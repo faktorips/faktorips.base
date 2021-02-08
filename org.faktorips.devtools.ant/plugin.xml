@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-    <extension point="org.eclipse.ant.core.antTasks">
-        <antTask
-        class="org.faktorips.devtools.ant.ProjectImportTask"
-        eclipseRuntime="true"
-        headless="true"
-        library="ant_tasks/ant-tasks.jar"
-        name="importProject"/>
-    </extension>
-
-    <extension point="org.eclipse.ant.core.antTasks">
-        <antTask
-        class="org.faktorips.devtools.ant.FullBuildTask"
-        eclipseRuntime="true"
-        headless="true"
-        library="ant_tasks/ant-tasks.jar"
-        name="fullBuild"/>
-    </extension>
-
-    <extension point="org.eclipse.ant.core.extraClasspathEntries">
-        <extraClasspathEntry
-        eclipseRuntime="true"
-        headless="true"
-        library="ant_tasks/ant-tasks.jar"/>
-    </extension>
-
- <extension
-       point="org.eclipse.ant.core.antTasks">
+  <extension point="org.eclipse.ant.core.antTasks">
     <antTask
-          class="org.faktorips.devtools.ant.ExportHtmlTask"
-          eclipseRuntime="true"
-          headless="true"
-          library="ant_tasks/ant-tasks.jar"
-          name="exportHtml">
+      class="org.faktorips.devtools.ant.ProjectImportTask"
+      eclipseRuntime="true"
+      headless="true"
+      library="ant_tasks/ant-tasks.jar"
+      name="importProject"/>
+  </extension>
+  
+  <extension point="org.eclipse.ant.core.antTasks">
+    <antTask
+      class="org.faktorips.devtools.ant.FullBuildTask"
+      eclipseRuntime="true"
+      headless="true"
+      library="ant_tasks/ant-tasks.jar"
+      name="fullBuild"/>
+  </extension>
+  
+  <extension point="org.eclipse.ant.core.antTasks">
+    <antTask
+      class="org.faktorips.devtools.ant.ExportHtmlTask"
+      eclipseRuntime="true"
+      headless="true"
+      library="ant_tasks/ant-tasks.jar"
+      name="exportHtml">
     </antTask>
- </extension>
+  </extension>
+  
+  <extension point="org.eclipse.ant.core.antTasks">
+    <antTask
+      class="org.faktorips.devtools.ant.ConfigureJdkTask"
+      eclipseRuntime="true"
+      headless="true"
+      library="ant_tasks/ant-tasks.jar"
+      name="configureJdk">
+    </antTask>
+  </extension>
+  
+  <extension point="org.eclipse.ant.core.extraClasspathEntries">
+    <extraClasspathEntry
+      eclipseRuntime="true"
+      headless="true"
+      library="ant_tasks/ant-tasks.jar"/>
+  </extension>
 
 </plugin>

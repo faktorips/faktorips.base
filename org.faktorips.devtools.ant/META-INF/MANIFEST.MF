@@ -8,6 +8,7 @@ Require-Bundle: org.apache.ant,
  org.eclipse.ant.core,
  org.faktorips.devtools.core,
  org.faktorips.devtools.htmlexport,
- org.faktorips.runtime
+ org.faktorips.runtime,
+ org.eclipse.jdt.launching;bundle-version="3.13.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: ant_tasks/ant-tasks.jar
