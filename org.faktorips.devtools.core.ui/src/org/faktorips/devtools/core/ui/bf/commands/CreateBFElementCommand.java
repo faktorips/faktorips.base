@@ -11,8 +11,9 @@
 package org.faktorips.devtools.core.ui.bf.commands;
 
 import org.eclipse.draw2d.geometry.Point;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -36,6 +37,6 @@ public class CreateBFElementCommand extends BFElementCommand {
 
     @Override
     protected void executeInternal() {
-        bfElementType.newBFElement(businessFunction, location);
+        bfElementType.newBFElement(businessFunction, new Location(location.x, location.y));
     }
 }

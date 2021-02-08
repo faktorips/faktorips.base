@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.bf.edit;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.requests.GroupRequest;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBFElementCommand;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 
 /**
  * This policy creates the deletion command for business function elements.

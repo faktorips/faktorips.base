@@ -42,7 +42,7 @@ public class XEnumType extends XClass {
 
     static final String VAR_NAME_PRODUCT_REPOSITORY = "productRepository";
 
-    private final EnumJavaClassNameProvider javaClassNameProvider;
+    private final IJavaClassNameProvider javaClassNameProvider;
 
     public XEnumType(IEnumType enumtype, GeneratorModelContext context, ModelService modelService) {
         super(enumtype, context, modelService);
@@ -59,7 +59,7 @@ public class XEnumType extends XClass {
         return javaClassNameProvider;
     }
 
-    public static EnumJavaClassNameProvider createEnumJavaClassNameProvider(boolean isGeneratePublishedInterfaces) {
+    public static IJavaClassNameProvider createEnumJavaClassNameProvider(boolean isGeneratePublishedInterfaces) {
         return new EnumJavaClassNameProvider(isGeneratePublishedInterfaces);
     }
 

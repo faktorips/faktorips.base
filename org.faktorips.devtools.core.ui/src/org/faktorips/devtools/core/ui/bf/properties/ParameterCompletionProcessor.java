@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IParameterBFE;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IParameterBFE;
 import org.faktorips.devtools.model.type.IType;
 
 /**

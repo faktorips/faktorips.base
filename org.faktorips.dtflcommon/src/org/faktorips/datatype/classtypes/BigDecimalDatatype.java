@@ -10,7 +10,6 @@
 
 package org.faktorips.datatype.classtypes;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

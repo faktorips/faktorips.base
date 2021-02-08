@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
@@ -47,6 +48,8 @@ public class TestIpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsV
     private IIpsFeatureVersionManager[] featureVersionManagers;
 
     private Map<String, IVersionProviderFactory> versionProviderFactories;
+
+    private IClassLoaderProviderFactory classLoaderProviderFactory;
 
     public TestIpsModelExtensionsViaEclipsePlugins() {
         super(Platform.getExtensionRegistry());
@@ -96,6 +99,19 @@ public class TestIpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsV
      */
     public void setVersionProviderFactories(Map<String, IVersionProviderFactory> versionProviderFactories) {
         this.versionProviderFactories = versionProviderFactories;
+    }
+
+    @Override
+    public IClassLoaderProviderFactory getClassLoaderProviderFactory() {
+        return classLoaderProviderFactory != null ? classLoaderProviderFactory : super.getClassLoaderProviderFactory();
+    }
+
+    /**
+     * Sets the ClassLoaderProviderFactory. This method overwrites the ClassLoaderProviderFactory
+     * registered via extension points.
+     */
+    public void setClassLoaderProviderFactory(IClassLoaderProviderFactory classLoaderProviderFactory) {
+        this.classLoaderProviderFactory = classLoaderProviderFactory;
     }
 
 }

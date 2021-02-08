@@ -20,8 +20,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 
 /**
  * A section that is displayed in the property view. The properties of a parameter element can be

@@ -9,5 +9,5 @@ Require-Bundle: org.apache.ant,
  org.faktorips.devtools.core,
  org.faktorips.devtools.htmlexport,
  org.faktorips.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: ant_tasks/ant-tasks.jar

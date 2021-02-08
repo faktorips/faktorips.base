@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.internal.model.bf.BusinessFunction;
-import org.faktorips.devtools.core.internal.model.bf.ControlFlow;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.bf.BusinessFunction;
+import org.faktorips.devtools.model.internal.bf.ControlFlow;
 import org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.model.internal.enums.EnumAttribute;
 import org.faktorips.devtools.model.internal.enums.EnumContent;

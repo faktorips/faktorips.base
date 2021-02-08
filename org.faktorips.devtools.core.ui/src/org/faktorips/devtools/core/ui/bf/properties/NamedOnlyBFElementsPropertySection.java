@@ -20,11 +20,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.faktorips.devtools.core.model.bf.IBFElement;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.bf.edit.NodeEditPart;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.bf.IBFElement;
 
 /**
  * A section that is displayed in the property view. The name property of a business function

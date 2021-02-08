@@ -111,11 +111,16 @@ import org.xml.sax.SAXException;
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
 
-    public static final boolean TRACE_MODEL_MANAGEMENT;
+    public static final boolean TRACE_MODEL_MANAGEMENT = Boolean
+            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
 
-    public static final boolean TRACE_MODEL_CHANGE_LISTENERS;
+    public static final boolean TRACE_MODEL_CHANGE_LISTENERS = Boolean
+            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners")) //$NON-NLS-1$
+            .booleanValue();
 
-    public static final boolean TRACE_VALIDATION;
+    public static final boolean TRACE_VALIDATION = Boolean
+            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/validation")) //$NON-NLS-1$
+            .booleanValue();
 
     /**
      * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which
@@ -124,18 +129,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Described in FIPS-5745
      */
     private static final int INVALID_MOD_STAMP = -42;
+    private static final String OLD_NATURE_ID = "org.faktorips.devtools.core.ipsnature"; //$NON-NLS-1$
 
-    private static IpsModel INSTANCE = new IpsModel();
-
-    static {
-        TRACE_MODEL_MANAGEMENT = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
-        TRACE_MODEL_CHANGE_LISTENERS = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners")) //$NON-NLS-1$
-                .booleanValue();
-        TRACE_VALIDATION = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/validation")) //$NON-NLS-1$
-                .booleanValue();
-    }
+    private static IpsModel theInstance = new IpsModel();
 
     /**
      * Resource delta visitor used to generate IPS source file contents changed events and trigger a
@@ -214,9 +210,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Deprecated
     public static void reInit() {
-        INSTANCE.stopListeningToResourceChanges();
-        INSTANCE = new IpsModel();
-        INSTANCE.startListeningToResourceChanges();
+        theInstance.stopListeningToResourceChanges();
+        theInstance = new IpsModel();
+        theInstance.startListeningToResourceChanges();
     }
 
     /**
@@ -228,7 +224,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Deprecated
     public static final IpsModel get() {
-        return INSTANCE;
+        return theInstance;
     }
 
     /**
@@ -459,7 +455,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private boolean hasIpsNature(IProject project) {
         try {
-            return project.hasNature(IIpsProject.NATURE_ID);
+            return project.hasNature(IIpsProject.NATURE_ID) || project.hasNature(OLD_NATURE_ID);
         } catch (CoreException e) {
             return false;
         }

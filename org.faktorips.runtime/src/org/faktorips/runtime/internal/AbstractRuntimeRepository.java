@@ -13,6 +13,8 @@ package org.faktorips.runtime.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -905,6 +907,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     @Override
     public JAXBContext newJAXBContext() {
+        ClassLoader tccl = null;
         try {
             Set<String> classNames = getAllModelTypeImplementationClasses();
             Set<Class<?>> classes = new LinkedHashSet<Class<?>>(classNames.size());
@@ -914,7 +917,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                     classes.add(clazz);
                 }
             }
+
+            tccl = getPrivilegedCurrentThreadContextClassLoader();
+            Thread.currentThread().setContextClassLoader(getClassLoader());
+
             JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
+
             return newJAXBContext(ctx);
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -922,6 +930,28 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         } catch (Exception e) {
             // CSON: IllegalCatch
             throw new RuntimeException(e);
+        } finally {
+            if (tccl != null) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
+    }
+
+    /**
+     * Jaxb uses the class loader from the thread context. By default, the thread context class
+     * loader is not aware of OSGi and thus doesn't see any of the classes imported in the bundle.
+     * 
+     * If a {@link SecurityManager} is used the {@link ClassLoader} is loaded with
+     * {@link AccessController#doPrivileged(java.security.PrivilegedAction)}.
+     * 
+     * @return the context {@code ClassLoader} for this thread, or {@code null}
+     */
+    private ClassLoader getPrivilegedCurrentThreadContextClassLoader() {
+        if (System.getSecurityManager() == null) {
+            return Thread.currentThread().getContextClassLoader();
+        } else {
+            return java.security.AccessController.doPrivileged(
+                    (PrivilegedAction<ClassLoader>)Thread.currentThread()::getContextClassLoader);
         }
     }
 

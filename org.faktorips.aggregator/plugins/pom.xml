@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -18,10 +20,12 @@
         <!-- plugins of feature org.faktorips.feature -->
         <module>../../org.faktorips.devtools.ant</module>
         <module>../../org.faktorips.devtools.core</module>
+        <module>../../org.faktorips.devtools.core.refactor</module>
         <module>../../org.faktorips.devtools.core.ui</module>
         <module>../../org.faktorips.devtools.htmlexport</module>
         <module>../../org.faktorips.devtools.htmlexport.nl1</module>
         <module>../../org.faktorips.devtools.model</module>
+        <module>../../org.faktorips.devtools.model.builder</module>
         <module>../../org.faktorips.devtools.stdbuilder</module>
         <module>../../org.faktorips.devtools.stdbuilder.ui</module>
         <module>../../org.faktorips.devtools.tableconversion</module>
@@ -29,8 +33,10 @@
         <module>../../org.faktorips.dtflcommon</module>
         <module>../../org.faktorips.eclipse.emf.codegen</module>
         <module>../../org.faktorips.fl</module>
+        <module>../../org.faktorips.m2e</module>
         <module>../../org.faktorips.nls.devtools.core.nl1</module>
         <module>../../org.faktorips.nls.devtools.core.ui.nl1</module>
+        <module>../../org.faktorips.nls.devtools.model.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
         <module>../../org.faktorips.runtime</module>
@@ -40,4 +46,19 @@
         <module>../../org.faktorips.valuetypes.joda</module>
     </modules>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <!-- at the moment we do not check missing javadoc 
+                            like missing @param or @return -->
+                        <doclint>none</doclint>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

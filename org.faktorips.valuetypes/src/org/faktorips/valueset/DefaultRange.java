@@ -119,6 +119,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      *             {@link Integer#MAX_VALUE}
      */
     protected int sizeForDiscreteValuesExcludingNull() {
+        if (lowerBound != null && upperBound != null && lowerBound == upperBound) {
+            return 1;
+        }
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");
     }
 

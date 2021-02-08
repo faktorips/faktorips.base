@@ -10,7 +10,7 @@ Require-Bundle: org.faktorips.devtools.core,
  org.eclipse.jdt.core,
  org.faktorips.valuetypes
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.devtools.htmlexport,org.faktorips.devtoo
  ls.htmlexport.context,org.faktorips.devtools.htmlexport.generators,or
  g.faktorips.devtools.htmlexport.generators.html,org.faktorips.devtool

@@ -12,7 +12,10 @@
    <feature url="features/org.faktorips.groovy.feature_0.0.0.jar" id="org.faktorips.groovy.feature" version="0.0.0">
       <category name="faktor_ips_addons"/>
    </feature>
-   <feature id="org.faktorips.groovy.feature.nls1">
+   <feature url="features/org.faktorips.groovy.feature.nls1_0.0.0.jar"  id="org.faktorips.groovy.feature.nls1" version="0.0.0">
+      <category name="faktor_ips_addons"/>
+   </feature>
+   <feature url="features/org.faktorips.m2e.feature_0.0.0.jar"  id="org.faktorips.m2e.feature" version="0.0.0">
       <category name="faktor_ips_addons"/>
    </feature>
    <category-def name="faktor_ips" label="Faktor-IPS">

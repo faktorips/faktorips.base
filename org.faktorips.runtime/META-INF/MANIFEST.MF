@@ -24,6 +24,7 @@ Export-Package: org.faktorips.runtime,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.opencsv;version="3.3.0";resolution:=optional,
+ com.sun.xml.bind.v2,
  edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
  javax.xml.bind;resolution:=optional,
  javax.xml.bind.annotation;resolution:=optional,

@@ -219,38 +219,6 @@
       </builderSet>
    </extension>
    <extension
-         point="org.eclipse.ltk.core.refactoring.renameParticipants">
-      <renameParticipant
-            class="org.faktorips.devtools.stdbuilder.refactor.RenameRefactoringParticipant"
-            id="org.faktorips.devtools.stdbuilder.renameParticipant"
-            name="StdBuilderRenameParticipant">
-         <enablement>
-            <instanceof
-                  value="org.faktorips.devtools.model.IIpsElement">
-            </instanceof></enablement>
-      </renameParticipant>
-   </extension>
-   <extension
-         point="org.eclipse.ltk.core.refactoring.moveParticipants">
-      <moveParticipant
-            class="org.faktorips.devtools.stdbuilder.refactor.MoveRefactoringParticipant"
-            id="org.faktorips.devtools.stdbuilder.moveParticipant"
-            name="StdBuilderMoveParticipant">
-         <enablement>
-            <instanceof
-                  value="org.faktorips.devtools.model.ipsobject.IIpsObject">
-            </instanceof></enablement>
-      </moveParticipant>
-   </extension>
-   <extension
-         point="org.faktorips.devtools.core.pullUpParticipants">
-      <pullUpParticipant
-            class="org.faktorips.devtools.stdbuilder.refactor.PullUpRefactoringParticipant"
-            id="org.faktorips.devtools.stdbuilder.pullUpParticipant"
-            name="StdBuilderPullUpParticipant">
-      </pullUpParticipant>
-   </extension>
-   <extension
          point="org.faktorips.devtools.stdbuilder.artefactBuilderFactory">
       <artefactBuilderFactory
             class="org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.PolicyBuilderFactory">

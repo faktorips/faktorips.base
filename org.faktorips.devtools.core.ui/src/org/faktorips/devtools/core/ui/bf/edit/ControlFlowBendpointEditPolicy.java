@@ -14,10 +14,10 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.BendpointEditPolicy;
 import org.eclipse.gef.requests.BendpointRequest;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.CreateBendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.MoveBendpointCommand;
+import org.faktorips.devtools.model.bf.IControlFlow;
 
 /**
  * A specialization of {@link BendpointEditPolicy} that implements the necessary methods to create

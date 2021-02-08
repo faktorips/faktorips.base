@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><EnumContent enumType="my.EnumType" xml:space="preserve">
- <Description id="3bb742c4-a998-4990-9695-579d999c67ce" locale="de"/>
- <Description id="64ff10f1-7a1c-420f-9ee5-52bf6fc863f5" locale="en"/>
- <EnumAttributeReference id="28c3c99b-73e2-4e64-bd0f-7ea020386678" name="i"/>
-</EnumContent>

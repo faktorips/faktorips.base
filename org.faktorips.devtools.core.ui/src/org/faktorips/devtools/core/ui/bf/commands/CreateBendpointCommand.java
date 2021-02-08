@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.bf.commands;
 
-import org.eclipse.draw2d.AbsoluteBendpoint;
 import org.eclipse.draw2d.geometry.Point;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 
 /**
  * A command that adds a bend point to a control flow.
@@ -27,7 +27,7 @@ public class CreateBendpointCommand extends BendpointCommand {
 
     @Override
     protected void executeInternal() {
-        getControlFlow().addBendpoint(getIndex(), new AbsoluteBendpoint(getLocation()));
+        getControlFlow().addBendpoint(getIndex(), new Location(getLocation().x, getLocation().y));
     }
 
 }

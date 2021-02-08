@@ -105,12 +105,6 @@
    </extension>
 
    <extension
-         point="org.faktorips.devtools.model.ipsobjecttype">
-    	<ipsobjecttype
-            class="org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType">
-		</ipsobjecttype>
-	</extension>
-   <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.faktorips.devtools.model.productcmpt.IProductCmptLink"
@@ -245,100 +239,8 @@
    <extension
          point="org.faktorips.devtools.model.ipsMigrationOperation">
       <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_2_0$Factory"
-            targetVersion="3.2.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_4_0$Factory"
-            targetVersion="3.4.0.rfinal">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_5$Factory"
-            targetVersion="3.5.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0$Factory"
-            targetVersion="3.6.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_0_rfinal$Factory"
-            targetVersion="3.6.0.rfinal">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_6_2$Factory"
-            targetVersion="3.6.2">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_7_0$Factory"
-            targetVersion="3.7.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_8_0$Factory"
-            targetVersion="3.8.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_9_0$Factory"
-            targetVersion="3.9.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_11_0$Factory"
-            targetVersion="3.11.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_12_0$Factory"
-            targetVersion="3.12.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_13_0$Factory"
-            targetVersion="3.13.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_14_0$Factory"
-            targetVersion="3.14.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_15_0$Factory"
-            targetVersion="3.15.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_16_0$Factory"
-            targetVersion="3.16.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_18_0$Factory"
-            targetVersion="3.18.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_19_0$Factory"
-            targetVersion="3.19.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_20_0$Factory"
-            targetVersion="3.20.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_21_0$Factory"
-            targetVersion="3.21.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_3_22_0$Factory"
-            targetVersion="3.22.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_19_7_0_Factory"
-            targetVersion="19.7.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_19_12_0_Factory"
-            targetVersion="19.12.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_20_6_0$Factory"
-            targetVersion="20.6.0">
-      </migrationOperation>
-      <migrationOperation
-            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_20_12_0_Factory"
-            targetVersion="20.12.0">
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_21_6_0$Factory"
+            targetVersion="21.6.0">
       </migrationOperation>
    </extension>
    <extension point="org.faktorips.devtools.model.ipsModelPreferences">

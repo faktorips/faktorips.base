@@ -27,8 +27,8 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.core.model.bf.BFElementType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.bf.BFElementType;
 
 /**
  * Builds the palette that is needed by the business function edtior.

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
@@ -52,7 +52,7 @@ public class JavaDocTagGeneratorUtil {
 
     public static String[] getJavaDocTagsInclGenerated(IIpsObjectPartContainer element, StandardBuilderSet builderSet) {
         List<String> javaDocTags = getJavaDocTags(element, builderSet);
-        javaDocTags.add(JavaSourceFileBuilder.ANNOTATION_GENERATED[0]);
+        javaDocTags.add(JavaSourceFileBuilder.ANNOTATION_GENERATED);
         return javaDocTags.toArray(new String[javaDocTags.size()]);
     }
 

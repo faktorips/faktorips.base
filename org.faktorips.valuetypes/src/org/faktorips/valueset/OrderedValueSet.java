@@ -10,16 +10,19 @@
 
 package org.faktorips.valueset;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * Implementation of the <code>org.faktorips.valueset.ValueSet</code> interface for ordered values.
+ * Implementation of the {@link ValueSet} interface for ordered values.
  */
-public class OrderedValueSet<E> implements ValueSet<E> {
+public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
 
     private static final long serialVersionUID = 1735375680693336950L;
 
@@ -30,15 +33,16 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     private int hashCode;
 
     /**
-     * Creates a new instance of <code>OrderedValueSet</code>.
+     * Creates a new instance of {@link OrderedValueSet}.
      * 
-     * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true.
+     * @param values the values of this set. If these values contain {@code null} or the
+     *            {@code null} representation value the parameter {@code containsNull} must be set
+     *            to {@code true}.
      * 
-     * @param containsNull indicates if the provided values contain null or the null representation
-     *            value
-     * @param nullValue the java null value or null representation value for the datatype of this
-     *            enumeration value set
+     * @param containsNull indicates whether the provided values contain {@code null} or the
+     *            {@code null} representation value
+     * @param nullValue the java {@code null} value or {@code null} representation value for the
+     *            datatype of this enumeration value set
      * @throws IllegalArgumentException if the values array contains duplicate entries
      */
     @SafeVarargs
@@ -55,17 +59,18 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     }
 
     /**
-     * Creates a new instance of <code>OrderedValueSet</code>.
+     * Creates a new instance of {@link OrderedValueSet}.
      * 
-     * @param values the values of this set. If these values contain null or the null representation
-     *            value the parameter containsNull must be set to true. if <code>values</code> is
-     *            <code>null</code> the created set does not contain any values.
+     * @param values the values of this set. If these values contain {@code null} or the
+     *            {@code null} representation value the parameter {@code containsNull} must be set
+     *            to {@code true}. If {@code values} is {@code null} the created set does not
+     *            contain any values.
      * 
-     * @param containsNull indicates if the provided values contain null or the null representation
-     *            value
-     * @param nullValue the java null value or null representation value for the datatype of this
-     *            value set
-     * @throws IllegalArgumentException if the values Collection contains duplicate entries
+     * @param containsNull indicates whether the provided values contain {@code null} or the
+     *            {@code null} representation value
+     * @param nullValue the java {@code null} value or {@code null} representation value for the
+     *            datatype of this value set
+     * @throws IllegalArgumentException if the value collection contains duplicate entries
      */
     public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
         if (values != null) {
@@ -77,6 +82,64 @@ public class OrderedValueSet<E> implements ValueSet<E> {
             }
         }
         initialize(containsNull, nullValue);
+    }
+
+    /**
+     * Creates a new instance of {@link OrderedValueSet}.
+     * 
+     * @param values the values of this set. If these values contain {@code null}
+     *            {@link #containsNull()} will return {@code true}. If {@code values} is
+     *            {@code null} the created set does not contain any values.
+     * 
+     * @throws IllegalArgumentException if the value collection contains duplicate entries
+     */
+    public OrderedValueSet(Collection<E> values) {
+        if (values != null) {
+            for (E e : values) {
+                if (set.contains(e)) {
+                    throw new IllegalArgumentException("The provided values Collection contains duplicate entries.");
+                }
+                if (e == null) {
+                    containsNull = true;
+                    nullValue = null;
+                }
+                set.add(e);
+            }
+        }
+        initialize(containsNull, nullValue);
+    }
+
+    /**
+     * Returns a new instance of {@link OrderedValueSet} with an empty set.
+     */
+    public static <E> OrderedValueSet<E> empty() {
+        return new OrderedValueSet<E>(null);
+    }
+
+    /**
+     * Returns a new instance of {@link OrderedValueSet} containing the passed values.
+     *
+     * @param values the values of this set. If these values contain {@code null}
+     *            {@link #containsNull()} will return {@code true}. If {@code values} is
+     *            {@code null} the created set does not contain any values.
+     * 
+     * @throws IllegalArgumentException if the values Collection contains duplicate entries
+     */
+    public static <E> OrderedValueSet<E> of(Collection<E> values) {
+        return new OrderedValueSet<E>(values);
+    }
+
+    /**
+     * Returns a new instance of {@link OrderedValueSet} containing the passed values.
+     *
+     * @param values the values of this set. If these values contain {@code null}
+     *            {@link #containsNull()} will return {@code true}.
+     * 
+     * @throws IllegalArgumentException if the values Collection contains duplicate entries
+     */
+    @SafeVarargs
+    public static <E> OrderedValueSet<E> of(E... values) {
+        return of(Arrays.asList(values));
     }
 
     private void initialize(boolean containsNull, E nullValue) {
@@ -103,6 +166,10 @@ public class OrderedValueSet<E> implements ValueSet<E> {
         return hashCode;
     }
 
+    /**
+     * Returns all values of this set except a possible {@code null} or {@code null} representation
+     * value.
+     */
     @SuppressWarnings("unchecked")
     private Set<E> getValuesWithoutNull() {
         if (containsNull) {
@@ -114,7 +181,15 @@ public class OrderedValueSet<E> implements ValueSet<E> {
     }
 
     public Set<E> getValues(boolean excludeNull) {
-        return excludeNull ? getValuesWithoutNull() : Collections.unmodifiableSet(set);
+        return excludeNull ? getValuesWithoutNull() : getValues();
+    }
+
+    /**
+     * Returns all values of this set including a possible {@code null} or {@code null}
+     * representation value.
+     */
+    public Set<E> getValues() {
+        return Collections.unmodifiableSet(set);
     }
 
     public final boolean isDiscrete() {
@@ -159,6 +234,14 @@ public class OrderedValueSet<E> implements ValueSet<E> {
 
     public int size() {
         return set.size();
+    }
+
+    public Iterator<E> iterator() {
+        return set.iterator();
+    }
+
+    public Stream<E> stream() {
+        return set.stream();
     }
 
 }

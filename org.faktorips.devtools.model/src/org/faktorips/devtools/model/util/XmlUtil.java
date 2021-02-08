@@ -165,7 +165,40 @@ public class XmlUtil {
             xml = addPreserveSpace(xml);
         }
         xml = noIndentationAroundCDATA(xml);
+        xml = noIndentationToXmlDataContent(xml);
         return removeDuplicateWindowsLineBreaks(xml);
+    }
+
+    /**
+     * In Java 9+ the bug JDK-8087303 changed the behavior of the XML serializer. Now it can not
+     * distinguish whether the space is a meaningful content or just an indentation, so the
+     * serializer regards the spaces as XML data content. This leads to spurious empty lines when
+     * reading pretty printed XML files.
+     * 
+     * <p>
+     * For Example:
+     * </p>
+     *
+     * <pre>
+     * ···&lt;DefaultValue isNull="true"/&gt;LF
+     * </pre>
+     *
+     * The three spaces and the XML tag will be handled as two separate XML entities, and therefore
+     * will be indented by each three spaces.
+     *
+     * <pre>
+     * ······LF
+     * ···&lt;DefaultValue isNull="true"/&gt;LF
+     * </pre>
+     * 
+     * 
+     * @return the XML without spurious empty lines
+     */
+    private static String noIndentationToXmlDataContent(String xml) {
+        // \R = carriage return and line feed pair, sole line feed, sole carriage return, vertical
+        // tab, form feed, next line, line separator, paragraph separator; may backtrack into the
+        // middle of a carriage return and line feed pair
+        return xml.replaceAll("(?<=>)\\R(?: |\\t)+(\\R *)(?=<)", "$1"); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**

@@ -17,22 +17,20 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.gef;bundle-version="3.4.0",
  org.faktorips.devtools.model;visibility:=reexport,
  com.google.guava;bundle-version="21.0.0",
- com.opencsv;bundle-version="3.3.0"
+ com.opencsv;bundle-version="3.3.0",
+ org.faktorips.devtools.model.builder;bundle-version="21.6.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
- org.faktorips.devtools.core.builder,
  org.faktorips.devtools.core.exception,
  org.faktorips.devtools.core.fl,
  org.faktorips.devtools.core.internal.migration;x-friends:="org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.stdbuilder,org.faktorips.productvariant.core",
  org.faktorips.devtools.core.internal.migrationextensions;x-friends:="org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.stdbuilder",
  org.faktorips.devtools.core.internal.model.adapter;x-friends:="org.faktorips.productvariant.core",
- org.faktorips.devtools.core.internal.model.bf;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.model.pctype.validationrule;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.model.testcase;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.productrelease;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.refactor;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.model,
- org.faktorips.devtools.core.model.bf,
  org.faktorips.devtools.core.model.ipsobject.refactor,
  org.faktorips.devtools.core.model.testcase,
  org.faktorips.devtools.core.model.versionmanager,
@@ -40,7 +38,7 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.refactor,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
  org.apache.commons.collections;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"

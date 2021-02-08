@@ -15,8 +15,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
 
 /**
  * A section that is displayed in the property view. The properties of a control flow object can be

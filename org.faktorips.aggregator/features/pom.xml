@@ -24,6 +24,7 @@
         <module>../../org.faktorips.testdependencies</module>
         <module>../../org.faktorips.groovy.feature</module>
         <module>../../org.faktorips.groovy.feature.nls1</module>
+        <module>../../org.faktorips.m2e.feature</module>
     </modules>
 
 </project>

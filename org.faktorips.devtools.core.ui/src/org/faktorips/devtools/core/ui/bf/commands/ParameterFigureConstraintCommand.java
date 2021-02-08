@@ -11,7 +11,8 @@
 package org.faktorips.devtools.core.ui.bf.commands;
 
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
@@ -22,21 +23,21 @@ import org.faktorips.util.memento.Memento;
  */
 public class ParameterFigureConstraintCommand extends org.eclipse.gef.commands.Command {
 
-    private Rectangle contraint;
+    private Rectangle constraint;
     private IBusinessFunction businessFunction;
     private Memento bfElementState;
 
-    public ParameterFigureConstraintCommand(IBusinessFunction bf, Rectangle contraint) {
+    public ParameterFigureConstraintCommand(IBusinessFunction bf, Rectangle constraint) {
         ArgumentCheck.notNull(bf, this);
-        ArgumentCheck.notNull(contraint, this);
+        ArgumentCheck.notNull(constraint, this);
         this.businessFunction = bf;
-        this.contraint = contraint;
+        this.constraint = constraint;
     }
 
     @Override
     public void execute() {
         bfElementState = businessFunction.newMemento();
-        businessFunction.setParameterRectangleSize(contraint.getSize());
+        businessFunction.setParameterRectangleSize(new Size(constraint.getSize().width, constraint.getSize().height));
     }
 
     @Override

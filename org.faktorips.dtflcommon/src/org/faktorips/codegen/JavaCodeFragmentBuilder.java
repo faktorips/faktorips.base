@@ -337,7 +337,7 @@ public class JavaCodeFragmentBuilder {
             Class<?>[] argClass,
             JavaCodeFragment body,
             String javadoc,
-            String[] javaDocAnnotations) {
+            String... javaDocAnnotations) {
 
         javaDoc(javadoc, javaDocAnnotations);
         methodBegin(modifier, returnType, methodName, argName, argClass);
@@ -398,7 +398,7 @@ public class JavaCodeFragmentBuilder {
             String[] argClass,
             JavaCodeFragment body,
             String javadoc,
-            String[] javaDocAnnotations) {
+            String... javaDocAnnotations) {
 
         javaDoc(javadoc, javaDocAnnotations);
         methodBegin(modifier, returnType, methodName, argName, argClass);
@@ -1058,19 +1058,11 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Put the given text into a JavaDoc comment.
-     */
-    public JavaCodeFragmentBuilder javaDoc(String text) {
-        javaDoc(text, null);
-        return this;
-    }
-
-    /**
      * Puts the given text and annotations into a java doc comment. For an annotation only the
      * annotation name and optionally separated by a space character an annotation text needs to be
      * specified. The '@' character will be automatically added.
      */
-    public JavaCodeFragmentBuilder javaDoc(String text, String[] annotations) {
+    public JavaCodeFragmentBuilder javaDoc(String text, String... annotations) {
         if (text == null && annotations == null) {
             return this;
         }

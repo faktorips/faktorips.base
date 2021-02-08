@@ -97,6 +97,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.faktorips.devtools.htmlexport"/>
       <import plugin="org.faktorips.devtools.stdbuilder"/>
       <import plugin="org.faktorips.devtools.stdbuilder.ui"/>
+      <import plugin="org.faktorips.devtools.model"/>
    </requires>
 
    <plugin
@@ -141,6 +142,14 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
 
    <plugin
          id="org.faktorips.nls.devtools.stdbuilder.ui.nl1"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.nls.devtools.model.nl1"
          download-size="0"
          install-size="0"
          version="0.0.0"

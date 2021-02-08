@@ -14,14 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.draw2d.AbsoluteBendpoint;
-import org.eclipse.draw2d.geometry.Point;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
 import org.faktorips.devtools.core.ui.bf.commands.BendpointCommand;
 import org.faktorips.devtools.core.ui.bf.commands.DeleteBendpointCommand;
+import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +50,9 @@ public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
         } catch (IndexOutOfBoundsException e) {
         }
 
-        cf.addBendpoint(0, new AbsoluteBendpoint(10, 10));
+        cf.addBendpoint(0, new Location(10, 10));
         assertEquals(1, cf.getBendpoints().size());
-        assertEquals(new Point(10, 10), cf.getBendpoints().get(0));
+        assertEquals(new Location(10, 10), cf.getBendpoints().get(0));
         command.execute();
         assertTrue(cf.getBendpoints().isEmpty());
     }

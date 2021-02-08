@@ -13,25 +13,11 @@ package org.faktorips.devtools.core.internal.migrationextensions;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
+
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.migrationextensions.messages"; //$NON-NLS-1$
-    public static String Migration_19_12_0_description;
-    public static String Migration_19_7_0_description;
-    public static String Migration_20_6_0_description;
-    public static String Migration_20_12_0_description;
-    public static String Migration_3_7_0_description;
-    public static String Migration_3_8_0_description;
-    public static String Migration_3_9_0_description;
-    public static String Migration_3_11_0_description;
-    public static String Migration_3_12_0_description;
-    public static String Migration_3_13_0_description;
-    public static String Migration_3_14_0_description;
-    public static String Migration_3_15_0_description;
-    public static String Migration_3_16_0_description;
-    public static String Migration_3_18_0_description;
-    public static String Migration_3_19_0_description;
-    public static String Migration_3_20_0_description;
-    public static String Migration_3_21_0_description;
-    public static String Migration_3_22_0_description;
+
+    public static String Migration_21_6_0_description;
+    public static String Migration_21_6_0_IpsVersionTooOld;
 
     static {
         // initialize resource bundle

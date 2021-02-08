@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.bf.commands;
 
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.Command;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 

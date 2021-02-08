@@ -16,11 +16,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.gef.commands.Command;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.bf.BFElementType;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
-import org.faktorips.devtools.core.model.bf.IControlFlow;
-import org.faktorips.devtools.core.model.bf.IDecisionBFE;
+import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
+import org.faktorips.devtools.model.bf.IControlFlow;
+import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.util.memento.Memento;
 
 public class ConnectionCommand extends Command {

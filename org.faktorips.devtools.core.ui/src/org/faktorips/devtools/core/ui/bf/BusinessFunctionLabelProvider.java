@@ -15,8 +15,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.bf.IBFElement;
-import org.faktorips.devtools.core.model.bf.IBusinessFunction;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.bf.edit.BusinessFunctionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.CallBusinessFunctionActionEditPart;
@@ -28,6 +26,8 @@ import org.faktorips.devtools.core.ui.bf.edit.InlineActionEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.MergeEditPart;
 import org.faktorips.devtools.core.ui.bf.edit.ParameterEditPart;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.bf.IBFElement;
+import org.faktorips.devtools.model.bf.IBusinessFunction;
 
 /**
  * Provides display text and images for business function elements. It is used by the property view.

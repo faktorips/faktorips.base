@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -9,9 +11,9 @@
         <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
         <maven-surefire-plugin>2.18.1</maven-surefire-plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- JUnit, Findbugs and Checkstyle already run in tycho build -->
+        <!-- JUnit, Spotbugs and Checkstyle already run in tycho build -->
         <surefire.skip>true</surefire.skip>
-        <findbugs.skip>true</findbugs.skip>
+        <spotbugs.skip>true</spotbugs.skip>
         <checkstyle.skip>true</checkstyle.skip>
         <java.version>8</java.version>
     </properties>
@@ -47,6 +49,9 @@
         <module>../../org.faktorips.dtflcommon/nexus</module>
         <module>../../org.faktorips.fl/nexus</module>
         <module>../../org.faktorips.devtools.model/nexus</module>
+        <module>../../org.faktorips.eclipse.emf.codegen/nexus</module>
+        <module>../../org.faktorips.devtools.model.builder/nexus</module>
+        <module>../../org.faktorips.devtools.stdbuilder/nexus</module>
     </modules>
 
     <build>
@@ -61,6 +66,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>parse-version</id>
@@ -74,11 +80,12 @@
             <plugin>
                 <groupId>org.revapi</groupId>
                 <artifactId>revapi-maven-plugin</artifactId>
+                <version>0.13.2</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.revapi</groupId>
                         <artifactId>revapi-java</artifactId>
-                        <version>0.23.0</version>
+                        <version>0.23.2</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -120,13 +127,7 @@
             </plugin>
         </plugins>
         <pluginManagement>
-            <!-- Older FindBugs versions can't be configured by current maven... -->
             <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>3.0.5</version>
-                </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
@@ -155,8 +156,9 @@
                             <version>${maven-javadoc-plugin-version}</version>
                             <configuration>
                                 <source>8</source>
-                                <!-- at the moment we do not check missing javadoc like missing @param or @return -->
-                                <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                                <!-- at the moment we do not check missing 
+                                    javadoc like missing @param or @return -->
+                                <doclint>none</doclint>
                             </configuration>
                         </plugin>
                     </plugins>
