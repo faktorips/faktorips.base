@@ -1137,7 +1137,7 @@
               name="%org.faktorips.ipsobjectpathspropertypage">
          <filter
                name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
+               value="org.faktorips.devtools.model.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
@@ -1151,7 +1151,7 @@
               name="%org.faktorips.ipsbuildersetpropertypage"> 
          <filter
                name="nature"
-               value="org.faktorips.devtools.core.ipsnature">
+               value="org.faktorips.devtools.model.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
