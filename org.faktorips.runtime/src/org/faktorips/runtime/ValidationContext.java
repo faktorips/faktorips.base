@@ -10,14 +10,17 @@
 
 package org.faktorips.runtime;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.faktorips.runtime.validation.DefaultGenericAttributeValidationConfiguration;
+import org.faktorips.runtime.validation.IGenericAttributeValidationConfiguration;
+
 /**
  * Default implementation of {@link IValidationContext}.
- * 
- * @author Peter Erzberger
  */
 public class ValidationContext implements IValidationContext {
 
@@ -27,29 +30,44 @@ public class ValidationContext implements IValidationContext {
 
     private final ClassLoader resourceClassLoader;
 
+    private final IGenericAttributeValidationConfiguration genericAttributeValidationConfiguration;
+
     /**
-     * Creates a new validation context with the specified local.
+     * Creates a new validation context with the specified locale, resource {@link ClassLoader} and
+     * {@link IGenericAttributeValidationConfiguration}.
      * 
      * @param locale Setting the locale of this context
      * @param resourceClassLoader setting the {@link ClassLoader} used to load resources
      * 
-     * @throws NullPointerException if one of the specified parameters is null
+     * @throws NullPointerException if one of the specified parameters is {@code null}
      */
-    public ValidationContext(Locale locale, ClassLoader resourceClassLoader) {
-        if (locale == null) {
-            throw new NullPointerException("The parameter locale cannot be null.");
-        }
-        if (resourceClassLoader == null) {
-            throw new NullPointerException("The parameter resourceClassLoader cannot be null.");
-        }
-        this.locale = locale;
-        this.resourceClassLoader = resourceClassLoader;
+    public ValidationContext(Locale locale, ClassLoader resourceClassLoader,
+            IGenericAttributeValidationConfiguration genericAttributeValidationConfiguration) {
+        this.locale = requireNonNull(locale, "The parameter locale cannot be null.");
+        this.resourceClassLoader = requireNonNull(resourceClassLoader,
+                "The parameter resourceClassLoader cannot be null.");
+        this.genericAttributeValidationConfiguration = requireNonNull(genericAttributeValidationConfiguration,
+                "The parameter genericAttributeValidationConfiguration cannot be null.");
     }
 
     /**
-     * Creates a new validation context with the specified local.
+     * Creates a new validation context with the specified locale, resource {@link ClassLoader} and
+     * a {@link DefaultGenericAttributeValidationConfiguration}.
      * 
-     * @throws NullPointerException if the specified parameter is null
+     * @param locale Setting the locale of this context
+     * @param resourceClassLoader setting the {@link ClassLoader} used to load resources
+     * 
+     * @throws NullPointerException if one of the specified parameters is {@code null}
+     */
+    public ValidationContext(Locale locale, ClassLoader resourceClassLoader) {
+        this(locale, resourceClassLoader, new DefaultGenericAttributeValidationConfiguration(locale));
+    }
+
+    /**
+     * Creates a new validation context with the specified locale and a
+     * {@link DefaultGenericAttributeValidationConfiguration}.
+     * 
+     * @throws NullPointerException if the specified locale is {@code null}
      */
     public ValidationContext(Locale locale) {
         this(locale, ValidationContext.class.getClassLoader());
@@ -57,7 +75,7 @@ public class ValidationContext implements IValidationContext {
 
     /**
      * Creates a new validation context with the default locale ({@link java.util.Locale}
-     * .getDefault()).
+     * .getDefault()) and a {@link DefaultGenericAttributeValidationConfiguration}.
      */
     public ValidationContext() {
         this(Locale.getDefault());
@@ -88,6 +106,18 @@ public class ValidationContext implements IValidationContext {
      */
     public ClassLoader getResourceClassLoader() {
         return resourceClassLoader;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This implementation returns the configuration passed to the
+     *           {@link #ValidationContext(Locale, ClassLoader, IGenericAttributeValidationConfiguration)
+     *           constructor}.
+     */
+    @Override
+    public IGenericAttributeValidationConfiguration getGenericAttributeValidationConfiguration() {
+        return genericAttributeValidationConfiguration;
     }
 
 }

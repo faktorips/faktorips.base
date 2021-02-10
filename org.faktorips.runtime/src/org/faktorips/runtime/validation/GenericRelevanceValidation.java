@@ -11,13 +11,10 @@ package org.faktorips.runtime.validation;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Locale;
-
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.NullObject;
 import org.faktorips.values.ObjectUtil;
@@ -28,20 +25,15 @@ import org.faktorips.valueset.ValueSet;
  */
 public class GenericRelevanceValidation {
 
-    public static final String ERROR_MANDATORY_MSG_CODE_PREFIX = "error.mandatory";
-    public static final String ERROR_IRRELEVANT_MSG_CODE_PREFIX = "error.irrelevant";
-    public static final String ERROR_INVALID_MSG_CODE_PREFIX = "error.invalid";
-
-    private static final String ERROR_MANDATORY_MSG_TEXT = "%s is a mandatory field.";
-    private static final String ERROR_IRRELEVANT_MSG_TEXT = "No value can be specified for %s.";
-    private static final String ERROR_VALUE_OUT_OF_RANGE_MSG_TEXT = "The value for %s is out of range.";
-
     private final IModelObject modelObject;
     private final PolicyAttribute policyAttribute;
+    private final IGenericAttributeValidationConfiguration config;
 
-    public GenericRelevanceValidation(IModelObject modelObject, PolicyAttribute policyAttribute) {
+    public GenericRelevanceValidation(IModelObject modelObject, PolicyAttribute policyAttribute,
+            IGenericAttributeValidationConfiguration config) {
         this.modelObject = requireNonNull(modelObject, "modelObject must not be null");
         this.policyAttribute = requireNonNull(policyAttribute, "policyAttribute must not be null");
+        this.config = requireNonNull(config, "config must not be null");
     }
 
     /**
@@ -66,24 +58,21 @@ public class GenericRelevanceValidation {
 
     private Message validateValuePresentIfMandatory() {
         if (isInvalidMandatory()) {
-            return createMessage(ERROR_MANDATORY_MSG_CODE_PREFIX,
-                    ERROR_MANDATORY_MSG_TEXT);
+            return config.createMessageForMissingMandatoryValue(policyAttribute, modelObject);
         }
         return null;
     }
 
     private Message validateValueNullIfIrrelevant() {
         if (isInvalidIrrelevance()) {
-            return createMessage(ERROR_IRRELEVANT_MSG_CODE_PREFIX,
-                    ERROR_IRRELEVANT_MSG_TEXT);
+            return config.createMessageForValuePresentForIgnoredAttribute(policyAttribute, modelObject);
         }
         return null;
     }
 
     private Message validateValueContainedIfPresent() {
         if (isInvalidNotContained()) {
-            return createMessage(ERROR_INVALID_MSG_CODE_PREFIX,
-                    ERROR_VALUE_OUT_OF_RANGE_MSG_TEXT);
+            return config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject);
         }
         return null;
     }
@@ -133,16 +122,5 @@ public class GenericRelevanceValidation {
     @SuppressWarnings("unchecked")
     private <T> ValueSet<T> getValueSet() {
         return (ValueSet<T>)policyAttribute.getValueSet(modelObject);
-    }
-
-    private Message createMessage(String errorCodePrefix, String textFormat) {
-        String attributeName = policyAttribute.getName();
-        String label = policyAttribute.getLabel(Locale.ENGLISH);
-        String errorCode = String.format("%s.%s.%s", errorCodePrefix,
-                IpsModel.getPolicyCmptType(modelObject).getName(), policyAttribute.getName());
-        return Message.error(String.format(textFormat, label))
-                .code(errorCode)
-                .invalidObjectWithProperties(modelObject, attributeName)
-                .create();
     }
 }
