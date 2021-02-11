@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +126,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Group configGroup;
 
     private Checkbox validationRuleAdded;
+    private Checkbox genericValidation;
 
     /**
      * Holds controls for defining a validation rule.
@@ -750,17 +750,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         validationRuleAddedDecoration = getToolkit().createMessageDecoration(validationRuleAdded);
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
 
+        genericValidation = getToolkit().createCheckbox(workArea, Messages.AttributeEditDialog_labelGenericValidation);
+        genericValidation.setToolTipText(Messages.AttributeEditDialog_tooltipGenericValidation);
+
         ruleComposite = getToolkit().createGridComposite(workArea, 1, false, false);
 
         ruleDefinitionUI.initUI(ruleComposite);
-        ruleModel.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (ruleDefinitionUI.isUiInitialized()
-                        && RuleUIModel.PROPERTY_VALIDATION_RULE.equals(evt.getPropertyName())) {
-                    IValidationRule newRule = (IValidationRule)evt.getNewValue();
-                    rebindTo(newRule);
-                }
+        ruleModel.addPropertyChangeListener(evt -> {
+            if (ruleDefinitionUI.isUiInitialized()
+                    && RuleUIModel.PROPERTY_VALIDATION_RULE.equals(evt.getPropertyName())) {
+                IValidationRule newRule = (IValidationRule)evt.getNewValue();
+                rebindTo(newRule);
             }
         });
 
@@ -804,6 +804,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void bindEnablement() {
         if (validationRuleAdded != null) {
             getBindingContext().bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
+        }
+        if (genericValidation != null) {
+            getBindingContext().bindContent(genericValidation.getButton(), ruleModel, RuleUIModel.PROPERTY_GENERIC);
         }
         getBindingContext()
                 .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
@@ -1069,6 +1072,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     public static class RuleUIModel extends PresentationModelObject {
 
         public static final String PROPERTY_ENABLED = "enabled"; //$NON-NLS-1$
+        public static final String PROPERTY_GENERIC = "generic"; //$NON-NLS-1$
         public static final String PROPERTY_VALIDATION_RULE = "validationRule"; //$NON-NLS-1$
 
         private IValidationRule rule;
@@ -1101,6 +1105,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         public void setEnabled(boolean enabled) {
             if (enabled) {
+                setGeneric(false);
                 setValidationRule(attribute.createValueSetRule());
             } else {
                 rule.delete();
@@ -1110,6 +1115,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         public boolean isEnabled() {
             return rule != null;
+        }
+
+        public boolean isGeneric() {
+            return attribute.isGenericValidationEnabled();
+        }
+
+        public void setGeneric(boolean generic) {
+            boolean oldGeneric = isGeneric();
+            attribute.setGenericValidationEnabled(generic);
+            if (oldGeneric != generic) {
+                notifyListeners(new PropertyChangeEvent(this, PROPERTY_GENERIC, oldGeneric, isGeneric()));
+            }
+            if (generic && isEnabled()) {
+                setEnabled(false);
+            }
         }
     }
 
