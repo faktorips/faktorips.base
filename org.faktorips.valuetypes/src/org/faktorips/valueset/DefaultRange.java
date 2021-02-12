@@ -333,8 +333,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     /**
      * {@inheritDoc}
      * <p>
-     * In case of a ranges this method returns <code>true</code> if one of the following conditions
-     * is <code>true</code>
+     * In case of ranges this method returns <code>true</code> if one of the following conditions is
+     * <code>true</code>
      * <ul>
      * <li>the range is empty</li>
      * <li>lower bound is equal to upper bound</li>
@@ -347,7 +347,11 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * could be assumed.
      */
     public boolean isDiscrete() {
-        return isEmpty() || lowerBound.equals(upperBound) || !isStepNull();
+        return isEmpty() || lowerBoundEqualsUpperBound() || !isStepNull();
+    }
+
+    private boolean lowerBoundEqualsUpperBound() {
+        return !isLowerBoundNull() && getLowerBound().equals(getUpperBound());
     }
 
     public boolean containsNull() {

@@ -1,9 +1,9 @@
 package org.faktorips.valueset;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -55,6 +55,20 @@ public class DefaultRangeTest {
     @Test
     public void testIsDiscrete_Size1NoStep() {
         TestRange rangeWithoutStep = new TestRange(0, 0, null);
+
+        assertTrue(rangeWithoutStep.isDiscrete());
+    }
+
+    @Test
+    public void testIsDiscrete_NoBoundsAndNoStep() {
+        TestRange rangeWithoutStep = new TestRange(null, null, null, true);
+
+        assertFalse(rangeWithoutStep.isDiscrete());
+    }
+
+    @Test
+    public void testIsDiscrete_NoBounds() {
+        TestRange rangeWithoutStep = new TestRange(null, null, 10, true);
 
         assertTrue(rangeWithoutStep.isDiscrete());
     }
