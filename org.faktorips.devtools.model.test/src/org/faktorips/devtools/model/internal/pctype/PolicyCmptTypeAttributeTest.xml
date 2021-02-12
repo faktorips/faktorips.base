@@ -68,7 +68,7 @@
     </Attribute>
 
     <Attribute id="567" name="genericvalidation" datatype="Integer" valueSetConfiguredByProduct="true" relevanceConfiguredByProduct="true" attributeType="changeable"
-        genericValidationEnabled="true">
+        genericValidation="true">
         <DefaultValue isNull="true"></DefaultValue>
         <ValueSet>
             <AllValues containsNull="false" />

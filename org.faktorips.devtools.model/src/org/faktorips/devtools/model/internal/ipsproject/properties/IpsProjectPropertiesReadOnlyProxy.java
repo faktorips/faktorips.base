@@ -632,6 +632,15 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void setGenerateValidatorClassDefault(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
 
+    @Override
+    public boolean isGenericValidationDefaultEnabled() {
+        return propertiesInternal.isGenericValidationDefaultEnabled();
+    }
+
+    @Override
+    public void setGenericValidationDefault(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 }

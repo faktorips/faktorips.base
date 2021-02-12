@@ -287,7 +287,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         set.setStep("step");
         Element element = attribute.toXml(newDocument());
 
-        assertFalse(element.hasAttribute(IPolicyCmptTypeAttribute.PROPERTY_GENERIC_VALIDATION_ENABLED));
+        assertFalse(element.hasAttribute(IPolicyCmptTypeAttribute.PROPERTY_GENERIC_VALIDATION));
         IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals(attribute.getId(), copy.getId());

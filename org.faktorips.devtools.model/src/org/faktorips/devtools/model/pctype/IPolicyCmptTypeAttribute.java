@@ -35,7 +35,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public static final String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public static final String PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT = "valueSetConfiguredByProduct"; //$NON-NLS-1$
     public static final String PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT = "relevanceConfiguredByProduct"; //$NON-NLS-1$
-    public static final String PROPERTY_GENERIC_VALIDATION_ENABLED = "genericValidationEnabled"; //$NON-NLS-1$
+    public static final String PROPERTY_GENERIC_VALIDATION = "genericValidation"; //$NON-NLS-1$
 
     public static final String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
