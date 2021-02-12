@@ -58,6 +58,20 @@ public class DefaultRangeTest {
     }
 
     @Test
+    public void testIsDiscrete_NoBoundsAndNoStep() {
+        TestRange rangeWithoutStep = new TestRange(null, null, null, true);
+
+        assertFalse(rangeWithoutStep.isDiscrete());
+    }
+
+    @Test
+    public void testIsDiscrete_NoBounds() {
+        TestRange rangeWithoutStep = new TestRange(null, null, 10, true);
+
+        assertTrue(rangeWithoutStep.isDiscrete());
+    }
+
+    @Test
     public void testEquals_LegacyAndNewEmpty() {
         TestRange emptytRange = new TestRange();
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
@@ -66,7 +80,7 @@ public class DefaultRangeTest {
     }
 
     @Test
-    public void testhashCode_LegacyAndNewEmpty() {
+    public void testHashCode_LegacyAndNewEmpty() {
         TestRange emptytRange = new TestRange();
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
 
@@ -85,9 +99,18 @@ public class DefaultRangeTest {
             super(lower, upper, step, false);
         }
 
+        public TestRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
+            super(lower, upper, step, containsNull);
+        }
+
         @Override
         protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
             return true;
+        }
+
+        @Override
+        protected Integer getNullValue() {
+            return null;
         }
     }
 }
