@@ -20,13 +20,10 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
-import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileExternal;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.util.message.MessageList;
@@ -129,31 +126,6 @@ public class EnumExportPage extends IpsObjectExportPage {
             return;
         }
         setDefaultByEnumValueContainer(srcFile);
-    }
-
-    /**
-     * Gets the {@link IpsSrcFile} which contains the data required for exporting enums.
-     * 
-     * @param selectedResource The currently selected resource
-     * @return The required IIpsSrcFile or null if is does not exist
-     */
-    private IIpsSrcFile getIpsSrcFile(IResource selectedResource) {
-        IIpsElement srcElement = null;
-        if (selectedIpsSrcFile != null) {
-            srcElement = selectedIpsSrcFile;
-        } else if (selectedResource != null) {
-            srcElement = IIpsModel.get().getIpsElement(selectedResource);
-        } else {
-            return null;
-        }
-
-        if (srcElement instanceof IpsSrcFileExternal) {
-            return ((IpsSrcFileExternal)srcElement).getMutableIpsSrcFile();
-        } else if (srcElement instanceof IIpsSrcFile) {
-            return (IIpsSrcFile)srcElement;
-        }
-
-        return null;
     }
 
     /**

@@ -78,6 +78,10 @@ public class Messages extends NLS {
 
     public static String ContentPage_errorManyMore;
 
+    public static String ContentPage_labelOpenFixTableContentDialog;
+
+    public static String ContentPage_tooltipOpenFixTableContentDialog;
+
     public static String SetStructureDialog_titleChooseTableStructure;
 
     public static String SetStructureDialog_labelNewStructure;

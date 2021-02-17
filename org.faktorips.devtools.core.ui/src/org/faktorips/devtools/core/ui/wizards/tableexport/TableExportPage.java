@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -58,24 +57,35 @@ public class TableExportPage extends IpsObjectExportPage {
 
     @Override
     protected void setDefaults(IResource selectedResource) {
-        if (selectedResource == null) {
+        IIpsSrcFile srcFile = getIpsSrcFile(selectedResource);
+        if (srcFile == null
+                || IIpsModel.get().findIpsElement(srcFile.getIpsProject().getCorrespondingResource()) == null) {
             setTableContents(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile src = (IIpsSrcFile)element;
-            if (src.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-                ITableContents contents = (ITableContents)src.getIpsObject();
-                setTableContents(contents);
-            }
-        } else if (element != null) {
-            setIpsProject(element.getIpsProject());
+        setDefaultByTableContents(srcFile);
+    }
+
+    /**
+     * Extracts the selected table content from the provided {@link IIpsSrcFile}.
+     * 
+     * @param src The {@link IIpsSrcFile} matching with the currently selected view
+     */
+    private void setDefaultByTableContents(IIpsSrcFile src) {
+        IpsObjectType ipsObjectType = src.getIpsObjectType();
+        if (ipsObjectType.equals(IpsObjectType.TABLE_CONTENTS)) {
+            ITableContents contents = (ITableContents)src.getIpsObject();
+            setTableContents(contents);
         } else {
             setTableContents(null);
         }
     }
 
+    /**
+     * Provides the currently selected table content by getting it from the UI control.
+     * 
+     * @return The currently selected {@link ITableContents}
+     */
     public ITableContents getTableContents() throws CoreException {
         if (exportedIpsObjectControl instanceof TableContentsRefControl) {
             return ((TableContentsRefControl)exportedIpsObjectControl).findTableContents();
@@ -83,13 +93,18 @@ public class TableExportPage extends IpsObjectExportPage {
         return null;
     }
 
+    /**
+     * Sets the selected table content for the UI control.
+     * 
+     * @param contents The selected {@link ITableContents}
+     */
     private void setTableContents(ITableContents contents) {
         if (contents == null) {
-            exportedIpsObjectControl.setText(""); //$NON-NLS-1$
+            exportedIpsObjectControl.updateSelection(null);
             setIpsProject(null);
             return;
         }
-        exportedIpsObjectControl.setText(contents.getQualifiedName());
+        exportedIpsObjectControl.updateSelection(contents.getQualifiedNameType());
         setIpsProject(contents.getIpsProject());
     }
 
@@ -131,5 +146,4 @@ public class TableExportPage extends IpsObjectExportPage {
             throw new RuntimeException(e);
         }
     }
-
 }

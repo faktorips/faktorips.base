@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -98,6 +99,8 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     private IAction openFixTableContentDialogAction;
     private NewRowAction newRowAction;
     private DeleteRowAction deleteRowAction;
+    private TableImportExportActionInEditor importAction;
+    private TableImportExportActionInEditor exportAction;
 
     /**
      * The <code>ITableContents</code> the <code>TableContentsEditor</code> this page belongs to is
@@ -171,38 +174,12 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         TableRows tableRows = (TableRows)getTableContents().getTableRows();
         tableViewer.setItemCount(tableRows.getNumOfRows());
 
-        IToolBarManager formToolbarManager = getManagedForm().getForm().getToolBarManager();
+        createToolbarActions();
 
-        createUniqueKeyValidationButton(tableRows, formToolbarManager);
+        createToolbar(tableRows);
 
-        openFixTableContentDialogAction = new OpenFixTableContentWizardAction(this, tableContents,
-                getSite().getShell());
-        newRowAction = new NewRowAction(tableViewer, this);
-        deleteRowAction = new DeleteRowAction(tableViewer, this);
         initTablePopupMenu(table, deleteRowAction, newRowAction);
-        formToolbarManager.add(openFixTableContentDialogAction);
-        updateToolbarActionsEnabledStates();
-        formToolbarManager.add(newRowAction);
-        formToolbarManager.add(deleteRowAction);
-        formToolbarManager.add(new Separator());
 
-        // create own TableImportExportActionInEditor because the editor must be refreshed after
-        // importing of the table contents otherwise the old content is visible until the editor is
-        // reopened
-        // Workaround see
-        TableImportExportActionInEditor importAction = new TableImportExportActionInEditor(getSite().getShell(),
-                getTableContents(), true);
-        importAction.setControlWithDataChangeableSupport(this);
-        TableImportExportActionInEditor exportAction = new TableImportExportActionInEditor(getSite().getShell(),
-                getTableContents(), false);
-
-        formToolbarManager.add(importAction);
-        formToolbarManager.add(exportAction);
-        if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-            formToolbarManager.add(new Separator());
-            formToolbarManager.add(new NavigateToTableStructureAction(getTableContents()));
-        }
-        formToolbarManager.update(true);
         searchBar.setFilterTo(tableViewer);
 
         // FS#822 workaround to activate the correct cell editor (row and column),
@@ -233,14 +210,79 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     }
 
-    private void createUniqueKeyValidationButton(TableRows tableRows, IToolBarManager formToolbarManager) {
-        UniqueKeyValidatonAction uniqueKeyValidationAction = new UniqueKeyValidatonAction(tableViewer);
-        ActionContributionItem uniqueKeyValidationActionContributionItem = new ActionContributionItem(
-                uniqueKeyValidationAction);
-        uniqueKeyValidationActionContributionItem
-                .setVisible(tableRows.isUniqueKeyValidationEnabled() && !tableRows.isUniqueKeyValidatedAutomatically());
-        formToolbarManager.add(uniqueKeyValidationActionContributionItem);
+    /**
+     * Initializes the toolbar actions.
+     */
+    private void createToolbarActions() {
+        openFixTableContentDialogAction = new OpenFixTableContentWizardAction(this, tableContents,
+                getSite().getShell());
+
+        newRowAction = new NewRowAction(tableViewer, this);
+        deleteRowAction = new DeleteRowAction(tableViewer, this);
+
+        importAction = new TableImportExportActionInEditor(getSite().getShell(),
+                getTableContents(), true);
+        importAction.setControlWithDataChangeableSupport(this);
+        exportAction = new TableImportExportActionInEditor(getSite().getShell(),
+                getTableContents(), false);
+    }
+
+    /**
+     * Initializes the toolbar.
+     * 
+     * @param tableRows {@link TableRows} required for providing the unique key validation button
+     */
+    private void createToolbar(TableRows tableRows) {
+        IToolBarManager formToolbarManager = getManagedForm().getForm().getToolBarManager();
+
+        addUniqueKeyValidationButton(tableRows, formToolbarManager);
+        formToolbarManager.add(openFixTableContentDialogAction);
         formToolbarManager.add(new Separator());
+
+        formToolbarManager.add(newRowAction);
+        formToolbarManager.add(deleteRowAction);
+        formToolbarManager.add(new Separator());
+
+        formToolbarManager.add(importAction);
+        formToolbarManager.add(exportAction);
+        if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+            formToolbarManager.add(new Separator());
+            formToolbarManager.add(new NavigateToTableStructureAction(getTableContents()));
+        }
+
+        formToolbarManager.update(true);
+        updateToolbarActionsEnabledStates();
+    }
+
+    /**
+     * Adds a unique key validation button to the toolbar, if required.
+     * 
+     * @param tableRows The {@link TableRows} used for checking if the button is required
+     * @param formToolbarManager The currently used {@link IToolBarManager}
+     */
+    private void addUniqueKeyValidationButton(TableRows tableRows, IToolBarManager formToolbarManager) {
+        if (tableRows.isUniqueKeyValidationEnabled() && !tableRows.isUniqueKeyValidatedAutomatically()) {
+            UniqueKeyValidatonAction uniqueKeyValidationAction = new UniqueKeyValidatonAction(tableViewer);
+            ActionContributionItem uniqueKeyValidationActionContributionItem = new ActionContributionItem(
+                    uniqueKeyValidationAction);
+            formToolbarManager.add(uniqueKeyValidationActionContributionItem);
+            formToolbarManager.add(new Separator());
+        }
+    }
+
+    /**
+     * Updates the visibility of the toolbar items based on the current changeability state.
+     * <p>
+     * The export functionality should be always available.
+     * 
+     * @param changeable Whether the page content is changeable
+     */
+    private void updateToolbarVisibilityState(boolean changeable) {
+        IToolBarManager toolBarManager = getManagedForm().getForm().getToolBarManager();
+        Arrays.stream(toolBarManager.getItems())
+                .filter(item -> item.getId() == null || !item.getId().equals(exportAction.getId()))
+                .forEach(item -> item.setVisible(changeable));
+        toolBarManager.update(true);
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
@@ -413,7 +455,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
             tableViewer.setCellEditors(editors);
         }
         ((TableContentsLabelProvider)tableViewer.getLabelProvider()).setValueDatatypes(datatypes);
-        tableViewer.setSorter(new TableSorter());
+        tableViewer.setComparator(new TableSorter());
         tableViewer.refresh();
     }
 
@@ -565,12 +607,15 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     protected void setDataChangeable(boolean changeable) {
         super.setDataChangeable(changeable);
         searchBar.setEnabled(true);
+        Composite header = getManagedForm().getForm().getForm().getHead();
+        toolkit.setDataChangeable(header, true);
+        updateToolbarVisibilityState(changeable);
     }
 
-    /*
-     * 
-     * Updates the enabled states of the tool bar. <p> The
-     * <code>OpenFixEnumContentWizardAction</code> will be enabled if the
+    /**
+     * Updates the enabled states of the tool bar.
+     * <p>
+     * The <code>OpenFixEnumContentWizardAction</code> will be enabled if the
      * <code>ITableStructure</code> the <code>ITableContents</code> to edit is built upon is not
      * correct
      */
@@ -579,7 +624,6 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         openFixTableContentDialogAction.setEnabled(isFixToModelRequired);
         newRowAction.setEnabled(!isFixToModelRequired);
         deleteRowAction.setEnabled(!isFixToModelRequired);
-
     }
 
     @Override
@@ -593,12 +637,23 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     private class TableImportExportActionInEditor extends TableImportExportAction {
 
+        /**
+         * ID used for identifying the import action within the toolbar.
+         */
+        private static final String IMPORT_ACTION_ID = "table_content_import_action"; //$NON-NLS-1$
+        /**
+         * ID used for identifying the export action within the toolbar.
+         */
+        private static final String EXPORT_ACTION_ID = "table_content_export_action"; //$NON-NLS-1$
+
         protected TableImportExportActionInEditor(Shell shell, ITableContents tableContents, boolean isImport) {
             super(shell, tableContents);
             if (isImport) {
                 initImportAction();
+                setId(IMPORT_ACTION_ID);
             } else {
                 initExportAction();
+                setId(EXPORT_ACTION_ID);
             }
         }
 

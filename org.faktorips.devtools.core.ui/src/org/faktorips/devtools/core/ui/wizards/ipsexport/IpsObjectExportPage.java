@@ -45,6 +45,8 @@ import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileExternal;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -135,6 +137,31 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      *            wizard was opened.
      */
     protected abstract void setDefaults(IResource selectedResource);
+
+    /**
+     * Gets the {@link IpsSrcFile} which contains the data required for the export.
+     * 
+     * @param selectedResource The currently selected resource
+     * @return The required IIpsSrcFile or null if is does not exist
+     */
+    protected IIpsSrcFile getIpsSrcFile(IResource selectedResource) {
+        IIpsElement srcElement = null;
+        if (selectedIpsSrcFile != null) {
+            srcElement = selectedIpsSrcFile;
+        } else if (selectedResource != null) {
+            srcElement = IIpsModel.get().getIpsElement(selectedResource);
+        } else {
+            return null;
+        }
+
+        if (srcElement instanceof IpsSrcFileExternal) {
+            return ((IpsSrcFileExternal)srcElement).getMutableIpsSrcFile();
+        } else if (srcElement instanceof IIpsSrcFile) {
+            return (IIpsSrcFile)srcElement;
+        }
+
+        return null;
+    }
 
     public void setFilename(String newName) {
         filenameField.setText(newName);

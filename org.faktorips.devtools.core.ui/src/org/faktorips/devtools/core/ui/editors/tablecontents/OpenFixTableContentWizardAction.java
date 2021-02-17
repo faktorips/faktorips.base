@@ -14,7 +14,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.editors.enumcontent.Messages;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.FixContentWizard;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.FixTableContentStrategy;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -37,15 +36,15 @@ public class OpenFixTableContentWizardAction extends Action {
     private IpsObjectEditorPage editorPage;
 
     /**
-     * Creates a new <code>OpenFixEnumContentWizardAction</code>.
+     * Creates a new <code>OpenFixTableContentWizardAction</code>.
      * 
      * @param editorPage The <code>IpsObjectEditorPage</code> that requested the operation or
      *            <code>null</code> (the page will be refreshed after the operation was performed if
      *            given).
      * @param parentShell The parent shell.
      * 
-     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is <code>null</code>
-     *             .
+     * @throws NullPointerException If <code>tableContents</code> or <code>parentShell</code> is
+     *             <code>null</code> .
      */
     public OpenFixTableContentWizardAction(IpsObjectEditorPage editorPage, ITableContents tableContents,
             Shell parentShell) {
@@ -57,8 +56,8 @@ public class OpenFixTableContentWizardAction extends Action {
         this.editorPage = editorPage;
 
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_NAME));
-        setText(Messages.EnumContentPage_labelOpenFixEnumTypeDialog);
-        setToolTipText(Messages.EnumContentPage_tooltipOpenFixEnumTypeDialog);
+        setText(Messages.ContentPage_labelOpenFixTableContentDialog);
+        setToolTipText(Messages.ContentPage_tooltipOpenFixTableContentDialog);
     }
 
     @Override
