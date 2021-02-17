@@ -780,7 +780,7 @@ public class CodeGenUtil {
     public static FacadeHelper instantiateFacadeHelper(String facadeHelperClass) {
         try {
             Class<?> cls = Class.forName(facadeHelperClass);
-            Object object = cls.newInstance();
+            Object object = cls.getConstructor().newInstance();
             if (object instanceof FacadeHelper) {
                 return (FacadeHelper)object;
             }

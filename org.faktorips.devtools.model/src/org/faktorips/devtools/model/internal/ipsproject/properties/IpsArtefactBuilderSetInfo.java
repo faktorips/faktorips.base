@@ -76,18 +76,16 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         ArgumentCheck.notNull(ipsProject);
 
         try {
-            IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)getBuilderSetClass().newInstance();
+            IIpsArtefactBuilderSet builderSet = (IIpsArtefactBuilderSet)getBuilderSetClass().getConstructor()
+                    .newInstance();
             builderSet.setId(getBuilderSetId());
             builderSet.setLabel(getBuilderSetLabel());
             builderSet.setIpsProject(ipsProject);
             return builderSet;
         } catch (ClassCastException e) {
             IpsLog.log(new IpsStatus("The registered builder set " + getBuilderSetClass() + //$NON-NLS-1$
-            " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
-        } catch (InstantiationException e) {
-            IpsLog.log(new IpsStatus("Unable to instantiate the builder set " + getBuilderSetClass(), e)); //$NON-NLS-1$
-
-        } catch (IllegalAccessException e) {
+                    " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
+        } catch (Exception e) {
             IpsLog.log(new IpsStatus("Unable to instantiate the builder set " + getBuilderSetClass(), e)); //$NON-NLS-1$
         }
         return new EmptyBuilderSet();
@@ -114,7 +112,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                 builderSetClass = Platform.getBundle(namespace).loadClass(builderSetClassName);
             } catch (ClassNotFoundException e) {
                 IpsLog.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName + //$NON-NLS-1$
-                " with the id " + builderSetId)); //$NON-NLS-1$
+                        " with the id " + builderSetId)); //$NON-NLS-1$
             }
         }
         return builderSetClass;

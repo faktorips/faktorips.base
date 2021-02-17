@@ -473,7 +473,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      *  try {
      *      String className = childElement.getAttribute(&quot;class&quot;);
      *      inputTcPolicyA_1 =([PolicyCmptTypeParameter.name]) Class.forName(className, true,
-     *          [PolicyCmptTypeParameter.name].class.getClassLoader()).newInstance();
+     *          [PolicyCmptTypeParameter.name].class.getClassLoader()).getConstructor().newInstance();
      *      inputTcPolicyA_1.initFromXml(childElement, true, getRepository(),
      *          &lt;objectReferenceStoreName&gt;);
      * } catch (Exception e) {
@@ -495,7 +495,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         body.appendClassName(qualifiedPolicyCmptName);
         body.append(") Class.forName(className, true, ");
         body.appendClassName(qualifiedPolicyCmptName);
-        body.appendln(".class.getClassLoader()).newInstance();");
+        body.appendln(".class.getClassLoader()).getConstructor().newInstance();");
         body.append(variableName);
         body.append(".initFromXml(childElement, true, getRepository(), ");
         body.append(objectReferenceStoreName);

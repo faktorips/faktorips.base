@@ -128,13 +128,8 @@ public class WrapperAction extends IpsAction {
 
         if (className != null) {
             try {
-                Class<?> tempClass = Class.forName(className);
-                wrappedActionDelegate = (IActionDelegate)tempClass.newInstance();
-            } catch (InstantiationException e) {
-                IpsPlugin.log(e);
-            } catch (IllegalAccessException e) {
-                IpsPlugin.log(e);
-            } catch (ClassNotFoundException e) {
+                wrappedActionDelegate = (IActionDelegate)Class.forName(className).getConstructor().newInstance();
+            } catch (Exception e) {
                 IpsPlugin.log(e);
             }
         }

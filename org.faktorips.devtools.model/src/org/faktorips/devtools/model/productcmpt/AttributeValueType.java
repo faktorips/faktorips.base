@@ -102,12 +102,10 @@ public enum AttributeValueType {
     public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue) {
         try {
             Class<? extends IAttributeValueHolderFactory<T>> valueHolderFactory = getValueHolderFactory();
-            IAttributeValueHolderFactory<T> factory = valueHolderFactory.newInstance();
+            IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
             IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue);
             return newValueInstance;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -129,12 +127,10 @@ public enum AttributeValueType {
     public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue, IValue<?> defaultValue) {
         try {
             Class<? extends IAttributeValueHolderFactory<T>> valueHolderFactory = getValueHolderFactory();
-            IAttributeValueHolderFactory<T> factory = valueHolderFactory.newInstance();
+            IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
             IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue, defaultValue);
             return newValueInstance;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

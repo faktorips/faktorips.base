@@ -592,7 +592,7 @@ def package static createTargetFromXmlMethod (XPolicyAssociation it) '''
             String className = childEl.getAttribute("class");
             if (className.length() > 0) {
                 try {
-                    «targetClassName» «createChildFromXMLLocalVarName» = («targetClassName»)Class.forName(className).newInstance();
+                    «targetClassName» «createChildFromXMLLocalVarName» = («targetClassName»)Class.forName(className).getConstructor().newInstance();
                         «methodNameSetOrAdd»(«createChildFromXMLLocalVarName»);
                     return «createChildFromXMLLocalVarName»;
                 } catch (Exception e) {
