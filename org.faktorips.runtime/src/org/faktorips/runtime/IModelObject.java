@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime;
 
+import java.util.Locale;
+
 /**
  * Base interface for all model objects.
  * 
@@ -18,13 +20,13 @@ package org.faktorips.runtime;
 public interface IModelObject {
 
     /**
-     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()). Indicates
-     * that the validation should be stopped.
+     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()).
+     * Indicates that the validation should be stopped.
      */
     boolean STOP_VALIDATION = false;
     /**
-     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()). Indicates
-     * that the validation should be continued.
+     * Constant for the return values of validate methods (i.e. validateSelf() or ruleXYZ()).
+     * Indicates that the validation should be continued.
      */
     boolean CONTINUE_VALIDATION = true;
 
@@ -41,4 +43,16 @@ public interface IModelObject {
      */
     public MessageList validate(IValidationContext context);
 
+    /**
+     * Returns a description for this model object in the specified locale. The description can be
+     * used for possible error messages.
+     * 
+     * @param locale the locale/language in which the description should be given
+     * 
+     * @return the description for the given locale/language or the result of the {@code toString}
+     *         method if no custom implementation is provided
+     */
+    public default String getDescription(Locale locale) {
+        return toString();
+    }
 }
