@@ -13,7 +13,7 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.faktorips.devtools.model.productcmpt.template.ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

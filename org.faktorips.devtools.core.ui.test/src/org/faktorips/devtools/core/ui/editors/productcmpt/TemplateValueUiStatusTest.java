@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;

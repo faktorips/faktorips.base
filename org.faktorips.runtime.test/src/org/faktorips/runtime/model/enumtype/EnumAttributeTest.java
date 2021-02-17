@@ -2,7 +2,7 @@ package org.faktorips.runtime.model.enumtype;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

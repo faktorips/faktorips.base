@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StyledString;

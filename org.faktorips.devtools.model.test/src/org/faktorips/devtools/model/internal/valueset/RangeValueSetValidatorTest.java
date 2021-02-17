@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 

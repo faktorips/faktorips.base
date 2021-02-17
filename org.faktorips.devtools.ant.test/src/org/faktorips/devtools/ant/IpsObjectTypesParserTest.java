@@ -10,7 +10,7 @@
 package org.faktorips.devtools.ant;
 
 import static org.faktorips.devtools.ant.IpsObjectTypesParser.getIpsObjectTypes;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;

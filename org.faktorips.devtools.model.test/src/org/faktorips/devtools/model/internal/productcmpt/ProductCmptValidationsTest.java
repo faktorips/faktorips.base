@@ -11,7 +11,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;

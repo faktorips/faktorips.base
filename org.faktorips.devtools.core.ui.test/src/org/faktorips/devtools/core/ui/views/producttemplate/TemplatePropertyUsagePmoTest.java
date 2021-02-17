@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

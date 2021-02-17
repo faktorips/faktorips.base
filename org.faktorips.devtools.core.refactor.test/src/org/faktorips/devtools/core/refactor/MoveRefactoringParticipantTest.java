@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.refactor;
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 

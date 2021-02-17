@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.GregorianCalendar;
 
