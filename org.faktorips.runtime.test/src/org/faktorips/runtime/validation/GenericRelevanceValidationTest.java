@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.valueset.OrderedValueSet;
@@ -17,6 +18,52 @@ import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
 
 public class GenericRelevanceValidationTest {
+
+    @Test
+    public void testOf() {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        TestPolicy modelObject = new TestPolicy();
+        ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
+        modelObject.setAllowedValuesForIntegerAttribute(valueSet);
+
+        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicy.PROPERTY_INTEGER_ATTRIBUTE,
+                new ValidationContext(Locale.GERMANY, getClass().getClassLoader(), config));
+        assertThat(messageList.size(), is(1));
+
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(),
+                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_MANDATORY_MSG_CODE_PREFIX));
+        assertThat(message.getCode(), containsString("TestPolicy"));
+        assertThat(message.getCode(), containsString(TestPolicy.PROPERTY_INTEGER_ATTRIBUTE));
+        assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
+    }
+
+    @Test
+    public void testOf_LocaleFromGenericAttributeValidationConfigurationIsUsed() {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        TestPolicy modelObject = new TestPolicy();
+        ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
+        modelObject.setAllowedValuesForIntegerAttribute(valueSet);
+
+        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicy.PROPERTY_INTEGER_ATTRIBUTE,
+                // ValidationContext has different Locale, which is ignored.
+                new ValidationContext(Locale.ENGLISH, getClass().getClassLoader(), config));
+        assertThat(messageList.size(), is(1));
+
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(),
+                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_MANDATORY_MSG_CODE_PREFIX));
+        assertThat(message.getCode(), containsString("TestPolicy"));
+        assertThat(message.getCode(), containsString(TestPolicy.PROPERTY_INTEGER_ATTRIBUTE));
+        assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testOf_AttributeNotFound() {
+        GenericRelevanceValidation.of(new TestPolicy(), "Foobar", new ValidationContext());
+    }
 
     @Test
     public void testValidate_MissingMandatoryValue() {

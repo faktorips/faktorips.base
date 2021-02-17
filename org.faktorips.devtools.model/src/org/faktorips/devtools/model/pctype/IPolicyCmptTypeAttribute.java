@@ -262,6 +262,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * @return {@code true} if generic validation is enabled for this attribute, otherwise
      *         {@code false}
      * @see GenericRelevanceValidation
+     * @since 21.6
      */
     boolean isGenericValidationEnabled();
 
@@ -271,6 +272,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * @param genericValidationEnabled whether generic validation should be generated for this
      *            attribute
      * @see GenericRelevanceValidation
+     * @since 21.6
      */
     void setGenericValidationEnabled(boolean genericValidationEnabled);
 }

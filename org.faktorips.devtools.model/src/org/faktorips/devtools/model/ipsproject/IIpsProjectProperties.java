@@ -717,6 +717,8 @@ public interface IIpsProjectProperties {
     /**
      * Returns which format is used to save table contents.
      *
+     * @since 20.12
+     *
      * @see TableContentFormat
      */
     TableContentFormat getTableContentFormat();
@@ -729,6 +731,8 @@ public interface IIpsProjectProperties {
     /**
      * Returns true if newly created policy component types should always have
      * {@link IPolicyCmptType#isGenerateValidatorClass()} enabled.
+     *
+     * @since 20.12
      */
     boolean isGenerateValidatorClassDefaultEnabled();
 
@@ -740,6 +744,8 @@ public interface IIpsProjectProperties {
     /**
      * Returns true if newly created policy component type attributes should always have
      * {@link IPolicyCmptTypeAttribute#isGenericValidationEnabled()} enabled.
+     *
+     * @since 21.6
      */
     boolean isGenericValidationDefaultEnabled();
 

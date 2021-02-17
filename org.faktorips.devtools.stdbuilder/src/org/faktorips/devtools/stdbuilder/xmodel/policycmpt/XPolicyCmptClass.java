@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -228,12 +229,7 @@ public class XPolicyCmptClass extends XType {
      */
     @Override
     public Set<XPolicyAttribute> getAttributes() {
-        return filterAbstractAttributes(getAllDeclaredAttributes());
-    }
-
-    protected Set<XPolicyAttribute> filterAbstractAttributes(Set<XPolicyAttribute> xAttributes) {
-        return xAttributes.stream().filter(a -> !a.isAbstract())
-                .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+        return filtered(getAllDeclaredAttributes(), Predicate.not(XPolicyAttribute::isAbstract));
     }
 
     public Set<XPolicyAttribute> getAttributesIncludingAbstract() {
@@ -422,13 +418,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public Set<XPolicyAttribute> getAttributesToCopy() {
-        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isConsiderInCopySupport()) {
-                resultingSet.add(attribute);
-            }
-        }
-        return resultingSet;
+        return filtered(getAttributes(), XPolicyAttribute::isConsiderInCopySupport);
     }
 
     /**
@@ -456,14 +446,8 @@ public class XPolicyCmptClass extends XType {
      *            <code>false</code> for static attributes.
      */
     public Set<XPolicyAttribute> getAttributesToInit(boolean initWithProductData, boolean changingOverTime) {
-        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : getAttributes()) {
-            if (changingOverTime == attribute.isChangingOverTime()
-                    && matchesInitWithProductData(initWithProductData, attribute)) {
-                resultingSet.add(attribute);
-            }
-        }
-        return resultingSet;
+        return filtered(getAttributes(), a -> changingOverTime == a.isChangingOverTime()
+                && matchesInitWithProductData(initWithProductData, a));
     }
 
     private boolean matchesInitWithProductData(boolean initWithProductData, XPolicyAttribute attribute) {
@@ -474,34 +458,26 @@ public class XPolicyCmptClass extends XType {
         }
     }
 
+    private <T> Set<T> filtered(Set<T> set, Predicate<T> filter) {
+        return set.stream()
+                .filter(filter)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<XPolicyAttribute> getAttributesForGenericValidation() {
+        return filtered(getAttributes(), a -> a.getAttribute().isGenericValidationEnabled());
+    }
+
     public Set<XPolicyAttribute> getAttributesForDeltaComputation() {
-        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isConsiderInDeltaComputation()) {
-                resultingSet.add(attribute);
-            }
-        }
-        return resultingSet;
+        return filtered(getAttributes(), XPolicyAttribute::isConsiderInDeltaComputation);
     }
 
     public Set<XPolicyAssociation> getAssociationsForDeltaComputation() {
-        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isConsiderInDeltaComputation()) {
-                resultingSet.add(assoc);
-            }
-        }
-        return resultingSet;
+        return filtered(getAssociations(), XPolicyAssociation::isConsiderInDeltaComputation);
     }
 
     public Set<XPolicyAssociation> getAssociationsToCopy() {
-        Set<XPolicyAssociation> resultingSet = new LinkedHashSet<XPolicyAssociation>();
-        for (XPolicyAssociation assoc : getAssociations()) {
-            if (assoc.isConsiderInCopySupport()) {
-                resultingSet.add(assoc);
-            }
-        }
-        return resultingSet;
+        return filtered(getAssociations(), XPolicyAssociation::isConsiderInCopySupport);
     }
 
     /**

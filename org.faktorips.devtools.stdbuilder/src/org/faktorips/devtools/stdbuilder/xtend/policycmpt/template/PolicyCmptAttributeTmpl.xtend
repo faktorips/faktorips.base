@@ -250,4 +250,8 @@ def private static formulaCall (XMethod it) '''
     «methodName»(«FOR parameter : parameters SEPARATOR  ","»«parameter.name»«ENDFOR»)
 '''
 
+def package static genericValidation (XPolicyAttribute it) '''
+    ml.add(«GenericRelevanceValidation».of(this, «constantNamePropertyName», context));
+'''
+
 }

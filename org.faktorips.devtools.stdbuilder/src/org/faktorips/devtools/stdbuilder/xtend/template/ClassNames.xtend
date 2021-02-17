@@ -52,6 +52,7 @@ import org.faktorips.runtime.internal.ValueToXmlHelper
 import org.faktorips.runtime.internal.XmlCallback
 import org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter
 import org.faktorips.runtime.util.MessagesHelper
+import org.faktorips.runtime.validation.GenericRelevanceValidation
 import org.faktorips.values.DefaultInternationalString
 import org.faktorips.values.InternationalString
 import org.faktorips.values.ListUtil
@@ -117,6 +118,8 @@ class ClassNames {
     def static PropertyChangeListener(AbstractGeneratorModelNode it) { addImport(typeof(PropertyChangeListener)) }
 
     def static AssociationChangedEvent(AbstractGeneratorModelNode it) { addImport(typeof(AssociationChangedEvent)) }
+
+    def static GenericRelevanceValidation(AbstractGeneratorModelNode it) { addImport(typeof(GenericRelevanceValidation)) }
 
     // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
     def static Collection_(AbstractGeneratorModelNode it, String genericType) {

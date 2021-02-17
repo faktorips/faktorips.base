@@ -13,6 +13,8 @@ import java.util.NoSuchElementException;
 
 /**
  * Defines which format is used to save table contents.
+ *
+ * @since 20.12
  */
 public enum TableContentFormat {
 

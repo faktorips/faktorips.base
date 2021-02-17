@@ -80,7 +80,8 @@ class PolicyValidatorTmpl {
           return «STOP_VALIDATION»;
         }
       «ENDIF»
-      «FOR it : validationRules» «ValidationRuleTmpl.validate(it)»«ENDFOR»
+      «FOR it : attributesForGenericValidation»«PolicyCmptAttributeTmpl.genericValidation(it)»«ENDFOR»
+      «FOR it : validationRules»«ValidationRuleTmpl.validate(it)»«ENDFOR»
       return «CONTINUE_VALIDATION»;
     }
   '''

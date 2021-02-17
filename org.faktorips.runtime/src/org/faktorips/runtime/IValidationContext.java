@@ -39,6 +39,7 @@ public interface IValidationContext {
      *           custom error messages.
      * @implNote The default implementation always creates a new
      *           {@link DefaultGenericAttributeValidationConfiguration}.
+     * @since 21.6
      */
     default IGenericAttributeValidationConfiguration getGenericAttributeValidationConfiguration() {
         return new DefaultGenericAttributeValidationConfiguration(getLocale());

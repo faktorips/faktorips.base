@@ -585,7 +585,8 @@ def private static  validateMethods (XPolicyCmptClass it) '''
             return getValidator().validate(ml, context);
           «ENDIF»
         «ELSE»
-          «FOR it : validationRules» «ValidationRuleTmpl.validate(it)» «ENDFOR»
+          «FOR it : attributesForGenericValidation»«PolicyCmptAttributeTmpl.genericValidation(it)»«ENDFOR»
+          «FOR it : validationRules»«ValidationRuleTmpl.validate(it)»«ENDFOR»
           return «CONTINUE_VALIDATION»;
         «ENDIF»
     }

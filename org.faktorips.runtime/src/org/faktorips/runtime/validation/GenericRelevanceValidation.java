@@ -12,9 +12,11 @@ package org.faktorips.runtime.validation;
 import static java.util.Objects.requireNonNull;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.NullObject;
 import org.faktorips.values.ObjectUtil;
@@ -22,6 +24,8 @@ import org.faktorips.valueset.ValueSet;
 
 /**
  * Class for validating the attribute relevance and value range.
+ *
+ * @since 21.6
  */
 public class GenericRelevanceValidation {
 
@@ -34,6 +38,28 @@ public class GenericRelevanceValidation {
         this.modelObject = requireNonNull(modelObject, "modelObject must not be null");
         this.policyAttribute = requireNonNull(policyAttribute, "policyAttribute must not be null");
         this.config = requireNonNull(config, "config must not be null");
+    }
+
+    /**
+     * Creates a {@link GenericRelevanceValidation} for the given model object's attribute using the
+     * validation context to {@link IValidationContext#getGenericAttributeValidationConfiguration()
+     * get} the {@link IGenericAttributeValidationConfiguration} and {@link #validate() validates}
+     * the attribute.
+     *
+     * @param modelObject the model object to validate
+     * @param propertyName the name of a {@link PolicyAttribute} of the model object
+     * @param validationContext the context containing information on what to validate and how to
+     *            create error messages
+     * @return the messages resulting from the validation, if any, or an empty message list if
+     *         validation was successful (or not performed because of
+     *         {@link IGenericAttributeValidationConfiguration#shouldValidate(PolicyAttribute, IModelObject)}
+     *         returning {@code false}
+     */
+    public static MessageList of(IModelObject modelObject, String propertyName, IValidationContext validationContext) {
+        return new GenericRelevanceValidation(modelObject,
+                IpsModel.getPolicyCmptType(modelObject).getAttribute(propertyName),
+                validationContext.getGenericAttributeValidationConfiguration())
+                        .validate();
     }
 
     /**
