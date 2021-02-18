@@ -16,7 +16,8 @@ class TableTmpl {
 
         /**
         * «localizedJDoc("CLASS_DESCRIPTION")» «descriptionForJDoc»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(TABLE_CLASS)»
@@ -45,7 +46,8 @@ class TableTmpl {
     def private static  fields(XIndex it) '''
         /**
         * «localizedJDoc("FIELD_KEY_MAP")»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         private «structureClass» «keySearchStructureName»;
@@ -186,7 +188,8 @@ class TableTmpl {
     def private static  findRow(XTable table, XIndex it) '''
         /**
         * «IF uniqueKey» «localizedJDoc("METHOD_FIND_ROW")» «ELSE»«localizedJDoc("METHOD_FIND_ROWS")» «ENDIF»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         public «table.getMethodReturnTypeFindRow(it)» «method(table.getMethodNameFindRow(it), methodParametersFindRow)»{
@@ -199,7 +202,8 @@ class TableTmpl {
     def private static  findRowNullRowReturnedForEmtpyResult(XTable table, XIndex it) '''
         /**
         * «localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         public «table.tableRowName» «method(table.getMethodNameFindRowNullRowReturned(it), methodParametersFindRow)»{
@@ -213,7 +217,8 @@ class TableTmpl {
         *
         * @return «localizedText("METHOD_FIND_EXISTING_ROW_RETURN_JAVADOC")»
         * @throws «localizedText("METHOD_FIND_EXISTING_ROW_THROW_JAVADOC")»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         public «table.tableRowName» «method(table.getMethodNameFindExistingRow(it), methodParametersFindRow)»{

@@ -23,7 +23,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static defaultField (XPolicyAttribute it) '''
         /**
          * «localizedJDoc("FIELD_DEFAULTVALUE", name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
@@ -32,7 +33,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static allowedValueSetField (XPolicyAttribute it) '''
         /**
          * «localizedJDoc(getJavadocKey("FIELD"), name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         private «valueSetJavaClassName» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
@@ -50,7 +52,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static getterDefaultValue (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_DEFAULTVALUE", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT, genInterface)»
@@ -66,7 +69,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static setterDefaultValue (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_DEFAULTVALUE", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER, genInterface)»
@@ -83,7 +87,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static getterAllowedValues (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
@@ -99,7 +104,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static setterAllowedValues (XPolicyAttribute it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_VALUESET", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER, genInterface)»

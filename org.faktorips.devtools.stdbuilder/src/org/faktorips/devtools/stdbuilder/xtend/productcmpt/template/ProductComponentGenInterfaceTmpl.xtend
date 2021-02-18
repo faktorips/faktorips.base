@@ -17,7 +17,7 @@ class ProductComponentGenInterfaceTmpl {
 
             /**
              * «localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
             «IF !productCmptType.changingOverTime»
              * «localizedJDoc("DEPRECATED_INTERFACE", generationConceptNamePlural)»
             «ENDIF»

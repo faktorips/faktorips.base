@@ -19,7 +19,8 @@ class MethodsTmpl {
             * «localizedJDoc("METHOD_GETFORMULAR")»
             * @see #«methodNameIsFormulaAvailable»
         «ENDIF»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
 
@@ -65,7 +66,8 @@ class MethodsTmpl {
             «ELSE»
              * «localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
             «ENDIF»
-            * «getAnnotations(ELEMENT_JAVA_DOC)»
+           «getAnnotations(ELEMENT_JAVA_DOC)»
+            *
             * @generated
             */
             «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, !genInterface && overrides && published)»
@@ -85,7 +87,8 @@ class MethodsTmpl {
         «ELSEIF description.length > 0»
          * «description»
         «ENDIF»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrides)»

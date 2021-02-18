@@ -31,7 +31,8 @@ def static  String body (XPolicyCmptClass it) '''
      «ELSE»
      * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
      «ENDIF»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
      «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS)»
@@ -187,7 +188,8 @@ def private static  initializeAttributes(String methodNameGetProductConfiguratio
 def private static  constructors (XPolicyCmptClass it) '''
     /**
      * «localizedJDoc("CONSTRUCTOR", implClassName)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
     public «method(implClassName)» {
@@ -200,7 +202,8 @@ def private static  constructors (XPolicyCmptClass it) '''
     «IF configured»
         /**
          * «localizedJDoc("CONSTRUCTOR", implClassName)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         public «method(implClassName, productCmptClassName, "productCmpt")» {
@@ -219,7 +222,8 @@ def private static  getterForProductAttributes(XPolicyCmptClass currentClass, XP
     «IF generateInterfaceGetter»
          /**
          * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, descriptionForJDoc)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
@@ -236,7 +240,8 @@ def private static  getterForProductAttributes(XPolicyCmptClass currentClass, XP
 def private static  getterForTables(XPolicyCmptClass policyClass, XTableUsage it) '''
     /**
      * «localizedJDoc("METHOD_GET_TABLE_IN_POLICY", name)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {

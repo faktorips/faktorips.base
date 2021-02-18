@@ -16,7 +16,8 @@ class PolicyCmptInterfaceTmpl {
 
         /**
         * «localizedJDoc("INTERFACE", name)» «description»
-        * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(AnnotatedJavaElementType.PUBLISHED_INTERFACE_CLASS)»

@@ -12,7 +12,8 @@ class AssociationTmpl {
         «IF oneToMany && !derived && !constrain»
             /**
              * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
-            * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+           «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+            *
             * @generated
             */
                «overrideAnnotationForPublishedMethodImplementation()»
@@ -31,7 +32,8 @@ class AssociationTmpl {
             «IF oneToMany»
                 /**
                 * «localizedJDoc("METHOD_GET_MANY", getName(true), descriptionForJDoc)»
-                * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+               «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+                *
                 * @generated
                 */
                 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
@@ -45,7 +47,8 @@ class AssociationTmpl {
 
                 /**
                 * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
-                * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+               «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+                *
                 * @generated
                 */
                 «overrideAnnotationForPublishedMethodImplementation()»
@@ -58,7 +61,8 @@ class AssociationTmpl {
             «ELSE»
                 /**
                 * «localizedJDoc("METHOD_GET_ONE", name, descriptionForJDoc)»
-                * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+               «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+                *
                 * @generated
                 */
                 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»

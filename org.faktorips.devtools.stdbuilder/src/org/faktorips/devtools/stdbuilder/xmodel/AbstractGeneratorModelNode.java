@@ -47,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -526,7 +527,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
         List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
-        StringBuilder result = new StringBuilder("");
+        StringBuilder result = new StringBuilder(AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type ? " * " : "");
         for (IAnnotationGenerator generator : generators) {
             if (!generator.isGenerateAnnotationFor(this)) {
                 continue;
@@ -535,7 +536,11 @@ public abstract class AbstractGeneratorModelNode {
             addImport(annotationFragment.getImportDeclaration());
             result.append(annotationFragment.getSourcecode());
         }
-        return result.toString();
+        if (result.length() <= 3) {
+            return IpsStringUtils.EMPTY;
+        } else {
+            return result.toString();
+        }
     }
 
     /**

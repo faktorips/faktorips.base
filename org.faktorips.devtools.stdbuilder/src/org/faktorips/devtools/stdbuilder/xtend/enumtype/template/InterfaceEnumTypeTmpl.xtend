@@ -17,6 +17,7 @@ class InterfaceEnumTypeTmpl {
          *
         «ENDIF»
          «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotations(ENUM_CLASS)»
@@ -32,7 +33,8 @@ class InterfaceEnumTypeTmpl {
         «ELSE»
             * «localizedJDoc("GETTER", name, descriptionForJDoc)»
         «ENDIF»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(ENUM_ATTRIBUTE_GETTER)»

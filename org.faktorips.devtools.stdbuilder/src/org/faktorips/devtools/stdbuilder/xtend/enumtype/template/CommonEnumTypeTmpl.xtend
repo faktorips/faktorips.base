@@ -12,8 +12,8 @@ class CommonEnumTypeTmpl {
     def package static messageHelperVar (XEnumType it) '''
         «IF messageHelperNeeded»
         /**
-        * @generated
-        */
+         * @generated
+         */
         private static final «MessagesHelper» «varNameMessageHelper» = new «MessagesHelper»(«unqualifiedClassName».class.getName(), «unqualifiedClassName».class.getClassLoader(), «defaultLocale»);
         «ENDIF»
     '''
@@ -27,8 +27,9 @@ class CommonEnumTypeTmpl {
     def private static field (XEnumAttribute it) '''
         /**
         «getAnnotations(ELEMENT_JAVA_DOC)»
-        * @generated
-        */
+         *
+         * @generated
+         */
         private final «datatypeNameForConstructor» «field(memberVarName)»;
     '''
 
@@ -37,9 +38,10 @@ class CommonEnumTypeTmpl {
     '''
 
     def private static getter (XEnumAttribute it) '''
-        /**
+       /**
         * «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(ENUM_ATTRIBUTE_GETTER)»

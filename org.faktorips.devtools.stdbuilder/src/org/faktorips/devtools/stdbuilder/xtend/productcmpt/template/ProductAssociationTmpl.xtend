@@ -16,7 +16,8 @@ class ProductAssociationTmpl {
     def package static privateConstants(XProductAssociation it) '''
         «IF !derivedUnion && !constrain»
             /** «localizedJDoc("CONSTANT_XML_TAG_ASSOCIATION", fieldName)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
             private static final String «field(constantNameXmlTag)» = "«name»";
@@ -27,7 +28,8 @@ class ProductAssociationTmpl {
         «IF !derivedUnion && !constrain»
             /**
              * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
             «IF oneToMany»
@@ -65,7 +67,8 @@ class ProductAssociationTmpl {
     def private static getterProductCmpt(XProductAssociation it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany), descriptionForJDoc)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface)»
@@ -102,7 +105,8 @@ class ProductAssociationTmpl {
     def private static getterProductCmptGen(XProductAssociation it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany), descriptionForJDoc)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «overrideAnnotationForConstainedAssociation»
@@ -143,7 +147,8 @@ class ProductAssociationTmpl {
         «IF oneToMany»
             /**
              * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_AT_INDEX", name, descriptionForJDoc)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «overrideAnnotationForConstainedAssociation»
@@ -163,7 +168,8 @@ class ProductAssociationTmpl {
     def private static getterLinksFor(XProductAssociation it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany), descriptionForJDoc)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterface(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS, genInterface())»
@@ -188,7 +194,8 @@ class ProductAssociationTmpl {
     def private static getterSingleLinkFor(XProductAssociation it) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_LINK_AT_INDEX", name, descriptionForJDoc)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «overrideAnnotationForPublishedMethodImplementation»
@@ -208,7 +215,8 @@ class ProductAssociationTmpl {
         «IF oneToMany»
             /**
              * «localizedJDoc("METHOD_ADD_CMPT")»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
@@ -229,7 +237,8 @@ class ProductAssociationTmpl {
         «IF oneToMany && matchingAssociation!==null»
             /**
              * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
@@ -250,7 +259,8 @@ class ProductAssociationTmpl {
         «IF oneToMany»
             /**
              * «localizedJDoc("METHOD_REMOVE_CMPT")»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER)»
@@ -271,7 +281,8 @@ class ProductAssociationTmpl {
         «IF !oneToMany»
             /**
              * «localizedJDoc("METHOD_SET_CMPT", name)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER)»
@@ -292,7 +303,8 @@ class ProductAssociationTmpl {
         «IF !oneToMany && matchingAssociation!==null»
             /**
              * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY", name)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «getAnnotations(PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER)»
@@ -313,7 +325,8 @@ class ProductAssociationTmpl {
         «IF hasMatchingAssociation»
             /**
              * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CARDINALITY_FOR", nameOfMatchingAssociation)»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
              «overrideAnnotationForPublishedMethodImplementation»

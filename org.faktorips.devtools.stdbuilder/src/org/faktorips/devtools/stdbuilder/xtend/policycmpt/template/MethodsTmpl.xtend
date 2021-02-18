@@ -11,10 +11,14 @@ class MethodsTmpl{
 
 def package static method (XMethod it) '''
     «IF published || !genInterface()»
-        /**«IF published && !genInterface()»«inheritDocOrText(description)»
-         * «ELSEIF description.length > 0»
-          «description»
-         * «ENDIF»«getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        /**
+        «IF published && !genInterface()»
+         * «inheritDocOrText(description)»
+        «ELSEIF description.length > 0»
+         * «description»
+        «ENDIF»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)»

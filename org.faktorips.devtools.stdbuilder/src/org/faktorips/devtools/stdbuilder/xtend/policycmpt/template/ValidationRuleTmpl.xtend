@@ -38,7 +38,8 @@ def package static validationRuleMethods (XValidationRule it) '''«validationRul
 def private static constantMsgCode (XValidationRule it) '''
     /**
      * «localizedJDoc("FIELD_MSG_CODE", name)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
     public static final String «field(constantNameMessageCode)» = "«messageCode»";
@@ -48,7 +49,8 @@ def private static constantRuleName (XValidationRule it) '''
     «IF configured»
         /**
          * «localizedJDoc("FIELD_RULE_NAME", name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         public static final String «field(constantNameRuleName)» = "«name»";
@@ -58,7 +60,8 @@ def private static constantRuleName (XValidationRule it) '''
 def private static execRuleMethod (XValidationRule it, String modelObject) '''
     /**
      * «localizedJDoc("EXEC_RULE", name)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @restrainedmodifiable
      */
     «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
@@ -107,7 +110,8 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
 def private static createMessageFor (XValidationRule it, String modelObject) '''
     /**
      * «localizedJDoc("CREATE_MESSAGE", name)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {

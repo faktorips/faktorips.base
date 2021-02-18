@@ -20,6 +20,7 @@ class EnumEnumTypeTmpl {
             *
         «ENDIF»
         «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(ENUM_CLASS)»

@@ -14,13 +14,14 @@ class ClassEnumTypeTmpl {
     def static String body(XEnumType it) '''
 
         /**
-        «IF described»
-        *  «description»
-        *
-        «ENDIF»
+         «IF described»
+         *  «description»
+         *
+         «ENDIF»
         «getAnnotations(ELEMENT_JAVA_DOC)»
-        * @generated
-        */
+         *
+         * @generated
+         */
         «getAnnotations(ENUM_CLASS)»
         public final class «name» «CommonDefinitions::extendedInterfaces(it)» «CommonDefinitions::implementedInterfaces(it)»{
 

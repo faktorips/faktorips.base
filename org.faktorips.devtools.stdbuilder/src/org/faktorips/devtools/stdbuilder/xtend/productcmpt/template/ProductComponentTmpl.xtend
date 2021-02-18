@@ -31,7 +31,8 @@ class ProductComponentTmpl {
             «ELSE»
                 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
             «ENDIF»
-        * «getAnnotations(ELEMENT_JAVA_DOC)»
+       «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(PRODUCT_CMPT_IMPL_CLASS)»
@@ -59,7 +60,8 @@ class ProductComponentTmpl {
 
             /**
             * «localizedJDoc("CONSTRUCTOR", implClassName)»
-            * «getAnnotations(ELEMENT_JAVA_DOC)»
+           «getAnnotations(ELEMENT_JAVA_DOC)»
+            *
             * @generated
             */
                 public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {

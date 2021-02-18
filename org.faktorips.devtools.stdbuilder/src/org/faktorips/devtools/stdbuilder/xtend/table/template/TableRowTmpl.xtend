@@ -44,6 +44,7 @@ class TableRowTmpl {
         «IF datatypeName !== null»
             /**
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+            *
             * @generated
             */
             private final «datatypeName» «attributeName»;
@@ -71,6 +72,7 @@ class TableRowTmpl {
     def private static getterMethod(XColumn it) '''
         /**
         «getAnnotations(ELEMENT_JAVA_DOC)»
+        *
         * @generated
         */
         «getAnnotations(TABLE_ROW_CLASS_COLUMN_GETTER)»

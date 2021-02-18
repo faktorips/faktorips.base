@@ -13,7 +13,8 @@ def package static constantForPropertyName (XPolicyAttribute it) '''
     «IF !overwrite»
         /**
          * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         public static final String «field(constantNamePropertyName)» = "«name»";
@@ -24,7 +25,8 @@ def package static constantForValueSet (XPolicyAttribute it) '''
     «IF generateConstantForValueSet»
         /**
          * «localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         public static final «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
@@ -35,7 +37,8 @@ def package static constantField (XPolicyAttribute it) '''
     «IF constant»
             /**
              * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
-             * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
             «getAnnotationsForPublishedInterface(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
@@ -47,7 +50,8 @@ def package static memberField (XPolicyAttribute it) '''
     «IF generateField»
         /**
          * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)»
@@ -58,7 +62,8 @@ def package static memberField (XPolicyAttribute it) '''
 def package static abstractGetter(XPolicyAttribute it) '''
     /**
      * «inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
-     * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+     *
      * @generated
      */
      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
@@ -70,7 +75,8 @@ def package static abstractSetter(XPolicyAttribute it) '''
     «IF isGenerateSetter()»
         /**
          * «inheritDocOrJavaDocIf(genInterface, "METHOD_SETVALUE", name, descriptionForJDoc)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
@@ -84,7 +90,8 @@ def package static getter (XPolicyAttribute it) '''
     «IF isGenerateGetter(genInterface())»
         /**
          * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * «IF !genInterface()&&generateDefaultForOnTheFlyDerivedAttribute»@restrainedmodifiable«ELSE»@generated«ENDIF»
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
@@ -125,7 +132,8 @@ def package static setter (XPolicyAttribute it) '''
          *
          * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_THROWS", addImport(ClassCastException), javaClassName)»
          «ENDIF»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
@@ -149,7 +157,8 @@ def package static setterInternal (XPolicyAttribute it) '''
     «IF generateSetterInternal»
         /**
          * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»
@@ -163,7 +172,8 @@ def package static allowedValuesMethod (XPolicyAttribute it) '''
     «IF generateGetAllowedValuesForAndGetDefaultValue»
         /**
          * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
-         * «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+         *
          * «IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»

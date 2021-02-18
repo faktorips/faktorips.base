@@ -32,7 +32,8 @@ class ProductComponentGenTmpl {
             «IF !productCmptType.changingOverTime»
              * «localizedJDoc("DEPRECATED_CLASS", generationConceptNamePlural)»
             «ENDIF»
-             * «getAnnotations(ELEMENT_JAVA_DOC)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
              * @generated
              */
             «IF !productCmptType.changingOverTime»
@@ -62,7 +63,8 @@ class ProductComponentGenTmpl {
 
                 /**
                  * «localizedJDoc("CONSTRUCTOR", getSimpleName(IMPLEMENTATION))»
-                 * «getAnnotations(ELEMENT_JAVA_DOC)»
+                «getAnnotations(ELEMENT_JAVA_DOC)»
+                 *
                  * @generated
                  */
                 public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {

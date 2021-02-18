@@ -15,7 +15,8 @@ class TableUsagesTmpl{
     def package static memberField (XTableUsage it) '''
         /**
          * «localizedJDoc("FIELD_TABLE_USAGE", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         private String «field(fieldName)» = null;
@@ -24,7 +25,8 @@ class TableUsagesTmpl{
     def package static propertyField (XTableUsage it) '''
         /**
          * «localizedJDoc("PROPERTY_TABLE_USAGE", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          public static final String «field(constantNameTable)» = "«name»";
@@ -38,7 +40,8 @@ class TableUsagesTmpl{
     def private static getter (XTableUsage it) '''
         /**
          * «localizedJDoc("METHOD_GET_TABLE", name)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
          «getAnnotations(TABLE_USAGE_GETTER)»
@@ -53,7 +56,8 @@ class TableUsagesTmpl{
     def private static setter (XTableUsage it) '''
         /**
          * «localizedJDoc("METHOD_SET_TABLE_NAME", fieldName.toFirstUpper)»
-         * «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
          * @generated
          */
         public void «method(methodNameSetter, "String", "tableName")» {
