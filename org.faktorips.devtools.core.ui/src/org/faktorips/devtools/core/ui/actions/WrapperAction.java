@@ -90,10 +90,48 @@ public class WrapperAction extends IpsAction {
     }
 
     private void initDelegate(String actionSetId, String actionId) {
-        String className = null;
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        // search actionsets for action definitions
         IConfigurationElement[] elems = registry.getConfigurationElementsFor("org.eclipse.ui.actionSets"); //$NON-NLS-1$
+        String className = searchActionSetsForDefinitions(actionSetId, actionId, elems);
+
+        if (className == null) {
+            className = searchPopupMenuForDefinitions(actionId, registry);
+        }
+
+        if (className != null) {
+            try {
+                wrappedActionDelegate = (IActionDelegate)Class.forName(className).getConstructor().newInstance();
+                // CSOFF: IllegalCatch
+            } catch (Exception e) {
+                // CSON: IllegalCatch
+                IpsPlugin.log(e);
+            }
+        }
+        if (wrappedActionDelegate == null) {
+            super.setEnabled(false);
+        }
+    }
+
+    private String searchPopupMenuForDefinitions(String actionId, IExtensionRegistry registry) {
+        String className = null;
+        IConfigurationElement[] popupElements = registry.getConfigurationElementsFor("org.eclipse.ui.popupMenus"); //$NON-NLS-1$
+        for (IConfigurationElement popupElement : popupElements) {
+            IConfigurationElement[] actionElements = popupElement.getChildren("action"); //$NON-NLS-1$
+            for (IConfigurationElement actionElement : actionElements) {
+                if (actionElement.getAttribute("id").equals(actionId)) { //$NON-NLS-1$
+                    className = actionElement.getAttribute("class"); //$NON-NLS-1$
+                    break;
+                }
+            }
+            if (className != null) {
+                break;
+            }
+        }
+        return className;
+    }
+
+    private String searchActionSetsForDefinitions(String actionSetId, String actionId, IConfigurationElement[] elems) {
+        String className = null;
         for (IConfigurationElement elem : elems) {
             if (elem.getName().equals("actionSet") && elem.getAttribute("id").equals(actionSetId)) { //$NON-NLS-1$ //$NON-NLS-2$
                 IConfigurationElement[] childElems = elem.getChildren("action"); //$NON-NLS-1$
@@ -108,34 +146,7 @@ public class WrapperAction extends IpsAction {
                 break;
             }
         }
-
-        if (className == null) {
-            // search popupmenu defs for action definitions
-            IConfigurationElement[] popupElements = registry.getConfigurationElementsFor("org.eclipse.ui.popupMenus"); //$NON-NLS-1$
-            for (IConfigurationElement popupElement : popupElements) {
-                IConfigurationElement[] actionElements = popupElement.getChildren("action"); //$NON-NLS-1$
-                for (IConfigurationElement actionElement : actionElements) {
-                    if (actionElement.getAttribute("id").equals(actionId)) { //$NON-NLS-1$
-                        className = actionElement.getAttribute("class"); //$NON-NLS-1$
-                        break;
-                    }
-                }
-                if (className != null) {
-                    break;
-                }
-            }
-        }
-
-        if (className != null) {
-            try {
-                wrappedActionDelegate = (IActionDelegate)Class.forName(className).getConstructor().newInstance();
-            } catch (Exception e) {
-                IpsPlugin.log(e);
-            }
-        }
-        if (wrappedActionDelegate == null) {
-            super.setEnabled(false);
-        }
+        return className;
     }
 
     /**

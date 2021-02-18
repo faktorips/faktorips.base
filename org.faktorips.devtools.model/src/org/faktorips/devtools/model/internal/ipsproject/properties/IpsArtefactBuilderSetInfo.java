@@ -85,7 +85,9 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
         } catch (ClassCastException e) {
             IpsLog.log(new IpsStatus("The registered builder set " + getBuilderSetClass() + //$NON-NLS-1$
                     " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsLog.log(new IpsStatus("Unable to instantiate the builder set " + getBuilderSetClass(), e)); //$NON-NLS-1$
         }
         return new EmptyBuilderSet();
@@ -235,7 +237,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                     if (StringUtils.isEmpty(builderSetClassName)) {
                         logger.log(new IpsStatus(
                                 "The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$
-                                        extension.getUniqueIdentifier() + " is not specified."));//$NON-NLS-1$
+                                        extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
                         continue;
                     }
 

@@ -105,9 +105,12 @@ public enum AttributeValueType {
             IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
             IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue);
             return newValueInstance;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
+
     }
 
     /**
@@ -130,7 +133,9 @@ public enum AttributeValueType {
             IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
             IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue, defaultValue);
             return newValueInstance;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
     }
