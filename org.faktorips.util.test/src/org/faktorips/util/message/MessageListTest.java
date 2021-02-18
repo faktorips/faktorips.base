@@ -12,6 +12,7 @@ package org.faktorips.util.message;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
@@ -23,6 +24,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.faktorips.util.message.MessageList.SeverityComparator;
 import org.junit.Test;
@@ -439,8 +441,88 @@ public class MessageListTest {
         list.add(error1);
         list.add(error2);
 
+        assertThat(error1.equals(error2), is(false));
         assertThat(list.stream().findFirst().get(), is(error1));
         assertThat(list.stream().filter(m -> "e2".equals(m.getText())).findFirst().get(), is(error2));
     }
 
+    @Test
+    public void testMessageList_of() {
+        Message e1 = Message.newError(null, "e1");
+        Message i1 = Message.newInfo(null, "i1");
+
+        MessageList list = MessageList.of(e1, i1);
+
+        assertThat(list.isEmpty(), is(false));
+        assertThat(list, hasItems(e1, i1));
+    }
+
+    @Test
+    public void testMessageList_of_Null() {
+        Message[] msgs = null;
+        MessageList list = MessageList.of(msgs);
+
+        assertThat(list.isEmpty(), is(true));
+        assertThat(list.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testMessageList_of_empty() {
+        MessageList list = MessageList.of(new Message[0]);
+
+        assertThat(list.isEmpty(), is(true));
+        assertThat(list.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testMessageList_ofErrors() {
+        MessageList list = MessageList.ofErrors("e1", "e2", "e3");
+
+        assertThat(list.isEmpty(), is(false));
+        assertThat(list.size(), is(3));
+        assertThat(list,
+                hasItems(Message.newError(null, "e1"), Message.newError(null, "e3"), Message.newError(null, "e2")));
+    }
+
+    @Test
+    public void testMessageList_ofErrors_null() {
+        String[] input = null;
+        MessageList list = MessageList.ofErrors(input);
+
+        assertThat(list.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMessageList_ofErrors_empty() {
+        MessageList list = MessageList.ofErrors(new String[0]);
+
+        assertThat(list.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMessageList_MessageCollector() {
+        MessageList list = MessageList.ofErrors("e1", "e2", "e3");
+
+        MessageList newList = list.stream().collect(MessageList.collectMessages());
+
+        assertThat(newList.isEmpty(), is(false));
+        assertThat(newList.size(), is(3));
+        assertThat(newList,
+                hasItems(Message.newError(null, "e1"), Message.newError(null, "e3"), Message.newError(null, "e2")));
+    }
+
+    @Test
+    public void testMessageList_MessageListCollector() {
+        Message e1 = Message.newError(null, "e1");
+        Message e2 = Message.newError(null, "e2");
+        Message w1 = Message.newWarning(null, "w1");
+        Message i1 = Message.newInfo(null, "i1");
+        MessageList errorList = MessageList.of(e1, e2);
+        MessageList otherList = MessageList.of(w1, i1);
+
+        MessageList combined = Stream.of(errorList, otherList).collect(MessageList.flatten());
+
+        assertThat(combined.size(), is(4));
+        assertThat(combined, hasItems(e1, e2, w1, i1));
+    }
 }

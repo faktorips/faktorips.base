@@ -18,7 +18,13 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Spliterator;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -390,6 +396,135 @@ public class MessageList extends AbstractMessageList<Message, MessageList> {
     @Override
     public Stream<Message> parallelStream() {
         return super.parallelStream();
+    }
+
+    /**
+     * Returns a new {@code MessageList} that consists of the given {@code Messages}. Returns an
+     * empty {@code MessageList} if {@code null} is given.
+     * 
+     * @param messages the {@code Messages} that the new {@code MessageList} will contain. May be
+     *            {@code null}
+     * @return a new {@code MessageList} that consist of the given {@code Messages}
+     */
+    public static final MessageList of(Message... messages) {
+        if (messages == null) {
+            return new MessageList();
+        }
+        MessageList messageList = new MessageList();
+        for (Message message : messages) {
+            messageList.add(message);
+        }
+        return messageList;
+    }
+
+    /**
+     * Returns a new {@code MessageList} that contains error messages with the given texts. The code
+     * of the messages are {@code null}.
+     * <p>
+     * Returns an empty {@code MessageList} if {@code null} or an empty array is given.
+     * </p>
+     *
+     * @param texts the texts of the error messages in the new {@code MessageList}. May be
+     *            {@code null} or empty
+     * @return a new {@code MessageList} that contains error messages with the given texts or an
+     *         empty {@code MessageList}
+     */
+    public static final MessageList ofErrors(String... texts) {
+        if (texts == null) {
+            return new MessageList();
+        }
+        return Stream.of(texts).map(text -> Message.newError(null, text))
+                .collect(MessageList.collectMessages());
+    }
+
+    /**
+     * Returns a {@link Collector} that can be used to {@linkplain Stream#collect(Collector)
+     * collect} a {@code Stream} of {@link MessageList MessageLists} into a new {@code MessageList}.
+     * 
+     * @return a {@code Collector} that collects {@link MessageList MessageLists} into a new
+     *         {@code MessageList}
+     */
+    public static final Collector<MessageList, ?, MessageList> flatten() {
+        return new MessageListCollector();
+    }
+
+    /**
+     * Returns a {@link Collector} that can be used to {@linkplain Stream#collect(Collector)
+     * collect} messages from a {@code Stream} of {@link Message Messages} into a
+     * {@code MessageList}.
+     * 
+     * @return a {@code Collector} that collects messages into a {@code MessageList}
+     */
+    public static final Collector<Message, ?, MessageList> collectMessages() {
+        return new MessageCollector();
+    }
+
+    private static class MessageListCollector implements Collector<MessageList, MessageList, MessageList> {
+
+        @Override
+        public Supplier<MessageList> supplier() {
+            return () -> new MessageList();
+        }
+
+        @Override
+        public BiConsumer<MessageList, MessageList> accumulator() {
+            return (ml1, ml2) -> ml1.add(ml2);
+        }
+
+        @Override
+        public BinaryOperator<MessageList> combiner() {
+            return (ml1, ml2) -> {
+                MessageList ml = new MessageList();
+                ml.add(ml1);
+                ml.add(ml2);
+                return ml;
+            };
+        }
+
+        @Override
+        public Function<MessageList, MessageList> finisher() {
+            return Function.identity();
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.singleton(Characteristics.IDENTITY_FINISH);
+        }
+
+    }
+
+    private static class MessageCollector implements Collector<Message, MessageList, MessageList> {
+
+        @Override
+        public Supplier<MessageList> supplier() {
+            return () -> new MessageList();
+        }
+
+        @Override
+        public BiConsumer<MessageList, Message> accumulator() {
+            return (messageList, message) -> messageList.add(message);
+        }
+
+        @Override
+        public BinaryOperator<MessageList> combiner() {
+            return (ml1, ml2) -> {
+                MessageList ml = new MessageList();
+                ml.add(ml1);
+                ml.add(ml2);
+                return ml;
+            };
+        }
+
+        @Override
+        public Function<MessageList, MessageList> finisher() {
+            return Function.identity();
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.singleton(Characteristics.IDENTITY_FINISH);
+        }
+
     }
 
     public static class SeverityComparator implements Comparator<Message>, Serializable {

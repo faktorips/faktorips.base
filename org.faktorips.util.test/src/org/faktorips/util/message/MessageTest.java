@@ -10,6 +10,8 @@
 
 package org.faktorips.util.message;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,8 +21,6 @@ import java.util.HashMap;
 import org.junit.Test;
 
 public class MessageTest {
-
-    // TODO
 
     @Test
     public void testCopy() {
@@ -169,6 +169,28 @@ public class MessageTest {
         msg2 = new Message("1", "blabla", Message.ERROR, op);
         assertTrue(msg.equals(msg2));
 
+    }
+
+    @Test
+    public void testEqualsObject_code_null() {
+        Message m1 = new Message(null, "Message with null code", Message.ERROR);
+        Message m2 = new Message("some.code", "Message with code", Message.ERROR);
+
+        assertThat(m1.equals(m1), is(true));
+        assertThat(m1.equals(m2), is(false));
+        assertThat(m2.equals(m1), is(false));
+
+        m1 = new Message(null, null, Message.INFO);
+        m2 = new Message(null, null, Message.INFO);
+        assertThat(m1.equals(m2), is(true));
+    }
+
+    @Test
+    public void testEqualsObject_text_null() {
+        Message m1 = new Message(null, null, Message.INFO);
+        Message m2 = new Message(null, null, Message.INFO);
+
+        assertThat(m1.equals(m2), is(true));
     }
 
 }

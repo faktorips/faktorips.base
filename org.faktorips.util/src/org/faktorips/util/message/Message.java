@@ -356,24 +356,26 @@ public class Message implements IMessage {
         if (o == this) {
             return true;
         }
-
         if (!(o instanceof Message)) {
             return false;
         }
         Message other = (Message)o;
 
-        boolean equalSeverity = severity == other.severity;
-        boolean equalCode = code.equals(other.code);
-        boolean equalText = text.equals(other.text);
-        boolean equalInvalidOpLength = invalidOp.length == other.invalidOp.length;
-        if (!(equalSeverity && equalCode && equalText && equalInvalidOpLength)) {
+        if (!Objects.equals(severity, other.severity)) {
             return false;
         }
-
+        if (!Objects.equals(code, other.code)) {
+            return false;
+        }
+        if (!Objects.equals(text, other.text)) {
+            return false;
+        }
+        if (invalidOp.length != other.invalidOp.length) {
+            return false;
+        }
         if (!equalsProperties(other)) {
             return false;
         }
-
         return true;
     }
 
