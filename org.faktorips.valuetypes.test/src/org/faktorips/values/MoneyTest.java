@@ -292,7 +292,7 @@ public class MoneyTest {
 
         // different currencies
         try {
-            m1.add(Money.usd(1, 0));
+            m1.subtract(Money.usd(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.

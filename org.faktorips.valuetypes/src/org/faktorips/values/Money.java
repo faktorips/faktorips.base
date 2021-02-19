@@ -355,6 +355,13 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @throws NullPointerException if value is <code>null</code>
      */
     public Money subtract(Money value) {
+        if (value.isNull()) {
+            return Money.NULL;
+        }
+        if (!currency.equals(value.currency)) {
+            throw new IllegalArgumentException(
+                    "Can't subtract " + value + " from " + this + " because they have different currencies.");
+        }
         return new Money(internalAmount - value.internalAmount, currency);
     }
 
