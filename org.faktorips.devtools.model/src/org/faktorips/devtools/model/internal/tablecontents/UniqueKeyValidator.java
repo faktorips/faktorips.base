@@ -117,7 +117,7 @@ public class UniqueKeyValidator {
     /**
      * Returns <code>true</code> if the caches of unique key values are empty.
      */
-    public boolean isEmtpy() {
+    public boolean isEmpty() {
         return uniqueKeyMapColumn.isEmpty() && uniqueKeyValidatorForTwoColumnRange.isEmpty();
     }
 

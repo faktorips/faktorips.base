@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.util;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -295,9 +295,9 @@ public class HistogramTest {
     }
 
     @Test
-    public void testIsEmtpy() {
-        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, EMPTY).isEmtpy(), is(true));
-        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, element("A")).isEmtpy(), is(false));
+    public void testIsEmpty() {
+        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, EMPTY).isEmpty(), is(true));
+        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, element("A")).isEmpty(), is(false));
     }
 
     @Test

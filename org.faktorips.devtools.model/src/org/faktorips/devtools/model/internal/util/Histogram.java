@@ -160,7 +160,7 @@ public class Histogram<V, E> {
      * 
      * @return {@code true} when this histogram contains no elements/values.
      */
-    public boolean isEmtpy() {
+    public boolean isEmpty() {
         return valueToElements.isEmpty();
     }
 

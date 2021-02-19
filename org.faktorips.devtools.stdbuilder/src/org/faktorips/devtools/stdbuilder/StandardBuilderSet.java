@@ -309,7 +309,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         code.appendClassName(getModelNode(tableStructure, XTable.class).getQualifiedName(BuilderAspect.IMPLEMENTATION));
         // create get instance method by using the qualified name of the table content
         code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
-                + "\").findRowNullRowReturnedForEmtpyResult("); //$NON-NLS-1$
+                + "\").findRowNullRowReturnedForEmptyResult("); //$NON-NLS-1$
 
         for (int i = 0; i < argResults.length; i++) {
             if (i > 0) {

@@ -38,7 +38,7 @@ import org.faktorips.runtime.internal.Table;
  */
 public class XTable extends XTableStructure {
 
-    private static final String METHOD_NAME_SUFFIX_FOR_NULL_VALUE_ROW = "NullRowReturnedForEmtpyResult";
+    private static final String METHOD_NAME_SUFFIX_FOR_NULL_VALUE_ROW = "NullRowReturnedForEmptyResult";
     private static final String METHOD_NAME_FIND = "find";
     private static final String METHOD_NAME_EXISTING = "Existing";
     private static final String METHOD_NAME_ROW = "Row";

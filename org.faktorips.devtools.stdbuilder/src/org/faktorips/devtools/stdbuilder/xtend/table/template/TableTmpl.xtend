@@ -180,7 +180,7 @@ class TableTmpl {
     def private static  findMethods(XTable table, XIndex it) '''
         «findRow(table, it)»
         «IF uniqueKey»
-            «findRowNullRowReturnedForEmtpyResult(table, it)»
+            «findRowNullRowReturnedForEmptyResult(table, it)»
             «findExistingRow(table, it)»
         «ENDIF»
     '''
@@ -199,7 +199,7 @@ class TableTmpl {
         }
     '''
 
-    def private static  findRowNullRowReturnedForEmtpyResult(XTable table, XIndex it) '''
+    def private static  findRowNullRowReturnedForEmptyResult(XTable table, XIndex it) '''
         /**
         * «localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
        «getAnnotations(ELEMENT_JAVA_DOC)»

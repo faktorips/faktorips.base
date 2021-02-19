@@ -307,7 +307,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         if (isUniqueKeyValidationEnabled()) {
             if (validate) {
                 // check if the unique key cache needs to be updated
-                if (uniqueKeyValidator.isEmtpy() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {
+                if (uniqueKeyValidator.isEmpty() || uniqueKeyValidator.isInvalidUniqueKeyCache(tableStructure)) {
                     // could be happen if a new column was added to the table generation
                     // or the structure has changed, e.g. a new unique key was added
                     updateUniqueKeyCache(tableStructure);

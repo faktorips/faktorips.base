@@ -43,7 +43,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      */
     private final String kindId;
     /**
-     * If this entry is a product component: the version id if of the product component kind, emtpy
+     * If this entry is a product component: the version id if of the product component kind, empty
      * string otherwise.
      */
     private final String versionId;

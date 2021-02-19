@@ -53,7 +53,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
      * 
      * @param pack The package the given qualified name must match. Can be empty, but must not be
      *            <code>null</code>.
-     * @param prefix The prefix the unqualifed name must match. Can be emtpy, but must not be
+     * @param prefix The prefix the unqualifed name must match. Can be empty, but must not be
      *            <code>null</code>.
      * @param qualifiedName The qulified name to match against the given package and name prefix.
      * 
@@ -107,7 +107,8 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
                         // table contents doesn't support description, thus doen't call getIpsObject
                         // due to performance reason
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                        localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(ipsObject);
+                        localizedDescription = IIpsModel.get().getMultiLanguageSupport()
+                                .getLocalizedDescription(ipsObject);
                     }
 
                     CompletionProposal proposal = new CompletionProposal(qName, 0, documentOffset, qName.length(),
