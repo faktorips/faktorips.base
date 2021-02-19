@@ -61,6 +61,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     private boolean relevanceConfiguredByProduct;
 
+    private boolean genericValidationEnabled = getIpsProject() == null ? false
+            : getIpsProject().getReadOnlyProperties().isGenericValidationDefaultEnabled();
+
     private AttributeType attributeType = AttributeType.CHANGEABLE;
 
     private IValueSet valueSet;
@@ -430,6 +433,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 .booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+        genericValidationEnabled = Boolean.valueOf(element.getAttribute(PROPERTY_GENERIC_VALIDATION))
+                .booleanValue();
     }
 
     @Override
@@ -450,6 +455,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
+        if (genericValidationEnabled) {
+            element.setAttribute(PROPERTY_GENERIC_VALIDATION, "" + genericValidationEnabled); //$NON-NLS-1$
+        }
     }
 
     @Override
@@ -586,6 +594,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public boolean isChangingOverTimeValidationNecessary() {
         return isProductRelevant() && getAttributeType().equals(AttributeType.CHANGEABLE);
+    }
+
+    @Override
+    public boolean isGenericValidationEnabled() {
+        return genericValidationEnabled;
+    }
+
+    @Override
+    public void setGenericValidationEnabled(boolean genericValidationEnabled) {
+        boolean oldGenericValidationEnabled = isGenericValidationEnabled();
+        this.genericValidationEnabled = genericValidationEnabled;
+        valueChanged(oldGenericValidationEnabled, genericValidationEnabled);
     }
 
 }

@@ -241,6 +241,7 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_generalGroup;
     public static String AttributeEditDialog_Info;
     public static String AttributeEditDialog_labelActivateValidationRule;
+    public static String AttributeEditDialog_labelGenericValidation;
     public static String AttributeEditDialog_labelAttributeIsTransient;
     public static String AttributeEditDialog_labelAttrType;
     public static String AttributeEditDialog_labelCategory;
@@ -271,6 +272,7 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_textNotSupportedByPersistenceProvider;
     public static String AttributeEditDialog_title;
     public static String AttributeEditDialog_tooltipActivateValidationRule;
+    public static String AttributeEditDialog_tooltipGenericValidation;
     public static String AttributeEditDialog_TypeCantBeFound;
     public static String AttributeEditDialog_validationRuleTitle;
     public static String AttributeEditDialog_ValueSetConfiguredByProduct;

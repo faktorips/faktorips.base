@@ -260,6 +260,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isProductRelevant());
         assertTrue(attribute.isValueSetConfiguredByProduct());
         assertTrue(attribute.isRelevanceConfiguredByProduct());
+
+        assertFalse(attribute.isGenericValidationEnabled());
+
+        attribute.initFromXml((Element)nl.item(7));
+        assertTrue(attribute.isGenericValidationEnabled());
     }
 
     @Test
@@ -282,6 +287,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         set.setStep("step");
         Element element = attribute.toXml(newDocument());
 
+        assertFalse(element.hasAttribute(IPolicyCmptTypeAttribute.PROPERTY_GENERIC_VALIDATION));
         IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
         assertEquals(attribute.getId(), copy.getId());
@@ -292,6 +298,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(copy.isValueSetConfiguredByProduct());
         assertFalse(copy.isRelevanceConfiguredByProduct());
         assertFalse(copy.isOverwrite());
+        assertFalse(copy.isGenericValidationEnabled());
         assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
         assertEquals("18", copy.getDefaultValue());
         assertEquals("unten", ((IRangeValueSet)copy.getValueSet()).getLowerBound());
@@ -308,6 +315,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
         attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setGenericValidationEnabled(true);
         IEnumValueSet set2 = (IEnumValueSet)attribute.getValueSet();
         set2.addValue("a");
         set2.addValue("b");
@@ -321,6 +329,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertTrue(attribute.isProductRelevant());
         assertFalse(copy.isValueSetConfiguredByProduct());
         assertTrue(copy.isRelevanceConfiguredByProduct());
+        assertTrue(copy.isGenericValidationEnabled());
         assertEquals(AttributeType.CONSTANT, attribute.getAttributeType());
         assertEquals("18", attribute.getDefaultValue());
         String[] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
@@ -517,7 +526,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(false);
         messageList = attribute.validate(ipsProject);
         assertEquals(1, messageList.size());
-        assertEquals(PolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
+        assertEquals(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
     }
 
     @Test

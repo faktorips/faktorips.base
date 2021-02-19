@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -716,6 +717,8 @@ public interface IIpsProjectProperties {
     /**
      * Returns which format is used to save table contents.
      *
+     * @since 20.12
+     *
      * @see TableContentFormat
      */
     TableContentFormat getTableContentFormat();
@@ -728,6 +731,8 @@ public interface IIpsProjectProperties {
     /**
      * Returns true if newly created policy component types should always have
      * {@link IPolicyCmptType#isGenerateValidatorClass()} enabled.
+     *
+     * @since 20.12
      */
     boolean isGenerateValidatorClassDefaultEnabled();
 
@@ -735,4 +740,17 @@ public interface IIpsProjectProperties {
      * @see #isGenerateValidatorClassDefaultEnabled()
      */
     void setGenerateValidatorClassDefault(boolean enabled);
+
+    /**
+     * Returns true if newly created policy component type attributes should always have
+     * {@link IPolicyCmptTypeAttribute#isGenericValidationEnabled()} enabled.
+     *
+     * @since 21.6
+     */
+    boolean isGenericValidationDefaultEnabled();
+
+    /**
+     * @see #isGenericValidationDefaultEnabled()
+     */
+    void setGenericValidationDefault(boolean enabled);
 }

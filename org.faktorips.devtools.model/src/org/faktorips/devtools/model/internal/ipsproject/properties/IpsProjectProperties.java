@@ -131,6 +131,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT = "generateValidatorClassDefault"; //$NON-NLS-1$
 
+    private static final String SETTING_GENERIC_VALIDATION_BY_DEFAULT = "genericValidationDefault"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -192,6 +194,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
     private boolean generateValidatorClassByDefault = false;
+    private boolean genericValidationByDefault = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
@@ -695,6 +698,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT,
                 isGenerateValidatorClassDefaultEnabled()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_GENERIC_VALIDATION_BY_DEFAULT,
+                isGenericValidationDefaultEnabled()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1062,6 +1068,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setChangingOverTimeDefault(enabled);
         } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
             setGenerateValidatorClassDefault(enabled);
+        } else if (name.equals(SETTING_GENERIC_VALIDATION_BY_DEFAULT)) {
+            setGenericValidationDefault(enabled);
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD)) {
             setInferredTemplateLinkThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
@@ -1829,6 +1837,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setGenerateValidatorClassDefault(boolean enabled) {
         generateValidatorClassByDefault = enabled;
+    }
+
+    @Override
+    public boolean isGenericValidationDefaultEnabled() {
+        return genericValidationByDefault;
+    }
+
+    @Override
+    public void setGenericValidationDefault(boolean enabled) {
+        genericValidationByDefault = enabled;
     }
 
     @Override

@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.validation.GenericRelevanceValidation;
 
 /**
  * A policy component type's attribute.
@@ -34,6 +35,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     public static final String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
     public static final String PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT = "valueSetConfiguredByProduct"; //$NON-NLS-1$
     public static final String PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT = "relevanceConfiguredByProduct"; //$NON-NLS-1$
+    public static final String PROPERTY_GENERIC_VALIDATION = "genericValidation"; //$NON-NLS-1$
 
     public static final String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
@@ -254,4 +256,23 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      */
     public IPersistentAttributeInfo getPersistenceAttributeInfo();
 
+    /**
+     * Returns whether generic validation should be generated for this attribute.
+     *
+     * @return {@code true} if generic validation is enabled for this attribute, otherwise
+     *         {@code false}
+     * @see GenericRelevanceValidation
+     * @since 21.6
+     */
+    boolean isGenericValidationEnabled();
+
+    /**
+     * Sets whether generic validation should be generated for this attribute.
+     *
+     * @param genericValidationEnabled whether generic validation should be generated for this
+     *            attribute
+     * @see GenericRelevanceValidation
+     * @since 21.6
+     */
+    void setGenericValidationEnabled(boolean genericValidationEnabled);
 }

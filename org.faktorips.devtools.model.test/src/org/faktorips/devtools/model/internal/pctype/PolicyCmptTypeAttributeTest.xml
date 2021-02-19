@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Test data for AttributeImplTest.java -->
+<!-- Test data for PolicyCmptTypeAttributeTest.java -->
 <testcases>
 
     <Attribute id="42" name="premium" datatype="money" productRelevant="false" attributeType="computed"
@@ -64,6 +64,14 @@
         <DefaultValue isNull="true"></DefaultValue>
         <ValueSet>
             <AllValues containsNull="true" />
+        </ValueSet>
+    </Attribute>
+
+    <Attribute id="567" name="genericvalidation" datatype="Integer" valueSetConfiguredByProduct="true" relevanceConfiguredByProduct="true" attributeType="changeable"
+        genericValidation="true">
+        <DefaultValue isNull="true"></DefaultValue>
+        <ValueSet>
+            <AllValues containsNull="false" />
         </ValueSet>
     </Attribute>
 </testcases>
