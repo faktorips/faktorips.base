@@ -14,6 +14,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -23,11 +24,37 @@ import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.Range;
 import org.faktorips.valueset.ValueSet;
 
+/**
+ * Default implementation of {@link IGenericAttributeValidationConfiguration} that uses a
+ * {@link Locale} specific {@link ResourceBundle} to load messages.
+ * <p>
+ * Messages are created with one replacement parameter that is set to the attribute's localized
+ * {@link PolicyAttribute#getLabel(Locale) label} and with a message code created from an error
+ * specific
+ * prefix({@value #ERROR_MANDATORY_MSG_CODE_PREFIX}/{@value #ERROR_IRRELEVANT_MSG_CODE_PREFIX}/{@value #ERROR_INVALID_MSG_CODE_PREFIX}),
+ * the name of the policy type and the attribute name.
+ * <p>
+ * To add {@link IMarker markers} or other information to messages, you can override this class'
+ * methods and use {@link org.faktorips.runtime.Message.Builder} to modify the messages returned
+ * from them.
+ */
 public class DefaultGenericAttributeValidationConfiguration implements IGenericAttributeValidationConfiguration {
 
+    /**
+     * Message code prefix indicating a missing value for a mandatory attribute.
+     */
     public static final String ERROR_MANDATORY_MSG_CODE_PREFIX = "InvalidAttribute.Mandatory";
+
+    /**
+     * Message code prefix indicating a value is set for an irrelevant attribute.
+     */
     public static final String ERROR_IRRELEVANT_MSG_CODE_PREFIX = "InvalidAttribute.Irrelevant";
+
+    /**
+     * Message code prefix indicating a missing value outside of an attribute's allowed value set.
+     */
     public static final String ERROR_INVALID_MSG_CODE_PREFIX = "InvalidAttribute.Invalid";
+
     private static final String MSG_KEY_VALUE_IN_RANGE = "ValueInRange";
     private static final String MSG_KEY_VALUE_IN_RANGE_LOWER = "ValueInRangeLower";
     private static final String MSG_KEY_VALUE_IN_RANGE_UPPER = "ValueInRangeUpper";
@@ -47,22 +74,48 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
         this.locale = requireNonNull(locale, "locale must not be null");
     }
 
+    /**
+     * Returns the {@link Locale} this configuration was created for.
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
+    /**
+     * Returns the {@link ResourceBundle} for this configuration.
+     */
+    public ResourceBundle getMessages() {
+        return messages;
+    }
+
     @Override
     public boolean shouldValidate(PolicyAttribute policyAttribute, IModelObject modelObject) {
         return true;
     }
 
-    private Message createErrorMessage(PolicyAttribute policyAttribute,
+    /**
+     * Creates an error message with a message code created from the given prefix via
+     * {@link #createMsgCode(String, IModelObject, PolicyAttribute)} and an invalid object property
+     * for the given attribute.
+     */
+    protected Message createErrorMessage(PolicyAttribute policyAttribute,
             IModelObject modelObject,
             String msgCodePrefix,
             String message) {
-        String propertyName = policyAttribute.getName();
-        String msgCode = String.format("%s.%s.%s", msgCodePrefix, IpsModel.getPolicyCmptType(modelObject).getName(),
-                policyAttribute.getName());
+        String msgCode = createMsgCode(msgCodePrefix, modelObject, policyAttribute);
         return Message.error(message)
                 .code(msgCode)
-                .invalidObjectWithProperties(modelObject, propertyName)
+                .invalidObjectWithProperties(modelObject, policyAttribute.getName())
                 .create();
+    }
+
+    /**
+     * Creates a message code from the pattern
+     * &lt;prefix&gt;.&lt;policyCmptTypeName&gt;.&lt;policyAttributeName&gt;.
+     */
+    protected String createMsgCode(String msgCodePrefix, IModelObject modelObject, PolicyAttribute policyAttribute) {
+        return String.format("%s.%s.%s", msgCodePrefix, IpsModel.getPolicyCmptType(modelObject).getName(),
+                policyAttribute.getName());
     }
 
     /**
