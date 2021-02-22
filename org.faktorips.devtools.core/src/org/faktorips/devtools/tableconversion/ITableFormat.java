@@ -53,6 +53,12 @@ public interface ITableFormat {
     public String getDefaultExtension();
 
     /**
+     * Returns the default extension prepended with an asterisk used for filtering files with the
+     * given default extension.
+     */
+    public String getDefaultExtensionWildcard();
+
+    /**
      * Adds a converter to transform external values to internal values (and vice versa). This
      * method also sets the table format in the given converter via its
      * {@link IValueConverter#setTableFormat(ITableFormat)} method.
@@ -250,8 +256,8 @@ public interface ITableFormat {
 
     /**
      * Computes a preview for the enumeration to be imported and returns <code>List</code>
-     * containing a <code>String[]</code> for each row, or <code>Collections.EMPTY_LIST</code> if the
-     * preview could not be computed or the file contains no entries.
+     * containing a <code>String[]</code> for each row, or <code>Collections.EMPTY_LIST</code> if
+     * the preview could not be computed or the file contains no entries.
      * 
      * @param structure The enumeration type to use (derive data types) for the preview.
      * @param filename The filename of the file to be previewed.

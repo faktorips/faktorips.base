@@ -39,6 +39,7 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.StringUtil;
 
@@ -47,8 +48,8 @@ import org.faktorips.util.StringUtil;
  * button that allows to browse the available objects and an optional delete button if the reference
  * may be removed.
  * <p>
- * The referenced {@link IIpsSrcFile ips source files} should be within the given
- * {@link IIpsProject ips projects}.
+ * The referenced {@link IIpsSrcFile ips source files} should be within the given {@link IIpsProject
+ * ips projects}.
  * <p>
  * An older version of this class was based on using only one {@link IIpsProject}, but has been
  * refitted for several ips projects. Therefore some method are deprecated and replaced by new
@@ -66,6 +67,11 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     private IContentProposalProvider proposalProvider;
 
     private Button deleteButton;
+
+    /**
+     * The {@link IpsObjectType} of the currently selected object.
+     */
+    protected IpsObjectType objectType;
 
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
@@ -216,7 +222,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     protected String getDefaultDialogFilterExpression() {
-        return StringUtil.unqualifiedName(super.getText());
+        return StringUtil.unqualifiedName(getText());
     }
 
     /**
@@ -225,7 +231,11 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * @param ipsSrcFiles List of selected ips source files containing at least 1 element!
      */
     protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
-        setText(ipsSrcFiles.get(0).getQualifiedNameType().getName());
+        if (ipsSrcFiles.isEmpty()) {
+            updateSelection(null);
+        } else {
+            updateSelection(ipsSrcFiles.get(0).getQualifiedNameType());
+        }
     }
 
     public boolean isDialogFilterEnabled() {
@@ -271,6 +281,54 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             }
         }
         return null;
+    }
+
+    /**
+     * Checks whether an object is clearly identifiable by the passed qualified name within the used
+     * {@link #ipsProjects}.
+     * 
+     * @param qualifiedName The qualified name to be checked for uniqueness
+     * @return True whether the qualified name is unique, else false
+     * @throws CoreException If getting the required {@link IIpsSrcFile}s failed
+     */
+    public boolean checkIpsObjectUniqueness(String qualifiedName) throws CoreException {
+        List<IIpsSrcFile> srcFiles = Arrays.asList(getIpsSrcFiles());
+        if (srcFiles.isEmpty()) {
+            return true;
+        }
+        long objectCount = srcFiles
+                .stream()
+                .filter(src -> src.getQualifiedNameType().getName().equals(qualifiedName))
+                .count();
+        return objectCount <= 1;
+
+    }
+
+    /**
+     * Getter which provides the {@link #objectType} of the selected object.
+     * 
+     * @return The object type
+     */
+    public IpsObjectType getSelectedObjectType() {
+        return objectType;
+    }
+
+    /**
+     * Updates the user selection. This includes setting the {@link #objectType} and updating the
+     * text field text.
+     * <p>
+     * Passing {@code null} will clear the selection.
+     * 
+     * @param qualifiedNameType The {@link QualifiedNameType} of the current selection
+     */
+    public void updateSelection(QualifiedNameType qualifiedNameType) {
+        if (qualifiedNameType != null) {
+            objectType = qualifiedNameType.getIpsObjectType();
+            setText(qualifiedNameType.getName());
+        } else {
+            objectType = null;
+            setText(StringUtils.EMPTY);
+        }
     }
 
     @Override

@@ -104,6 +104,11 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     }
 
     @Override
+    public String getDefaultExtensionWildcard() {
+        return "*" + defaultExtension; //$NON-NLS-1$
+    }
+
+    @Override
     public void addValueConverter(IValueConverter converter) {
         converters.add(converter);
         converter.setTableFormat(this);

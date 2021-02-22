@@ -48,6 +48,13 @@
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-model-builder</artifactId>
             <version>${project.version}</version>
+        </dependency> 
+        <!-- artificial dependency so the multithreaded maven build does 
+            not get ahead of it self -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.stdbuilder</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.xtend</groupId>

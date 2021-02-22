@@ -11,11 +11,13 @@
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,6 +57,11 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  */
 public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
+    /**
+     * The <code>UIToolkit<code> used for updating the changeability states.
+     */
+    private UIToolkit uiToolkit;
+
     /** Values section showing the <code>IEnumValue</code>s. */
     private EnumValuesSection enumValuesSection;
 
@@ -92,6 +99,8 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
+
+        uiToolkit = toolkit;
 
         createToolbarActions();
 
@@ -141,6 +150,29 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
 
         form.updateToolBar();
         updateToolbarActionsEnabledStates();
+    }
+
+    @Override
+    protected void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        Composite header = getManagedForm().getForm().getForm().getHead();
+        uiToolkit.setDataChangeable(header, true);
+        updateToolbarVisibilityState(changeable);
+    }
+
+    /**
+     * Update the visibility of the toolbar items based on the current changeability state.
+     * <p>
+     * The export functionality should be always available.
+     * 
+     * @param changeable Whether the page content is changeable
+     */
+    protected void updateToolbarVisibilityState(boolean changeable) {
+        IToolBarManager toolBarManager = getManagedForm().getForm().getToolBarManager();
+        Arrays.stream(toolBarManager.getItems())
+                .filter(item -> item.getId() == null || !item.getId().equals(exportAction.getId()))
+                .forEach(item -> item.setVisible(changeable));
+        toolBarManager.update(true);
     }
 
     /**
@@ -197,12 +229,23 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     /** Executes the <code>EnumImportExportOperation</code> and refreshes the view. */
     private class EnumImportExportActionInEditor extends EnumImportExportAction {
 
+        /**
+         * ID used for identifying the import action within the toolbar.
+         */
+        private static final String IMPORT_ACTION_ID = "enum_content_import_action"; //$NON-NLS-1$
+        /**
+         * ID used for identifying the export action within the toolbar.
+         */
+        private static final String EXPORT_ACTION_ID = "enum_content_export_action"; //$NON-NLS-1$
+
         public EnumImportExportActionInEditor(Shell shell, IEnumValueContainer enumValueContainer, boolean isImport) {
             super(shell, enumValueContainer);
             if (isImport) {
                 initImportAction();
+                setId(IMPORT_ACTION_ID);
             } else {
                 initExportAction();
+                setId(EXPORT_ACTION_ID);
             }
         }
 

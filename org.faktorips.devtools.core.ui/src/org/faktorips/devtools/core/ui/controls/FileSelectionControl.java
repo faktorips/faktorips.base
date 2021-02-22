@@ -67,4 +67,32 @@ public class FileSelectionControl extends TextButtonControl {
     public FileDialog getDialog() {
         return dialog;
     }
+
+    /**
+     * Sets a filter to the dialog for just showing the files with the required format. The length
+     * of the array of both names and extensions has to be equal.
+     * 
+     * @param filterNames the descriptions of the formats
+     * @param filterExtensions the extensions of the formats
+     */
+    public void setDialogFilterExtensions(String[] filterNames, String[] filterExtensions) {
+        if (filterNames.length == filterExtensions.length) {
+            dialog.setFilterExtensions(filterExtensions);
+            dialog.setFilterNames(filterNames);
+            dialog.setFilterIndex(0);
+        } else {
+            throw new IllegalArgumentException(
+                    "The number of the allowed file extensions has to be equal to the number of the extension names. " //$NON-NLS-1$
+                            + "Number of names: " + filterNames.length //$NON-NLS-1$
+                            + ". Number of extensions: " + filterExtensions.length + "."); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    /**
+     * Clears the extensions filter of the dialog.
+     */
+    public void clearDialogFilterExtensions() {
+        dialog.setFilterNames(null);
+        dialog.setFilterExtensions(null);
+    }
 }
