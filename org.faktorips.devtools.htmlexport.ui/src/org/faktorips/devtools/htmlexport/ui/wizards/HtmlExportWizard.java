@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.wizards;
+package org.faktorips.devtools.htmlexport.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -24,10 +24,10 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
-import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
+import org.faktorips.devtools.htmlexport.ui.HtmlExportPlugin;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class HtmlExportWizard extends Wizard implements IExportWizard {

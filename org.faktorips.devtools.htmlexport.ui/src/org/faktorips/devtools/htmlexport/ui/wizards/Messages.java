@@ -8,12 +8,12 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.wizards;
+package org.faktorips.devtools.htmlexport.ui.wizards;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.wizards.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.htmlexport.ui.wizards.messages"; //$NON-NLS-1$
     public static String HtmlExportWizardPage_inheritedObjectPartsWithinTable;
     public static String HtmlExportWizard_errorHtmlExport;
     public static String HtmlExportWizard_messageErrorHtmlExport;

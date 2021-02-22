@@ -9,7 +9,7 @@
        </category>
      	<wizard
             category="org.faktorips.devtools"
-            class="org.faktorips.devtools.htmlexport.wizards.HtmlExportWizard"
+            class="org.faktorips.devtools.htmlexport.ui.wizards.HtmlExportWizard"
             icon="icons/HtmlExport.gif"
             id="ipsProjectHtmlExportWizard"
             name="%exportIpsProjectHtml">

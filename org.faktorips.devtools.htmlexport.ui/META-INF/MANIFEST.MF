@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Html Export Plug-in UI
+Bundle-SymbolicName: org.faktorips.devtools.htmlexport.ui;singleton:=true
+Bundle-Version: 21.6.0.qualifier
+Bundle-Activator: org.faktorips.devtools.htmlexport.ui.HtmlExportPlugin
+Bundle-Localization: plugin
+Require-Bundle: org.faktorips.devtools.core,
+ org.faktorips.devtools.core.ui,
+ org.eclipse.jdt.core,
+ org.faktorips.valuetypes,
+ org.faktorips.devtools.htmlexport
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: org.faktorips.devtools.htmlexport.ui.wizards
+Bundle-Vendor: Faktor Zehn GmbH
+Bundle-ClassPath: .
+Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.htmlexport.wizards;
+package org.faktorips.devtools.htmlexport.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
