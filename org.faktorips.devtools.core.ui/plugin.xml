@@ -811,7 +811,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipspolicycmpttype"
-            icon="icons/PolicyCmptType.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/PolicyCmptType.gif"
             id="policyCmptTypeEditor"
             name="%policyCmptTypeEditor">
       	</editor>
@@ -820,7 +820,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipsproductcmpttype"
-            icon="icons/ProductCmptType.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/ProductCmptType.gif"
             id="productCmptTypeEditor"
             name="%productCmptTypeEditor">
       	</editor>
@@ -829,7 +829,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsenumtype"
-             icon="icons/EnumType.gif"
+             icon="../org.faktorips.devtools.model.decorators/icons/EnumType.gif"
              id="enumTypeEditor"
              name="%enumTypeEditor">
        </editor>   
@@ -838,7 +838,7 @@
 			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
 			default="true"
 			extensions="ipsbusinessfunction"
-			icon="icons/BusinessFunction.gif"
+			icon="../org.faktorips.devtools.model.decorators/icons/BusinessFunction.gif"
 			id="org.faktorips.devtools.bf.ui.editor"
 			name="%businessFunctionEditor">
 		</editor>
@@ -847,7 +847,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablestructure"
-            icon="icons/TableStructure.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/TableStructure.gif"
             id="tableStructureEditor"
             name="%tableStructureEditor">
       	</editor>
@@ -856,7 +856,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcasetype"
-            icon="icons/TestCaseType.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/TestCaseType.gif"
             id="testCaseTypeEditor"
             name="%testCaseTypeEditor"/>
       	<editor
@@ -864,7 +864,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsproduct"
-             icon="icons/ProductCmpt.gif"
+             icon="../org.faktorips.devtools.model.decorators/icons/ProductCmpt.gif"
              id="productCmptEditor"
              name="%productCmptEditor">
       	</editor>
@@ -873,7 +873,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipstemplate"
-             icon="icons/ProductTemplate.gif"
+             icon="../org.faktorips.devtools.model.decorators/icons/ProductTemplate.gif"
              id="productTemplateEditor"
              name="%productTemplateEditor">
       	</editor>
@@ -882,7 +882,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsenumcontent"
-             icon="icons/EnumContent.gif"
+             icon="../org.faktorips.devtools.model.decorators/icons/EnumContent.gif"
              id="enumContentEditor"
              name="%enumContentEditor">
        </editor>
@@ -891,7 +891,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablecontents"
-            icon="icons/TableContents.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/TableContents.gif"
             id="tableContentsEditor"
             name="%tableContentsEditor">
       	</editor>
@@ -900,7 +900,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcase"
-            icon="icons/TestCase.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/TestCase.gif"
             id="testCaseEditor"
             name="%testCaseEditor">
         </editor>
@@ -1275,7 +1275,7 @@
       <decorator
             adaptable="true"
             class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
-            icon="icons/ovr16/error_ovr.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/overlays/error_ovr.gif"
             id="org.faktorips.devtools.core.ipsproblemsdecorator"
             label="Faktor-IPS Problems Decorator"
             lightweight="true"
@@ -1400,7 +1400,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
-            icon="icons/TestCase.gif"
+            icon="../org.faktorips.devtools.model.decorators/icons/TestCase.gif"
             configTypeID="org.faktorips.devtools.core.ipsTestLaunchConfigurationType"
             id="org.faktorips.devtools.core.ipsTestLaunchImage">
 		</launchConfigurationTypeImage>

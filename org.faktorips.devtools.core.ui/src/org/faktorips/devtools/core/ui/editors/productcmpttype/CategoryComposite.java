@@ -56,7 +56,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dnd.IpsByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;

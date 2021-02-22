@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.DeltaType.Kind;
@@ -69,7 +70,7 @@ public class DeltaLabelProvider extends LabelProvider {
             case LINK_CHANGING_OVER_TIME_MISMATCH:
             case MISSING_TEMPLATE_LINK:
             case REMOVED_TEMPLATE_LINK:
-                return IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
+                return IIpsDecorators.getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
             default:
                 return null;
         }

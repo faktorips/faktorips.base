@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Faktor-IPS Model
+Bundle-Name: Faktor-IPS Model Builder
 Bundle-SymbolicName: org.faktorips.devtools.model.builder;singleton:=true
 Bundle-Version: 21.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH

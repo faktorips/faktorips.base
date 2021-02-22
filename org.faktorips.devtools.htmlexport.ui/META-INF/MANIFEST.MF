@@ -7,6 +7,7 @@ Bundle-Activator: org.faktorips.devtools.htmlexport.ui.HtmlExportPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui,
+ org.faktorips.devtools.model.decorators,
  org.eclipse.jdt.core,
  org.faktorips.valuetypes,
  org.faktorips.devtools.htmlexport

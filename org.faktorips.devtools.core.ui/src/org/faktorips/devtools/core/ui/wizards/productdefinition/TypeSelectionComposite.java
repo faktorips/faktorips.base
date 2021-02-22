@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.ElementSelectionComposite;
-import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
+import org.faktorips.devtools.model.decorators.internal.ProductCmptDecorator;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
@@ -70,13 +70,13 @@ public class TypeSelectionComposite extends ElementSelectionComposite<IIpsObject
 
     private static class ProductCmptWizardTypeLabelProvider extends LocalizedLabelProvider {
 
-        private final ProductCmptWorkbenchAdapter productCmptWorkbenchAdapter = new ProductCmptWorkbenchAdapter();
+        private final ProductCmptDecorator productCmptDecorator = new ProductCmptDecorator();
 
         @Override
         public Image getImage(Object element) {
             if (element instanceof IProductCmptType) {
                 IProductCmptType productCmptType = (IProductCmptType)element;
-                ImageDescriptor descriptorForInstancesOf = productCmptWorkbenchAdapter
+                ImageDescriptor descriptorForInstancesOf = productCmptDecorator
                         .getImageDescriptorForInstancesOf(productCmptType);
                 return JFaceResources.getResources().createImage(descriptorForInstancesOf);
             }

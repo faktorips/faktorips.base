@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
+import org.faktorips.devtools.model.decorators.internal.AssociationDecorator;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 
 /**
@@ -39,7 +39,7 @@ public class DetachedAssociationViewItem extends AbstractAssociationViewItem {
 
     @Override
     public Image getImage() {
-        return IpsUIPlugin.getImageHandling().getImage(new AssociationWorkbenchAdapter().getDefaultImageDescriptor());
+        return IpsUIPlugin.getImageHandling().getImage(new AssociationDecorator().getDefaultImageDescriptor());
     }
 
     @Override

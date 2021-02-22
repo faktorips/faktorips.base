@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Model Decorators
+Bundle-SymbolicName: org.faktorips.devtools.model.decorators;singleton:=true
+Bundle-Version: 21.6.0.qualifier
+Bundle-Vendor: Faktor Zehn GmbH
+Bundle-Localization: plugin
+Require-Bundle: 
+ org.faktorips.devtools.model;bundle-version="21.6.0";visibility:=reexport,
+ org.eclipse.jface;bundle-version="3.15.100"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.faktorips.devtools.model.decorators,
+ org.faktorips.devtools.model.decorators.internal;x-friends:="org.faktorips.devtools.core.ui"
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional
+Bundle-Activator: org.faktorips.devtools.model.decorators.internal.IpsModelIconsPluginActivator

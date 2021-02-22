@@ -21,6 +21,7 @@
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
     </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
@@ -54,8 +55,9 @@
         <setEntry value="org.apache.commons.compress@default:default"/>
         <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
+        <setEntry value="org.apache.commons.lang*2.6.0.v201404270220@default:default"/>
+        <setEntry value="org.apache.commons.lang*2.6.0@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
-        <setEntry value="org.apache.commons.lang@default:default"/>
         <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
@@ -301,8 +303,8 @@
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
-        <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
+        <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>

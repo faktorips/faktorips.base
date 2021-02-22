@@ -43,8 +43,10 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.decorators.internal.ProductCmptDecorator;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -146,10 +148,12 @@ public class CustomIconSection extends IpsSection {
         if (!(type instanceof IProductCmptType)) {
             return;
         }
-        ProductCmptWorkbenchAdapter adapter = (ProductCmptWorkbenchAdapter)IpsUIPlugin.getImageHandling()
-                .getWorkbenchAdapterFor(ProductCmpt.class);
-        iconPreview.setImage(IpsUIPlugin.getImageHandling()
-                .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+        IIpsElementDecorator decorator = IIpsDecorators.get(ProductCmpt.class);
+        if (decorator instanceof ProductCmptDecorator) {
+            ProductCmptDecorator adapter = (ProductCmptDecorator)decorator;
+            iconPreview.setImage(IpsUIPlugin.getImageHandling()
+                    .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+        }
     }
 
     public void setType(IType newType) {

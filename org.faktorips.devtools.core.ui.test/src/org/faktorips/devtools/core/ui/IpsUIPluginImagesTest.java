@@ -21,12 +21,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
@@ -88,6 +86,25 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIpsElementgetImage() throws Exception {
+        IIpsProject testElement = newIpsProject();
+
+        String elementImageName = "IpsProject.gif";
+        ImageDescriptor elementImageDecriptor = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
+                elementImageName, true);
+        Image elementImage = IIpsDecorators.getImageHandling().getSharedImage(elementImageName, true);
+
+        assertEquals(elementImageDecriptor, IIpsDecorators.getImageHandling().getImageDescriptor(testElement));
+        assertEquals(elementImage, IIpsDecorators.getImageHandling().getImage(testElement));
+
+        WorkbenchLabelProvider labelProvider = new WorkbenchLabelProvider();
+        Image actualImage = labelProvider.getImage(testElement);
+        assertEquals(elementImage, actualImage);
+        labelProvider.dispose();
+        assertEquals(elementImage, actualImage);
+    }
+
+    @Test
     public void testResourceHandling() {
         String name = "TestImage.gif";
         ImageDescriptor descriptor = ImageDescriptor.createFromFile(this.getClass(), name);
@@ -123,46 +140,6 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertTrue(imageP.isDisposed());
     }
 
-    @Test
-    public void testDisabledgetImage() throws Exception {
-        IIpsElement ipsElement = newIpsProject();
-        IIpsElement newIpsElement = newIpsProject("zwei");
-
-        ImageDescriptor disabledDescriptor = IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(ipsElement);
-        Image disabledImage = IpsUIPlugin.getImageHandling().getDisabledImage(ipsElement);
-
-        // test descriptors
-        // simply call twice
-        assertEquals(disabledDescriptor, IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(ipsElement));
-        assertEquals(disabledDescriptor, IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(newIpsElement));
-
-        // test images
-        assertEquals(disabledImage, IpsUIPlugin.getImageHandling().getDisabledImage(ipsElement));
-        assertEquals(disabledImage, IpsUIPlugin.getImageHandling().getDisabledImage(newIpsElement));
-
-        IpsUIPlugin.getImageHandling().disposeImage(disabledDescriptor);
-        assertTrue(disabledImage.isDisposed());
-    }
-
-    @Test
-    public void testIpsElementgetImage() throws Exception {
-        IIpsProject testElement = newIpsProject();
-
-        String elementImageName = "IpsProject.gif";
-        ImageDescriptor elementImageDecriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                elementImageName, true);
-        Image elementImage = IpsUIPlugin.getImageHandling().getSharedImage(elementImageName, true);
-
-        assertEquals(elementImageDecriptor, IpsUIPlugin.getImageHandling().getImageDescriptor(testElement));
-        assertEquals(elementImage, IpsUIPlugin.getImageHandling().getImage(testElement));
-
-        WorkbenchLabelProvider labelProvider = new WorkbenchLabelProvider();
-        Image actualImage = labelProvider.getImage(testElement);
-        assertEquals(elementImage, actualImage);
-        labelProvider.dispose();
-        assertEquals(elementImage, actualImage);
-    }
-
     /**
      * Testing the image methods in the IpsUIPlugin by loading the same images several times. So
      * there should be only one instance of the real image.
@@ -195,36 +172,4 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
             assertEquals(expected, actual);
         }
     }
-
-    public void tesOverlayImages() throws Exception {
-        ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-
-        String baseName = "New.gif";
-        Image baseImage = IpsUIPlugin.getImageHandling().getSharedImage(baseName, true);
-
-        ImageDescriptor ovr1 = OverlayIcons.ABSTRACT_OVR_DESC;
-        ImageDescriptor ovr2 = OverlayIcons.OVERRIDE_OVR_DESC;
-        ImageDescriptor ovr3 = OverlayIcons.ERROR_OVR_DESC;
-        ImageDescriptor ovr4 = OverlayIcons.WARNING_OVR_DESC;
-
-        ImageDescriptor expected = new DecorationOverlayIcon(baseImage,
-                new ImageDescriptor[] { ovr1, ovr2, ovr3, ovr4 });
-
-        ImageDescriptor actual = IpsUIPlugin.getImageHandling().getSharedOverlayImage(
-                baseName,
-                new String[] { OverlayIcons.ABSTRACT_OVR, OverlayIcons.OVERRIDE_OVR, OverlayIcons.ERROR_OVR,
-                        OverlayIcons.WARNING_OVR });
-
-        assertEquals(expected, actual);
-        assertEquals(resourceManager.get(expected), IpsUIPlugin.getImageHandling().getImage(actual));
-
-        expected = new DecorationOverlayIcon(baseImage, ovr1, IDecoration.TOP_LEFT);
-        actual = IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseName, OverlayIcons.ABSTRACT_OVR,
-                IDecoration.TOP_LEFT);
-
-        assertEquals(expected, actual);
-        assertEquals(resourceManager.get(expected), IpsUIPlugin.getImageHandling().getImage(actual));
-        resourceManager.dispose();
-    }
-
 }

@@ -690,7 +690,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          * the normal image descriptor
          */
         toggleProductPolicyAction
-                .setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE));
+                .setHoverImageDescriptor(
+                        IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE));
     }
 
     private void setProductCmptTypeImage() {
@@ -699,7 +700,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          * the normal image descriptor
          */
         toggleProductPolicyAction
-                .setHoverImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TYPE_IMAGE));
+                .setHoverImageDescriptor(
+                        IpsUIPlugin.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TYPE_IMAGE));
     }
 
     private void refresh() {

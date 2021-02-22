@@ -14,10 +14,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -57,12 +55,8 @@ import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -72,7 +66,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -128,6 +121,7 @@ import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapt
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -140,6 +134,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -247,7 +242,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private DatatypeInputFormatRegistry datatypeInputFormat;
 
-    private final ImageHandling images = new ImageHandling();
+    private ImageHandling images;
 
     /**
      * List of global property visibility filters.
@@ -288,6 +283,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
         initDefaultValidityDate();
         propertyVisibilityFilters = Collections.unmodifiableList(loadPropertyFilters());
+        images = new ImageHandling(plugin.getBundle());
     }
 
     private void initDefaultValidityDate() {
@@ -1409,219 +1405,25 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Images in eclipse is not so easy as it looks like. If you are not familiar with the basics of
-     * image handling in eclipse, read this short article <a href=
-     * "http://www.eclipse.org/articles/Article-Using%20Images%20In%20Eclipse/Using%20Images%20In%20Eclipse.html"
-     * >Using Images in the Eclipse UI</a>
-     * <p>
-     * In Faktor-IPS we have a two kinds of images handled by the image handling. The first kind of
-     * image is a plugin shared image. Only use shared images for those icons that are realy
-     * important for several components of the plugin and more important, those does not change over
-     * time.
-     * <p>
-     * The second kind of images are not shared images. You have to look for the
      * 
-     * @author dirmeier
+     * @see org.faktorips.devtools.model.decorators.internal.ImageHandling
      */
-    public static class ImageHandling {
+    public static class ImageHandling extends org.faktorips.devtools.model.decorators.internal.ImageHandling {
 
-        private static final Map<ImageDescriptor, ImageDescriptor> ENABLE_DISABLE_MAP = new HashMap<ImageDescriptor, ImageDescriptor>();
-
-        private ResourceManager resourceManager;
-
-        /**
-         * used to map image names (also composit names for overlays) to descriptors
-         */
-        private Map<String, ImageDescriptor> descriptorMap = new HashMap<String, ImageDescriptor>();
-
-        public ResourceManager getResourceManager() {
-            if (resourceManager == null) {
-                resourceManager = createResourceManager();
-            }
-            return resourceManager;
-        }
-
-        private ResourceManager createResourceManager() {
-            // If we are in the UI Thread use that
-            if (Display.getCurrent() != null) {
-                return new LocalResourceManager(JFaceResources.getResources(Display.getCurrent()));
-            }
-
-            if (PlatformUI.isWorkbenchRunning()) {
-                return new LocalResourceManager(JFaceResources.getResources(PlatformUI.getWorkbench().getDisplay()));
-            }
-
-            // Use the default display if it is not the UI Thread and the workbench is not created.
-            return new LocalResourceManager(JFaceResources.getResources(Display.getDefault()));
-        }
-
-        /**
-         * Returns the image with the indicated name from the <code>icons</code> folder. If no image
-         * with the indicated name is found and createIfAbsent is false null is returned.
-         * 
-         * @param name The image name, e.g. <code>IpsProject.gif</code>
-         * @param createIfAbsent true to create a new image if not already registered
-         */
-        public Image getSharedImage(String name, boolean createIfAbsent) {
-            ImageDescriptor descriptor = getSharedImageDescriptor(name, createIfAbsent);
-            if (createIfAbsent) {
-                return getImage(descriptor);
-            } else {
-                if (descriptor != null) {
-                    return (Image)getResourceManager().find(descriptor);
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        /**
-         * To get an image descriptor to a specified name. If the image descriptor is not already
-         * registered in the plugin's image registry and the flag createIfAbsent is true, this
-         * method does. Only use this method for images you want to share for the whole plugin.
-         * 
-         * @see ImageHandling
-         * 
-         * @param name the name of the image equal to the filename in the subfolder icons
-         * 
-         * @return the shared image descriptor
-         */
-        public ImageDescriptor getSharedImageDescriptor(String name, boolean createIfAbsent) {
-            ImageDescriptor descriptor = descriptorMap.get(name);
-            if (descriptor == null && createIfAbsent) {
-                descriptor = createImageDescriptor(name);
-                registerSharedImageDescriptor(name, descriptor);
-            }
-            return descriptor;
-        }
-
-        /**
-         * To register an image descriptor in the image registry. The name of the image is the
-         * filename in the subfolder <i>icons</i> that means the path to the image is
-         * IpsUIPlugin/icons/name
-         */
-        public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
-            if (descriptor != null && descriptor != ImageDescriptor.getMissingImageDescriptor()) {
-                descriptorMap.put(name, descriptor);
-            }
-        }
-
-        /**
-         * Get the disabled version of a shared image for an ips element
-         */
-        public Image getDisabledImage(IAdaptable adaptable) {
-            return getImage(getDisabledImageDescriptor(adaptable));
-        }
-
-        /**
-         * Get the shared descriptor for disable image with the descriptor of an enabled image
-         */
-        public ImageDescriptor getDisabledImageDescriptor(IAdaptable adaptable) {
-            ImageDescriptor enabledImageDescriptor = getImageDescriptor(adaptable);
-            ImageDescriptor disabledImageDescriptor = ENABLE_DISABLE_MAP.get(enabledImageDescriptor);
-            if (disabledImageDescriptor == null) {
-                disabledImageDescriptor = createDisabledImageDescriptor(enabledImageDescriptor);
-            }
-            return disabledImageDescriptor;
-        }
-
-        /**
-         * Return a shared image which is the disabled version of the given image descriptor
-         */
-        public Image getDisabledSharedImage(ImageDescriptor enabledImage) {
-            ImageDescriptor disabledID = createDisabledImageDescriptor(enabledImage);
-            return getImage(disabledID);
-        }
-
-        /**
-         * Create the disabled version of a shared image descriptor
-         */
-        public ImageDescriptor createDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor) {
-            ImageDescriptor disabledImageDesc = ImageDescriptor.createWithFlags(enabledImageDescriptor,
-                    SWT.IMAGE_DISABLE);
-            return disabledImageDesc;
-        }
-
-        /**
-         * Just create a image descriptor with the specified name as image filename in the icons
-         * subfolder does not register anything in the image registry or the image description
-         * registry. Only use for images of this plugin!
-         * <p>
-         * Use this method when you only want to have an image descriptor for any eclipse object
-         * e.g. an Action or a Wizard Normally eclipse does instantiate and dispose the image
-         * 
-         * @return the new created image descriptor
-         */
-        public ImageDescriptor createImageDescriptor(String name) {
-            URL url = getDefault().getBundle().getEntry("icons/" + name); //$NON-NLS-1$
-            return ImageDescriptor.createFromURL(url);
-        }
-
-        /**
-         * To get an image for an image descriptor from resource manager. If no such resource
-         * already exists the resource manager creates a new one. The image will remain allocated
-         * for the lifetime of the plugin. If the image is not potentially needed by other classes
-         * use the methods {@link #createImage(ImageDescriptor)} and
-         * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
-         * <p/>
-         * If descriptor is null, the missing image is returned
-         */
-        public Image getImage(ImageDescriptor descriptor) {
-            return getImage(descriptor, true);
-        }
-
-        /**
-         * To get an image for an image descriptor from resource manager. If no such resource
-         * already exists the resource manager creates a new one. The image will remain allocated
-         * for the lifetime of the plugin. If the image is not potentially needed by other classes
-         * use the methods {@link #createImage(ImageDescriptor)} and
-         * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
-         * 
-         * @param returnMissingImage if true, the MissingImage is returned instead of null
-         */
-        public Image getImage(ImageDescriptor descriptor, boolean returnMissingImage) {
-            if (descriptor != null) {
-                return (Image)getResourceManager().get(descriptor);
-            }
-            if (returnMissingImage) {
-                return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
-            }
-            return null;
-        }
-
-        /**
-         * Create an image in the resource manager. You have to dispose the image by calling
-         * {@link #disposeImage(ImageDescriptor)} if you do not need it any longer. If you want to
-         * share the image with other components, use one of the shared image methods. If the image
-         * descriptor is already registered as a shared image, the descriptor is not registered
-         * twice. You do not have to worry about calling the disposeImage method because a shared
-         * image also would not be disposed
-         */
-        public Image createImage(ImageDescriptor descriptor) {
-            if (descriptor != null) {
-                return getResourceManager().createImage(descriptor);
-            }
-            return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
-        }
-
-        /**
-         * To dispose a self registered image. Do not dispose shared images (in fact this method
-         * wouldn't do).
-         * 
-         * @param descriptor the descriptor of the image you want to dispose
-         * 
-         */
-        public void disposeImage(ImageDescriptor descriptor) {
-            getResourceManager().destroyImage(descriptor);
+        public ImageHandling(Bundle bundle) {
+            super(bundle);
         }
 
         /**
          * Getting an image descriptor by calling the {@link IWorkbenchAdapter} of the ips element
-         * If there is no registered adapter this method returns null. If the registered adapter has
-         * no image, this method returns the missing image
+         * If there is no registered adapter this implementation will check the
+         * {@link IIpsDecorators} before returning {@code null}. If no image was found in either the
+         * adapter or decorator, this method returns the missing image
          * 
-         * @return the image descriptor or null if there is no image or no registered adapter
+         * @return the image descriptor or null if there is no image or no registered adapter or
+         *         decorator
          */
+        @Override
         public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {
             if (adaptable == null) {
                 return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
@@ -1635,37 +1437,19 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     return ImageDescriptor.getMissingImageDescriptor();
                 }
             }
-            return null;
+            return super.getImageDescriptor(adaptable);
         }
 
         /**
-         * Getting the image for an ips element by calling the {@link IWorkbenchAdapter} for the
-         * specified ips element. The image is either a shared image (if someone already registered
-         * the corresponding image descriptor) or a not shared one if no one registered the image
-         * before. If it is a no shared image, someone (maybe you - normally the workbench adapter)
-         * have dispose the image.
+         * Get the default image descriptor for an ips element class. If no
+         * {@link IWorkbenchAdapter} is found, this method will check the {@link IIpsDecorators}
+         * before returning {@code null}.
+         * <p>
+         * Note: The workbench adapters or decorators are registered for concrete implementations
+         * not for interfaces.
+         * </p>
          */
-        public Image getImage(IAdaptable adaptable) {
-            return getImage(getImageDescriptor(adaptable), false);
-        }
-
-        /**
-         * Get the enabled or disabled image for the given element.
-         * 
-         * @see #getImage(IAdaptable) and @see {@link #getDisabledImage(IAdaptable)}
-         */
-        public Image getImage(IAdaptable adaptable, boolean enabled) {
-            if (enabled) {
-                return getImage(adaptable);
-            } else {
-                return getDisabledImage(adaptable);
-            }
-        }
-
-        /**
-         * Get the default image descriptor for an ips element class. May return null. Note: The
-         * workbench adapters are registered for concrete implementations not for interfaces
-         */
+        @Override
         public ImageDescriptor getDefaultImageDescriptor(Class<? extends IIpsElement> ipsElementClass) {
             IpsElementWorkbenchAdapter adapter = getDefault().ipsElementWorkbenchAdapterAdapterFactory
                     .getAdapterByClass(ipsElementClass);
@@ -1673,99 +1457,12 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
                 return ipsWA.getDefaultImageDescriptor();
             } else {
-                return null;
+                return super.getDefaultImageDescriptor(ipsElementClass);
             }
         }
 
-        /**
-         * Get the default image for an ips element class. May return null. Note: The workbench
-         * adapters are registered for concrete implementations not for interfaces
-         */
-        public Image getDefaultImage(Class<? extends IIpsElement> ipsElementClass) {
-            ImageDescriptor descriptor = getDefaultImageDescriptor(ipsElementClass);
-            if (descriptor != null) {
-                return getImage(descriptor);
-            } else {
-                return null;
-            }
-        }
-
-        /**
-         * Returns the image with the indicated name from the <code>icons</code> folder and overlays
-         * it with the specified overlay image. If the given image is not found return the missing
-         * image overlaid with the product relevant image.
-         * 
-         * @param baseImageName The name of the image which will be overlaid with the overlay image.
-         * @param overlayImageName The name of the overlay image
-         * @param quadrant the quadrant where the overlay is painted, one of
-         *            {@link IDecoration#TOP_LEFT} {@link IDecoration#TOP_RIGHT},
-         *            {@link IDecoration#BOTTOM_LEFT} or {@link IDecoration#BOTTOM_RIGHT}
-         */
-        public ImageDescriptor getSharedOverlayImage(String baseImageName, String overlayImageName, int quadrant) {
-            if (StringUtils.isEmpty(overlayImageName)) {
-                return getSharedImageDescriptor(baseImageName, true);
-            }
-            Image baseImage = getSharedImage(baseImageName, true);
-            return getSharedOverlayImageDescriptor(baseImage, overlayImageName, quadrant);
-        }
-
-        /**
-         * Returns the image with the indicated name from the <code>icons</code> folder and overlays
-         * it with the specified overlay image. If the given image is not found return the missing
-         * image overlaid with the product relevant image.
-         * 
-         * @param baseImage The image which will be overlaid with the overlay image
-         * @param overlayImageName The name of the overlay image
-         * @param quadrant the quadrant where the overlay is painted, one of
-         *            {@link IDecoration#TOP_LEFT} {@link IDecoration#TOP_RIGHT},
-         *            {@link IDecoration#BOTTOM_LEFT} or {@link IDecoration#BOTTOM_RIGHT}
-         */
-        public ImageDescriptor getSharedOverlayImageDescriptor(Image baseImage, String overlayImageName, int quadrant) {
-            String overlayedImageName = overlayImageName + "_" + baseImage.hashCode(); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
-            if (imageDescriptor == null) {
-                ImageDescriptor overlay = createImageDescriptor(overlayImageName);
-                imageDescriptor = new DecorationOverlayIcon(baseImage, overlay, quadrant);
-                registerSharedImageDescriptor(overlayedImageName, imageDescriptor);
-            }
-            return imageDescriptor;
-        }
-
-        /**
-         * Returns the image with the indicated name from the <code>icons</code> folder and overlaid
-         * by the specified overlay images. The array contains the names of the overlays, sorted in
-         * following order: top-left, top-right, bottom-left, bottom-right. If the given image is
-         * not found return the missing image overlaid with the product relevant image.
-         * 
-         * 
-         * @param baseImageName The name of the image which will be overlaid with the overlay image.
-         * @param overlayImageNames The names of the overlay images
-         */
-        public ImageDescriptor getSharedOverlayImage(String baseImageName, String[] overlayImageNames) {
-            String overlayedImageName = Arrays.toString(overlayImageNames) + "_" + baseImageName; //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
-            if (imageDescriptor == null) {
-                Image baseImage = getSharedImage(baseImageName, true);
-                ImageDescriptor[] overlays = new ImageDescriptor[overlayImageNames.length];
-                for (int i = 0; i < overlayImageNames.length; i++) {
-                    if (overlayImageNames[i] != null) {
-                        overlays[i] = createImageDescriptor(overlayImageNames[i]);
-                    }
-                }
-                imageDescriptor = new DecorationOverlayIcon(baseImage, overlays);
-                registerSharedImageDescriptor(overlayedImageName, imageDescriptor);
-            }
-            return imageDescriptor;
-        }
-
-        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<? extends IpsElement> class1) {
-            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(class1);
-        }
-
-        public void dispose() {
-            if (resourceManager != null) {
-                resourceManager.dispose();
-            }
+        public IpsElementWorkbenchAdapter getWorkbenchAdapterFor(Class<? extends IpsElement> clazz) {
+            return getDefault().ipsElementWorkbenchAdapterAdapterFactory.getAdapterByClass(clazz);
         }
     }
 

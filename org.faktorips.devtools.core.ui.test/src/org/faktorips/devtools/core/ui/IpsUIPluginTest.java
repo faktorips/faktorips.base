@@ -60,9 +60,9 @@ import org.junit.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
-    private static final String LINK_GIF = "LinkOverlay.gif";
+    private static final String LINK_GIF = "over_co.gif";
 
-    private static final String PRODUCT_GIF = "ProductCmptType.gif";
+    private static final String PRODUCT_GIF = "Table.gif";
 
     private IExtensionPropertyEditFieldFactory editFieldFactory;
 
