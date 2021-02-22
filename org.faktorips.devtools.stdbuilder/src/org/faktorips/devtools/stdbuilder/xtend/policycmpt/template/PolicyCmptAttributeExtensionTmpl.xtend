@@ -12,9 +12,10 @@ def package static inheritDocOrJavaDoc(XPolicyAttribute it, String jDoc, Object 
 def package static inheritDocOrJavaDoc(XPolicyAttribute it, String jDoc, Object param, Object desc) { if (overwrite || generatePublishedInterfaces) "{@inheritDoc}" else localizedJDoc(jDoc, param, desc)}
 
 def package static getPropertyValueContainer(XPolicyAttribute it, Boolean publishedInterface)  { if (changingOverTime) getProductCmptGeneration(it, publishedInterface)
-    else methodNameGetProductCmpt + "()"}
+ else if (!generatePublishedInterfaces || publishedInterface) methodNameGetProductCmpt + "()"
+ else "((" + policyCmptNode.productCmptNode.implClassName + ")" + methodNameGetProductCmpt + "())"}
 
 def private static getProductCmptGeneration(XPolicyAttribute it, Boolean publishedInterface)  { if (!generatePublishedInterfaces || publishedInterface)  methodNameGetProductCmptGeneration + "()"
-    else "((" + policyCmptNode.productCmptGenerationNode.implClassName + ")" + methodNameGetProductCmptGeneration + "())"}
+ else "((" + policyCmptNode.productCmptGenerationNode.implClassName + ")" + methodNameGetProductCmptGeneration + "())"}
 
 }

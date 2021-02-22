@@ -92,7 +92,7 @@ def package static getter (XPolicyAttribute it) '''
          * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
-         * «IF !genInterface()&&generateDefaultForOnTheFlyDerivedAttribute»@restrainedmodifiable«ELSE»@generated«ENDIF»
+         * «IF !genInterface()&&!generateField&&(generateDefaultForOnTheFlyDerivedAttribute||!overwrite)»@restrainedmodifiable«ELSE»@generated«ENDIF»
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface())»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite)»
@@ -106,14 +106,28 @@ def package static getter (XPolicyAttribute it) '''
                     // begin-user-code
                     return «defaultValueCode»;
                     // end-user-code
-                «ELSEIF !generatePublishedInterfaces && overwrite»
+                «ELSEIF overwrite»
                     return super.«methodNameGetter»();
                 «ELSE»
+                    «IF changingOverTime»
+                        «getPolicyCmptNode.productCmptGenerationNode.implClassName» productCmpt = «getPropertyValueContainer(false)»;
+                    «ELSE»
+                        «getPolicyCmptNode.productCmptNode.implClassName» productCmpt = «getPropertyValueContainer(false)»;
+                    «ENDIF»
+                    // begin-user-code
+                    if (productCmpt == null) {
+                        «IF datatype.isPrimitive»
+                          return «datatype.defaultValue»;
+                        «ELSE»
+                          return null;
+                        «ENDIF»
+                    }
                     «IF !formulaSignature.parameters.isEmpty»
                         «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
                     «ENDIF»
                     «formulaParameterDeclaration(formulaSignature)»
-                    return «getPropertyValueContainer(false)».«formulaCall(formulaSignature)»;
+                    return productCmpt.«formulaCall(formulaSignature)»;
+                    // end-user-code
                 «ENDIF»
             «ENDIF»
         }
