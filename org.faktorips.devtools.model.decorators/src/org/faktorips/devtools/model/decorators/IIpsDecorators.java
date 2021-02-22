@@ -29,8 +29,8 @@ public interface IIpsDecorators {
 
     static ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
         if (ipsElement != null) {
-            IIpsElementDecorator iIpsElementDecorator = get(ipsElement.getClass());
-            return iIpsElementDecorator.getImageDescriptor(ipsElement);
+            IIpsElementDecorator ipsElementDecorator = get(ipsElement.getClass());
+            return ipsElementDecorator.getImageDescriptor(ipsElement);
         } else {
             return ImageDescriptor.getMissingImageDescriptor();
         }

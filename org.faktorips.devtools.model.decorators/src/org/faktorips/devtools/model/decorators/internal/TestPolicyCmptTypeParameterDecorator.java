@@ -35,9 +35,11 @@ public class TestPolicyCmptTypeParameterDecorator implements IIpsObjectPartDecor
             ITestPolicyCmptTypeParameter testParameter = (ITestPolicyCmptTypeParameter)ipsObjectPart;
             if (IpsStringUtils.isEmpty(testParameter.getAssociation())) {
                 if (testParameter.isRequiresProductCmpt()) {
-                    return IIpsDecorators.getImageHandling().getSharedImageDescriptor("ProductCmpt.gif", true); //$NON-NLS-1$
+                    return IIpsDecorators.getImageHandling()
+                            .getSharedImageDescriptor(IpsDecorators.PRODUCT_CMPT_TYPE_IMAGE, true);
                 } else {
-                    return IIpsDecorators.getImageHandling().getSharedImageDescriptor("PolicyCmptType.gif", true); //$NON-NLS-1$
+                    return IIpsDecorators.getImageHandling()
+                            .getSharedImageDescriptor(IpsDecorators.POLICY_CMPT_TYPE_IMAGE, true);
                 }
             }
             if (!testParameter.isRoot()) {
@@ -45,20 +47,20 @@ public class TestPolicyCmptTypeParameterDecorator implements IIpsObjectPartDecor
                     IPolicyCmptTypeAssociation association = testParameter.findAssociation(testParameter
                             .getIpsProject());
                     if (association != null) {
-                        return IIpsDecorators.getImageHandling().getImageDescriptor(association);
+                        return IIpsDecorators.getImageDescriptor(association);
                     }
                 } catch (CoreException e) {
                     IpsLog.log(e);
                 }
             }
-            return getDefaultImageDescriptor();
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().getSharedImageDescriptor("AssociationType-Composition.gif", true); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling()
+                .getSharedImageDescriptor(AssociationDecorator.ASSOCIATION_TYPE_COMPOSITION_IMAGE, true);
     }
 
 }

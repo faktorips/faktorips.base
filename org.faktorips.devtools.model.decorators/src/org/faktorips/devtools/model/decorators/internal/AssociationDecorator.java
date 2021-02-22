@@ -44,23 +44,27 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
             IAssociation association = (IAssociation)ipsObjectPart;
             String baseName = getImageBaseName(association);
             String[] overlays = getImageOverlays(association);
-            return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseName, overlays);
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseName, overlays);
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     private String getImageBaseName(IAssociation association) {
-        String baseName = ""; //$NON-NLS-1$
-        if (association.getAssociationType() == AssociationType.AGGREGATION) {
-            baseName = ASSOCIATION_TYPE_AGGREGATION_IMAGE;
-        } else if (association.getAssociationType() == AssociationType.ASSOCIATION) {
-            baseName = ASSOCIATION_TYPE_ASSOCIATION_IMAGE;
-        } else if (association.getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
-            baseName = ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE;
-        } else if (association.getAssociationType() == AssociationType.COMPOSITION_MASTER_TO_DETAIL) {
-            baseName = ASSOCIATION_TYPE_COMPOSITION_IMAGE;
+        AssociationType associationType = association.getAssociationType();
+        if (associationType != null) {
+            switch (associationType) {
+                case AGGREGATION:
+                    return ASSOCIATION_TYPE_AGGREGATION_IMAGE;
+                case ASSOCIATION:
+                    return ASSOCIATION_TYPE_ASSOCIATION_IMAGE;
+                case COMPOSITION_DETAIL_TO_MASTER:
+                    return ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE;
+                case COMPOSITION_MASTER_TO_DETAIL:
+                    return ASSOCIATION_TYPE_COMPOSITION_IMAGE;
+            }
         }
-        return baseName;
+        throw new IllegalArgumentException(
+                association + " has unknown " + AssociationType.class.getSimpleName() + ": " + associationType); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String[] getImageOverlays(IAssociation association) {
@@ -69,17 +73,17 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
             IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
             if (polAssociation.isConfigurable()
                     && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
-                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_OVR;
+                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_RELEVANT;
             }
         }
         if (association instanceof IProductCmptTypeAssociation) {
             IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
             if (showChangingOverTimeOverlay && !productAssociation.isChangingOverTime()) {
-                overlays[IDecoration.TOP_LEFT] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
             }
         }
         if (association.isConstrain()) {
-            overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE_OVR;
+            overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE;
         }
         return overlays;
     }

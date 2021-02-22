@@ -14,12 +14,18 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Locale;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
@@ -42,7 +48,7 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImage() {
         ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
-        ImageDescriptor expectedImageDesc = IpsDecorators.getImageHandling()
+        ImageDescriptor expectedImageDesc = IIpsDecorators.getImageHandling()
                 .getSharedImageDescriptor(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE, true);
         assertEquals(expectedImageDesc, imageDesc);
     }
@@ -64,20 +70,30 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    @Ignore
     public void testGetLabel() {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(rule.getIpsProject()).thenReturn(ipsProject);
+        IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+        ISupportedLanguage language = mock(ISupportedLanguage.class);
+        when(properties.getDefaultLanguage()).thenReturn(language);
+        when(language.getLocale()).thenReturn(Locale.ITALY);
+        ILabel label = mock(ILabel.class);
+        when(rule.getLabel(Locale.ITALY)).thenReturn(label);
+        when(label.getValue()).thenReturn("RegelName");
+
         assertEquals("RegelName", adapter.getLabel(rule));
     }
 
     private ImageDescriptor createImageDescriptorWithOverlays(boolean productRelevant, boolean nonChangingOverTime) {
         if (productRelevant) {
-            overlays[1] = OverlayIcons.PRODUCT_OVR;
+            overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
             if (!nonChangingOverTime) {
-                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[0] = OverlayIcons.STATIC;
             }
         }
-        return IpsDecorators.getImageHandling()
-                .getSharedOverlayImage(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE, overlays);
+        return IIpsDecorators.getImageHandling()
+                .getSharedOverlayImageDescriptor(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE, overlays);
     }
 
 }

@@ -19,8 +19,10 @@ import org.faktorips.util.StringUtil;
 
 public class TableContentUsageDecorator extends SimpleIpsElementDecorator implements IIpsObjectPartDecorator {
 
+    public static final String TABLE_CONTENTS_USAGE_IMAGE = "TableContentsUsage.gif"; //$NON-NLS-1$
+
     public TableContentUsageDecorator() {
-        super("TableContentsUsage.gif"); //$NON-NLS-1$
+        super(TABLE_CONTENTS_USAGE_IMAGE);
     }
 
     @Override

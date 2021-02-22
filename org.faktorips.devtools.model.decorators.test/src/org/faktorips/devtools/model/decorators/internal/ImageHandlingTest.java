@@ -27,7 +27,8 @@ public class ImageHandlingTest {
 
     @Test
     public void testGetSharedOverlayImage() throws Exception {
-        ImageDescriptor sharedOverlayImage = IIpsDecorators.getImageHandling().getSharedOverlayImage(PRODUCT_GIF,
+        ImageDescriptor sharedOverlayImage = IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(
+                PRODUCT_GIF,
                 LINK_GIF,
                 IDecoration.BOTTOM_LEFT);
         Image sharedImage = IIpsDecorators.getImageHandling().getSharedImage(PRODUCT_GIF, false);
@@ -40,7 +41,7 @@ public class ImageHandlingTest {
 
     @Test
     public void testGetSharedOverlayImage_Empty() throws Exception {
-        ImageDescriptor sharedOverlayImage = IIpsDecorators.getImageHandling().getSharedOverlayImage(
+        ImageDescriptor sharedOverlayImage = IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(
                 IpsStringUtils.EMPTY, IpsStringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);

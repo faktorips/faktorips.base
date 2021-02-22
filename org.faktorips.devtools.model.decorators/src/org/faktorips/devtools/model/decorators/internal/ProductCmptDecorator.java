@@ -15,6 +15,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IImageHandling;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsSrcFileDecorator;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -23,13 +24,12 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 public class ProductCmptDecorator implements IIpsSrcFileDecorator {
 
-    private static final String PRODUCT_TEMPLATE_OVERLAY = "overlays/ProductTemplateOverlay.gif"; //$NON-NLS-1$
-    private static final String PRODUCT_CMPT_BASE_IMAGE = "ProductCmpt.gif"; //$NON-NLS-1$
-    private static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_BASE_IMAGE = "ProductCmpt.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.gif"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_BASE_IMAGE);
+        return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_BASE_IMAGE);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
         if (ipsElement instanceof IProductCmpt) {
             IProductCmpt productCmpt = (IProductCmpt)ipsElement;
             if (productCmpt.isProductTemplate()) {
-                return IpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
+                return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
             } else {
                 return getProductCmptImageDescriptor(productCmpt.findProductCmptType(ipsElement.getIpsProject()));
             }
@@ -45,28 +45,30 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
         if (ipsElement instanceof IpsSrcFile) {
             return getImageDescriptor((IIpsSrcFile)ipsElement);
         }
-        return null;
+        return IIpsSrcFileDecorator.super.getImageDescriptor(ipsElement);
     }
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
-        boolean template = ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
-        if (template) {
-            return IpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
-        } else {
-            String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-            if (typeName != null) {
-                IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
-                ImageDescriptor productCmptImageDescriptor = getProductCmptImageDescriptor(type);
-                String templateName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
-                if (templateName != null && !templateName.isBlank()) {
-                    IImageHandling imageHandling = IIpsDecorators.getImageHandling();
-                    return imageHandling.getSharedOverlayImageDescriptor(
-                            imageHandling.getImage(productCmptImageDescriptor),
-                            PRODUCT_TEMPLATE_OVERLAY,
-                            IDecoration.TOP_LEFT);
+        if (ipsSrcFile != null) {
+            boolean template = ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
+            if (template) {
+                return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
+            } else {
+                String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+                if (typeName != null) {
+                    IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
+                    ImageDescriptor productCmptImageDescriptor = getProductCmptImageDescriptor(type);
+                    String templateName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
+                    if (templateName != null && !templateName.isBlank()) {
+                        IImageHandling imageHandling = IIpsDecorators.getImageHandling();
+                        return imageHandling.getSharedOverlayImageDescriptor(
+                                imageHandling.getImage(productCmptImageDescriptor),
+                                OverlayIcons.TEMPLATE,
+                                IDecoration.TOP_LEFT);
+                    }
+                    return productCmptImageDescriptor;
                 }
-                return productCmptImageDescriptor;
             }
         }
         return getDefaultImageDescriptor();

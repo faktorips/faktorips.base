@@ -21,6 +21,9 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
 
+    public static final String IPS_PACKAGE_FRAGMENT_ICON = "IpsPackageFragment.gif"; //$NON-NLS-1$
+    public static final String IPS_PACKAGE_FRAGMENT_EMPTY_ICON = "IpsPackageFragmentEmpty.gif"; //$NON-NLS-1$
+
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
         if (ipsElement instanceof IIpsPackageFragment) {
@@ -28,20 +31,20 @@ public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
             try {
                 IIpsElement[] children = packageFragment.getChildren();
                 if (children != null && children.length > 0) {
-                    return IIpsDecorators.getImageHandling().getSharedImageDescriptor("IpsPackageFragment.gif", true); //$NON-NLS-1$
+                    return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_PACKAGE_FRAGMENT_ICON, true);
                 }
             } catch (CoreException e) {
                 IpsLog.log(e);
             }
-            return IIpsDecorators.getImageHandling().getSharedImageDescriptor("IpsPackageFragmentEmpty.gif", true); //$NON-NLS-1$
+            return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_PACKAGE_FRAGMENT_EMPTY_ICON, true);
         } else {
-            return null;
+            return getDefaultImageDescriptor();
         }
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().getSharedImageDescriptor("IpsPackageFragment.gif", true); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_PACKAGE_FRAGMENT_ICON, true);
     }
 
     @Override

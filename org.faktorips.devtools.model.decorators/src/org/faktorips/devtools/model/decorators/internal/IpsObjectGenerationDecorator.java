@@ -12,10 +12,8 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
@@ -41,11 +39,11 @@ public class IpsObjectGenerationDecorator implements IIpsObjectPartDecorator {
         if (ipsObjectPart instanceof IIpsObjectGeneration) {
             return getLabel((IIpsObjectGeneration)ipsObjectPart);
         } else {
-            return null;
+            return IIpsObjectPartDecorator.super.getLabel(ipsObjectPart);
         }
     }
 
-    protected String getLabel(IIpsObjectGeneration ipsObjectGeneration) {
+    private String getLabel(IIpsObjectGeneration ipsObjectGeneration) {
         GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
         if (validFrom == null) {
             return IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
@@ -66,30 +64,10 @@ public class IpsObjectGenerationDecorator implements IIpsObjectPartDecorator {
 
     public ImageDescriptor getGenerationImageDescriptor(IChangesOverTimeNamingConvention namingConvention) {
         String id = namingConvention.getId();
-        Locale locale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
+                id + "_" + GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        ImageDescriptor imageDescriptor = ImageDescriptor.getMissingImageDescriptor();
-        // first we try to load the image with the full locale, i.e. de_DE
-        if (locale.toString().length() > 0) {
-            imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
-                    id + "_" + GENERATION_IMAGE_BASE + "_" + locale.toString() + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-
-        // if the locale has a country code (e.g. DE), we now ignore this and try
-        // to load the image only with the language code (e.g. de).
-        if (!exists(imageDescriptor) && locale.getCountry().length() != 0) {
-            imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
-                    id + "_" + GENERATION_IMAGE_BASE + "_" + locale.getLanguage() + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-
-        // neither for full locale nor for only language code an image was found,
-        // so try to load the base image and let the missing image descriptor be
-        // returned if not found.
-        if (!exists(imageDescriptor)) {
-            imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
-                    id + "_" + GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        // if image still does not exists try to load default image
+        // if image does not exists try to load default image
         if (!exists(imageDescriptor)) {
             imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$
         }

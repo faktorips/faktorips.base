@@ -71,7 +71,7 @@ public interface IImageHandling {
      *            {@link IDecoration#TOP_LEFT} {@link IDecoration#TOP_RIGHT},
      *            {@link IDecoration#BOTTOM_LEFT} or {@link IDecoration#BOTTOM_RIGHT}
      */
-    ImageDescriptor getSharedOverlayImage(String baseImageName, String overlayImageName, int quadrant);
+    ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName, String overlayImageName, int quadrant);
 
     /**
      * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
@@ -112,7 +112,7 @@ public interface IImageHandling {
      * @param baseImageName The name of the image which will be overlaid with the overlay image.
      * @param overlayImageNames The names of the overlay images
      */
-    ImageDescriptor getSharedOverlayImage(String baseImageName, String[] overlayImageNames);
+    ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName, String[] overlayImageNames);
 
     /**
      * Just create a image descriptor with the specified name as image filename in the icons

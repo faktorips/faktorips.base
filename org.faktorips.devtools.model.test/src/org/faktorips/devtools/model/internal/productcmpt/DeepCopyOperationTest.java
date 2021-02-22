@@ -45,7 +45,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.TestIpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -367,7 +367,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         configElement.setValue("Foo");
 
         IDeepCopyOperationFixup testDeepCopyOperationFixup = mock(IDeepCopyOperationFixup.class);
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions.setDeepCopyOperationFixups(Arrays.asList(testDeepCopyOperationFixup));
 
             IpsPackageFragment packageFragment = (IpsPackageFragment)comfortMotorProduct.getIpsPackageFragment();

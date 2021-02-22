@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -23,6 +25,15 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.junit.Test;
 
 public class ProductCmptTypeMethodDecoratorTest extends AbstractIpsPluginTest {
+
+    @Test
+    public void testGetImageDescriptor_Null() {
+        ProductCmptTypeMethodDecorator decorator = new ProductCmptTypeMethodDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
 
     @Test
     public void testGetImageDescriptor() {
@@ -46,9 +57,9 @@ public class ProductCmptTypeMethodDecoratorTest extends AbstractIpsPluginTest {
         String baseImage = ProductCmptTypeMethodDecorator.METHOD_IMAGE_NAME;
         String[] overlays = new String[4];
         if (!changingOverTime) {
-            overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            overlays[0] = OverlayIcons.STATIC;
         }
-        return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseImage, overlays);
+        return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);
     }
 
 }

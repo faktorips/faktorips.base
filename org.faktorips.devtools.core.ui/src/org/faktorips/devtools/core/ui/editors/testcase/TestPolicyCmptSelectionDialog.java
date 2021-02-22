@@ -327,7 +327,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
     private boolean isFilterChildOfLink(ITestPolicyCmptLink link, String filter) throws CoreException {
         boolean found = false;
         ITestPolicyCmpt testPolicyCmpt = link.findTarget();
-        if (!link.isAccoziation() && testPolicyCmpt != null) {
+        if (!link.isAssociation() && testPolicyCmpt != null) {
             found = isFilterChildOf(testPolicyCmpt, filter);
         }
         return found;

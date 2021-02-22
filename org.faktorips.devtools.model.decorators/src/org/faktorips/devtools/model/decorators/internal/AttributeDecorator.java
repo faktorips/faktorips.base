@@ -36,22 +36,22 @@ public class AttributeDecorator implements IIpsObjectPartDecorator {
             String[] overlays = new String[4];
 
             if (attribute instanceof IProductCmptTypeAttribute && !attribute.isChangingOverTime()) {
-                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[0] = OverlayIcons.STATIC;
             }
 
             if (attribute instanceof IPolicyCmptTypeAttribute
                     && ((IPolicyCmptTypeAttribute)attribute).isProductRelevant()) {
-                overlays[1] = OverlayIcons.PRODUCT_OVR;
+                overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
 
                 if (!attribute.isChangingOverTime()) {
-                    overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                    overlays[0] = OverlayIcons.STATIC;
                 }
             }
             if (attribute.isOverwrite()) {
-                overlays[3] = OverlayIcons.OVERRIDE_OVR;
+                overlays[3] = OverlayIcons.OVERRIDE;
             }
 
-            return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseImage, overlays);
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);
         }
         return getDefaultImageDescriptor();
     }
@@ -75,7 +75,6 @@ public class AttributeDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        // TODO Auto-generated method stub
-        return IIpsObjectPartDecorator.super.getDefaultImageDescriptor();
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(PUBLISHED_BASE_IMAGE, true);
     }
 }

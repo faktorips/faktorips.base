@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.decorators.internal;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
@@ -41,15 +42,15 @@ public class ValidationRuleConfigDecorator implements IIpsObjectPartDecorator {
             if (config.isActive()) {
                 return getDefaultImageDescriptor();
             } else {
-                return IpsDecorators.getImageHandling().getDisabledImageDescriptor(getDefaultImageDescriptor());
+                return IIpsDecorators.getImageHandling().getDisabledImageDescriptor(getDefaultImageDescriptor());
             }
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsDecorators.getImageHandling().getSharedImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE, true);
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE, true);
     }
 
 }

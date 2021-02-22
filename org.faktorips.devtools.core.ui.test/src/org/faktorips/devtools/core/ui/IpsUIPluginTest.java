@@ -243,7 +243,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(PRODUCT_GIF, LINK_GIF,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(PRODUCT_GIF, LINK_GIF,
                 IDecoration.BOTTOM_LEFT);
         Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage(PRODUCT_GIF, false);
         ImageDescriptor sharedOverlayByImage = IpsUIPlugin.getImageHandling()
@@ -255,7 +255,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage_Empty() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(StringUtils.EMPTY,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(StringUtils.EMPTY,
                 StringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);

@@ -36,7 +36,7 @@ public class MethodDecorator implements IIpsObjectPartDecorator {
         if (ipsObjectPart instanceof IMethod) {
             IMethod method = (IMethod)ipsObjectPart;
             String[] overlays = getOverlays(method);
-            return IIpsDecorators.getImageHandling().getSharedOverlayImage(METHOD_IMAGE_NAME, overlays);
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(METHOD_IMAGE_NAME, overlays);
         } else {
             return getDefaultImageDescriptor();
         }
@@ -46,13 +46,13 @@ public class MethodDecorator implements IIpsObjectPartDecorator {
         String[] overlays = new String[4];
         try {
             if (method.findOverriddenMethod(method.getIpsProject()) != null) {
-                overlays[3] = OverlayIcons.OVERRIDE_OVR;
+                overlays[3] = OverlayIcons.OVERRIDE;
             }
         } catch (CoreException e) {
             IpsLog.log(e);
         }
         if (method.isAbstract()) {
-            overlays[1] = OverlayIcons.ABSTRACT_OVR;
+            overlays[1] = OverlayIcons.ABSTRACT;
         }
         return overlays;
     }

@@ -20,26 +20,26 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 
 public class TestPolicyCmptDecorator implements IIpsObjectPartDecorator {
 
-    private static final String POLICY_CMPT_INSTANCE = "PolicyCmptInstance.gif"; //$NON-NLS-1$
+    public static final String POLICY_CMPT_INSTANCE_IMAGE = "PolicyCmptInstance.gif"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof ITestPolicyCmpt) {
             ITestPolicyCmpt testPC = (ITestPolicyCmpt)ipsObjectPart;
-            String baseImageName = POLICY_CMPT_INSTANCE;
             if (testPC.isProductRelevant()) {
-                return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseImageName, OverlayIcons.PRODUCT_OVR,
+                return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(POLICY_CMPT_INSTANCE_IMAGE,
+                        OverlayIcons.PRODUCT_RELEVANT,
                         IDecoration.TOP_RIGHT);
             } else {
-                return IIpsDecorators.getImageHandling().getSharedImageDescriptor(baseImageName, true);
+                return IIpsDecorators.getImageHandling().getSharedImageDescriptor(POLICY_CMPT_INSTANCE_IMAGE, true);
             }
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(POLICY_CMPT_INSTANCE, true);
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(POLICY_CMPT_INSTANCE_IMAGE, true);
     }
 
 }

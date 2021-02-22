@@ -22,6 +22,10 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 
 public class ConfigElementDecorator implements IIpsObjectPartDecorator {
 
+    public static final String CONFIG_ELEMENT_ICON = "ConfigElement.gif"; //$NON-NLS-1$
+    public static final String CONFIGURED_DEFAULT_ICON = "ConfiguredDefault.gif"; //$NON-NLS-1$
+    public static final String CONFIGURED_VALUE_SET_ICON = "ConfiguredValueSet.gif"; //$NON-NLS-1$
+
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IConfiguredDefault) {
@@ -29,36 +33,41 @@ public class ConfigElementDecorator implements IIpsObjectPartDecorator {
         } else if (ipsObjectPart instanceof IConfiguredValueSet) {
             return getConfiguredValueSetImageDescriptor();
         } else {
-            return null;
+            return getDefaultImageDescriptor();
         }
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().createImageDescriptor("ConfigElement.gif"); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().createImageDescriptor(CONFIG_ELEMENT_ICON);
     }
 
     public ImageDescriptor getConfiguredDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().createImageDescriptor("ConfiguredDefault.gif"); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().createImageDescriptor(CONFIGURED_DEFAULT_ICON);
     }
 
     public ImageDescriptor getConfiguredValueSetImageDescriptor() {
-        return IIpsDecorators.getImageHandling().createImageDescriptor("ConfiguredValueSet.gif"); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().createImageDescriptor(CONFIGURED_VALUE_SET_ICON);
     }
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(ipsObjectPart);
-        Object value = ((IConfigElement)ipsObjectPart).getPropertyValue();
-        if (value instanceof String) {
-            ValueDatatype datatype = ((IConfigElement)ipsObjectPart).findValueDatatype(ipsObjectPart.getIpsProject());
-            if (datatype != null) {
-                value = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter()
-                        .formatValue(datatype, (String)value);
+        if (ipsObjectPart instanceof IConfigElement) {
+            IConfigElement configElement = (IConfigElement)ipsObjectPart;
+            String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(configElement);
+            Object value = configElement.getPropertyValue();
+            if (value instanceof String) {
+                ValueDatatype datatype = configElement.findValueDatatype(ipsObjectPart.getIpsProject());
+                if (datatype != null) {
+                    value = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter()
+                            .formatValue(datatype, (String)value);
+                }
+                return caption + ": " + value; //$NON-NLS-1$
+            } else {
+                return caption;
             }
-            return caption + ": " + value; //$NON-NLS-1$
         } else {
-            return caption;
+            return IIpsObjectPartDecorator.super.getLabel(ipsObjectPart);
         }
     }
 }

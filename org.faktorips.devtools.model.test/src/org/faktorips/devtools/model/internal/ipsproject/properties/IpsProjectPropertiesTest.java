@@ -25,7 +25,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.TestIpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
@@ -104,7 +104,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         IIpsFeatureVersionManager versionManager = mock(IIpsFeatureVersionManager.class);
         when(versionManager.getFeatureId()).thenReturn("my.feature");
         when(versionManager.isRequiredForAllProjects()).thenReturn(false);
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions.setFeatureVersionManagers(versionManager);
             ml = props.validate(ipsProject);
             assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));

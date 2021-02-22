@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.descriptorOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -22,9 +23,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
-import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -32,10 +33,6 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
 
-// TODO Joerg warum musste vom IpsUIPluginTest abgeleitet werden
-// Problem beim der Autotestsuite (stefan w.)?
-// die Tests von IpsUIPluginTest wurden immer mit ausgefuehrt
-@SuppressWarnings("restriction")
 public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot root;
@@ -47,7 +44,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        prodCmptDefaultIcon = IpsDecorators.getImageHandling().createImageDescriptor("ProductCmpt.gif");
+        prodCmptDefaultIcon = IIpsDecorators.getImageHandling().createImageDescriptor("ProductCmpt.gif");
         ipsProject = newIpsProject("AdapterTestProject");
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
@@ -73,7 +70,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         ProductCmptDecorator cmptDecorator = (ProductCmptDecorator)decorator;
 
         // A: standard Icons
-        ImageDescriptor imageDescriptor = IpsDecorators.getImageHandling().getImageDescriptor(aSuperCmpt);
+        ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().getImageDescriptor(aSuperCmpt);
         assertEquals(prodCmptDefaultIcon, imageDescriptor);
         IconDesc iconDesc = cmptDecorator.getProductCmptIconDesc(aSuperType);
         assertFalse(iconDesc instanceof PathIconDesc);
@@ -100,7 +97,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
 
         bNormalType.setInstancesIcon("");
         // C inherits A's standard Icon
-        imageDescriptor = IpsDecorators.getImageHandling().getImageDescriptor(cSubCmpt);
+        imageDescriptor = IIpsDecorators.getImageHandling().getImageDescriptor(cSubCmpt);
         assertEquals(prodCmptDefaultIcon, imageDescriptor);
         iconDesc = cmptDecorator.getProductCmptIconDesc(cSubType);
         assertFalse(iconDesc instanceof PathIconDesc);
@@ -111,7 +108,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         // create Types
         IProductCmptType productType = newProductCmptType(root, "a.ProductType");
         // create components
-        ProductCmpt template = newProductTemplate(productType, "a.Template");
+        IProductCmpt template = newProductTemplate(productType, "a.Template");
         IProductCmpt standardProductCmpt1 = newProductCmpt(productType, "a.StandardProduct1");
         IProductCmpt standardProductCmpt2 = newProductCmpt(productType, "a.StandardProduct2");
         IProductCmpt templatedProductCmpt1 = newProductCmpt(productType, "a.TemplatedProduct1");
@@ -139,6 +136,50 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         assertThat(templatedImageDescriptor, is(not(sameInstance(standardImageDescriptor))));
         assertThat(cmptDecorator.getImageDescriptor(templatedProductCmpt2.getIpsSrcFile()),
                 is(sameInstance(templatedImageDescriptor)));
+    }
+
+    @Test
+    public void testGetImageDescriptor_Null() {
+        ProductCmptDecorator decorator = new ProductCmptDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
+
+    @Test
+    public void testGetImageDescriptor_ElementNull() {
+        ProductCmptDecorator decorator = new ProductCmptDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor((IIpsElement)null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
+
+    @Test
+    public void testGetImageDescriptor_ElementTemplate() throws CoreException {
+        // create Types
+        IProductCmptType productType = newProductCmptType(root, "a.ProductType");
+        // create components
+        IProductCmpt template = newProductTemplate(productType, "a.Template");
+        ProductCmptDecorator decorator = new ProductCmptDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(template);
+
+        assertThat(imageDescriptor, is(descriptorOf(ProductCmptDecorator.PRODUCT_CMPT_TEMPLATE_BASE_IMAGE)));
+    }
+
+    @Test
+    public void testGetImageDescriptor_SrcFileTemplate() throws CoreException {
+        // create Types
+        IProductCmptType productType = newProductCmptType(root, "a.ProductType");
+        // create components
+        IProductCmpt template = newProductTemplate(productType, "a.Template");
+        ProductCmptDecorator decorator = new ProductCmptDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(template.getIpsSrcFile());
+
+        assertThat(imageDescriptor, is(descriptorOf(ProductCmptDecorator.PRODUCT_CMPT_TEMPLATE_BASE_IMAGE)));
     }
 
 }

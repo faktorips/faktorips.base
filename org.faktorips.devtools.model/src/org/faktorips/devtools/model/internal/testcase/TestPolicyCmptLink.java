@@ -133,7 +133,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    public boolean isAccoziation() {
+    public boolean isAssociation() {
         return targetChild == null;
     }
 
@@ -243,7 +243,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         }
 
         // for assoziations check if the target is in the test case
-        if (isAccoziation()) {
+        if (isAssociation()) {
             if (getTestCase().findTestPolicyCmpt(getTarget()) == null) {
                 String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_AssoziationNotFound, getTarget());
                 Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -57,6 +59,13 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetImageDescriptor_Null() throws Exception {
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
+
+    @Test
     public void testGetImageDescriptor_BaseNameAggregation() throws Exception {
         when(aProductAssociation.getAssociationType()).thenReturn(AssociationType.AGGREGATION);
 
@@ -99,6 +108,13 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
         assertNotNull(imageDescriptor);
         assertTrue(createImageDescriptor(AssociationDecorator.ASSOCIATION_TYPE_COMPOSITION_IMAGE).equals(
                 imageDescriptor));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetImageDescriptor_BaseNameUnknownType() throws Exception {
+        when(aProductAssociation.getAssociationType()).thenReturn(null);
+
+        decorator.getImageDescriptor(aProductAssociation);
     }
 
     @Test
@@ -174,15 +190,15 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
             boolean noChangeOverTime) {
         String[] overlays = new String[4];
         if (isOverride) {
-            overlays[3] = OverlayIcons.OVERRIDE_OVR;
+            overlays[3] = OverlayIcons.OVERRIDE;
         }
         if (isProductRelevant) {
-            overlays[1] = OverlayIcons.PRODUCT_OVR;
+            overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
         }
         if (noChangeOverTime) {
-            overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            overlays[0] = OverlayIcons.STATIC;
         }
-        return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseName, overlays);
+        return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseName, overlays);
     }
 
     @Test

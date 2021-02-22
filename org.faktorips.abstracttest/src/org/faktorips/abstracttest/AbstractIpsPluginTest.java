@@ -142,7 +142,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected static final String DEFAULT_CATEGORY_NAME_FORMULA_SIGNATURE_DEFINITIONS = "formulas";
 
     private final TestChangeListener contentsChangeListener;
-    private TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensionsViaEclipsePlugins;
+    private TestIpsModelExtensions testIpsModelExtensions;
 
     public AbstractIpsPluginTest() {
         super();
@@ -154,8 +154,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     public void setUp() throws Exception {
         IpsLog.setSuppressLoggingDuringTest(false);
         IpsModel.get().stopListeningToResourceChanges();
-        testIpsModelExtensionsViaEclipsePlugins = new TestIpsModelExtensionsViaEclipsePlugins();
-        testIpsModelExtensionsViaEclipsePlugins.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
+        testIpsModelExtensions = new TestIpsModelExtensions();
+        testIpsModelExtensions.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
         setAutoBuild(false);
 
         IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
@@ -179,7 +179,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     @After
     public void tearDown() throws Exception {
-        testIpsModelExtensionsViaEclipsePlugins.close();
+        testIpsModelExtensions.close();
         IpsLog.setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {

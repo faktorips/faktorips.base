@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -16,14 +18,21 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class TableStructureUsageDecoratorTest extends AbstractIpsPluginTest {
+
+    @Test
+    public void testGetImageDescriptor_Null() {
+        TableStructureUsageDecorator decorator = new TableStructureUsageDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
 
     @Test
     public void testGetImageDescriptor() {
@@ -47,8 +56,8 @@ public class TableStructureUsageDecoratorTest extends AbstractIpsPluginTest {
         String baseImage = TableStructureUsageDecorator.BASE_IMAGE;
         String[] overlays = new String[4];
         if (!changingOverTime) {
-            overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            overlays[0] = OverlayIcons.STATIC;
         }
-        return IpsDecorators.getImageHandling().getSharedOverlayImage(baseImage, overlays);
+        return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);
     }
 }

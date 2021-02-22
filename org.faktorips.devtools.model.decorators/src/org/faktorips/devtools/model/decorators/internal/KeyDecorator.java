@@ -34,7 +34,7 @@ public class KeyDecorator implements IIpsObjectPartDecorator {
             String name = getImageName(key);
             return IIpsDecorators.getImageHandling().getSharedImageDescriptor(name, true);
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     private String getImageName(IKey key) {

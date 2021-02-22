@@ -21,18 +21,16 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 
 public class AttributeValueDecorator implements IIpsObjectPartDecorator {
 
+    public static final String PRODUCT_ATTRIBUTE_ICON = "ProductAttribute.gif"; //$NON-NLS-1$
+
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IAttributeValue) {
-            return getDefaultImageDescriptor();
-        } else {
-            return null;
-        }
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().createImageDescriptor("ProductAttribute.gif"); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_ATTRIBUTE_ICON);
     }
 
     @Override

@@ -74,6 +74,9 @@ import org.faktorips.devtools.model.internal.valueset.ValueSet;
 
 public class IpsDecorators implements IIpsDecorators {
 
+    public static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
+
     private static IpsDecorators theInstance = new IpsDecorators();
 
     private final IImageHandling imageHandling = new ImageHandling(IpsModelIconsPluginActivator.getBundle());
@@ -95,10 +98,10 @@ public class IpsDecorators implements IIpsDecorators {
         decorators.put(IpsPackageFragmentRoot.class, new SimpleIpsElementDecorator("IpsPackageFragmentRoot.gif")); //$NON-NLS-1$
         decorators.put(IpsProject.class, new SimpleIpsElementDecorator("IpsProject.gif")); //$NON-NLS-1$
         decorators.put(Parameter.class, new SimpleIpsElementDecorator("Parameter.gif")); //$NON-NLS-1$
-        decorators.put(PolicyCmptType.class, new SimpleIpsElementDecorator("PolicyCmptType.gif")); //$NON-NLS-1$
+        decorators.put(PolicyCmptType.class, new SimpleIpsElementDecorator(POLICY_CMPT_TYPE_IMAGE));
         decorators.put(PolicyCmptTypeMethod.class, new MethodDecorator());
         decorators.put(ProductCmptGeneration.class, new SimpleIpsElementDecorator("ProductCmptGeneration.gif")); //$NON-NLS-1$
-        decorators.put(ProductCmptType.class, new SimpleIpsElementDecorator("ProductCmptType.gif")); //$NON-NLS-1$
+        decorators.put(ProductCmptType.class, new SimpleIpsElementDecorator(PRODUCT_CMPT_TYPE_IMAGE));
         decorators.put(ProductCmptTypeMethod.class, new ProductCmptTypeMethodDecorator());
         decorators.put(Row.class, new SimpleIpsElementDecorator("TableRow.gif")); //$NON-NLS-1$
         decorators.put(TableContents.class, new SimpleIpsElementDecorator("TableContents.gif")); //$NON-NLS-1$
@@ -143,6 +146,7 @@ public class IpsDecorators implements IIpsDecorators {
         decorators.put(ValidationRuleConfig.class, new ValidationRuleConfigDecorator());
         decorators.put(ValidationRuleConfig.class, new ValidationRuleConfigDecorator());
         decorators.put(ProductCmpt.class, new ProductCmptDecorator());
+        // TODO get decorators from extensions via IIpsElementDecoratorsProvider
     }
 
     /**

@@ -29,9 +29,9 @@ public class ProductCmptTypeMethodDecorator extends MethodDecorator {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)ipsObjectPart;
             String[] overlays = getOverlays(method);
             if (!method.isChangingOverTime()) {
-                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[0] = OverlayIcons.STATIC;
             }
-            return IIpsDecorators.getImageHandling().getSharedOverlayImage(METHOD_IMAGE_NAME, overlays);
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(METHOD_IMAGE_NAME, overlays);
         } else {
             return getDefaultImageDescriptor();
         }

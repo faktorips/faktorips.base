@@ -36,9 +36,9 @@ public class TableStructureUsageDecorator extends SimpleIpsElementDecorator impl
             String[] overlays = new String[4];
 
             if (!tableStructureUsage.isChangingOverTime()) {
-                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                overlays[0] = OverlayIcons.STATIC;
             }
-            return IIpsDecorators.getImageHandling().getSharedOverlayImage(baseImage, overlays);
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);
         }
         return getDefaultImageDescriptor();
     }

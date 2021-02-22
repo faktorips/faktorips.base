@@ -144,16 +144,16 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         ImageDescriptor expected = new DecorationOverlayIcon(baseImage,
                 new ImageDescriptor[] { ovr1, ovr2, ovr3, ovr4 });
 
-        ImageDescriptor actual = IIpsDecorators.getImageHandling().getSharedOverlayImage(
+        ImageDescriptor actual = IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(
                 baseName,
-                new String[] { OverlayIcons.ABSTRACT_OVR, OverlayIcons.OVERRIDE_OVR, OverlayIcons.ERROR_OVR,
-                        OverlayIcons.WARNING_OVR });
+                new String[] { OverlayIcons.ABSTRACT, OverlayIcons.OVERRIDE, OverlayIcons.ERROR,
+                        OverlayIcons.WARNING });
 
         assertEquals(expected, actual);
         assertEquals(resourceManager.get(expected), IIpsDecorators.getImageHandling().getImage(actual));
 
         expected = new DecorationOverlayIcon(baseImage, ovr1, IDecoration.TOP_LEFT);
-        actual = IIpsDecorators.getImageHandling().getSharedOverlayImage(baseName, OverlayIcons.ABSTRACT_OVR,
+        actual = IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseName, OverlayIcons.ABSTRACT,
                 IDecoration.TOP_LEFT);
 
         assertEquals(expected, actual);

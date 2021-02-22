@@ -9,8 +9,11 @@
  *******************************************************************************/
 package org.faktorips.abstracttest.matcher;
 
+import java.util.function.Function;
+
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNot;
 
@@ -54,6 +57,54 @@ public class Matchers {
 
     public static Matcher<MessageList> containsErrorMsg() {
         return new ContainsErrorMatcher();
+    }
+
+    /**
+     * Similar to {@link CoreMatchers#allOf(Matcher...)}, but with better mismatch description.
+     */
+    @SafeVarargs
+    public static <T> Matcher<T> allOf(Matcher<T>... matchers) {
+        return AllMatcher.allOf(matchers);
+    }
+
+    /**
+     * A {@link Matcher Matcher&lt;T&gt;} that uses a wrapped {@link Matcher Matcher&lt;P&gt;} on a
+     * property of type &lt;P&gt; of the matched object of type &lt;T&gt;.
+     * 
+     * @param <T> the type of the matched object
+     * @param <P> the type of the object's property matched by the wrapped matcher
+     */
+    public static <T, P> Matcher<T> hasProperty(Function<T, P> propertyGetter,
+            String propertyDescription,
+            Matcher<P> propertyMatcher) {
+        return new PropertyMatcher<>(propertyGetter, propertyDescription, propertyMatcher);
+    }
+
+    /**
+     * A {@link Matcher Matcher&lt;T&gt;} that uses a wrapped {@link Matcher Matcher&lt;P&gt;} on a
+     * property of type &lt;P&gt; of the matched object of type &lt;T&gt; and referenced object of
+     * that same type.
+     *
+     * @param <T> the type of the compared objects
+     * @param <P> the type of the property
+     */
+    public static <T, P> Matcher<T> hasSame(String propertyDescription,
+            Function<T, P> propertyGetter,
+            T objectToMatch) {
+        return SamePropertyMatcher.same(propertyGetter, propertyDescription, objectToMatch);
+    }
+
+    /**
+     * A {@link Matcher Matcher&lt;T&gt;} that uses a wrapped {@link Matcher Matcher&lt;byte[]&gt;}
+     * on a byte[]-typed property of the matched object of type &lt;T&gt; and referenced object of
+     * that same type.
+     *
+     * @param <T> the type of the compared objects
+     */
+    public static <T> Matcher<T> hasSameByteArray(String propertyDescription,
+            Function<T, byte[]> propertyGetter,
+            T objectToMatch) {
+        return SameByteArrayPropertyMatcher.sameByteArray(propertyGetter, propertyDescription, objectToMatch);
     }
 
 }

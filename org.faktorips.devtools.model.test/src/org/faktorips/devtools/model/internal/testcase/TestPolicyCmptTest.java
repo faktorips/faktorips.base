@@ -192,9 +192,9 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertEquals(3, testPolicyCmptObjectExpected.getTestAttributeValues().length);
         assertAssociation(testPolicyCmptObjectExpected.getTestPolicyCmptLink("association2"), "base.Test2");
 
-        assertTrue(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[0].isAccoziation());
+        assertTrue(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[0].isAssociation());
         assertFalse(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[0].isComposition());
-        assertFalse(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[1].isAccoziation());
+        assertFalse(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[1].isAssociation());
         assertTrue(testPolicyCmptObjectExpected.getTestPolicyCmptLinks()[1].isComposition());
     }
 

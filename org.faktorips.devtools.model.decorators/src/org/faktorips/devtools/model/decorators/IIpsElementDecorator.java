@@ -11,6 +11,7 @@ package org.faktorips.devtools.model.decorators;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public interface IIpsElementDecorator {
 
@@ -23,7 +24,7 @@ public interface IIpsElementDecorator {
     }
 
     default String getLabel(IIpsElement ipsElement) {
-        return ipsElement.getName();
+        return ipsElement == null ? IpsStringUtils.EMPTY : ipsElement.getName();
     }
 
 }

@@ -22,7 +22,7 @@ public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
             return getImageDescriptor(ipsSrcFile);
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile);

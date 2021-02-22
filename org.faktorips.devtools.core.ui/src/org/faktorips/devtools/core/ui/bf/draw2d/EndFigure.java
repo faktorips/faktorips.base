@@ -33,7 +33,8 @@ public class EndFigure extends Shape {
     private boolean showError;
 
     public EndFigure() {
-        errorImage = IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
+        errorImage = IpsUIPlugin.getImageHandling()
+                .getImage(IpsUIPlugin.getImageHandling().getSharedImageDescriptor(OverlayIcons.ERROR, true));
     }
 
     @Override

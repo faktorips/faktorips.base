@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -22,8 +23,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
 
-    private static final String OVERLAY_GIF = "overlays/LinkOverlay.gif"; //$NON-NLS-1$
-    private static final String PRODUCT_CMPT_LINK_GIF = "ProductCmptLink.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_LINK_IMAGE = "ProductCmptLink.gif"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -32,20 +32,19 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
             try {
                 IProductCmpt target = link.findTarget(ipsObjectPart.getIpsProject());
                 return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(
-                        IIpsDecorators.getImageHandling().getImage(target),
-                        OVERLAY_GIF,
+                        IIpsDecorators.getImageDescriptor(target),
+                        OverlayIcons.LINK,
                         IDecoration.BOTTOM_RIGHT);
             } catch (CoreException e) {
                 IpsLog.log(e);
-                return getDefaultImageDescriptor();
             }
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsDecorators.getImageHandling().getSharedImageDescriptor(PRODUCT_CMPT_LINK_GIF, true);
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(PRODUCT_CMPT_LINK_IMAGE, true);
     }
 
     @Override

@@ -36,12 +36,10 @@ import org.osgi.framework.Bundle;
  * >Using Images in the Eclipse UI</a>
  * <p>
  * In Faktor-IPS we have a two kinds of images handled by the image handling. The first kind of
- * image is a plugin shared image. Only use shared images for those icons that are realy important
- * for several components of the plugin and more important, those does not change over time.
+ * image is a plugin shared image. Only use shared images for those icons that are really important
+ * for several components of the plugin and more important, those that do not change over time.
  * <p>
- * The second kind of images are not shared images. You have to look for the
- * 
- * @author dirmeier
+ * The second kind of images are not shared images.
  */
 public class ImageHandling implements IImageHandling {
 
@@ -141,7 +139,7 @@ public class ImageHandling implements IImageHandling {
     }
 
     @Override
-    public ImageDescriptor getSharedOverlayImage(String baseImageName, String overlayImageName, int quadrant) {
+    public ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName, String overlayImageName, int quadrant) {
         if (IpsStringUtils.isEmpty(overlayImageName)) {
             return getSharedImageDescriptor(baseImageName, true);
         }
@@ -169,7 +167,7 @@ public class ImageHandling implements IImageHandling {
     }
 
     @Override
-    public ImageDescriptor getSharedOverlayImage(String baseImageName, String[] overlayImageNames) {
+    public ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName, String[] overlayImageNames) {
         String overlayedImageName = Arrays.toString(overlayImageNames) + "_" + baseImageName; //$NON-NLS-1$
         ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
         if (imageDescriptor == null) {

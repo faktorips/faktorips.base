@@ -17,13 +17,14 @@ import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 
 /**
  * Subclass for testing with hard set values.
  * <p>
- * The {@link TestIpsModelExtensionsViaEclipsePlugins} class is {@link AutoCloseable}; it replaces
- * the original {@link IpsModelExtensionsViaEclipsePlugins} singleton instance and restores it when
+ * The {@link TestIpsModelExtensions} class is {@link AutoCloseable}; it replaces the original
+ * {@link IpsModelExtensionsViaEclipsePlugins} singleton instance and restores it when
  * {@link #close()} is automatically called in the finish block.
  * <p>
  * Usage:
@@ -31,15 +32,14 @@ import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
  * <pre>
  * // the customExtensionRegistry parameter is optional. If omitted, the standard Eclipse extension
  * // registry will be used for all non-overwritten values
- * try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins(
- *         customExtensionRegistry)) {
+ * try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
  *     // ... set custom values ...
+ *     testIpsModelExtensions.set...
  *     // ... test ...
  * }
  * </pre>
  */
-public class TestIpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsViaEclipsePlugins
-        implements AutoCloseable {
+public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins implements AutoCloseable {
 
     private IpsModelExtensionsViaEclipsePlugins original;
 
@@ -51,7 +51,9 @@ public class TestIpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsV
 
     private IClassLoaderProviderFactory classLoaderProviderFactory;
 
-    public TestIpsModelExtensionsViaEclipsePlugins() {
+    private IIpsModelPreferences modelPreferences;
+
+    public TestIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
         original = IpsModelExtensionsViaEclipsePlugins.get();
         IpsModelExtensionsViaEclipsePlugins.setInstanceForTest(this);
@@ -112,6 +114,30 @@ public class TestIpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsV
      */
     public void setClassLoaderProviderFactory(IClassLoaderProviderFactory classLoaderProviderFactory) {
         this.classLoaderProviderFactory = classLoaderProviderFactory;
+    }
+
+    @Override
+    public IIpsModelPreferences getModelPreferences() {
+        return modelPreferences != null ? modelPreferences : super.getModelPreferences();
+    }
+
+    /**
+     * Sets the IIpsModelPreferences. This method overwrites the IIpsModelPreferences registered via
+     * extension points.
+     */
+    public void setModelPreferences(IIpsModelPreferences modelPreferences) {
+        this.modelPreferences = modelPreferences;
+    }
+
+    public TestIpsModelExtensions with(IIpsModelPreferences modelPreferences) {
+        setModelPreferences(modelPreferences);
+        return this;
+    }
+
+    public static TestIpsModelExtensions using(IIpsModelPreferences modelPreferences) {
+        TestIpsModelExtensions ipsModelExtensions = new TestIpsModelExtensions();
+        ipsModelExtensions.setModelPreferences(modelPreferences);
+        return ipsModelExtensions;
     }
 
 }

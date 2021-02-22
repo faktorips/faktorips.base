@@ -14,35 +14,37 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
-import org.faktorips.devtools.model.internal.testcasetype.TestAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 
 public class TestAttributeDecorator implements IIpsObjectPartDecorator {
 
+    public static final String TEST_ATTRIBUTE_IMAGE = "TestAttribute.gif"; //$NON-NLS-1$
+
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof TestAttribute) {
-            TestAttribute testAttribute = (TestAttribute)ipsObjectPart;
+        if (ipsObjectPart instanceof ITestAttribute) {
+            ITestAttribute testAttribute = (ITestAttribute)ipsObjectPart;
             try {
-                // TODO v2 - hier koennen wir doch auch ein festes Image nehmen, oder? (von jörg)
                 IPolicyCmptTypeAttribute attribute = testAttribute.findAttribute(testAttribute.getIpsProject());
                 if (attribute != null) {
-                    return IIpsDecorators.getImageHandling().getImageDescriptor(attribute);
+                    return IIpsDecorators.getImageDescriptor(attribute);
                 } else {
                     return getDefaultImageDescriptor();
                 }
             } catch (CoreRuntimeException e) {
                 // ignore exception, return default image
-                return getDefaultImageDescriptor();
+                IpsLog.log(e);
             }
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().getSharedImageDescriptor("TestAttribute.gif", true); //$NON-NLS-1$
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(TEST_ATTRIBUTE_IMAGE, true);
     }
 
 }

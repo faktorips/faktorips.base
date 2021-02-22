@@ -31,10 +31,6 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * This class provides several methods related to multi-language support.
- * 
- * @since 3.1
- * 
- * @author Alexander Weickmann
  */
 public class MultiLanguageSupport implements IMultiLanguageSupport {
 
@@ -73,17 +69,11 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return new Locale(nl);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Locale getUsedLanguagePackLocale() {
         return usedLanguagePackLocale;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -101,9 +91,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return localizedCaption;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -121,9 +108,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return localizedPluralCaption;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -144,9 +128,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return defaultCaption;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultPluralCaption(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -167,9 +148,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return defaultPluralCaption;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedLabel(ILabeledElement labeledElement) {
         ArgumentCheck.notNull(labeledElement);
@@ -189,9 +167,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedPluralLabel(ILabeledElement labeledElement) {
         ArgumentCheck.notNull(labeledElement);
@@ -212,16 +187,13 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return pluralLabel;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultLabel(ILabeledElement labeledElement) {
         ArgumentCheck.notNull(labeledElement);
 
         String label = StringUtils.capitalize(labeledElement.getName());
 
-        // TODO AW: Awkward hard-coded solution but so far we havn't agreed upon another approach
+        // TODO AW: Awkward hard-coded solution but so far we haven't agreed upon another approach
         if (labeledElement instanceof IProductCmptTypeMethod) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)labeledElement;
             if (method.isFormulaSignatureDefinition()) {
@@ -239,9 +211,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return label;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultPluralLabel(ILabeledElement labeledElement) {
         ArgumentCheck.notNull(labeledElement);
@@ -314,9 +283,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedDescription(IDescribedElement describedElement) {
         ArgumentCheck.notNull(describedElement);
@@ -401,17 +367,11 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Locale getLocalizationLocale() {
         return localizationLocale;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Locale getLocalizationLocaleOrDefault(IIpsProject ipsProject) {
         IIpsProjectProperties readOnlyProperties = ipsProject.getReadOnlyProperties();
@@ -422,9 +382,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return supportedLanguage.getLocale();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getLocalizedContent(IValue<?> value, IIpsProject ipsProject) {
         String localizedContent = value.getLocalizedContent(getLocalizationLocale());

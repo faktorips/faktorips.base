@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.decorators.internal;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -31,16 +32,15 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
         if (ipsElement instanceof IValidationRule) {
             IValidationRule rule = (IValidationRule)ipsElement;
             if (rule.isConfigurableByProductComponent()) {
-                overlays[1] = OverlayIcons.PRODUCT_OVR;
+                overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
                 if (!rule.isChangingOverTime()) {
-                    overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+                    overlays[0] = OverlayIcons.STATIC;
                 }
-                return IpsDecorators.getImageHandling().getSharedOverlayImage(VALIDATION_RULE_DEF_BASE_IMAGE, overlays);
-            } else {
-                return getDefaultImageDescriptor();
+                return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE,
+                        overlays);
             }
         }
-        return null;
+        return getDefaultImageDescriptor();
     }
 
     /**
@@ -59,7 +59,7 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsDecorators.getImageHandling().getSharedImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE, true);
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE, true);
     }
 
 }
