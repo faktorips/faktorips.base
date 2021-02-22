@@ -6,8 +6,7 @@ Bundle-Version: 21.6.0.qualifier
 Require-Bundle: org.faktorips.devtools.model,
  org.eclipse.jdt.core,
  org.faktorips.valuetypes,
- org.faktorips.devtools.core.ui,
- org.faktorips.devtools.core
+ org.faktorips.devtools.core.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.context,

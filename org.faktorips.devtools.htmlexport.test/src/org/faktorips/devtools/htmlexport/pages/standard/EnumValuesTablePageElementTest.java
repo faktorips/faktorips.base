@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.value.IValue;
 import org.junit.Before;
@@ -65,7 +65,7 @@ public class EnumValuesTablePageElementTest {
     private ValueDatatype valueDatatype;
 
     @Mock
-    private UIDatatypeFormatter datatypeFormatter;
+    private IDatatypeFormatter datatypeFormatter;
 
     private EnumValuesTablePageElement pageElement;
 

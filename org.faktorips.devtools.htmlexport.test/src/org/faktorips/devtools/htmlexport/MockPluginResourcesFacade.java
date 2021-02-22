@@ -16,9 +16,9 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.context.IPluginResourceFacade;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class MockPluginResourcesFacade implements IPluginResourceFacade {
@@ -61,9 +61,9 @@ public class MockPluginResourcesFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public UIDatatypeFormatter getDatatypeFormatter() {
-        UIDatatypeFormatter datatypeFormatter = new UIDatatypeFormatter();
-        return datatypeFormatter;
+    public IDatatypeFormatter getDatatypeFormatter() {
+        return new IDatatypeFormatter() {
+        };
     }
 
     @Override
