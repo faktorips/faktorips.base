@@ -17,6 +17,8 @@ import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -50,7 +52,17 @@ class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
 
     private boolean isRelevant(IIpsSrcFile ipsSrcFile) {
         IIpsProject ipsSrcFileProject = ipsSrcFile.getIpsProject();
-        return ipsProject.equals(ipsSrcFileProject) || ipsProject.isReferencing(ipsSrcFileProject);
+        IIpsPackageFragment fragment = ipsSrcFile.getIpsPackageFragment();
+
+        return ipsProject.equals(ipsSrcFileProject) || isReferencingAndReexporting(fragment, ipsSrcFileProject);
+    }
+
+    private boolean isReferencingAndReexporting(IIpsPackageFragment fragment, IIpsProject ipsSrcFileProject) {
+        if (ipsSrcFileProject == null || fragment == null) {
+            return false;
+        }
+        IIpsObjectPathEntry rootEntry = ipsSrcFileProject.getIpsObjectPath().getEntry(fragment.getRoot().getName());
+        return ipsProject.isReferencing(ipsSrcFileProject) && rootEntry != null && rootEntry.isReexported();
     }
 
     private void handleTableStructureChange(IIpsSrcFile ipsSrcFile,

@@ -482,10 +482,4 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             throw new CoreRuntimeException(e);
         }
     }
-
-    @Override
-    public boolean isReexported() {
-        return true;
-    }
-
 }
