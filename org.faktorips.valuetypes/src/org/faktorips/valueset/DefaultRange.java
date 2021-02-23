@@ -75,9 +75,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * @param upper bound of the range
      * @param step the unit that defines the discrete values that are allowed to be within this
      *            range. The value can be {@code null} indicating that it is a continuous range. It
-     *            has to fulfill the condition: the value of the expression <i>abs(upperBound -
-     *            lowerBound) / step</i> needs to be an integer
-     * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
+     *            has to fulfill the condition: the value of the expression <em>abs(upperBound -
+     *            lowerBound) / step</em> needs to be an integer
+     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) / step</em>
      *             is not met. The condition is not applied if one or both of the bounds are
      *             {@code null}
      */
@@ -92,9 +92,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * @param upper bound of the range
      * @param step the unit that defines the discrete values that are allowed to be within this
      *            range. The value can be {@code null} indicating that it is a continuous range. It
-     *            has to fulfill the condition: the value of the expression <i>abs(upperBound -
-     *            lowerBound) / step</i> needs to be an integer
-     * @throws IllegalArgumentException if the condition <i>abs(upperBound - lowerBound) / step</i>
+     *            has to fulfill the condition: the value of the expression <em>abs(upperBound -
+     *            lowerBound) / step</em> needs to be an integer
+     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) / step</em>
      *             is not met. The condition is not applied if one is or both of the bounds are
      *             {@code null}
      */

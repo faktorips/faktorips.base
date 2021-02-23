@@ -247,17 +247,11 @@ public abstract class AbstractCompareItem
         return contentStringWithoutWhiteSpace;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren() {
         return getChildItems().toArray();

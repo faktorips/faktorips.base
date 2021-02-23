@@ -92,7 +92,8 @@ public interface ITableStructureUsage extends IProductCmptProperty {
     public boolean isUsed(String tableStructure);
 
     /**
-     * Adds the given table structure to the list of table structure this usage object specifies.<br>
+     * Adds the given table structure to the list of table structure this usage object
+     * specifies.<br>
      * If the table structure is already assigned then do nothing.
      */
     public void addTableStructure(String tableStructure);
@@ -108,7 +109,8 @@ public interface ITableStructureUsage extends IProductCmptProperty {
      * number of objects - 1 (the last object) no object is moved down.
      * 
      * @param indexes The indexes identifying the table structures.
-     * @param up <code>true</code>, to move the table structures up, <false> to move them down.
+     * @param up <code>true</code>, to move the table structures up, <code>false</code> to move them
+     *            down.
      * 
      * @return The new indexes of the moved table structures.
      * 

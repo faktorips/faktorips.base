@@ -98,7 +98,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * columns - 1 (the last column) no column is moved down.
      * 
      * @param indexes The indexes identifying the columns.
-     * @param up <code>true</code>, to move the columns up, <false> to move them down.
+     * @param up <code>true</code>, to move the columns up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved columns.
      * 
@@ -144,7 +144,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * 1 (the last range) no range is moved down.
      * 
      * @param indexes The indexes identifying the ranges.
-     * @param up <code>true</code>, to move the ranges up, <false> to move them down.
+     * @param up <code>true</code>, to move the ranges up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved ranges.
      * 
@@ -239,7 +239,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * keys - 1 (the last key) no range is moved down.
      * 
      * @param indexes The indexes identifying the keys.
-     * @param up <code>true</code>, to move the keys up, <false> to move them down.
+     * @param up <code>true</code>, to move the keys up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved keys.
      * 

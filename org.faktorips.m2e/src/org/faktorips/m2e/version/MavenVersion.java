@@ -35,9 +35,6 @@ public class MavenVersion implements IVersion<MavenVersion> {
         return version.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getUnqualifiedVersion() {
         String versionString = asString();

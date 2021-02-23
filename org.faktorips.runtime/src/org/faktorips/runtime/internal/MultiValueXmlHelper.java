@@ -33,7 +33,7 @@ public enum MultiValueXmlHelper {
     public static final String XML_TAG_VALUE = "Value"; //$NON-NLS-1$
 
     /**
-     * Reads String values from the a XML structure. Given the below XML (in this case an
+     * Reads String values from the an XML structure. Given the below XML (in this case an
      * AttributeValue-Element), this method will return a List containing three strings: {null,
      * "foo", "bar"}.
      * 

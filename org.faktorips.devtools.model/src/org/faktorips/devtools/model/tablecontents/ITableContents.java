@@ -42,9 +42,9 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
     public static final String MSGCODE_UNIQUE_KEY_VIOLATION = MSGCODE_PREFIX + "UniqueKeyViolation"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the from value is greater the to value. TODO joerg
-     * validate 'from' <= 'to', and 'from'+'to' same datatype
+     * Validation message code to indicate that the from value is greater the to value.
      */
+    // TODO joerg validate 'from' &le; 'to', and 'from'+'to' same datatype
     public static final String MSGCODE_TWO_COLUMN_RANGE_FROM_GREATER_TO_VALUE = MSGCODE_PREFIX
             + "TwoColumnRangeFromGreaterToValue"; //$NON-NLS-1$
 

@@ -32,7 +32,7 @@ import org.faktorips.util.ArgumentCheck;
  * <ul>
  * <li>the selection is a structured selection</li>
  * <li>the number of elements in the selection is within the specified range</li>
- * <li>the selection contains only elements of the specified type <b>T</b>.
+ * <li>the selection contains only elements of the specified type <strong>T</strong>.
  * </ul>
  * Several convenience methods are available to provide a type-safe access to the elements of the
  * selection. Additionally, several factory methods will simplify the creation of
@@ -59,7 +59,7 @@ public class TypedSelection<T> {
      * element of the given type is in the selection.
      * 
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      */
     public TypedSelection(final Class<T> type, final ISelection selection) {
@@ -71,7 +71,7 @@ public class TypedSelection<T> {
      * contains the specified number of elements.
      * 
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @param elements the number of elements that must be in the selection
      */
@@ -89,7 +89,7 @@ public class TypedSelection<T> {
      * ultimate goal, so I can live with this solution until then.
      * 
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @param minElements the minimum number of elements in the selection
      * @param maxElements the maximum number of elements in the selection
@@ -160,7 +160,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @return the created instance
      */
@@ -174,7 +174,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @return the created instance
      */
@@ -188,7 +188,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @param minElements the minimum number of elements in the selection
      * @return the created instance
@@ -205,7 +205,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @param elements the number of elements that must be in the selection
      * @return the created instance
@@ -219,7 +219,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @param minElements the minimum number of elements in the selection
      * @param maxElements the maximum number of elements in the selection
@@ -271,7 +271,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @return the selection as an collection
      */
@@ -289,7 +289,7 @@ public class TypedSelection<T> {
      * 
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
+     *            <strong>T</strong>)
      * @param selection the selection to validate
      * @return the selection as an collection
      */

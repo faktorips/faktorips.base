@@ -279,8 +279,8 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     /**
      * Can be used within subclass validation methods to validate the name of the business function
-     * element. This method checks if the name is equal to the not allowed values <i>execute</i>,
-     * <i>start</i>, <i>end</i>.
+     * element. This method checks if the name is equal to the not allowed values <em>execute</em>,
+     * <em>start</em>, <em>end</em>.
      * 
      * @param name The name to be checked.
      * @param nameOfName The error message that is created by this method refers to the name. Here

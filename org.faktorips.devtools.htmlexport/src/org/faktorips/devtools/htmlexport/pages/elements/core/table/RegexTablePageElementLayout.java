@@ -14,20 +14,16 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 /**
- * <p>
  * The {@link RegexTablePageElementLayout} uses a regular expression to layout a cell.
- * </p>
  * <p>
  * Set given {@link Style}s, if
  * <ol>
  * <li>{@link TableCellPageElement} consists just of one {@link TextPageElement}</li>
  * <li>the text of the {@link TextPageElement} matches the given regular expression</li>
  * </ol>
- * </p>
  * <p>
  * e.g. RegexTablePageElementLayout(".{1,3}", Style.CENTER) centers every cell with maximum 3
  * characters
- * </p>
  * 
  * @author dicker
  * 

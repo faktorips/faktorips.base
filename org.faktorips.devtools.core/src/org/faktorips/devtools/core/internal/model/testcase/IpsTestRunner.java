@@ -542,7 +542,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     /**
      * Returns the max heap size for the test runner, should be passed as program argument
-     * "-ipstestrunner.xmx <size>" (e.g. "-ipstestrunner.xmx 512M")
+     * {@code -ipstestrunner.xmx <size>} (for example {@code"-ipstestrunner.xmx 512M"})
      */
     public String getMaxHEapSizeFromAppArgs() {
         String[] applicationArgs = Platform.getApplicationArgs();

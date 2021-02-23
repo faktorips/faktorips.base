@@ -24,10 +24,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.2.0</version>
                     <configuration>
                         <!-- at the moment we do not check missing javadoc 
                             like missing @param or @return -->
-                        <doclint>none</doclint>
+                        <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                        <failOnError>true</failOnError>
                         <additionalDependencies>
                             <additionalDependency>
                                 <groupId>xmlunit</groupId>

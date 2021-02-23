@@ -19,9 +19,9 @@ import bsh.Interpreter;
  * Evaluates a given expression and returns it's result.
  * <p>
  * Technically this is done by first compiling the expression to {@link JavaCodeFragment Java source
- * code} using the {@link JavaExprCompiler}. After that a java bean shell
- * {@link "http://www.beanshell.org"} interpreter interprets the expression and the result is
- * returned by the evaluate method of this class.
+ * code} using the {@link JavaExprCompiler}. After that a java
+ * <a href="https://beanshell.github.io/">bean-shell</a>} interpreter interprets the expression and
+ * the result is returned by the evaluate method of this class.
  * 
  * @author Jan Ortmann
  */

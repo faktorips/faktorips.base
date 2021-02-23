@@ -73,7 +73,7 @@ public enum AttributeValueType {
     /**
      * Getting the name of the type as it is stored in the XML.
      * 
-     * @return Returns the xmlTypeName.
+     * @return the XML type name
      */
     public String getXmlTypeName() {
         return xmlTypeName;
@@ -96,8 +96,7 @@ public enum AttributeValueType {
      *            {@link IValueHolder}. The new value holder is not set in the specified attribute
      *            value.
      * 
-     * @return Returns the new value holder with the specified default value and the attribute set
-     *         as parent.
+     * @return the new value holder with the specified default value and the attribute set as parent
      */
     public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue) {
         try {
@@ -121,11 +120,10 @@ public enum AttributeValueType {
      *            {@link IValueHolder}. The new value holder is not set in the specified attribute
      *            value.
      * @param defaultValue The default value set in the new value holder. The type of the default
-     *            holder is always a IValue<?>. In case of multiple values, the default value will
-     *            be split using {@link IMultiValueHolder#SEPARATOR}
+     *            holder is always an {@link IValue IValue&lt;?&gt;}. In case of multiple values,
+     *            the default value will be split using {@link IMultiValueHolder#SEPARATOR}
      * 
-     * @return Returns the new value holder with the specified default value and the attribute set
-     *         as parent.
+     * @return the new value holder with the specified default value and the attribute set as parent
      */
     public <T> IValueHolder<T> newHolderInstance(IAttributeValue attributeValue, IValue<?> defaultValue) {
         try {
@@ -146,8 +144,8 @@ public enum AttributeValueType {
      * attributes.
      * 
      * @param attribute The attribute you want to check against this {@link AttributeValueType}
-     * @return true if this {@link AttributeValueType} is responsible for the specified attribute,
-     *         false if not
+     * @return {@code true} if this {@link AttributeValueType} is responsible for the specified
+     *         attribute, {@code false} if not
      */
     public abstract boolean isResponsibleFor(IProductCmptTypeAttribute attribute);
 

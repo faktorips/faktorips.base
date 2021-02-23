@@ -81,7 +81,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     }
 
     /**
-     * <em><b>For testing with a custom {@link IExtensionRegistry} only.</b></em>
+     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      * 
      * @param testInstance an IpsModelExtensionsViaEclipsePlugins with test data
      */
@@ -90,7 +90,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     }
 
     /**
-     * <em><b>For testing with a custom {@link IExtensionRegistry} only.</b></em>
+     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      *
      * @see IpsModelExtensionsViaEclipsePlugins#get IpsModelExtensionsViaEclipsePlugins#get for the
      *      singleton instance initialized from the Eclipse {@link Platform}.

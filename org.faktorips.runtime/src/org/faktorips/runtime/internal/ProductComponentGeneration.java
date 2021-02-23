@@ -55,9 +55,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         this.validationRules = new ValidationRules(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IConfigurableModelObject createPolicyComponent() {
         throw new RuntimeException("Product component does not configure a policy component.");

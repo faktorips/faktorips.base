@@ -195,9 +195,6 @@ public class FunctionSignatureImpl implements FunctionSignature {
         return builder.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasVarArgs() {
         return hasVarArgs;

@@ -315,9 +315,6 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public boolean isNotNull() {
         return true;
     }

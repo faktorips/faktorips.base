@@ -64,7 +64,7 @@ public interface IParameterContainer extends IIpsObjectPart {
      * Returns the new indices of the moved parameters.
      * 
      * @param indices The indices identifying the parameters.
-     * @param up <code>true</code>, to move the parameters up, <false> to move them down.
+     * @param up <code>true</code>, to move the parameters up, <code>false</code> to move them down.
      * 
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a parameter.

@@ -47,9 +47,6 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
         contentProvider = (ModelContentProvider)viewer.getContentProvider();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void resourceChanged(final IResourceChangeEvent event) {
         Control ctrl = viewer.getControl();

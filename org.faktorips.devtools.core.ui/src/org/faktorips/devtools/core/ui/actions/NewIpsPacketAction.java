@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard;
  * filesystem. It is possible to create subpackages by specifying a path separated with dots (".").
  * This action will then create the package defined by the path and all parent packages if they have
  * not been existing yet. The package name must be valid according to the java package name
- * conventions. Packages may only be created in <code>IpsSourceFolder</i>s.
+ * conventions. Packages may only be created in <code>IpsSourceFolder</code>s.
  * 
  * @author Daniel Hohenberger
  */

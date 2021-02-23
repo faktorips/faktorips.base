@@ -43,9 +43,6 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
         super(name, description, type, argType);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
 

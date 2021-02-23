@@ -50,9 +50,6 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     private IProductCmptType coverageType;
     private IProductCmptTypeAssociation association;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Before
     public void setUp() throws Exception {

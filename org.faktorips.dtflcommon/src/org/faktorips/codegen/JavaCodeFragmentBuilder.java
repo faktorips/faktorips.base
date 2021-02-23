@@ -20,8 +20,8 @@ import org.apache.commons.lang.StringUtils;
  * <p>
  * JavaCodeFragmentBuilder uses the method chaining pattern: Every method modifying the
  * {@link JavaCodeFragment} returns this JavaCodeFragmentBuilder so you could chain the methods as
- * follows: javaCodeFragmentBuilder.methodBegin(<method signature parameter>).appendLn(<one
- * line>).methodEnd();
+ * follows:
+ * {@code javaCodeFragmentBuilder.methodBegin(<method signature parameter>).appendLn(<one line>).methodEnd();}.
  */
 public class JavaCodeFragmentBuilder {
 
@@ -1399,7 +1399,7 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * append a constructor call: new <name>(parameters[0], parameters[1], ...)
+     * append a constructor call: new &lt;name&gt;(parameters[0], parameters[1], ...)
      * 
      * @param finishLine append a semicolon and new line if true
      * @return the JavaCodeFragmentBuilder for Method chaining
@@ -1415,8 +1415,8 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
+     * @return The created instance of {@link JavaCodeFragmentBuilder}
      * @see #constructorCall(String, String[], boolean)
-     * @return @see #constructorCall(String, String[], boolean)
      */
     public JavaCodeFragmentBuilder constructorCall(String className, List<String> parameters, boolean finishLine) {
         return constructorCall(className, parameters.toArray(new String[parameters.size()]), finishLine);
@@ -1439,7 +1439,7 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Appends the generic parameters to the builder: <className1, className2, ...>. An import
+     * Appends the generic parameters to the builder: &lt;className1, className2, ...&gt;. An import
      * statement is added if a given class has not yet been imported.
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
@@ -1459,8 +1459,8 @@ public class JavaCodeFragmentBuilder {
     }
 
     /**
-     * Appends the generic parameters to the builder: <class1, class2, ...>. An import statement is
-     * added if a given class has not yet been imported.
+     * Appends the generic parameters to the builder: &lt;class1, class2, ...&gt;. An import
+     * statement is added if a given class has not yet been imported.
      * <p>
      * Note: You have to make sure that generics are supported by target compiler
      */

@@ -15,7 +15,7 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.Operation;
 
 /**
- * Parenthesis <i>()</i> operator for datatype primitive integer.
+ * Parenthesis <em>()</em> operator for datatype primitive integer.
  */
 public class ParenthesisInt extends AbstractUnaryJavaOperation {
 
@@ -23,9 +23,6 @@ public class ParenthesisInt extends AbstractUnaryJavaOperation {
         super(Operation.ParenthesisInt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         JavaCodeFragment parenthesis = new JavaCodeFragment();

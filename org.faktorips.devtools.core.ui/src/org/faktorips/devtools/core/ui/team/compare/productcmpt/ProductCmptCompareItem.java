@@ -460,9 +460,6 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
         sb.append(configuredDefault.getValue());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String initName() {
         StringBuilder sb = new StringBuilder();

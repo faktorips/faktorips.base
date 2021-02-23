@@ -34,7 +34,8 @@ import org.w3c.dom.NodeList;
  * <p>
  * When transforming a name to a Java identifier, special characters like blank and hyphen (-) can
  * be replaced with a String that is allowed in a Java identifier. These special characters can be
- * registered along with their replacement via the addSpecialCharReplacement() method.
+ * registered along with their replacement via the {@link #putSpecialCharReplacement(char, String)}
+ * method.
  * <p>
  * Note that two special characters can't have the same replacement, as otherwise two product
  * component names (so unlikely) could result in the same Java class name.
@@ -43,8 +44,10 @@ import org.w3c.dom.NodeList;
  * information in qualified names.
  * <p>
  * By default the following replacement is used:
- * <p>
- * hyphen (-) => two underscores blank => three underscores
+ * <ul>
+ * <li>hyphen (-) &rarr; two underscores</li>
+ * <li>blank &rarr; three underscores</li>
+ * </ul>
  * 
  * @author Jan Ortmann
  */

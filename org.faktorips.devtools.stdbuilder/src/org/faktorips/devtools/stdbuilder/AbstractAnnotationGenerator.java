@@ -37,7 +37,7 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
      * Appends a key/value pair divided by an assign ('=') literal to the given code fragment at the
      * current position. The key is the literal "name", the value is an arbitrary unquoted String
      * which will be quoted.
-     * <p/>
+     * <p>
      * Example:<br>
      * appendName(f, "tableName") <br>
      * yields<br>

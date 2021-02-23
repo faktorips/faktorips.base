@@ -86,10 +86,10 @@ public abstract class XProductClass extends XType {
     public abstract boolean isChangeOverTimeClass();
 
     /**
-     * Returns all declared attributes that are applicable for content generation
+     * Returns all declared attributes that are applicable for content generation.
      * 
      * @implNote For a set of all declared attributes use
-     *           {@link #getAttributesIncludingNoContentGeneration()}.
+     *           {@link #getAttributesIncludingNoContentGeneration()}
      * 
      * @return a set of all attributes relevant for content generation
      */

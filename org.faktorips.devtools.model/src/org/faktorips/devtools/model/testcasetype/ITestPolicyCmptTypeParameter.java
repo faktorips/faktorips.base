@@ -241,7 +241,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * is the number of attributes - 1 (the last test attribute) no attribute is moved down.
      * 
      * @param indexes The indexes identifying the attributes.
-     * @param up <code>true</code>, to move the attributes up, <false> to move them down.
+     * @param up <code>true</code>, to move the attributes up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved attributes.
      * 
@@ -256,7 +256,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * (the last child) nothing is moved down.
      * 
      * @param indexes The indexes identifying the child.
-     * @param up <code>true</code>, to move the child up, <false> to move them down.
+     * @param up <code>true</code>, to move the child up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved child.
      * 

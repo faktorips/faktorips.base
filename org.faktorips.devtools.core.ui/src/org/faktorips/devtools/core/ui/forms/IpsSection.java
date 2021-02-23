@@ -126,7 +126,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * Constructs the section's controls.
      * <p>
-     * This has to to be called explicitly by subclasses <b>after</b> they have initialized any
+     * This has to to be called explicitly by subclasses <strong>after</strong> they have initialized any
      * subclass specific instance variables.
      * <p>
      * The <code>IpsSection</code> does not call this method in it's constructor, because in

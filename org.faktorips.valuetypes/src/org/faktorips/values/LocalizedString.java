@@ -40,17 +40,11 @@ public class LocalizedString implements Serializable {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return locale + " = " + value; //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -60,9 +54,6 @@ public class LocalizedString implements Serializable {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

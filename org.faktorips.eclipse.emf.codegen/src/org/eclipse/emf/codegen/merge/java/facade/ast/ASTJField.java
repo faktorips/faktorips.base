@@ -78,7 +78,7 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
     /**
      * Variable declaration fragment that is wrapped by ASTJField and to be used by
      * <code>set...</code> and <code>get...</code> methods. Note that when field is removed, this
-     * variable is <b>not</b> changed. On the other hand, wrappedVariableDeclarationFragment is
+     * variable is <strong>not</strong> changed. On the other hand, wrappedVariableDeclarationFragment is
      * updated to reflect current node in the tree.
      * <p>
      * Since the same {@link FieldDeclaration} can have multiple variables declared in it, but

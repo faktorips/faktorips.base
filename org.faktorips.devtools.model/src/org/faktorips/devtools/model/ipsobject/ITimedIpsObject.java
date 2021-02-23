@@ -105,7 +105,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * Returns <code>null</code> if no generation is found or date is <code>null</code>.
      * <p>
      * Note: This method returns <code>null</code> if it does not find a generation with the
-     * <b>exact</b> effective date. Given a two generations with effective dates 01-01-2004 and
+     * <strong>exact</strong> effective date. Given a two generations with effective dates 01-01-2004 and
      * 01-01-2005 this method would return the first generation if 01-01-2004 is passed as argument
      * and the second generation if 01-01-2005 is passed in. For all other dates the methods would
      * return <code>null</code>

@@ -155,7 +155,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      * Returns parameter names.
      * <p>
      * Note that if parameters have been changed by {@link #setParameters(String[])} method, this
-     * method will <b>not</b> parse parameters, and will <b>not</b> return the new parameter names.
+     * method will <strong>not</strong> parse parameters, and will <strong>not</strong> return the new parameter names.
      * This method will return either parameter names set by {@link #setParameterNames(String[])}
      * method or original parameter names.
      * 

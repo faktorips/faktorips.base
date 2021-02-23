@@ -37,7 +37,7 @@ public interface IDependencyDetail {
      * <li>If a policy component type has a super type, the IPS object representing the policy
      * component type is responsible for the dependency (the policy component type depends on its
      * super type). So this method returns the IPS object representing the policy component type.
-     * <li/>
+     * </li>
      * <li>If a policy component type has an association and the target of the association is
      * another policy component type, the association is responsible for the dependency between the
      * policy component type and the other type. OIn this case this method returns the association.

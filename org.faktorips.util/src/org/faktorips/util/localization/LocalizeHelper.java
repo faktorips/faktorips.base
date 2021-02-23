@@ -49,7 +49,7 @@ import org.apache.commons.lang.StringUtils;
  * eg. AT for austria; the String ll_RR is given as parameter). If the target file does not exist,
  * it is created with the same content as the source file. If the target exists, the properties
  * contained in the source, but not in the target, are copied to the target and marked with the text
- * >TRANSLATE_ME< as value-Prefix.
+ * &lt;TRANSLATE_ME&gt; as value-Prefix.
  * <p>
  * Note: No translation is done by this class!
  * 

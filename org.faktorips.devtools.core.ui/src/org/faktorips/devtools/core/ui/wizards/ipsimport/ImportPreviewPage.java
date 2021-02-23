@@ -296,7 +296,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     /**
      * Reinitializes the contents of this page.
-     * <p/>
+     * <p>
      * 
      * @param filename The name of the file to show the preview for.
      * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,

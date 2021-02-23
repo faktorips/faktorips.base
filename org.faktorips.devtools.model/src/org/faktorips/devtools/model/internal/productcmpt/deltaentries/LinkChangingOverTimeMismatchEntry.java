@@ -26,7 +26,7 @@ import org.faktorips.util.StringUtil;
  * association's changing over time property was changed from "changing over time" to "static" (or
  * the other way round). Instances (links) of static associations must be part of the product
  * component, links of changing associations must be part of product component generations.
- * <p/>
+ * <p>
  * {@link #fix()} "moves" the link from a product component to all its generations or from the
  * latest generation to the product component. In the first case a link instance is created in each
  * generation with the same (original) target. In the latter case a link instance is created in the
@@ -55,7 +55,8 @@ public class LinkChangingOverTimeMismatchEntry extends AbstractDeltaEntryForLink
     @Override
     public String getDescription() {
         String linkCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getLink());
-        String generationLabelByNamingConvention = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true);
+        String generationLabelByNamingConvention = IIpsModelExtensions.get().getModelPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true);
         if (getAssociation().isChangingOverTime()) {
             return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt, new String[] {
                     linkCaption, unqualifiedTargetName, generationLabelByNamingConvention });

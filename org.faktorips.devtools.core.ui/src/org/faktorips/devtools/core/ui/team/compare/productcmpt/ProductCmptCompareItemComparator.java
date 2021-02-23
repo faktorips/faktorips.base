@@ -23,9 +23,8 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
  * Comparator for <code>ProductCmptCompareItem</code>s. Compares the actual <code>IIpsElement</code>
  * s referenced by each compare item.
  * <p>
- * PropertyValues of
- * <code>IProductCmpt<code> are placed above <code>IProductCmptGeneration<code>. Then sorts <code>IProductCmptGeneration</code>
- * s by their validFrom date.
+ * PropertyValues of <code>IProductCmpt</code> are placed above <code>IProductCmptGeneration</code>.
+ * Then sorts <code>IProductCmptGeneration</code> s by their validFrom date.
  * <p>
  * <code>IConfigElement</code>s and <code>ITableContentUsage</code>s are sorted in the following
  * order: product attributes, table usages, formulas, policy attributes. Attributes are placed above
@@ -42,13 +41,10 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 public class ProductCmptCompareItemComparator implements Comparator<AbstractCompareItem> {
 
     private static final Class<?>[] TYPE_ORDER = new Class<?>[] { IPropertyValue.class, IProductCmptLink.class,
-        IProductCmptGeneration.class };
+            IProductCmptGeneration.class };
 
     private static final PropertyValueComparator PROPERTY_VALUE_COMPARATOR = new PropertyValueComparator();
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int compare(AbstractCompareItem pci1, AbstractCompareItem pci2) {
         IIpsElement element1 = pci1.getIpsElement();

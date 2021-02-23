@@ -31,25 +31,16 @@ public class IpsSrcFileMemento implements IIpsSrcFileMemento {
         this.dirty = dirty;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsSrcFile getIpsSrcFile() {
         return file;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element getState() {
         return state;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDirty() {
         return dirty;

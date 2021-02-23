@@ -53,9 +53,6 @@ public class ElementSelectionPage extends WizardPage {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite root = new Composite(parent, SWT.NONE);

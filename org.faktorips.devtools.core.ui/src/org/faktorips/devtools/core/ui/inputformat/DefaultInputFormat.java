@@ -18,8 +18,7 @@ import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
- * Fallback inputformat. Simply passes through the given string in {@link #parse(String)} and
- * {@link #format(String)}.
+ * Fallback input format.
  */
 public class DefaultInputFormat extends AbstractInputFormat<String> {
 

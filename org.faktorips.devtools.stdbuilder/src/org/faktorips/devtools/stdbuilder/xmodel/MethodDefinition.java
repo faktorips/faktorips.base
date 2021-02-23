@@ -51,9 +51,6 @@ public class MethodDefinition implements IGeneratedJavaElement {
         this.parameters = parameters;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IJavaElement getJavaElement(IType javaType) {
         return javaType.getMethod(getName(), getTypeSignatures());

@@ -33,9 +33,6 @@ public class ValidationRuleMessageText extends InternationalString implements IV
         super(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public LinkedHashSet<String> getReplacementParameters() {
         LinkedHashSet<String> result = new LinkedHashSet<String>();

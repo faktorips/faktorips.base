@@ -45,20 +45,4 @@
         <module>../../org.faktorips.valuetypes</module>
         <module>../../org.faktorips.valuetypes.joda</module>
     </modules>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
-                        <!-- at the moment we do not check missing javadoc 
-                            like missing @param or @return -->
-                        <doclint>none</doclint>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

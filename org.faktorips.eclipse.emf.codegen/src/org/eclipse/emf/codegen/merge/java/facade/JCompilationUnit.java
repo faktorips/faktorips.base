@@ -36,7 +36,7 @@ public interface JCompilationUnit extends JNode {
     /**
      * Sets the header comment for this compilation unit. The header comment appears before the
      * first declaration in a compilation unit. The syntax for a comment corresponds to Comments
-     * (JLS2 3.7), <b>including</b> comment delimiters.
+     * (JLS2 3.7), <strong>including</strong> comment delimiters.
      *
      * @param header the header comment for this compilation unit, or <code>null</code> if
      *            indicating no header comment

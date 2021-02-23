@@ -16,17 +16,11 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 // TODO has to be registered
 public class OpenNewBFWizardAction extends OpenNewWizardAction {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public INewWizard createWizard() {
         return new NewBFWizard();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do

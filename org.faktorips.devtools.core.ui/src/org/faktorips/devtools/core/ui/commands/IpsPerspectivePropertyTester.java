@@ -19,11 +19,12 @@ import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 /**
  * This property tester defines two property tests to check active perspectives:
  * 
- * <li>
- * <em>isPerspectiveOpen</em> takes an perspective id as argument and checks whether this
- * perspective is active</li> <li>
- * <em>isProductDefinitionPerspectiveOpen</em> takes no argument and checks whether the ips product
- * definition perspective is open</li>
+ * <ul>
+ * <li><em>isPerspectiveOpen</em> takes an perspective id as argument and checks whether this
+ * perspective is active</li>
+ * <li><em>isProductDefinitionPerspectiveOpen</em> takes no argument and checks whether the ips
+ * product definition perspective is open</li>
+ * </ul>
  * 
  * @author dirmeier
  */
@@ -46,7 +47,8 @@ public class IpsPerspectivePropertyTester extends PropertyTester {
                 if (args.length != 0) {
                     throw new RuntimeException("invalid number of arguments in IpsPerspectivePropertyTester"); //$NON-NLS-1$
                 }
-                return isPerspectiveOpen(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID, window);
+                return isPerspectiveOpen(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID,
+                        window);
             }
         }
         return false;

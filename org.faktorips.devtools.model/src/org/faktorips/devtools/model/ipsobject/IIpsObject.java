@@ -55,7 +55,7 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * fragment's name followed by a dot followed by the object's unqualified name. So this is
      * basically the same concept as the qualified name of Java classes.
      * <p>
-     * <b>Example:</b><br>
+     * <strong>Example:</strong><br>
      * The qualified name of an IPS object called 'MotorCoverage' in the package fragment
      * 'mycompany.motor' has the qualified name 'mycompany.motor.MotorCoverage'.
      */

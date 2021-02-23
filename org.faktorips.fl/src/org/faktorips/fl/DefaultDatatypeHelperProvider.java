@@ -38,9 +38,6 @@ public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider<Jav
         helpers.put(Datatype.PRIMITIVE_INT, DatatypeHelper.PRIMITIVE_INTEGER);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         return helpers.get(datatype);

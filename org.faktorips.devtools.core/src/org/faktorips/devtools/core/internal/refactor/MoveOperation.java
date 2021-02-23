@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragmentRoot;
 
 /**
- * Helper Class for Drag&Drop Move Operations
+ * Helper class for drag&amp;drop move operations
  */
 public abstract class MoveOperation {
 

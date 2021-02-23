@@ -140,25 +140,16 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
         messages.add(list);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean successfull() {
         return !messages.containsErrorMsg();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean failed() {
         return messages.containsErrorMsg();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -169,9 +160,6 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -208,9 +196,6 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return "Datatype: " + (datatype == null ? "null" : datatype.toString()) //$NON-NLS-1$ //$NON-NLS-2$

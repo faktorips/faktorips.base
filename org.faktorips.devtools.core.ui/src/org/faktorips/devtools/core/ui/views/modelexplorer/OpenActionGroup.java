@@ -26,8 +26,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * This is the action group for the open actions.
- * 
- * @see org.eclipse.ui.views.navigator#OpenActionGroup
  */
 public class OpenActionGroup extends ActionGroup {
     private ModelExplorer explorer;

@@ -37,9 +37,6 @@ public class Count extends AbstractFlFunction {
         super(name, description, FunctionSignatures.Count);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);

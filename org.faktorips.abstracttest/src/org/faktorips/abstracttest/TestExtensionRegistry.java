@@ -164,9 +164,6 @@ public class TestExtensionRegistry implements IExtensionRegistry {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IExtensionPoint[] getExtensionPoints() {
         return extensionPoints;

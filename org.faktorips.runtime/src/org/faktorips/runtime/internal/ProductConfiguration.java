@@ -69,7 +69,7 @@ public class ProductConfiguration implements Serializable {
     }
 
     /**
-     * Sets the product component generation <b>null</b>.
+     * Sets the product component generation <strong>null</strong>.
      */
     public void resetProductCmptGeneration() {
         productCmptGeneration = null;

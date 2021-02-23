@@ -140,7 +140,7 @@ public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPa
      * Sets the short human-readable message to inform the user what type of
      * <code>IIpsObjectPart</code> s he is now selecting and why.
      * <p>
-     * Example:<br />
+     * Example:<br>
      * <code>Select methods to override:</code>
      * 
      * @param selectLabelText The short human-readable message to show.

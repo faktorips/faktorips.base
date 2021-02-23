@@ -74,9 +74,6 @@ public class ModelContentProvider implements ITreeContentProvider {
         return layoutStyle;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         return filter(getUnfilteredChildren(parentElement));
@@ -416,9 +413,6 @@ public class ModelContentProvider implements ITreeContentProvider {
         return filtered.toArray();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {

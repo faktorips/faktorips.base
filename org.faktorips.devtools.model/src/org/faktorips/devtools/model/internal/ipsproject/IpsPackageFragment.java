@@ -63,7 +63,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IIpsPackageFragment<code>.
+ * Implementation of <code>IIpsPackageFragment</code>.
  */
 public class IpsPackageFragment extends AbstractIpsPackageFragment {
 

@@ -227,7 +227,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Returns the new indices of the moved attributes.
      * 
      * @param indices The indices identifying the attributes.
-     * @param up <code>true</code>, to move the attributes up, <false> to move them down.
+     * @param up <code>true</code>, to move the attributes up, <code>false</code> to move them down.
      * 
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
@@ -341,7 +341,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Returns an array containing the new indices of the moved associations.
      * 
      * @param indices The indices identifying the associations.
-     * @param up <code>true</code>, to move the associations up, <false> to move them down.
+     * @param up <code>true</code>, to move the associations up, <code>false</code> to move them
+     *            down.
      * 
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
@@ -428,7 +429,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Returns an array containing the new indices of the moved methods.
      * 
      * @param indices The indices identifying the methods.
-     * @param up <code>true</code>, to move the methods up, <false> to move them down.
+     * @param up <code>true</code>, to move the methods up, <code>false</code> to move them down.
      * 
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a method.

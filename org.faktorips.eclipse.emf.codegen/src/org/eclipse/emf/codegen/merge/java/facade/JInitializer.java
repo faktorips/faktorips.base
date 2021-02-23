@@ -32,7 +32,7 @@ public interface JInitializer extends JMember {
     /**
      * Sets the body of this initializer. The syntax for a body corresponds to InstanceInitializer
      * (JLS2 8.6) and StaticDeclaration (JLS2 8.7). No formatting or syntax checking is performed on
-     * the body. Braces <b>must</b> be included.
+     * the body. Braces <strong>must</strong> be included.
      *
      * @param body an initializer body, including braces, or <code>null</code> indicating no body
      */

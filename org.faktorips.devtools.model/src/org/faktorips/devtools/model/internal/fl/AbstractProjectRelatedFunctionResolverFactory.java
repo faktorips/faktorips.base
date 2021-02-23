@@ -19,7 +19,7 @@ import org.faktorips.fl.FunctionResolver;
 
 /**
  * This AbstractProjectRelatedFunctionResolverFactory can be registered with the
- * <i>flfunctionResolverFactory</i> extension point. Subclasses resolves functions according to a
+ * <em>flfunctionResolverFactory</em> extension point. Subclasses resolves functions according to a
  * related {@link IIpsProject}. Therefore the Interface is enhanced and calling
  * {@link #newFunctionResolver(Locale)} is forbidden. Call the new method
  * {@link #newFunctionResolver(IIpsProject, Locale)} instead.

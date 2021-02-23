@@ -1497,7 +1497,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         /**
          * To register an image descriptor in the image registry. The name of the image is the
-         * filename in the subfolder <i>icons</i> that means the path to the image is
+         * filename in the subfolder <em>icons</em> that means the path to the image is
          * IpsUIPlugin/icons/name
          */
         public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
@@ -1563,7 +1563,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * for the lifetime of the plugin. If the image is not potentially needed by other classes
          * use the methods {@link #createImage(ImageDescriptor)} and
          * {@link #disposeImage(ImageDescriptor)} or even better use your own LocalResourceManager.
-         * <p/>
+         * <p>
          * If descriptor is null, the missing image is returned
          */
         public Image getImage(ImageDescriptor descriptor) {

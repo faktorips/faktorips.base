@@ -26,9 +26,6 @@ public class Not extends AbstractFlFunction {
         super(name, description, FunctionSignatures.Not);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment("!(");

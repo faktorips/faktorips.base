@@ -241,16 +241,16 @@ public interface ITestPolicyCmpt extends ITestObject {
      * type association} associated with the test policy component is a composition AND a product
      * component is assigned to the test policy component
      * <li>The operation will look at the child test parameters. For each child test parameter, if
-     * it's minimum instances count is > 0 (meaning the parameter is not optional), and only one
+     * it's minimum instances count is &gt; 0 (meaning the parameter is not optional), and only one
      * {@linkplain IProductCmpt product component} qualifies for the association, a number of
      * {@linkplain ITestPolicyCmptLink test policy component links} that is equal to the minimum
      * cardinality of the child test parameter will be added
      * <li>If more than one product component qualifies for the association, or the minimum
      * instances count = 0, the {@linkplain IProductCmptLink product component links} of the product
      * component assigned to the test policy component are analyzed. For each product component link
-     * to the target with minimum cardinality > 0, a number of {@linkplain ITestPolicyCmptLink test
-     * policy component links} equal to the minimum cardinality of the product component link will
-     * be added
+     * to the target with minimum cardinality &gt; 0, a number of {@linkplain ITestPolicyCmptLink
+     * test policy component links} equal to the minimum cardinality of the product component link
+     * will be added
      * </ol>
      * 
      * @param ipsProject project to use as a base for searching the
@@ -328,7 +328,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * number of parameters - 1 (the last link) nothing moved down
      * 
      * @param indexes The indexes identifying the test policy component link.
-     * @param up <code>true</code>, to move up, <false> to move them down.
+     * @param up <code>true</code>, to move up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the test policy component link.
      * 
@@ -384,7 +384,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * instance's display-name accordingly (if applicable). Renaming {@link ITestPolicyCmpt} will
      * retain the standard-naming or manual naming respectively as well as the uniqueness of the
      * name.
-     * <p/>
+     * <p>
      * The standard naming of a {@link ITestPolicyCmpt} is as follows:
      * <ul>
      * <li>If this TestPolicyComponent has a product component, it is named after it (with possible
@@ -393,7 +393,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * TestPolicyCmptTypeParameter.</li>
      * </ul>
      * In all other cases the name is assumed to be manually modified.
-     * <p/>
+     * <p>
      * This method renames this {@link ITestPolicyCmpt} if it has standard-naming, but does not
      * change it if it was set manually. If the given qualified name is empty (null or "") there are
      * two cases:

@@ -29,9 +29,6 @@ public class MinMaxDecimal extends AbstractFlFunction {
         functionName = isMax ? "max" : "min";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);

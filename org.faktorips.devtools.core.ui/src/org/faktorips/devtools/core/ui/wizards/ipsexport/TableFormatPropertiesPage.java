@@ -47,9 +47,6 @@ public class TableFormatPropertiesPage extends WizardPage implements ValueChange
         setPageComplete(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         this.pageControl = toolkit.createGridComposite(parent, 1, false, false);

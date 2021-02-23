@@ -10,10 +10,8 @@
 		<relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
 	</parent>
   
-  <artifactId>org.faktorips.runtime.test</artifactId>
+  	<artifactId>org.faktorips.runtime.test</artifactId>
   
     <packaging>eclipse-test-plugin</packaging>
-  
-    
 
 </project>

@@ -22,9 +22,6 @@ public class PlusDecimal extends AbstractUnaryJavaOperation {
         super(Operation.PlusDecimal);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

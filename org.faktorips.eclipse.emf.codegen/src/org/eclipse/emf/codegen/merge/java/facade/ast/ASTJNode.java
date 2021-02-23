@@ -723,7 +723,7 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * Adds strings from strings list to existing array of strings, returns resulting string array,
      * and clears the list of strings.
      * 
-     * @param strings can <b>not</b> be <code>null</code>
+     * @param strings can <strong>not</strong> be <code>null</code>
      * @param stringsList can be <code>null</code>
      */
     protected String[] combineArrayAndList(String[] strings, List<String> stringsList) {

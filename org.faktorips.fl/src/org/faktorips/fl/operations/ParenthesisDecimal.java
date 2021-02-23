@@ -14,7 +14,7 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.Operation;
 
 /**
- * Parenthesis <i>()</i> operator for datatype Decimal.
+ * Parenthesis <em>()</em> operator for datatype Decimal.
  */
 public class ParenthesisDecimal extends AbstractUnaryJavaOperation {
 
@@ -22,9 +22,6 @@ public class ParenthesisDecimal extends AbstractUnaryJavaOperation {
         super(Operation.ParenthesisDecimal);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

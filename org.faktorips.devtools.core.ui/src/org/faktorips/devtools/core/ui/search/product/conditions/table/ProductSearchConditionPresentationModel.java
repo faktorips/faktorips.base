@@ -223,7 +223,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     }
 
     /**
-     * Returns a List<String> with allowed values
+     * Returns a {@link List List<String>} with allowed values.
      */
     protected List<String> getAllowedAttributeValues() {
         if (getConditionType().hasValueSet()) {

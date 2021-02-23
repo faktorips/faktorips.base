@@ -208,8 +208,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Re-initializes the model (the singleton instance will be reset).
      *
-     * @deprecated <b><em>Should only be called in test cases to ensure a clean
-     *             environment.</em></b>
+     * @deprecated <strong><em>Should only be called in test cases to ensure a clean
+     *             environment.</em></strong>
      */
     @Deprecated
     public static void reInit() {
@@ -222,8 +222,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the {@link IpsModel} singleton instance.
      *
      * @see IIpsModel#get
-     * @deprecated <b><em>This method should only be called when explicitly depending on
-     *             implementation details, otherwise use {@link IIpsModel#get}!</em></b>
+     * @deprecated <strong><em>This method should only be called when explicitly depending on
+     *             implementation details, otherwise use {@link IIpsModel#get}!</em></strong>
      */
     @Deprecated
     public static final IpsModel get() {
@@ -614,10 +614,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * Tells the model to stop broadcasting any changes made to IPS objects by the current thread.
-     * By default changes are broadcasted until this method is called. To restart brodcasting
+     * By default changes are broadcasted until this method is called. To restart broadcasting
      * changes the method resumeBroadcastingChangesMadeByCurrentThread() has to be called.
      * <p>
-     * <strong>Note<strong> that these two method have a "nested transaction behavior". That means
+     * <strong>Note</strong> that these two methods have a "nested transaction behavior". That means
      * broadcasting resumes only if the resume method has been called as many times as the stop
      * method. This allows to implement method that stop/resume broadcasting to call other method
      * that use these methods without resuming broadcasting to early.
@@ -639,7 +639,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Tells the model to resume broadcasting any changes made to IPS objects by the current thread.
      * <p>
-     * <strong>Note<strong> that these two method have a "nested transaction behavior". That means
+     * <strong>Note</strong> that these two methods have a "nested transaction behavior". That means
      * broadcasting resumes only if the resume method has been called as many times as the stop
      * method. This allows to implement method that stop/resume broadcasting to call other method
      * that use these methods without resuming broadcasting to early.

@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Calendar;
@@ -180,15 +181,15 @@ public class XmlUtil {
      * </p>
      *
      * <pre>
-     * ···&lt;DefaultValue isNull="true"/&gt;LF
+     * {@code ···<DefaultValue isNull="true">LF}
      * </pre>
      *
      * The three spaces and the XML tag will be handled as two separate XML entities, and therefore
      * will be indented by each three spaces.
      *
      * <pre>
-     * ······LF
-     * ···&lt;DefaultValue isNull="true"/&gt;LF
+     * {@code ······LF
+     * ···<DefaultValue isNull="true">LF}
      * </pre>
      * 
      * 
@@ -228,7 +229,7 @@ public class XmlUtil {
 
     /**
      * Java 9+ adds indentation around CDATA. We remove it to avoid changes in XML files created
-     * with Java <=8.
+     * with Java &le; 8.
      */
     private static String noIndentationAroundCDATA(String xml) {
         return xml.replaceAll(">[\\n\\r\\s]+<!\\[CDATA", "><![CDATA") //$NON-NLS-1$//$NON-NLS-2$
@@ -246,13 +247,13 @@ public class XmlUtil {
      * Transforms the given node to a string and writes in to the given writer.
      * <p>
      * The encoding that is used to transforms the string into bytes is defined by the writer. E.g.
-     * a <code>OutputStreamWriter</code> is created with a char set / encoding. With a
-     * </code>StringWriter</code> no encoding is necessary.
+     * a {@link OutputStreamWriter} is created with a char set / encoding. With a
+     * {@link StringWriter} no encoding is necessary.
      * <p>
-     * However, to get the encoding option set in the XML header e.g. <code>&lt;?xml version="1.0"
-     * encoding="Cp1252"?&gt;</code>, it is necessary to pass the encoding to this method. Note that
-     * this method does not check, if the writer's encoding and the given encoding are the same (as
-     * the encoding is not available from the writer).
+     * However, to get the encoding option set in the XML header e.g. {@code <?xml version="1.0"
+     * encoding="Cp1252"?>}, it is necessary to pass the encoding to this method. Note that this
+     * method does not check, if the writer's encoding and the given encoding are the same (as the
+     * encoding is not available from the writer).
      */
     public static final void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
         Transformer transformer = getTransformer();
@@ -275,7 +276,7 @@ public class XmlUtil {
     }
 
     /**
-     * Writes a XML document to a file.
+     * Writes an XML document to a file.
      * <p>
      * See also the
      * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
@@ -288,7 +289,7 @@ public class XmlUtil {
     }
 
     /**
-     * Writes a XML document to a file.
+     * Writes an XML document to a file.
      * <p>
      * See also the
      * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
@@ -301,7 +302,7 @@ public class XmlUtil {
     }
 
     /**
-     * Writes a XML document to a DOM result object.
+     * Writes an XML document to a DOM result object.
      * <p>
      * See also the
      * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
@@ -357,7 +358,7 @@ public class XmlUtil {
     /**
      * Returns the child element with the given tag name and index. The index is the position of the
      * element considering all child elements with the given tag name. In contrast to
-     * Element#getElementsByTagName(String tagName) this method returns only the direct children,
+     * {@link Element#getElementsByTagName(String)} this method returns only the direct children,
      * not all descendants.
      * 
      * @param parent The parent node.
@@ -476,7 +477,7 @@ public class XmlUtil {
     }
 
     /**
-     * Adds a TextNode or, if text contains chars>127, a CDATASection containing the text to the
+     * Adds a TextNode or, if text contains chars&gt;127, a CDATASection containing the text to the
      * parent and returns this new child.
      */
     public static final Node addNewCDATAorTextChild(Document doc, Node parent, String text) {
@@ -495,12 +496,13 @@ public class XmlUtil {
 
     /**
      * Returns the value for the given property from the given parent element. The parent XML
-     * element must has the following format:
+     * element must have the following format:
      * 
      * <pre>
-     *   <Parent>
-     *      <Property isNull="false"</Property>
-     *   </Parent>
+     * {@code <Parent>
+     *   <Property isNull="false">value</Property>
+     * </Parent>
+     * }
      * </pre>
      * 
      * @throws NullPointerException if parent or propertyName is <code>null</code> or the parent

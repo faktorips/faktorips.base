@@ -211,7 +211,6 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Sets the type of the test attribute. The following types could be set.
-     * <p>
      * <ul>
      * <li>INPUT: The test attribute specifies test attribute input objects.
      * <li>EXPECTED_RESULT: The test attribute specifies test attribute expected result objects.

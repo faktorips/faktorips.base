@@ -55,8 +55,8 @@ public class JavaPackageStructure implements IJavaPackageStructure {
      * @param internalArtifacts <code>true</code> if the artifacts are internal <code>false</code>
      *            if they are published (usable by clients).
      * @param mergableArtifacts <code>true</code> if the generated artifact is mergable (at the
-     *            moment this applies to Java Source files only). <code>false</code) if the artifact
-     *            is 100% generated and can't be modified by the user.
+     *            moment this applies to Java Source files only). <code>false</code>) if the
+     *            artifact is 100% generated and can't be modified by the user.
      */
     protected String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
             boolean internalArtifacts,

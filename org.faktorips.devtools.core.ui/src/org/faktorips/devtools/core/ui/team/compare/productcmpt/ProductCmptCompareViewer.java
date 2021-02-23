@@ -63,9 +63,6 @@ public class ProductCmptCompareViewer extends TextMergeViewer {
         textViewer.getTextWidget().addLineStyleListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getTitle() {
         return Messages.ProductCmptCompareViewer_CompareViewer_title;

@@ -153,17 +153,11 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String decorateText(String text, Object element) {
         return text;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
@@ -173,9 +167,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         if (resourceManager != null) {
@@ -184,17 +175,11 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         listeners = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isLabelProperty(Object element, String property) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeListener(ILabelProviderListener listener) {
         if (listener != null && listeners != null) {
@@ -202,9 +187,6 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void decorate(Object element, IDecoration decoration) {
         try {

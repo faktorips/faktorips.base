@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 /**
  * The table column naming strategy defines how a table column name is constructed from a given
  * String. Possible uses include a conversion from from a CamelCase naming to an upper cased naming
- * (e.g. ColumnName -> COLUMN_NAME).
+ * (e.g. ColumnName &rarr; COLUMN_NAME).
  * 
  * @author Roman Grutza
  */

@@ -16,7 +16,7 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.fl.FunctionResolver;
 
 /**
- * FunctionResolverFactories can be registered with the <i>flfunctionResolverFactory</i> extension
+ * FunctionResolverFactories can be registered with the <em>flfunctionResolverFactory</em> extension
  * point. The function resolvers of the registered factories augment the set of available formula
  * language functions.
  * 

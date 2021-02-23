@@ -29,9 +29,6 @@ public class BooleanFct extends AbstractFlFunction {
         this.value = value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         if (value == null) {

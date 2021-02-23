@@ -30,13 +30,14 @@ import org.faktorips.util.ArgumentCheck;
  * <ul>
  * <li>Formating a value in the model to a locale specific string that will be displayed in the GUI
  * (i.e. "1.2" will be displayed as "1,2" for the german locale)</li>
- * <li>Parsing a locale specific string to a value object, that can be written back to the model</li>
+ * <li>Parsing a locale specific string to a value object, that can be written back to the
+ * model</li>
  * <li>Verifying user input to avoid mistakes. No invalid characters may be entered in a
  * {@link FormattingTextField} (i.e. no letters in an integer field).</li>
  * </ul>
- * <p/>
+ * <p>
  * {@link AbstractInputFormat} supports the FIPS null-Presentation mechanism.
- * <p/>
+ * <p>
  * Instances of this class reconfigure themselves if the IpsPreference
  * IpsPreferences.DATATYPE_FORMATTING_LOCALE changes. Subclasses need to implement
  * {@link #initFormat(Locale)} for this.
@@ -62,9 +63,6 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         this.datatypeLocale = datatypeLocale;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFormat() {
         initFormat(datatypeLocale);
@@ -80,9 +78,6 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         this.nullStringRepresentation = nullString;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T parse(String stringToBeParsed, boolean supportNull) {
         if (supportNull && isRepresentingNull(stringToBeParsed)) {
@@ -108,9 +103,6 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String format(T objectValue, boolean supportNull) {
         if (objectValue == null) {
@@ -131,17 +123,11 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public T parse(String stringToBeparsed) {
         return parse(stringToBeparsed, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String format(T objectValue) {
         return format(objectValue, true);

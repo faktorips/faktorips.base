@@ -211,7 +211,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Marks this type as layer supertype or not. A layer supertype is an abstract base class
      * containing only technical abstraction but no real business aspects. E.g. you could specify an
-     * abstract base types for your composite structure: <i>ProductPartContainer</i><br>
+     * abstract base types for your composite structure: <em>ProductPartContainer</em><br>
      * Marking this class as layer supertype it is filtered for example in the new product component
      * wizard where only business abstractions are relevant.
      * 
@@ -241,8 +241,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Configures the changing over time flag of this product component type.
      * <p>
      * If it is set to <code>false</code>, {@link IProductCmpt instances} of this type do not have
-     * {@link IProductCmptGeneration IProductCmptGenerations}. All properties, e.g. {@link IProductCmptTypeAttribute IProductCmptTypeAttributes},
-     * will not change over time, too.
+     * {@link IProductCmptGeneration IProductCmptGenerations}. All properties, e.g.
+     * {@link IProductCmptTypeAttribute IProductCmptTypeAttributes}, will not change over time, too.
      * <p>
      * Furthermore no classes and access methods for {@link IProductCmptGeneration generations} will
      * be generated.
@@ -371,8 +371,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * number of objects - 1 (the last object) no object is moved down.
      * 
      * @param indexes The indexes identifying the table structure usages.
-     * @param up <code>true</code>, to move the table structure usages up, <false> to move them
-     *            down.
+     * @param up <code>true</code>, to move the table structure usages up, <code>false</code> to
+     *            move them down.
      * 
      * @return The new indexes of the moved table structure usages.
      * 

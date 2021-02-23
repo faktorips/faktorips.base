@@ -27,49 +27,31 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
         return new String[] { "MONTH", "YEAR" };
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportingNames() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultValue() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValueName(String id) {
         return id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         return value.equals("MONTH") || value.equals(("YEAR"));
@@ -94,41 +76,26 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return value == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return "TestEnumDatatype";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedName() {
         return "TestEnumDatatype";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueDatatype() {
         return true;

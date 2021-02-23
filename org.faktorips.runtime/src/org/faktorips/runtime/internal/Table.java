@@ -103,7 +103,7 @@ public abstract class Table<R> implements ITable<R> {
      * Is used by generated classes within the initKeyMaps() method to identify a null values.
      * 
      * @param valueElement the element that contains the value for a field within a row
-     * @return true if the the <i>isNull</i> attribute contains <i>true</i> otherwise false
+     * @return true if the the <em>isNull</em> attribute contains <em>true</em> otherwise false
      */
     protected boolean isNull(Element valueElement) {
         return Boolean.valueOf(valueElement.getAttribute("isNull")).booleanValue();

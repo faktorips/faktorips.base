@@ -68,9 +68,6 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
         init();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
@@ -126,9 +123,6 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IDependency[] getDependants(QualifiedNameType id) {
         Collection<IDependency> qualfiedNameTypes = getDependantsAsList(id);
@@ -157,9 +151,6 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
         return new ArrayList<IDependency>(dependantsForMap.get(target));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void update(QualifiedNameType qName) {
         if (qName == null) {

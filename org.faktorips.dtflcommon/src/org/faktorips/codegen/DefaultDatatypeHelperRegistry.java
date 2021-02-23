@@ -29,17 +29,11 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
         return new DefaultDatatypeHelperRegistry();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public DatatypeHelper getHelper(Datatype datatype) {
         return helpers.get(datatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void register(DatatypeHelper helper) {
         helpers.put(helper.getDatatype(), helper);

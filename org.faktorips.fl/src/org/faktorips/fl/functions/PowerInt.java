@@ -38,9 +38,6 @@ public class PowerInt extends AbstractFlFunction {
         super(name, description, FunctionSignatures.PowerInt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);

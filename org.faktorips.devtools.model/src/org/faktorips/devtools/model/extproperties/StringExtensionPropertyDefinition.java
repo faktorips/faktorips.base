@@ -14,7 +14,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of </code>IExtensionPropertyDefinition</code> for extension properties of type
+ * Implementation of <code>IExtensionPropertyDefinition</code> for extension properties of type
  * String.
  * 
  * @author Jan Ortmann

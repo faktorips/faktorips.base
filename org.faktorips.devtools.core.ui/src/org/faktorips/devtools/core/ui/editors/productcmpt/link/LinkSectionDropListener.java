@@ -46,9 +46,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  * Drop Listener for the link section. This drop listener is able to move elements within the link
  * section and could create new links for objects that are dragged from outside the link section.
  * <p>
- * This listener is very similar to the {@link LinkDropListener} which is responsible for drag&drop
- * in the product structure view. Because of the different items provided by the different content
- * providers, these two listeners are separated.
+ * This listener is very similar to the {@link LinkDropListener} which is responsible for
+ * drag&amp;drop in the product structure view. Because of the different items provided by the
+ * different content providers, these two listeners are separated.
  * 
  * @author dirmeier
  */
@@ -180,8 +180,8 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     /**
      * Override the determineLocation method because we have only location after or location before
-     * when moving an element. When D&D is not in moving mode, we do not have location feedback. In
-     * that case we return the normal determined location instead.
+     * when moving an element. When drag&amp;drop is not in moving mode, we do not have location
+     * feedback. In that case we return the normal determined location instead.
      */
     @Override
     protected int determineLocation(DropTargetEvent event) {

@@ -18,9 +18,9 @@ import org.faktorips.devtools.model.XmlSupport;
  * An IPS project that supports a natural language provides labels for model elements in that
  * language.
  * <p>
- * <strong>Example supporting English and German language:</strong><br />
- * Policy component type: MotorPolicy<br />
- * English label: Motor Policy<br />
+ * <strong>Example supporting English and German language:</strong><br>
+ * Policy component type: MotorPolicy<br>
+ * English label: Motor Policy<br>
  * German label: KFZ-Vertrag
  * <p>
  * A supported language can be marked as "default language" which means that it will be used
@@ -43,7 +43,7 @@ public interface ISupportedLanguage extends XmlSupport {
     /**
      * Returns the name of the language.
      * <p>
-     * This is a shortcut for<br />
+     * This is a shortcut for<br>
      * <code>getLocale().getDisplayLanguage();</code>
      */
     public String getLanguageName();

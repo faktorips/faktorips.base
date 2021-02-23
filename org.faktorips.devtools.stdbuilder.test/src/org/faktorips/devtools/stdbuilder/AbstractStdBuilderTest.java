@@ -136,7 +136,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * Expects a specific {@IBaseMethod} to be added to the list of generated Java elements.
+     * Expects a specific {@link IMethod} to be added to the list of generated Java elements.
      * 
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method

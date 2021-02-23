@@ -24,9 +24,6 @@ public class EqualsPrimtiveType extends AbstractBinaryJavaOperation {
         ArgumentCheck.isTrue(primitiveType.isPrimitive());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append("=="); //$NON-NLS-1$

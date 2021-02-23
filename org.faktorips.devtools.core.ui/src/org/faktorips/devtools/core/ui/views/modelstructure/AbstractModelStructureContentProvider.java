@@ -274,7 +274,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * projects it depends.
      * 
      * @param ipsProject the {@link IIpsProject} for which the objects should be retrieved
-     * @param types an array of {@list IpsObjectType} which should be retrieved
+     * @param types an array of {@link IpsObjectType} which should be retrieved
      * 
      * @return a {@link List} of {@link IType ITypes}, or an empty {@link List} if no {@link IType
      *         ITypes} exist.
@@ -292,7 +292,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
     /**
      * Toggles the show type state.<br>
      * <p>
-     * <b>Example:</b> <br>
+     * <strong>Example:</strong> <br>
      * <ol>
      * <li>{@link #getShowTypeState()} returns {@link ShowTypeState
      * ShowTypeState.SHOW_POLICIES}</li>

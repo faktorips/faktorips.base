@@ -42,7 +42,7 @@ public interface IdentifierResolver<T extends CodeFragment> {
      * identifier's {@link Datatype}.
      * <P>
      * If the string is not a valid identifier the returned compilation result must contain an
-     * <strong>error</string> message with the code {@link ExprCompiler#UNDEFINED_IDENTIFIER
+     * <strong>error</strong> message with the code {@link ExprCompiler#UNDEFINED_IDENTIFIER
      * UNDEFINED_IDENTIFIER}.
      * 
      * @param identifier The identifier to resolve.

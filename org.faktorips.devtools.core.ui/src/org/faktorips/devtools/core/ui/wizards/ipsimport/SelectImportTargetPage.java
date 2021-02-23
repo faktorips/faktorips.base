@@ -33,7 +33,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A wizard page where one can specify an IPS object as the target of an import.
- * <p/>
+ * <p>
  * The page consists of two TextButtonFields, the upper one for selecting an IPS project and the
  * lower one for selecting the actual target IPS object (e.g. an Enum Type/Content or an Table
  * Content).

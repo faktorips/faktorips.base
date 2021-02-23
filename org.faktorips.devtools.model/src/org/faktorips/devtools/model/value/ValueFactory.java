@@ -30,7 +30,7 @@ public final class ValueFactory {
     }
 
     /**
-     * Reads the xml and creates a new {@link IValue IValue<?>}.
+     * Reads the XML and creates a new {@link IValue}.
      * 
      * @param valueEl Element
      */

@@ -38,11 +38,12 @@ import org.faktorips.util.message.ObjectProperty;
  * Validates the links of a {@link IProductCmptLinkContainer} against their corresponding
  * associations in the product component type hierarchy. Ensures that
  * <ul>
- * <li>the number of links for a single association:</li>
+ * <li>the number of links for a single association:
  * <ul>
  * <li>satisfies the minimum cardinality, and</li>
  * <li>does not exceed the maximum cardinality defined by the type association.</li>
  * </ul>
+ * </li>
  * <li>no duplicate targets exist. That is a product component is never linked (or used) more than
  * once by this container.</li>
  * <li>a link has an effective date that is before or equal to the effective date of the referencing
@@ -251,7 +252,8 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
                             && productCmpt.getGenerationEffectiveOn(linkContainer.getValidFrom()) == null) {
                         String dateString = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
                                 .format(linkContainer.getValidFrom().getTime());
-                        String generationName = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                        String generationName = IIpsModelExtensions.get().getModelPreferences()
+                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                         String text = NLS.bind(
                                 Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
                                 new Object[] { productCmpt.getQualifiedName(), generationName, dateString });

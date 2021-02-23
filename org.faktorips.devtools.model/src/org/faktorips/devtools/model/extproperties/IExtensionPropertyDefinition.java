@@ -103,8 +103,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
 
     /**
      * Stores the value in the XML element. Simple values should be appended as CDATA sections to
-     * the given element (textual representation of value "blabla" is
-     * &ltvalue&gtblabla&lt/value&gt).
+     * the given element (textual representation of value "blabla" is {@code <value>blabla</value>}.
      * 
      * @param valueElement The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      * @param value The value to add to the XML. The passed value is <strong>never</strong>

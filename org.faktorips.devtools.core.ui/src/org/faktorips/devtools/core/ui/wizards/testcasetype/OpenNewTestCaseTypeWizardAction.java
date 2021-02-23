@@ -18,17 +18,11 @@ import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
  */
 public class OpenNewTestCaseTypeWizardAction extends OpenNewWizardAction {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public INewWizard createWizard() {
         return new NewTestCaseTypeWizard();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do

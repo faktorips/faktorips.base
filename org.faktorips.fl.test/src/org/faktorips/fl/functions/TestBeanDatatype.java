@@ -37,49 +37,31 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
         properties.put(property.getName(), property);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public PropertyDatatype getProperty(String name) {
         return properties.get(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueDatatype() {
         return false;

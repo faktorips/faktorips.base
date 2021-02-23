@@ -27,9 +27,6 @@ public class OpenNewTableContentsWizardAction extends OpenNewWizardAction {
         return new NewTableContentsWizard();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do

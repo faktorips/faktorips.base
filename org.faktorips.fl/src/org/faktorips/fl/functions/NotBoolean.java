@@ -26,9 +26,6 @@ public class NotBoolean extends AbstractFlFunction {
         super(name, description, FunctionSignatures.NotBoolean);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         CompilationResultImpl result = (CompilationResultImpl)argResults[0];

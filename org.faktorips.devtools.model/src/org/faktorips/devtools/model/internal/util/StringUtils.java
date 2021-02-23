@@ -66,7 +66,8 @@ public class StringUtils {
      * unique.
      * <p>
      * Example:
-     * <table border="true">
+     * <table border="1">
+     * <caption>Example:</caption>
      * <tr>
      * <th>uniqueCopyOfCounter</th>
      * <th>nameCandidate</th>

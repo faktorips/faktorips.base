@@ -19,7 +19,7 @@ import org.faktorips.values.DateUtil;
 
 /**
  * A Datatype for the <code>java.util.Date </code> class. The string representation supported by
- * this datatype is <i>yyyy-MM-dd</i>.
+ * this datatype is <em>yyyy-MM-dd</em>.
  * 
  * @author Peter Erzberger
  */

@@ -22,9 +22,6 @@ public class SubtractIntInt extends AbstractBinaryJavaOperation {
         super(Operation.SubtractIntInt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(" - "); //$NON-NLS-1$

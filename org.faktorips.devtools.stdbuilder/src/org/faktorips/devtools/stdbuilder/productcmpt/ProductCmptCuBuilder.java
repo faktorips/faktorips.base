@@ -53,7 +53,6 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
      * Generates the constructor.
      * <p>
      * Example:
-     * <p>
      * 
      * <pre>
      * public MotorPolicyPk0(IRuntimeRepository repository, String id, String kindId, String versionId) {

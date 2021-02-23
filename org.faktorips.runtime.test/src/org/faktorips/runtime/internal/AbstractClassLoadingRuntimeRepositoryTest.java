@@ -136,7 +136,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     @Test
     public void testCreateEnumValues_NoXmlResourceName() throws Exception {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
-        // in a DetachedContentRuntimeRepository, the XML resource name will be empty, but a XML
+        // in a DetachedContentRuntimeRepository, the XML resource name will be empty, but an XML
         // input stream may be created nonetheless
         doReturn(EnumSaxHandlerTest.class.getClassLoader()
                 .getResourceAsStream("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml")).when(repo)

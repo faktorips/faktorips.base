@@ -32,9 +32,9 @@ public class MinMaxComparableDatatypes extends AbstractFlFunction {
     }
 
     /**
-     * Max: (p1.compareTo(p2) > 0 ? p1 : p2)
+     * Max: (p1.compareTo(p2) &gt; 0 ? p1 : p2)
      * <p>
-     * Min: (p1.compareTo(p2) < 0 ? p1 : p2)
+     * Min: (p1.compareTo(p2) &lt; 0 ? p1 : p2)
      */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {

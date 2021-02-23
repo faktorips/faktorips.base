@@ -602,7 +602,7 @@ public class JControlModel extends PrefixHandler {
 
     /**
      * <p>
-     * A sweep rule removes elements from the target if they are <b>NOT</b> available in the source.
+     * A sweep rule removes elements from the target if they are <strong>NOT</strong> available in the source.
      * It can work on available Dictionary Patterns or be used to filter out import statements as
      * follows:
      * </p>
@@ -801,7 +801,7 @@ public class JControlModel extends PrefixHandler {
      * 
      * <p>
      * An important remark is that if there is a type conversion during the merge process, the match
-     * rules should <b>not</b> be used to pair different &quot;kinds&quot; of elements like fields
+     * rules should <strong>not</strong> be used to pair different &quot;kinds&quot; of elements like fields
      * and enumerator constants for example. See
      * {@link JMerger#convertTarget(org.eclipse.emf.codegen.merge.java.facade.JAbstractType, Class)
      * Jmerger.convert} and {@link NodeConverter} for further details on conversions.

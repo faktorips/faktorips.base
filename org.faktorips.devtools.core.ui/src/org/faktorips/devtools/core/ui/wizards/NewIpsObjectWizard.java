@@ -55,9 +55,6 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         setNeedsProgressMonitor(false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void addPages() {
         try {
@@ -110,17 +107,11 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IpsObjectType getIpsObjectType() {
         return objectPage.getIpsObjectType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
@@ -183,9 +174,6 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;

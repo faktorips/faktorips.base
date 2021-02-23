@@ -34,9 +34,6 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         super(ipsProject);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String[] getAllValueIds(boolean includeNull) {
         if (getAdaptedClass() == null) {
@@ -49,57 +46,36 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         return datatype.getAllValueIds(includeNull);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setAllValuesMethodName(String getAllValuesMethodName) {
         this.getAllValuesMethodName = getAllValuesMethodName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getAllValuesMethodName() {
         return getAllValuesMethodName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setIsSupportingNames(boolean supporting) {
         isSupportingNames = supporting;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setGetNameMethodName(String getNameMethodName) {
         this.getNameMethodName = getNameMethodName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGetNameMethodName() {
         return getNameMethodName;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isSupportingNames() {
         return isSupportingNames;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getValueName(String id) {
         if (!isSupportingNames) {
@@ -120,9 +96,6 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeToXml(Element element) {
         super.writeToXml(element);

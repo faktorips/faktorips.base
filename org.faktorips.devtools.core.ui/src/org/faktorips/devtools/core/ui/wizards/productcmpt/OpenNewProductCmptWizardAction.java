@@ -36,9 +36,6 @@ public class OpenNewProductCmptWizardAction extends OpenNewWizardAction {
         this.template = template;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public INewWizard createWizard() {
         if (template) {
@@ -48,9 +45,6 @@ public class OpenNewProductCmptWizardAction extends OpenNewWizardAction {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do

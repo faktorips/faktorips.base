@@ -209,12 +209,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
 
     /**
      * Sets the database table name to use for the {@link IPolicyCmptType} this object is part of.
-     * <p/>
+     * <p>
      * The table name be must unique for each entity in a {@link IPolicyCmptType} inheritance
      * hierarchy if the JOINED_SUBCLASS inheritance strategy is used. In contrast when using MIXED
      * or SINGLE_TABLE inheritance strategies each part of the hierarchy must use the same primary
      * table name.
-     * <p/>
+     * <p>
      * Note that the final table name in the database can differ from the given
      * <code>newTableName</code> by means of an ITableNamingStrategy which is set on a per
      * IpsProject basis.
@@ -298,7 +298,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
     /**
      * An inheritance strategy for mapping a class hierarchy to database tables as defined in the
      * JPA 2 standard.
-     * <p/>
+     * <p>
      * Note:
      * <ul>
      * <li>The strategy TABLE_PER_CONCRETE_CLASS is not supported as it is an optional part of the

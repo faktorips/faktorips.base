@@ -549,11 +549,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * 
-     */
     @Override
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() {
         return getIpsPackageFragmentRoots(true);

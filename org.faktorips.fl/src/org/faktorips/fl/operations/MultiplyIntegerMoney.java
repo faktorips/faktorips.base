@@ -19,9 +19,6 @@ public class MultiplyIntegerMoney extends AbstractBinaryJavaOperation {
         super(Operation.MultiplyIntegerMoney);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         rhs.addCodeFragment(".multiply("); //$NON-NLS-1$

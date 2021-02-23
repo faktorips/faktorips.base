@@ -47,7 +47,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
      * @param elements The elements to refactor in the composite refactoring (set will be copied
      *            defensively)
      * 
-     * @throws IllegalArgumentException If the size of the given set is <= 0 or if different types
+     * @throws IllegalArgumentException If the size of the given set is &le; 0 or if different types
      *             of elements shall be refactored (e.g. attributes and methods)
      */
     protected IpsCompositeRefactoring(Set<IIpsElement> elements) {
@@ -94,7 +94,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     @Override
     public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 
-        pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$ 
+        pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckInitialConditions);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -128,7 +128,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
 
-        pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$ 
+        pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckFinalConditions);
 
         RefactoringStatus status = new RefactoringStatus();

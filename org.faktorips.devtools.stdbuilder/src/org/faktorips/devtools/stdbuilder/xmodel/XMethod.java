@@ -51,7 +51,7 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     /**
      * The returned modifier is the java modifier derived from the method. But if we currently
-     * generate an interface we do not want to have the modifier <i>abstract</i> included (removed
+     * generate an interface we do not want to have the modifier <em>abstract</em> included (removed
      * by XOR '^').
      * 
      * @param generateInterface <code>true</code> if we currently generates an interface,

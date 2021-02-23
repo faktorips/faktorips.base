@@ -205,13 +205,13 @@ public enum Operation {
 
     // greater than operation
     /**
-     * Decimal > Decimal
+     * Decimal &gt; Decimal
      * 
      * @see Datatype#DECIMAL
      */
     GreaterThanDecimalDecimal(DECIMAL, BinaryOperation.GREATER_THAN, DECIMAL),
     /**
-     * Money > Money
+     * Money &gt; Money
      * 
      * @see Datatype#MONEY
      */
@@ -219,13 +219,13 @@ public enum Operation {
 
     // greater than or equal operation
     /**
-     * Decimal >= Decimal
+     * Decimal &ge; Decimal
      * 
      * @see Datatype#DECIMAL
      */
     GreaterThanOrEqualDecimalDecimal(DECIMAL, BinaryOperation.GREATER_THAN_OR_EQUAL, DECIMAL),
     /**
-     * Money >= Money
+     * Money &ge; Money
      * 
      * @see Datatype#MONEY
      */
@@ -233,13 +233,13 @@ public enum Operation {
 
     // less than operation
     /**
-     * Decimal < Decimal
+     * Decimal &lt; Decimal
      * 
      * @see Datatype#DECIMAL
      */
     LessThanDecimalDecimal(DECIMAL, BinaryOperation.LESSER_THAN, DECIMAL),
     /**
-     * Money < Money
+     * Money &lt; Money
      * 
      * @see Datatype#MONEY
      */
@@ -247,13 +247,13 @@ public enum Operation {
 
     // less than or equal operation
     /**
-     * Decimal <= Decimal
+     * Decimal &le; Decimal
      * 
      * @see Datatype#DECIMAL
      */
     LessThanOrEqualDecimalDecimal(DECIMAL, BinaryOperation.LESSER_THAN_OR_EQUAL, DECIMAL),
     /**
-     * Money <= Money
+     * Money &le; Money
      * 
      * @see Datatype#MONEY
      */

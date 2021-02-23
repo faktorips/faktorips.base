@@ -157,9 +157,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         return ipsObject;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         toolkit = new FormToolkit(parent.getDisplay());
@@ -290,9 +287,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         excomposite.setClient(clientGroup);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         IIpsModel.get().removeIpsSrcFilesChangedListener(this);
@@ -306,9 +300,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         super.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         if (form == null) {
@@ -317,9 +308,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         return form;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setFocus() {
         if (form == null) {

@@ -20,8 +20,8 @@ import org.w3c.dom.Element;
  * This strategy converts CamelCased Strings to uppercase with an underscore in between where a
  * lowercase character is followed by an uppercased character.
  * <p>
- * Example:<br />
- * CamelCasedIdentifier42 -> CAMEL_CASED_IDENTIFIER42
+ * Example:<br>
+ * CamelCasedIdentifier42 &rarr; CAMEL_CASED_IDENTIFIER42
  * 
  * @author Roman Grutza
  */
