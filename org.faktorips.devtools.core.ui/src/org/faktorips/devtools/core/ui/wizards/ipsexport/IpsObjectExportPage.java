@@ -245,6 +245,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * <p>
      * This check does not affect the validation process since it is only used for improving the
      * usability.
+     * 
+     * @throws CoreRuntimeException if an error occurs during the validation
      */
     protected void validateObjectToExportUniqueness() {
         try {
@@ -256,7 +258,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
                 setMessage(message, IMessageProvider.INFORMATION);
             }
         } catch (CoreException e) {
-            new CoreRuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
     }
 
