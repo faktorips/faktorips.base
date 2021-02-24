@@ -60,7 +60,9 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         String minRequiredVersionNumber = getIpsProject().getProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
-        if (!minRequiredVersionNumber.startsWith("20")) { //$NON-NLS-1$
+        int majorVersion = Integer
+                .parseInt(minRequiredVersionNumber.substring(0, minRequiredVersionNumber.indexOf('.')));
+        if (majorVersion < 20) {
             return new MessageList(Message.newError(MSGCODE_IPS_VERSION_TOO_OLD,
                     MessageFormat.format(
                             Messages.Migration_21_6_0_IpsVersionTooOld,
