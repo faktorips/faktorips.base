@@ -723,10 +723,13 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
             List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = currentType.getPolicyCmptTypeAttributes();
             for (IPolicyCmptTypeAttribute currentAttribute : policyCmptTypeAttributes) {
-                if (isPersistentAttribute(currentAttribute)) {
-                    addIfNotEmpty(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
-                            new ObjectProperty(currentAttribute.getPersistenceAttributeInfo(),
-                                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+                if (!(currentAttribute.isOverwrite()
+                        && currentInheritanceStrategy == InheritanceStrategy.SINGLE_TABLE)) {
+                    if (isPersistentAttribute(currentAttribute)) {
+                        addIfNotEmpty(currentAttribute.getPersistenceAttributeInfo().getTableColumnName(),
+                                new ObjectProperty(currentAttribute.getPersistenceAttributeInfo(),
+                                        IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+                    }
                 }
             }
 
