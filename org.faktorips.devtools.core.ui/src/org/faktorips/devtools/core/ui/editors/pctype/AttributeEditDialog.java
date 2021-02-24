@@ -983,7 +983,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (!isDataChangeable()) {
             return false;
         }
-        return attribute.getPolicyCmptType().isPersistentEnabled();
+        return attribute.getPolicyCmptType().isPersistentEnabled() && !attribute.isOverwrite();
     }
 
     private void enableOrDisableDatatypeDependingControls() {
