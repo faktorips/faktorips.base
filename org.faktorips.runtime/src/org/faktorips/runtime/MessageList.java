@@ -11,6 +11,7 @@
 package org.faktorips.runtime;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -99,6 +100,18 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return newList;
     }
 
+    /* kept for compile compatibility */
+    @Override
+    public void add(Message message) {
+        super.add(message);
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public void add(MessageList messageList) {
+        super.add(messageList);
+    }
+
     /**
      * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
@@ -120,6 +133,24 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
                 add(message);
             }
         }
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public int size() {
+        return super.size();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public Message getMessage(int index) {
+        return super.getMessage(index);
     }
 
     /**
@@ -147,6 +178,18 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return result;
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public Message getMessageByCode(String code) {
+        return super.getMessageByCode(code);
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public MessageList getMessagesByCode(String code) {
+        return super.getMessagesByCode(code);
     }
 
     /**
@@ -209,6 +252,12 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return severity;
     }
 
+    /* kept for compile compatibility */
+    @Override
+    public String getText() {
+        return super.getText();
+    }
+
     @Override
     public boolean containsErrorMsg() {
         for (Message message : getMessages()) {
@@ -217,6 +266,11 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return false;
+    }
+
+    @Override
+    public MessageList getMessagesFor(Object object, String property) {
+        return super.getMessagesFor(object, property);
     }
 
     @Override
@@ -240,5 +294,35 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return result;
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public Iterator<Message> iterator() {
+        return super.iterator();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }
