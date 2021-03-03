@@ -10126,3 +10126,4 @@ retargeted
 xpand
 plugins
 plugin
+configurator

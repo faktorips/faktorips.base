@@ -21,14 +21,18 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -36,9 +40,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Utilities for the creation and modification of projects.
@@ -104,7 +111,7 @@ public class ProjectUtil {
      * 
      * @param javaProject The Java project to use as base for the IPS project.
      * @param runtimeIdPrefix The prefix for the runtime IDs to be used in the new project.
-     * @param mergableFolder The source folder for mergable Java files.
+     * @param mergableFolder The source folder for mergeable Java files.
      * @param derivedFolder The source folder for derived Java files.
      * @param srcFolder The source folder for IPS objects.
      * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
@@ -226,7 +233,103 @@ public class ProjectUtil {
     }
 
     /**
+     * Creates and returns an {@link IIpsProject} based on the given <code>IJavaProject</code> and
+     * the inserted properties {@link IpsProjectCreationProperties} required for creating an IPS
+     * project.
+     * <p>
+     * Uses {@link IIpsProjectConfigurator IIpsProjectConfigurators} provided by the extension point
+     * {@value ExtensionPoints#ADD_IPS_NATURE} to add Faktor-IPS-dependencies in a way matching the
+     * used dependency management, defaulting to Eclipse Java project libraries.
+     * 
+     * @param javaProject the selected java project
+     * @param properties the required properties {@link IpsProjectCreationProperties} for creating a
+     *            Faktor-IPS project
+     * @return the created and configured Faktor-IPS project
+     */
+    public static IIpsProject createIpsProject(IJavaProject javaProject, IpsProjectCreationProperties properties)
+            throws CoreException {
+
+        String errorMessage = properties.checkForRequiredProperties();
+        if (IpsStringUtils.isNotEmpty(errorMessage)) {
+            throw new CoreException(
+                    new IpsStatus(errorMessage));
+        }
+
+        IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
+        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+        for (IPackageFragmentRoot root : roots) {
+            if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                if (root.getCorrespondingResource() instanceof IProject) {
+                    throw new CoreException(
+                            new IpsStatus(Messages.ProjectUtil_msgSourceInProjectImpossible));
+                }
+                javaSrcFolder = (IFolder)root.getCorrespondingResource();
+                break;
+            }
+        }
+
+        IIpsProject ipsProject = ProjectUtil.createDefaultIpsProject(javaProject, properties.getRuntimeIdPrefix(),
+                properties.isProductDefinitionProject(), properties.isModelProject(),
+                properties.isPersistentProject(),
+                properties.getLocales());
+
+        IFolder ipsModelFolder = ipsProject.getProject().getFolder(properties.getSourceFolderName());
+        if (!ipsModelFolder.exists()) {
+            ipsModelFolder.create(true, true, new NullProgressMonitor());
+        }
+        IIpsObjectPath path = new IpsObjectPath(ipsProject);
+        path.setOutputDefinedPerSrcFolder(false);
+        path.setBasePackageNameForMergableJavaClasses(properties.getBasePackageName());
+        path.setOutputFolderForMergableSources(javaSrcFolder);
+        path.setBasePackageNameForDerivedJavaClasses(properties.getBasePackageName());
+        if (javaSrcFolder.exists()) {
+            String derivedsrcFolderName = properties.isModelProject() ? "resources" : "derived"; //$NON-NLS-1$//$NON-NLS-2$
+            IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path(derivedsrcFolderName));
+            if (!derivedsrcFolder.exists()) {
+                derivedsrcFolder.create(true, true, new NullProgressMonitor());
+                IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
+                IClasspathEntry[] rawClassPath = javaProject.getRawClasspath();
+                IClasspathEntry[] newClassPath = new IClasspathEntry[rawClassPath.length + 1];
+                System.arraycopy(rawClassPath, 0, newClassPath, 0, rawClassPath.length);
+                newClassPath[newClassPath.length - 1] = derivedsrc;
+                javaProject.setRawClasspath(newClassPath, new NullProgressMonitor());
+            }
+            path.setOutputFolderForDerivedSources(derivedsrcFolder);
+        }
+        path.newSourceFolderEntry(ipsModelFolder);
+        ipsProject.setIpsObjectPath(path);
+
+        List<IIpsProjectConfigurator> ipsProjectConfigurators = IpsModelExtensionsViaEclipsePlugins.get()
+                .getIpsProjectConfigurators();
+
+        boolean isExtensionResponsible = false;
+        for (IIpsProjectConfigurator configurator : ipsProjectConfigurators) {
+            if (configurator.canConfigure(javaProject.getProject())) {
+                isExtensionResponsible = true;
+                configurator.configureIpsProject(ipsProject, properties);
+            }
+        }
+        if (!isExtensionResponsible) {
+            StandardJavaProjectConfigurator.configureIpsProject(javaProject);
+        }
+
+        if (properties.isModelProject()) {
+            IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+            ipsProjectProperties.getBuilderSetConfig()
+                    .setPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, "false", //$NON-NLS-1$
+                            null);
+            ipsProject.setProperties(ipsProjectProperties);
+        }
+
+        return ipsProject;
+    }
+
+    /**
      * Creates and returns an <code>IIpsProject</code> based on the given <code>IJavaProject</code>.
+     * <p>
+     * This method also adds the required runtime libraries.
+     * 
+     * @implNote Use this method only if you do not want to use Maven for dependency management.
      * 
      * @param javaProject The <code>IJavaProject</code> which is to be extended with IPS
      *            capabilities.
@@ -250,7 +353,36 @@ public class ProjectUtil {
             boolean isPersistentProject,
             List<Locale> supportedLocales) throws CoreException {
 
-        addIpsRuntimeLibraries(javaProject);
+        IIpsProject ipsProject = createDefaultIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
+                isModelProject, isPersistentProject, supportedLocales);
+
+        StandardJavaProjectConfigurator.configureIpsProject(javaProject);
+
+        return ipsProject;
+    }
+
+    /**
+     * Creates a default {@link IIpsProject} and sets all properties which are definitely required
+     * for the usage of Faktor-IPS in any cases.
+     * 
+     * @param javaProject The selected java project
+     * @param runtimeIdPrefix The inserted runtime-ID-prefix
+     * @param isProductDefinitionProject {@code True} whether it is a product definition project,
+     *            else {@code false}
+     * @param isModelProject {@code True} whether it is a model project, else {@code false}
+     * @param isPersistentProject {@code True} whether it is a persistent project, else
+     *            {@code false}
+     * @param supportedLocales The supported locales
+     * @return The created IPS project
+     * @throws CoreException If creating or configuring the IPS project failed
+     */
+    private static IIpsProject createDefaultIpsProject(IJavaProject javaProject,
+            String runtimeIdPrefix,
+            boolean isProductDefinitionProject,
+            boolean isModelProject,
+            boolean isPersistentProject,
+            List<Locale> supportedLocales) throws CoreException {
+
         IIpsModel ipsModel = IIpsModel.get();
         IIpsProject ipsProject = ipsModel.createIpsProject(javaProject);
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -267,10 +399,11 @@ public class ProjectUtil {
         DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", //$NON-NLS-1$ //$NON-NLS-2$
                 true);
         props.setProductCmptNamingStrategy(namingStrategy);
+        props.setChangesOverTimeNamingConventionIdForGeneratedCode(
+                IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getId());
         props.setMinRequiredVersionNumber(
                 "org.faktorips.feature", //$NON-NLS-1$
                 Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$
-        props.setChangesOverTimeNamingConventionIdForGeneratedCode(IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getId());
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsModel.getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
         if (builderSetInfo != null) {
             props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
@@ -298,23 +431,6 @@ public class ProjectUtil {
         } else {
             properties.setFormulaLanguageLocale(Locale.ENGLISH);
         }
-    }
-
-    private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
-        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        if (targetVersionIsAtLeast5(javaProject)) {
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
-                    .newDefaultEntryPath());
-            javaProject.setRawClasspath(entries, null);
-        }
-    }
-
-    private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
-        return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
-                || Integer.parseInt(targetVersion[0]) > 1;
     }
 
     /**

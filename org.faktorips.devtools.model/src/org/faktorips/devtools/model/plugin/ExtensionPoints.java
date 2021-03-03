@@ -81,6 +81,12 @@ public class ExtensionPoints {
     public static final String PULL_UP_PARTICIPANTS = "pullUpParticipants"; //$NON-NLS-1$
 
     /**
+     * IpsModelPlugin relative id of the extension point for configuring a Maven project as an IPS
+     * project.
+     */
+    public static final String ADD_IPS_NATURE = "addIpsNature"; //$NON-NLS-1$
+
+    /**
      * Name of the attribute that holds the name of the executable class
      */
     public static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$

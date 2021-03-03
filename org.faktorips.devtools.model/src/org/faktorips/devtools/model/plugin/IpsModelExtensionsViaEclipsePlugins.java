@@ -20,6 +20,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitio
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsExtension;
 import org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensions;
@@ -60,6 +62,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     private final Supplier<List<IIpsLoggingFrameworkConnector>> loggingFrameworkConnectors;
 
     private final Supplier<List<IIpsFeatureVersionManager>> featureVersionManagers;
+
+    private final Supplier<List<IIpsProjectConfigurator>> ipsProjectConfigurators;
 
     private final Supplier<IdentifierFilter> identifierFilter;
 
@@ -99,6 +103,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
         modelPreferences = new ModelPreferencesExtension(extensionPoints);
         ipsWorkspaceInteractions = new IpsWorkspaceInteractionsExtension(extensionPoints);
+        ipsProjectConfigurators = new IpsProjectConfigurerExtension(extensionPoints);
         classLoaderProviderFactory = new ClassLoaderProviderFactoryExtension(extensionPoints);
         registeredMigrationOperations = new MigrationOperationExtensions(extensionPoints);
         flFunctionResolvers = new FunctionResolverFactoryExtensions(extensionPoints);
@@ -170,6 +175,11 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     @Override
     public Map<String, IVersionProviderFactory> getVersionProviderFactories() {
         return versionProviderFactories.get();
+    }
+
+    @Override
+    public List<IIpsProjectConfigurator> getIpsProjectConfigurators() {
+        return ipsProjectConfigurators.get();
     }
 
 }

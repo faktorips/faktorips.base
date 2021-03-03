@@ -10,15 +10,10 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -33,12 +28,7 @@ import org.eclipse.ui.actions.ActionDelegate;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.builder.AbstractBuilderSet;
-import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.ProjectUtil;
 
 /**
@@ -118,69 +108,23 @@ public class AddIpsNatureAction extends ActionDelegate {
                 }
                 return;
             }
-        } catch (CoreException e1) {
-            IpsPlugin.log(e1);
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
             return;
         }
+        AddIpsNatureDialog dialog = new AddIpsNatureDialog(getShell(), javaProject);
+        if (dialog.open() == Window.CANCEL) {
+            return;
+        }
+
         try {
-            AddIpsNatureDialog dialog = new AddIpsNatureDialog(getShell(), javaProject);
-            if (dialog.open() == Window.CANCEL) {
-                return;
-            }
-            IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
-            IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
-            for (IPackageFragmentRoot root : roots) {
-                if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
-                    if (root.getCorrespondingResource() instanceof IProject) {
-                        IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgSourceInProjectImpossible);
-                        ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null,
-                                status);
-                        return;
-                    }
-                    javaSrcFolder = (IFolder)root.getCorrespondingResource();
-                    break;
-                }
-            }
-
-            IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, dialog.getRuntimeIdPrefix(),
-                    dialog.isProductDefinitionProject(), dialog.isModelProject(), dialog.isPersistentProject(),
-                    dialog.getLocales());
-            IFolder ipsModelFolder = ipsProject.getProject().getFolder(dialog.getSourceFolderName());
-            if (!ipsModelFolder.exists()) {
-                ipsModelFolder.create(true, true, null);
-            }
-            IIpsObjectPath path = new IpsObjectPath(ipsProject);
-            path.setOutputDefinedPerSrcFolder(false);
-            path.setBasePackageNameForMergableJavaClasses(dialog.getBasePackageName());
-            path.setOutputFolderForMergableSources(javaSrcFolder);
-            path.setBasePackageNameForDerivedJavaClasses(dialog.getBasePackageName());
-            if (javaSrcFolder.exists()) {
-                String derivedsrcFolderName = dialog.isModelProject() ? "resources" : "derived"; //$NON-NLS-1$//$NON-NLS-2$
-                IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path(derivedsrcFolderName));
-                derivedsrcFolder.create(true, true, new NullProgressMonitor());
-                IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
-                IClasspathEntry[] rawClassPath = javaProject.getRawClasspath();
-                IClasspathEntry[] newClassPath = new IClasspathEntry[rawClassPath.length + 1];
-                System.arraycopy(rawClassPath, 0, newClassPath, 0, rawClassPath.length);
-                newClassPath[newClassPath.length - 1] = derivedsrc;
-                javaProject.setRawClasspath(newClassPath, new NullProgressMonitor());
-                path.setOutputFolderForDerivedSources(derivedsrcFolder);
-            }
-            path.newSourceFolderEntry(ipsModelFolder);
-            ipsProject.setIpsObjectPath(path);
-
-            if (dialog.isModelProject()) {
-                IIpsProjectProperties properties = ipsProject.getProperties();
-                properties.getBuilderSetConfig()
-                        .setPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED, "false", //$NON-NLS-1$
-                                null);
-                ipsProject.setProperties(properties);
-            }
-
+            ProjectUtil.createIpsProject(javaProject, dialog.getIpsProjectCreationProperties());
         } catch (CoreException e) {
-            IpsStatus status = new IpsStatus(Messages.AddIpsNatureAction_msgErrorCreatingIPSProject + javaProject, e);
-            ErrorDialog.openError(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature, null, status);
             IpsPlugin.log(e);
+            ErrorDialog.openError(getShell(),
+                    Messages.AddIpsNatureAction_msgErrorCreatingIPSProject + ": " + javaProject.getElementName(), //$NON-NLS-1$
+                    e.getMessage(),
+                    e.getStatus());
         }
     }
 
