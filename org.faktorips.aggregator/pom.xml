@@ -33,6 +33,7 @@
         <module>tests</module>
         <module>sites</module>
         <module>../org.faktorips.archetype</module>
+        <module>../faktorips-maven-plugin</module>
     </modules>
 
     <scm>
