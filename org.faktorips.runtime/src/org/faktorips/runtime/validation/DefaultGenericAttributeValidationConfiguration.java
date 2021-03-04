@@ -151,7 +151,7 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
     }
 
     @Override
-    public Message createMessageForValuePresentForIgnoredAttribute(PolicyAttribute policyAttribute,
+    public Message createMessageForValuePresentForIrrelevantAttribute(PolicyAttribute policyAttribute,
             IModelObject modelObject) {
         return createErrorMessage(policyAttribute, modelObject, ERROR_IRRELEVANT_MSG_CODE_PREFIX,
                 format(ERROR_IRRELEVANT_MSG_CODE_PREFIX, getLabelFor(policyAttribute, modelObject)));
