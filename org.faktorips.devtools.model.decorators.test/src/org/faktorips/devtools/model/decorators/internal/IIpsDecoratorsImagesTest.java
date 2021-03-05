@@ -36,7 +36,7 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         String name = "test";
         ImageDescriptor descriptor = IIpsDecorators.getImageHandling().createImageDescriptor(name);
 
-        URL url = IpsModelIconsPluginActivator.getBundle().getEntry("icons/" + name); //$NON-NLS-1$
+        URL url = IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/" + name); //$NON-NLS-1$
         assertEquals(ImageDescriptor.createFromURL(url), descriptor);
     }
 

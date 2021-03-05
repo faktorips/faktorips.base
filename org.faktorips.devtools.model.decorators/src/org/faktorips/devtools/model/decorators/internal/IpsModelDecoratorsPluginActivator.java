@@ -13,7 +13,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class IpsModelIconsPluginActivator implements BundleActivator {
+public class IpsModelDecoratorsPluginActivator implements BundleActivator {
+
+    public static final String PLUGIN_ID = "org.faktorips.devtools.model.decorators"; //$NON-NLS-1$
 
     private static Bundle bundle;
 

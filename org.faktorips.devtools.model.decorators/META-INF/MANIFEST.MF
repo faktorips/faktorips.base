@@ -14,4 +14,4 @@ Export-Package: org.faktorips.devtools.model.decorators,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional
-Bundle-Activator: org.faktorips.devtools.model.decorators.internal.IpsModelIconsPluginActivator
+Bundle-Activator: org.faktorips.devtools.model.decorators.internal.IpsModelDecoratorsPluginActivator

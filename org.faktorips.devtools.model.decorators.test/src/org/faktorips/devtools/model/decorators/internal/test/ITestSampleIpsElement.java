@@ -7,21 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.model.decorators;
-
-import java.util.Map;
+package org.faktorips.devtools.model.decorators.internal.test;
 
 import org.faktorips.devtools.model.IIpsElement;
 
-/**
- * Provider for additional {@link IIpsElementDecorator IIpsElementDecorators}, to be used by
- * {@link IIpsDecorators}.
- */
-public interface IIpsElementDecoratorsProvider {
+public interface ITestSampleIpsElement extends IIpsElement {
 
-    /**
-     * Returns a map of classes implementing {@link IIpsElement} mapped to their
-     * {@link IIpsElementDecorator IIpsElementDecorators}.
-     */
-    Map<Class<? extends IIpsElement>, IIpsElementDecorator> getDecoratorsByElementClass();
+    // no properties needed
+
 }

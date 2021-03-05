@@ -18,6 +18,8 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IImageHandling;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.decorators.IIpsElementDecoratorsProvider;
+import org.faktorips.devtools.model.decorators.IIpsElementDecoratorsProviders;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.bf.BusinessFunction;
 import org.faktorips.devtools.model.internal.bf.ControlFlow;
@@ -79,7 +81,7 @@ public class IpsDecorators implements IIpsDecorators {
 
     private static IpsDecorators theInstance = new IpsDecorators();
 
-    private final IImageHandling imageHandling = new ImageHandling(IpsModelIconsPluginActivator.getBundle());
+    private final IImageHandling imageHandling = new ImageHandling(IpsModelDecoratorsPluginActivator.getBundle());
     private final Map<Class<? extends IIpsElement>, IIpsElementDecorator> decorators = new HashMap<>();
 
     private IpsDecorators() {
@@ -146,7 +148,11 @@ public class IpsDecorators implements IIpsDecorators {
         decorators.put(ValidationRuleConfig.class, new ValidationRuleConfigDecorator());
         decorators.put(ValidationRuleConfig.class, new ValidationRuleConfigDecorator());
         decorators.put(ProductCmpt.class, new ProductCmptDecorator());
-        // TODO get decorators from extensions via IIpsElementDecoratorsProvider
+
+        for (IIpsElementDecoratorsProvider ipsElementDecoratorsProvider : IIpsElementDecoratorsProviders.get()
+                .getIpsElementDecoratorsProviders()) {
+            decorators.putAll(ipsElementDecoratorsProvider.getDecoratorsByElementClass());
+        }
     }
 
     /**
@@ -163,7 +169,17 @@ public class IpsDecorators implements IIpsDecorators {
 
     @Override
     public IIpsElementDecorator getDecorator(Class<? extends IIpsElement> ipsElementClass) {
-        return decorators.getOrDefault(ipsElementClass, IIpsElementDecorator.MISSING_ICON_PROVIDER);
+        IIpsElementDecorator decorator = decorators.get(ipsElementClass);
+        if (decorator != null) {
+            return decorator;
+        }
+        Class<?> superclass = ipsElementClass.getSuperclass();
+        if (superclass != null && IIpsElement.class.isAssignableFrom(superclass)) {
+            @SuppressWarnings("unchecked")
+            Class<? extends IIpsElement> superIpsElementClass = (Class<? extends IIpsElement>)superclass;
+            return getDecorator(superIpsElementClass);
+        }
+        return IIpsElementDecorator.MISSING_ICON_PROVIDER;
     }
 
     public static IImageHandling getImageHandling() {

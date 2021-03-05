@@ -117,7 +117,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_CustomProductCmptTypeIcon() throws CoreException, IOException {
         IFile file = ipsProject.getProject().getFile("/root/foo.gif");
-        file.create(IpsModelIconsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), true, null);
+        file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), true, null);
         prodType.setInstancesIcon("foo.gif");
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(link);
