@@ -70,7 +70,10 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -99,8 +102,6 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     private static final String SHOW_ROLENAMES = "show_rolenames"; //$NON-NLS-1$
     private static final String SHOW_PROJECTS = "show_projects"; //$NON-NLS-1$
 
-    private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
-    private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
     private static final String CARDINALITY_IMAGE = "Cardinality.gif"; //$NON-NLS-1$
     private static final String PROVIDER_SHOW_STATE = "show_state"; //$NON-NLS-1$
     private static final String INITIAL_CONTENT_PROVIDER = "initial_content_provider"; //$NON-NLS-1$
@@ -591,7 +592,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE);
+                return IIpsDecorators.getDefaultImageDescriptor(PolicyCmptType.class);
             }
 
             @Override
@@ -691,7 +692,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          */
         toggleProductPolicyAction
                 .setHoverImageDescriptor(
-                        IpsUIPlugin.getImageHandling().createImageDescriptor(POLICY_CMPT_TYPE_IMAGE));
+                        IIpsDecorators.getDefaultImageDescriptor(PolicyCmptType.class));
     }
 
     private void setProductCmptTypeImage() {
@@ -701,7 +702,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
          */
         toggleProductPolicyAction
                 .setHoverImageDescriptor(
-                        IpsUIPlugin.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TYPE_IMAGE));
+                        IIpsDecorators.getDefaultImageDescriptor(ProductCmptType.class));
     }
 
     private void refresh() {

@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard;
 
@@ -41,7 +41,7 @@ public class NewIpsPacketAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         NewIpsPackageWizard wizard = new NewIpsPackageWizard();
-        wizard.init(IpsPlugin.getDefault().getWorkbench(), selection);
+        wizard.init(PlatformUI.getWorkbench(), selection);
         WizardDialog dialog = new WizardDialog(shell, wizard);
         dialog.open();
     }

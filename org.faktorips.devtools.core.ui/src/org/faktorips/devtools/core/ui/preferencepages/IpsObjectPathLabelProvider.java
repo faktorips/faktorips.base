@@ -21,6 +21,12 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
+import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.internal.tablecontents.TableContents;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -74,25 +80,24 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
     @Override
     public Image getImage(Object element) {
         if (element instanceof IIpsSrcFolderEntry) {
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(IpsPackageFragmentRoot.class);
             return (Image)resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsProjectRefEntry) {
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("IpsProject.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(IpsProject.class);
             return (Image)resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsArchiveEntry) {
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("IpsAr.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IIpsDecorators
+                    .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
             return (Image)resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
             if (att.isTocPath()) {
-                ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                        "TableContents.gif"); //$NON-NLS-1$
+                ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(TableContents.class);
                 return (Image)resourceManager.get(imageDescriptor);
             }
             if (att.isPackageNameForDerivedSources() || att.isPackageNameForMergableSources()) {
-                ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                        "IpsPackageFragment.gif"); //$NON-NLS-1$
+                ImageDescriptor imageDescriptor = IIpsDecorators
+                        .getDefaultImageDescriptor(AbstractIpsPackageFragment.class);
                 return (Image)resourceManager.get(imageDescriptor);
             }
         }
@@ -109,12 +114,14 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
         }
 
         if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)
-                || attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)) {
+                || attribute.getType()
+                        .equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)) {
             result = Messages.IpsObjectPathLabelProvider_output_folder_derived;
         }
 
         if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)
-                || attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)) {
+                || attribute.getType()
+                        .equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)) {
             result = Messages.IpsObjectPathLabelProvider_output_folder_mergable;
         }
 

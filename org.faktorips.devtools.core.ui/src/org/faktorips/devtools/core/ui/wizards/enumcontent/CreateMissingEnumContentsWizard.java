@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -388,7 +389,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                 if (pack == null || !(pack.exists())) {
                     return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.gif", true); //$NON-NLS-1$
                 }
-                return IpsUIPlugin.getImageHandling().getSharedImage("IpsPackageFragment.gif", true); //$NON-NLS-1$
+                return IIpsDecorators.getImageHandling().getSharedImage("IpsPackageFragment.gif", true); //$NON-NLS-1$
             }
 
         }

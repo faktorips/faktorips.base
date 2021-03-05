@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptComma
 import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
@@ -75,7 +76,8 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             if (reference instanceof IProductCmptReference) {
                 children = reference.getStructure().getChildProductCmptTypeAssociationReferences(reference);
             } else {
-                children = new IProductCmptTypeAssociationReference[] { (IProductCmptTypeAssociationReference)reference };
+                children = new IProductCmptTypeAssociationReference[] {
+                        (IProductCmptTypeAssociationReference)reference };
             }
             if (children.length == 0) {
                 // also adding the command knowing that it is disabled because the handler is
@@ -172,7 +174,8 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
 
         }
         if (association != null) {
-            return NLS.bind(Messages.ProductStructureExplorerContributionFactory_addExistingProductCmpt_for, IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association));
+            return NLS.bind(Messages.ProductStructureExplorerContributionFactory_addExistingProductCmpt_for,
+                    IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association));
         } else {
             return null;
         }
@@ -201,10 +204,13 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             } else if (tableContentUsages.length == 1) {
                 ITableContentUsage tableContentUsage = tableContentUsages[0];
                 CommandContributionItem itemNew = createAddNewTableCommand(serviceLocator, tableContentUsage, NLS.bind(
-                        Messages.ProductStructureExplorerContributionFactory_label_newTableContent_for, IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
+                        Messages.ProductStructureExplorerContributionFactory_label_newTableContent_for,
+                        IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
                 additions.addContributionItem(itemNew, null);
                 CommandContributionItem itemExisting = createAddExistingTableCommand(serviceLocator, tableContentUsage,
-                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor, IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)), true);
+                        NLS.bind(Messages.ProductStructureExplorerContributionFactory_label_selectTableFor,
+                                IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage)),
+                        true);
                 additions.addContributionItem(itemExisting, null);
             } else {
                 MenuManager menuManagerNew = new MenuManager(
@@ -286,7 +292,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     }
 
     private ImageDescriptor getExistingTableContentsImageDescriptor() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
+        ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
                 "TableContents.gif", true); //$NON-NLS-1$
         return imageDescriptor;
     }

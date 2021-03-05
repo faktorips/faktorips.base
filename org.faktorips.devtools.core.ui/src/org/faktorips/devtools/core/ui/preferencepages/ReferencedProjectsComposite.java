@@ -34,9 +34,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
@@ -232,11 +232,9 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
 
     private static final class TableLabelProvider extends LabelProvider {
 
-        private static final String PROJECT_IMG = "IpsProject.gif"; //$NON-NLS-1$
-
         @Override
         public Image getImage(Object element) {
-            return IpsUIPlugin.getImageHandling().getSharedImage(PROJECT_IMG, true);
+            return IIpsDecorators.getImageHandling().getSharedImage("IpsProject.gif", true); //$NON-NLS-1$
         }
 
         @Override

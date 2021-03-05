@@ -65,7 +65,8 @@ public class WrapperAction extends IpsAction {
 
     /**
      * The wrapperaction is created with the image given by imageName. If no image with this name
-     * can be found, the action will be created without an icon.
+     * can be found, the action will be created without an icon. The wrapperaction will check this
+     * osgi bundle first, if no icon is found the ipsdecorator bundle will be checked.
      * 
      * @param selectionProvider The provider to get the selection from to let the wrapped action
      *            work on.

@@ -71,7 +71,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -79,7 +78,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISaveableFilter;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -635,11 +633,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return null;
         }
         if (srcFile instanceof ILibraryIpsSrcFile) {
-            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
-            IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(srcFile.getName());
+            IEditorDescriptor editor = PlatformUI.getWorkbench().getEditorRegistry()
+                    .getDefaultEditor(srcFile.getName());
             IpsArchiveEditorInput input = new IpsArchiveEditorInput(srcFile);
             try {
-                IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 if (page == null) {
                     return null;
                 }
@@ -696,23 +694,24 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
         try {
             IFile file = editorInput.getFile();
-            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             /*
              * For known file types always use the registered editor, NOT the editor specified by
              * the preferences/file-associations. This ensures that, when calling this method,
              * IpsObjects are always opened in their IpsObjectEditor and never in an XML editor
              * (which might be the default editor for the given file).
              */
-            IEditorDescriptor editor = workbench.getEditorRegistry().getDefaultEditor(file.getName());
+            IEditorDescriptor editor = PlatformUI.getWorkbench().getEditorRegistry().getDefaultEditor(file.getName());
             if (editor != null) {
-                return workbench.getActiveWorkbenchWindow().getActivePage().openEditor(editorInput, editor.getId());
+                return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(editorInput,
+                        editor.getId());
             } else {
                 /*
                  * For unknown files let IDE open the corresponding editor. This method searches the
                  * preferences/file-associations for an editor (default editor) and if none is found
                  * guesses the filetype by looking at the contents of the given file.
                  */
-                return IDE.openEditor(workbench.getActiveWorkbenchWindow().getActivePage(), file, true, true);
+                return IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), file, true,
+                        true);
             }
         } catch (PartInitException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -759,8 +758,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public boolean isOpenEditor(IIpsSrcFile ipsSrcFile) {
         IEditorInput editorInput = new FileEditorInput(ipsSrcFile.getCorrespondingFile());
-        IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
-        return workbench.getActiveWorkbenchWindow().getActivePage().findEditor(editorInput) != null;
+        return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditor(editorInput) != null;
     }
 
     /**
@@ -997,8 +995,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return the decorated label provider
      */
     public static LabelProvider getDecoratedLabelProvider(ILabelProvider labelProvider) {
-        IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        return new DecoratingLabelProvider(labelProvider, decoManager.getLabelDecorator());
+        return new DecoratingLabelProvider(labelProvider,
+                PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator());
     }
 
     /**
@@ -1169,7 +1167,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * active.
      */
     public IpsObjectEditor getActiveIpsObjectEditor() {
-        IWorkbenchWindow activeWorkbenchWindow = getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow == null) {
             return null;
         }
@@ -1206,8 +1204,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @param action The {@link IWorkspaceRunnable} that should be startet-
      */
     public void runWorkspaceModification(final IWorkspaceRunnable action) {
-        IWorkbench wb = PlatformUI.getWorkbench();
-        IProgressService ps = wb.getProgressService();
+        IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
             ps.busyCursorWhile(new IRunnableWithProgress() {
 
@@ -1366,20 +1363,19 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          */
         private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
             String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
-            IWorkbench workbench = IpsPlugin.getDefault().getWorkbench();
             IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
 
             IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
             IContentType contentType = contentTypeManager.getContentType(defaultContentTypeOfIpsSrcFilesId);
 
-            IEditorDescriptor[] editors = workbench.getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
+            IEditorDescriptor[] editors = PlatformUI.getWorkbench().getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
             if (editors.length != 1) {
                 throw new CoreException(new IpsStatus(
                         NLS.bind("No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
                                 defaultContentTypeOfIpsSrcFilesId)));
             }
             try {
-                IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+                IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 if (page == null) {
                     return null;
                 }
@@ -1414,6 +1410,16 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             super(bundle);
         }
 
+        @Override
+        public ImageDescriptor createImageDescriptor(String name) {
+            ImageDescriptor descriptor = super.createImageDescriptor(name);
+            if (descriptor == null
+                    || ImageDescriptor.getMissingImageDescriptor().equals(descriptor)) {
+                descriptor = IIpsDecorators.getImageHandling().createImageDescriptor(name);
+            }
+            return descriptor;
+        }
+
         /**
          * Getting an image descriptor by calling the {@link IWorkbenchAdapter} of the ips element
          * If there is no registered adapter this implementation will check the
@@ -1437,7 +1443,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     return ImageDescriptor.getMissingImageDescriptor();
                 }
             }
-            return super.getImageDescriptor(adaptable);
+            return IIpsDecorators.getImageHandling().getImageDescriptor(adaptable);
         }
 
         /**
@@ -1457,7 +1463,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 IpsElementWorkbenchAdapter ipsWA = adapter;
                 return ipsWA.getDefaultImageDescriptor();
             } else {
-                return super.getDefaultImageDescriptor(ipsElementClass);
+                return IIpsDecorators.getImageHandling().getDefaultImageDescriptor(ipsElementClass);
             }
         }
 

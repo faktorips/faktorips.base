@@ -29,6 +29,8 @@ import org.eclipse.gef.tools.MarqueeSelectionTool;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.internal.bf.ControlFlow;
 
 /**
  * Builds the palette that is needed by the business function edtior.
@@ -63,13 +65,15 @@ public class PaletteBuilder {
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/OpaqueAction.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry inlineActionEntry = new CombinedTemplateCreationEntry(
                 BFElementType.ACTION_INLINE.getName(), Messages.PaletteBuilder_inlineActionDesc, new BFElementFactory(
-                        BFElementType.ACTION_INLINE), imageDescriptor, imageDescriptor);
+                        BFElementType.ACTION_INLINE),
+                imageDescriptor, imageDescriptor);
         entries.add(inlineActionEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$
         CombinedTemplateCreationEntry decisionEntry = new CombinedTemplateCreationEntry(
                 BFElementType.DECISION.getName(), Messages.PaletteBuilder_decisionDesc, new BFElementFactory(
-                        BFElementType.DECISION), imageDescriptor, imageDescriptor);
+                        BFElementType.DECISION),
+                imageDescriptor, imageDescriptor);
         entries.add(decisionEntry);
 
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/DecisionNode.gif"); //$NON-NLS-1$
@@ -96,7 +100,7 @@ public class PaletteBuilder {
                 imageDescriptor);
         entries.add(mergeEntry);
 
-        imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/ControlFlow.gif"); //$NON-NLS-1$
+        imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ControlFlow.class);
         ToolEntry controlflowEntry = new ConnectionCreationToolEntry(Messages.PaletteBuilder_controlflow,
                 Messages.PaletteBuilder_controlFlowDesc, null, imageDescriptor, imageDescriptor);
         entries.add(controlflowEntry);

@@ -76,7 +76,9 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -319,7 +321,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
+                return IIpsDecorators.getDefaultImageDescriptor(PolicyCmptTypeAssociation.class);
             }
 
             @Override

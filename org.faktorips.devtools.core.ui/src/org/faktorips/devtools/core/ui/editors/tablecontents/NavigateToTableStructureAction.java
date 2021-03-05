@@ -14,6 +14,7 @@ import org.eclipse.jface.action.Action;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
@@ -28,7 +29,7 @@ class NavigateToTableStructureAction extends Action {
         this.tableContents = tableContents;
         setText(Messages.NavigateToTableStructureAction_Label);
         setToolTipText(Messages.NavigateToTableStructureAction_ToolTip);
-        setImageDescriptor(IIpsDecorators.getImageHandling().createImageDescriptor("TableStructure.gif")); //$NON-NLS-1$
+        setImageDescriptor(IIpsDecorators.getDefaultImageDescriptor(TableStructure.class));
     }
 
     /**
