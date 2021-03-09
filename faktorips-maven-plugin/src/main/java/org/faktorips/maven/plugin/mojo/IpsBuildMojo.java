@@ -22,6 +22,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -34,7 +35,13 @@ import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo;
 import org.faktorips.maven.plugin.mojo.internal.Repository;
 
-@Mojo(name = "faktorips-build")
+/**
+ * Builds the Faktor-IPS project.
+ * <p>
+ * By default, the latest Faktor-IPS is used with an Eclipse 2019-03 runtime, all installed from
+ * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
+ */
+@Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class IpsBuildMojo extends AbstractMojo {
 
     /**
@@ -145,26 +152,41 @@ public class IpsBuildMojo extends AbstractMojo {
     @Parameter(defaultValue = "${java.io.tmpdir}/${project.name}/eclipserun-work")
     private File work;
 
-    @Parameter(property = "project")
-    private MavenProject project;
-
     @Parameter(property = "session", readonly = true, required = true)
     private MavenSession session;
 
+    /**
+     * Path to the JDK 8.
+     */
     @Parameter(defaultValue = "${jdk8.dir}")
     private String jdk8dir;
 
+    /**
+     * The version of Faktor-IPS to be installed.
+     */
     @Parameter(property = "faktorips.repository.version", defaultValue = "latest")
     private String fipsRepositoryVersion;
 
+    /**
+     * Path to the update site to install Faktor-IPS.
+     */
     @Parameter(property = "repository.fips", defaultValue = "https://update.faktorzehn.org/faktorips/${faktorips.repository.version}/")
     private String fipsRepository;
 
+    /**
+     * Path to the third-party repository.
+     */
     @Parameter(property = "repository.thirdparty", defaultValue = "https://drone.faktorzehn.de/p2/thirdparty-1.6")
     private String thirdpartyRepository;
 
+    /**
+     * Path to the update site to install Eclipse.
+     */
     @Parameter(property = "repository.eclipse", defaultValue = "http://update.faktorzehn.org/p2repositories/2019-03/")
     private String eclipseRepository;
+
+    @Component
+    private MavenProject project;
 
     @Component
     private EquinoxInstallationFactory installationFactory;
