@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * Generic action wrapping action delegates defined by other plugins.
+ * Generic action wrapping action delegates to actions/pop-ups defined by other plugins.
  * 
  * @author Thorsten Guenther
  * @author Stefan Widmaier
@@ -31,27 +31,27 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class WrapperAction extends IpsAction {
 
     /**
-     * The action delegate this action wrapps.
+     * The action delegate this action wraps.
      */
     private IActionDelegate wrappedActionDelegate = null;
 
     /**
-     * Creates a new wrapper action for the given ids. The WrapperAction therefor searches action
-     * definitions of extensions/plugins to retrieve the classname of the actual action.
+     * Creates a new wrapper action for the given IDs. The {@link WrapperAction} therefore searches
+     * action definitions of extensions/plugins to retrieve the class name of the actual action.
      * <p>
-     * First all actionset definitions are searched for the given actionset id and action id.
-     * Secondly all popup menu definitions are searched for the given action id, the actionset id is
-     * ignored in this case.
+     * First all action set definitions are searched for the given action set ID and action ID.
+     * Secondly all pop-up menu definitions are searched for the given action ID, the action set ID
+     * is ignored in this case.
      * <p>
-     * The found classname is used to instanciate the requested delegate action. If no action
-     * delegate can be instanciated this wrapperaction does nothing when run.
+     * The found class name is used to instantiate the requested delegate action. If no action
+     * delegate can be instantiated this wrapper action does nothing when run.
      * 
      * @param selectionProvider The provider to get the selection from to let the wrapped action
      *            work on.
      * @param label The label of this action in the GUI.
      * @param tooltip The tooltip of this action.
-     * @param actionSetId The id of the action set to get the action from.
-     * @param actionId The id of the action to wrap.
+     * @param actionSetId The ID of the action set to get the action from.
+     * @param actionId The ID of the action to wrap.
      */
     public WrapperAction(ISelectionProvider selectionProvider, String label, String tooltip, String actionSetId,
             String actionId) {
@@ -64,9 +64,10 @@ public class WrapperAction extends IpsAction {
     }
 
     /**
-     * The wrapperaction is created with the image given by imageName. If no image with this name
-     * can be found, the action will be created without an icon. The wrapperaction will check this
-     * osgi bundle first, if no icon is found the ipsdecorator bundle will be checked.
+     * The wrapper action is created with the image given by image name. If no image with this name
+     * can be found, the action will be created without an icon. The wrapper action will check this
+     * OSGI bundle first, if no icon is found the {@link org.faktorips.devtools.model.decorators}
+     * bundle will be checked.
      * 
      * @param selectionProvider The provider to get the selection from to let the wrapped action
      *            work on.
@@ -75,8 +76,8 @@ public class WrapperAction extends IpsAction {
      * @param imageName The name of the icon/image that should be used for this action in the GUI.
      *            If no image with the given name can be found or if imageName ist null this action
      *            is created without an image.
-     * @param actionSetId The id of the action set to get the action from.
-     * @param actionId The id of the action to wrap.
+     * @param actionSetId The ID of the action set to get the action from.
+     * @param actionId The ID of the action to wrap.
      */
     public WrapperAction(ISelectionProvider selectionProvider, String label, String tooltip, String imageName,
             String actionSetId, String actionId) {
@@ -152,7 +153,7 @@ public class WrapperAction extends IpsAction {
 
     /**
      * Sets the selection of the wrapped action and runs it. Does nothing if no action delegate
-     * could be instanciated when this action was initialized. {@inheritDoc}
+     * could be instantiated when this action was initialized.
      */
     @Override
     public void run(IStructuredSelection selection) {
