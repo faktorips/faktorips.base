@@ -3,10 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport
 Bundle-Version: 21.6.0.qualifier
-Require-Bundle: org.faktorips.devtools.model;bundle-version="21.6.0",
- org.faktorips.devtools.model.decorators;bundle-version="21.6.0",
+Require-Bundle: org.faktorips.valuetypes,
+ org.faktorips.devtools.model.decorators;visibility:=reexport,
  org.eclipse.jdt.core,
- org.faktorips.valuetypes,
  org.eclipse.swt,
  org.eclipse.jface
 Bundle-RequiredExecutionEnvironment: JavaSE-11

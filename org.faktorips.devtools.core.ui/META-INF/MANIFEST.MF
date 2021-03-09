@@ -6,7 +6,7 @@ Bundle-Version: 21.6.0.qualifier
 Bundle-Activator: org.faktorips.devtools.core.ui.IpsUIPlugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.gef;bundle-version="3.4.0",
- org.faktorips.devtools.core,
+ org.faktorips.devtools.core;visibility:=reexport,
  org.eclipse.jface.text;bundle-version="3.4.0",
  org.eclipse.ui.forms;visibility:=reexport,
  org.eclipse.ui.workbench.texteditor;bundle-version="3.4.0",

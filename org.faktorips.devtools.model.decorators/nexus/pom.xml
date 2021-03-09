@@ -53,7 +53,6 @@
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.swt.${swt.platform}</artifactId>
             <version>3.115.100</version>
-            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.eclipse.platform</groupId>

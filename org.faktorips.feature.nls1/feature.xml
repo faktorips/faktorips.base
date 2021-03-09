@@ -156,4 +156,12 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.faktorips.nls.devtools.model.decorators.nl1"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
 </feature>

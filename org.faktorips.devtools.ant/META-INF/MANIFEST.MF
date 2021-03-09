@@ -4,11 +4,11 @@ Bundle-Name: Faktor-IPS Custom Ant-Tasks
 Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
 Bundle-Version: 21.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Require-Bundle: org.apache.ant,
- org.eclipse.ant.core,
- org.faktorips.devtools.core,
+Require-Bundle: org.faktorips.runtime,
+ org.faktorips.devtools.model,
  org.faktorips.devtools.htmlexport,
- org.faktorips.runtime,
+ org.apache.ant,
+ org.eclipse.ant.core,
  org.eclipse.jdt.launching;bundle-version="3.13.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: ant_tasks/ant-tasks.jar
