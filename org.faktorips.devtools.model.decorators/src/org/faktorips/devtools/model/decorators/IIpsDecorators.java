@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.internal.IpsDecorators;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 public interface IIpsDecorators {
 
@@ -25,6 +26,10 @@ public interface IIpsDecorators {
 
     static IIpsElementDecorator get(Class<? extends IIpsElement> ipsElementClass) {
         return get().getDecorator(ipsElementClass);
+    }
+
+    static IIpsElementDecorator get(IpsObjectType ipsObjectType) {
+        return get().getDecorator(ipsObjectType);
     }
 
     static ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
@@ -42,11 +47,19 @@ public interface IIpsDecorators {
                 : ImageDescriptor.getMissingImageDescriptor();
     }
 
+    static ImageDescriptor getDefaultImageDescriptor(IpsObjectType ipsObjectType) {
+        return ipsObjectType != null
+                ? get(ipsObjectType).getDefaultImageDescriptor()
+                : ImageDescriptor.getMissingImageDescriptor();
+    }
+
     static IImageHandling getImageHandling() {
         return IpsDecorators.getImageHandling();
     }
 
     IIpsElementDecorator getDecorator(Class<? extends IIpsElement> ipsElementClass);
+
+    IIpsElementDecorator getDecorator(IpsObjectType ipsObjectType);
 
     public Collection<Class<? extends IIpsElement>> getDecoratedClasses();
 

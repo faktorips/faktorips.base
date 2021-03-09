@@ -248,17 +248,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$
         }
         List<IpsObjectType> types = new ArrayList<IpsObjectType>();
-        types.add(IpsObjectType.PRODUCT_CMPT);
-        types.add(IpsObjectType.PRODUCT_TEMPLATE);
-        types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
         types.add(IpsObjectType.PRODUCT_CMPT_TYPE);
+        types.add(IpsObjectType.PRODUCT_CMPT);
+        types.add(IpsObjectType.PRODUCT_TEMPLATE);
+        types.add(IpsObjectType.ENUM_TYPE);
+        types.add(IpsObjectType.ENUM_CONTENT);
         types.add(IpsObjectType.TABLE_STRUCTURE);
         types.add(IpsObjectType.TABLE_CONTENTS);
         types.add(IpsObjectType.TEST_CASE_TYPE);
+        types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.BUSINESS_FUNCTION);
-        types.add(IpsObjectType.ENUM_TYPE);
-        types.add(IpsObjectType.ENUM_CONTENT);
 
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
@@ -1450,7 +1450,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IpsObjectType[] getIpsObjectTypes() {
-        return ipsObjectTypes;
+        return Arrays.copyOf(ipsObjectTypes, ipsObjectTypes.length);
     }
 
     @Override

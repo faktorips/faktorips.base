@@ -48,9 +48,11 @@ import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.internal.ProductCmptDecorator;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
@@ -268,7 +270,8 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
     static class LabelProvider extends ColumnLabelProvider {
 
-        private final ProductCmptDecorator productCmptDecorator = new ProductCmptDecorator();
+        private final ProductCmptDecorator productCmptDecorator = (ProductCmptDecorator)IIpsDecorators
+                .get(IpsObjectType.PRODUCT_CMPT);
 
         private final LocalizedLabelProvider delegate = new LocalizedLabelProvider();
 

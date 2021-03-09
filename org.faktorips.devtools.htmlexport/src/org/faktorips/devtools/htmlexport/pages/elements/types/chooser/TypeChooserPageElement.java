@@ -78,8 +78,7 @@ public class TypeChooserPageElement extends AbstractPageElement {
             @Override
             public void run() {
                 IImageHandling imageHandling = IIpsDecorators.getImageHandling();
-                ImageDescriptor defaultImageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType
-                        .getImplementingClass());
+                ImageDescriptor defaultImageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType);
                 ImageDescriptor disabledSharedImage = imageHandling.getDisabledImageDescriptor(defaultImageDescriptor);
                 ImageData imageData = disabledSharedImage.getImageData(100);
                 wrapper.addPageElements(new ImagePageElement(imageData, ipsObjectType.getDisplayName(), ipsObjectType
@@ -92,9 +91,7 @@ public class TypeChooserPageElement extends AbstractPageElement {
     private void addLink(IpsObjectType ipsObjectType, ICompositePageElement wrapper) {
         ILinkStrategy linkStrategy = new LinkToObjectTypeClassesStrategy(ipsObjectType);
 
-        ImageData imageData = IIpsDecorators.getImageHandling()
-                .getDefaultImage(ipsObjectType.getImplementingClass())
-                .getImageData();
+        ImageData imageData = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType).getImageData(100);
 
         IPageElement pageElement = new ImagePageElement(imageData, ipsObjectType.getDisplayName(),
                 ipsObjectType.getFileExtension(), getContext());

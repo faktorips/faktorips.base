@@ -27,9 +27,23 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
     public static final String PRODUCT_CMPT_BASE_IMAGE = "ProductCmpt.gif"; //$NON-NLS-1$
     public static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.gif"; //$NON-NLS-1$
 
+    private final String defaultImage;
+
+    ProductCmptDecorator() {
+        this(PRODUCT_CMPT_BASE_IMAGE);
+    }
+
+    private ProductCmptDecorator(String defaultImage) {
+        this.defaultImage = defaultImage;
+    }
+
+    static ProductCmptDecorator forTemplates() {
+        return new ProductCmptDecorator(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
+    }
+
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_BASE_IMAGE);
+        return IIpsDecorators.getImageHandling().createImageDescriptor(defaultImage);
     }
 
     @Override

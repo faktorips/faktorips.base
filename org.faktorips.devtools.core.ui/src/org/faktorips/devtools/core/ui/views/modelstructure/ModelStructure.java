@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -733,8 +732,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(java.util.Observable o, Object arg) {
         if (o.equals(this.provider)) {
             if (this.treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
                 expandPaths((IType)this.treeViewer.getInput());

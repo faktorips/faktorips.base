@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IImageHandling;
@@ -73,6 +74,8 @@ import org.faktorips.devtools.model.internal.testcasetype.TestPolicyCmptTypePara
 import org.faktorips.devtools.model.internal.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.model.internal.testcasetype.TestValueParameter;
 import org.faktorips.devtools.model.internal.valueset.ValueSet;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
 
 public class IpsDecorators implements IIpsDecorators {
 
@@ -83,11 +86,13 @@ public class IpsDecorators implements IIpsDecorators {
 
     private final IImageHandling imageHandling = new ImageHandling(IpsModelDecoratorsPluginActivator.getBundle());
     private final Map<Class<? extends IIpsElement>, IIpsElementDecorator> decorators = new HashMap<>();
+    private final Supplier<IIpsElementDecorator> templateDecorator = CachingSupplier
+            .caching(() -> ProductCmptDecorator.forTemplates());
 
     private IpsDecorators() {
         // set this here, because the SimpleIpsElementDecorator will access it in its constructor
         theInstance = this;
-        decorators.put(AbstractIpsSrcFile.class, new SimpleIpsElementDecorator("IpsSrcFile.gif")); //$NON-NLS-1$
+        decorators.put(AbstractIpsSrcFile.class, new IpsSrcFileDecorator());
         decorators.put(BusinessFunction.class, new SimpleIpsElementDecorator("BusinessFunction.gif")); //$NON-NLS-1$
         decorators.put(BusinessFunctionImpl.class, new SimpleIpsElementDecorator("BusinessFunction.gif")); //$NON-NLS-1$
         decorators.put(Column.class, new SimpleIpsElementDecorator("TableColumn.gif")); //$NON-NLS-1$
@@ -180,6 +185,15 @@ public class IpsDecorators implements IIpsDecorators {
             return getDecorator(superIpsElementClass);
         }
         return IIpsElementDecorator.MISSING_ICON_PROVIDER;
+    }
+
+    @Override
+    public IIpsElementDecorator getDecorator(IpsObjectType ipsObjectType) {
+        // special case: PRODUCT_TEMPLATE uses the same implementing class as PRODUCT_CMPT
+        if (IpsObjectType.PRODUCT_TEMPLATE.equals(ipsObjectType)) {
+            return templateDecorator.get();
+        }
+        return getDecorator(ipsObjectType.getImplementingClass());
     }
 
     public static IImageHandling getImageHandling() {

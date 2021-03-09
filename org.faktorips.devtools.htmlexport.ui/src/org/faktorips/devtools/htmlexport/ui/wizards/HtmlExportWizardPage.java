@@ -54,12 +54,13 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 
 public class HtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
-ICheckStateListener {
+        ICheckStateListener {
 
     private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage"; //$NON-NLS-1$
 
@@ -158,6 +159,7 @@ ICheckStateListener {
         new Label(parent, SWT.NONE).setText(Messages.HtmlExportWizardPage_objectTypes);
 
         objectTypesTreeViewer = new ContainerCheckedTreeViewer(parent);
+        objectTypesTreeViewer.setUseHashlookup(false);
         objectTypesTreeViewer.setContentProvider(new IpsObjectTreeContentProvider());
         objectTypesTreeViewer.setLabelProvider(new IpsObjectLabelProvider());
         objectTypesTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -448,7 +450,7 @@ ICheckStateListener {
                 return null;
             }
             IpsObjectType ipsObjectType = (IpsObjectType)element;
-            return IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());
+            return IpsUIPlugin.getImageHandling().getImage(IIpsDecorators.getDefaultImageDescriptor(ipsObjectType));
         }
 
         @Override
