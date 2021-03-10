@@ -40,6 +40,10 @@ import org.faktorips.maven.plugin.mojo.internal.Repository;
  * <p>
  * By default, the latest Faktor-IPS is used with an Eclipse 2019-03 runtime, all installed from
  * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
+ * <p>
+ * To change from where the plugins are installed, see {@link #additionalRepositories},
+ * {@link #repositories}, {@link #fipsRepository}/{@link #fipsRepositoryVersion},
+ * {@link #eclipseRepository} and {@link #thirdpartyRepository}.
  */
 @Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class IpsBuildMojo extends AbstractMojo {
@@ -73,7 +77,9 @@ public class IpsBuildMojo extends AbstractMojo {
     private boolean skip = false;
 
     /**
-     * Dependencies which will be resolved transitively to make up the eclipse runtime. Example:
+     * Dependencies which will be resolved transitively to make up the eclipse runtime.
+     * <p>
+     * Example:
      * 
      * <pre>
      * &lt;dependencies&gt;
@@ -84,11 +90,13 @@ public class IpsBuildMojo extends AbstractMojo {
      * &lt;/dependencies&gt;
      * </pre>
      */
-    // @Parameter
+    // Parameter
     private List<Dependency> dependencies = new ArrayList<>();
 
     /**
-     * List of JVM arguments set on the command line. Example:
+     * List of JVM arguments set on the command line.
+     * <p>
+     * Example:
      * 
      * <pre>
      * &lt;jvmArgs&gt;
@@ -101,7 +109,9 @@ public class IpsBuildMojo extends AbstractMojo {
     private List<String> jvmArgs = new ArrayList<>();
 
     /**
-     * List of applications arguments set on the command line. Example:
+     * List of applications arguments set on the command line.
+     * <p>
+     * Example:
      *
      * <pre>
      * &lt;applicationsArgs&gt;
@@ -114,20 +124,61 @@ public class IpsBuildMojo extends AbstractMojo {
     private List<String> applicationsArgs = new ArrayList<>();
 
     /**
-     * p2 repositories which will be used to resolve dependencies. Example:
+     * p2 repositories which will be used to resolve dependencies. If the default values should be
+     * used this parameter must remain unused. Additional repositories can then be defined using the
+     * {@link #additionalRepositories} parameter. The paths of the default repositories can be
+     * changed individually using the parameters {@link #fipsRepository}, {@link #eclipseRepository}
+     * and {@link #thirdpartyRepository} or the properties {@code repository.fips},
+     * {@code repository.eclipse} and {@code repository.thirdparty}.
+     * <p>
+     * Example:
      * 
      * <pre>
-     * &lt;repositories&gt;
-     *  &lt;repository&gt;
-     *   &lt;id&gt;juno&lt;/id&gt;
-     *   &lt;layout&gt;p2&lt;/layout&gt;
-     *   &lt;url&gt;https://download.eclipse.org/releases/juno&lt;/url&gt;
-     *  &lt;/repository&gt;
-     * &lt;/repositories&gt;
+     * {@code
+     * <repositories>
+     *  <repository>
+     *   <id>faktor-ips-21-6</id>
+     *   <layout>p2</layout>
+     *   <url>https://update.faktorzehn.org/faktorips/v21_6/</url>
+     *  </repository>
+     *  <repository>
+     *   <id>eclipse-2020-12</id>
+     *   <layout>p2</layout>
+     *   <url>http://download.eclipse.org/eclipse/updates/4.18/</url>
+     *  </repository>
+     *  <repository>
+     *   <id>thirdparty</id>
+     *   <layout>p2</layout>
+     *   <url>https://drone.faktorzehn.de/p2/thirdparty-1.6</url>
+     *  </repository>
+     * </repositories>
+     * }
+     * </pre>
+     * 
+     * @see #additionalRepositories
+     */
+    @Parameter
+    private List<Repository> repositories = new ArrayList<>();
+    /**
+     * This parameter makes it possible to define additional repositories while using the default
+     * repositories (for which the {@link #repositories} parameter must remain unused).
+     * <p>
+     * Example:
+     * 
+     * <pre>
+     * {@code
+     * <additionalRepositories>
+     *  <repository>
+     *   <id>fips-test</id>
+     *   <layout>p2</layout>
+     *   <url>https://update.faktorzehn.org/faktorips/productvariants/21.6</url>
+     *  </repository>
+     * </additionalRepositories>
+     * }
      * </pre>
      */
-    // @Parameter
-    private List<Repository> repositories = new ArrayList<>();
+    @Parameter
+    private List<Repository> additionalRepositories = new ArrayList<>();
 
     /**
      * Kill the forked process after a certain number of seconds. If set to 0, wait forever for the
@@ -212,10 +263,14 @@ public class IpsBuildMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // default values for parameter repositories
-        addRepository(eclipseRepository);
-        addRepository(getFipsRepository());
-        addRepository(thirdpartyRepository);
+        // add default repositories if no repositories are specified in the pom.xml
+        if (repositories.isEmpty()) {
+            addRepository(eclipseRepository);
+            addRepository(getFipsRepository());
+            addRepository(thirdpartyRepository);
+        }
+
+        repositories.addAll(additionalRepositories);
 
         // default values for parameter dependencies
         addDependency("org.faktorips.devtools.core");
