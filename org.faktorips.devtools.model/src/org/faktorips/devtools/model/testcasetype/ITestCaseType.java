@@ -180,7 +180,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * number of parameters - 1 (the last test parameter) nothing moved down
      * 
      * @param indexes The indexes identifying the test parameter.
-     * @param up <code>true</code>, to move up, <false> to move them down.
+     * @param up <code>true</code>, to move up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved test parameter.
      * 

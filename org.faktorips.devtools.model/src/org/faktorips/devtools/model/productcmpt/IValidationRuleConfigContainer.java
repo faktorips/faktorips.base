@@ -27,8 +27,9 @@ public interface IValidationRuleConfigContainer {
     int getNumOfValidationRules();
 
     /**
-     * Returns the validation with the given name if defined in this generation. Returns <null> no
-     * validation rule with the given name can be found or if the given name is {@code null}.
+     * Returns the validation with the given name if defined in this generation. Returns
+     * {@code null} if no validation rule with the given name can be found or if the given name is
+     * {@code null}.
      */
     IValidationRuleConfig getValidationRuleConfig(String validationRuleName);
 

@@ -436,9 +436,9 @@ public class XPolicyAssociation extends XAssociation {
     }
 
     /**
-     * /** Returns "new" plus the capitalized association name.
+     * Returns "new" plus the capitalized association name.
      * 
-     * @See {@link #getMethodNameNew()}
+     * @see #getMethodNameNew()
      */
     public String getVariableNameNewInstance() {
         return getMethodNameNew();

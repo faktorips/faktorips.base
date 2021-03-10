@@ -152,17 +152,11 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         return range;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.RANGE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
         if (valueSet == null) {
@@ -171,17 +165,11 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         return valueSet.isRange();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IValueSet getValueSet() {
         return range;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setValueSet(IValueSet valueSet, ValueDatatype valueDatatype) {
         range = (IRangeValueSet)valueSet;
@@ -230,17 +218,11 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         emptyRangeCheckboxField.getControl().setEnabled(enabled);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;

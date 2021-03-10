@@ -61,9 +61,6 @@ public class ProductContentProvider extends ModelContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Object[] getUnfilteredChildren(Object parentElement) {
         // exclude all non ips project definition projects

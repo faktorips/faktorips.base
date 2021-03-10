@@ -302,9 +302,6 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         return description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getDefaultDescription(IDescribedElement describedElement) {
         ArgumentCheck.notNull(describedElement);

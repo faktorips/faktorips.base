@@ -16,7 +16,9 @@ import org.faktorips.devtools.model.type.IType;
 
 /**
  * Wizard to create constrained Associations. This Wizard appears when user clicks on the button
- * <quote>override</quote> The Wizard contains two pages.
+ * <em>override</em>.
+ * <p>
+ * The Wizard contains two pages.
  * 
  * @since 3.11
  */

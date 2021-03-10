@@ -68,7 +68,7 @@ public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>
      * {@inheritDoc}
      * <p>
      * This implementation returns a string representation of the list of values. For example
-     * <code>[value1, value2, value3]
+     * <code>[value1, value2, value3]</code>.
      */
     @Override
     public default String getStringValue() {

@@ -585,8 +585,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     /**
      * Returns true if the wizard is
      * <ul>
-     * <li>in copy mode and
-     * <li>the product component type of the product component to be copied can be found
+     * <li>in copy mode and</li>
+     * <li>the product component type of the product component to be copied can be found</li>
+     * </ul>
      */
     public boolean isSingleTypeSelection() {
         return singleTypeSelection;
@@ -597,8 +598,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      * <p>
      * The page is not needed if
      * <ul>
-     * <li>{@link #isAddToMode()} returns {@code true} or
-     * <li>{@link #isCopyMode()} returns {@code true} and the product component type of the product
+     * <li>{@link #isAddToMode()} returns {@code true} or</li>
+     * <li>{@link #isCopyMode()} returns {@code true} and the product component type of the
+     * product</li>
+     * </ul>
      * component being copied can be found
      */
     public boolean isFirstPageNeeded() {

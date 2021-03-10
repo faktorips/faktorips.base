@@ -474,8 +474,8 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * 
      * <strong>Scenario:</strong><br>
      * An {@link IType} is indirectly targeted by an {@link IAssociation} over the supertype
-     * hierarchy: <br />
-     * Example: if A supertype B and B -> C, then !A->C
+     * hierarchy: <br>
+     * Example: if A supertype B and B&rarr;C, then !A&rarr;C
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * B is the only root for C
@@ -508,8 +508,8 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * 
      * <strong>Scenario:</strong><br>
      * An {@link IType} is indirectly targeted by an {@link IAssociation} over the supertype
-     * hierarchy: <br />
-     * Example: if A -> B and B supertype of C, then A->C
+     * hierarchy: <br>
+     * Example: if A &rarr; B and B supertype of C, then A&rarr;C
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * A is the root for object C

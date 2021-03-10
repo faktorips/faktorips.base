@@ -22,9 +22,6 @@ public class PlusInteger extends AbstractUnaryJavaOperation {
         super(Operation.PlusInteger);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

@@ -130,8 +130,8 @@ public class TextRegion implements Comparable<TextRegion> {
      * <p>
      * For example in string "abc123" you get the following results:
      * <ul>
-     * <li>Text region 1 to 5: <b>bc12</b></li>
-     * <li>Text region 1 to -5: <b>abc123</b></li>
+     * <li>Text region 1 to 5: <strong>bc12</strong></li>
+     * <li>Text region 1 to -5: <strong>abc123</strong></li>
      * </ul>
      * 
      * @return The string that is the defined substring of the input string.

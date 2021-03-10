@@ -324,7 +324,7 @@ public class XEnumType extends XClass {
     }
 
     /**
-     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br />
+     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br>
      * Code snippet:
      *
      * <pre>
@@ -351,7 +351,7 @@ public class XEnumType extends XClass {
     }
 
     /**
-     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br />
+     * Returns the code fragment for a <code>getValueByXXX()</code> method call expression.<br>
      * Code snippet:
      *
      * <pre>

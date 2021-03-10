@@ -23,16 +23,23 @@ import org.w3c.dom.Element;
  * the IPS project properties.Therefor the IpsArtefactBuilderSet tag of an .ipsproject file can
  * contain one IpsArtefactBuilderSetConfig tag. Here is an example for a configuration declaration:
  * 
+ * <pre>
+ * {@code
  * <IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">
- * <IpsArtefactBuilderSetConfig> <Property name="name" value="value"/>
- * <Property name="name2" value="value2"/> </IpsArtefactBuilderSetConfig> </IpsArtefactBuilderSet>
+ *      <IpsArtefactBuilderSetConfig>
+ *          <Property name="name" value="value"/>
+ *          <Property name="name2" value="value2"/>
+ *      </IpsArtefactBuilderSetConfig>
+ * </IpsArtefactBuilderSet>
+ * }
+ * </pre>
  * 
  * @author Peter Erzberger
  */
 public interface IIpsArtefactBuilderSetConfigModel {
 
     /**
-     * The xml tag name for instances of this type.
+     * The XML tag name for instances of this type.
      */
     public static final String XML_ELEMENT = "IpsArtefactBuilderSetConfig"; //$NON-NLS-1$
 

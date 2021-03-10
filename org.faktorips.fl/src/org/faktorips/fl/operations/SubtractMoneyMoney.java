@@ -22,9 +22,6 @@ public class SubtractMoneyMoney extends AbstractBinaryJavaOperation {
         super(Operation.SubtractMoneyMoney);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".subtract("); //$NON-NLS-1$

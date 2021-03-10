@@ -166,7 +166,7 @@ public interface IRuntimeRepository {
 
     /**
      * Returns the enumeration value for the provided unique Id. The unique Id is specified as
-     * follows <i>qualifiedClassName'#'valueId</i>.
+     * follows <em>qualifiedClassName'#'valueId</em>.
      * 
      * @deprecated This method does only return valid enums if the id attribute of the enum is of
      *             type {@link String}. You should never use this method! Use

@@ -42,9 +42,6 @@ public class SqrtDecimal extends AbstractFlFunction {
         conversionCodeGenerator = ConversionCodeGenerator.getDefault();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);

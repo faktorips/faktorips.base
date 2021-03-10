@@ -53,7 +53,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     /**
      * Returns a default ConversionCodeGenerator that contains the following conversions.
-     * <p>
      * <ul>
      * <li>Primitive boolean to Boolean</li>
      * <li>Boolean to primitive boolean</li>

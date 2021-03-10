@@ -30,17 +30,11 @@ import org.osgi.framework.Bundle;
  */
 public class FileHandler implements IoHandler {
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeFile(DocumentationContext context, String relativPath, byte[] content) throws IOException {
         writeFile(context.getPath() + File.separator + relativPath, content);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void writeFile(String filename, byte[] content) throws IOException {
         File file = new File((filename));
@@ -55,9 +49,6 @@ public class FileHandler implements IoHandler {
         outputStream.close();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public byte[] readFile(String fileName) throws IOException {
         String bundleName = "org.faktorips.devtools.htmlexport"; //$NON-NLS-1$

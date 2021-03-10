@@ -31,9 +31,6 @@ public class Exists extends AbstractFlFunction {
         super(name, description, FunctionSignatures.Exists);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         Datatype argType = argResults[0].getDatatype();

@@ -15,8 +15,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.FunctionSignatures;
 
 /**
- * A function that provides a boolean or-operation and has the following signature <i>boolean
- * OR(boolean...)</i>.
+ * A function that provides a boolean or-operation and has the following signature <em>boolean
+ * OR(boolean...)</em>.
  */
 public class Or extends AbstractVarArgFunction {
 

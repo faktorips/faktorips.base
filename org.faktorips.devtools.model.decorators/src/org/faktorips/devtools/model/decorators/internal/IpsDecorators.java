@@ -164,8 +164,8 @@ public class IpsDecorators implements IIpsDecorators {
      * Returns the {@link IpsDecorators} singleton instance.
      *
      * @see IIpsDecorators#get
-     * @deprecated <b><em>This method should only be called when explicitly depending on
-     *             implementation details, otherwise use {@link IIpsDecorators#get}!</em></b>
+     * @deprecated <em>This method should only be called when explicitly depending on implementation
+     *             details, otherwise use {@link IIpsDecorators#get}!</em>
      */
     @Deprecated
     public static final IpsDecorators get() {

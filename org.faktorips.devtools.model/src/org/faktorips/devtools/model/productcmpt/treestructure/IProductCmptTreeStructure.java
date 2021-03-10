@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
  * subclasses which are references to product components or product component type associations. One
  * reference wraps one product component, but it is possible that more than one reference wraps the
  * same product component.
- * <p/>
+ * <p>
  * It is also not possible to setup the structure for a special generation but for a concrete date.
  * This is because the structure is built for a set of product components which may have different
  * adjustment dates.
@@ -79,7 +79,8 @@ public interface IProductCmptTreeStructure {
      *         <code>null</code> if no parent was found (if the given child is the root of the
      *         structure, for example).
      */
-    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(IProductCmptStructureReference child);
+    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(
+            IProductCmptStructureReference child);
 
     /**
      * @param parent The parent-reference to start the search for child-references.
@@ -95,7 +96,8 @@ public interface IProductCmptTreeStructure {
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent);
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+            IProductCmptStructureReference parent);
 
     /**
      * Get all product component type association references from the parent structure reference.
@@ -104,14 +106,16 @@ public interface IProductCmptTreeStructure {
      * @param includeEmptyAssociations true if empty associations have to be included
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(IProductCmptStructureReference parent,
+    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+            IProductCmptStructureReference parent,
             boolean includeEmptyAssociations);
 
     /**
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptReference</code>s.
      */
-    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(IProductCmptStructureReference parent);
+    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(
+            IProductCmptStructureReference parent);
 
     /**
      * @param parent The parent-reference to start the search for child-references.
@@ -120,8 +124,8 @@ public interface IProductCmptTreeStructure {
     public IProductCmptVRuleReference[] getChildProductCmptVRuleReferences(IProductCmptStructureReference parent);
 
     /**
-     * Searches this structure/tree for {@link IProductCmptReference IProductCmptReferences} containing the given
-     * qualified name of a {@link IProductCmpt}.
+     * Searches this structure/tree for {@link IProductCmptReference IProductCmptReferences}
+     * containing the given qualified name of a {@link IProductCmpt}.
      * 
      * @param string the {@link IProductCmpt}'s qualified name to search for
      * @return <code>true</code> if this structure references the given qualified name,

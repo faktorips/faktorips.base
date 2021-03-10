@@ -45,9 +45,6 @@ public class DefaultInternationalString implements InternationalString {
         this.defaultLocale = defaultLocale;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public String get(Locale locale) {
         LocalizedString localizedString = localizedStringMap.get(locale);
         if (localizedString == null && !"".equals(locale.getCountry()) && !"".equals(locale.getLanguage())) {

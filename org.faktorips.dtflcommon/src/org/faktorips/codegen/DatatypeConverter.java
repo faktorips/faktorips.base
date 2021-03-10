@@ -25,9 +25,6 @@ public class DatatypeConverter implements ConversionMatrix {
         super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canConvert(Datatype from, Datatype to) {
         return false;

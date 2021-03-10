@@ -166,9 +166,11 @@ public interface IProductDefObjectNamingStrategy {
      * nested inside the given element. E.g.
      * 
      * <pre>
-     *     <ProductCmptNamingStrategy>
-     *         <NoVersionIdProductCmptNamingStrategy/>
-     *     </ProductCmptNamingStrategy>
+     * {@code
+     *  <ProductCmptNamingStrategy>
+     *      <NoVersionIdProductCmptNamingStrategy/>
+     *  </ProductCmptNamingStrategy>
+     * }
      * </pre>
      */
     public void initFromXml(Element el);

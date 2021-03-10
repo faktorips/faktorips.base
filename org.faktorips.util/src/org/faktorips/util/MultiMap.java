@@ -173,7 +173,7 @@ public class MultiMap<K, V> implements Serializable {
      * exist an empty List is returned.
      * 
      * @param key The key containing the wanted associated Collection
-     * @return Collection<V> the collection to which the specified key is mapped
+     * @return the collection to which the specified key is mapped
      */
     public Collection<V> get(Object key) {
         Collection<V> collection = internalMap.get(key);
@@ -185,9 +185,8 @@ public class MultiMap<K, V> implements Serializable {
     }
 
     /**
-     * Returns the keySet of the internal map. Changes to this set (especially removing values) are
+     * Returns the key-set of the internal map. Changes to this set (especially removing values) are
      * reflected in this {@link MultiMap} according to {@link Map#keySet()}.
-     * 
      */
     public Set<K> keySet() {
         return internalMap.keySet();

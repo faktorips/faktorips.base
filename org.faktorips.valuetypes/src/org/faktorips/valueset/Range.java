@@ -47,8 +47,8 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
 
     /**
      * The unit that defines the discrete values that are allowed to be within this range. The
-     * values that are allowed to be within this range have to meet the condition: <i>bound + x*step
-     * = value</i>, while <i>x</i> must be an integer value. The variable bound is either the upper
+     * values that are allowed to be within this range have to meet the condition: <em>bound + x*step
+     * = value</em>, while <em>x</em> must be an integer value. The variable bound is either the upper
      * or the lower bound while one of these needs to be different from null. The returned value can
      * be null indicating that this is a continuous range.
      */

@@ -36,7 +36,7 @@ import org.faktorips.values.LocalizedString;
  * value as a string formatted depending on the datatype and the locale. In case of a multi-value
  * attribute a list of formatted values is be returned. e.g. a list of the ISO dates "2012-04-01"
  * and "2012-04-02" will be displayed as "[01.04.2012 | 02.04.2012]" in the German locale.
- * <p/>
+ * <p>
  * Warning: this wrapper can only be used to display human readable values <em>not</em> to edit
  * them. If you want to edit a formatted value use {@link FormattingTextField}.
  * 
@@ -105,7 +105,8 @@ public class AttributeValueFormatter {
     private String getFormattedSingleValue(UIDatatypeFormatter datatypeFormatter, ISingleValueHolder holder) {
         String stringValue;
         if (holder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-            LocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(IIpsModel.get().getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
+            LocalizedString locString = ((IInternationalString)holder.getValue().getContent()).get(
+                    IIpsModel.get().getMultiLanguageSupport().getLocalizationLocaleOrDefault(holder.getIpsProject()));
             stringValue = locString.getValue();
         } else {
             stringValue = holder.getStringValue();

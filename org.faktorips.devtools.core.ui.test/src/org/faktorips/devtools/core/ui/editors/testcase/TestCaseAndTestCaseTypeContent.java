@@ -19,14 +19,14 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 /**
  * Class to create and provide the content for a given test case type and a given test case.<br>
  * TestCaseType TestCase<br>
- * testPolicyCmptType1 (TestPolicyCmptTypeParameter) <--- testPolicyCmptType1_label
+ * testPolicyCmptType1 (TestPolicyCmptTypeParameter) &lt;--- testPolicyCmptType1_label
  * (ITestPolicyCmpt)<br>
- * testPolicyCmptTypeRelation1 (TestPolicyCmptTypeParameter) <--- testPolicyCmptTypeRelation1
+ * testPolicyCmptTypeRelation1 (TestPolicyCmptTypeParameter) &lt;--- testPolicyCmptTypeRelation1
  * (ITestPolicyCmptRelation)<br>
  * \- testPolicyCmptType2_label (ITestPolicyCmpt)<br>
  * testPolicyCmptTypeRelation1 (ITestPolicyCmptRelation)<br>
  * \- testPolicyCmptType22_label (ITestPolicyCmpt)<br>
- * testPolicyCmptTypeRelation2 (TestPolicyCmptTypeParameter) <--- testPolicyCmptTypeRelation2
+ * testPolicyCmptTypeRelation2 (TestPolicyCmptTypeParameter) &lt;--- testPolicyCmptTypeRelation2
  * (ITestPolicyCmptRelation)<br>
  * \- testPolicyCmptType3_label (ITestPolicyCmpt)<br>
  * 

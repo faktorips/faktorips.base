@@ -78,7 +78,7 @@ public class XTable extends XTableStructure {
 
     /**
      * 
-     * @return all indices of table as a list of @XIndex
+     * @return all indices of table as a list of {@link XIndex}
      */
     public List<XIndex> getIndexModelNodes() {
         List<XIndex> result = new ArrayList<XIndex>();
@@ -250,7 +250,7 @@ public class XTable extends XTableStructure {
     }
 
     /**
-     * @return "TableRow" if the index is unique, else "Set<TableRow>"
+     * @return {@code "TableRow"} if the index is unique, otherwise {@code "Set<TableRow>"}.
      */
     public String getMethodReturnTypeFindRow(XIndex index) {
         if (index.isUniqueKey()) {

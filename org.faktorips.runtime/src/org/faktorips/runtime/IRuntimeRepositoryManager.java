@@ -42,7 +42,7 @@ public interface IRuntimeRepositoryManager {
      * Call a modification check on the product data provider. If there are any changes in the
      * product data, this method creates a new {@link IRuntimeRepository}. If there are no changes
      * this method simply returns the existing one. The current runtime repository can be
-     * <b>null</b>.
+     * <strong>null</strong>.
      * <p>
      * Every direct referenced manger will be asked for it current repository. If any direct
      * referenced manager returns <code>null</code> as its current repository, this direct

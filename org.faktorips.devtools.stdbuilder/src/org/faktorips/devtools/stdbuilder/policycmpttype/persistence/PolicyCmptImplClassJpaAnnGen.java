@@ -26,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 
 /**
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
- * <p/>
+ * <p>
  * Each persistent policy component type needs at least an <code>@Entity</code> annotation. The
  * information which annotations to generate is pulled from the class {@link IPersistentTypeInfo}
  * which is part of persistent {@link IPolicyCmptType}s.

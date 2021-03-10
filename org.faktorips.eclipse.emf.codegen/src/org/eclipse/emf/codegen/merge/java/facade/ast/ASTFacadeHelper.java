@@ -431,8 +431,8 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Copies the ASTJField node.
      * <p>
-     * The copied field should <b>not</b> be modified (using set methods) nor read (using get
-     * methods), and can <b>only</b> be inserted into the same tree that context node belongs to.
+     * The copied field should <strong>not</strong> be modified (using set methods) nor read (using get
+     * methods), and can <strong>only</strong> be inserted into the same tree that context node belongs to.
      * <p>
      * If the source field has only 1 variable, returned field is replaced by contents of original
      * field declaration. The returned field will have no internal structure.

@@ -117,25 +117,16 @@ public class DelegateCellEditor extends CellEditor {
         return currentCellEditor;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Control getControl() {
         return getCurrent().getControl();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void removeListener(ICellEditorListener listener) {
         getCurrent().removeListener(listener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createControl(Composite parent) {
         return getCurrent().createControl(parent);
@@ -145,36 +136,24 @@ public class DelegateCellEditor extends CellEditor {
         return getCurrent().isMappedValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Object doGetValue() {
         IpsCellEditor current = getCurrent();
         return current.doGetValue();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doSetFocus() {
         IpsCellEditor current = getCurrent();
         current.doSetFocus();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doSetValue(Object value) {
         IpsCellEditor current = getCurrent();
         current.doSetValue(value);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void deactivate() {
         super.deactivate();

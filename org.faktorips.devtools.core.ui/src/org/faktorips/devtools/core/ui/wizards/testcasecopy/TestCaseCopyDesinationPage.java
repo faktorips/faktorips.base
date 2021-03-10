@@ -489,9 +489,6 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         return (TestCaseCopyWizard)super.getWizard();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         return validatePage();

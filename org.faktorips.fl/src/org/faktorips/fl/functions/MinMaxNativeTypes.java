@@ -37,9 +37,6 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         errorCodeSuffix = isMax ? "MAX" : "MIN";
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean match(String name, Datatype[] otherArgTypes) {
         if (!this.getName().equals(name)) {
@@ -69,9 +66,6 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);

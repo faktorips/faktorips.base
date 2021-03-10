@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
- * ViewerFilter for <code>ProductExplorer<code> viewpart. It is used to
- * filter out all projects that are not productdefinition projects.
+ * ViewerFilter for <code>ProductExplorer</code> viewpart. It is used to filter out all projects
+ * that are not productdefinition projects.
  * 
  * @author Stefan Widmaier
  */

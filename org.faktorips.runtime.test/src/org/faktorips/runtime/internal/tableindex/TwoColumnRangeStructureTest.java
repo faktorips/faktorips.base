@@ -417,8 +417,8 @@ public class TwoColumnRangeStructureTest {
 
     /**
      * FIPS-2595. This tests checks the correctness of the comparable generics. GregorianCalendar
-     * extends Comparable<Calendar> hence we need <em>K extends Comparable<? super K</em> instead of
-     * simply <em>K extends Comparable<K></em>
+     * extends {@code Comparable<Calendar>} hence we need {@code K extends Comparable<? super
+     * K>} instead of simply {@code K extends Comparable<K>}.
      */
     public void testInstantiateSuperComparable() {
         TwoColumnRangeStructure<GregorianCalendar, ResultStructure<Object>, Object> structure = TwoColumnRangeStructure
@@ -475,7 +475,8 @@ public class TwoColumnRangeStructureTest {
      * {@link #hasRange(TwoColumnRange)} we introduce an own matcher that checks lower and upper
      * bounds.
      */
-    public static <K extends Comparable<? super K>> Matcher<Iterable<? super TwoColumnRange<K>>> hasRange(TwoColumnRange<K> element) {
+    public static <K extends Comparable<? super K>> Matcher<Iterable<? super TwoColumnRange<K>>> hasRange(
+            TwoColumnRange<K> element) {
         TwoColumnRangeMatcher<K> elementMatcher = new TwoColumnRangeMatcher<K>(element);
         return hasItem(elementMatcher);
     }

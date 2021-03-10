@@ -128,9 +128,6 @@ public class TableContentsCompareItem extends AbstractCompareItem {
         return sb;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected String initName() {
         StringBuilder sb = new StringBuilder();

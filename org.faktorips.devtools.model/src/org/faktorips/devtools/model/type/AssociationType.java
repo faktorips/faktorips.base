@@ -84,9 +84,9 @@ public enum AssociationType {
     /**
      * Returns the corresponding association type:<br>
      * <ul>
-     * <li>ASSOZIATION => out: ASSOZIATION
-     * <li>COMPOSITION_MASTER_TO_DETAIL => out: COMPOSITION_DETAIL_TO_MASTER
-     * <li>COMPOSITION_DETAIL_TO_MASTER => out: COMPOSITION_MASTER_TO_DETAIL
+     * <li>ASSOZIATION &rarr; out: ASSOZIATION
+     * <li>COMPOSITION_MASTER_TO_DETAIL &rarr; out: COMPOSITION_DETAIL_TO_MASTER
+     * <li>COMPOSITION_DETAIL_TO_MASTER &rarr; out: COMPOSITION_MASTER_TO_DETAIL
      * </ul>
      * Returns <code>null</code> if no corresponding type exists.
      */

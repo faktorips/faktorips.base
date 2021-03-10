@@ -10,9 +10,10 @@
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +29,10 @@ import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.junit.Before;
@@ -67,6 +72,18 @@ public class TableContentsStructureCacheUpdaterTest {
 
     @Mock
     private IIpsSrcFile tableContent3;
+
+    @Mock
+    private IIpsObjectPathEntry objectPathEntryC;
+
+    @Mock
+    private IIpsObjectPathEntry objectPathEntryB;
+
+    @Mock
+    private IIpsObjectPathEntry objectPathEntryA;
+
+    @Mock
+    private IIpsObjectPathEntry objectPathEntryBase;
 
     private TableContentsStructureCache tableContentsStructureCacheA;
 
@@ -114,6 +131,40 @@ public class TableContentsStructureCacheUpdaterTest {
         when(tableStructure.getIpsObjectName()).thenReturn(TABLE_STRUCTURE);
         when(tableStructure.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE));
+
+        IIpsPackageFragment fragment = mock(IIpsPackageFragment.class);
+        when(tableContent1.getIpsPackageFragment()).thenReturn(fragment);
+        when(tableContent2.getIpsPackageFragment()).thenReturn(fragment);
+        when(tableContent3.getIpsPackageFragment()).thenReturn(fragment);
+        when(tableStructure.getIpsPackageFragment()).thenReturn(fragment);
+
+        IIpsPackageFragmentRoot rootFragment = mock(IIpsPackageFragmentRoot.class);
+        when(fragment.getRoot()).thenReturn(rootFragment);
+        when(rootFragment.getName()).thenReturn("FRAGMENT_NAME");
+
+        IIpsObjectPath objectPathBase = mock(IIpsObjectPath.class);
+        when(ipsProjectBase.getIpsObjectPath()).thenReturn(objectPathBase);
+
+        IIpsObjectPath objectPathA = mock(IIpsObjectPath.class);
+        when(ipsProjectA.getIpsObjectPath()).thenReturn(objectPathA);
+
+        IIpsObjectPath objectPathB = mock(IIpsObjectPath.class);
+        when(ipsProjectB.getIpsObjectPath()).thenReturn(objectPathB);
+
+        IIpsObjectPath objectPathC = mock(IIpsObjectPath.class);
+        when(ipsProjectC.getIpsObjectPath()).thenReturn(objectPathC);
+
+        when(objectPathBase.getEntry(anyString())).thenReturn(objectPathEntryBase);
+        when(objectPathEntryBase.isReexported()).thenReturn(true);
+
+        when(objectPathA.getEntry(anyString())).thenReturn(objectPathEntryA);
+        when(objectPathEntryA.isReexported()).thenReturn(true);
+
+        when(objectPathB.getEntry(anyString())).thenReturn(objectPathEntryB);
+        when(objectPathEntryB.isReexported()).thenReturn(true);
+
+        when(objectPathC.getEntry(anyString())).thenReturn(objectPathEntryC);
+        when(objectPathEntryC.isReexported()).thenReturn(true);
     }
 
     @Test
@@ -135,6 +186,27 @@ public class TableContentsStructureCacheUpdaterTest {
         assertEquals(2, tableContents3.size());
         assertThat(tableContents3, hasItem(tableContent1));
         assertThat(tableContents3, hasItem(tableContent2));
+    }
+
+    @Test
+    public void testChangeListener_contentAdded_p1_reexport_false() throws Exception {
+        setUpProjectWithTableContents(ipsProjectA, tableContent1);
+        setUpTableStructureIn(ipsProjectA);
+        initCache();
+        when(objectPathEntryA.isReexported()).thenReturn(false);
+
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+
+        List<IIpsSrcFile> tableContents1 = tableContentsStructureCacheA.getTableContents(tableStructure);
+        assertEquals(2, tableContents1.size());
+        assertThat(tableContents1, hasItem(tableContent1));
+        assertThat(tableContents1, hasItem(tableContent2));
+
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+
+        List<IIpsSrcFile> tableContents3 = tableContentsStructureCacheC.getTableContents(tableStructure);
+        assertEquals(1, tableContents3.size());
+        assertThat(tableContents3, hasItem(tableContent1));
     }
 
     @Test

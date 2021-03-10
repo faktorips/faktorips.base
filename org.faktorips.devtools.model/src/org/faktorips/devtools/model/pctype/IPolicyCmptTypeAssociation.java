@@ -295,7 +295,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns <code>true</code> if it is possible to mark this association as being qualified,
      * otherwise <code>false</code>. It is possible to mark an association as being qualified if the
      * following conditions hold true:
-     * <p>
      * <ul>
      * <li>The association is a composition (master-to-detail)</li>
      * <li>The target policy component type exists and is configurable by a product component type.

@@ -526,10 +526,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /**
      * Reinitializes the contents of this section:
      * <ul>
-     * <li>The <code>columnNames</code> will be emptied and created anew.
-     * <li>Every table column of the table will be disposed and created anew.
-     * <li>The table viewer will be refreshed.
-     * <li>The default provider values will be re-initialized.
+     * <li>The <code>columnNames</code> will be emptied and created anew.</li>
+     * <li>Every table column of the table will be disposed and created anew.</li>
+     * <li>The table viewer will be refreshed.</li>
+     * <li>The default provider values will be re-initialized.</li>
+     * </ul>
      */
     public void reinit() {
         for (TableColumn currentColumn : enumValuesTable.getColumns()) {
@@ -792,7 +793,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
              */
             IEnumAttributeValue enumAttributeValue = enumAttributeValues.get(columnIndex);
             IIpsProject ipsProject = enumAttributeValue.getIpsProject();
-            String columnValue = IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+            String columnValue = IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(
+                    enumAttributeValue.getValue(),
                     ipsProject);
             try {
                 IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);

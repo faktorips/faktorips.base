@@ -18,7 +18,7 @@ import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**
- * The <b>Plugin</b> for the model EMF.CodeGen library. EMF must run within an Eclipse workbench,
+ * The <strong>Plugin</strong> for the model EMF.CodeGen library. EMF must run within an Eclipse workbench,
  * within a headless Eclipse workspace, or just stand-alone as part of some other application. To
  * support this, all resource access should be directed to the resource locator, which can redirect
  * the service as appropriate to the runtime. During stand-alone invocation no plugin initialization
@@ -74,7 +74,7 @@ public final class CodeGenPlugin extends EMFPlugin {
     }
 
     /**
-     * The actual implementation of the Eclipse <b>Plugin</b>.
+     * The actual implementation of the Eclipse <strong>Plugin</strong>.
      */
     public static class Implementation extends EMFPlugin.EclipsePlugin {
         /**

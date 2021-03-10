@@ -598,7 +598,7 @@ public abstract class AbstractGeneratorModelNode {
      *            pass {@code "String", "str", "int", "fromIndex"}.
      * @return The method's definition. For example for a method name <em>setFoo</em> with parameter
      *         <em>bar</em> of type <em>String</em> the method definition is <em>setFoo(String
-     *         bar)<em>
+     *         bar)</em>
      */
     public String method(String methodName, String... parameterTypesAndNames) {
         if (parameterTypesAndNames.length % 2 == 0) {

@@ -446,7 +446,7 @@ public class ASTNodeConverter implements NodeConverter {
          * Initializer string is in the form
          * 
          * <pre>
-         * <code> <b>new</b> Type ( ArgumentsList ) AnonymousClassDeclaration</code>
+         * <code> <strong>new</strong> Type ( ArgumentsList ) AnonymousClassDeclaration</code>
          * </pre>
          * 
          * where

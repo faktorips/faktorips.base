@@ -32,9 +32,6 @@ public class NotEqualsObjectDatatype extends EqualsObjectDatatype {
         super("!=", lhsDatatype, rhsDatatype);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         CompilationResultImpl result = super.generate(lhs, rhs);

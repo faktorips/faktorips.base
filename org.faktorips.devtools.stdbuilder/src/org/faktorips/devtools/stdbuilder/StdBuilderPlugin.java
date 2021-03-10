@@ -81,7 +81,9 @@ public class StdBuilderPlugin extends Plugin {
                 if ("tocEntryBuilderFactory".equals(configElement.getName())) { //$NON-NLS-1$
                     ITocEntryBuilderFactory builderFactory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, "class", ITocEntryBuilderFactory.class); //$NON-NLS-1$
-                    tocEntryBuilderFactories.add(builderFactory);
+                    if (builderFactory != null) {
+                        tocEntryBuilderFactories.add(builderFactory);
+                    }
                 }
             }
         }

@@ -26,9 +26,6 @@ public class DecimalNullFct extends AbstractFlFunction {
         super("DECIMALNULL", "", Datatype.DECIMAL, new Datatype[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();

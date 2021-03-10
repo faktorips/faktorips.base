@@ -14,7 +14,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
- * IInputFormatFactory registered with the <i>inputFormat</i> extension point.
+ * IInputFormatFactory registered with the <em>inputFormat</em> extension point.
  * 
  * @since 3.11
  */

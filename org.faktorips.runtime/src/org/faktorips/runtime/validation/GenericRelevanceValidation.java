@@ -91,7 +91,7 @@ public class GenericRelevanceValidation {
 
     private Message validateValueNullIfIrrelevant() {
         if (isInvalidIrrelevance()) {
-            return config.createMessageForValuePresentForIgnoredAttribute(policyAttribute, modelObject);
+            return config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject);
         }
         return null;
     }

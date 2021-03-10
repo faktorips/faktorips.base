@@ -65,9 +65,6 @@ public class ResultDisplayer implements Runnable {
         run();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run() {
         MultiStatus multiStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.ResultDisplayer_reasonText, null);

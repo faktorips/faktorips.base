@@ -63,17 +63,11 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 "wizards/NewTestCaseCopyWizard.png")); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createPageControls(Composite pageContainer) {
         super.createPageControls(pageContainer);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addPages() {
         testCaseCopyDestinationPage = new TestCaseCopyDesinationPage(toolkit);
@@ -193,9 +187,6 @@ public class TestCaseCopyWizard extends ResizableWizard {
                 + testCaseCopyDestinationPage.getTargetTestCaseName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performFinish() {
         try {
@@ -222,9 +213,6 @@ public class TestCaseCopyWizard extends ResizableWizard {
         IIpsModel.get().runAndQueueChangeEvents(new DeleteUnselectedTestObjects(), null);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean performCancel() {
         if (targetTestCase != null) {

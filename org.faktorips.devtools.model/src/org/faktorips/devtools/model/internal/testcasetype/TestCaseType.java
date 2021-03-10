@@ -320,7 +320,6 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     /**
      * Sets the type of the test parameter. The following types could be set.
-     * <p>
      * <ul>
      * <li>INPUT: the test parameter specifies only test case input objects
      * <li>EXPECTED_RESULT: the test parameter specifies only test case expected result objects

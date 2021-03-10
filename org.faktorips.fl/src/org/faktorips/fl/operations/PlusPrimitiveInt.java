@@ -22,9 +22,6 @@ public class PlusPrimitiveInt extends AbstractUnaryJavaOperation {
         super(Operation.PlusPrimitiveInt);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

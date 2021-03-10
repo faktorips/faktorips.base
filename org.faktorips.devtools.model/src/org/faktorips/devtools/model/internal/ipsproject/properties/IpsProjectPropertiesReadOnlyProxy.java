@@ -216,17 +216,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addDefinedDatatype(Datatype datatype) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$

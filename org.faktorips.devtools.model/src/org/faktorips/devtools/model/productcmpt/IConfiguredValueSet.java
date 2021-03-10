@@ -39,10 +39,9 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     /**
      * Validation message code to indicate that the config'elements value set is not of a type that
      * conforms to the specification in the model. E.g. if in the model (=the policy component
-     * type's attribute) the value set type
-     * <code>UNRESTRICTED<code> is specified, then in the configuration element all types
-     * are allowed. If <code>RANGE</code> is specified in the model, then only <code>RANGE</code> is
-     * allowed in the configuration element.
+     * type's attribute) the value set type <code>UNRESTRICTED</code> is specified, then in the
+     * configuration element all types are allowed. If <code>RANGE</code> is specified in the model,
+     * then only <code>RANGE</code> is allowed in the configuration element.
      */
     public static final String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
 

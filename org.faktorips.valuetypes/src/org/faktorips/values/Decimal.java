@@ -129,7 +129,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
     }
 
     /**
-     * Returns the <i>scale</i> of this BigDecimal. (The scale is the number of digits to the right
+     * Returns the <em>scale</em> of this BigDecimal. (The scale is the number of digits to the right
      * of the decimal point.)
      * 
      * @return the scale of this Decimal.
@@ -495,9 +495,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * be divided (rather than multiplied), and the value may be changed; in this case, the
      * specified rounding mode is applied to the division.
      * <p>
-     * Note that since Decimal objects are immutable, calls of this method do <i>not</i> result in
+     * Note that since Decimal objects are immutable, calls of this method do <em>not</em> result in
      * the original object being modified, contrary to the usual convention of having methods named
-     * <code>set<i>X</i></code> mutate field <code><i>X</i></code>. Instead, <code>setScale</code>
+     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead, <code>setScale</code>
      * returns an object with the proper scale; the returned object may or may not be newly
      * allocated.
      * 
@@ -535,9 +535,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * be divided (rather than multiplied), and the value may be changed; in this case, the
      * specified rounding mode is applied to the division.
      * <p>
-     * Note that since Decimal objects are immutable, calls of this method do <i>not</i> result in
+     * Note that since Decimal objects are immutable, calls of this method do <em>not</em> result in
      * the original object being modified, contrary to the usual convention of having methods named
-     * <code>set<i>X</i></code> mutate field <code><i>X</i></code>. Instead, <code>setScale</code>
+     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead, <code>setScale</code>
      * returns an object with the proper scale; the returned object may or may not be newly
      * allocated.
      * 

@@ -26,7 +26,7 @@ public interface IImageHandling {
      * 
      * @see ImageHandling
      * 
-     * @param name the name of the image equal to the filename in the subfolder icons
+     * @param name the name of the image equal to the filename in the sub-folder icons
      * 
      * @return the shared image descriptor
      */
@@ -34,7 +34,7 @@ public interface IImageHandling {
 
     /**
      * To register an image descriptor in the image registry. The name of the image is the filename
-     * in the subfolder <i>icons</i> that means the path to the image is IpsUIPlugin/icons/name
+     * in the sub-folder <em>icons</em> that means the path to the image is {bundle}/icons/name
      */
     void registerSharedImageDescriptor(String name, ImageDescriptor descriptor);
 
@@ -46,7 +46,7 @@ public interface IImageHandling {
     ImageDescriptor getDisabledImageDescriptor(ImageDescriptor enabledImageDescriptor);
 
     /**
-     * Getting an image descriptor by calling the {@link IIpsElementDecorator} of the ips element If
+     * Getting an image descriptor by calling the {@link IIpsElementDecorator} of the IPS element If
      * there is no registered adapter this method returns null. If the registered adapter has no
      * image, this method returns the missing image
      * 
@@ -55,8 +55,10 @@ public interface IImageHandling {
     ImageDescriptor getImageDescriptor(IAdaptable adaptable);
 
     /**
-     * Get the default image descriptor for an ips element class. May return null. Note: The
-     * workbench adapters are registered for concrete implementations not for interfaces
+     * Get the default image descriptor for an IPS element class. May return {@code null}.
+     * <p>
+     * <em>Note:</em>The workbench adapters are registered for concrete implementations not for
+     * interfaces
      */
     ImageDescriptor getDefaultImageDescriptor(Class<? extends IIpsElement> ipsElementClass);
 
@@ -116,7 +118,7 @@ public interface IImageHandling {
 
     /**
      * Just create a image descriptor with the specified name as image filename in the icons
-     * subfolder does not register anything in the image registry or the image description registry.
+     * sub-folder does not register anything in the image registry or the image description registry.
      * Only use for images of this plugin!
      * <p>
      * Use this method when you only want to have an image descriptor for any eclipse object e.g. an
@@ -141,8 +143,8 @@ public interface IImageHandling {
      * lifetime of the plugin. If the image is not potentially needed by other classes use the
      * methods {@link #createImage(ImageDescriptor)} and {@link #disposeImage(ImageDescriptor)} or
      * even better use your own LocalResourceManager.
-     * <p/>
-     * If descriptor is null, the missing image is returned
+     * <p>
+     * If descriptor is {@code null} the missing image is returned
      */
     Image getImage(ImageDescriptor descriptor);
 
@@ -161,9 +163,9 @@ public interface IImageHandling {
      * Create an image in the resource manager. You have to dispose the image by calling
      * {@link #disposeImage(ImageDescriptor)} if you do not need it any longer. If you want to share
      * the image with other components, use one of the shared image methods. If the image descriptor
-     * is already registered as a @Override shared image, the descriptor is not registered twice.
-     * You do not have to worry about calling the disposeImage method because a shared image also
-     * would not be disposed
+     * is already registered as a shared image, the descriptor is not registered twice. You do not
+     * have to worry about calling the {@link #disposeImage(ImageDescriptor)} method because a
+     * shared image also would not be disposed
      */
     Image createImage(ImageDescriptor descriptor);
 
@@ -177,14 +179,14 @@ public interface IImageHandling {
     void disposeImage(ImageDescriptor descriptor);
 
     /**
-     * Get the default image for an ips element class. May return null. Note: The workbench adapters
+     * Get the default image for an IPS element class. May return null. Note: The workbench adapters
      * are registered for concrete implementations not for interfaces
      */
     Image getDefaultImage(Class<? extends IIpsElement> ipsElementClass);
 
     /**
-     * Getting the image for an ips element by calling the {@link IIpsDecorators} for the specified
-     * ips element. The image is either a shared image (if someone already registered the
+     * Getting the image for an IPS element by calling the {@link IIpsDecorators} for the specified
+     * IPS element. The image is either a shared image (if someone already registered the
      * corresponding image descriptor) or a not shared one if no one registered the image before. If
      * it is a no shared image, someone (maybe you - normally the workbench adapter) have dispose
      * the image.
@@ -199,7 +201,7 @@ public interface IImageHandling {
     Image getImage(IAdaptable adaptable, boolean enabled);
 
     /**
-     * Get the disabled version of a shared image for an ips element
+     * Get the disabled version of a shared image for an IPS element
      */
     Image getDisabledImage(IAdaptable adaptable);
 

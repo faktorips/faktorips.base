@@ -48,9 +48,6 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;

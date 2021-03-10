@@ -54,9 +54,6 @@ public class ModelDescriptionView extends PageBookView {
         super.createPartControl(parent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IPage createDefaultPage(PageBook book) {
         MessagePage page = new MessagePage();
@@ -78,9 +75,6 @@ public class ModelDescriptionView extends PageBookView {
         return page;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected PageRec doCreatePage(IWorkbenchPart part) {
         if (part instanceof IModelDescriptionSupport) {
@@ -104,9 +98,6 @@ public class ModelDescriptionView extends PageBookView {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doDestroyPage(IWorkbenchPart part, PageRec rec) {
         IPage page = rec.page;
@@ -114,9 +105,6 @@ public class ModelDescriptionView extends PageBookView {
         rec.dispose();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IWorkbenchPart getBootstrapPart() {
         IWorkbenchPage page = getSite().getPage();
@@ -127,9 +115,6 @@ public class ModelDescriptionView extends PageBookView {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isImportant(IWorkbenchPart part) {
         /*
@@ -140,9 +125,6 @@ public class ModelDescriptionView extends PageBookView {
         return (part instanceof IEditorPart);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void partBroughtToTop(IWorkbenchPart part) {
         partActivated(part);

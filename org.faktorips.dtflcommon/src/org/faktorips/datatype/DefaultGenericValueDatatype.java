@@ -14,8 +14,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
 /**
- * A generic value datatype that makes an <strong>existing</code> Java class (is is already loaded
- * by the classloader) available as datatype.
+ * A generic value datatype that makes an <strong>existing</strong> Java class (already loaded by
+ * the classloader) available as datatype.
  * 
  * @author Jan Ortmann
  */

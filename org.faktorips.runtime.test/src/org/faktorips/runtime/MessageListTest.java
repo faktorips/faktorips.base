@@ -329,7 +329,7 @@ public class MessageListTest {
         list.add(msg1);
         list.add(msg2);
 
-        MessageList messagesWithAnyMarker = list.getMessagesByMarker(t -> true);
+        MessageList messagesWithAnyMarker = list.getMessagesByMarker((Predicate<IMarker>)t -> true);
         assertEquals(2, messagesWithAnyMarker.size());
         assertSame(msg1, messagesWithAnyMarker.getMessage(0));
         assertSame(msg2, messagesWithAnyMarker.getMessage(1));

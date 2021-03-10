@@ -467,7 +467,6 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the constructor for a PolicyCmptParameter in the initInputFromXml method.<br>
      * <p>
      * Example:
-     * <p>
      * 
      * <pre>
      *  try {

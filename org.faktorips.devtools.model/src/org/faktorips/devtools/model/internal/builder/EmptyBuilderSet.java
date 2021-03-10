@@ -78,7 +78,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     /**
-     * Returns the string <i>emptyBuilderSet</i>
+     * Returns the string <em>emptyBuilderSet</em>
      */
     @Override
     public String getId() {
@@ -86,7 +86,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     /**
-     * Calls to this method are ignored. The getId() method always returns <i>emptyBuilderSet</i>
+     * Calls to this method are ignored. The getId() method always returns <em>emptyBuilderSet</em>
      */
     @Override
     public void setId(String id) {

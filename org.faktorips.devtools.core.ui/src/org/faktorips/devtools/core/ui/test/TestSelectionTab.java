@@ -43,9 +43,6 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
 
     private IIpsProject project;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void createControl(Composite parent) {
         Composite main = toolkit.createComposite(parent);
@@ -74,17 +71,11 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         parameterText.addModifyListener(basicModifyListener);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return Messages.TestSelectionTab_title;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initializeFrom(ILaunchConfiguration configuration) {
         try {
@@ -107,9 +98,6 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
         if (project != null) {
@@ -120,9 +108,6 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
@@ -130,9 +115,6 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$        
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testConfigurationHasChanged() {
         updateLaunchConfigurationDialog();

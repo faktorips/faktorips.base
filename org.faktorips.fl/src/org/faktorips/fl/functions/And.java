@@ -15,8 +15,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.FunctionSignatures;
 
 /**
- * A function that provides a boolean and-operation and has the following signature <i>boolean
- * AND(boolean...)</i>.
+ * A function that provides a boolean and-operation and has the following signature <em>boolean
+ * AND(boolean...)</em>.
  */
 public class And extends AbstractVarArgFunction {
 

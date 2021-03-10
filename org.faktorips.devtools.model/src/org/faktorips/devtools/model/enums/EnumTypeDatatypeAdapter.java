@@ -56,9 +56,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         this.enumContent = enumContent;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isEnum() {
         return true;

@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResultImpl;
  * transformed to be used with the {@link Comparable#compareTo(Object)} method comparing zero.
  * <p>
  * Example:<br>
- * For the operator '<' we simply generate <em>(lhs.compareTo(rhs) < 0)'</em>
+ * For the operator '&lt;' we simply generate <em>(lhs.compareTo(rhs) &lt; 0)'</em>
  */
 public class CompareToComparableDatatype extends AbstractBinaryJavaOperation {
 

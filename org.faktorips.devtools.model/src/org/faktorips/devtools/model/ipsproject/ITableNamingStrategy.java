@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 /**
  * The table naming strategy defines how a table name is constructed from a given String. Possible
  * uses include a conversion from from a CamelCase naming to an upper cased naming (e.g. TableName
- * -> TABLE_NAME).
+ * &rarr; TABLE_NAME).
  * 
  * @author Roman Grutza
  */

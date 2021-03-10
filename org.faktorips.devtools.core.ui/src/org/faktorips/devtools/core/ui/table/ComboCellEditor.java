@@ -51,9 +51,6 @@ public class ComboCellEditor extends IpsCellEditor {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doSetFocus() {
         comboControl.setFocus();
@@ -86,9 +83,6 @@ public class ComboCellEditor extends IpsCellEditor {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMappedValue() {
         return true;

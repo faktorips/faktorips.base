@@ -164,16 +164,16 @@ public interface IIpsModel extends IIpsElement {
      * (IpsPackageFragmentRoot).
      * <p>
      * Resource: HomeInsurance/model/pack1/Policy.ipspolicycmpttype<br>
-     * => Returns an IIpsSrcFile handle. (Whether the underlying Resource exists or not).
+     * &rarr; Returns an IIpsSrcFile handle. (Whether the underlying Resource exists or not).
      * <p>
      * Resource: HomeInsurance/model/pack1/readme.txt<br>
-     * => Returns <code>null</code> as readme.txt is not a file containing an IpsObject.
+     * &rarr; Returns <code>null</code> as readme.txt is not a file containing an IpsObject.
      * <p>
      * Resource: HomeInsurance/root/pack1/Policy.ipspolicycmpttype<br>
-     * => Returns <code>null</code> as "root" is not a source folder representing an
+     * &rarr; Returns <code>null</code> as "root" is not a source folder representing an
      * IpsPackageFragmentRoot in the project HomeInsurance!
      * <p>
-     * Resource: HomeInsurance/root => Returns <code>null</code> as "root" is not a source folder
+     * Resource: HomeInsurance/root &rarr; Returns <code>null</code> as "root" is not a source folder
      * representing an IpsPackageFragmentRoot in the project HomeInsurance!
      */
     IIpsElement getIpsElement(IResource resource);

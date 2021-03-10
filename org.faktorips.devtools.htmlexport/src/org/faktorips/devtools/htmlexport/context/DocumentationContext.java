@@ -157,7 +157,7 @@ public class DocumentationContext {
      * given array.
      * 
      * @param ipsObjectTypes Array with all relevant {@link IpsObjectType}s
-     * @return List<IIpsSrcFile>
+     * @return The {@link IIpsSrcFile} list
      */
     public List<IIpsSrcFile> getDocumentedSourceFiles(IpsObjectType... ipsObjectTypes) {
         try {

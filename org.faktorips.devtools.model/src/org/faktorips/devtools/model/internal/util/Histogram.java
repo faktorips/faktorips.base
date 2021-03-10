@@ -117,7 +117,7 @@ public class Histogram<V, E> {
     /**
      * Returns the relative distribution of values in this histogram as a sorted map. The keys in
      * the map are the values in this histogram, the associated value in the map is a decimal n with
-     * 0 &lt; n &lt;= 1 that indicates how often an value occurs relative to the other values in the
+     * 0 &lt; n &le; 1 that indicates how often an value occurs relative to the other values in the
      * histogram. The decimal is rounded to a scale of {@link #SCALE}. The map is sorted so that
      * values occurring more often come first.
      */

@@ -26,9 +26,6 @@ public class MoneyNullFct extends AbstractFlFunction {
         super("MONEYNULL", "", Datatype.MONEY, new Datatype[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();

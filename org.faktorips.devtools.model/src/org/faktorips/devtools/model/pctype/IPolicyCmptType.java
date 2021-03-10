@@ -258,7 +258,7 @@ public interface IPolicyCmptType extends IType {
      * number of attributes - 1 (the last attribute) no attribute is moved down.
      * 
      * @param indexes The indexes identifying the attributes.
-     * @param up <code>true</code>, to move the attributes up, <false> to move them down.
+     * @param up <code>true</code>, to move the attributes up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved attributes.
      * 
@@ -311,7 +311,7 @@ public interface IPolicyCmptType extends IType {
      * (the last rule) no rule is moved down.
      * 
      * @param indexes The indexes identifying the rules.
-     * @param up <code>true</code>, to move the rules up, <false> to move them down.
+     * @param up <code>true</code>, to move the rules up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved rules.
      * 
@@ -360,7 +360,7 @@ public interface IPolicyCmptType extends IType {
      * number of relations - 1 (the last relation) no relation is moved down.
      * 
      * @param indexes The indexes identifying the relations.
-     * @param up <code>true</code>, to move the relations up, <false> to move them down.
+     * @param up <code>true</code>, to move the relations up, <code>false</code> to move them down.
      * 
      * @return The new indexes of the moved relations.
      * 

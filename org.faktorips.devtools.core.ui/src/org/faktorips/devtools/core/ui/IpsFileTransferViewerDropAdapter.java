@@ -45,7 +45,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
     /**
      * Get the transfered (dragged) elements. Returns null if there are no elements, the transfer
      * type is wrong or there is at least one invalid element.
-     * <p/>
+     * <p>
      * On some systems it is not possible to determine the concrete object while dragging. In this
      * case the method returns an empty array. (e.g. linux)
      */

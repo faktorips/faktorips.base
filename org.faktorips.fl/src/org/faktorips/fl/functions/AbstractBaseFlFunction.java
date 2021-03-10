@@ -60,9 +60,6 @@ FlFunction<T> {
         this.description = description;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);

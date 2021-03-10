@@ -33,7 +33,7 @@ import org.faktorips.util.LocalizedStringsSet;
 /**
  * This builder generates property files for every language and every enum type that contains
  * multilingual attributes. The property file contains one property for every internationalized enum
- * attribute value. The key of the property will be <name of attribute>_<id of value>.
+ * attribute value. The key of the property will be {@code <name of attribute>_<id of value>}.
  * 
  * @author dirmeier
  */

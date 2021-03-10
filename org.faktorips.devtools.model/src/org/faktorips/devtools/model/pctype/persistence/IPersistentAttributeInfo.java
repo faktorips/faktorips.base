@@ -156,7 +156,7 @@ public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
 
     /**
      * Sets the table column name for this attribute.
-     * <p/>
+     * <p>
      * Note that the final column name in the database can differ from the given
      * <code>newTableColumnName</code> by means of an ITableColumnNamingStrategy which is set on a
      * per IpsProject basis.

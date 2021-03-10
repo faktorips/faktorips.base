@@ -25,7 +25,6 @@ public enum AttributeProperty {
     /**
      * This property defines whether an attribute may change over time, that means in different
      * generations.
-     * <p>
      */
     CHANGING_OVER_TIME,
 

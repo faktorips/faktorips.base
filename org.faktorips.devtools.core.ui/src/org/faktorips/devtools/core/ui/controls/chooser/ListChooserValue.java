@@ -35,9 +35,6 @@ public class ListChooserValue {
         return value == null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -46,9 +43,6 @@ public class ListChooserValue {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

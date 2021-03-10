@@ -54,9 +54,6 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return (StandardBuilderSet)super.getBuilderSet();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (ipsSrcFile.getIpsObjectType().equals(BusinessFunctionIpsObjectType.getInstance())) {

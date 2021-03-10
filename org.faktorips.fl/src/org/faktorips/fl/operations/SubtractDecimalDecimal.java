@@ -22,9 +22,6 @@ public class SubtractDecimalDecimal extends AbstractBinaryJavaOperation {
         super(Operation.SubtractDecimalDecimal);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {
         lhs.getCodeFragment().append(".subtract("); //$NON-NLS-1$

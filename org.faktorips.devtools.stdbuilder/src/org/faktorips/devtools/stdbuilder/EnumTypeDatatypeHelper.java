@@ -53,9 +53,6 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         return enumTypeAdapter.getEnumType();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
@@ -69,17 +66,11 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("null");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getJavaClassName() {
         return enumType.getQualifiedClassName();
@@ -90,9 +81,6 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         return super.newInstanceFromExpression(expression, enumTypeAdapter.getEnumType().isInextensibleEnum());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return enumType.getCallGetValueByIdentifierCodeFragment(expression, false, null);

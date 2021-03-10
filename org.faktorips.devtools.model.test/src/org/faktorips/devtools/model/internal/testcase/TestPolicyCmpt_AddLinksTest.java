@@ -59,8 +59,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Three policy types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components are non-ambiguous
      * </ul>
@@ -117,8 +117,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Three policy types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(0..1)
-     * <li>2 -&gt; 3 &nbsp;(0..1)
+     * <li>1 &rarr; 2 &nbsp;(0..1)
+     * <li>2 &rarr; 3 &nbsp;(0..1)
      * </ul>
      * <li>Product components are non-ambiguous
      * </ul>
@@ -173,8 +173,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Three policy types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(2..3)
-     * <li>2 -&gt; 3 &nbsp;(2..3)
+     * <li>1 &rarr; 2 &nbsp;(2..3)
+     * <li>2 &rarr; 3 &nbsp;(2..3)
      * </ul>
      * <li>Product components are non-ambiguous
      * </ul>
@@ -234,9 +234,9 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Four policy types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(3..3)
-     * <li>3 -&gt; 4 &nbsp;(0..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(3..3)
+     * <li>3 &rarr; 4 &nbsp;(0..1)
      * </ul>
      * <li>Product components are non-ambiguous
      * </ul>
@@ -305,10 +305,10 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3_1 &nbsp;(1..1)
-     * <li>2 -&gt; 3_2 &nbsp;(1..1)
-     * <li>2 -&gt; 3_3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3_1 &nbsp;(1..1)
+     * <li>2 &rarr; 3_2 &nbsp;(1..1)
+     * <li>2 &rarr; 3_3 &nbsp;(1..1)
      * </ul>
      * <li>Product components are non-ambiguous
      * </ul>
@@ -386,8 +386,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
      * product component 3_2 is actually linked with product component 2.
@@ -446,8 +446,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
      * product component 3_1 is actually linked with product component 2. Furthermore, this link
@@ -506,8 +506,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. However, only
      * product component 3_1 is actually linked with product component 2. Furthermore, this link
@@ -569,8 +569,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Product components 3_1 and 3_2 come into consideration for policy type 3. Both product
      * components are linked with product component 2. Furthermore, each link defines a minimum
@@ -633,8 +633,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>Following product components exist for policy type 3, and are linked with product
      * component 2:
@@ -705,8 +705,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(0..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(0..1)
      * </ul>
      * <li>Product components are non-ambiguous. However, the cardinality from product component 2
      * to product component 3 is changed by the product component link to mandatory.
@@ -767,8 +767,8 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Multiple policy component types are linked together as following:
      * <ul>
-     * <li>1 -&gt; 2 &nbsp;(1..1)
-     * <li>2 -&gt; 3 &nbsp;(1..1)
+     * <li>1 &rarr; 2 &nbsp;(1..1)
+     * <li>2 &rarr; 3 &nbsp;(1..1)
      * </ul>
      * <li>There is a test policy component for policy component type 1, but the product component
      * that is assigned to it does not exist
@@ -855,9 +855,9 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Policy types are linked together as following:
      * <ul>
-     * <li>Root -&gt; 1 &nbsp;(1..1)
-     * <li>Root -&gt; 2 &nbsp;(0..1)
-     * <li>Root -&gt; 3 &nbsp;(2..2)
+     * <li>Root &rarr; 1 &nbsp;(1..1)
+     * <li>Root &rarr; 2 &nbsp;(0..1)
+     * <li>Root &rarr; 3 &nbsp;(2..2)
      * </ul>
      * <li>Product components can be non-ambiguously assigned to each association
      * </ul>
@@ -937,9 +937,9 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * <ul>
      * <li>Policy types are linked together as following:
      * <ul>
-     * <li>Root -&gt; 1 &nbsp;(1..1)
-     * <li>Root -&gt; 2 &nbsp;(0..1)
-     * <li>Root -&gt; 3 &nbsp;(2..2)
+     * <li>Root &rarr; 1 &nbsp;(1..1)
+     * <li>Root &rarr; 2 &nbsp;(0..1)
+     * <li>Root &rarr; 3 &nbsp;(2..2)
      * </ul>
      * <li>Product components can be non-ambiguously assigned to each association
      * </ul>

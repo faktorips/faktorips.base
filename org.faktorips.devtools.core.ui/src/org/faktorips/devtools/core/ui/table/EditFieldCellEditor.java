@@ -27,9 +27,6 @@ public class EditFieldCellEditor extends IpsCellEditor {
         this.editField = editField;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Object doGetValue() {
         String returnValue = editField.getValue();
@@ -39,18 +36,12 @@ public class EditFieldCellEditor extends IpsCellEditor {
         return returnValue;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doSetFocus() {
         editField.selectAll();
         editField.getControl().setFocus();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void doSetValue(Object value) {
         editField.setValue(value == null ? null : value.toString());
@@ -66,9 +57,6 @@ public class EditFieldCellEditor extends IpsCellEditor {
         editField.setText(newText);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isMappedValue() {
         return false;

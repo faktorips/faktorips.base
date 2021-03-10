@@ -45,9 +45,6 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void launch(final ILaunchConfiguration configuration,
             final String mode,

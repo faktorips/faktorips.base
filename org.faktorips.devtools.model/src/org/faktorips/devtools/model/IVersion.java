@@ -14,7 +14,6 @@ package org.faktorips.devtools.model;
  * like <em>\d+.\d+.\d+</em> as well as simple strings can be used. Any version can be identified by
  * the unique string returned by the method {@link #asString()}. Thus all {@link IVersion} instances
  * created using the same unique identifier are equal.
- * <p>
  * <h2>Comparable</h2> Version objects are comparable. To make clear that only versions of the same
  * implementation are comparable to each other, every implementation must provide the generic type
  * <code>K</code>. The equals() method must be implemented according to the recommendation in

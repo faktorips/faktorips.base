@@ -377,9 +377,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable && findDatatype() != null;
@@ -404,9 +401,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         toolkit.setDataChangeable(concreteValueSetCheckbox, enabled);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isDataChangeable() {
         return dataChangeable;

@@ -409,9 +409,6 @@ public class TestCaseStructurePage extends WizardPage {
         });
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canFlipToNextPage() {
         boolean newTestCaseCreated = false;

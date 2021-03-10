@@ -54,25 +54,16 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     // the last selection
     private ISelection selection;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         // nothing to do
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IWorkbenchWindow window) {
         this.window = window;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void run(IAction action) {
         BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
@@ -110,9 +101,6 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection.isEmpty()) {
@@ -219,9 +207,6 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         window = targetPart.getSite().getWorkbenchWindow();

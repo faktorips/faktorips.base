@@ -59,9 +59,6 @@ public class TestLogger implements ILog {
         throw new RuntimeException("Not implemented yet.");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void log(IStatus status) {
         logEntries.add(status);

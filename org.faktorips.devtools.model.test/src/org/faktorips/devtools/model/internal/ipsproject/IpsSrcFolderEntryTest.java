@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -331,13 +331,5 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
 
         assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
-    }
-
-    @Test
-    public void testIsReexported() {
-        IFolder src = ipsProject.getProject().getFolder("src");
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setReexported(false);
-        assertTrue(entry.isReexported());
     }
 }

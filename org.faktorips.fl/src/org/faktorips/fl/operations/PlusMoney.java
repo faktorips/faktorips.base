@@ -22,9 +22,6 @@ public class PlusMoney extends AbstractUnaryJavaOperation {
         super(Operation.PlusMoney);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

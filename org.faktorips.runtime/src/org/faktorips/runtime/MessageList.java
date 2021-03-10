@@ -11,6 +11,7 @@
 package org.faktorips.runtime;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -99,6 +100,18 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return newList;
     }
 
+    /* kept for compile compatibility */
+    @Override
+    public void add(Message message) {
+        super.add(message);
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public void add(MessageList messageList) {
+        super.add(messageList);
+    }
+
     /**
      * Copies the messages from the given list to this list and sets the message's invalid object
      * properties.
@@ -120,6 +133,24 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
                 add(message);
             }
         }
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public int size() {
+        return super.size();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public Message getMessage(int index) {
+        return super.getMessage(index);
     }
 
     /**
@@ -149,6 +180,18 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return result;
     }
 
+    /* kept for compile compatibility */
+    @Override
+    public Message getMessageByCode(String code) {
+        return super.getMessageByCode(code);
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public MessageList getMessagesByCode(String code) {
+        return super.getMessagesByCode(code);
+    }
+
     /**
      * Returns a new message list containing all the message in this list that have the specified
      * {@link IMarker}. Returns an empty list if this list does not contain any message with the
@@ -166,6 +209,27 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return sublist;
+    }
+
+    /**
+     * Returns a new message list containing all the message in this list with a {@link IMarker} the
+     * specified {@code IPredicate} matches. Returns an empty list if this list does not contain any
+     * such message.
+     * <p>
+     * Sample usage:
+     * <code>messages.getMessagesByMarker(new IPredicate&lt;IMarker&gt;(){public boolean test(IMarker t){return t.isRequiredInformationMissing();}});</code>
+     * <p>
+     * Sample usage (Java8):
+     * <code>messages.getMessagesByMarker(IMarker::isRequiredInformationMissing);</code>
+     * 
+     * @param markerPredicate to match a {@link IMarker} with. Must not be <code>null</code>
+     * @throws NullPointerException if markerPredicate is <code>null</code>
+     * @deprecated for removal since 21.6; Use {@link #getMessagesByMarker(Predicate)} with the Java
+     *             8 {@link Predicate} instead.
+     */
+    @Deprecated
+    public MessageList getMessagesByMarker(org.faktorips.runtime.util.function.IPredicate<IMarker> markerPredicate) {
+        return getMessagesByMarker((Predicate<IMarker>)markerPredicate);
     }
 
     /**
@@ -209,6 +273,12 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return severity;
     }
 
+    /* kept for compile compatibility */
+    @Override
+    public String getText() {
+        return super.getText();
+    }
+
     @Override
     public boolean containsErrorMsg() {
         for (Message message : getMessages()) {
@@ -217,6 +287,11 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return false;
+    }
+
+    @Override
+    public MessageList getMessagesFor(Object object, String property) {
+        return super.getMessagesFor(object, property);
     }
 
     @Override
@@ -240,5 +315,35 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return result;
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public Iterator<Message> iterator() {
+        return super.iterator();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    /* kept for compile compatibility */
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

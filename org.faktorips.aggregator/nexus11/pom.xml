@@ -10,15 +10,15 @@
         <javax.activation.version>1.2.0</javax.activation.version>
 
         <!-- Use this to override the default javadoc settings in the parent pom -->
-        <!-- <javadoc.doclint.string>accessibility,html,reference,syntax</javadoc.doclint.string> -->
-        <!-- <javadoc.failOnError>true</javadoc.failOnError> -->
-        <!-- <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink> -->
+        <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
+        <javadoc.failOnError>true</javadoc.failOnError>
+        <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
     </properties>
 
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-nexus</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.4</version>
         <relativePath></relativePath>
     </parent>
 

@@ -47,7 +47,7 @@ public class MethodParameter {
      * Create the parameter with the type and the parameter name. It does not matter if the type is
      * qualified or not as far the import statement is already present.
      * <p>
-     * If isFinalFlag is <b>true</b> then the parameter gets the preceding keyword 'final'.
+     * If isFinalFlag is <strong>true</strong> then the parameter gets the preceding keyword 'final'.
      * 
      * @param type The parameter type, e.g. <em>String</em> or <em>ProductComponent</em>
      * @param paramName The name of the parameter

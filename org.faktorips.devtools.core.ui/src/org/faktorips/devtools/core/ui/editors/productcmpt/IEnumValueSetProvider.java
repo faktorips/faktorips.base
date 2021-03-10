@@ -17,13 +17,13 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
  * Provider used when enum valuesets are configured. E.g. when an enum value set in the model
  * (policy component type attribute) is configured with a subset by a product component (config
  * element). In above case the model valueset will be returned by {@link #getSourceEnumValueSet()}.
- * {@link #getTargetConfiguredValueSet()} will return the config element of the product component, that
- * defines the subset of the source value set.
- * <p/>
+ * {@link #getTargetConfiguredValueSet()} will return the config element of the product component,
+ * that defines the subset of the source value set.
+ * <p>
  * However there are other cases of configuring valuesets against each other. E.g. product variants
  * allow to restrict valuesets defined in a product component even further. Those cases can be
  * represented by different implentations of this interface.
- * <p/>
+ * <p>
  * The {@link AnyValueSetControl} can be configured with a custom {@link IEnumValueSetProvider} to
  * allow arbitrary pairs of (enum-)valueset and config element defining a subset.
  * 

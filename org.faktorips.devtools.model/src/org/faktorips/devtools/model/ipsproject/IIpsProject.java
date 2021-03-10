@@ -241,15 +241,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * If there is no referencing project, this project is returned.
      * <p>
      * Although you get a minimal set of IPS projects for your search, you have to look for
-     * duplicate results. E.g. in your project structure you have a project called <i>ipsProject</i>
-     * and you have two projects <i>RefProject1</i> and <i>RefProject2</i> that both referencing
-     * <i>ipsProject</i>. In <i>ipsProject</i> there is a <code>ProductCmptType</code> and a derived
+     * duplicate results. E.g. in your project structure you have a project called <em>ipsProject</em>
+     * and you have two projects <em>RefProject1</em> and <em>RefProject2</em> that both referencing
+     * <em>ipsProject</em>. In <em>ipsProject</em> there is a <code>ProductCmptType</code> and a derived
      * <code>ProductCmpt</code> you want to find. Because there are maybe other
      * <code>ProductCmpt</code>s referencing you <code>ProductCmptType</code> you have to search in
-     * all IPS projects, referencing your <i>ipsProject</i>. This is exactly the usage of this
-     * method. The problem is, you get two projects, both referencing <i>ipsProject</i>. If you add
-     * all results of search in project <i>RefProject1</i> and <i>RefProject2</i> you found the
-     * <code>ProductCmpt</code> in <i>ipsProject</i> twice.
+     * all IPS projects, referencing your <em>ipsProject</em>. This is exactly the usage of this
+     * method. The problem is, you get two projects, both referencing <em>ipsProject</em>. If you add
+     * all results of search in project <em>RefProject1</em> and <em>RefProject2</em> you found the
+     * <code>ProductCmpt</code> in <em>ipsProject</em> twice.
      * 
      * 
      * @return The IPS projects referencing this project excluding projects that are referenced by
@@ -720,7 +720,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
      * @param excludedDatatypes A list of data types that should NOT be included, may be
-     *            code>null</code> if none shall be excluded.
+     *            <code>null</code> if none shall be excluded.
      * @param includeAbstract true if abstract data types should be included.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly,

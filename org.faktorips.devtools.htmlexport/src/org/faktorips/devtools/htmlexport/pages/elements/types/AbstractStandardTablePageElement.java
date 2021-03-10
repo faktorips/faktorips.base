@@ -33,7 +33,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
  * </p>
  * <p>
  * The table is built internally by the methods addDataRows() and addHeadline(). The normal way with
- * addPageElements() doesn't work with this {@link TablePageElement}s. </p
+ * addPageElements() doesn't work with this {@link TablePageElement}s.
+ * </p>
  * 
  * @author dicker
  * 

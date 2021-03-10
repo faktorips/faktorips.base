@@ -47,9 +47,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         super(path);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getType() {
         return TYPE_CONTAINER;
@@ -102,9 +99,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return container.resolveEntries();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean exists(QualifiedNameType qnt) throws CoreException {
         List<IIpsObjectPathEntry> entries = resolveEntries();
@@ -116,9 +110,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
         return Collections.emptyList();
@@ -146,25 +137,16 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean containsResource(String resourcePath) {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public InputStream getResourceAsStream(String resourcePath) {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initFromXml(Element element, IProject project) {
         super.initFromXml(element, project);
@@ -172,9 +154,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         optionalPath = element.getAttribute(XML_ATTRIBUTE_PATH);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Element toXml(Document doc) {
         Element element = super.toXml(doc);
@@ -184,9 +163,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return element;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public MessageList validate() {
         IIpsObjectPathContainer container = getIpsObjectPathContainer();

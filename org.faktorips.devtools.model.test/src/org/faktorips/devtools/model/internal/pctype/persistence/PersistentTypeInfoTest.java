@@ -602,6 +602,36 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
+    public void testDuplicateColumnName_OverwriteAttribute() throws CoreException {
+        MessageList ml = null;
+
+        PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
+        superPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
+
+        IPersistentTypeInfo superPersTypeInfo = superPolicyCmptType.getPersistenceTypeInfo();
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute("attribute");
+        policyCmptTypeAttribute.getPersistenceAttributeInfo().setTableColumnName("a");
+
+        IPersistentTypeInfo pTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        IPolicyCmptTypeAttribute pcAttribute = policyCmptType.newPolicyCmptTypeAttribute("attribute");
+        pcAttribute.getPersistenceAttributeInfo().setTableColumnName("a");
+        pcAttribute.setOverwrite(true);
+
+        // single table strategy
+        pTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+
+        // joined table strategy
+        pTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        ml = pTypeInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    @Test
     public void testValidateInheritanceStrategy() throws CoreException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();

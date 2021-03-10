@@ -73,7 +73,6 @@ public class QNameUtil {
     /**
      * Transforms the qualified name to a string array containing it's segments and returns it. Each
      * segment of the name is placed in hierarchical order, e.g. "de.faktorips.devtools":
-     * <p>
      * 
      * <pre>
      * segments[0] = de
@@ -115,7 +114,6 @@ public class QNameUtil {
      * is empty.
      * <p>
      * Example: The following call returns "org.faktorips".
-     * <p>
      * 
      * <pre>
      * QNameUtil.getSubSegments(&quot;org.faktorips.devtools.model&quot;, 2);

@@ -50,7 +50,7 @@ public interface IGenericAttributeValidationConfiguration {
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute was validated
      */
-    Message createMessageForValuePresentForIgnoredAttribute(PolicyAttribute policyAttribute, IModelObject modelObject);
+    Message createMessageForValuePresentForIrrelevantAttribute(PolicyAttribute policyAttribute, IModelObject modelObject);
 
     /**
      * Creates a message to indicate that the given attribute's value on the given model object is

@@ -14,7 +14,7 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.Operation;
 
 /**
- * Parenthesis <i>()</i> operator for datatype String.
+ * Parenthesis <em>()</em> operator for datatype String.
  */
 public class ParenthesisString extends AbstractUnaryJavaOperation {
 
@@ -22,9 +22,6 @@ public class ParenthesisString extends AbstractUnaryJavaOperation {
         super(Operation.ParenthesisString);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl arg) {
         return arg;

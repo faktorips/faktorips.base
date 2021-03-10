@@ -119,17 +119,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         getTableViewer().setInput(valueSet);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ValueSetType getValueSetType() {
         return ValueSetType.ENUM;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
         if (valueSet == null) {

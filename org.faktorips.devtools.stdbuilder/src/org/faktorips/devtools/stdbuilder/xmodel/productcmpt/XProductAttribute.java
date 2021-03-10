@@ -190,10 +190,12 @@ public class XProductAttribute extends XAttribute {
     /**
      * The default value is set under following circumstances:
      * 
+     * <ul>
      * <li>For abstract attributes we never call setDefaultValue</li>
      * <li>If the default value is not <code>null</code> then call setDefaultValue</li>
      * <li>If the attribute was configured in a super type we always call setDefaultValue. To get
      * this we could check if it is not abstract and no content code is generated.</li>
+     * </ul>
      * 
      */
     public boolean isCallSetDefaultValue() {

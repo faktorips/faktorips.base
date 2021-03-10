@@ -460,9 +460,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         return fTestRunPane;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException {
         super.init(site, memento);
@@ -474,9 +471,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
@@ -928,9 +922,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     // Listener methods
     //
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testFailureOccured(String qualifiedTestName, String[] failureDetails) {
         isFailure = true;
@@ -938,9 +929,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         setNextPrevToolBarButtonsStatus(true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testFinished(String qualifiedTestName) {
         if (fExecutedTests > fCounterPanel.getTotal()) {
@@ -964,9 +952,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         postEndTest(getTestId(qualifiedTestName));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testStarted(String qualifiedTestName) {
         setInfoMessage(StringUtil.unqualifiedName(qualifiedTestName));
@@ -975,9 +960,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         postStartTest(getTestId(qualifiedTestName));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testTableEntry(final String qualifiedName, final String fullPath) {
         // get a new or a cached test id
@@ -998,9 +980,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testTableEntries(final String[] qualifiedNames, final String[] fullPaths) {
         // get a new or a cached test id
@@ -1023,9 +1002,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testRunStarted(int testCount, String classpathRepository, String testPackage) {
         this.classpathRepository = classpathRepository;
@@ -1054,9 +1030,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject().getJavaProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void testRunEnded(String elapsedTime) {
         fExecutedTests--;
@@ -1125,9 +1098,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         return fTestRunPane.getSelectedTestQualifiedName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean canNavigateToFailure() {
         return false;

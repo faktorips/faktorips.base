@@ -61,8 +61,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
      * Generates the constructor.
      * <p>
      * Example:
-     * <p>
-     * 
+     *
      * <pre>
      * public MotorPolicyPk0(RuntimeRepository repository, String qName, Class policyComponentType) {
      *     super(registry, qName, policyComponentType);

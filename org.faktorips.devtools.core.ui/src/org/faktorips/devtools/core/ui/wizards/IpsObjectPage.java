@@ -89,9 +89,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         this.ipsObjectType = ipsObjectType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Control createControlInternal(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -207,9 +204,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return nameText;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getIpsObjectName() {
         return nameField == null ? null : nameField.getText();
@@ -252,17 +246,11 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         // may be override by subclasses
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setIpsPackageFragment(IIpsPackageFragment pack) {
         packageControl.setIpsPackageFragment(pack);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IIpsPackageFragment getIpsPackageFragment() {
         return packageControl.getIpsPackageFragment();
@@ -276,9 +264,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return getIpsPackageFragmentRoot().getIpsProject();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected IpsObjectType getIpsObjectType() {
         if (ipsObjectType == null) {
@@ -295,9 +280,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return nameComposite;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public final void valueChanged(FieldValueChangedEvent e) {
         if (e.field == sourceFolderField) {
@@ -483,9 +465,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return file;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void updatePageComplete() {
         if (getErrorMessage() != null) {
@@ -497,9 +476,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         setPageComplete(complete);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @SuppressWarnings("deprecation")
     @Override
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
@@ -529,9 +505,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         return packageControl;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected void setIpsPackageFragmentRoot(IIpsPackageFragmentRoot root) {
         sourceFolderControl.setIpsPackageFragmentRoot(root);

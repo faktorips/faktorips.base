@@ -55,9 +55,6 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         this.showAssociationTargets = showAssociationTargets;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getChildren(Object parentElement) {
         if (!showRelationType && parentElement instanceof IProductCmptReference) {
@@ -115,9 +112,6 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         return result.toArray(new Object[result.size()]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getParent(Object element) {
         if (structure == null) {
@@ -137,25 +131,16 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void dispose() {
         structure = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object[] getElements(Object inputElement) {
         if (structure == inputElement) {
@@ -165,9 +150,6 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput == null || !(newInput instanceof IProductCmptTreeStructure)) {

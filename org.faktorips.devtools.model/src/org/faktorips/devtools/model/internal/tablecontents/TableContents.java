@@ -337,7 +337,6 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * hence the {@link TableRows} were table generations derived from {@link IpsObjectGeneration}.
      * Because of these circumstances the old XML format had the tag name "Generations". We still
      * need to read the old format in this method.
-     * <p>
      * 
      * @see #initFromInputStream(InputStream)
      */

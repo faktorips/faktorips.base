@@ -23,25 +23,16 @@ public class StringDatatype extends ValueClassNameDatatype {
         super(String.class.getSimpleName());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isParsable(String value) {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Object getValue(String value) {
         return value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean supportsCompare() {
         return true;

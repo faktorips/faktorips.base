@@ -349,9 +349,10 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
 
     /**
      * Returns <code>true</code> if the join column is required.
-     * <table border=1>
+     * <table border="1">
+     * <caption>Example:</caption>
      * <tr>
-     * <td colspan=3><b>bidirectional</b></td>
+     * <td colspan=3><strong>bidirectional</strong></td>
      * </tr>
      * <tr>
      * <td>one-to-one</td>
@@ -361,13 +362,13 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
      * <tr>
      * <td>one-to-one</td>
      * <td>detail-to-master</td>
-     * <td><b>true</b></td>
+     * <td><strong>true</strong></td>
      * </tr>
      * <tr>
      * <tr>
      * <td>one-to-one</td>
      * <td>association</td>
-     * <td><b>true</b><i> (on one side)</i></td>
+     * <td><strong>true</strong><em> (on one side)</em></td>
      * </tr>
      * <tr>
      * <td>one-to-many</td>
@@ -377,7 +378,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
      * <tr>
      * <td>one-to-many</td>
      * <td>detail-to-master</td>
-     * <td><i>false (but not supported)</i></td>
+     * <td><em>false (but not supported)</em></td>
      * </tr>
      * <tr>
      * <td>one-to-many</td>
@@ -387,17 +388,17 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
      * <tr>
      * <td>many-to-one</td>
      * <td>master-to-detail</td>
-     * <td><i>false (but not supported)</i></td>
+     * <td><em>false (but not supported)</em></td>
      * </tr>
      * <tr>
      * <td>many-to-one</td>
      * <td>detail-to-master</td>
-     * <td><b>true</b></td>
+     * <td><strong>true</strong></td>
      * </tr>
      * <tr>
      * <td>many-to-one</td>
      * <td>association</td>
-     * <td><b>true</b></td>
+     * <td><strong>true</strong></td>
      * </tr>
      * <tr>
      * <td>many-to-many</td>
@@ -405,14 +406,15 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
      * <td>false</td>
      * </tr>
      * <tr>
-     * <td colspan=3><b>unidirectional</b></td>
+     * <td colspan=3><strong>unidirectional</strong></td>
      * </tr>
      * <tr>
      * <td>all</td>
      * <td>all</td>
-     * <td><b>true</b></td>
+     * <td><strong>true</strong></td>
      * </tr>
      * </table>
+     * <p>
      * Note that if this relationship side the owner of a many-to-many association then return
      * always <code>false</code>. If the associated policy component type association is a derived
      * union or the inverse of a derived union association then return <code>false</code>.

@@ -49,18 +49,12 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
         rhsDatatype = rhs;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ExprCompiler<T> getCompiler() {
         return compiler;

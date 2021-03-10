@@ -45,9 +45,6 @@ public abstract class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
         build(ipsSrcFile, is);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public abstract String getName();
 

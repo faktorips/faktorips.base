@@ -201,7 +201,7 @@ public class TypedSelectionTest {
     }
 
     /**
-     * Checks that the validator only accepts count >= 0.
+     * Checks that the validator only accepts count &ge; 0.
      */
     @Test
     public void testMinimum() {

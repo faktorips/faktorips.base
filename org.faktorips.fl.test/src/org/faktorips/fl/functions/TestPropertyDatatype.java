@@ -31,57 +31,36 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
         this.name = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Datatype getDatatype() {
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getGetterMethod() {
         return "get" + StringUtils.capitalize(name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getQualifiedName() {
         return name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isPrimitive() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isAbstract() {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isValueDatatype() {
         return false;

@@ -31,9 +31,6 @@ public class IsEmpty extends AbstractFlFunction {
         super(name, description, FunctionSignatures.IsEmpty);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         Datatype argType = argResults[0].getDatatype();

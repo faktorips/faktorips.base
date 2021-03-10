@@ -119,9 +119,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         IFile file = getXmlContentFile(ipsSrcFile);
@@ -139,9 +136,6 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         return ipsObjectType.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getName() {
         return "XmlContentFileCopyBuilder"; //$NON-NLS-1$
