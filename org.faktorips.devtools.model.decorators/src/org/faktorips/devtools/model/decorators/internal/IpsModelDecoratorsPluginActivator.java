@@ -31,6 +31,7 @@ public class IpsModelDecoratorsPluginActivator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
         bundle = null;
+        ((ImageHandling)IpsDecorators.getImageHandling()).dispose();
     }
 
 }
