@@ -16,6 +16,8 @@ import org.faktorips.devtools.model.decorators.internal.IpsElementDecoratorsProv
 /**
  * Provides access to all {@link IIpsElementDecoratorsProvider} instances available in the current
  * Faktor-IPS instance.
+ *
+ * @since 21.6
  */
 public interface IIpsElementDecoratorsProviders {
 

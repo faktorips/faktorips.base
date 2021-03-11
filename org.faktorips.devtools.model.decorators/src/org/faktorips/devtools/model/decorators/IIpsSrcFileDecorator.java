@@ -14,6 +14,11 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.StringUtil;
 
+/**
+ * An {@link IIpsElementDecorator} for {@link IIpsSrcFile IIpsSrcFiles}.
+ *
+ * @since 21.6
+ */
 public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
 
     @Override
@@ -25,6 +30,9 @@ public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
         return getDefaultImageDescriptor();
     }
 
+    /**
+     * Returns the {@link ImageDescriptor} for the given {@link IIpsSrcFile}.
+     */
     ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile);
 
     @Override
@@ -36,6 +44,9 @@ public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
         return IIpsElementDecorator.super.getLabel(ipsElement);
     }
 
+    /**
+     * Returns the label for the given {@link IIpsSrcFile}.
+     */
     default String getLabel(IIpsSrcFile ipsSrcFile) {
         return StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName());
     }

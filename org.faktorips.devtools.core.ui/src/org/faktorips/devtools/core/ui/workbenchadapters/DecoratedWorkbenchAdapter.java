@@ -12,27 +12,33 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 
+/**
+ * A workbench adapter that wraps an {@link IIpsElementDecorator}.
+ *
+ * @since 21.6
+ */
 public class DecoratedWorkbenchAdapter extends IpsElementWorkbenchAdapter {
 
-    private final Class<? extends IIpsElement> clazz;
+    private final IIpsElementDecorator decorator;
 
     public DecoratedWorkbenchAdapter(Class<? extends IIpsElement> adaptableClass) {
-        this.clazz = adaptableClass;
+        decorator = IIpsDecorators.get(adaptableClass);
     }
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        return IIpsDecorators.get(clazz).getImageDescriptor(ipsElement);
+        return decorator.getImageDescriptor(ipsElement);
     }
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IIpsDecorators.get(clazz).getDefaultImageDescriptor();
+        return decorator.getDefaultImageDescriptor();
     }
 
     @Override
     protected String getLabel(IIpsElement ipsElement) {
-        return IIpsDecorators.get(clazz).getLabel(ipsElement);
+        return decorator.getLabel(ipsElement);
     }
 }

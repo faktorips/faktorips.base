@@ -5,6 +5,11 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
+/**
+ * An {@link IIpsElementDecorator} for {@link IIpsObjectPart IIpsObjectParts}.
+ *
+ * @since 21.6
+ */
 public interface IIpsObjectPartDecorator extends IIpsElementDecorator {
 
     @Override
@@ -16,6 +21,9 @@ public interface IIpsObjectPartDecorator extends IIpsElementDecorator {
         return getDefaultImageDescriptor();
     }
 
+    /**
+     * Returns the {@link ImageDescriptor} for the given {@link IIpsObjectPart}.
+     */
     ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart);
 
     @Override
@@ -27,6 +35,9 @@ public interface IIpsObjectPartDecorator extends IIpsElementDecorator {
         return IpsStringUtils.EMPTY;
     }
 
+    /**
+     * Returns the label for the given {@link IIpsObjectPart}.
+     */
     default String getLabel(IIpsObjectPart ipsObjectPart) {
         return ipsObjectPart == null ? IpsStringUtils.EMPTY : ipsObjectPart.getName();
     }

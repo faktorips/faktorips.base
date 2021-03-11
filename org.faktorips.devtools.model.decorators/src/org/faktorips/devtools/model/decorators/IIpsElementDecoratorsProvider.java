@@ -16,6 +16,8 @@ import org.faktorips.devtools.model.IIpsElement;
 /**
  * Provider for additional {@link IIpsElementDecorator IIpsElementDecorators}, to be used by
  * {@link IIpsDecorators}.
+ *
+ * @since 21.6
  */
 public interface IIpsElementDecoratorsProvider {
 

@@ -18,6 +18,8 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * <p>
  * Decorators only provide {@link ImageDescriptor} instances. Creating concrete images from those
  * descriptors is up to the caller.
+ *
+ * @since 21.6
  */
 public interface IIpsElementDecorator {
 

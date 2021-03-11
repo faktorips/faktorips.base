@@ -12,6 +12,11 @@ package org.faktorips.devtools.model.decorators;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
+/**
+ * Icons to be used as overlay images for other images.
+ *
+ * @since 21.6
+ */
 public interface OverlayIcons {
     static final String OVERLAYS_FOLDER = "overlays/"; //$NON-NLS-1$
 

@@ -17,6 +17,12 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.internal.ImageHandling;
 
+/**
+ * Manages {@link ImageDescriptor ImageDescriptors} and {@link Image Images} with a
+ * {@link ResourceManager}.
+ *
+ * @since 21.6
+ */
 public interface IImageHandling {
 
     /**
@@ -118,8 +124,8 @@ public interface IImageHandling {
 
     /**
      * Just create a image descriptor with the specified name as image filename in the icons
-     * sub-folder does not register anything in the image registry or the image description registry.
-     * Only use for images of this plugin!
+     * sub-folder does not register anything in the image registry or the image description
+     * registry. Only use for images of this plugin!
      * <p>
      * Use this method when you only want to have an image descriptor for any eclipse object e.g. an
      * Action or a Wizard Normally eclipse does instantiate and dispose the image
