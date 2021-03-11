@@ -701,7 +701,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             throwUnableToCallMethodException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
-                    "The provided enumeration class doesn't provide an identifing method getEnumValueId.", e); //$NON-NLS-1$
+                    "The provided enumeration class doesn't provide an identifying method getEnumValueId.", e); //$NON-NLS-1$
         } catch (IllegalAccessException e) {
             throwUnableToCallMethodException(e);
         } catch (InvocationTargetException e) {
@@ -729,26 +729,29 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final <T> List<T> getEnumValues(Class<T> clazz) {
-        List<T> values;
+        return Collections.unmodifiableList(getEnumValuesOriginal(clazz));
+    }
+
+    private <T> List<T> getEnumValuesOriginal(Class<T> clazz) {
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
         if (lookup != null) {
             return lookup.getEnumValues();
         } else {
-            values = getEnumValuesInternal(clazz);
-        }
-        List<T> valuesFromType = getEnumValuesDefinedInType(clazz);
-        ArrayList<T> allValues = new ArrayList<T>(valuesFromType);
-        if (values != null) {
-            allValues.addAll(values);
-            return Collections.unmodifiableList(allValues);
-        }
-        for (IRuntimeRepository repository : repositories) {
-            List<T> referencedValues = repository.getEnumValues(clazz);
-            if (!referencedValues.equals(valuesFromType)) {
-                return Collections.unmodifiableList(referencedValues);
+            List<T> valuesFromType = getEnumValuesDefinedInType(clazz);
+            ArrayList<T> allValues = new ArrayList<T>(valuesFromType);
+            List<T> values = getEnumValuesInternal(clazz);
+            if (values != null) {
+                allValues.addAll(values);
+            } else {
+                for (IRuntimeRepository repository : repositories) {
+                    List<T> referencedValues = repository.getEnumValues(clazz);
+                    if (!referencedValues.equals(valuesFromType)) {
+                        return referencedValues;
+                    }
+                }
             }
+            return allValues;
         }
-        return Collections.unmodifiableList(allValues);
     }
 
     /**
@@ -826,6 +829,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         // because we store every kind of enumValueLookupService in the same map we could not know
         // the type of the object. This is ugly design!
         IEnumValueLookupService<T> enumValueLookupService = (IEnumValueLookupService<T>)enumValueLookups.get(enumClazz);
+        if (enumValueLookupService == null) {
+            for (IRuntimeRepository repository : getAllReferencedRepositories()) {
+                enumValueLookupService = repository.getEnumValueLookupService(enumClazz);
+                if (enumValueLookupService != null) {
+                    break;
+                }
+            }
+        }
         return enumValueLookupService;
     }
 

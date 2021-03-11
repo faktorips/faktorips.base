@@ -123,7 +123,7 @@ public interface IRuntimeRepository {
     /**
      * Returns the type safe {@link List} of enumeration values of the provided Faktor-IPS generated
      * enumeration class. This method is only relevant for Faktor-IPS enumerations whose values are
-     * deferred to a content that is hold by this repository.
+     * deferred to a content that is held by this repository.
      * 
      * @param clazz the enumeration class upon which the list of enumeration values is returned
      * 

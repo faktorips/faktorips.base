@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -35,6 +36,8 @@ import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
+import org.faktorips.sample.model.TestAbstractEnum;
+import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -418,11 +421,39 @@ public class AbstractRuntimeRepositoryTest {
         assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
         assertNull(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"));
         assertNull(baseRepository.getEnumValue(null, null));
+    }
+
+    @Test
+    public void testGetEnumValueFromReferencedLookup() {
+        ConcreteLookup lookup = new ConcreteLookup();
+        assertNull(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()));
 
         // test if the search through referenced repositories works
-        assertEquals(lookup.value1, mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-        assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-        assertNull(mainRepository.getEnumValue(TestEnumValue.class, "unknownId"));
+        baseRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup.extendedValue1,
+                mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()));
+        assertEquals(TestConcreteExtensibleEnum.CLASS_VALUE_2,
+                mainRepository.getEnumValue(TestConcreteExtensibleEnum.class,
+                        TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()));
+        assertNull(mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, "unknownId"));
+        assertNull(mainRepository.getEnumValue(null, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetEnumValueWithoutLookup_WithAbstractBaseEnum_() {
+        baseRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId());
+    }
+
+    @Test
+    public void testGetEnumValueFromReferencedLookup_WithAbstractBaseEnum() {
+        // test if the search through referenced repositories works
+        AbstractLookup lookup = new AbstractLookup();
+        baseRepository.addEnumValueLookupService(lookup);
+        assertEquals(lookup.extendedValue1,
+                mainRepository.getEnumValue(TestAbstractEnum.class, lookup.extendedValue1.getId()));
+        assertEquals(TestConcreteExtensibleEnum.CLASS_VALUE_2,
+                mainRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()));
+        assertNull(mainRepository.getEnumValue(TestAbstractEnum.class, "unknownId"));
         assertNull(mainRepository.getEnumValue(null, null));
     }
 
@@ -525,6 +556,80 @@ public class AbstractRuntimeRepositoryTest {
 
         @Override
         public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
+            return null;
+        }
+
+    }
+
+    private class AbstractLookup implements IEnumValueLookupService<TestAbstractEnum> {
+
+        private final TestConcreteExtensibleEnum extendedValue1 = new TestConcreteExtensibleEnum(2, "E1",
+                "Extended Value 1");
+        private final TestConcreteExtensibleEnum extendedValue2 = new TestConcreteExtensibleEnum(3, "E2",
+                "Extended Value 2");
+
+        private final List<TestAbstractEnum> values = Arrays.asList(TestConcreteExtensibleEnum.CLASS_VALUE_1,
+                TestConcreteExtensibleEnum.CLASS_VALUE_2, extendedValue1, extendedValue2);
+
+        @Override
+        public Class<TestAbstractEnum> getEnumTypeClass() {
+            return TestAbstractEnum.class;
+        }
+
+        @Override
+        public TestAbstractEnum getEnumValue(Object id) {
+            for (TestAbstractEnum value : values) {
+                if (value.getId().equals(id)) {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public List<TestAbstractEnum> getEnumValues() {
+            return values;
+        }
+
+        @Override
+        public XmlAdapter<?, TestAbstractEnum> getXmlAdapter() {
+            return null;
+        }
+
+    }
+
+    private class ConcreteLookup implements IEnumValueLookupService<TestConcreteExtensibleEnum> {
+
+        private final TestConcreteExtensibleEnum extendedValue1 = new TestConcreteExtensibleEnum(2, "E1",
+                "Extended Value 1");
+        private final TestConcreteExtensibleEnum extendedValue2 = new TestConcreteExtensibleEnum(3, "E2",
+                "Extended Value 2");
+
+        private final List<TestConcreteExtensibleEnum> values = Arrays.asList(TestConcreteExtensibleEnum.CLASS_VALUE_1,
+                TestConcreteExtensibleEnum.CLASS_VALUE_2, extendedValue1, extendedValue2);
+
+        @Override
+        public Class<TestConcreteExtensibleEnum> getEnumTypeClass() {
+            return TestConcreteExtensibleEnum.class;
+        }
+
+        @Override
+        public TestConcreteExtensibleEnum getEnumValue(Object id) {
+            for (TestConcreteExtensibleEnum value : values) {
+                if (value.getId().equals(id)) {
+                    return value;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public List<TestConcreteExtensibleEnum> getEnumValues() {
+            return values;
+        }
+
+        @Override
+        public XmlAdapter<?, TestConcreteExtensibleEnum> getXmlAdapter() {
             return null;
         }
 
