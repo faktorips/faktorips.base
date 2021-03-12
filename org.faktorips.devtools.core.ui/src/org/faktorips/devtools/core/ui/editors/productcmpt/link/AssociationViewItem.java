@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.internal.AssociationDecorator;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -26,12 +26,12 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 public class AssociationViewItem extends AbstractAssociationViewItem {
 
     private final IProductCmptTypeAssociation association;
-    private final AssociationWorkbenchAdapter workbenchAdapter;
+    private final AssociationDecorator workbenchAdapter;
 
     protected AssociationViewItem(IProductCmptLinkContainer container, IProductCmptTypeAssociation association) {
         super(container);
         this.association = association;
-        workbenchAdapter = new AssociationWorkbenchAdapter(association.getProductCmptType().isChangingOverTime());
+        workbenchAdapter = new AssociationDecorator(association.getProductCmptType().isChangingOverTime());
     }
 
     @Override

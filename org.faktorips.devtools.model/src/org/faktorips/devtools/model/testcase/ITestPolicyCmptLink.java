@@ -94,7 +94,7 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if the link is an association.
      */
-    public boolean isAccoziation();
+    public boolean isAssociation();
 
     /**
      * Returns <code>true</code> if the link is a composition.

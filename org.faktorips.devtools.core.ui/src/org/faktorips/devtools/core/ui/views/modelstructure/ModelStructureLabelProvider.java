@@ -86,8 +86,9 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
             }
 
             if (overlayed) {
-                return resourceManager.createImage(IpsUIPlugin.getImageHandling().getSharedOverlayImage(imageName,
-                        overlayImages));
+                return resourceManager
+                        .createImage(IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(imageName,
+                                overlayImages));
             } else {
                 Image image = IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
                 return image;

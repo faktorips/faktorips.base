@@ -15,7 +15,6 @@ import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
@@ -34,9 +33,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractStandardTa
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectMessageListTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 import org.faktorips.devtools.model.IVersion;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.message.MessageList;
 
@@ -73,10 +74,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                         + " " + getContext().getIpsProject().getName(), //$NON-NLS-1$
                 getContext())));
 
-        addPageElements(new PageElementUtils(getContext()).createLinkPageElement(getContext(), getDocumentedIpsObject()
-                .getIpsPackageFragment(), TargetType.CLASSES,
-                IpsUIPlugin.getLabel(getDocumentedIpsObject()
-                        .getIpsPackageFragment()),
+        IIpsPackageFragment ipsPackageFragment = getDocumentedIpsObject().getIpsPackageFragment();
+        addPageElements(new PageElementUtils(getContext()).createLinkPageElement(getContext(), ipsPackageFragment,
+                TargetType.CLASSES,
+                IIpsDecorators.get(ipsPackageFragment.getClass()).getLabel(ipsPackageFragment),
                 true));
         addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$
                 + getContext().getLabel(getDocumentedIpsObject()), TextType.HEADING_1, getContext()));

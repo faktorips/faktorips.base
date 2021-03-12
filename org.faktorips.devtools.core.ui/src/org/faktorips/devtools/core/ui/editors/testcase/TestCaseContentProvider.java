@@ -401,7 +401,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * Returns all child of the given test case association.
      */
     private Object[] getChildsForTestPolicyCmptAssociation(ITestPolicyCmptLink testPcAssociation) {
-        if (testPcAssociation.isAccoziation()) {
+        if (testPcAssociation.isAssociation()) {
             return EMPTY_ARRAY;
         } else {
             ITestPolicyCmpt[] childs = new ITestPolicyCmpt[1];

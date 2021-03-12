@@ -25,7 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 
 /**
  * Counter panel.

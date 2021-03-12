@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.util.message.Message;
 
 public class IpsProblemOverlayIcon {

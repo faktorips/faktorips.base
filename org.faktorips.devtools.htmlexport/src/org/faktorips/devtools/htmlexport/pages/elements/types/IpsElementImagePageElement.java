@@ -15,12 +15,11 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -54,15 +53,15 @@ public class IpsElementImagePageElement extends ImagePageElement {
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
-        if (Display.getCurrent() == null && !PlatformUI.isWorkbenchRunning()) {
-            return IpsUIPlugin.getImageHandling()
+        if (Display.getCurrent() == null) {
+            return IIpsDecorators.getImageHandling()
                     .getImage(element, true)
                     .getImageData();
         } else {
             CompletableFuture<ImageData> futureImageData = new CompletableFuture<>();
             Display.getDefault()
                     .syncExec(() -> futureImageData
-                            .complete(IpsUIPlugin.getImageHandling()
+                            .complete(IIpsDecorators.getImageHandling()
                                     .getImage(element, true)
                                     .getImageData()));
             return futureImageData.join();

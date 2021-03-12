@@ -303,6 +303,7 @@
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>

@@ -38,6 +38,10 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
+import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -48,14 +52,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class IpsObjectPathContainer {
 
-    private static final ImageDescriptor packageFragmentRootImage = IpsUIPlugin.getImageHandling()
-            .createImageDescriptor("IpsPackageFragmentRoot.gif"); //$NON-NLS-1$
+    private static final ImageDescriptor packageFragmentRootImage = IIpsDecorators
+            .getDefaultImageDescriptor(IpsPackageFragmentRoot.class);
 
-    private static final ImageDescriptor projectImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "IpsProject.gif"); //$NON-NLS-1$
+    private static final ImageDescriptor projectImage = IIpsDecorators.getDefaultImageDescriptor(IpsProject.class);
 
-    private static final ImageDescriptor archiveImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "IpsAr.gif"); //$NON-NLS-1$
+    private static final ImageDescriptor archiveImage = IIpsDecorators
+            .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
 
     private static final ImageDescriptor objectPathImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
             "obj16/cp_order_obj.gif"); //$NON-NLS-1$

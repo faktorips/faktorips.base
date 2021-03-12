@@ -42,10 +42,9 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    // eclipse api is not type safe
-    public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
+    @Override
+    public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
         if (!adapterType.isAssignableFrom(IpsElementWorkbenchAdapter.class)) {
             return null;
         }
@@ -56,7 +55,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
                 if (ipsSrcFile.exists() && ipsSrcFile.isContentParsable()) {
                     Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
                     if (implementingClass != null) {
-                        return getAdapterByClass(implementingClass);
+                        return (T)getAdapterByClass(implementingClass);
                     }
                     /*
                      * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
@@ -70,7 +69,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
             }
         }
         if (adaptableObject instanceof IpsElement) {
-            return getAdapterByClass((Class<? extends IpsElement>)adaptableObject.getClass());
+            return (T)getAdapterByClass((Class<? extends IpsElement>)adaptableObject.getClass());
         } else {
             return null;
         }

@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.filter.IIpsElementFilter;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.chooser.TypeChooserPageElement;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -107,7 +107,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
 
             linkedPackagesNames.add(packageFragment.getName());
             packageLinks.add(new PageElementUtils(getContext()).createLinkPageElement(getContext(), packageFragment,
-                    getLinkTarget(), IpsUIPlugin.getLabel(packageFragment), true));
+                    getLinkTarget(), IIpsDecorators.get(packageFragment.getClass()).getLabel(packageFragment), true));
         }
 
         return packageLinks;

@@ -45,7 +45,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     public static final String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "containerRelationApplicable"; //$NON-NLS-1$
+    public static final String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "derivedUnionApplicable"; //$NON-NLS-1$
 
     public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 

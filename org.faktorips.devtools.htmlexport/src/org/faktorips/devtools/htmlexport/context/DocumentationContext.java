@@ -23,7 +23,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
@@ -39,6 +38,7 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
 
@@ -291,7 +291,7 @@ public class DocumentationContext {
         return messagesManager.getMessage(object);
     }
 
-    public UIDatatypeFormatter getDatatypeFormatter() {
+    public IDatatypeFormatter getDatatypeFormatter() {
         return pluginResources.getDatatypeFormatter();
     }
 }

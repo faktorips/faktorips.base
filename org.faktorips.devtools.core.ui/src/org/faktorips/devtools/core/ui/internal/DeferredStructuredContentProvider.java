@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.internal;
 
-import java.util.Observable;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,7 +35,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Cornelius Dirmeier
  */
-public abstract class DeferredStructuredContentProvider extends Observable implements IStructuredContentProvider {
+@SuppressWarnings("deprecation")
+public abstract class DeferredStructuredContentProvider extends java.util.Observable
+        implements IStructuredContentProvider {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
@@ -123,8 +123,8 @@ public abstract class DeferredStructuredContentProvider extends Observable imple
         protected IStatus run(IProgressMonitor monitor) {
             try {
                 monitor.beginTask(getWaitingLabel(), 1);
-                 @SuppressWarnings("deprecation")
-       org.eclipse.core.runtime.SubProgressMonitor collectMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1);
+                org.eclipse.core.runtime.SubProgressMonitor collectMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                        monitor, 1);
                 Object[] result = collectElements(inputElement, collectMonitor);
                 // only set the result if this is still the active job!
                 if (this == collector) {

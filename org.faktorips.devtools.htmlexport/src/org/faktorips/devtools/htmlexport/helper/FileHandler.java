@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.htmlexport.HtmlExportPlugin;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.osgi.framework.Bundle;
 
@@ -52,7 +51,7 @@ public class FileHandler implements IoHandler {
 
     @Override
     public byte[] readFile(String fileName) throws IOException {
-        String bundleName = HtmlExportPlugin.PLUGIN_ID;
+        String bundleName = "org.faktorips.devtools.htmlexport"; //$NON-NLS-1$
         if (Platform.getBundle(bundleName) == null) {
             throw new IOException("Bundle " + bundleName + " not found (Loading file " + fileName + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }

@@ -14,8 +14,8 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 
 /**
  * Encapsulates accesses to the IpsPlugin
@@ -30,7 +30,7 @@ public interface IPluginResourceFacade {
 
     public String getIpsPluginPluginId();
 
-    public UIDatatypeFormatter getDatatypeFormatter();
+    public IDatatypeFormatter getDatatypeFormatter();
 
     public Properties getMessageProperties(String resourceName) throws CoreException;
 

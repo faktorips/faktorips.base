@@ -214,7 +214,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                     return image;
                 } else {
                     ImageDescriptor disableImageDescriptor = IpsUIPlugin.getImageHandling()
-                            .createDisabledImageDescriptor(ImageDescriptor.createFromImage(image));
+                            .getDisabledImageDescriptor(ImageDescriptor.createFromImage(image));
                     return (Image)resourceManager.get(disableImageDescriptor);
                 }
             }

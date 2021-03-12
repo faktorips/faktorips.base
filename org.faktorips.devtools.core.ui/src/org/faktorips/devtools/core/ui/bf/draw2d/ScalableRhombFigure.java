@@ -20,7 +20,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 
 /**
  * The figure for the decision and merge business function elements.

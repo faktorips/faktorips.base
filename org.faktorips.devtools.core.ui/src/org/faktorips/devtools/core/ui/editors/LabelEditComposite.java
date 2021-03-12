@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;

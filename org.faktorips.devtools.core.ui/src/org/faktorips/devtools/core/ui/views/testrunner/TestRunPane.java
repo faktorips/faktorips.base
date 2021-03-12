@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;

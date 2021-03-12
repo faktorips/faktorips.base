@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Observable;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +63,6 @@ import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkEditDialog;
-import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
@@ -76,7 +74,9 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -319,7 +319,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("AssociationType-Association.gif"); //$NON-NLS-1$
+                return IIpsDecorators.getDefaultImageDescriptor(PolicyCmptTypeAssociation.class);
             }
 
             @Override
@@ -406,14 +406,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
         GenerationDateContentProvider adjustmentContentProvider = new GenerationDateContentProvider();
         generationDateViewer.setContentProvider(adjustmentContentProvider);
-        adjustmentContentProvider.addCollectorFinishedListener(new ICollectorFinishedListener() {
-
-            @Override
-            public void update(Observable o, Object arg) {
-                generationDateViewer.setSelection(0);
-            }
-
-        });
+        adjustmentContentProvider.addCollectorFinishedListener(($1, $2) -> generationDateViewer.setSelection(0));
 
         generationDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 

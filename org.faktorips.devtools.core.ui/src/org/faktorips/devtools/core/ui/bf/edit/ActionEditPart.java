@@ -26,8 +26,8 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.model.bf.IActionBFE;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 

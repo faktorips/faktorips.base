@@ -60,9 +60,9 @@ import org.junit.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
-    private static final String LINK_GIF = "LinkOverlay.gif";
+    private static final String LINK_GIF = "over_co.gif";
 
-    private static final String PRODUCT_GIF = "ProductCmptType.gif";
+    private static final String PRODUCT_GIF = "Table.gif";
 
     private IExtensionPropertyEditFieldFactory editFieldFactory;
 
@@ -243,7 +243,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(PRODUCT_GIF, LINK_GIF,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(PRODUCT_GIF, LINK_GIF,
                 IDecoration.BOTTOM_LEFT);
         Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage(PRODUCT_GIF, false);
         ImageDescriptor sharedOverlayByImage = IpsUIPlugin.getImageHandling()
@@ -255,7 +255,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage_Empty() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(StringUtils.EMPTY,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(StringUtils.EMPTY,
                 StringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);

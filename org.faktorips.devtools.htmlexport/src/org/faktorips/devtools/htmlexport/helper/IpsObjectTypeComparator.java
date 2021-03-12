@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
  * {@link IpsObjectType#TABLE_STRUCTURE}, {@link IpsObjectType#PRODUCT_CMPT},
  * {@link IpsObjectType#ENUM_CONTENT}, {@link IpsObjectType#TABLE_CONTENTS}
  * <ol>
- * <li>non productdefinitiontypes before productdefinitiontypes (depending on the result of
+ * <li>non-product-definition-types before product-definition-types (depending on the result of
  * {@link IpsObjectType#isProductDefinitionType()})</li>
  * <li>members of the list before non-members</li>
  * <li>the order of the list</li>
@@ -43,8 +43,9 @@ public class IpsObjectTypeComparator implements Comparator<IpsObjectType> {
 
     private static List<IpsObjectType> IPS_OBJECT_TYPES = Arrays.asList(new IpsObjectType[] {
             IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.ENUM_TYPE,
-            IpsObjectType.TABLE_STRUCTURE, IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT,
-            IpsObjectType.TABLE_CONTENTS });
+            IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TEST_CASE_TYPE, IpsObjectType.PRODUCT_CMPT,
+            IpsObjectType.PRODUCT_TEMPLATE, IpsObjectType.ENUM_CONTENT,
+            IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE });
 
     @Override
     public int compare(IpsObjectType o1, IpsObjectType o2) {

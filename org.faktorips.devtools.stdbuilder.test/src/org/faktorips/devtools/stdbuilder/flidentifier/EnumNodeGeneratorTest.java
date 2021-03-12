@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
-import org.faktorips.abstracttest.TestIpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -117,7 +117,7 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions.setClassLoaderProviderFactory(new TestClassLoaderProviderFactory());
             enumDatatype = newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class })[0];
             nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());

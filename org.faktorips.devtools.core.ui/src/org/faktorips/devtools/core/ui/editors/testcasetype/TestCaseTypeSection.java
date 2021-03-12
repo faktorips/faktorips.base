@@ -111,6 +111,7 @@ import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -692,7 +693,7 @@ public class TestCaseTypeSection extends IpsSection {
                     case 3:
                         // datatype
                         baseImage = (Image)resourceManager
-                                .get(IpsUIPlugin.getImageHandling().createImageDescriptor("Datatype.gif")); //$NON-NLS-1$
+                                .get(IIpsDecorators.getImageHandling().createImageDescriptor("Datatype.gif")); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
                         break;
                     default:

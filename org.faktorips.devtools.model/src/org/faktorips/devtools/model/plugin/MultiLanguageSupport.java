@@ -31,10 +31,6 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * This class provides several methods related to multi-language support.
- * 
- * @since 3.1
- * 
- * @author Alexander Weickmann
  */
 public class MultiLanguageSupport implements IMultiLanguageSupport {
 
@@ -197,7 +193,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
 
         String label = StringUtils.capitalize(labeledElement.getName());
 
-        // TODO AW: Awkward hard-coded solution but so far we havn't agreed upon another approach
+        // TODO AW: Awkward hard-coded solution but so far we haven't agreed upon another approach
         if (labeledElement instanceof IProductCmptTypeMethod) {
             IProductCmptTypeMethod method = (IProductCmptTypeMethod)labeledElement;
             if (method.isFormulaSignatureDefinition()) {

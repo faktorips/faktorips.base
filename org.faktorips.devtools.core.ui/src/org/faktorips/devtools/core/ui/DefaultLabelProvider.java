@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -55,11 +56,11 @@ public class DefaultLabelProvider extends LabelProvider {
             // check adaptable to IIpsSrcFile
             IIpsSrcFile adaptedIpsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
             if (adaptedIpsSrcFile != null) {
-                return IpsUIPlugin.getImageHandling().getImage(adaptedIpsSrcFile);
+                return IIpsDecorators.getImageHandling().getImage(adaptedIpsSrcFile);
             }
         }
         if (element instanceof Datatype) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
+            return IIpsDecorators.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
         } else if (element instanceof FlFunction) {
             return IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true); //$NON-NLS-1$
         } else if (element instanceof EnumTypeDatatypeAdapter) {

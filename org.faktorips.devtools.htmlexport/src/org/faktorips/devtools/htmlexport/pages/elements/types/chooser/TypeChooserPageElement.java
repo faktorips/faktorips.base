@@ -15,11 +15,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
@@ -29,6 +26,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ILinkStrategy;
+import org.faktorips.devtools.model.decorators.IImageHandling;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
@@ -73,16 +72,15 @@ public class TypeChooserPageElement extends AbstractPageElement {
     }
 
     private void addDisabledImage(final IpsObjectType ipsObjectType, final ICompositePageElement wrapper) {
-        Display display = (Display)IpsUIPlugin.getImageHandling().getResourceManager().getDevice();
+        Display display = (Display)IIpsDecorators.getImageHandling().getResourceManager().getDevice();
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
-                ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
-                ImageDescriptor defaultImageDescriptor = imageHandling.getDefaultImageDescriptor(ipsObjectType
-                        .getImplementingClass());
-                Image disabledSharedImage = imageHandling.getDisabledSharedImage(defaultImageDescriptor);
-                ImageData imageData = disabledSharedImage.getImageData();
+                IImageHandling imageHandling = IIpsDecorators.getImageHandling();
+                ImageDescriptor defaultImageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType);
+                ImageDescriptor disabledSharedImage = imageHandling.getDisabledImageDescriptor(defaultImageDescriptor);
+                ImageData imageData = disabledSharedImage.getImageData(100);
                 wrapper.addPageElements(new ImagePageElement(imageData, ipsObjectType.getDisplayName(), ipsObjectType
                         .getFileExtension(), getContext()));
             }
@@ -93,8 +91,7 @@ public class TypeChooserPageElement extends AbstractPageElement {
     private void addLink(IpsObjectType ipsObjectType, ICompositePageElement wrapper) {
         ILinkStrategy linkStrategy = new LinkToObjectTypeClassesStrategy(ipsObjectType);
 
-        ImageData imageData = IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass())
-                .getImageData();
+        ImageData imageData = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType).getImageData(100);
 
         IPageElement pageElement = new ImagePageElement(imageData, ipsObjectType.getDisplayName(),
                 ipsObjectType.getFileExtension(), getContext());

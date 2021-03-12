@@ -45,6 +45,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.internal.tablestructure.Column;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IKey;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
@@ -399,8 +401,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
 
         private ResourceManager resourceManager;
 
-        private ImageDescriptor tableColumnDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "TableColumn.gif"); //$NON-NLS-1$
+        private ImageDescriptor tableColumnDescriptor = IIpsDecorators.getDefaultImageDescriptor(Column.class);
 
         public KeyItemLabelProvider() {
             super();

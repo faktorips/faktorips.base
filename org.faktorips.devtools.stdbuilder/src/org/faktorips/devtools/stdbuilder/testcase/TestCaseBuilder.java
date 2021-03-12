@@ -403,7 +403,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (associations[i].isAccoziation()) {
+                } else if (associations[i].isAssociation()) {
                     // @see AbstractModelObject
                     associationType = "association";
                     Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent,

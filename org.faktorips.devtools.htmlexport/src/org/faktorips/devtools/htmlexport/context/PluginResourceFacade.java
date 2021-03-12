@@ -16,12 +16,12 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class PluginResourceFacade implements IPluginResourceFacade {
@@ -33,17 +33,17 @@ public class PluginResourceFacade implements IPluginResourceFacade {
 
     @Override
     public void log(IStatus status) {
-        IpsPlugin.log(status);
+        IpsModelActivator.getLog().log(status);
     }
 
     @Override
     public String getIpsPluginPluginId() {
-        return IpsPlugin.PLUGIN_ID;
+        return IpsModelActivator.PLUGIN_ID;
     }
 
     @Override
-    public UIDatatypeFormatter getDatatypeFormatter() {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter();
+    public IDatatypeFormatter getDatatypeFormatter() {
+        return IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PluginResourceFacade implements IPluginResourceFacade {
             messages.load(new ByteArrayInputStream(bs));
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(IStatus.WARNING,
-                    "Messages " + resourceName + " not be loaded found", e)); //$NON-NLS-1$ //$NON-NLS-2$        } 
+                    "Messages " + resourceName + " not be loaded found", e)); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         return messages;

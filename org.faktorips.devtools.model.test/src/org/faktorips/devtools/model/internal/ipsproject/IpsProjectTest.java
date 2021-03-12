@@ -55,7 +55,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsFeatureVersionManager;
-import org.faktorips.abstracttest.TestIpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.codegen.DatatypeHelper;
@@ -293,7 +293,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         TestIpsFeatureVersionManager manager = new TestIpsFeatureVersionManager();
         manager.setCurrentVersionCompatibleWith(false);
         manager.setCompareToCurrentVersion(-1);
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions.setFeatureVersionManagers(manager);
             ml = ipsProject.validate();
             assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
@@ -1595,7 +1595,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
 
         setMinRequiredVersion("0.0.3");
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions.setFeatureVersionManagers(new InvalidMigrationMockManager());
             suppressLoggingDuringExecutionOfThisTestCase();
             ml = ipsProject.validate();
@@ -2451,7 +2451,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = mock(IVersionProvider.class);
         IVersionProviderFactory versionProviderFactory = $ -> versionProvider;
         IIpsProjectProperties properties = ipsProject.getProperties();
-        try (TestIpsModelExtensionsViaEclipsePlugins testIpsModelExtensions = new TestIpsModelExtensionsViaEclipsePlugins()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             Map<String, IVersionProviderFactory> versionProviderFactories = new HashMap<String, IVersionProviderFactory>();
             versionProviderFactories.put("foobar", versionProviderFactory);
             testIpsModelExtensions.setVersionProviderFactories(versionProviderFactories);
