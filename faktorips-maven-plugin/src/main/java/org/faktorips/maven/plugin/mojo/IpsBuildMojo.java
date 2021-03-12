@@ -44,6 +44,9 @@ import org.faktorips.maven.plugin.mojo.internal.Repository;
  * To change from where the plugins are installed, see {@link #additionalRepositories},
  * {@link #repositories}, {@link #fipsRepository}/{@link #fipsRepositoryVersion},
  * {@link #eclipseRepository} and {@link #thirdpartyRepository}.
+ * <p>
+ * Additional plugins (like the Faktor-IPS Product Variant Plugin) can be configured with
+ * {@link #additionalPlugins}.
  */
 @Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 public class IpsBuildMojo extends AbstractMojo {
@@ -78,20 +81,27 @@ public class IpsBuildMojo extends AbstractMojo {
 
     /**
      * Dependencies which will be resolved transitively to make up the eclipse runtime.
+     */
+    // Not a parameter, for internal use only
+    private List<Dependency> dependencies = new ArrayList<>();
+
+    /**
+     * Additional Eclipse-plugins which will be resolved transitively to make up the eclipse
+     * runtime.
      * <p>
      * Example:
      * 
      * <pre>
-     * &lt;dependencies&gt;
+     * &lt;additionalPlugins&gt;
      *  &lt;dependency&gt;
-     *   &lt;artifactId&gt;org.eclipse.ant.core&lt;/artifactId&gt;
+     *   &lt;artifactId&gt;org.faktorips.productvariant.core&lt;/artifactId&gt;
      *   &lt;type&gt;eclipse-plugin&lt;/type&gt;
      *  &lt;/dependency&gt;
-     * &lt;/dependencies&gt;
+     * &lt;/additionalPlugins&gt;
      * </pre>
      */
-    // Parameter
-    private List<Dependency> dependencies = new ArrayList<>();
+    @Parameter
+    private List<Dependency> additionalPlugins = new ArrayList<>();
 
     /**
      * List of JVM arguments set on the command line.
@@ -281,6 +291,7 @@ public class IpsBuildMojo extends AbstractMojo {
         addDependency("org.faktorips.devtools.ant");
         addDependency("org.eclipse.jdt.junit");
         addDependency("org.eclipse.jdt.junit5.runtime");
+        dependencies.addAll(additionalPlugins);
 
         // default values for parameter applicationArgs
         applicationsArgs.add("-consoleLog");
