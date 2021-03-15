@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -27,6 +28,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
@@ -61,10 +63,11 @@ public class IpsBuildMojo extends AbstractMojo {
     private boolean addDefaultDependencies = true;
 
     /**
-     * Execution environment profile name used to resolve dependencies.
+     * Execution environment profile name used to resolve dependencies and run Faktor-IPS. Must be
+     * at least JavaSE-11.
      */
-    // @Parameter(defaultValue = "JavaSE-11")
-    private String executionEnvironment = "JavaSE-11";
+    @Parameter(defaultValue = "JavaSE-11")
+    private String executionEnvironment;
 
     /**
      * Whether to skip mojo execution.
@@ -104,10 +107,12 @@ public class IpsBuildMojo extends AbstractMojo {
      * Example:
      * 
      * <pre>
-     * &lt;jvmArgs&gt;
-     *   &lt;args&gt;-Xdebug&lt;/args&gt;
-     *   &lt;args&gt;-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044&lt;/args&gt;
-     * &lt;/jvmArgs&gt;
+     * {@code
+     * <jvmArgs>
+     *   <args>-Xdebug</args>
+     *   <args>-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044</args>
+     * </jvmArgs>
+     * }
      * </pre>
      */
     // @Parameter
@@ -119,10 +124,12 @@ public class IpsBuildMojo extends AbstractMojo {
      * Example:
      *
      * <pre>
-     * &lt;applicationsArgs&gt;
-     * &lt;args&gt;-buildfile&lt;/args&gt;
-     * &lt;args&gt;build-test.xml&lt;/args&gt;
-     * &lt;/applicationsArgs&gt;
+     * {@code
+     * <applicationsArgs>
+     * <args>-buildfile</args>
+     * <args>build-test.xml</args>
+     * </applicationsArgs>
+     * }
      * </pre>
      */
     // @Parameter
@@ -212,10 +219,21 @@ public class IpsBuildMojo extends AbstractMojo {
     private MavenSession session;
 
     /**
-     * Path to the JDK 8.
+     * Path to the JDK the project should build against. If no path is specified, the parameter
+     * {@link #jdkId} will be evaluated. If both parameters do not contain a value, the
+     * {@link #executionEnvironment} will be used as default.
      */
-    @Parameter(defaultValue = "${jdk8.dir}")
-    private String jdk8dir;
+    @Parameter(property = "jdk.dir")
+    private String jdkDir;
+
+    /**
+     * ID of the JDK the project should build against. The corresponding JDK must be configured in
+     * the Maven {@code toolchains.xml} This parameter is only evaluated if {@link #jdkDir} is not
+     * specified. If this parameter does not contain a value either, the
+     * {@link #executionEnvironment} will be used as default.
+     */
+    @Parameter(property = "jdk.id")
+    private String jdkId;
 
     /**
      * The version of Faktor-IPS to be installed.
@@ -281,6 +299,26 @@ public class IpsBuildMojo extends AbstractMojo {
         return fipsRepository.replace("${faktorips.repository.version}", fipsRepositoryVersion);
     }
 
+    public String getPathToJdk() throws MojoExecutionException {
+        if (jdkDir != null) {
+            return jdkDir;
+        } else {
+            if (jdkId != null) {
+                Toolchain tc = toolchainProvider.findMatchingJavaToolChain(session, jdkId);
+                if (tc != null) {
+                    getLog().info("Toolchain in faktorips-maven-plugin: " + tc);
+                    return new File(tc.findTool("java")).getParentFile().getParent();
+                } else if (Objects.equals(jdkId, "JavaSE-" + Runtime.version().feature())) {
+                    getLog().debug("Using current Java runtime to build project as it matches the configured JDK ID.");
+                } else {
+                    getLog().warn("No toolchain was found in faktorips-maven-plugin for " + jdkId
+                            + ". Current Java runtime will be used to build the project.");
+                }
+            }
+            return null;
+        }
+    }
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         // add default repositories if no repositories are specified in the pom.xml
@@ -315,7 +353,10 @@ public class IpsBuildMojo extends AbstractMojo {
         jvmArgs.add("-Xmx1024m");
         jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
         jvmArgs.add("-DjavacFailOnError=true");
-        jvmArgs.add("-Djdk8.dir=" + jdk8dir);
+        String pathToJdk = getPathToJdk();
+        if (pathToJdk != null) {
+            jvmArgs.add("-Djdk.dir=" + pathToJdk);
+        }
         jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
         if (debug) {
             jvmArgs.add("-Xdebug");
