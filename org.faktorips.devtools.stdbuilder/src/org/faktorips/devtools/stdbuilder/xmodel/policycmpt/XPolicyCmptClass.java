@@ -538,7 +538,7 @@ public class XPolicyCmptClass extends XType {
      * </ul>
      * <code>false</code> otherwise.
      */
-    public boolean isFirstDependantTypeInHierarchy() {
+    public boolean isFirstDependantConfiguredTypeInHierarchy() {
         try {
             if (!getType().isDependantType()) {
                 return false;
@@ -547,7 +547,7 @@ public class XPolicyCmptClass extends XType {
             if (supertype == null) {
                 return true;
             }
-            return !supertype.isDependantType();
+            return !supertype.isDependantType() || !supertype.isConfigurableByProductCmptType();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

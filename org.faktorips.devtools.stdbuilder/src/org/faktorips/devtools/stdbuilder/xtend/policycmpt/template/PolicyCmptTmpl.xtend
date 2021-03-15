@@ -387,7 +387,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
         }
     «ENDIF»
  
-    «IF firstDependantTypeInHierarchy»
+    «IF firstDependantConfiguredTypeInHierarchy»
         /**
          * «inheritDoc»
          *
