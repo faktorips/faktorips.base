@@ -11,6 +11,7 @@
 package org.faktorips.maven.plugin.mojo;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
@@ -65,15 +67,6 @@ public class IpsBuildMojo extends AbstractMojo {
     private String executionEnvironment = "JavaSE-11";
 
     /**
-     * Whether the workspace should be cleared before running eclipse.
-     * <p>
-     * If {@code false} and a workspace from a previous run exists, that workspace is reused.
-     * </p>
-     */
-    // @Parameter(defaultValue = "true")
-    private boolean clearWorkspaceBeforeLaunch = true;
-
-    /**
      * Whether to skip mojo execution.
      */
     // @Parameter(property = "eclipserun.skip", defaultValue = "false")
@@ -92,12 +85,14 @@ public class IpsBuildMojo extends AbstractMojo {
      * Example:
      * 
      * <pre>
-     * &lt;additionalPlugins&gt;
-     *  &lt;dependency&gt;
-     *   &lt;artifactId&gt;org.faktorips.productvariant.core&lt;/artifactId&gt;
-     *   &lt;type&gt;eclipse-plugin&lt;/type&gt;
-     *  &lt;/dependency&gt;
-     * &lt;/additionalPlugins&gt;
+     * {@code
+     * <additionalPlugins>
+     *  <dependency>
+     *   <artifactId>org.faktorips.productvariant.core</artifactId>
+     *   <type>eclipse-plugin</type>
+     *  </dependency>
+     * </additionalPlugins>
+     * }
      * </pre>
      */
     @Parameter
@@ -246,6 +241,21 @@ public class IpsBuildMojo extends AbstractMojo {
     @Parameter(property = "repository.eclipse", defaultValue = "http://update.faktorzehn.org/p2repositories/2019-03/")
     private String eclipseRepository;
 
+    /**
+     * Starts the build in debug mode and pauses it until a remote debugger has been connected. The
+     * default debug port is 8000; a different port can be configured with {@link #debugPort}.
+     */
+    @Parameter(property = "faktorips.debug")
+    private boolean debug;
+
+    /**
+     * The port on which the started Faktor-IPS build will listen for a remote debugger.
+     *
+     * @see #debug
+     */
+    @Parameter(property = "faktorips.debug.port", defaultValue = "8000")
+    private int debugPort;
+
     @Component
     private MavenProject project;
 
@@ -307,6 +317,22 @@ public class IpsBuildMojo extends AbstractMojo {
         jvmArgs.add("-DjavacFailOnError=true");
         jvmArgs.add("-Djdk8.dir=" + jdk8dir);
         jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
+        if (debug) {
+            jvmArgs.add("-Xdebug");
+            jvmArgs.add("-Xnoagent");
+            jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
+        }
+
+        File workDir = work.getAbsoluteFile();
+        if (workDir.exists()) {
+            try {
+                FileUtils.deleteDirectory(workDir);
+            } catch (IOException e) {
+                throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(), e);
+            }
+        }
+        // no need to clean as we just deleted the parent directory
+        boolean clearWorkspaceBeforeLaunch = false;
 
         EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
                 clearWorkspaceBeforeLaunch,
