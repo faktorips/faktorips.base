@@ -13,11 +13,21 @@ package org.faktorips.maven.plugin.mojo;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
@@ -38,6 +48,8 @@ import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo;
 import org.faktorips.maven.plugin.mojo.internal.Repository;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Builds the Faktor-IPS project.
@@ -126,8 +138,8 @@ public class IpsBuildMojo extends AbstractMojo {
      * <pre>
      * {@code
      * <applicationsArgs>
-     * <args>-buildfile</args>
-     * <args>build-test.xml</args>
+     *  <args>-buildfile</args>
+     *  <args>build-test.xml</args>
      * </applicationsArgs>
      * }
      * </pre>
@@ -219,6 +231,45 @@ public class IpsBuildMojo extends AbstractMojo {
     private MavenSession session;
 
     /**
+     * Path to an ant build file. If no path is specified, a new script is generated.
+     */
+    @Parameter(property = "ant.script")
+    private String antScriptPath;
+
+    /**
+     * Whether to include the HTML export. It will be generated in {@code target/html}.
+     * <p>
+     * <em>UI-libraries are required for the HTML export to work, so if you run this build on a CI
+     * server like Jenkins, make sure to install for example the Xvfb fake X server.</em>
+     * <p>
+     * To package the generated HTML export in its own JAR, configure the maven-jar-plugin as
+     * follows:
+     *
+     * <pre>
+     * &lt;plugin&gt;
+     *   &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt;
+     *   &lt;executions&gt;
+     *     &lt;execution&gt;
+     *       &lt;configuration&gt;
+     *         &lt;classifier&gt;html&lt;/classifier&gt;
+     *         &lt;classesDirectory&gt;${project.build.directory}/html&lt;/classesDirectory&gt;
+     *         &lt;includes&gt**&#47;*&lt;/includes&gt;
+     *       &lt;/configuration&gt;
+     *       &lt;id&gt;pack-html&lt;/id&gt;
+     *       &lt;phase&gt;package&lt;/phase&gt;
+     *       &lt;goals&gt;
+     *         &lt;goal&gt;jar&lt;/goal&gt;
+     *       &lt;/goals&gt;
+     *     &lt;/execution&gt;
+     *   &lt;/executions&gt;
+     * &lt;/plugin&gt;
+     * </pre>
+     */
+    // we can't use @code for this Javadoc, because it includes } and **/
+    @Parameter(defaultValue = "false")
+    private boolean exportHtml;
+
+    /**
      * Path to the JDK the project should build against. If no path is specified, the parameter
      * {@link #jdkId} will be evaluated. If both parameters do not contain a value, the
      * {@link #executionEnvironment} will be used as default.
@@ -295,8 +346,46 @@ public class IpsBuildMojo extends AbstractMojo {
     @Component
     private ToolchainManager toolchainManager;
 
+    public String getProjectName() {
+        File eclipseProjectFile = new File(project.getBasedir().getAbsolutePath(), ".project");
+        if (eclipseProjectFile.exists()) {
+            try {
+                DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                Document doc = documentBuilder.parse(eclipseProjectFile);
+                return doc.getElementsByTagName("name").item(0).getTextContent();
+            } catch (SAXException | IOException | ParserConfigurationException e) {
+                getLog().error("Can't read Eclipse .project file to find project name", e);
+            }
+        }
+        // TODO FIPS-5457 : when we import the project as a maven project instead of as an existing
+        // eclipse project, we need to use
+        // return project.getName();
+        return project.getBasedir().getName();
+    }
+
     public String getFipsRepository() {
         return fipsRepository.replace("${faktorips.repository.version}", fipsRepositoryVersion);
+    }
+
+    public String getPathToAntScript() throws MojoExecutionException {
+        if (antScriptPath == null) {
+            try {
+                antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
+                FileUtils.forceMkdir(new File(project.getBuild().getDirectory()));
+                String script = IOUtils.toString(getClass().getResourceAsStream("/importProjects.xml"),
+                        StandardCharsets.UTF_8);
+
+                String pathToJdk = getPathToJdk();
+                List<String> replaced = script.lines()
+                        .filter(line -> pathToJdk != null || !line.contains("faktorips.configureJdk"))
+                        .filter(line -> exportHtml || !line.contains("faktorips.exportHtml"))
+                        .collect(Collectors.toList());
+                Files.write(Paths.get(antScriptPath), replaced, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            } catch (IOException e) {
+                getLog().error("Can't create ant script in " + antScriptPath, e);
+            }
+        }
+        return antScriptPath;
     }
 
     public String getPathToJdk() throws MojoExecutionException {
@@ -327,7 +416,6 @@ public class IpsBuildMojo extends AbstractMojo {
             addRepository(getFipsRepository());
             addRepository(thirdpartyRepository);
         }
-
         repositories.addAll(additionalRepositories);
 
         // default values for parameter dependencies
@@ -335,10 +423,12 @@ public class IpsBuildMojo extends AbstractMojo {
         addDependency("org.faktorips.devtools.stdbuilder");
         addDependency("org.faktorips.runtime.groovy");
         addDependency("org.faktorips.valuetypes.joda");
-        addDependency("org.faktorips.devtools.htmlexport");
         addDependency("org.faktorips.devtools.ant");
         addDependency("org.eclipse.jdt.junit");
         addDependency("org.eclipse.jdt.junit5.runtime");
+        if (exportHtml) {
+            addDependency("org.faktorips.devtools.htmlexport");
+        }
         dependencies.addAll(additionalPlugins);
 
         // default values for parameter applicationArgs
@@ -346,7 +436,7 @@ public class IpsBuildMojo extends AbstractMojo {
         applicationsArgs.add("-application");
         applicationsArgs.add("org.eclipse.ant.core.antRunner");
         applicationsArgs.add("-buildfile");
-        applicationsArgs.add(project.getBasedir().getAbsolutePath() + "/build/importProjects.xml");
+        applicationsArgs.add(getPathToAntScript());
         applicationsArgs.add("import");
 
         // default values for parameter jvmArgs
@@ -357,6 +447,7 @@ public class IpsBuildMojo extends AbstractMojo {
         if (pathToJdk != null) {
             jvmArgs.add("-Djdk.dir=" + pathToJdk);
         }
+        jvmArgs.add("-DprojectName=" + getProjectName());
         jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
         if (debug) {
             jvmArgs.add("-Xdebug");
