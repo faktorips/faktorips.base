@@ -312,6 +312,7 @@
         <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>

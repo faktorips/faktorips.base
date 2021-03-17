@@ -53,6 +53,9 @@
 <setEntry value="org.apache.commons.lang3@default:default"/>
 <setEntry value="org.apache.commons.lang@default:default"/>
 <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
+<setEntry value="org.apache.felix.gogo.command@default:default"/>
+<setEntry value="org.apache.felix.gogo.runtime@default:default"/>
+<setEntry value="org.apache.felix.gogo.shell@default:default"/>
 <setEntry value="org.apache.felix.scr@1:true"/>
 <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
 <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
@@ -306,6 +309,7 @@
 <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
+<setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
@@ -313,8 +317,8 @@
 <setEntry value="org.faktorips.dtflcommon@default:default"/>
 <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
 <setEntry value="org.faktorips.fl@default:default"/>
-        <setEntry value="org.faktorips.m2e@default:default"/>
-        <setEntry value="org.faktorips.runtime.groovy@default:default"/>
+<setEntry value="org.faktorips.m2e@default:default"/>
+<setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>
 <setEntry value="org.faktorips.valuetypes.joda@default:default"/>

@@ -24,13 +24,15 @@
 <setAttribute key="selected_target_bundles">
 <setEntry value="com.google.guava*21.0.0@default:default"/>
 <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
+<setEntry value="com.google.guava*30.1.0.v20210127-2300@default:default"/>
 <setEntry value="com.ibm.icu@default:default"/>
 <setEntry value="com.jcraft.jsch@default:default"/>
 <setEntry value="com.opencsv@default:default"/>
+<setEntry value="com.sun.activation.javax.activation@default:default"/>
 <setEntry value="com.sun.jna.platform@default:default"/>
 <setEntry value="com.sun.jna@default:default"/>
+<setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
 <setEntry value="groovy@default:default"/>
-<setEntry value="javaee-api@default:default"/>
 <setEntry value="javaewah@default:default"/>
 <setEntry value="javax.annotation@default:default"/>
 <setEntry value="javax.inject@default:default"/>
@@ -52,6 +54,9 @@
 <setEntry value="org.apache.commons.lang3@default:default"/>
 <setEntry value="org.apache.commons.lang@default:default"/>
 <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
+<setEntry value="org.apache.felix.gogo.command@default:default"/>
+<setEntry value="org.apache.felix.gogo.runtime@default:default"/>
+<setEntry value="org.apache.felix.gogo.shell@default:default"/>
 <setEntry value="org.apache.felix.scr@1:true"/>
 <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
 <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
@@ -66,6 +71,8 @@
 <setEntry value="org.apache.xml.serializer@default:default"/>
 <setEntry value="org.apache.xmlgraphics@default:default"/>
 <setEntry value="org.apiguardian@default:default"/>
+<setEntry value="org.bouncycastle.bcpg@default:default"/>
+<setEntry value="org.bouncycastle.bcprov@default:default"/>
 <setEntry value="org.eclipse.ant.core@default:default"/>
 <setEntry value="org.eclipse.ant.launching@default:default"/>
 <setEntry value="org.eclipse.ant.ui@default:default"/>
@@ -188,6 +195,7 @@
 <setEntry value="org.eclipse.jface.notifications@default:default"/>
 <setEntry value="org.eclipse.jface.text@default:default"/>
 <setEntry value="org.eclipse.jface@default:default"/>
+<setEntry value="org.eclipse.jgit.gpg.bc@default:false"/>
 <setEntry value="org.eclipse.jgit.http.apache@default:default"/>
 <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
 <setEntry value="org.eclipse.jgit.ssh.jsch@default:false"/>
@@ -302,9 +310,10 @@
 <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
 <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.core@default:default"/>
-<setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
+<setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
 <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
+<setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
 <setEntry value="org.faktorips.devtools.model@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
 <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
@@ -312,8 +321,8 @@
 <setEntry value="org.faktorips.dtflcommon@default:default"/>
 <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
 <setEntry value="org.faktorips.fl@default:default"/>
-        <setEntry value="org.faktorips.m2e@default:default"/>
-        <setEntry value="org.faktorips.runtime.groovy@default:default"/>
+<setEntry value="org.faktorips.m2e@default:default"/>
+<setEntry value="org.faktorips.runtime.groovy@default:default"/>
 <setEntry value="org.faktorips.runtime@default:default"/>
 <setEntry value="org.faktorips.util@default:default"/>
 <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
