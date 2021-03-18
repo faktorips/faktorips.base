@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  * Additional plugins (like the Faktor-IPS Product Variant Plugin) can be configured with
  * {@link #additionalPlugins}.
  */
-@Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+@Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, threadSafe = true)
 public class IpsBuildMojo extends AbstractMojo {
 
     /**
@@ -193,7 +193,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <additionalRepositories>
      *  <repository>
-     *   <id>fips-test</id>
+     *   <id>productvariants</id>
      *   <layout>p2</layout>
      *   <url>https://update.faktorzehn.org/faktorips/productvariants/21.6</url>
      *  </repository>
@@ -253,7 +253,7 @@ public class IpsBuildMojo extends AbstractMojo {
      *       &lt;configuration&gt;
      *         &lt;classifier&gt;html&lt;/classifier&gt;
      *         &lt;classesDirectory&gt;${project.build.directory}/html&lt;/classesDirectory&gt;
-     *         &lt;includes&gt**&#47;*&lt;/includes&gt;
+     *         &lt;includes&gt;**&#47;*&lt;/includes&gt;
      *       &lt;/configuration&gt;
      *       &lt;id&gt;pack-html&lt;/id&gt;
      *       &lt;phase&gt;package&lt;/phase&gt;
@@ -367,7 +367,7 @@ public class IpsBuildMojo extends AbstractMojo {
         return fipsRepository.replace("${faktorips.repository.version}", fipsRepositoryVersion);
     }
 
-    public String getPathToAntScript() throws MojoExecutionException {
+    public String getPathToAntScript() {
         if (antScriptPath == null) {
             try {
                 antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
@@ -375,9 +375,9 @@ public class IpsBuildMojo extends AbstractMojo {
                 String script = IOUtils.toString(getClass().getResourceAsStream("/importProjects.xml"),
                         StandardCharsets.UTF_8);
 
-                String pathToJdk = getPathToJdk();
+                boolean usesCustomJdk = usesCustomJdk();
                 List<String> replaced = script.lines()
-                        .filter(line -> pathToJdk != null || !line.contains("faktorips.configureJdk"))
+                        .filter(line -> usesCustomJdk || !line.contains("faktorips.configureJdk"))
                         .filter(line -> exportHtml || !line.contains("faktorips.exportHtml"))
                         .collect(Collectors.toList());
                 Files.write(Paths.get(antScriptPath), replaced, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
@@ -386,6 +386,10 @@ public class IpsBuildMojo extends AbstractMojo {
             }
         }
         return antScriptPath;
+    }
+
+    private boolean usesCustomJdk() {
+        return jdkDir != null || jdkId != null;
     }
 
     public String getPathToJdk() throws MojoExecutionException {
@@ -443,9 +447,8 @@ public class IpsBuildMojo extends AbstractMojo {
         jvmArgs.add("-Xmx1024m");
         jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
         jvmArgs.add("-DjavacFailOnError=true");
-        String pathToJdk = getPathToJdk();
-        if (pathToJdk != null) {
-            jvmArgs.add("-Djdk.dir=" + pathToJdk);
+        if (usesCustomJdk()) {
+            jvmArgs.add("-Djdk.dir=" + getPathToJdk());
         }
         jvmArgs.add("-DprojectName=" + getProjectName());
         jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());

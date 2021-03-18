@@ -61,6 +61,11 @@ import org.eclipse.tycho.p2.target.facade.TargetPlatformConfigurationStub;
  */
 public class EclipseRunMojo extends AbstractMojo {
 
+    /*
+     * Lock object to ensure thread-safety
+     */
+    private static final Object CREATE_LOCK = new Object();
+
     /**
      * Work area. This includes:
      * <ul>
@@ -261,7 +266,12 @@ public class EclipseRunMojo extends AbstractMojo {
             getLog().debug("skipping mojo execution");
             return;
         }
-        EquinoxInstallation installation = createEclipseInstallation();
+        EquinoxInstallation installation;
+        synchronized (CREATE_LOCK) {
+            // we only need to lock the creation of the eclipse installations, as those will then
+            // each run separately
+            installation = createEclipseInstallation();
+        }
         runEclipse(installation);
     }
 
