@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * @since 21.6
  */
 public final class OverlayIcons {
+
     public static final String OVERLAYS_FOLDER = "overlays/"; //$NON-NLS-1$
 
     public static final String ABSTRACT = OVERLAYS_FOLDER + "AbstractIndicator.gif"; //$NON-NLS-1$
@@ -58,4 +59,8 @@ public final class OverlayIcons {
             .createImageDescriptor(MODIFIED);
     public static final ImageDescriptor NOT_CHANGEOVERTIME_OVR_DESC = IIpsDecorators.getImageHandling()
             .createImageDescriptor(STATIC);
+
+    private OverlayIcons() {
+        // utility class
+    }
 }
