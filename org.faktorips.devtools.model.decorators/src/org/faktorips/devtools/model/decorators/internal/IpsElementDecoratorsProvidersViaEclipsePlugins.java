@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 public class IpsElementDecoratorsProvidersViaEclipsePlugins implements IIpsElementDecoratorsProviders {
 
-    private static /* final */ IpsElementDecoratorsProvidersViaEclipsePlugins INSTANCE = new IpsElementDecoratorsProvidersViaEclipsePlugins();
+    private static /* final */ IpsElementDecoratorsProvidersViaEclipsePlugins instance = new IpsElementDecoratorsProvidersViaEclipsePlugins();
 
     private final Supplier<List<IIpsElementDecoratorsProvider>> ipsElementDecoratorsProviders;
 
@@ -38,7 +38,7 @@ public class IpsElementDecoratorsProvidersViaEclipsePlugins implements IIpsEleme
      * Returns the singleton instance initialized from the Eclipse {@link Platform}.
      */
     public static IpsElementDecoratorsProvidersViaEclipsePlugins get() {
-        return INSTANCE;
+        return instance;
     }
 
     @Override

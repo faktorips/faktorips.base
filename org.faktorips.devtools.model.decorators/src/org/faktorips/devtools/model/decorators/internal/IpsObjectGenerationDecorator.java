@@ -57,6 +57,7 @@ public class IpsObjectGenerationDecorator implements IIpsObjectPartDecorator {
         IChangesOverTimeNamingConvention namingConvention = IIpsModelExtensions.get().getModelPreferences()
                 .getChangesOverTimeNamingConvention();
         if (cachedImageDescriptor == null || cachedNamingConvention != namingConvention) {
+            cachedNamingConvention = namingConvention;
             cachedImageDescriptor = getGenerationImageDescriptor(namingConvention);
         }
         return cachedImageDescriptor;
