@@ -11,6 +11,7 @@
 package org.faktorips.maven.plugin.mojo;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -469,6 +471,8 @@ public class IpsBuildMojo extends AbstractMojo {
         // no need to clean as we just deleted the parent directory
         boolean clearWorkspaceBeforeLaunch = false;
 
+        copyMavenSettings();
+
         EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
                 clearWorkspaceBeforeLaunch,
                 project,
@@ -489,6 +493,22 @@ public class IpsBuildMojo extends AbstractMojo {
                 logger,
                 toolchainManager);
         eclipseRunMojo.execute();
+    }
+
+    private void copyMavenSettings() {
+        try {
+            File settingsDir = new File(work,
+                    "data/.metadata/.plugins/org.eclipse.core.runtime/.settings")
+                            .getAbsoluteFile();
+            FileUtils.forceMkdir(settingsDir);
+
+            Properties p = new Properties();
+            p.put("eclipse.m2.userSettingsFile", session.getRequest().getUserSettingsFile().getAbsolutePath());
+            p.put("eclipse.preferences.version", "1");
+            p.store(new FileOutputStream(new File(settingsDir, "org.eclipse.m2e.core.prefs")), "IpsBuildMojo");
+        } catch (IOException e) {
+            getLog().error("Error while copying the maven settings into the workspace", e);
+        }
     }
 
     private void addRepository(String url) {
