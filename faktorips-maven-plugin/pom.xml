@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -8,58 +10,35 @@
     <version>21.6.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
+
     <organization>
         <name>Faktor Zehn GmbH</name>
         <url>https://faktorzehn.org/</url>
     </organization>
+
     <licenses>
         <license>
-            <name>Individual License from Faktor Zehn</name>
-            <comments>
-Faktor-IPS is available under a dual licensing scheme whereby
-the use of Faktor-IPS in projects that are licensed so as to be
-compatible with AGPL Version 3 may use Faktor-IPS under the
-terms of the compatible license. Please see below for more details.
-However, if this licensing is incompatible with your use of Faktor-IPS,
-alternative license terms are available from Faktor Zehn GmbH.
-            </comments>
-        </license>
-        <license>
-            <name>GNU AFFERO GENERAL PUBLIC LICENSE, Version 3</name>
-            <url>https://www.gnu.org/licenses/agpl-3.0.de.html</url>
-            <comments>
-The following additional permissions and restrictions are 
-stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
-
-If you modify the Program or any covered work, by linking or 
-combining it with libraries of the namespace org.eclipse.* and 
-org.junit (including dependencies or a modified version of
-these libraries), thus containing parts covered by the terms of 
-Eclipse Public License Version 1.0 (EPL), the licensors of this 
-Program grant you the additional permission to convey the 
-resulting work.
-
-If you modify the Program or any covered work, without changing 
-its source code, only by linking or combining some or all 
-bundles of the Program with separate works covered by AGPL-
-incompatible license terms, the licensors of this Program grant
-you the additional permission to convey the resulting work.
-
-You are not allowed to remove or alter any legal notices in the
-covered work or in the Appropriate Legal Notices.
-            </comments>
+            <name>GNU Affero General Public License Version 3 with additional permissions</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
     <properties>
-        <faktor-ips.version>${project.version}</faktor-ips.version>
+        <jdk.version>11</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <tycho-version>2.2.0</tycho-version>
         <tycho-extras-version>2.2.0</tycho-extras-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
-        <junit-version>3.8.1</junit-version>
-        <maven-site-plugin-version>3.9.1</maven-site-plugin-version>
+        <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
         <maven-plugin-plugin-version>3.6.0</maven-plugin-plugin-version>
         <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
+        <maven-javadoc-plugin>3.2.0</maven-javadoc-plugin>
+        <maven-source-plugin>3.2.1</maven-source-plugin>
+        <maven-site-plugin-version>3.9.1</maven-site-plugin-version>
     </properties>
 
     <dependencies>
@@ -75,12 +54,6 @@ covered work or in the Appropriate Legal Notices.
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit-version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.tycho.extras</groupId>
             <artifactId>tycho-eclipserun-plugin</artifactId>
             <version>${tycho-extras-version}</version>
@@ -88,16 +61,66 @@ covered work or in the Appropriate Legal Notices.
         <dependency>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>sisu-equinox-launching</artifactId>
-            <version>2.2.0</version>
+            <version>${tycho-version}</version>
         </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>./</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                    <include>agpl-3.0.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>${maven-plugin-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin-version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>${maven-plugin-plugin-version}</version>
                 <executions>
                     <execution>
                         <id>default-descriptor</id>
@@ -108,20 +131,54 @@ covered work or in the Appropriate Legal Notices.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin-version}</version>
                 <configuration>
-                    <compilerVersion>11</compilerVersion>
-                    <source>11</source>
-                    <target>11</target>
+                    <compilerVersion>${jdk.version}</compilerVersion>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>${maven-site-plugin-version}</version>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <source>${jdk.version}</source>
+                            <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- currently default deployment is switched off. Deployment 
+                    is triggered using profiles or custom scripts -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
@@ -137,4 +194,38 @@ covered work or in the Appropriate Legal Notices.
             </plugin>
         </plugins>
     </reporting>
+
+    <scm>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor Zehn Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor Zehn Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>CI</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
