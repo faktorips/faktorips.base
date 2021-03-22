@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
         <maven-source-plugin-version>2.4</maven-source-plugin-version>
         <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
-        
+
         <!-- Use this to override the default javadoc settings in the parent pom -->
         <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
         <javadoc.failOnError>true</javadoc.failOnError>
@@ -28,7 +26,7 @@
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Library for Maven Java8</name>
-
+    
     <scm>
         <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
     </scm>
