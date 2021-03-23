@@ -463,6 +463,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public boolean isContainsNullEnabled() {
             boolean sourceSetAllowsNull = sourceSet == null || sourceSet.isContainsNull();
+            if (!getValueSet().isDerived() && getValueSet().isRange() && getValueSet().isEmpty()) {
+                return false;
+            }
             return !getValueSet().isDerived() && sourceSetAllowsNull
                     && (!getValueDatatype().isPrimitive() || getValueSet().isEnum());
         }

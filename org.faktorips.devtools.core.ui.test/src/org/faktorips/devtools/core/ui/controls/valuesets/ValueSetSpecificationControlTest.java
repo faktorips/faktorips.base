@@ -22,7 +22,9 @@ import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.valueset.DerivedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -131,6 +133,45 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3"), "mockId"));
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_isEmptyRange() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setValueSetType(ValueSetType.RANGE);
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.setValueSetCopy(RangeValueSet.empty(attribute, "mockId"));
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_isNotEmptyRange() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setValueSetType(ValueSetType.RANGE);
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.setValueSetCopy(new RangeValueSet(attribute, "mockId", "0", "10", "1", true));
+        IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(true));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_isDerivedValueSet() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setValueSetType(ValueSetType.DERIVED);
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.setValueSetCopy(new DerivedValueSet(attribute, "mockId"));
         IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
 
