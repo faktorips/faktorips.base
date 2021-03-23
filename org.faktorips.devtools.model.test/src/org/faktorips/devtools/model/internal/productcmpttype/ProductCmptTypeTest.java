@@ -65,6 +65,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
@@ -1483,16 +1484,97 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_AssociationTargetSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_To1ProductAssociationTargetSameAsSuperTypeName() throws CoreException {
+        superProductCmptType.setChangingOverTime(true);
+        productCmptType.setChangingOverTime(true);
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular(superProductCmptType.getName());
+        association.setMaxCardinality(1);
+        association.setTarget(superProductCmptType.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, superProductCmptType, IProductCmptType.PROPERTY_NAME,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString(
+                        "The name superproduct is not unique. There is at least one association in the type Product with the same name. (Note: Property names are compared case insensitive)."));
+    }
+
+    @Test
+    public void testValidate_ToNProductAssociationTargetSameAsSuperTypeName() throws CoreException {
+        superProductCmptType.setChangingOverTime(true);
+        productCmptType.setChangingOverTime(true);
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular(superProductCmptType.getName());
+        association.setTargetRolePlural(superProductCmptType.getName() + "s");
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setTarget(superProductCmptType.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertThat(validationMessageList, isEmpty());
+    }
+
+    @Test
+    public void testValidate_ToNProductAssociationPluralTargetNameSameAsSuperTypeName() throws CoreException {
+        superProductCmptType.setChangingOverTime(true);
+        productCmptType.setChangingOverTime(true);
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular(superProductCmptType.getName());
+        association.setTargetRolePlural(superProductCmptType.getName());
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setTarget(superProductCmptType.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, superProductCmptType, IProductCmptType.PROPERTY_NAME,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString(
+                        "The name superproduct is not unique. There is at least one association in the type Product with the same name. (Note: Property names are compared case insensitive)."));
+    }
+
+    @Test
+    public void testValidate_To1ProductAssociationTargetSameAsProductCmptTypeName_NotChangingOverTime()
+            throws CoreException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
 
-        IAssociation association = productCmptType.newAssociation();
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTargetRoleSingular("ProductCmptTypeName");
         association.setMaxCardinality(1);
         association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(false);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertThat(validationMessageList, isEmpty());
+    }
+
+    @Test
+    public void testValidate_To1ProductAssociationTargetSameAsProductCmptTypeName() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("ProductCmptTypeName");
+        association.setMaxCardinality(1);
+        association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(true);
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
         assertOneValidationMessage(validationMessageList,
@@ -1504,15 +1586,122 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_AttributeNameSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_ToNProductAssociationSingularTargetSameAsProductCmptTypeName() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("ProductCmptTypeName");
+        association.setTargetRolePlural("ProductCmptTypeNames");
+        association.setMaxCardinality(2);
+        association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertThat(validationMessageList, isEmpty());
+    }
+
+    @Test
+    public void testValidate_ToNProductAssociationSingularAndPluralTargetSameAsProductCmptTypeName()
+            throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("ProductCmptTypeName");
+        association.setTargetRolePlural("ProductCmptTypeName");
+        association.setMaxCardinality(2);
+        association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString("The product component type itself and associations cannot have the same name."));
+    }
+
+    @Test
+    public void testValidate_ToNProductAssociationPluralTargetSameAsProductCmptTypeName() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("OneProductCmptTypeName");
+        association.setTargetRolePlural("ProductCmptTypeName");
+        association.setMaxCardinality(2);
+        association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(true);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString("The product component type itself and associations cannot have the same name."));
+    }
+
+    @Test
+    public void testValidate_ToNProductAssociationPluralTargetSameAsProductCmptTypeName_NotChangingOverTime()
+            throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+        IProductCmptType target = newProductCmptType(ipsProject, "Target");
+
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setAssociationType(AssociationType.AGGREGATION);
+        association.setTargetRoleSingular("ProductCmptTypeName");
+        association.setTargetRolePlural("ProductCmptTypeName");
+        association.setMaxCardinality(2);
+        association.setTarget(target.getQualifiedName());
+        association.setChangingOverTime(false);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertThat(validationMessageList, isEmpty());
+    }
+
+    @Test
+    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName() throws CoreException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
 
-        IAttribute attribute = productCmptType.newAttribute();
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("ProductCmptTypeName");
         attribute.setDatatype("String");
+        attribute.setChangingOverTime(true);
 
         MessageList validationMessageList = productCmptType.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList,
+                IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
+                Message.ERROR);
+        Message message = validationMessageList.getMessage(0);
+        assertThat(message.getText(),
+                containsString("The product component type itself and attributes cannot have the same name."));
+    }
+
+    @Test
+    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName_NotChangingOverTime() throws CoreException {
+        productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
+        productCmptType.setChangingOverTime(true);
+
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+        attribute.setName("ProductCmptTypeName");
+        attribute.setDatatype("String");
+        attribute.setChangingOverTime(false);
+
+        MessageList validationMessageList = productCmptType.validate(ipsProject);
+        // although we only have a problem when
+        // StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS is set, we can't access
+        // that builder setting from the model and therefore prohibit all attributes
         assertOneValidationMessage(validationMessageList,
                 IProductCmptType.MSGCODE_DUPLICATE_PROPERTY_NAME, productCmptType, null,
                 Message.ERROR);

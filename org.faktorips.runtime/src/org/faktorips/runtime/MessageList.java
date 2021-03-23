@@ -323,7 +323,7 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
      * given transformer function applied to each message.
      */
     public MessageList map(UnaryOperator<Message> transformer) {
-        return stream().map(m -> transformer.apply(m)).collect(MessageLists.collectMessages());
+        return stream().map(transformer::apply).collect(MessageLists.collectMessages());
     }
 
     /**

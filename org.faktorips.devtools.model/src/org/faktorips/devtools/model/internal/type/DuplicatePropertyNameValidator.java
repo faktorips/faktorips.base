@@ -358,4 +358,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             }
         }
     }
+
+    protected Map<String, ObjectProperty[]> getProperties() {
+        return properties;
+    }
 }
