@@ -493,6 +493,44 @@ public class MessageListTest {
         assertThat(list.stream().filter(m -> "e2".equals(m.getText())).findFirst().get(), is(error2));
     }
 
+    @Test
+    public void testMap() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError("error", "e1");
+        Message error2 = Message.newError("error", "e2");
+        Message warning1 = Message.newWarning("warning", "w1");
+        list.add(error1);
+        list.add(error2);
+        list.add(warning1);
+
+        MessageList transformedList = list.map(m -> {
+            return new Message.Builder(m).text("transformed text").create();
+        });
+
+        assertThat(transformedList.getMessage(0), is(new Message("error", "transformed text", Severity.ERROR)));
+        assertThat(transformedList.getMessage(1), is(new Message("error", "transformed text", Severity.ERROR)));
+        assertThat(transformedList.getMessage(2), is(new Message("warning", "transformed text", Severity.WARNING)));
+    }
+
+    @Test
+    public void testMap_WithPredicate() {
+        MessageList list = new MessageList();
+        Message error1 = Message.newError("error", "e1");
+        Message error2 = Message.newError("error", "e2");
+        Message warning1 = Message.newWarning("warning", "w1");
+        list.add(error1);
+        list.add(error2);
+        list.add(warning1);
+
+        MessageList transformedList = list.map(m -> m.getSeverity().equals(Severity.WARNING), m -> {
+            return new Message.Builder(m).text("transformed text").create();
+        });
+
+        assertThat(transformedList.getMessage(0), is(new Message("error", "e1", Severity.ERROR)));
+        assertThat(transformedList.getMessage(1), is(new Message("error", "e2", Severity.ERROR)));
+        assertThat(transformedList.getMessage(2), is(new Message("warning", "transformed text", Severity.WARNING)));
+    }
+
     private static final class RequiredInformationMissing implements IMarker {
 
         @Override

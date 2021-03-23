@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.faktorips.runtime.util.AbstractMessageList;
@@ -315,6 +316,24 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
             }
         }
         return result;
+    }
+
+    /**
+     * Returns a new message list containing the same number of messages as this list, with the
+     * given transformer function applied to each message.
+     */
+    public MessageList map(UnaryOperator<Message> transformer) {
+        return stream().map(m -> transformer.apply(m)).collect(MessageLists.collectMessages());
+    }
+
+    /**
+     * Returns a new message list containing the same number of messages as this list, with the
+     * given transformer function applied to each message that matches the given predicate. All
+     * other messages are transferred to the new list without change.
+     */
+    public MessageList map(Predicate<Message> shouldBeTransformed, UnaryOperator<Message> transformer) {
+        return stream().map(m -> shouldBeTransformed.test(m) ? transformer.apply(m) : m)
+                .collect(MessageLists.collectMessages());
     }
 
     /* kept for compile compatibility */
