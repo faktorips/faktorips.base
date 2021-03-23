@@ -66,9 +66,12 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -1504,8 +1507,80 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private static class ProductCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
 
+        private Set<IProductCmptType> productCmptTypes = new LinkedHashSet<>();
+
         public ProductCmptTypeDuplicatePropertyNameValidator(IIpsProject ipsProject) {
             super(ipsProject);
+        }
+
+        @Override
+        public void addMessagesForDuplicates(IType currentType, MessageList messages) {
+            super.addMessagesForDuplicates(currentType, messages);
+            for (IProductCmptType productCmptType : productCmptTypes) {
+                String propertyName = productCmptType.getUnqualifiedName().toLowerCase();
+                ObjectProperty[] potentialProperties = getProperties().get(propertyName);
+                if (potentialProperties != null) {
+                    List<ObjectProperty> duplicateProperties = new ArrayList<>();
+                    for (ObjectProperty potentialProperty : potentialProperties) {
+                        Object object = potentialProperty.getObject();
+                        String property = potentialProperty.getProperty();
+                        if (isPartOfPolicyTypeOrProductTypeChangingOverTime(object)
+                                && (isPolicyPartOrProductPartChangingOverTime(object)
+                                        /*
+                                         * although we only have a problem when StandardBuilderSet.
+                                         * CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS is set, we
+                                         * can't access that builder setting from the model and
+                                         * therefore prohibit all attributes, even when no
+                                         * convenience getter is generated
+                                         */
+                                        || object instanceof IAttribute)) {
+                            if (!(object instanceof IAssociation)
+                                    || hasProblematicTargetRole((IAssociation)object, property)) {
+                                duplicateProperties.add(potentialProperty);
+                            }
+                        }
+                    }
+                    if (!duplicateProperties.isEmpty()) {
+                        duplicateProperties.add(0, new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_NAME));
+                        messages.add(createMessage(propertyName,
+                                duplicateProperties.toArray(new ObjectProperty[duplicateProperties.size()])));
+                    }
+                }
+            }
+        }
+
+        private boolean isPartOfPolicyTypeOrProductTypeChangingOverTime(Object object) {
+            if (object instanceof ITypePart) {
+                IType type = ((ITypePart)object).getType();
+                boolean policyType = type instanceof IPolicyCmptType;
+                boolean productTypeChangingOverTime = type instanceof IProductCmptType
+                        && ((IProductCmptType)type).isChangingOverTime();
+                return policyType || productTypeChangingOverTime;
+            } else {
+                return false;
+            }
+        }
+
+        private boolean isPolicyPartOrProductPartChangingOverTime(Object object) {
+            return !(object instanceof IChangingOverTimeProperty)
+                    || ((IChangingOverTimeProperty)object).isChangingOverTime();
+        }
+
+        /*
+         * The target role is problematic, when it is used to generate a 0-args-getter, which is
+         * true for the singular-target-role for a to-1-association and for the plural-target-role
+         * for a to-n-association. If the singular and plural are the same, only the singular
+         * property is collected, so in that case it has to be checked for a to-n-association.
+         */
+        private boolean hasProblematicTargetRole(IAssociation association, String property) {
+            boolean problematicSingular = association.is1To1()
+                    && IAssociation.PROPERTY_TARGET_ROLE_SINGULAR.equals(property);
+            boolean problematicPlural = association.is1ToMany()
+                    && (IAssociation.PROPERTY_TARGET_ROLE_PLURAL.equals(property)
+                            || (IAssociation.PROPERTY_TARGET_ROLE_SINGULAR.equals(property)
+                                    && association.getTargetRoleSingular()
+                                            .equalsIgnoreCase(association.getTargetRolePlural())));
+            return problematicSingular || problematicPlural;
         }
 
         @Override
@@ -1575,6 +1650,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected boolean visit(IType currentType) {
             ProductCmptType productCmptType = (ProductCmptType)currentType;
+            productCmptTypes.add(productCmptType);
             for (ITableStructureUsage tableStructureUsage : productCmptType.tableStructureUsages) {
                 add(tableStructureUsage.getRoleName(),
                         new ObjectProperty(tableStructureUsage, ITableStructureUsage.PROPERTY_ROLENAME));
@@ -1585,10 +1661,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     add(method.getFormulaName(),
                             new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
-            }
-            if (productCmptType.isChangingOverTime()) {
-                String name = productCmptType.getUnqualifiedName();
-                add(name, new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_NAME));
             }
             super.visit(currentType);
             return true;
