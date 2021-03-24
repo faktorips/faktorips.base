@@ -479,9 +479,9 @@ def private static  generalMethods (XPolicyCmptClass it) '''
         @Override
         protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
             super.«initPropertiesFromXml("propMap", "productRepository")»;
-            «FOR it : attributes» «initFromXmlMethodCall» «ENDFOR»
+            «FOR it : attributesIncludingAbstract» «initFromXmlMethodCall» «ENDFOR»
         }
-        «FOR it : attributes» «PolicyCmptAttributeTmpl.initFromXmlMethod(it)» «ENDFOR»
+        «FOR it : attributesIncludingAbstract» «PolicyCmptAttributeTmpl.initFromXmlMethod(it)» «ENDFOR»
     «ENDIF»
 
     /**
