@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -61,15 +61,18 @@ public enum AttributeRelevance {
     public abstract void set(IConfiguredValueSet configuredValueSet);
 
     protected IValueSet nonEmpty(IConfiguredValueSet configuredValueSet) {
-        if (configuredValueSet.getValueSet().isEmpty()) {
-            try {
-                IPolicyCmptTypeAttribute attribute = configuredValueSet
-                        .findPcTypeAttribute(configuredValueSet.getIpsProject());
-                IValueSet parentValueSet = attribute.getValueSet();
-                if (parentValueSet.isEnum()) {
+        try {
+            IPolicyCmptTypeAttribute attribute = configuredValueSet
+                    .findPcTypeAttribute(configuredValueSet.getIpsProject());
+            IValueSet parentValueSet = attribute.getValueSet();
+            ValueDatatype valueSetDatatype = attribute.findDatatype(configuredValueSet.getIpsProject());
+
+            if (configuredValueSet.getValueSet().isEmpty()) {
+                if (parentValueSet.isEnum() || Datatype.BOOLEAN.equals(valueSetDatatype)
+                        || Datatype.PRIMITIVE_BOOLEAN.equals(valueSetDatatype)) {
+                    // force creation of a new EnumValueSet with values from the model
+                    configuredValueSet.setValueSetType(ValueSetType.UNRESTRICTED);
                     configuredValueSet.convertValueSetToEnumType();
-                    List<String> values = ((IEnumValueSet)parentValueSet).getValuesAsList();
-                    ((IEnumValueSet)configuredValueSet.getValueSet()).addValues(values);
                 } else {
                     if (configuredValueSet.getValueSet().isRange()) {
                         ((IRangeValueSet)configuredValueSet.getValueSet()).setEmpty(false);
@@ -81,9 +84,10 @@ public enum AttributeRelevance {
                         range.copyPropertiesFrom(parentValueSet);
                     }
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
         return configuredValueSet.getValueSet();
     }

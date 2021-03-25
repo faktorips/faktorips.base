@@ -209,22 +209,27 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     @Override
     public IEnumValueSet convertValueSetToEnumType() {
-        ValueSetType newValueSetType = ValueSetType.ENUM;
-        if (valueSet.getValueSetType().equals(newValueSetType)) {
-            // unchanged
+        if (valueSet.getValueSetType().equals(ValueSetType.ENUM)) {
             return (IEnumValueSet)valueSet;
-        }
-        setValueSetType(newValueSetType);
-        IEnumValueSet newValueSet = (IEnumValueSet)valueSet;
-        ValueDatatype valueSetDatatype = findValueDatatype(getIpsProject());
-        if (Datatype.BOOLEAN.equals(valueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(valueSetDatatype)) {
-            newValueSet.addValue(Boolean.TRUE.toString());
-            newValueSet.addValue(Boolean.FALSE.toString());
-            if (!valueSetDatatype.isPrimitive()) {
-                newValueSet.addValue(null);
+        } else {
+            setValueSetType(ValueSetType.ENUM);
+            IEnumValueSet newValueSet = (IEnumValueSet)valueSet;
+            ValueDatatype valueSetDatatype = findValueDatatype(getIpsProject());
+            if (Datatype.BOOLEAN.equals(valueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(valueSetDatatype)) {
+                newValueSet.addValue(Boolean.TRUE.toString());
+                newValueSet.addValue(Boolean.FALSE.toString());
+                if (!valueSetDatatype.isPrimitive()) {
+                    newValueSet.addValue(null);
+                }
+            } else {
+                IValueSet modelValueSet = findModelValueSet();
+                if (modelValueSet != null && ValueSetType.ENUM.equals(modelValueSet.getValueSetType())) {
+                    List<String> values = ((IEnumValueSet)modelValueSet).getValuesAsList();
+                    newValueSet.addValues(values);
+                }
             }
+            return newValueSet;
         }
-        return newValueSet;
     }
 
     @Override
@@ -241,14 +246,19 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public void setValueSetType(ValueSetType type) {
         IValueSet oldset = valueSet;
-        IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(valueSet.getIpsProject());
-        IValueSet modelValueSet = attribute == null ? null : attribute.getValueSet();
+        IValueSet modelValueSet = findModelValueSet();
         if (modelValueSet != null && modelValueSet.getValueSetType().equals(type)) {
             valueSet = modelValueSet.copy(this, getNextPartId());
         } else {
             valueSet = type.newValueSet(this, getNextPartId());
         }
         valueChanged(oldset, valueSet);
+    }
+
+    private IValueSet findModelValueSet() {
+        IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(valueSet.getIpsProject());
+        IValueSet modelValueSet = attribute == null ? null : attribute.getValueSet();
+        return modelValueSet;
     }
 
     @Override

@@ -659,4 +659,91 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
                 configuredValueSet.getLastResortCaption());
     }
 
+    @Test
+    public void testConvertValueSetToEnumType_Range() {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        configuredValueSet.changeValueSetType(ValueSetType.RANGE);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testConvertValueSetToEnumType_Unrestricted() {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testConvertValueSetToEnumType_Unrestricted_ModelBoolean() throws CoreException {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(false));
+        assertThat(enumValueSet.containsValue("true", ipsProject), is(true));
+        assertThat(enumValueSet.containsValue("false", ipsProject), is(true));
+        assertThat(enumValueSet.isContainsNull(), is(true));
+    }
+
+    @Test
+    public void testConvertValueSetToEnumType_Unrestricted_ModelPrimitiveBoolean() throws CoreException {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(false));
+        assertThat(enumValueSet.containsValue("true", ipsProject), is(true));
+        assertThat(enumValueSet.containsValue("false", ipsProject), is(true));
+        assertThat(enumValueSet.isContainsNull(), is(false));
+    }
+
+    @Test
+    public void testConvertValueSetToEnumType_Derived() {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        configuredValueSet.changeValueSetType(ValueSetType.DERIVED);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testConvertValueSetToEnumType_Derived_ModelEnum() throws CoreException {
+        attribute.setAttributeType(AttributeType.CHANGEABLE);
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ((IEnumValueSet)attribute.getValueSet()).addValues(Arrays.asList("1", "2"));
+        configuredValueSet.changeValueSetType(ValueSetType.DERIVED);
+
+        IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
+
+        assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
+        assertThat(enumValueSet.isEmpty(), is(false));
+        assertThat(enumValueSet.containsValue("1", ipsProject), is(true));
+        assertThat(enumValueSet.containsValue("2", ipsProject), is(true));
+    }
+
 }

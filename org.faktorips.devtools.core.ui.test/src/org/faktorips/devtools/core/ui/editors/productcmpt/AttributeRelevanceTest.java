@@ -210,6 +210,30 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testSet_Irrelevant_From_BooleanDatatypeWithNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        configuredValueSet.getValueSet().setContainsNull(true);
+
+        AttributeRelevance.Irrelevant.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(empty()));
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+    }
+
+    @Test
+    public void testSet_Irrelevant_From_BooleanDatatypeWithoutNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        configuredValueSet.getValueSet().setContainsNull(false);
+
+        AttributeRelevance.Irrelevant.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(empty()));
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+    }
+
+    @Test
     public void testSet_Mandatory_From_UnrestrictedWithNull() {
         configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
         configuredValueSet.getValueSet().setContainsNull(true);
@@ -286,6 +310,23 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testSet_Mandatory_From_Enum_WithEnumInModel() {
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        ((IEnumValueSet)attribute.getValueSet()).addValue("1");
+        ((IEnumValueSet)attribute.getValueSet()).addValue("3");
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        ((IEnumValueSet)configuredValueSet.getValueSet()).removeValue("1");
+        configuredValueSet.getValueSet().setContainsNull(true);
+
+        AttributeRelevance.Mandatory.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+        assertThat(configuredValueSet.getValueSet(), not(containsNull()));
+        assertThat(configuredValueSet.getValueSet(), contains("3"));
+        assertThat(configuredValueSet.getValueSet(), not(contains("1")));
+    }
+
+    @Test
     public void testSet_Mandatory_From_RangeWithNull() {
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         configuredValueSet.getValueSet().setContainsNull(true);
@@ -336,6 +377,32 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.getValueSet(), is(isRange("0", "100")));
         assertThat(configuredValueSet.getValueSet(), is(not(empty())));
         assertThat(configuredValueSet.getValueSet(), not(containsNull()));
+    }
+
+    @Test
+    public void testSet_Mandatory_From_BooleanDatatypeWithNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.convertValueSetToEnumType();
+        configuredValueSet.getValueSet().setContainsNull(true);
+
+        AttributeRelevance.Mandatory.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+        assertThat(configuredValueSet.getValueSet(), not(containsNull()));
+        assertThat(configuredValueSet.getValueSet(), contains(Boolean.TRUE.toString(), Boolean.FALSE.toString()));
+    }
+
+    @Test
+    public void testSet_Mandatory_From_BooleanDatatypeWithoutNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        configuredValueSet.getValueSet().setContainsNull(false);
+
+        AttributeRelevance.Mandatory.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+        assertThat(configuredValueSet.getValueSet(), not(containsNull()));
+        assertThat(configuredValueSet.getValueSet(), contains(Boolean.TRUE.toString(), Boolean.FALSE.toString()));
     }
 
     @Test
@@ -392,6 +459,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     public void testSet_Optional_From_EmptyEnum() {
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
         configuredValueSet.getValueSet().setContainsNull(false);
+        assertThat(configuredValueSet.getValueSet().isEmpty(), is(true));
 
         AttributeRelevance.Optional.set(configuredValueSet);
 
@@ -406,6 +474,9 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         ((IEnumValueSet)attribute.getValueSet()).addValue("3");
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
         configuredValueSet.getValueSet().setContainsNull(false);
+        ((EnumValueSet)configuredValueSet.getValueSet())
+                .removeValues(((EnumValueSet)configuredValueSet.getValueSet()).getValuesAsList());
+        assertThat(configuredValueSet.getValueSet().isEmpty(), is(true));
 
         AttributeRelevance.Optional.set(configuredValueSet);
 
@@ -465,6 +536,32 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.getValueSet(), is(isRange("0", "100")));
         assertThat(configuredValueSet.getValueSet(), is(not(empty())));
         assertThat(configuredValueSet.getValueSet(), containsNull());
+    }
+
+    @Test
+    public void testSet_Optional_From_BooleanDatatypeWithNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.convertValueSetToEnumType();
+        configuredValueSet.getValueSet().setContainsNull(true);
+
+        AttributeRelevance.Optional.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+        assertThat(configuredValueSet.getValueSet(), containsNull());
+        assertThat(configuredValueSet.getValueSet(), contains(Boolean.TRUE.toString(), Boolean.FALSE.toString()));
+    }
+
+    @Test
+    public void testSet_Optional_From_BooleanDatatypeWithoutNull() throws Exception {
+        attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        configuredValueSet.getValueSet().setContainsNull(false);
+
+        AttributeRelevance.Optional.set(configuredValueSet);
+
+        assertThat(configuredValueSet.getValueSet(), is(instanceOf(IEnumValueSet.class)));
+        assertThat(configuredValueSet.getValueSet(), containsNull());
+        assertThat(configuredValueSet.getValueSet(), contains(Boolean.TRUE.toString(), Boolean.FALSE.toString()));
     }
 
     public static class ValueSetMatchers {
