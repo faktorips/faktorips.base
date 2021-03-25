@@ -60,6 +60,8 @@
                                         exports org.faktorips.runtime;
                                         exports org.faktorips.runtime.caching;
                                         exports org.faktorips.runtime.formula;
+                                        exports org.faktorips.runtime.internal;
+                                        exports org.faktorips.runtime.internal.tableindex;
                                         exports org.faktorips.runtime.jaxb;
                                         exports org.faktorips.runtime.model;
                                         exports org.faktorips.runtime.model.annotation;
