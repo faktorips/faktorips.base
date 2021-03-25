@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	
-	<groupId>org.faktorips</groupId>
-	<artifactId>faktorips-runtime-groovy</artifactId>
-	<version>@version@</version>
-	<packaging>jar</packaging>
-	
-	<name>Faktor-IPS Runtime -  Groovy Extension</name>
-	<description>Groovy Extension for Faktor-IPS Runtime</description>
-	<url>http://faktorzehn.org</url>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<scm>
-		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.runtime-addons.git</url>
-		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.runtime-addons.git</connection>
-	</scm>
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-runtime-groovy</artifactId>
+    <version>@version@</version>
+    <packaging>jar</packaging>
 
-	<licenses>
-		<license>
-			<name>GNU Affero General Public License Version 3 with additional permissions</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <name>Faktor-IPS Runtime - Groovy Extension</name>
+    <description>Faktor-IPS Runtime Extension for Formula Evaluation with Groovy</description>
+    <url>http://faktorzehn.org</url>
 
-	<developers>
-		<developer>
-			<id>dirmeier</id>
-			<name>Cornelius Dirmeier</name>
-			<email>Cornelius.Dirmeier@faktorzehn.de</email>
-		</developer>
-	</developers>
+    <scm>
+        <url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.runtime-addons.git</url>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.runtime-addons.git</connection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License Version 3 with additional permissions</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS Team</name>
+            <email>fips@faktorzehn.de</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
-           <groupId>org.faktorips</groupId>
-           <artifactId>faktorips-runtime</artifactId>
-           <version>@version@</version>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+            <version>@version@</version>
         </dependency>
         <dependency>
-           <groupId>org.codehaus.groovy</groupId>
-           <artifactId>groovy-all</artifactId>
-           <version>1.7.4</version>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.7</version>
         </dependency>
     </dependencies>
 

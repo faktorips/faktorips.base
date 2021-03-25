@@ -15,8 +15,8 @@
 
     <packaging>jar</packaging>
 
-    <name>Faktor-IPS Runtime Groovy</name>
-    <description>Faktor-IPS Runtime for Groovy Formula Evaluation</description>
+	<name>Faktor-IPS Runtime - Groovy Extension</name>
+    <description>Faktor-IPS Runtime Extension for Formula Evaluation with Groovy</description>
     <url>http://faktorzehn.org</url>
 
     <build>
