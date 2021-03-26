@@ -39,6 +39,7 @@ public interface IActionBFE extends IMethodCallBFE {
      * @throws CoreException if an exception is thrown while trying to determine the business
      *             function using the specified target string
      */
+    @SuppressWarnings("deprecation")
     public IBusinessFunction findReferencedBusinessFunction() throws CoreException;
 
     /**

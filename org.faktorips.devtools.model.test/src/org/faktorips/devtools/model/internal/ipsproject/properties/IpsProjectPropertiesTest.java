@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -188,6 +191,21 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         list = props.validate(ipsProject);
         assertEquals(numOfMessages + 1, list.size());
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testValidate_DeprecatedBusinessFunctions() throws CoreException {
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.setBusinessFunctionsForValidationRules(false);
+        MessageList list = props.validate(ipsProject);
+        assertThat(list,
+                not(hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED)));
+
+        props.setBusinessFunctionsForValidationRules(true);
+        list = props.validate(ipsProject);
+        assertThat(list,
+                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
     }
 
     @Test

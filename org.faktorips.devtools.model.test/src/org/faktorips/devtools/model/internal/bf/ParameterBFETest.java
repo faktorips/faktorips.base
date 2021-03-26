@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@Deprecated
 public class ParameterBFETest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;

@@ -43,6 +43,7 @@ public interface IBFElement extends IIpsObjectPart {
     /**
      * Returns the business function to which this element belongs to.
      */
+    @SuppressWarnings("deprecation")
     public IBusinessFunction getBusinessFunction();
 
     /**

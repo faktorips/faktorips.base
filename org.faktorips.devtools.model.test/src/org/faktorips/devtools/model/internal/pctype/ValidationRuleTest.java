@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -296,12 +300,15 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(1, messageList.size());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testValidateBusinessFunctions() throws CoreException {
         validationRule.setAppliedForAllBusinessFunctions(true);
         MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertTrue(msgList.isEmpty());
+        assertThat(msgList.size(), is(1));
+        assertThat(msgList,
+                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
 
         validationRule.setAppliedForAllBusinessFunctions(false);
         msgList = validationRule.validate(ipsSrcFile.getIpsProject());
@@ -311,8 +318,11 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setAppliedForAllBusinessFunctions(false);
         validationRule.addBusinessFunction("function");
         msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertTrue(msgList.isEmpty());
+        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
+                isEmpty());
+        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
+        assertThat(msgList,
+                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
     }
 
     @Test

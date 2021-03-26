@@ -16,6 +16,7 @@ package org.faktorips.devtools.model.bf;
  * 
  * @author Peter Erzberger
  */
+@SuppressWarnings("deprecation")
 public enum BFElementType {
 
     ACTION_INLINE("inlineAction", Messages.BFElementType_inlineAction) { //$NON-NLS-1$

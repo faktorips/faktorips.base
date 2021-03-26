@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.businessfct;
 
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.runtime.ValidationContext;
 
 /**
  * These kind of business functions are used to specify that validation rules are only applicable in
@@ -23,7 +24,15 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
  * There is another business function concept which is defined by {@code IBusinessFunction}.
  * 
  * @see IValidationRule#getBusinessFunctions()
+ * @deprecated for removal since 21.6; You can use any object type as a value set to
+ *             {@link ValidationContext#setValue(String, Object)} to control execution of your
+ *             validation rules.
  */
+@Deprecated
 public interface BusinessFunction extends IIpsObject {
-    // see documentation above
+    /**
+     * Validation message code to indicate that business functions are a deprecated concept.
+     */
+    public static final String MSGCODE_DEPRECATED = "BUSINESS_FUNCTION-DEPRECATED"; //$NON-NLS-1$
+
 }

@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
  * 
  * @author Peter Erzberger
  */
+
 public interface IControlFlow extends IIpsObjectPart {
 
     public static final String XML_TAG = "ControlFlow"; //$NON-NLS-1$
@@ -42,6 +43,7 @@ public interface IControlFlow extends IIpsObjectPart {
     /**
      * The business function to which this control flow belongs to.
      */
+    @SuppressWarnings("deprecation")
     public IBusinessFunction getBusinessFunction();
 
     /**

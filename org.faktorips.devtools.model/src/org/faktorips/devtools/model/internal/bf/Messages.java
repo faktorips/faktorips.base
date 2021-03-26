@@ -32,6 +32,7 @@ public class Messages extends NLS {
     public static String BFElement_nameNotSpecified;
     public static String BFElement_nameNotValid;
 
+    public static String BusinessFunction_deprecated;
     public static String BusinessFunction_duplicateNames;
     public static String BusinessFunction_elementNotConnectedWithEnd;
     public static String BusinessFunction_elementNotConnectedWithStart;

@@ -114,6 +114,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     public void testValidateUserInputValid() throws CoreException {
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
-        assertTrue(status.isOK());
+        // deprecation warnings for BusinessFunctions
+        assertTrue(status.hasWarning());
     }
 }

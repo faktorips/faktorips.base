@@ -222,9 +222,13 @@ public class ValidationRule extends TypePart implements IValidationRule {
         return usedMarkerIds;
     }
 
+    @SuppressWarnings("deprecation")
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) {
         for (int i = 0; i < functions.size(); i++) {
             String function = functions.get(i);
+            list.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
+                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
+                    Message.WARNING, new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
             if (StringUtils.isNotEmpty(function)) {
                 if (ipsProject.findIpsObject(IpsObjectType.BUSINESS_FUNCTION, function) == null) {
                     String text = NLS.bind(Messages.ValidationRule_msgFunctionNotExists, function);
@@ -243,6 +247,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
             String text = Messages.ValidationRule_msgOneBusinessFunction;
             list.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
                     IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
+        }
+        if (isAppliedForAllBusinessFunctions()) {
+            list.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
+                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
+                    Message.WARNING,
+                    new ObjectProperty(this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)));
         }
     }
 

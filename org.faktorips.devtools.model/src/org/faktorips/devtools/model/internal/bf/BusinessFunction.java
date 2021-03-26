@@ -22,7 +22,6 @@ import org.faktorips.devtools.model.bf.BFElementType;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.bf.IBFElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.bf.IMethodCallBFE;
@@ -43,7 +42,9 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-public class BusinessFunction extends BaseIpsObject implements IBusinessFunction {
+/** @deprecated for removal since 21.6 */
+@Deprecated
+public class BusinessFunction extends BaseIpsObject implements org.faktorips.devtools.model.bf.IBusinessFunction {
 
     private final BFElementIpsObjectPartCollection<IBFElement> simpleElements;
     private final BFElementIpsObjectPartCollection<IActionBFE> actions;
@@ -262,6 +263,7 @@ public class BusinessFunction extends BaseIpsObject implements IBusinessFunction
         validateOnlyOneElementAllowed(list, BFElementType.START, MSGCODE_START_SINGLE_OCCURRENCE);
         validateOnlyOneElementAllowed(list, BFElementType.END, MSGCODE_END_SINGLE_OCCURRENCE);
         validateBFElementNameCollision(list);
+        list.add(new Message(MSGCODE_DEPRECATED, Messages.BusinessFunction_deprecated, Message.WARNING, this));
     }
 
     // TODO testing Decision_MethodCall

@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.model.internal.tablecontents.TableContents;
 import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.internal.testcasetype.TestCaseType;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -47,10 +47,16 @@ public class IpsObjectType {
 
     /**
      * Type for business function.
+     *
+     * @deprecated for removal since 21.6; You can use any object type as a value set to
+     *             {@link ValidationContext#setValue(String, Object)} to control execution of your
+     *             validation rules.
      */
+    @Deprecated
     public static final IpsObjectType BUSINESS_FUNCTION = new IpsObjectType(
             "BusinessFunction", "BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, //$NON-NLS-1$ //$NON-NLS-2$
-            Messages.IpsObjectType_nameBusinessFunctionPlural, "ipsbf", false, false, BusinessFunctionImpl.class); //$NON-NLS-1$
+            Messages.IpsObjectType_nameBusinessFunctionPlural, "ipsbf", false, false, //$NON-NLS-1$
+            org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl.class);
 
     /**
      * Type for Policy component type.
@@ -213,7 +219,10 @@ public class IpsObjectType {
             return new TestCase(file);
         }
         if (this == BUSINESS_FUNCTION) {
-            return new BusinessFunctionImpl(file);
+            @SuppressWarnings("deprecation")
+            org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl businessFunctionImpl = new org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl(
+                    file);
+            return businessFunctionImpl;
         }
         if (this == ENUM_TYPE) {
             return new EnumType(file);

@@ -266,6 +266,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validatePersistenceOption(list);
             validateVersion(list);
             validateSupportedLanguages(list);
+            validateDeprecatedBusinessFunctions(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -273,6 +274,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void validateDeprecatedBusinessFunctions(MessageList msgList) {
+        if (isBusinessFunctionsForValidationRulesEnabled()) {
+            msgList.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
+                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
+                    Message.WARNING,
+                    new ObjectProperty(this, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)));
         }
     }
 

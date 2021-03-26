@@ -23,7 +23,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.bf.IBFElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.bf.Location;
@@ -35,11 +34,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+@Deprecated
 public class ControlFlowTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private TestContentsChangeListener listener;
-    private IBusinessFunction bf;
+    private org.faktorips.devtools.model.bf.IBusinessFunction bf;
 
     @Override
     @Before

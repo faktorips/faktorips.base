@@ -21,7 +21,6 @@ import org.faktorips.devtools.model.bf.BFElementType;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.bf.IBFElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.bf.Size;
@@ -32,6 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+@Deprecated
 public class BFElementTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -49,7 +49,8 @@ public class BFElementTest extends AbstractIpsPluginTest {
     @Test
     public void testInitFromXml() throws Exception {
         Document doc = getTestDocument();
-        IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        org.faktorips.devtools.model.bf.IBusinessFunction bf = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
+                ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
 
         IBFElement bfe = new BFElement(bf, "1");
@@ -63,16 +64,18 @@ public class BFElementTest extends AbstractIpsPluginTest {
 
     @Test
     public void testtoXml() throws Exception {
-        IBusinessFunction bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(),
+        org.faktorips.devtools.model.bf.IBusinessFunction bf = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
+                ipsProject, BusinessFunctionIpsObjectType.getInstance(),
                 "bf");
         IBFElement bfe = bf.newOpaqueAction(new Location(10, 10));
         bfe.setLocation(new Location(14, 14));
         bfe.setSize(new Size(100, 100));
         Document doc = getDocumentBuilder().newDocument();
-        doc.appendChild(doc.createElement(IBusinessFunction.XML_TAG));
+        doc.appendChild(doc.createElement(org.faktorips.devtools.model.bf.IBusinessFunction.XML_TAG));
         Element domEl = bfe.toXml(doc);
 
-        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject,
+        org.faktorips.devtools.model.bf.IBusinessFunction bf2 = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
+                ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), "bf2");
         IActionBFE action = new ActionBFE(bf2, "1");
         action.initFromXml(domEl);

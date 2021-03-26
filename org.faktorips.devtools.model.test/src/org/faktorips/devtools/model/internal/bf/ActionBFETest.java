@@ -20,7 +20,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.bf.IBFElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.model.bf.IParameterBFE;
 import org.faktorips.devtools.model.bf.Location;
@@ -34,11 +33,12 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@Deprecated
 public class ActionBFETest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private TestContentsChangeListener listener;
-    private IBusinessFunction bf;
+    private org.faktorips.devtools.model.bf.IBusinessFunction bf;
 
     @Override
     @Before
@@ -47,7 +47,8 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProject");
         listener = new TestContentsChangeListener();
         ipsProject.getIpsModel().addChangeListener(listener);
-        bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        bf = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf");
 
     }
 
@@ -99,7 +100,8 @@ public class ActionBFETest extends AbstractIpsPluginTest {
         actionBFE.setTarget("p1");
         assertEquals(parameter, actionBFE.getParameter());
 
-        IBusinessFunction bf2 = (IBusinessFunction)newIpsObject(ipsProject,
+        org.faktorips.devtools.model.bf.IBusinessFunction bf2 = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
+                ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), "bf2");
         actionBFE = bf.newBusinessFunctionCallAction(new Location(10, 10));
         actionBFE.setTarget("bf2");

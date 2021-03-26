@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.bf.IMethodCallBFE;
 import org.faktorips.devtools.model.bf.IParameterBFE;
@@ -33,11 +32,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+@Deprecated
 public class DecisionBFETest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private TestContentsChangeListener listener;
-    private IBusinessFunction bf;
+    private org.faktorips.devtools.model.bf.IBusinessFunction bf;
 
     @Override
     @Before
@@ -46,7 +46,8 @@ public class DecisionBFETest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProject");
         listener = new TestContentsChangeListener();
         ipsProject.getIpsModel().addChangeListener(listener);
-        bf = (IBusinessFunction)newIpsObject(ipsProject, BusinessFunctionIpsObjectType.getInstance(), "bf");
+        bf = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(ipsProject,
+                BusinessFunctionIpsObjectType.getInstance(), "bf");
     }
 
     @Test

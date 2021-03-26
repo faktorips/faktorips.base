@@ -21,7 +21,10 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
  * two elements is called a control flow.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6; Consider using and external business process / workflow
+ *             management system.
  */
+@Deprecated
 public interface IBusinessFunction extends IIpsObject {
 
     public static final String PROPERTY_PARAMETER_RECTANGLE_SIZE = "ParameterRectangleSize"; //$NON-NLS-1$
@@ -40,6 +43,10 @@ public interface IBusinessFunction extends IIpsObject {
     public static final String MSGCODE_END_DEFINITION_MISSING = MSGCODE_PREFIX + "endDefinitionMissing"; //$NON-NLS-1$
     public static final String MSGCODE_NOT_CONNECTED_WITH_START = MSGCODE_PREFIX + "notConnectedWithStart"; //$NON-NLS-1$
     public static final String MSGCODE_NOT_CONNECTED_WITH_END = MSGCODE_PREFIX + "notConnectedWithEnd"; //$NON-NLS-1$
+    /**
+     * Validation message code to indicate that business functions are a deprecated concept.
+     */
+    public static final String MSGCODE_DEPRECATED = MSGCODE_PREFIX + "DEPRECATED"; //$NON-NLS-1$
 
     /**
      * Creates and returns a control flow and adds it to the set of control flows that belongs to

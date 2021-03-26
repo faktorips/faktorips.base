@@ -10,16 +10,21 @@
 
 package org.faktorips.devtools.model.internal.businessfct;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.businessfct.BusinessFunction;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
-// TODO AW: Is this class obsolete?
-public class BusinessFunctionImpl extends IpsObject implements BusinessFunction {
+/** @deprecated for removal since 21.6 */
+@Deprecated
+public class BusinessFunctionImpl extends IpsObject
+        implements org.faktorips.devtools.model.businessfct.BusinessFunction {
 
     public BusinessFunctionImpl(IIpsSrcFile file) {
         super(file);
@@ -58,6 +63,13 @@ public class BusinessFunctionImpl extends IpsObject implements BusinessFunction 
     @Override
     protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
         return null;
+    }
+
+    /** @since 21.6 */
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        list.add(new Message(MSGCODE_DEPRECATED, Messages.BusinessFunction_deprecated, Message.WARNING, this));
     }
 
 }
