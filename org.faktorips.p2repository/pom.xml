@@ -30,6 +30,7 @@
         <deploy.script.callssh>${deploy.scriptsdir}/callSSH.sh</deploy.script.callssh>
         <deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
         <deploy.release>false</deploy.release>
+        <faktorips-maven-plugin.build.directory>${project.build.directory}/../../faktorips-maven-plugin/target</faktorips-maven-plugin.build.directory>
         <snapshotQualifier>-SNAPSHOT</snapshotQualifier>
         <versionQualifier></versionQualifier>
     </properties>
@@ -237,6 +238,19 @@
                                     <includes>*.zip</includes>
                                     <url>scp://${deploy.user}@${deploy.server}</url>
                                     <toDir>${deploy.downloadDir}</toDir>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>upload-documentation</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                                <configuration>
+                                    <fromDir>${faktorips-maven-plugin.build.directory}/site</fromDir>
+                                    <includes>**/*</includes>
+                                    <url>scp://doc@doc.faktorzehn.org:2004</url>
+                                    <toDir>/var/www/doc.faktorzehn.org/faktorips-maven-plugin/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}/</toDir>
                                 </configuration>
                             </execution>
                         </executions>
