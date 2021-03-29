@@ -43,7 +43,8 @@ public class NewProductCmptTypePage extends NewTypePage {
     public NewProductCmptTypePage(IStructuredSelection selection, NewPcTypePage pcTypePage) {
         super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.NewProductCmptTypePage_title);
         setPageOfAssociatedType(pcTypePage);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
+        setImageDescriptor(
+                IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/NewProductCmptTypeWizard.png")); //$NON-NLS-1$
     }
 
     @Override
@@ -128,8 +129,9 @@ public class NewProductCmptTypePage extends NewTypePage {
             return;
         }
 
-        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
-                IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
+        setErrorMessage(TypeValidations.validateUniqueQualifiedName(IpsObjectType.POLICY_CMPT_TYPE,
+                getQualifiedIpsObjectName(), getIpsProject())
+                .getMessageWithHighestSeverity());
     }
 
     @Override

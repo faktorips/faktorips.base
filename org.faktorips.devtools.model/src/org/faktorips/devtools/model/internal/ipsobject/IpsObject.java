@@ -25,6 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -225,6 +226,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
         validateNamingConventions(list, getName(), PROPERTY_NAME);
         validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(list, ipsProject);
+        list.add(TypeValidations.validateUniqueQualifiedName(this));
     }
 
     /** Validates whether there is another type in the object path with the same name. */

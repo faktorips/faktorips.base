@@ -43,7 +43,6 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.model.internal.type.Type;
-import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.internal.util.TreeSetHelper;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -604,8 +603,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateSuperProductCmptTypeHasSameChangingOverTimeSetting(supertype, list);
 
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
-        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
-                getQualifiedName(), ipsProject, this));
 
         validateIconPath(list, ipsProject);
         validateDefaultCategoryForFormulaSignatureDefinition(list, ipsProject);

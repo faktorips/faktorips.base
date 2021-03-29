@@ -33,7 +33,6 @@ import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentTypeInfo;
 import org.faktorips.devtools.model.internal.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.model.internal.type.Type;
-import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -342,8 +341,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
-        list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.PRODUCT_CMPT_TYPE,
-                getQualifiedName(), ipsProject, this));
         validateDuplicateRulesNames(list);
         validateSameGenerateValidatorClassSetting(list);
     }

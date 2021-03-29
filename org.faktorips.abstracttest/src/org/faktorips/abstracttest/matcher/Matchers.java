@@ -59,6 +59,10 @@ public class Matchers {
         return new ContainsErrorMatcher();
     }
 
+    public static Matcher<Message> containsText(String text) {
+        return new MessageTextMatcher(text);
+    }
+
     /**
      * Similar to {@link CoreMatchers#allOf(Matcher...)}, but with better mismatch description.
      */
@@ -105,6 +109,19 @@ public class Matchers {
             Function<T, byte[]> propertyGetter,
             T objectToMatch) {
         return SameByteArrayPropertyMatcher.sameByteArray(propertyGetter, propertyDescription, objectToMatch);
+    }
+
+    /**
+     * A {@link Matcher} that matches if, for every given {@link Matcher}, the checked
+     * {@link MessageList} contains a {@link Message} that is matched by that {@link Matcher}. This
+     * must be a different {@link Message} for every {@link Matcher Matchers}. The
+     * {@link MessageList} may contain additional {@link Message Messages} not matched by any
+     * {@link Matcher}. The order of the {@link Message Messages} and {@link Matcher Matchers} is
+     * irrelevant.
+     */
+    @SafeVarargs
+    public static Matcher<MessageList> hasMessages(Matcher<Message>... messageMatchers) {
+        return new MessageListMessagesMatcher(messageMatchers);
     }
 
 }

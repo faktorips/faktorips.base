@@ -90,8 +90,6 @@ public class TestCaseTest extends AbstractDependencyTest {
         attribute1.setDatatype("Integer");
         attribute1.setDefaultValue("11");
 
-        newPolicyCmptType(ipsProject, "testCaseTypeX");
-
         testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType1");
         ITestValueParameter inputTestValueParameter0 = testCaseType.newInputTestValueParameter();
         inputTestValueParameter0.setName("inputTestValue0");

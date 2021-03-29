@@ -129,8 +129,9 @@ public class NewPcTypePage extends NewTypePage {
         if (getIpsProject() == null) {
             return;
         }
-        setErrorMessage(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(
-                IpsObjectType.PRODUCT_CMPT_TYPE, getQualifiedIpsObjectName(), getIpsProject(), null));
+        setErrorMessage(TypeValidations.validateUniqueQualifiedName(IpsObjectType.PRODUCT_CMPT_TYPE,
+                getQualifiedIpsObjectName(), getIpsProject())
+                .getMessageWithHighestSeverity());
     }
 
     @Override

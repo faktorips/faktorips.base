@@ -74,7 +74,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
-        newProductCmpt(productCmptType, "motor.MotorProduct");
+        newProductCmpt(productCmptType, "motor.MotorProduct 2021-03");
 
         // toc should be empty as long as the project hasn't been built
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -244,7 +244,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         // create a product component: policyCmptType => 1 productCmptType => 2 productCmpt => 3
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
-        IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct");
+        IProductCmpt motorProduct = newProductCmpt(productCmptType, "motor.MotorProduct 2021-03");
 
         // create a table content => 4
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
