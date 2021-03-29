@@ -1,0 +1,68 @@
+Faktor-IPS is available under a dual licensing scheme whereby
+the use of Faktor-IPS in projects that are licensed so as to be
+compatible with AGPL Version 3 may use Faktor-IPS under the 
+terms of the compatible license. Please see agpl-3.0.txt in the 
+Faktor-IPS bundles for more details. However, if this licensing 
+is incompatible with your use of Faktor-IPS, alternative 
+license terms are available from Faktor Zehn GmbH.
+
+The following additional permissions and restrictions are 
+stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
+
+If you modify the Program or any covered work, by linking or 
+combining it with libraries of the namespace org.eclipse.* and 
+org.junit (including dependencies or a modified version of
+these libraries), thus containing parts covered by the terms of 
+Eclipse Public License Version 1.0 (EPL), the licensors of this 
+Program grant you the additional permission to convey the 
+resulting work.
+
+If you modify the Program or any covered work, without changing 
+its source code, only by linking or combining some or all 
+bundles of the Program with separate works covered by AGPL-
+incompatible license terms, the licensors of this Program grant
+you the additional permission to convey the resulting work.
+
+You are not allowed to remove or alter any legal notices in the
+covered work or in the Appropriate Legal Notices.
+
+
+
+------------------------------------------------------------------
+
+Deutsche Übersetzung: 
+
+------------------------------------------------------------------
+
+
+Faktor-IPS ist unter einem dualen Lizenzmodell verfügbar. 
+Faktor-IPS darf in Projekten, die mit der AGPL Version 3 
+kompatibel sind, unter Anwendung dieser kompatiblen Lizenz 
+genutzt werden. Bitte beachten sie die Datei agpl-3.0.txt in
+den Faktor-IPS Bundles für weitere Details. Falls Sie Faktor
+-IPS in anderer Weise nutzen wollen, können Sie alternative
+Lizenzbedingungen mit der Faktor Zehn GmbH vereinbaren.
+  
+Auf Basis der Ziff. 7 der AGPL ergänzt die Faktor Zehn GmbH die
+Lizenzbedingungen der AGPL durch die folgenden Zusätzlichen
+Genehmigungen und Zusätzlichen Einschränkungen. 
+  
+Falls Sie das Programm oder ein betroffenes Werk dadurch
+modifizieren, dass Sie es mit Bibliotheken des Namensraums
+org.eclipse.* und org.junit (inklusive der Abhängigkeiten sowie
+modifizierte Versionen dieser Bibliotheken) verlinken oder
+kombinieren und dadurch für Teile des hervorgehenden Werks die
+Bedingungen der Eclipse Public License Version 1.0 (EPL)
+gelten, erteilen Ihnen die Lizenzgeber dieses Programms die
+Zusätzliche Genehmigung, das hervorgehende Werk zu übertragen.
+
+Falls Sie das Programm oder ein betroffenes Werk, ohne Änderung
+des Quelltextes, lediglich dadurch modifizieren, dass Sie
+einige oder alle Bundles des Programms mit AGPL-inkompatibel
+lizenzierten Werken verlinken oder kombinieren, erteilen Ihnen
+die Lizenzgeber dieses Programms die Zusätzliche Genehmigung,
+das hervorgehende Werk zu übertragen.
+
+Es ist nicht gestattet, irgendeinen rechtlichen Verweis im
+betroffenen Werk oder in einer interaktiven 
+Benutzerschnittstelle zu entfernen oder zu ändern.

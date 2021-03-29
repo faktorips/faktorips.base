@@ -31,8 +31,9 @@
         <module>nexus8</module>
         <module>nexus11</module>
         <module>tests</module>
+        <module>../faktorips-maven-archetype</module>
+        <module>../faktorips-maven-plugin</module>
         <module>sites</module>
-        <module>../org.faktorips.archetype</module>
     </modules>
 
     <scm>

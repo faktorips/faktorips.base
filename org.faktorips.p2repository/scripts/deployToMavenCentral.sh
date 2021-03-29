@@ -23,8 +23,6 @@ then
 else
 	REPO_ID=snapshots
 	REPO_URL=https://nexus.faktorzehn.de/content/repositories/snapshots/
-	#REPO_ID=ossrh    
-	#REPO_URL=https://oss.sonatype.org/content/repositories/snapshots/
 fi
 
 if [[ $VERSION == *-SNAPSHOT ]]
@@ -95,6 +93,22 @@ GROOVY_LIB_SOURCE_JAR=$GROOVY_LIB_PREFIX-sources.jar
 GROOVY_LIB_JAVADOC_JAR=$GROOVY_LIB_PREFIX-javadoc.jar
 GROOVY_LIB_POM=$POM_DIRECTORY/runtime-groovy-pom.xml
 
+MAVEN_PLUGIN=faktorips-maven-plugin
+MAVEN_PLUGIN_DIR=$BASE_DIRECTORY/$MAVEN_PLUGIN/$TARGET_DIR
+MAVEN_PLUGIN_PREFIX=$MAVEN_PLUGIN_DIR/${MAVEN_PLUGIN}-${VERSION_SNAPSHOT}
+MAVEN_PLUGIN_JAR=$MAVEN_PLUGIN_PREFIX.jar
+MAVEN_PLUGIN_SOURCE_JAR=$MAVEN_PLUGIN_PREFIX-sources.jar
+MAVEN_PLUGIN_JAVADOC_JAR=$MAVEN_PLUGIN_PREFIX-javadoc.jar
+MAVEN_PLUGIN_POM=$POM_DIRECTORY/maven-plugin-pom.xml
+
+MAVEN_ARCHETYPE=faktorips-maven-archetype
+MAVEN_ARCHETYPE_DIR=$BASE_DIRECTORY/$MAVEN_ARCHETYPE/$TARGET_DIR
+MAVEN_ARCHETYPE_PREFIX=$MAVEN_ARCHETYPE_DIR/${MAVEN_ARCHETYPE}-${VERSION_SNAPSHOT}
+MAVEN_ARCHETYPE_JAR=$MAVEN_ARCHETYPE_PREFIX.jar
+MAVEN_ARCHETYPE_SOURCE_JAR=$MAVEN_ARCHETYPE_PREFIX-sources.jar
+MAVEN_ARCHETYPE_POM=$POM_DIRECTORY/maven-archetype-pom.xml
+
+
 echo "INFO Runtime"
 echo $RUNTIME_LIB_JAR
 echo $RUNTIME_LIB_SOURCE_JAR
@@ -120,6 +134,21 @@ echo $GROOVY_LIB_JAVADOC_JAR
 echo $GROOVY_LIB_POM
 echo "########################"
 
+echo "INFO Maven Plugin"
+echo $MAVEN_PLUGIN_JAR
+echo $MAVEN_PLUGIN_SOURCE_JAR
+echo $MAVEN_PLUGIN_JAVADOC_JAR
+echo $MAVEN_PLUGIN_POM
+
+echo "########################"
+
+echo "INFO Maven Archetype"
+echo $MAVEN_ARCHETYPE_JAR
+echo $MAVEN_ARCHETYPE_SOURCE_JAR
+echo "No Javadoc as the project is not a Java classpath-capable package"
+echo $MAVEN_ARCHETYPE_POM
+
+echo "########################"
 echo "upload Runtime"
 mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$RUNTIME_LIB_JAR -Dsources=$RUNTIME_LIB_SOURCE_JAR -Djavadoc=$RUNTIME_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$RUNTIME_LIB_POM
 echo "upload Runtime Client"
@@ -130,4 +159,8 @@ echo "upload Valuetypes Joda"
 mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$VALUETYPES_JODA_LIB_JAR -Dsources=$VALUETYPES_JODA_LIB_SOURCE_JAR -Djavadoc=$VALUETYPES_JODA_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$VALUETYPES_JODA_LIB_POM
 echo "upload Groovy"
 mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$GROOVY_LIB_JAR -Dsources=$GROOVY_LIB_SOURCE_JAR -Djavadoc=$GROOVY_LIB_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$GROOVY_LIB_POM
+echo "upload Maven Plugin"
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$MAVEN_PLUGIN_JAR -Dsources=$MAVEN_PLUGIN_SOURCE_JAR -Djavadoc=$MAVEN_PLUGIN_JAVADOC_JAR -Dversion=$RELEASE_VERSION -DpomFile=$MAVEN_PLUGIN_POM
+echo "upload Maven Archetype"
+mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$MAVEN_ARCHETYPE_JAR -Dsources=$MAVEN_ARCHETYPE_SOURCE_JAR -Dversion=$RELEASE_VERSION -DpomFile=$MAVEN_ARCHETYPE_POM
 

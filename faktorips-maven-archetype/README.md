@@ -83,7 +83,7 @@ _Postprocessor_:
        ``mvn clean install``
 2. Generation of the archetype:		
     1. Execute in another folder then the archetype-folder: <br/>
-       ``mvn archetype:generate -DarchetypeGroupId=org.faktorips -DarchetypeArtifactId=org.faktorips.archetype -DarchetypeVersion=<version>``
+       ``mvn archetype:generate -DarchetypeGroupId=org.faktorips -DarchetypeArtifactId=faktorips-maven-archetype -DarchetypeVersion=<version>``
     2. Insert the described [parameters](#adjustable-parameters-for-creating-an-archetype)
 3. Installation of the generated project:		
     1. Navigate to the generated Maven project
@@ -145,7 +145,7 @@ _Postprozessor_:
        ``mvn clean install``
 2. Generation of the archetype:
     1. Ausführen in einem anderen Ordner als dem Archetype-Ordner: <br/>
-       ``mvn archetype:generate -DarchetypeGroupId=org.faktorips -DarchetypeArtifactId=org.faktorips.archetype -DarchetypeVersion=<version>``
+       ``mvn archetype:generate -DarchetypeGroupId=org.faktorips -DarchetypeArtifactId=faktorips-maven-archetype -DarchetypeVersion=<version>``
     2. Einfügen der beschriebenen [Parameter](#setzbare-parameter-bei-der-erstellung-eines-archetypes)
 3. Installation des generierten Projekts:
     1. Navigieren in das generierte Maven-Projekt

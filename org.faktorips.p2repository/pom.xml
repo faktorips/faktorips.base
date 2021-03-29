@@ -30,6 +30,7 @@
         <deploy.script.callssh>${deploy.scriptsdir}/callSSH.sh</deploy.script.callssh>
         <deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
         <deploy.release>false</deploy.release>
+        <faktorips-maven-plugin.build.directory>${project.build.directory}/../../faktorips-maven-plugin/target</faktorips-maven-plugin.build.directory>
         <snapshotQualifier>-SNAPSHOT</snapshotQualifier>
         <versionQualifier></versionQualifier>
     </properties>
@@ -239,6 +240,19 @@
                                     <toDir>${deploy.downloadDir}</toDir>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>upload-documentation</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>upload</goal>
+                                </goals>
+                                <configuration>
+                                    <fromDir>${faktorips-maven-plugin.build.directory}/site</fromDir>
+                                    <includes>**/*</includes>
+                                    <url>scp://doc@doc.faktorzehn.org:2004</url>
+                                    <toDir>/var/www/doc.faktorzehn.org/faktorips-maven-plugin/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}/</toDir>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
 
@@ -278,7 +292,6 @@
             </activation>
             <build>
                 <plugins>
-
                     <!-- Update poms for maven central upload -->
                     <plugin>
                         <groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -304,7 +317,6 @@
                             </replacements>
                         </configuration>
                     </plugin>
-
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
@@ -318,14 +330,11 @@
                                 <phase>deploy</phase>
                                 <configuration>
                                     <executable>${deploy.script.maven-central}</executable>
-                                    <commandlineArgs>${unqualifiedVersion}${snapshotQualifier}
-                                        ${deploy.release} ${basedir}/..
-                                        ${version.kind}</commandlineArgs>
+                                    <commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/.. ${version.kind}</commandlineArgs>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
-
                 </plugins>
             </build>
         </profile>

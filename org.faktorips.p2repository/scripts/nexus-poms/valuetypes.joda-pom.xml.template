@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+=======
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>>>>>>> FIPS-5966
     xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-valuetypes-joda</artifactId>
     <version>@version@</version>
     <packaging>jar</packaging>
+<<<<<<< HEAD
 
     <name>Faktor-IPS Valuetypes for Joda-Time</name>
     <description>JODA Valuetypes library for Faktor-IPS</description>
     <url>http://faktorzehn.org</url>
+=======
+    
+    <name>Faktor-IPS Valuetypes for Joda-Time</name>
+    <description>Valuetype Joda-Time for Faktor-IPS</description>
+    <url>http://faktorzehn.org</url>
+
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>https://faktorzehn.org/</url>
+    </organization>
+>>>>>>> FIPS-5966
 
     <properties>
         <version.joda>2.1</version.joda>
     </properties>
     <scm>
+<<<<<<< HEAD
         <url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
+=======
+>>>>>>> FIPS-5966
         <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
     </scm>
 
@@ -30,7 +50,11 @@
     <developers>
         <developer>
             <id>fips</id>
+<<<<<<< HEAD
             <name>Faktor-IPS Team</name>
+=======
+            <name>Faktor-IPS-Team</name>
+>>>>>>> FIPS-5966
             <email>fips@faktorzehn.de</email>
         </developer>
     </developers>
