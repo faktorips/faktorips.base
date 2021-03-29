@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
+import org.faktorips.m2e.version.MavenVersionFormatter;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -480,6 +482,11 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @return The Faktor-IPS version
      */
     private String getIpsVersionForMaven() {
-        return IpsModelActivator.getInstalledFaktorIpsVersion().replace(".qualifier", "-SNAPSHOT");
+        String versionWithQualifier = IpsModelActivator.getInstalledFaktorIpsVersion();
+        try {
+            return MavenVersionFormatter.formatVersion(versionWithQualifier);
+        } catch (IllegalArgumentException e) {
+            throw new CoreRuntimeException(e.getMessage());
+        }
     }
 }
