@@ -33,6 +33,7 @@ public class Messages extends NLS {
     public static String AddIpsNatureDialog_modelProject;
     public static String AddIpsNatureDialog_productDefinitionProject;
     public static String AddIpsNatureDialog_PersistenceSupport;
+    public static String AddIpsNatureDialog_GroovySupport;
     public static String AddIpsNatureDialog_ProjectType;
     public static String AddIpsNatureDialog_runtimeIdPrefix;
     public static String AddIpsNatureDialog_sourceFolderName;

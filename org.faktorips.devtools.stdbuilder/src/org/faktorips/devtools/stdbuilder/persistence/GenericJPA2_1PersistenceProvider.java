@@ -12,13 +12,14 @@ package org.faktorips.devtools.stdbuilder.persistence;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 
 /**
  * Persistence provider for standard generic JPA 2.1 support
  */
 public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProvider {
 
-    public static final String ID_GENERIC_JPA_2_1 = "Generic JPA 2.1"; //$NON-NLS-1$
+    public static final String ID_GENERIC_JPA_2_1 = PersistenceSupportNames.ID_GENERIC_JPA_2_1;
 
     private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$
 

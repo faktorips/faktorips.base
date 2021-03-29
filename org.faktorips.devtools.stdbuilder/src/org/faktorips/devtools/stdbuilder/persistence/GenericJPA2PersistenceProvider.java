@@ -14,13 +14,14 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 
 /**
  * Persistence provider for standard generic JPA 2 support
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
-    public static final String ID_GENERIC_JPA_2 = "Generic JPA 2.0"; //$NON-NLS-1$
+    public static final String ID_GENERIC_JPA_2 = PersistenceSupportNames.ID_GENERIC_JPA_2;
 
     @Override
     public boolean isSupportingConverters() {

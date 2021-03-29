@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
@@ -46,11 +48,32 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     public static final String GROOVY_BUNDLE = "org.faktorips.runtime.groovy"; //$NON-NLS-1$
 
     /**
-     * Returns <code>true</code> if the given groovy support bundle is available, otherwise
-     * <code>false</code>.
+     * Returns <code>true</code> if Groovy support is available, otherwise <code>false</code>.
      */
     public static final boolean isGroovySupportAvailable() {
         return Platform.getBundle(GROOVY_BUNDLE) != null;
+    }
+
+    /**
+     * Checks whether at least one extension of the extension point
+     * {@link ExtensionPoints#ADD_IPS_NATURE} supports Groovy and is responsible for configuring the
+     * passed {@link IProject}.
+     * <p>
+     * Is this the case, the {@link #GROOVY_BUNDLE} has not to be installed in Eclipse.
+     * 
+     * @return {@code true} whether at least on extension supports Groovy, else {@code false}
+     */
+    public static final boolean isGroovySupportedByAddIpsNatureExtension(IProject project) {
+        List<IIpsProjectConfigurator> ipsProjectConfigurators = IpsModelExtensionsViaEclipsePlugins.get()
+                .getIpsProjectConfigurators();
+        boolean isGroovySupportedByExtension = false;
+        for (IIpsProjectConfigurator configurator : ipsProjectConfigurators) {
+            if (configurator.canConfigure(project) && configurator.isGroovySupported()) {
+                isGroovySupportedByExtension = true;
+                break;
+            }
+        }
+        return isGroovySupportedByExtension;
     }
 
     /**
@@ -204,7 +227,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                     entryList.add(addEntry);
                 } else {
                     IpsLog.log(new IpsStatus("Can't create classpath entry for " + additionalEntry //$NON-NLS-1$
-                    + ", plugin is not available.")); //$NON-NLS-1$
+                            + ", plugin is not available.")); //$NON-NLS-1$
                 }
             }
             entries = entryList.toArray(new IClasspathEntry[entryList.size()]);
@@ -234,7 +257,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             Bundle bundle = Platform.getBundle(pluginId);
             if (bundle == null) {
                 IpsLog.log(new IpsStatus(
-                "Error initializing " + (sources ? "source for " : "") + "classpath container. Bundle " + pluginId + " not found.")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                        "Error initializing " + (sources ? "source for " : "") + "classpath container. Bundle " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                                + pluginId + " not found.")); //$NON-NLS-1$
                 return null;
             }
 
@@ -251,7 +275,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                 return Path.fromOSString(fullPath);
             } catch (IOException e) {
                 IpsLog.log(new IpsStatus("Error initializing classpath container for " //$NON-NLS-1$
-                + (sources ? "source " : StringUtils.EMPTY) + "source bundle " + pluginId, e)); //$NON-NLS-1$//$NON-NLS-2$
+                        + (sources ? "source " : StringUtils.EMPTY) + "source bundle " + pluginId, e)); //$NON-NLS-1$//$NON-NLS-2$
                 return null;
             }
         }

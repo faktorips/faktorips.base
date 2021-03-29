@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
  * Use this standard configurator if no extension of the extension point
  * {@link ExtensionPoints#ADD_IPS_NATURE} is responsible for configuring the project.
  * 
+ * @since 21.6
  * @author Florian Orendi
  */
 public class StandardJavaProjectConfigurator {
@@ -32,14 +33,40 @@ public class StandardJavaProjectConfigurator {
      * @param javaProject The java project to be configured
      * @throws CoreException if configuring failed
      */
-    public static void configureIpsProject(IJavaProject javaProject)
+    public static void configureDefaultIpsProject(IJavaProject javaProject)
             throws CoreException {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
         if (targetVersionIsAtLeast5(javaProject)) {
             IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
             System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
+            entries[oldEntries.length] = JavaCore
+                    .newContainerEntry(IpsClasspathContainerInitializer.newDefaultEntryPath());
+            javaProject.setRawClasspath(entries, null);
+        }
+    }
+
+    /**
+     * Configures a {@link IJavaProject} for the usage of Faktor-IPS.
+     * <p>
+     * Additionally, configures Groovy support based on the selection, whether Groovy should be
+     * supported or not.
+     * 
+     * @param javaProject The java project to be configured
+     * @param isGroovySupport {@code true} if Groovy should be supported, else false
+     * @throws CoreException if configuring failed
+     */
+    public static void configureGroovyIpsProject(IJavaProject javaProject, boolean isGroovySupport)
+            throws CoreException {
+        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+        if (targetVersionIsAtLeast5(javaProject)) {
+            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
+            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
+
+            boolean isJodaSupportAvailable = IpsClasspathContainerInitializer.isJodaSupportAvailable();
+            boolean isGroovySupportAvailable = IpsClasspathContainerInitializer.isGroovySupportAvailable()
+                    && isGroovySupport;
             entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
-                    .newDefaultEntryPath());
+                    .newEntryPath(isJodaSupportAvailable, isGroovySupportAvailable));
             javaProject.setRawClasspath(entries, null);
         }
     }

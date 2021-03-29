@@ -60,6 +60,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
@@ -152,8 +153,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     /**
      * Configuration property contains the persistence provider implementation.
+     * <p>
+     * All persistence support IDs are defined in {@link PersistenceSupportNames}.
      */
-    public static final String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = "persistenceProvider"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = PersistenceSupportNames.STD_BUILDER_PROPERTY_PERSISTENCE_PROVIDER;
 
     /**
      * Configuration property contains the kind of formula compiling.

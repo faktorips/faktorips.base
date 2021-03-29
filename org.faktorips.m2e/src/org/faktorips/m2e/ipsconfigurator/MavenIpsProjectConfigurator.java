@@ -45,6 +45,7 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.version.MavenVersionFormatter;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
@@ -70,6 +71,11 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     @Override
     public boolean canConfigure(IProject project) {
         return MavenPlugin.getMavenProjectRegistry().getProject(project) != null;
+    }
+
+    @Override
+    public boolean isGroovySupported() {
+        return true;
     }
 
     @Override
@@ -244,7 +250,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         }
 
         addMavenProperties(mavenModel);
-        addMavenDependencies(mavenModel);
+        addMavenDependencies(mavenModel, creationProperties);
         addMavenResources(build, resourcesPath, creationProperties);
         addMavenPlugins(build);
 
@@ -286,8 +292,11 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Existent dependencies are not touched.
      * 
      * @param mavenModel The model of the selected Maven project
+     * @param creationProperties The {@link IpsProjectCreationProperties} containing information
+     *            about the required dependencies
      */
-    private void addMavenDependencies(Model mavenModel) {
+    private void addMavenDependencies(Model mavenModel, IpsProjectCreationProperties creationProperties)
+            throws CoreException {
         String ipsVersion = String.format("${%s}", MAVEN_PROPERTY_IPS_VERSION);
 
         Set<String> dependencies = mavenModel.getDependencies().stream()
@@ -303,13 +312,39 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             mavenModel.addDependency(ipsRuntimeDependency);
         }
 
-        String groovyArtifactId = "faktorips-runtime-groovy";
-        if (!dependencies.contains(groovyArtifactId)) {
-            Dependency ipsGroovyDependency = new Dependency();
-            ipsGroovyDependency.setGroupId(DEPENDENCY_IPS_GROUP_ID);
-            ipsGroovyDependency.setArtifactId(groovyArtifactId);
-            ipsGroovyDependency.setVersion(ipsVersion);
-            mavenModel.addDependency(ipsGroovyDependency);
+        if (creationProperties.isGroovySupport()) {
+            String groovyArtifactId = "faktorips-runtime-groovy";
+            if (!dependencies.contains(groovyArtifactId)) {
+                Dependency ipsGroovyDependency = new Dependency();
+                ipsGroovyDependency.setGroupId(DEPENDENCY_IPS_GROUP_ID);
+                ipsGroovyDependency.setArtifactId(groovyArtifactId);
+                ipsGroovyDependency.setVersion(ipsVersion);
+                mavenModel.addDependency(ipsGroovyDependency);
+            }
+        }
+
+        if (creationProperties.isPersistentProject()) {
+            String persistenceSupport = creationProperties.getPersistenceSupport();
+            Dependency persistenceDependency = new Dependency();
+            persistenceDependency.setGroupId("org.eclipse.persistence");
+            if (persistenceSupport.equals(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1)) {
+                persistenceDependency.setArtifactId("eclipselink");
+                persistenceDependency.setVersion("1.1.0");
+            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5)) {
+                persistenceDependency.setArtifactId("eclipselink");
+                persistenceDependency.setVersion("2.5.0");
+            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_GENERIC_JPA_2)) {
+                persistenceDependency.setArtifactId("javax.persistence");
+                persistenceDependency.setVersion("2.0.0");
+            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_GENERIC_JPA_2_1)) {
+                persistenceDependency.setArtifactId("javax.persistence");
+                persistenceDependency.setVersion("2.1.0");
+            } else {
+                throw new CoreException(new IpsStatus(
+                        String.format("The selected persistence support \"%s\" is not supported.",
+                                creationProperties.getPersistenceSupport())));
+            }
+            mavenModel.addDependency(persistenceDependency);
         }
     }
 

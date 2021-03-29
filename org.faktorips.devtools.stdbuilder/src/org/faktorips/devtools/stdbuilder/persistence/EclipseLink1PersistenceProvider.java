@@ -15,6 +15,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -22,7 +23,7 @@ import org.faktorips.util.StringUtil;
  */
 public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
 
-    public static final String ID_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+    public static final String ID_ECLIPSE_LINK_1_1 = PersistenceSupportNames.ID_ECLIPSE_LINK_1_1;
 
     // orphanRemoval annotation constants
     private static final String ANNOTAITON_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned"; //$NON-NLS-1$

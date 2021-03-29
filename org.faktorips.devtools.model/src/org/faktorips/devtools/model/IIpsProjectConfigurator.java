@@ -42,6 +42,13 @@ public interface IIpsProjectConfigurator {
     boolean canConfigure(IProject project);
 
     /**
+     * Checks whether Groovy is supported by the extension.
+     * 
+     * @return {@code true} if Groovy is supported by the extension, else {@code false}
+     */
+    boolean isGroovySupported();
+
+    /**
      * Configures an existent project, which already contains the IPS-Nature, for the usage of
      * Faktor-IPS.
      * 
