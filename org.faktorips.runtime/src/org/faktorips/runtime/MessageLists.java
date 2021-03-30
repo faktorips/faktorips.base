@@ -118,6 +118,23 @@ public class MessageLists {
         return new MessageCollector();
     }
 
+    /**
+     * Returns a new {@code MessageList} that combines the messages of the given
+     * {@code MessageLists} including duplicates. Returns an empty {@code MessageList} if
+     * {@code null} is given.
+     * 
+     * @param messageLists the {@code MessageLists} that the new {@code MessageList} will join. May
+     *            be {@code null}
+     * @return a new {@code MessageList} that contains all messages of the given
+     *         {@code MessageLists}
+     */
+    public static final MessageList join(MessageList... messageLists) {
+        if (messageLists == null) {
+            return new MessageList();
+        }
+        return Stream.of(messageLists).collect(MessageLists.flatten());
+    }
+
     private static class MessageListCollector implements Collector<MessageList, MessageList, MessageList> {
 
         @Override

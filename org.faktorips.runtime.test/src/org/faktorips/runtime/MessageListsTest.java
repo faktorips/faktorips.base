@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -152,5 +153,35 @@ public class MessageListsTest {
         MessageList collected = empty.collect(MessageLists.collectMessages());
         assertThat(collected, is(notNullValue()));
         assertThat(collected.size(), is(0));
+    }
+
+    @Test
+    public void testJoin_NullArray() {
+        assertThat(MessageLists.join((MessageList[])null), is(emptyMessageList));
+    }
+
+    @Test
+    public void testJoin_EmptyArray() {
+        assertThat(MessageLists.join(), is(emptyMessageList));
+    }
+
+    @Test
+    public void testJoin() {
+        Message e1 = Message.newError("error", "error1");
+        Message e2 = Message.newError("error", "error2");
+        Message w1 = Message.newError("warning", "warning1");
+        MessageList m1 = MessageList.of(e1, e2);
+        MessageList m2 = MessageList.of(w1);
+        assertThat(MessageLists.join(m1, m2), hasItems(e1, e2, w1));
+    }
+
+    @Test
+    public void testJoin_Null() {
+        Message e1 = Message.newError("error", "error1");
+        Message e2 = Message.newError("error", "error2");
+        Message w1 = Message.newError("warning", "warning1");
+        MessageList m1 = MessageList.of(e1, e2);
+        MessageList m2 = MessageList.of(w1);
+        assertThat(MessageLists.join(m1, null, m2), hasItems(e1, e2, w1));
     }
 }
