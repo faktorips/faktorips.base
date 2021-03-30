@@ -18,6 +18,7 @@ import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
@@ -25,10 +26,20 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 public class DefaultPolicyAttribute extends PolicyAttribute {
+
+    private static final Map<Class<?>, Object> NULL_OBJECTS = new HashMap<>();
+
+    static {
+        NULL_OBJECTS.put(Decimal.class, Decimal.NULL);
+        NULL_OBJECTS.put(Money.class, Money.NULL);
+        NULL_OBJECTS.put(String.class, IpsStringUtils.EMPTY);
+    }
 
     private final Method getter;
 
@@ -209,6 +220,11 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                     "No method found for setting the allowed values of attribute: " + getName());
         }
         return method;
+    }
+
+    @Override
+    public void removeValue(IModelObject modelObject) {
+        setValue(modelObject, NULL_OBJECTS.get(getDatatype()));
     }
 
 }

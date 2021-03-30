@@ -53,6 +53,11 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     }
 
     @Override
+    public void removeValue(IModelObject modelObject) {
+        throw new UnsupportedOperationException("Cannot modify a constant field.");
+    }
+
+    @Override
     public ConstantPolicyAttribute createOverwritingAttributeFor(Type subType) {
         return new ConstantPolicyAttribute(subType, field, isChangingOverTime());
     }

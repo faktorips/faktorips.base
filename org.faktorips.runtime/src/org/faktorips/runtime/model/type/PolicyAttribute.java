@@ -16,9 +16,15 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.ValidationContext;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
+import org.faktorips.values.NullObject;
+import org.faktorips.values.NullObjectSupport;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -82,6 +88,50 @@ public abstract class PolicyAttribute extends Attribute {
      *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      */
     public abstract void setValue(IModelObject modelObject, Object value);
+
+    /**
+     * Sets the given model object's attribute identified by this model type attribute to its
+     * null-value ({@code null} for most datatypes, a {@link NullObject} for the
+     * {@link NullObjectSupport}-datatypes {@link Decimal} and {@link Money}, and an empty string
+     * for the datatype {@link String}) This only works for changeable attributes.
+     * 
+     * @param modelObject a model object corresponding to the {@link Type} this attribute belongs to
+     * @throws IllegalArgumentException if the model object does not have a changeable attribute
+     *             fitting this model type attribute or that attribute is not accessible for any
+     *             reason.
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @since 21.6
+     */
+    public abstract void removeValue(IModelObject modelObject);
+
+    /**
+     * Checks whether this attribute is empty on the given model object.
+     * <p>
+     * An attribute is considered empty if its value is one of the following cases:
+     * <ul>
+     * <li>{@code null}</li>
+     * <li>{@link NullObject}</li>
+     * <li>empty/blank {@link String}</li>
+     * </ul>
+     *
+     * @return {@code true} if empty
+     * @since 21.6
+     */
+    public boolean isEmpty(IModelObject modelObject) {
+        Object value = getValue(modelObject);
+        return ObjectUtil.isNull(value) || (value instanceof String && IpsStringUtils.isBlank(((String)value)));
+    }
+
+    /**
+     * Checks whether this attribute has a non-empty value on the given model object.
+     *
+     * @see #isEmpty(IModelObject)
+     * @since 21.6
+     */
+    public boolean isValuePresent(IModelObject modelObject) {
+        return !isEmpty(modelObject);
+    }
 
     /**
      * Returns the product configured default value of the attribute identified by this model type
@@ -192,8 +242,6 @@ public abstract class PolicyAttribute extends Attribute {
      * This method uses a default {@link IValidationContext}.
      *
      * @param modelObject a model object
-     * @throws UnsupportedOperationException if invoked on a
-     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      * @throws IllegalStateException if the method that should return a value set for this attribute
      *             has too many arguments
      * @throws IllegalArgumentException if the invocation of the method that should return a value
@@ -213,8 +261,6 @@ public abstract class PolicyAttribute extends Attribute {
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
      *            configuration is not changing over time.
-     * @throws UnsupportedOperationException if invoked on a
-     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      * @throws IllegalStateException if the method that should return a value set for this attribute
      *             has too many arguments
      * @throws IllegalArgumentException if the invocation of the method that should return a value
@@ -236,8 +282,6 @@ public abstract class PolicyAttribute extends Attribute {
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
      *            configuration is not changing over time.
-     * @throws UnsupportedOperationException if invoked on a
-     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
      * @throws IllegalStateException if the method that should return a value set for this attribute
      *             has too many arguments
      * @throws IllegalArgumentException if the invocation of the method that should return a value

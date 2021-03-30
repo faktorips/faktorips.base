@@ -11,22 +11,33 @@
 package org.faktorips.runtime;
 
 /**
- * Marks an model object as accepting visitors.
+ * Marks a model object as accepting visitors.
  * 
  * @author Jan Ortmann
  */
 public interface IVisitorSupport {
 
     /**
-     * Accepts the given visitor. This results in a call of the visitor's visit method for this
-     * object and all its children.
+     * Accepts the given visitor. This results in a call to the visitor's visit method for this
+     * object and, if it returns {@code true}, to all its children recursively.
      * 
-     * @param visitor The visitor to accept.
+     * @param visitor the visitor to accept
      * 
-     * @return The result of the visitor's visit method.
+     * @return the result of the visitor's visit method
      * 
      * @see IModelObjectVisitor#visit(IModelObject)
      */
-    public boolean accept(IModelObjectVisitor visitor);
+    boolean accept(IModelObjectVisitor visitor);
+
+    /**
+     * Returns the given model object if it implements {@link IVisitorSupport} otherwise a
+     * {@link GenericVisitorSupport} wrapping it.
+     *
+     * @since 21.6
+     */
+    static IVisitorSupport orGenericVisitorSupport(IModelObject modelObject) {
+        return modelObject instanceof IVisitorSupport ? (IVisitorSupport)modelObject
+                : new GenericVisitorSupport(modelObject);
+    }
 
 }

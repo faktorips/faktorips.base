@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -146,6 +147,18 @@ public class PolicyCmptType extends Type {
         AttributeCollector<PolicyAttribute> attrCollector = new AttributeCollector<PolicyAttribute>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
+    }
+
+    /**
+     * Returns a list with {@link ModelObjectAttribute ModelObjectAttributes} with all
+     * {@link #getAttributes()} of this {@link PolicyCmptType}
+     * 
+     * @param modelObject the {@link IModelObject} linked to the attributes
+     * @return a list with {@link ModelObjectAttribute ModelObjectAttributes}
+     * @since 21.6
+     */
+    public List<ModelObjectAttribute> getModelObjectAttributes(IModelObject modelObject) {
+        return getAttributes().stream().map(a -> ModelObjectAttribute.of(modelObject, a)).collect(Collectors.toList());
     }
 
     @Override
