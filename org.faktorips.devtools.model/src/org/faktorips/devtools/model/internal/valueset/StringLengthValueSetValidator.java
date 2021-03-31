@@ -15,7 +15,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class StringLengthValueSetValidator extends AbstractValueSetValidator<StringLengthValueSet> {
 

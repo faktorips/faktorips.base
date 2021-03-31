@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.model.versionmanager;
 
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Abstract class for operations migrating the content of an IPS project created with an older

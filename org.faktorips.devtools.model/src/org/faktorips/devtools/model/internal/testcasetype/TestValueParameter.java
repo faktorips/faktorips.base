@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.runtime.model.enumtype.EnumType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.Decimal;
 
 /**

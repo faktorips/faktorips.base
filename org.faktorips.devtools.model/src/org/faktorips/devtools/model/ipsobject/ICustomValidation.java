@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.ipsobject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Interface for custom validations. A custom validation is a validation that is not part of the

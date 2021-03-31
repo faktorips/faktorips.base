@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class NewProductCmptValidator extends NewProductDefinitionValidator {
 

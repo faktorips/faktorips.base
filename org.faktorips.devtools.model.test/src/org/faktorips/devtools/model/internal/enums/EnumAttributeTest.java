@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;

@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;

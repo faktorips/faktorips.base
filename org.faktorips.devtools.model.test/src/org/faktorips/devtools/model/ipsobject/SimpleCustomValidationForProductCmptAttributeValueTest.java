@@ -13,6 +13,8 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.SimpleCustomValidationForProductCmptAttributeValue;
@@ -21,9 +23,9 @@ import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Test;
 
 public class SimpleCustomValidationForProductCmptAttributeValueTest extends AbstractIpsPluginTest {
@@ -51,10 +53,10 @@ public class SimpleCustomValidationForProductCmptAttributeValueTest extends Abst
         Message message = messageList.getMessageByCode("4711");
         assertThat(message.getText(), is("bar"));
         assertThat(message.getSeverity(), is(Message.ERROR));
-        ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
-        assertThat(invalidObjectProperties.length, is(1));
-        assertThat(invalidObjectProperties[0].getObject(), is((Object)attributeValue));
-        assertThat(invalidObjectProperties[0].getProperty(), is(IAttributeValue.PROPERTY_VALUE_HOLDER));
+        List<ObjectProperty> invalidObjectProperties = message.getInvalidObjectProperties();
+        assertThat(invalidObjectProperties.size(), is(1));
+        assertThat(invalidObjectProperties.get(0).getObject(), is((Object)attributeValue));
+        assertThat(invalidObjectProperties.get(0).getProperty(), is(IAttributeValue.PROPERTY_VALUE_HOLDER));
     }
 
 }

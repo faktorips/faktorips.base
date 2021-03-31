@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 

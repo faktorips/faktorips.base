@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * A wizard page to select an existing Table Content.

@@ -67,7 +67,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A section to display a product component's relations in a tree.

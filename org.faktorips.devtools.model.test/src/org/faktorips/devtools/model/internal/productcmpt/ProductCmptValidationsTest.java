@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;

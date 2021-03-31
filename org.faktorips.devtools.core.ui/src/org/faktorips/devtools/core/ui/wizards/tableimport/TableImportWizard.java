@@ -36,7 +36,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard to import external tables into ipstablecontents.

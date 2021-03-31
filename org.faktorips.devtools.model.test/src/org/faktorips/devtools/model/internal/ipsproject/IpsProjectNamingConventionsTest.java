@@ -33,8 +33,8 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -303,7 +303,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         ml = productCmptType.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
         assertEquals(IIpsElement.PROPERTY_NAME, ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)
-                .getInvalidObjectProperties()[0].getProperty());
+                .getInvalidObjectProperties().get(0).getProperty());
         // testTypesCount ++; is currently no ips object type
 
         // Product cmpt

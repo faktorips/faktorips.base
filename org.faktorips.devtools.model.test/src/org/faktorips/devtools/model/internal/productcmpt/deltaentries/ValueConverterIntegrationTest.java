@@ -37,7 +37,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 

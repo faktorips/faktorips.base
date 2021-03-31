@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.internal;
 
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Common interface for classes that validate objects of the FIPS meta model.

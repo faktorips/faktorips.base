@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.util;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.widgets.Control;
@@ -19,8 +21,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 public final class UiMessage implements IMessage {
 
@@ -49,15 +52,15 @@ public final class UiMessage implements IMessage {
     /**
      * Converts from Faktor-IPS {@link Message} severity to {@link IMessageProvider} message type.
      */
-    private int convertSeverityToMessageType(int severity) {
+    private int convertSeverityToMessageType(Severity severity) {
         switch (severity) {
-            case Message.INFO:
+            case INFO:
                 return IMessageProvider.INFORMATION;
 
-            case Message.WARNING:
+            case WARNING:
                 return IMessageProvider.WARNING;
 
-            case Message.ERROR:
+            case ERROR:
                 return IMessageProvider.ERROR;
 
             default:
@@ -65,12 +68,12 @@ public final class UiMessage implements IMessage {
         }
     }
 
-    private Object getFirstObject(ObjectProperty[] objectProperties) {
-        if (objectProperties.length == 0 || objectProperties[0] == null) {
+    private Object getFirstObject(List<ObjectProperty> objectProperties) {
+        if (objectProperties.size() == 0 || objectProperties.get(0) == null) {
             return StringUtils.EMPTY;
         }
 
-        ObjectProperty invalidObjectProperty = objectProperties[0];
+        ObjectProperty invalidObjectProperty = objectProperties.get(0);
         Object contextObject = invalidObjectProperty.getObject();
         return contextObject;
     }

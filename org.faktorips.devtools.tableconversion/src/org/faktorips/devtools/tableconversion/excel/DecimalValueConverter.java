@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.Decimal;
 
 /**

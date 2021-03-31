@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.bf.IBFElement;
 import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.bf.Size;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The base edit part for all edit parts of this package. It provides an anchor for incoming and one

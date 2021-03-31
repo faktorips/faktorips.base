@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Abstract base class for all Faktor-IPS "Pull Up" refactoring processors.

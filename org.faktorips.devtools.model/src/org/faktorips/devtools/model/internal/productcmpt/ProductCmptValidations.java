@@ -16,9 +16,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.Messages;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 
 /**
  * A class that contains validations of the model class <code>IProductCmpt</code> that are also used

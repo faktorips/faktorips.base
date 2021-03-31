@@ -12,7 +12,7 @@ package org.faktorips.devtools.tableconversion.csv;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class StringValueConverter extends AbstractValueConverter {
 

@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class ProductReleaseProcessor {
 

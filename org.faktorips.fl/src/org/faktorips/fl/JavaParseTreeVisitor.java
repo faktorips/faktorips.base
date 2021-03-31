@@ -12,7 +12,7 @@ package org.faktorips.fl;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Visitor that visits the parse tree and generates the {@link JavaCodeFragment Java source code}

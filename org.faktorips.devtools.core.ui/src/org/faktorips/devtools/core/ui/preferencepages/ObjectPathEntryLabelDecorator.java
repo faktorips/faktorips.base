@@ -20,8 +20,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Decorator for IPS Object path entries

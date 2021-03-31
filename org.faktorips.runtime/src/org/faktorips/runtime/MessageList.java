@@ -11,41 +11,49 @@
 package org.faktorips.runtime;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import org.faktorips.runtime.util.AbstractMessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A list of {@link Message Messages}.
  * 
  * @see Message
  */
-public class MessageList extends AbstractMessageList<Message, MessageList> implements Serializable {
+public class MessageList implements Serializable, Iterable<Message> {
 
     private static final long serialVersionUID = 5518835977871253111L;
+    private List<Message> messages = new ArrayList<>(0);
 
     /**
      * Creates an empty message list.
      */
     public MessageList() {
-        super();
+        // Provide default constructor
     }
 
     /**
      * Creates a message list that contains the given message.
      * 
-     * @throws NullPointerException if message is null.
+     * @param message the message to add. Ignored if <code>null</code>.
      */
     public MessageList(Message message) {
-        super(message);
+        add(message);
     }
 
-    @Override
+    /**
+     * Creates a new empty message list.
+     */
     protected MessageList createEmptyMessageList() {
         return new MessageList();
     }
@@ -101,16 +109,43 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return newList;
     }
 
-    /* kept for compile compatibility */
-    @Override
-    public void add(Message message) {
-        super.add(message);
+    /**
+     * Creates a copy from the message list and replaces all references to the old object with the
+     * new object.
+     * 
+     * @param objectPropertyMap The <code>Map</code> between old and new <code>ObjectProperty</code>
+     * @return MessageList
+     */
+    public static final MessageList createCopy(MessageList list,
+            Map<ObjectProperty, ObjectProperty> objectPropertyMap) {
+        MessageList newList = new MessageList();
+        for (Message message : list) {
+            newList.add(Message.createCopy(message, objectPropertyMap));
+        }
+        return newList;
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Adds the message to the list.
+     * 
+     * @param message the message to add. Ignored if <code>null</code>.
+     */
+    public void add(Message message) {
+        if (message != null) {
+            messages.add(message);
+        }
+    }
+
+    /**
+     * Adds the messages in the given list to this list.
+     */
     public void add(MessageList messageList) {
-        super.add(messageList);
+        if (messageList == null) {
+            return;
+        }
+        for (Message message : messageList) {
+            add(message);
+        }
     }
 
     /**
@@ -136,22 +171,92 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         }
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Creates and returns a new message with severity {@link Message#ERROR} with the given code,
+     * text and object properties and adds the message to the list.
+     */
+    public Message newError(String code, String text, Object invalidObject, String... invalidProperties) {
+        Message newError = Message.newError(code, text, invalidObject, invalidProperties);
+        add(newError);
+        return newError;
+    }
+
+    /**
+     * Creates and returns a new message with severity {@link Message#ERROR} with the given code,
+     * text and invalid object properties and adds the message to the list.
+     */
+    public Message newError(String code, String text, ObjectProperty... invalidObjectProperty) {
+        Message newError = Message.newError(code, text, invalidObjectProperty);
+        add(newError);
+        return newError;
+    }
+
+    /**
+     * Creates and returns a new message with severity {@link Message#WARNING} with the given code,
+     * text and object properties and adds the message to the list.
+     */
+    public Message newWarning(String code, String text, Object invalidObject, String... invalidProperties) {
+        Message newWarning = Message.newWarning(code, text, invalidObject, invalidProperties);
+        add(newWarning);
+        return newWarning;
+    }
+
+    /**
+     * Creates and returns a new message with severity {@link Message#INFO} with the given code,
+     * text and object properties and adds the message to the list.
+     */
+    public Message newInfo(String code, String text, Object invalidObject, String invalidProperty) {
+        Message newInfo = Message.newInfo(code, text, invalidObject, invalidProperty);
+        add(newInfo);
+        return newInfo;
+    }
+
+    /**
+     * Returns true if the list is empty.
+     */
     public boolean isEmpty() {
-        return super.isEmpty();
+        return messages.isEmpty();
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Returns the total number of messages in the list.
+     * 
+     */
     public int size() {
-        return super.size();
+        return messages.size();
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Returns the message at the indicated index (indexing starts with 0).
+     * 
+     * @throws IndexOutOfBoundsException if the index is out of range.
+     */
     public Message getMessage(int index) {
-        return super.getMessage(index);
+        return messages.get(index);
+    }
+
+    /**
+     * Returns the number of messages in the list.
+     * 
+     * @deprecated Use #size() instead
+     */
+    @Deprecated
+    public int getNoOfMessages() {
+        return size();
+    }
+
+    /**
+     * Returns the message list.
+     */
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    /**
+     * Sets the message list.
+     */
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     /**
@@ -166,7 +271,10 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return null;
     }
 
-    @Override
+    /**
+     * Returns the message with the highest severity. If there are multiple such messages, the first
+     * one is returned. If this list {@link #isEmpty()}, <code>null</code> is returned.
+     */
     public Message getMessageWithHighestSeverity() {
         Message result = null;
         for (Message message : getMessages()) {
@@ -181,16 +289,82 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return result;
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Returns the first message in the list that has the specified message code. Returns
+     * <code>null</code> if the list does not contain such a message.
+     * 
+     * @param code the code to look for. May be <code>null</code>, as messages may have
+     *            <code>null</code> as their message code.
+     */
     public Message getMessageByCode(String code) {
-        return super.getMessageByCode(code);
+        for (Message message : getMessages()) {
+            if (Objects.equals(message.getCode(), code)) {
+                return message;
+            }
+        }
+        return null;
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Returns a new message list containing all the message in this list that have the specified
+     * message code. Returns an empty list if this list does not contain any message with the given
+     * code.
+     * 
+     * @param code the code to look for. May be <code>null</code>, as messages may have
+     *            <code>null</code> as their message code.
+     */
     public MessageList getMessagesByCode(String code) {
-        return super.getMessagesByCode(code);
+        MessageList sublist = createEmptyMessageList();
+        for (Message message : getMessages()) {
+            if (Objects.equals(message.getCode(), code)) {
+                sublist.add(message);
+            }
+        }
+        return sublist;
+    }
+
+    /**
+     * Returns a new <code>MessageList</code> containing only the <code>Message</code>s with the
+     * indicated severity. Returns an empty list if this list does not contain any message with the
+     * given severity.
+     */
+    public MessageList getMessagesBySeverity(Severity severity) {
+        MessageList messageList = createEmptyMessageList();
+        for (Message message : getMessages()) {
+            if (message.getSeverity() == severity) {
+                messageList.add(message);
+            }
+        }
+        return messageList;
+    }
+
+    /**
+     * Returns the number of messages in this list that have the indicated severity.
+     */
+    public int getNoOfMessages(Severity severity) {
+        List<Message> msgList = new ArrayList<Message>(getMessages().size());
+        for (Message msg : getMessages()) {
+            if (msg.getSeverity() == severity) {
+                msgList.add(msg);
+            }
+        }
+        return msgList.size();
+    }
+
+    /**
+     * The method returns a MethodList containing a sublist of messages of this messageList. By
+     * copying the content of this messageList, the original content won't be changed.
+     * <code>maxCount</code> defines how big the sublist should be. If <code>maxCount</code> ist
+     * higher than the size of the messageList the whole content of the original messageList will be
+     * returned.
+     * 
+     * @param maxCount the number of messages to be returned
+     * @return MessageList a sublist of the original MessageList
+     */
+    public MessageList getSubList(int maxCount) {
+        MessageList sortedSubList = MessageLists.sortBySeverity(this);
+        sortedSubList.setMessages(sortedSubList.getMessages().subList(0, Math.min(maxCount, size())));
+        return sortedSubList;
     }
 
     /**
@@ -274,13 +448,28 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return severity;
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Returns the text of all messages in the list, separated by the system's default line
+     * separator.
+     */
     public String getText() {
-        return super.getText();
+        return IpsStringUtils.join(getMessages(), Message::getText, System.lineSeparator());
     }
 
-    @Override
+    /**
+     * Removes the given message from this message list.
+     * <p>
+     * Does nothing if the given message is not actually contained in this message list.
+     * 
+     * @param message message to remove from this message list
+     */
+    public void remove(Message message) {
+        getMessages().remove(message);
+    }
+
+    /**
+     * Returns true if one the messages in the list is an error message, otherwise false.
+     */
     public boolean containsErrorMsg() {
         for (Message message : getMessages()) {
             if (message.getSeverity() == Severity.ERROR) {
@@ -290,12 +479,27 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
         return false;
     }
 
-    @Override
-    public MessageList getMessagesFor(Object object, String property) {
-        return super.getMessagesFor(object, property);
+    /**
+     * Returns a new list with the messages in this list that belong to the given object (any
+     * property). Returns an empty list if no such message is found.
+     */
+    public MessageList getMessagesFor(Object object) {
+        return getMessagesFor(object, null);
     }
 
-    @Override
+    /**
+     * Returns a new list with the messages in this list that belong to the given object and
+     * property. Returns an empty list if no such message is found.
+     */
+    public MessageList getMessagesFor(Object object, String property) {
+        return getMessagesFor(object, property, -1);
+    }
+
+    /**
+     * Returns a new list with the messages in this list that belong to the given object and
+     * property and the property is of the given index. Returns an empty list if no such message is
+     * found.
+     */
     public MessageList getMessagesFor(Object object, String property, int index) {
         MessageList result = new MessageList();
         for (Message message : getMessages()) {
@@ -319,6 +523,48 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
     }
 
     /**
+     * Finds all the messages with the messageCodes at the messageList and merge the
+     * ObjectProperties from the same messageTexts together. After this, the messageList has only
+     * unique messageTexts inside.
+     * 
+     * @param messageCode the messageCode to find
+     */
+    public void wrapUpMessages(String messageCode) {
+        Map<String, Message> messageTextMap = new LinkedHashMap<String, Message>();
+        for (Message message : getMessages()) {
+            if (message.getCode().equals(messageCode)) {
+                Message msgByText = getMessageByText(messageTextMap, message);
+                List<ObjectProperty> newInvalidObjects = concatInvalidObject(msgByText.getInvalidObjectProperties(),
+                        message.getInvalidObjectProperties());
+                Message newMessage = new Message(msgByText.getCode(), msgByText.getText(), msgByText.getSeverity(),
+                        newInvalidObjects);
+                messageTextMap.put(newMessage.getText(), newMessage);
+            }
+        }
+        setMessages(new ArrayList<Message>(messageTextMap.values()));
+    }
+
+    private Message getMessageByText(Map<String, Message> messageTextMap, Message message) {
+        Message msgByText = messageTextMap.get(message.getText());
+        if (msgByText == null) {
+            msgByText = message;
+        }
+        return msgByText;
+    }
+
+    private List<ObjectProperty> concatInvalidObject(List<ObjectProperty> invalidObjectProperties,
+            List<ObjectProperty> newObjectProperties) {
+        if (invalidObjectProperties.equals(newObjectProperties)) {
+            return invalidObjectProperties;
+        } else {
+            List<ObjectProperty> newOne = new ArrayList<ObjectProperty>();
+            newOne.addAll(invalidObjectProperties);
+            newOne.addAll(newObjectProperties);
+            return newOne;
+        }
+    }
+
+    /**
      * Returns a new message list containing the same number of messages as this list, with the
      * given transformer function applied to each message.
      */
@@ -336,33 +582,86 @@ public class MessageList extends AbstractMessageList<Message, MessageList> imple
                 .collect(MessageLists.collectMessages());
     }
 
-    /* kept for compile compatibility */
+    /**
+     * Returns an iterator over the messages in this list.
+     */
     @Override
     public Iterator<Message> iterator() {
-        return super.iterator();
+        return messages.iterator();
     }
 
-    /* kept for compile compatibility */
-    @Override
+    /**
+     * Removes all of the messages from this list. This list will be empty after this call returns.
+     */
     public void clear() {
-        super.clear();
+        messages.clear();
     }
 
-    /* kept for compile compatibility */
+    /**
+     * Returns all messages in the list separated by a line separator.
+     */
     @Override
     public String toString() {
-        return super.toString();
+        return IpsStringUtils.join(messages, System.lineSeparator());
     }
 
-    /* kept for compile compatibility */
     @Override
     public int hashCode() {
-        return super.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getMessages() == null) ? 0 : getMessages().hashCode());
+        return result;
     }
 
-    /* kept for compile compatibility */
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        try {
+            @SuppressWarnings("unchecked")
+            MessageList other = (MessageList)obj;
+            if (getMessages() == null) {
+                if (other.getMessages() != null) {
+                    return false;
+                }
+            } else if (!getMessages().equals(other.getMessages())) {
+                return false;
+            }
+            return true;
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Creates a {@link Spliterator} over the included messages.
+     *
+     * @since 21.6
+     */
+    @Override
+    public Spliterator<Message> spliterator() {
+        return messages.spliterator();
+    }
+
+    /**
+     * Returns a sequential {@code Stream} of the included messages.
+     * 
+     * @since 21.6
+     */
+    public Stream<Message> stream() {
+        return messages.stream();
+    }
+
+    /**
+     * Returns a parallel {@code Stream} of the included messages.
+     * 
+     * @since 21.6
+     */
+    public Stream<Message> parallelStream() {
+        return messages.parallelStream();
     }
 }

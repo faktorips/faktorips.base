@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.abstracttest.matcher;
 
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 

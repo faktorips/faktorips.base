@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * @author Thorsten Guenther

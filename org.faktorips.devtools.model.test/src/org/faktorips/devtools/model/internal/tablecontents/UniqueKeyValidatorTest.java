@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;

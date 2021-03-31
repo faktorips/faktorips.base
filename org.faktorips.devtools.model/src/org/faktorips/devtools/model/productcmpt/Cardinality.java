@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.productcmpt;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Defines the cardinality of a link. The cardinality consists of a minimum, a maximum and a default

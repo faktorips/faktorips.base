@@ -21,7 +21,7 @@ import org.eclipse.gef.editpolicies.LayoutEditPolicy;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 import org.faktorips.devtools.core.ui.bf.draw2d.EndFigure;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * An edit part that provides a nonresizable figure for the end business function element.

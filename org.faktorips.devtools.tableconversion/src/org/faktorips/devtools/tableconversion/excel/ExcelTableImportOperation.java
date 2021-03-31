@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Operation to import ipstablecontents from an excel-file.

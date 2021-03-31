@@ -14,8 +14,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Base class for the implementation (by way of implementing {@link #validate(String, IIpsProject)})
@@ -127,12 +128,12 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
      */
     public static class ValidationResult {
 
-        private int severity;
+        private Severity severity;
         private String text;
         private String msgCode;
 
-        ValidationResult(int severity, String text, String msgCode) {
-            this.severity = severity;
+        ValidationResult(Severity warning, String text, String msgCode) {
+            this.severity = warning;
             this.text = text;
             this.msgCode = msgCode;
         }

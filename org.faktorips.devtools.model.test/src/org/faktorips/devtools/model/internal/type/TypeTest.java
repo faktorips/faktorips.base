@@ -38,9 +38,10 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -133,7 +134,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         MessageList result = type.validate(ipsProject);
         Message msg = result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
         assertNotNull(msg);
-        ObjectProperty[] op = msg.getInvalidObjectProperties();
+        List<ObjectProperty> op = msg.getInvalidObjectProperties();
         List<Object> invalidObjects = new ArrayList<Object>();
         for (ObjectProperty element : op) {
             invalidObjects.add(element.getObject());
@@ -617,49 +618,49 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testGetAssociationsForTargetAndAssociationType() throws CoreException {
-            IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
-            IProductCmptType motor = (IProductCmptType)type;
-            IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
-    
-            List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
-                    injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-            assertEquals(0, associations.size());
-    
-            // Association: motor -> injection
-            IAssociation association = motor.newAssociation();
-            association.setTarget(injection.getQualifiedName());
-            association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-    
-            // Association: baseMotor -> injection
-            IAssociation associationInBase = baseMotor.newAssociation();
-            associationInBase.setTarget(injection.getQualifiedName());
-            associationInBase.setAssociationType(AssociationType.ASSOCIATION);
-    
-            // result = 1, because super not set
-            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-            assertEquals(1, associations.size());
-    
-            motor.setSupertype(baseMotor.getQualifiedName());
-    
-            // result = 1, because association type of super type association not equal
-            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-            assertEquals(1, associations.size());
-    
-            // result = 1 using search without supertype
-            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
-            assertEquals(1, associations.size());
-    
-            // result = 1 using search with supertype included
-            associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-            associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
-                    AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
-            assertEquals(2, associations.size());
-        }
+    public void testGetAssociationsForTargetAndAssociationType() throws CoreException {
+        IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
+        IProductCmptType motor = (IProductCmptType)type;
+        IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
+
+        List<IAssociation> associations = motor.findAssociationsForTargetAndAssociationType(
+                injection.getQualifiedName(), AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(0, associations.size());
+
+        // Association: motor -> injection
+        IAssociation association = motor.newAssociation();
+        association.setTarget(injection.getQualifiedName());
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+
+        // Association: baseMotor -> injection
+        IAssociation associationInBase = baseMotor.newAssociation();
+        associationInBase.setTarget(injection.getQualifiedName());
+        associationInBase.setAssociationType(AssociationType.ASSOCIATION);
+
+        // result = 1, because super not set
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        motor.setSupertype(baseMotor.getQualifiedName());
+
+        // result = 1, because association type of super type association not equal
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        // result = 1 using search without supertype
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, false);
+        assertEquals(1, associations.size());
+
+        // result = 1 using search with supertype included
+        associationInBase.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        associations = motor.findAssociationsForTargetAndAssociationType(injection.getQualifiedName(),
+                AssociationType.COMPOSITION_MASTER_TO_DETAIL, ipsProject, true);
+        assertEquals(2, associations.size());
+    }
 
     @Test
     public void testFindAllAttributes() throws Exception {
@@ -934,9 +935,9 @@ public class TypeTest extends AbstractIpsPluginTest {
         msg = ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY);
 
         assertNotNull(msg);
-        assertEquals(1, msg.getInvalidObjectProperties().length);
-        assertEquals(IPolicyCmptType.PROPERTY_SUPERTYPE, msg.getInvalidObjectProperties()[0].getProperty());
-        assertEquals(type, msg.getInvalidObjectProperties()[0].getObject());
+        assertEquals(1, msg.getInvalidObjectProperties().size());
+        assertEquals(IPolicyCmptType.PROPERTY_SUPERTYPE, msg.getInvalidObjectProperties().get(0).getProperty());
+        assertEquals(type, msg.getInvalidObjectProperties().get(0).getObject());
 
         type.setSupertype(type.getQualifiedName());
         ml = type.validate(ipsProject);
@@ -1100,7 +1101,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(constrainingAssociation.isConstrain());
         assertEquals(constrains_subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
         MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+        assertFalse(validate.getMessagesBySeverity(Severity.ERROR).toString(), validate.containsErrorMsg());
     }
 
     @Test
@@ -1123,7 +1124,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(constrainingAssociation.isConstrain());
         assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
         MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-        assertFalse(validate.getMessages(Message.ERROR).toString(), validate.containsErrorMsg());
+        assertFalse(validate.getMessagesBySeverity(Severity.ERROR).toString(), validate.containsErrorMsg());
     }
 
     @Test

@@ -22,8 +22,8 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 

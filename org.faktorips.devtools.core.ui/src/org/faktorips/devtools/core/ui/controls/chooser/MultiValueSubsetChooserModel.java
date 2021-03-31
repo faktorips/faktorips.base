@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IMultiValueHolder;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.devtools.model.util.ListElementMover;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
 

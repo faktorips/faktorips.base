@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestRule;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Refactoring processor for the "Rename ValidationRule" refactoring.

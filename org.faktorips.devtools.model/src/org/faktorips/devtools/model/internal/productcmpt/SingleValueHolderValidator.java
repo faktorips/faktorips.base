@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 
 /** {@code IValueHolderValidator} implementation for {@link SingleValueHolder}s. */
 public class SingleValueHolderValidator implements IValueHolderValidator {

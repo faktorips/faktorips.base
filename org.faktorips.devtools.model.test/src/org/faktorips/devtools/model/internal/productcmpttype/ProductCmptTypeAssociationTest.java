@@ -22,8 +22,8 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -95,6 +95,6 @@ public class ProductCmptTypeAssociationTest {
         verify(messageList).add(messageCaptor.capture());
         Message message = messageCaptor.getValue();
         assertEquals(IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH, message.getCode());
-        assertEquals(subsetMock, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(subsetMock, message.getInvalidObjectProperties().get(0).getObject());
     }
 }

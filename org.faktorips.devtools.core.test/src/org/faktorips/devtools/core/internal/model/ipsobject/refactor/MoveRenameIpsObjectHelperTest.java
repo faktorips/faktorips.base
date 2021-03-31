@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
@@ -30,7 +30,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
 
     private IProductCmptType productCmptType;
 
-    private org.faktorips.util.message.MessageList messageList;
+    private MessageList messageList;
 
     @Override
     public void setUp() throws Exception {

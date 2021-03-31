@@ -91,8 +91,8 @@ import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Dialog to edit an attribute.

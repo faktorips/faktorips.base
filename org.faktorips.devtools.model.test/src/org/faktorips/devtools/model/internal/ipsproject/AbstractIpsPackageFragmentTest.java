@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

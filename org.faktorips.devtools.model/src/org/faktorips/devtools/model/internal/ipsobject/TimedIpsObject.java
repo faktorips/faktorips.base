@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.util.XmlParseException;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
 
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {

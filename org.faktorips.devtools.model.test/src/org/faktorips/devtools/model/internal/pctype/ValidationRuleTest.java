@@ -44,7 +44,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;

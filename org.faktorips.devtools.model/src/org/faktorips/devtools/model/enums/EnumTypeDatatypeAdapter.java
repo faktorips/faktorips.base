@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.DatatypeComparator;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * This is an adapter for an <code>IEnumType</code> that adapts the <code>EnumDatatype</code>

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.ipsproject;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * An IPS object path container provides a way to wrap a set of IPS object path entries of type

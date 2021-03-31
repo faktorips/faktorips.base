@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import java.util.List;
 
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The model for an {@link EditTableControlViewer}. Provides methods for adding, removing and

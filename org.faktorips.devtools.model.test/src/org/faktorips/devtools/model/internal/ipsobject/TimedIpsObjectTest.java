@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -379,7 +379,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
 
         // Verify
         Message message = messageList.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_FORMAT_VALID_FROM);
-        assertEquals(productCmpt, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(productCmpt, message.getInvalidObjectProperties().get(0).getObject());
     }
 
 }

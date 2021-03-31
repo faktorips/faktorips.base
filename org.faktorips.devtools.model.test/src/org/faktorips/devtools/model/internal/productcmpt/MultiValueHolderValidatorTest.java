@@ -30,9 +30,10 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.junit.Test;
 
 public class MultiValueHolderValidatorTest {
@@ -158,7 +159,7 @@ public class MultiValueHolderValidatorTest {
         multiValueHolder.setValue(singleValues);
         MultiValueHolderValidator validator = new MultiValueHolderValidator(multiValueHolder, attributeValue, project);
 
-        MessageList messageList = validator.validate().getMessages(Message.ERROR);
+        MessageList messageList = validator.validate().getMessagesBySeverity(Severity.ERROR);
 
         assertThat(messageList.size(), is(2));
         assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_DUPLICATE_VALUE));
@@ -166,8 +167,9 @@ public class MultiValueHolderValidatorTest {
         Message invalidValueMsg = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE);
         verifyInvalidValueMessage(invalidValueMsg, multiValueHolder, attributeValue);
         Message duplicateValueMsg = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_DUPLICATE_VALUE);
-        assertThat(duplicateValueMsg.getInvalidObjectProperties()[0].getObject(), is((Object)singleValues.get(0)));
-        assertThat(duplicateValueMsg.getInvalidObjectProperties()[0].getProperty(), is(IValueHolder.PROPERTY_VALUE));
+        assertThat(duplicateValueMsg.getInvalidObjectProperties().get(0).getObject(), is((Object)singleValues.get(0)));
+        assertThat(duplicateValueMsg.getInvalidObjectProperties().get(0).getProperty(),
+                is(IValueHolder.PROPERTY_VALUE));
     }
 
     /**
@@ -175,8 +177,8 @@ public class MultiValueHolderValidatorTest {
      * {@link MultiValueHolder#MSGCODE_CONTAINS_INVALID_VALUE} message.
      */
     private void verifyInvalidValueMessage(Message message, MultiValueHolder valueHolder, IAttributeValue parent) {
-        ObjectProperty firstObjectProperty = message.getInvalidObjectProperties()[0];
-        ObjectProperty secondObjectProperty = message.getInvalidObjectProperties()[1];
+        ObjectProperty firstObjectProperty = message.getInvalidObjectProperties().get(0);
+        ObjectProperty secondObjectProperty = message.getInvalidObjectProperties().get(1);
         assertThat(firstObjectProperty.getObject(), is((Object)parent));
         assertThat(firstObjectProperty.getProperty(), is(IAttributeValue.PROPERTY_VALUE_HOLDER));
         assertThat(secondObjectProperty.getObject(), is((Object)valueHolder));

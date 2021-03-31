@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

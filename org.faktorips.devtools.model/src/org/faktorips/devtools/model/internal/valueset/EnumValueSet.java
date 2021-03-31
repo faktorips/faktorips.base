@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.collections.ListComparator;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

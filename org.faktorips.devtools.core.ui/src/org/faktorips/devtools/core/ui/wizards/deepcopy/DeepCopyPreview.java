@@ -34,8 +34,8 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class DeepCopyPreview {
 
@@ -112,7 +112,7 @@ public class DeepCopyPreview {
         for (int i = 0; i < noOfMessages; i++) {
             Message currMessage = validationResult.getMessage(i);
             final IProductCmptStructureReference object = (IProductCmptStructureReference)currMessage
-                    .getInvalidObjectProperties()[0].getObject();
+                    .getInvalidObjectProperties().get(0).getObject();
             addMessage(object, currMessage.getText());
             subProgress.worked(1);
         }

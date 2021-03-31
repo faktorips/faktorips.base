@@ -2,8 +2,8 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class InvalidDatatype implements ValueDatatype {
 

@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Severity;
 
 /**
  * A wizard page to select an existing Enum Type or Content.
@@ -130,13 +130,13 @@ public class SelectEnumPage extends SelectImportTargetPage {
             }
             if (enumValueContainer instanceof IEnumContent) {
                 IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
-                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
                     setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotValid);
                     return;
                 }
             }
 
-            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
                 setMessage(Messages.SelectEnumPage_msgEnumNotValid, WARNING);
             }
         } catch (CoreException e) {

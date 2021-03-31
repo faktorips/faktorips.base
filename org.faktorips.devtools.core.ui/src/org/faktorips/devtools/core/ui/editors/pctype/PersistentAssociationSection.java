@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Section to display the persistence properties of the associations specific to an

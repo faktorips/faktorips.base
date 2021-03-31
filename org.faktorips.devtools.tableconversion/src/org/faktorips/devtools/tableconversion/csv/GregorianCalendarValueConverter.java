@@ -20,8 +20,8 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 
 public class GregorianCalendarValueConverter extends AbstractValueConverter {

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The IPS object path defines where IPS objects can be found. It is the same concept as the Java

@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A gui control to edit the validationAttributes property of a IValidationRuleDef object.

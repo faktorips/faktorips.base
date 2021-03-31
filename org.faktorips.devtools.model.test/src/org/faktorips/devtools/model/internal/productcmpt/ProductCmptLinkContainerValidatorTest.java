@@ -30,8 +30,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +71,7 @@ public class ProductCmptLinkContainerValidatorTest {
         associations.add(association);
         when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
 
+        when(association.getTargetRoleSingular()).thenReturn("targetRole");
         when(association.isDerivedUnion()).thenReturn(false);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
 
@@ -133,7 +135,7 @@ public class ProductCmptLinkContainerValidatorTest {
     public void testNotAddWarningsFromAssociation() {
         MessageList messageList = callValidator();
 
-        assertTrue(messageList.getMessages(Message.WARNING).isEmpty());
+        assertTrue(messageList.getMessagesBySeverity(Severity.WARNING).isEmpty());
     }
 
     @Test

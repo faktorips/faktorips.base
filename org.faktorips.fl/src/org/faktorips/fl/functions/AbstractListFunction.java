@@ -19,7 +19,7 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 public abstract class AbstractListFunction extends AbstractFlFunction {
 

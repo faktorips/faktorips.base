@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -17,9 +19,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 
 /**
  * This class can be used to display a <code>MessageList</code> by using the
@@ -78,12 +80,16 @@ public class ResultDisplayer implements Runnable {
         if (containsErrors) {
             for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
-                    case Message.ERROR:
+                    case ERROR:
                         multiStatus
                                 .add(new IpsStatus(
                                         IStatus.ERROR,
                                         0,
-                                        (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") + getMessageText(msg), null)); //$NON-NLS-1$
+                                        (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") //$NON-NLS-1$
+                                                + getMessageText(msg),
+                                        null));
+                        break;
+                    default:
                         break;
                 }
             }
@@ -92,16 +98,20 @@ public class ResultDisplayer implements Runnable {
         if (containsWarningsOrInfos) {
             for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
-                    case Message.WARNING:
+                    case WARNING:
                         multiStatus.add(new IpsStatus(IStatus.WARNING, 0,
                                 (containsErrors ? Messages.ResultDisplayer_Warnings : "") + getMessageText(msg), null)); //$NON-NLS-1$
                         break;
-                    case Message.INFO:
+                    case INFO:
                         multiStatus
                                 .add(new IpsStatus(
                                         IStatus.INFO,
                                         0,
-                                        (containsErrors ? Messages.ResultDisplayer_Informations : "") + getMessageText(msg), null)); //$NON-NLS-1$
+                                        (containsErrors ? Messages.ResultDisplayer_Informations : "") //$NON-NLS-1$
+                                                + getMessageText(msg),
+                                        null));
+                        break;
+                    default:
                         break;
                 }
             }
@@ -126,14 +136,14 @@ public class ResultDisplayer implements Runnable {
      */
     private String getMessageText(Message msg) {
         String text = msg.getText();
-        ObjectProperty[] invalidObjectProperties = msg.getInvalidObjectProperties();
-        if (invalidObjectProperties == null || invalidObjectProperties.length == 0) {
+        List<ObjectProperty> invalidObjectProperties = msg.getInvalidObjectProperties();
+        if (invalidObjectProperties == null || invalidObjectProperties.size() == 0) {
             return text;
         }
         text += ": "; //$NON-NLS-1$
-        for (int i = 0; i < invalidObjectProperties.length; i++) {
-            text += invalidObjectProperties[i].getObject();
-            if (i + 1 < invalidObjectProperties.length) {
+        for (int i = 0; i < invalidObjectProperties.size(); i++) {
+            text += invalidObjectProperties.get(i).getObject();
+            if (i + 1 < invalidObjectProperties.size()) {
                 text += "\n  "; //$NON-NLS-1$
             }
         }

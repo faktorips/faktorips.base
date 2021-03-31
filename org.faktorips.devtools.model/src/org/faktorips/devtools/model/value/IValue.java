@@ -15,8 +15,8 @@ import java.util.Locale;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

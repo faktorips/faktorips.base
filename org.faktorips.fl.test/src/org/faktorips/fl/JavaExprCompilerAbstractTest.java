@@ -22,7 +22,7 @@ import java.util.Objects;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 
 /**

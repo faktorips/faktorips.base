@@ -50,7 +50,7 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.model.enumtype.EnumType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Project to develop IPS objects.

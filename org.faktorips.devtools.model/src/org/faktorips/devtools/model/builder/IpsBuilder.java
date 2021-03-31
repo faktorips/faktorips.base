@@ -62,10 +62,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.MultiMap;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 /**
  * The IPS builder generates Java sourcecode and XML files based on the IPS objects contained in the
@@ -277,7 +278,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private boolean isRelateToIpsObjectPath(Message message) {
-        ObjectProperty[] objectProperties = message.getInvalidObjectProperties();
+        List<ObjectProperty> objectProperties = message.getInvalidObjectProperties();
         for (ObjectProperty objectProperty : objectProperties) {
             Object object = objectProperty.getObject();
             if (object instanceof IIpsObjectPath || object instanceof IIpsObjectPathEntry
@@ -698,12 +699,12 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     private int getMarkerSeverity(Message msg) {
-        int msgSeverity = msg.getSeverity();
-        if (msgSeverity == Message.ERROR) {
+        Severity msgSeverity = msg.getSeverity();
+        if (msgSeverity == Severity.ERROR) {
             return IMarker.SEVERITY_ERROR;
-        } else if (msgSeverity == Message.WARNING) {
+        } else if (msgSeverity == Severity.WARNING) {
             return IMarker.SEVERITY_WARNING;
-        } else if (msgSeverity == Message.INFO) {
+        } else if (msgSeverity == Severity.INFO) {
             return IMarker.SEVERITY_INFO;
         }
         throw new RuntimeException("Unknown severity " + msgSeverity); //$NON-NLS-1$

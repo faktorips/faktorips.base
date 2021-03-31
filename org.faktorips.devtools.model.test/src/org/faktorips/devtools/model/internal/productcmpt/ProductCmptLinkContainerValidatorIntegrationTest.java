@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -113,15 +113,17 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         Message message = list.getMessage(0);
         assertEquals(Message.ERROR, message.getSeverity());
         assertEquals(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().length);
-        assertEquals(link1, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(1, message.getInvalidObjectProperties().size());
+        assertEquals(link1, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY,
+                message.getInvalidObjectProperties().get(0).getProperty());
         message = list.getMessage(1);
         assertEquals(Message.ERROR, message.getSeverity());
         assertEquals(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().length);
-        assertEquals(link2, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(1, message.getInvalidObjectProperties().size());
+        assertEquals(link2, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY,
+                message.getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test
@@ -149,15 +151,17 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         Message message = list.getMessage(0);
         assertEquals(Message.ERROR, message.getSeverity());
         assertEquals(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().length);
-        assertEquals(link1, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(1, message.getInvalidObjectProperties().size());
+        assertEquals(link1, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY,
+                message.getInvalidObjectProperties().get(0).getProperty());
         message = list.getMessage(1);
         assertEquals(Message.ERROR, message.getSeverity());
         assertEquals(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().length);
-        assertEquals(link2, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(1, message.getInvalidObjectProperties().size());
+        assertEquals(link2, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY,
+                message.getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test

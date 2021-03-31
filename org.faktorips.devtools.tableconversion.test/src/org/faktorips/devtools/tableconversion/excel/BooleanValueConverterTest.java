@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 /**

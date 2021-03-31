@@ -41,7 +41,7 @@ import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.FlParserVisitor;
 import org.faktorips.fl.parser.SimpleNode;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Visitor that visits the parse tree and generates the {@link CodeFragment source code} that

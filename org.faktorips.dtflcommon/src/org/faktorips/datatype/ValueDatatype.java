@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype;
 
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A datatype representing values (in contrast to reference objects).

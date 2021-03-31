@@ -29,7 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A specialization of {@link NodeEditPart} that creates the figure for an action, creates the

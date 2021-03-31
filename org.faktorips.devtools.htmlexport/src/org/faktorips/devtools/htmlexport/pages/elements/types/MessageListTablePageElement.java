@@ -26,9 +26,10 @@ import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 public class MessageListTablePageElement extends AbstractStandardTablePageElement {
 
@@ -56,7 +57,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
      * 
      */
     protected void addMessageRow(Message message) {
-        int severity = message.getSeverity();
+        Severity severity = message.getSeverity();
         addSubElement(new TableRowPageElement(new IPageElement[] {
                 createInvalidObjectPropertiesPageElement(message),
                 new TextPageElement(message.getText(), getContext()),
@@ -74,17 +75,17 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     }
 
     protected IPageElement createInvalidObjectPropertiesPageElement(Message message) {
-        if (message.getInvalidObjectProperties().length == 0) {
+        if (message.getInvalidObjectProperties().size() == 0) {
             return new TextPageElement("", getContext()); //$NON-NLS-1$
         }
 
-        if (message.getInvalidObjectProperties().length == 1) {
-            return createInvalidObjectPropertiesItem(message.getInvalidObjectProperties()[0]);
+        if (message.getInvalidObjectProperties().size() == 1) {
+            return createInvalidObjectPropertiesItem(message.getInvalidObjectProperties().get(0));
         }
 
         ListPageElement objectPropertiesList = new ListPageElement(getContext());
 
-        ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
+        List<ObjectProperty> invalidObjectProperties = message.getInvalidObjectProperties();
         for (ObjectProperty objectProperty : invalidObjectProperties) {
             objectPropertiesList.addPageElements(createInvalidObjectPropertiesItem(objectProperty));
         }

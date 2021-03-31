@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.JavaExprCompiler;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A class that provides the

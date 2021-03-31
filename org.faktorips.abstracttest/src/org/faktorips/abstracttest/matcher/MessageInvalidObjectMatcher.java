@@ -11,8 +11,8 @@ package org.faktorips.abstracttest.matcher;
 
 import java.util.Optional;
 
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.ObjectProperty;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 

@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Extend the {@link DecoratingStyledCellLabelProvider} to add the possibility to get a ToolTip of
@@ -59,7 +59,7 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
 
     private String validateAndReturnErrorMessages(Validatable validatable) throws CoreException {
         MessageList msgList = validatable.validate(validatable.getIpsProject());
-        String text = msgList.getMessages(Message.ERROR).getText();
+        String text = msgList.getMessagesBySeverity(Severity.ERROR).getText();
         if (!StringUtils.isEmpty(text)) {
             return text;
         }

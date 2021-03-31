@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.productcmpt;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

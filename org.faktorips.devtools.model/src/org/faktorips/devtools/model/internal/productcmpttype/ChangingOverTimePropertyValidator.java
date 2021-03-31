@@ -17,8 +17,8 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * This class is used to validate {@link IChangingOverTimeProperty}s.

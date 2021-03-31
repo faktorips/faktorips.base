@@ -17,10 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.faktorips.runtime.util.IMessage;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
@@ -45,7 +45,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
  * 
  * @see MsgReplacementParameter
  */
-public class Message implements Serializable, IMessage {
+public class Message implements Serializable {
 
     /**
      * Severity none.
@@ -179,7 +179,7 @@ public class Message implements Serializable, IMessage {
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
      * @param invalidObjectProperties An array of object properties the message refers to
      */
-    public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties) {
+    public Message(String code, String text, Severity severity, ObjectProperty... invalidObjectProperties) {
         this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties)));
     }
 
@@ -351,24 +351,119 @@ public class Message implements Serializable, IMessage {
     }
 
     /**
-     * Constructs a new information message.
+     * Creates and returns a copy of the given message and replaces all references to the old object
+     * with the new object.
+     * 
+     * @param objectPropertyMap The <code>Map</code> between old and new <code>ObjectProperty</code>
+     * @return Message
+     */
+    public static final Message createCopy(Message msg, Map<ObjectProperty, ObjectProperty> objectPropertyMap) {
+        List<ObjectProperty> op = msg.getInvalidObjectProperties();
+        List<ObjectProperty> newOp = new ArrayList<ObjectProperty>(op.size());
+        for (ObjectProperty objectProperty : op) {
+            ObjectProperty newObjectProperty = objectPropertyMap.get(objectProperty);
+            if (newObjectProperty != null) {
+                newOp.add(newObjectProperty);
+            } else {
+                newOp.add(objectProperty);
+            }
+        }
+        return new Builder(msg.text, msg.severity).code(msg.code).invalidObjects(newOp)
+                .replacements(msg.getReplacementParameters()).markers(msg.getMarkers()).create();
+    }
+
+    /**
+     * Constructs and returns a new information message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
      */
     public static final Message newInfo(String code, String text) {
         return new Message(code, text, INFO);
     }
 
     /**
-     * Constructs a new warning message.
+     * Constructs and returns a new information message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     * @param invalidProperty The name of the invalid property (which is a property of the
+     *            invalidObject)
+     */
+    public static final Message newInfo(String code, String text, Object invalidObject, String invalidProperty) {
+        return new Message(code, text, INFO, invalidObject, invalidProperty);
+    }
+
+    /**
+     * Constructs and returns a new warning message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
      */
     public static final Message newWarning(String code, String text) {
         return new Message(code, text, WARNING);
     }
 
     /**
-     * Constructs a new error message.
+     * Constructs and returns a new warning message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     */
+    public static final Message newWarning(String code, String text, Object invalidObject) {
+        return new Message(code, text, WARNING, new ObjectProperty[] { new ObjectProperty(invalidObject, null) });
+    }
+
+    /**
+     * Constructs and returns a new warning message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object
+     * @param invalidProperties The name of the invalid properties (which are properties of the
+     *            invalidObject)
+     */
+    public static final Message newWarning(String code,
+            String text,
+            Object invalidObject,
+            String... invalidProperties) {
+        return new Message(code, text, WARNING, invalidObject, invalidProperties);
+    }
+
+    /**
+     * Constructs and returns a new error message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
      */
     public static final Message newError(String code, String text) {
         return new Message(code, text, ERROR);
+    }
+
+    /**
+     * Constructs and returns a new error message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObject The invalid object to refer to.
+     * @param invalidProperties The name of the invalid properties (which are properties of the
+     *            invalidObject)
+     */
+    public static final Message newError(String code, String text, Object invalidObject, String... invalidProperties) {
+        return new Message(code, text, ERROR, invalidObject, invalidProperties);
+    }
+
+    /**
+     * Constructs and returns a new error message.
+     * 
+     * @param code The code that identifies the message.
+     * @param text The human readable text of the message.
+     * @param invalidObjectProperty The invalid object properties to refer to.
+     */
+    public static final Message newError(String code, String text, ObjectProperty... invalidObjectProperty) {
+        return new Message(code, text, ERROR, invalidObjectProperty);
     }
 
     /**
@@ -378,12 +473,10 @@ public class Message implements Serializable, IMessage {
         return severity;
     }
 
-    @Override
     public String getText() {
         return text;
     }
 
-    @Override
     public String getCode() {
         return code;
     }

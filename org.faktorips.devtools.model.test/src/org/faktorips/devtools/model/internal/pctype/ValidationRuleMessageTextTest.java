@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.IValidationRuleMessageText;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 

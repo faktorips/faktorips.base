@@ -11,7 +11,7 @@
 package org.faktorips.datatype;
 
 import org.faktorips.util.DatatypeComparator;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A datatype that is used to represent any type of data, similiar to <code>java.lang.Object.</code>

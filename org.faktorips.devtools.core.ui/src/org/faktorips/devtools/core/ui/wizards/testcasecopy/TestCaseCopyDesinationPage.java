@@ -69,8 +69,8 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestObject;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Page to specify the target and the product cmpt replacement type.

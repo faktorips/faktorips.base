@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A class that hold information about IIpsArtefactBuilderSets that are registered with the

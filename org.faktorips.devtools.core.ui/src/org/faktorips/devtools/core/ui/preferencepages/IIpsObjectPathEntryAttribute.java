@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * This class maps IPS object path entry attributes to values.

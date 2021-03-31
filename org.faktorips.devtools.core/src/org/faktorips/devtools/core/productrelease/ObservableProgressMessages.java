@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.productrelease;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 public class ObservableProgressMessages {
 

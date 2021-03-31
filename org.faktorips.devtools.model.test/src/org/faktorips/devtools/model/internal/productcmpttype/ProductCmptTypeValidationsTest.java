@@ -18,8 +18,8 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -156,9 +156,9 @@ public class ProductCmptTypeValidationsTest {
 
         Message message = messageList
                 .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
-        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(productCmptType, message.getInvalidObjectProperties().get(0).getObject());
         assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
-                message.getInvalidObjectProperties()[0].getProperty());
+                message.getInvalidObjectProperties().get(0).getProperty());
         assertEquals(Message.ERROR, message.getSeverity());
     }
 
@@ -173,9 +173,9 @@ public class ProductCmptTypeValidationsTest {
 
         Message message = messageList
                 .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
-        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(productCmptType, message.getInvalidObjectProperties().get(0).getObject());
         assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
-                message.getInvalidObjectProperties()[0].getProperty());
+                message.getInvalidObjectProperties().get(0).getProperty());
         assertEquals(Message.ERROR, message.getSeverity());
     }
 }

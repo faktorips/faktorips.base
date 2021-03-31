@@ -15,7 +15,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.Messages;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpt.template.TemplateHierarchyVisitor;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class TemplateValidations {
 

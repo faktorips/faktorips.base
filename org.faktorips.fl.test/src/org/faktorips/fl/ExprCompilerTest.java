@@ -26,7 +26,7 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.operations.AbstractBinaryOperation;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 import org.junit.Test;
 

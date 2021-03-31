@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A two-column {@link WizardPage} that allows the selection of a {@link IDescribedElement

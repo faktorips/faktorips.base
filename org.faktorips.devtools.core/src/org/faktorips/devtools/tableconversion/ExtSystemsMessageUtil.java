@@ -11,7 +11,7 @@
 package org.faktorips.devtools.tableconversion;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Utility class to create common error or information messages during the value conversation.

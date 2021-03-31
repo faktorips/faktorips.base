@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.value.ValueType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 
 /**

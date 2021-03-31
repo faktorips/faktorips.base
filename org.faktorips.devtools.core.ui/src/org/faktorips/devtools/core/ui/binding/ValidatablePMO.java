@@ -16,8 +16,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 public abstract class ValidatablePMO extends PresentationModelObject implements Validatable {
 
@@ -40,7 +41,7 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
     }
 
     protected MessageList createCopyAndMapObjectProperties(MessageList messageList) {
-        return messageList.createCopy(getObjectPropertyMapping());
+        return MessageList.createCopy(messageList, getObjectPropertyMapping());
     }
 
     @Override
@@ -49,7 +50,7 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
     }
 
     @Override
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
         return validate(ipsProject).getSeverity();
     }
 

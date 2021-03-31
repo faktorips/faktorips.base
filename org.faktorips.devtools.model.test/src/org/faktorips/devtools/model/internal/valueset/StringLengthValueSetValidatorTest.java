@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Ips object path entry for an archive.

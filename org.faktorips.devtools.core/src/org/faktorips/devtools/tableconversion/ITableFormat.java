@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public interface ITableFormat {
 

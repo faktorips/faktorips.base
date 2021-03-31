@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.tablecontents.IRow;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * LabelProvider for the TableViewer in the TableContents editor. Supports errormarkers for errenous

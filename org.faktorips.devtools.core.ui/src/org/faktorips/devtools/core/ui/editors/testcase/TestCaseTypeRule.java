@@ -20,9 +20,10 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestRule;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Class to represent a test rule parameter object inside the ui, e.g. the tree viewer.
@@ -63,8 +64,8 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     }
 
     @Override
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
-        return 0;
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        return Severity.NONE;
     }
 
     @Override

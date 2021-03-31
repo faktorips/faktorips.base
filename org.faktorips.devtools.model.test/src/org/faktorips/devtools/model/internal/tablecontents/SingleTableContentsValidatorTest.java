@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +54,7 @@ public class SingleTableContentsValidatorTest {
     @Before
     public void setup() {
         validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
+        when(tableStructure.getName()).thenReturn("tableStructure");
         when(contentsSrcFile1.getIpsProject()).thenReturn(ipsProjectBase);
         when(contentsSrcFile2.getIpsProject()).thenReturn(ipsProjectBase);
     }

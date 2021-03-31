@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.value.ValueType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;

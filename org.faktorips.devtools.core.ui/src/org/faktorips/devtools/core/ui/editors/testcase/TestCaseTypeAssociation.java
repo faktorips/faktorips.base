@@ -20,8 +20,9 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Helper class to represent a dummy association depending on the test case type association (test
@@ -147,9 +148,9 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     //
 
     @Override
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
         // TODO Auto-generated method stub
-        return 0;
+        return Severity.NONE;
     }
 
     @Override

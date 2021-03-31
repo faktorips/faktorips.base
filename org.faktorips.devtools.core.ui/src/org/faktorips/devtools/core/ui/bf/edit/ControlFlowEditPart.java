@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The edit part for the control flow model object. In addition to its figure this edit part has a

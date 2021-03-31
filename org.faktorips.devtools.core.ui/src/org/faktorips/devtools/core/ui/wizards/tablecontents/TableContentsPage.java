@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IpsProjectRefField;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.PageUiUpdater;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionComposite;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class TableContentsPage extends WizardPage {
 

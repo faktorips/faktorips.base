@@ -15,8 +15,8 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 
 public class AttributeAbstractDatatypeValidator {
 

@@ -19,9 +19,9 @@ import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         Message message = messages.getFirstMessage(Message.ERROR);
         assertEquals(message.getCode(),
                 IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER);
-        assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
+        assertEquals(message.getInvalidObjectProperties().get(0), new ObjectProperty(literalNameAttributeValue,
                 IEnumAttributeValue.PROPERTY_VALUE));
     }
 
@@ -84,7 +84,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         Message message = messages.getFirstMessage(Message.ERROR);
         assertEquals(message.getCode(),
                 IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER);
-        assertEquals(message.getInvalidObjectProperties()[0], new ObjectProperty(literalNameAttributeValue,
+        assertEquals(message.getInvalidObjectProperties().get(0), new ObjectProperty(literalNameAttributeValue,
                 IEnumAttributeValue.PROPERTY_VALUE));
     }
 
@@ -94,7 +94,8 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         assertNull(messages
-                .getMessageByCode(IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER));
+                .getMessageByCode(
+                        IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER));
     }
 
 }

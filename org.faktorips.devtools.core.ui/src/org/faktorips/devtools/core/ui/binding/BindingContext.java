@@ -64,12 +64,12 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.BeanUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 
 /**
  * A <code>BindingContext</code> provides binding between the user interface and a (domain or
@@ -647,9 +647,10 @@ public class BindingContext {
             try {
                 MessageList messageList = validatable.validate(validatable.getIpsProject());
                 for (Message message : messageList) {
-                    ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
+                    List<ObjectProperty> invalidObjectProperties = message.getInvalidObjectProperties();
                     for (ObjectProperty objectProperty : invalidObjectProperties) {
-                        MessageList propertyList = validationMap.computeIfAbsent(objectProperty, $ -> new MessageList());
+                        MessageList propertyList = validationMap.computeIfAbsent(objectProperty,
+                                $ -> new MessageList());
                         propertyList.add(message);
                     }
                 }

@@ -73,9 +73,9 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * The UI section for the <code>EnumTypeEditorPage</code> and the <code>EnumContentEditorPage</code>
@@ -753,7 +753,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
-            int severity = getSeverity((IEnumValue)element, columnIndex);
+            Severity severity = getSeverity((IEnumValue)element, columnIndex);
             ImageDescriptor overlay = IpsProblemOverlayIcon.getOverlay(severity);
             return IpsUIPlugin.getImageHandling().getImage(overlay, false);
         }
@@ -762,10 +762,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
          * Returns <code>true</code> if the validation of the given <code>IEnumValue</code> detects
          * an error at the given column index, <code>false</code> otherwise.
          */
-        private int getSeverity(IEnumValue enumValue, int columnIndex) {
+        private Severity getSeverity(IEnumValue enumValue, int columnIndex) {
             // Don't validate if the indicated column does not exist.
             if (enumValue.getEnumAttributeValues().size() <= columnIndex) {
-                return Message.NONE;
+                return Severity.NONE;
             }
             try {
                 MessageList messageList = enumValue.validate(enumValue.getIpsProject());

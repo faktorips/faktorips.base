@@ -50,7 +50,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.ObjectProperty;
 
 /**
  * Section to display and edit the product attributes

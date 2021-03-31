@@ -18,7 +18,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  *

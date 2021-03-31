@@ -14,7 +14,7 @@ import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.faktorips.devtools.core.ui.bf.draw2d.StartFigure;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * An edit part that provides a nonresizable figure for the start business function element.

@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {

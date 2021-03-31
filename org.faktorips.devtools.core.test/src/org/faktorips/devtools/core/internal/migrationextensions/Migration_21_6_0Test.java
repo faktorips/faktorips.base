@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.ProjectUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 public class Migration_21_6_0Test extends AbstractIpsPluginTest {

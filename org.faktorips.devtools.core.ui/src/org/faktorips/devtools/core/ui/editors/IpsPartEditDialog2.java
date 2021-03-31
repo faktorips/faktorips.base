@@ -41,9 +41,10 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Base class for dialogs that allows to edit an ips object part. In contrast to the original
@@ -322,7 +323,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         // default implementation does nothing
     }
 
-    private Message getFirstMessage(MessageList messageList, int severity, Set<String> ignoredMessageCodes) {
+    private Message getFirstMessage(MessageList messageList, Severity severity, Set<String> ignoredMessageCodes) {
         for (int i = 0; i < messageList.size(); i++) {
             Message message = messageList.getMessage(i);
             if (message.getSeverity() == severity && !(ignoredMessageCodes.contains(message.getCode()))) {

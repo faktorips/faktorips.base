@@ -48,7 +48,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
 

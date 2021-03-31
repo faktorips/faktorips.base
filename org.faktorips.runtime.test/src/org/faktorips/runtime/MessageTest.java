@@ -11,15 +11,17 @@
 package org.faktorips.runtime;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,6 +69,40 @@ public class MessageTest extends XmlAbstractTestCase {
             assertEquals(mps.get(i).getName(), mpsCpy.get(i).getName());
             assertEquals(mps.get(i).getValue(), mpsCpy.get(i).getValue());
         }
+    }
+
+    @Test
+    public void testCopy_Map() {
+        HashMap<ObjectProperty, ObjectProperty> invalidObjectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        invalidObjectPropertyMap.put(new ObjectProperty("a", "a"), new ObjectProperty("b", "b"));
+
+        Message msg = new Message("code", "text", Message.INFO);
+        Message copy = Message.createCopy(msg, invalidObjectPropertyMap);
+        assertEquals("code", msg.getCode());
+        assertEquals("text", msg.getText());
+        assertEquals(Message.INFO, msg.getSeverity());
+        assertEquals(0, msg.getInvalidObjectProperties().size());
+
+        Object oldObject = new Object();
+        ObjectProperty op0 = new ObjectProperty(oldObject, "prop0");
+        ObjectProperty op1 = new ObjectProperty(this, "prop1");
+        ObjectProperty op2 = new ObjectProperty(oldObject, "prop2");
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty[] { op0, op1, op2 });
+        Object newObject = new Object();
+
+        HashMap<ObjectProperty, ObjectProperty> objectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        objectPropertyMap.put(op0, new ObjectProperty(newObject, "prop0"));
+        objectPropertyMap.put(op2, new ObjectProperty(newObject, "prop2"));
+
+        copy = Message.createCopy(msg, objectPropertyMap);
+        List<ObjectProperty> ops = copy.getInvalidObjectProperties();
+        assertEquals(3, ops.size());
+        assertEquals(newObject, ops.get(0).getObject());
+        assertEquals("prop0", ops.get(0).getProperty());
+        assertEquals(this, ops.get(1).getObject());
+        assertEquals("prop1", ops.get(1).getProperty());
+        assertEquals(newObject, ops.get(2).getObject());
+        assertEquals("prop2", ops.get(2).getProperty());
     }
 
     @Test
@@ -267,6 +303,28 @@ public class MessageTest extends XmlAbstractTestCase {
         // no differences (with referenced object properties)
         msg2 = new Message("1", "blabla", Message.ERROR, op);
         assertTrue(msg.equals(msg2));
+    }
+
+    @Test
+    public void testEqualsObject_code_null() {
+        Message m1 = new Message(null, "Message with null code", Message.ERROR);
+        Message m2 = new Message("some.code", "Message with code", Message.ERROR);
+
+        assertThat(m1.equals(m1), is(true));
+        assertThat(m1.equals(m2), is(false));
+        assertThat(m2.equals(m1), is(false));
+
+        m1 = new Message(null, null, Message.INFO);
+        m2 = new Message(null, null, Message.INFO);
+        assertThat(m1.equals(m2), is(true));
+    }
+
+    @Test
+    public void testEqualsObject_text_null() {
+        Message m1 = new Message(null, null, Message.INFO);
+        Message m2 = new Message(null, null, Message.INFO);
+
+        assertThat(m1.equals(m2), is(true));
     }
 
     @Test

@@ -24,7 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * 

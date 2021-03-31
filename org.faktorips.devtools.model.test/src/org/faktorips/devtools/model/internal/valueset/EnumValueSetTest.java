@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -52,9 +52,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -712,25 +712,25 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, list.size());
         Message msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
-        ObjectProperty[] ops = msg0.getInvalidObjectProperties();
-        assertEquals(3, ops.length);
-        assertEquals(cValueSet, ops[0].getObject());
-        assertEquals(0, ops[1].getIndex());
-        assertEquals(2, ops[2].getIndex());
+        List<ObjectProperty> ops = msg0.getInvalidObjectProperties();
+        assertEquals(3, ops.size());
+        assertEquals(cValueSet, ops.get(0).getObject());
+        assertEquals(0, ops.get(1).getIndex());
+        assertEquals(2, ops.get(2).getIndex());
 
         set.addValue("2EUR");
         list = set.validate(ipsProject);
         assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
-        assertEquals(4, ops.length);
+        assertEquals(4, ops.size());
 
         set.setValue(3, "4EUR");
         list = set.validate(ipsProject);
         assertEquals(1, list.size());
         msg0 = list.getMessage(0);
         ops = msg0.getInvalidObjectProperties();
-        assertEquals(3, ops.length);
+        assertEquals(3, ops.size());
     }
 
     @Test
@@ -744,9 +744,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, list.size());
         Message msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
-        ObjectProperty[] ops = msg0.getInvalidObjectProperties();
-        assertEquals(1, ops.length);
-        assertEquals(0, ops[0].getIndex());
+        List<ObjectProperty> ops = msg0.getInvalidObjectProperties();
+        assertEquals(1, ops.size());
+        assertEquals(0, ops.get(0).getIndex());
 
         list = set.validateValue(1, ipsProject);
         assertTrue(list.isEmpty());
@@ -756,8 +756,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         msg0 = list.getMessage(0);
         assertEquals(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg0.getCode());
         ops = msg0.getInvalidObjectProperties();
-        assertEquals(1, ops.length);
-        assertEquals(2, ops[0].getIndex());
+        assertEquals(1, ops.size());
+        assertEquals(2, ops.get(0).getIndex());
     }
 
     @Test

@@ -22,7 +22,7 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.PropertyDatatype;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.faktorips.values.Decimal;
 
 /**

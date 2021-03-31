@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * This implementation of the {@link IIpsBuilderSetPropertyDef} interface can be used by

@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRefField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class FolderAndPackagePage extends WizardPage {
 

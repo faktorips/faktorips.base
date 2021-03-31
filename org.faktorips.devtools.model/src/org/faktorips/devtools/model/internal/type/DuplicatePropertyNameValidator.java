@@ -32,9 +32,9 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 
 public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 

@@ -51,7 +51,7 @@ import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 import org.junit.Test;
 

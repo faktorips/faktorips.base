@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public abstract class AbstractValueSetValidator<T extends IValueSet> {
 

@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class MessagesImportPMO extends PresentationModelObject {
 

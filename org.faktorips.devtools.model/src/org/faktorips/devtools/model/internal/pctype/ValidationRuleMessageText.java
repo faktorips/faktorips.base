@@ -19,8 +19,8 @@ import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.IValidationRuleMessageText;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessageText extends InternationalString implements IValidationRuleMessageText {

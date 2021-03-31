@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * The properties that can be set for a IpsArtefactBuilderSet can be defined in the plug-in

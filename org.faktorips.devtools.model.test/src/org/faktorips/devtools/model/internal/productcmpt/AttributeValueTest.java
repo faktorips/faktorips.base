@@ -14,11 +14,11 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -45,8 +45,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -276,12 +277,12 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         values.add(new SingleValueHolder(attributeValue, "C"));
         multiValueHolder.setValue(values);
 
-        MessageList messageList = attributeValue.validate(ipsProject).getMessages(Message.ERROR);
+        MessageList messageList = attributeValue.validate(ipsProject).getMessagesBySeverity(Severity.ERROR);
         assertEquals(2, messageList.getNoOfMessages(Message.ERROR));
-        assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties()[0].getObject());
+        assertEquals(valueHolder, messageList.getMessage(0).getInvalidObjectProperties().get(0).getObject());
         assertEquals(multiValueHolder.getParent(),
-                messageList.getMessage(1).getInvalidObjectProperties()[0].getObject());
-        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[1].getObject());
+                messageList.getMessage(1).getInvalidObjectProperties().get(0).getObject());
+        assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties().get(1).getObject());
     }
 
     @Test

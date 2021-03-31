@@ -34,9 +34,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 
 /**
  * Abstract base class for all Faktor-IPS refactoring processors.
@@ -160,14 +160,16 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
 
         for (Message message : validationMessageList) {
             switch (message.getSeverity()) {
-                case Message.ERROR:
+                case ERROR:
                     status.addError(message.getText());
                     break;
-                case Message.WARNING:
+                case WARNING:
                     status.addWarning(message.getText());
                     break;
-                case Message.INFO:
+                case INFO:
                     status.addInfo(message.getText());
+                    break;
+                default:
                     break;
             }
         }

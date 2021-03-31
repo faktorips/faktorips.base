@@ -12,8 +12,8 @@ package org.faktorips.abstracttest.matcher;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;

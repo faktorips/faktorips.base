@@ -96,7 +96,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;

@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInf
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
 
 /**

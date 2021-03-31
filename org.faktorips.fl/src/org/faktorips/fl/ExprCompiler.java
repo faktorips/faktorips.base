@@ -40,7 +40,7 @@ import org.faktorips.fl.parser.Token;
 import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * A compiler to compile expressions. This abstract class is target language agnostic and is by

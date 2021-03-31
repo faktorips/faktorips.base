@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Table model for a multi-value attribute. Manages the list of values the attribute contains.

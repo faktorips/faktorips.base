@@ -15,8 +15,9 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * This class uses a {@link ControlDecoration} to paint a marker next to a {@link Control} to
@@ -74,13 +75,13 @@ public class MessageDecoration {
      * 
      * @return the id of the {@link FieldDecoration}
      */
-    private String mapSeverityToFieldDecoration(int severity) {
+    private String mapSeverityToFieldDecoration(Severity severity) {
         switch (severity) {
-            case Message.ERROR:
+            case ERROR:
                 return FieldDecorationRegistry.DEC_ERROR;
-            case Message.WARNING:
+            case WARNING:
                 return FieldDecorationRegistry.DEC_WARNING;
-            case Message.INFO:
+            case INFO:
                 return FieldDecorationRegistry.DEC_INFORMATION;
             default:
                 return null;

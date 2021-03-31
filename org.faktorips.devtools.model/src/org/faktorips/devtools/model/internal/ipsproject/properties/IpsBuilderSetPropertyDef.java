@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * The default implementation of the {@link IIpsBuilderSetPropertyDef} interface. If no special

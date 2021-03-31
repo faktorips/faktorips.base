@@ -20,8 +20,8 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,11 +51,11 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
 
     @Override
     public boolean isValid(IIpsProject ipsProject) throws CoreException {
-        return getValidationResultSeverity(ipsProject) != Message.ERROR;
+        return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
         return validate(ipsProject).getSeverity();
     }
 

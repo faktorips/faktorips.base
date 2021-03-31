@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.osgi.framework.Version;
 
 /**

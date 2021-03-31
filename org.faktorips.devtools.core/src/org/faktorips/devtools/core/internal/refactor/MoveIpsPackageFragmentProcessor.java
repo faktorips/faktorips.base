@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Move processor for {@link IIpsPackageFragment}.

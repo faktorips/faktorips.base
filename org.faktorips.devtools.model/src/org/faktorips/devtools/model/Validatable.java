@@ -12,7 +12,8 @@ package org.faktorips.devtools.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Marks an object as being validatable.
@@ -49,7 +50,7 @@ public interface Validatable {
      *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
      * 
-     * @return Identification number of the resulting validation severity.
+     * @return the resulting validation severity.
      * 
      * @throws CoreException If an exception occurs while obtaining the resulting validation
      *             severity.
@@ -58,7 +59,7 @@ public interface Validatable {
      * 
      * @since 3.0.0
      */
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException;
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException;
 
     /**
      * <p>

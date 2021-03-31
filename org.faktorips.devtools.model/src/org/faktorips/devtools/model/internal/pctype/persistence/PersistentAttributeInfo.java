@@ -27,11 +27,12 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistableTypeConverter
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
@@ -279,15 +280,15 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
     private void validateTableColumnNullableMatchesValueSet(MessageList msgList, IIpsProject ipsProject) {
         IValueSet valueSet = policyComponentTypeAttribute.getValueSet();
-        int severityFromProperties = ipsProject.getReadOnlyProperties().getPersistenceColumnSizeChecksSeverity()
-                .getIntRepresentation();
-        if (severityFromProperties == 0) {
+        String severityFromProperties = ipsProject.getReadOnlyProperties().getPersistenceColumnSizeChecksSeverity()
+                .toString();
+        if ("NONE".equals(severityFromProperties)) { //$NON-NLS-1$
             return;
         }
         if (valueSet != null && valueSet.isContainsNull() && !getTableColumnNullable()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLUMN_NULLABLE_DOES_NOT_MATCH_MODEL,
                     Messages.PersistentAttributeInfo_msgColumnNullableDoesNotMatchModel,
-                    severityFromProperties,
+                    Severity.valueOf(severityFromProperties),
                     new ObjectProperty(this, PROPERTY_TABLE_COLUMN_NULLABLE),
                     new ObjectProperty(valueSet, IValueSet.PROPERTY_CONTAINS_NULL)));
         }
@@ -298,16 +299,17 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         if (!(valueDatatype instanceof StringDatatype)) {
             return;
         }
-        int severityFromProperties = ipsProject.getReadOnlyProperties().getPersistenceColumnSizeChecksSeverity()
-                .getIntRepresentation();
-        if (severityFromProperties == 0) {
+        String severityFromProperties = ipsProject.getReadOnlyProperties().getPersistenceColumnSizeChecksSeverity()
+                .toString();
+        if ("NONE".equals(severityFromProperties)) { //$NON-NLS-1$
             return;
         }
         IValueSet valueSet = policyComponentTypeAttribute.getValueSet();
         if (valueSet == null || valueSet.isUnrestricted()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_MODEL_CONTAINS_NO_LENGTH_RESTRICTION,
                     NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeNotRestrictedInModel, getTableColumnSize()),
-                    severityFromProperties, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
+                    Severity.valueOf(severityFromProperties), this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         } else if (valueSet.isStringLength()) {
             StringLengthValueSet sValueSet = (StringLengthValueSet)valueSet;
             if (sValueSet.getParsedMaximumLength() == null
@@ -315,7 +317,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
                 msgList.add(new Message(MSGCODE_PERSISTENCEATTR_MODEL_EXCEEDS_COLUMN_SIZE,
                         NLS.bind(Messages.PersistentAttributeInfo_msgModelExceedsColumnSize,
                                 sValueSet.getMaximumLength(), getTableColumnSize()),
-                        severityFromProperties,
+                        Severity.valueOf(severityFromProperties),
                         new ObjectProperty(this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE),
                         new ObjectProperty(sValueSet, IStringLengthValueSet.PROPERTY_MAXIMUMLENGTH)));
             }

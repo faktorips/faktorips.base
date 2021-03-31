@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -61,8 +62,45 @@ public class MessageListTest {
     @Test
     public void testOfErrors() {
         MessageList errorList = MessageList.ofErrors("foo", "bar");
+        assertThat(errorList.size(), is(2));
         assertThat(errorList.getMessage(0), is(new Message("foo", Severity.ERROR)));
         assertThat(errorList.getMessage(1), is(new Message("bar", Severity.ERROR)));
+    }
+
+    @Test
+    public void testNewError() {
+        MessageList list = new MessageList();
+        Message error = list.newError("code", "text", this, "foo");
+
+        assertSame(error, list.getFirstMessage(Message.ERROR));
+        assertEquals("code", list.getFirstMessage(Message.ERROR).getCode());
+        assertEquals("text", list.getFirstMessage(Message.ERROR).getText());
+        assertEquals(new ObjectProperty(this, "foo"),
+                list.getFirstMessage(Message.ERROR).getInvalidObjectProperties().get(0));
+    }
+
+    @Test
+    public void testNewWarning() {
+        MessageList list = new MessageList();
+        Message warning = list.newWarning("code", "text", this, "foo");
+
+        assertSame(warning, list.getFirstMessage(Message.WARNING));
+        assertEquals("code", list.getFirstMessage(Message.WARNING).getCode());
+        assertEquals("text", list.getFirstMessage(Message.WARNING).getText());
+        assertEquals(new ObjectProperty(this, "foo"), list.getFirstMessage(Message.WARNING)
+                .getInvalidObjectProperties().get(0));
+    }
+
+    @Test
+    public void testNewInfo() {
+        MessageList list = new MessageList();
+        Message info = list.newInfo("code", "text", this, "foo");
+
+        assertSame(info, list.getFirstMessage(Message.INFO));
+        assertEquals("code", list.getFirstMessage(Message.INFO).getCode());
+        assertEquals("text", list.getFirstMessage(Message.INFO).getText());
+        assertEquals(new ObjectProperty(this, "foo"),
+                list.getFirstMessage(Message.INFO).getInvalidObjectProperties().get(0));
     }
 
     @Test
@@ -165,7 +203,95 @@ public class MessageListTest {
     }
 
     @Test
-    public void testsize() {
+    public void testRemove() {
+        MessageList list = new MessageList();
+        list.add(Message.newError("code", "text"));
+        list.remove(new Message("code", "text", Message.ERROR));
+
+        assertNull(list.getMessageByCode("code"));
+    }
+
+    @Test
+    public void testRemove_DoNothingIfMessageNotInList() {
+        MessageList list = new MessageList();
+        list.remove(new Message("code", "text", Message.ERROR));
+
+        assertNull(list.getMessageByCode("code"));
+    }
+
+    @Test
+    public void testRemove_DoNotThrowExceptionIfNullIsGiven() {
+        new MessageList().remove(null);
+    }
+
+    @Test
+    public void testGetNoOfMessages() {
+        MessageList list = new MessageList();
+        assertEquals(0, list.size());
+        list.add(Message.newInfo("1", "blabla"));
+        assertEquals(1, list.size());
+        list.add(Message.newInfo("1", "blabla"));
+        assertEquals(2, list.size()); // messages are equal, but the list does not filter
+        // duplicate messages
+
+        assertEquals(0, list.getNoOfMessages(Message.ERROR));
+        assertEquals(0, list.getNoOfMessages(Message.WARNING));
+        assertEquals(2, list.getNoOfMessages(Message.INFO));
+        assertEquals(0, list.getNoOfMessages(Message.NONE));
+    }
+
+    @Test
+    public void testGetSubList() throws Exception {
+        MessageList messageList = new MessageList();
+        Message msg1 = new Message("err1", "err1", Message.ERROR);
+        messageList.add(msg1);
+        Message msg2 = new Message("err2", "err2", Message.ERROR);
+        messageList.add(msg2);
+        messageList.add(new Message("err3", "err3", Message.ERROR));
+
+        MessageList subList = messageList.getSubList(2);
+
+        assertEquals(2, subList.size());
+        assertEquals(msg1, subList.getMessage(0));
+        assertEquals(msg2, subList.getMessage(1));
+    }
+
+    @Test
+    public void testGetSubList_WithSort() throws Exception {
+        MessageList messageList = new MessageList();
+        Message msg1 = new Message("err1", "err1", Message.ERROR);
+        messageList.add(msg1);
+        Message msg2 = new Message("warning1", "warning1", Message.WARNING);
+        messageList.add(msg2);
+        Message msg3 = new Message("err3", "err3", Message.ERROR);
+        messageList.add(msg3);
+
+        MessageList subList = messageList.getSubList(2);
+
+        assertEquals(2, subList.size());
+        assertEquals(msg1, subList.getMessage(0));
+        assertEquals(msg3, subList.getMessage(1));
+    }
+
+    @Test
+    public void testGetSublist_CopyFunctionality() {
+        MessageList messageList = new MessageList();
+
+        messageList.add(new Message("warning1", "warning1", Message.WARNING));
+        messageList.add(new Message("info1", "info1", Message.INFO));
+        messageList.add(new Message("none", "none", Message.NONE));
+
+        MessageList subList = messageList.getSubList(5);
+        assertSame(subList.size(), messageList.size());
+
+        Message message = new Message("error1", "error1", Message.WARNING);
+        subList.add(message);
+
+        assertNotSame(subList.size(), messageList.size());
+    }
+
+    @Test
+    public void testSize() {
         MessageList list = new MessageList();
         assertEquals(0, list.size());
         list.add(Message.newInfo("1", "blabla"));
@@ -529,6 +655,22 @@ public class MessageListTest {
         assertThat(transformedList.getMessage(0), is(new Message("error", "e1", Severity.ERROR)));
         assertThat(transformedList.getMessage(1), is(new Message("error", "e2", Severity.ERROR)));
         assertThat(transformedList.getMessage(2), is(new Message("warning", "transformed text", Severity.WARNING)));
+    }
+
+    @Test
+    public void testWrapUpMessageList() {
+        MessageList list = new MessageList();
+        list.newError("code", "text", new ObjectProperty("1", "foo"), "foo");
+        list.newError("code", "text", new ObjectProperty("2", "foo"), "foo");
+        list.newError("code", "text", new ObjectProperty("3", "foo"), "foo");
+        list.newError("code1", "text", new ObjectProperty("4", "foo"), "foo");
+        list.newError("code", "text1", new ObjectProperty("5", "foo"), "foo");
+        list.newError("code", "text1", new ObjectProperty("6", "foo"), "foo");
+
+        list.wrapUpMessages("code");
+        assertEquals(2, list.size());
+        assertEquals(3, list.getMessageByCode("code").getInvalidObjectProperties().size());
+        assertEquals(2, list.getMessage(1).getInvalidObjectProperties().size());
     }
 
     private static final class RequiredInformationMissing implements IMarker {

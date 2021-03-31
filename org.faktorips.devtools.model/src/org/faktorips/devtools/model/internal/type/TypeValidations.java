@@ -29,9 +29,10 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.MessageLists;
+import org.faktorips.runtime.ObjectProperty;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -164,7 +165,7 @@ public class TypeValidations {
                 .map(t -> ipsProject.findIpsSrcFile(t, qualifiedName))
                 .filter(f -> f != null)
                 .map(file -> dupicateQualifiedName(ipsObject, ipsProject, file))
-                .collect(MessageList.collectMessages());
+                .collect(MessageLists.collectMessages());
     }
 
     private static Message dupicateQualifiedName(IIpsObject ipsObject, IIpsProject ipsProject, IIpsSrcFile file) {

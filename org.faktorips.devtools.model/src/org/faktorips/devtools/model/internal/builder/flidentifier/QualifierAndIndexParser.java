@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * This parser handles qualifiers and index identifiers. The identifier part always have to end with

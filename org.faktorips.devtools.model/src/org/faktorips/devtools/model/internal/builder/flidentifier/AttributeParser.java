@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * This parser tries to match the identifier part to an attribute of the context type. In case of

@@ -30,9 +30,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 /**
  * Validates the links of a {@link IProductCmptLinkContainer} against their corresponding
@@ -270,7 +271,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     private MessageList getErrorMessagesFor(IAssociation association) {
         try {
             MessageList errorList = association.validate(getIpsProject());
-            errorList = errorList.getMessages(Message.ERROR);
+            errorList = errorList.getMessagesBySeverity(Severity.ERROR);
             return errorList;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

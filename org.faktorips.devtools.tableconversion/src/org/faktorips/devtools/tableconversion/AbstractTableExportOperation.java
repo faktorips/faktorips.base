@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Abstract Operation to export ipstablecontents in an arbitrary format.

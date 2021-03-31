@@ -15,7 +15,7 @@ import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.faktorips.devtools.core.ui.bf.draw2d.ScalableRhombFigure;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The edit part for the decision model object.

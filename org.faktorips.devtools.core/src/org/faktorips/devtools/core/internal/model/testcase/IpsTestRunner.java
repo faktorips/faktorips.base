@@ -74,8 +74,8 @@ import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Class to run ips test cases in a second VM.

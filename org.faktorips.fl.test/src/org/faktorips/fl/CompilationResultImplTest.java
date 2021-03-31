@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Test;
 
 /**

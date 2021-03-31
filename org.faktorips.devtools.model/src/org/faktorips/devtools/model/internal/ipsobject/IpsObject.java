@@ -33,9 +33,10 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -138,11 +139,11 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     @Override
     public boolean isValid(IIpsProject ipsProject) throws CoreException {
-        return getValidationResultSeverity(ipsProject) != Message.ERROR;
+        return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
         return validate(ipsProject).getSeverity();
     }
 

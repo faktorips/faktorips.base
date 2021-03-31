@@ -14,9 +14,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,7 +59,7 @@ public class ValidatablePMOTest {
         MessageList copy = validatablePMO.createCopyAndMapObjectProperties(messageList);
         MessageList messageListForObjProp2 = copy.getMessagesFor(objectProperty2.getObject());
 
-        assertEquals(3, messageListForObjProp2.getNoOfMessages(Message.ERROR));
+        assertEquals(3, messageListForObjProp2.getNoOfMessages(Severity.ERROR));
         assertEquals("This is message 1", messageListForObjProp2.getMessage(0).getText());
         assertEquals(Message.ERROR, messageListForObjProp2.getSeverity());
     }
@@ -92,6 +93,7 @@ public class ValidatablePMOTest {
     private void creatingObjectProperties() {
         object1 = new Object();
         object2 = new Object();
+        object3 = new Object();
         objectProperty1 = new ObjectProperty(object1, "Property of Object 1");
         objectProperty2 = new ObjectProperty(object2, "Property of Object 2");
         objectProperty3 = new ObjectProperty(object3, null);

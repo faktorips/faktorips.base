@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumClassN
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * The parser for enum value identifiers.

@@ -39,9 +39,9 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -256,15 +256,16 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
         MessageList messageList = overwritingAttr.validate(ipsProject);
         assertEquals(1, messageList.size());
-        ObjectProperty[] invalidObjectProperties = messageList.getMessage(0).getInvalidObjectProperties();
-        assertEquals(1, invalidObjectProperties.length);
+        List<ObjectProperty> invalidObjectProperties = messageList.getMessage(0).getInvalidObjectProperties();
+        assertEquals(1, invalidObjectProperties.size());
 
         attr.setValueSetCopy(new EnumValueSet(attr, normalValues, "partId"));
         overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, listWithNull, "partId"));
 
         messageList = overwritingAttr.validate(ipsProject);
         assertEquals(2, messageList.size());
-        assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, messageList.getMessage(0).getCode());
+        assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET,
+                messageList.getMessage(0).getCode());
         assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET, messageList.getMessage(1)
                 .getCode());
     }

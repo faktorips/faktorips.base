@@ -11,7 +11,7 @@ package org.faktorips.devtools.model.internal;
 
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Validates whether a value set is compatible with another value set (preset) in terms of

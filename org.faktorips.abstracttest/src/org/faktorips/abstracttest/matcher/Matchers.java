@@ -11,8 +11,9 @@ package org.faktorips.abstracttest.matcher;
 
 import java.util.function.Function;
 
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNot;
@@ -51,7 +52,7 @@ public class Matchers {
         return new MessageInvalidObjectMatcher(invalidObject, propertyName);
     }
 
-    public static Matcher<Message> hasSeverity(int severity) {
+    public static Matcher<Message> hasSeverity(Severity severity) {
         return new MessageSevertiyMatcher(severity);
     }
 

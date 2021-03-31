@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.controller;
 
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Interface that gives generic access to controls via the methods getValue() and setValue(T

@@ -22,7 +22,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Model for choosing a subset of values from a given set. Subclasses specify the set of all

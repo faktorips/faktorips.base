@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPag
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard for exporting ipstablecontents to external files.

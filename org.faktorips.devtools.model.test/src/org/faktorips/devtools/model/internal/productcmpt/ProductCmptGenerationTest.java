@@ -66,7 +66,7 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;

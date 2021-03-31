@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -38,8 +39,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * The wizard page for the <code>NewEnumTypeWizard</code>.
@@ -305,17 +307,19 @@ public class EnumTypePage extends IpsObjectPage {
         // Display message with highest severity if any.
         if (validationMessages.size() > 0) {
             Message msg = validationMessages.getMessageWithHighestSeverity();
-            int severity = msg.getSeverity();
-            int msgLevel = Message.NONE;
+            Severity severity = msg.getSeverity();
+            int msgLevel = IMessageProvider.NONE;
             switch (severity) {
-                case Message.INFO:
+                case INFO:
                     msgLevel = INFORMATION;
                     break;
-                case Message.ERROR:
+                case ERROR:
                     msgLevel = ERROR;
                     break;
-                case Message.WARNING:
+                case WARNING:
                     msgLevel = WARNING;
+                    break;
+                default:
                     break;
             }
             setMessage(msg.getText(), msgLevel);

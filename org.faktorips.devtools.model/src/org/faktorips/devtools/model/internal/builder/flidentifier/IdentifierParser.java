@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Parses the identifiers of an expression. It uses a list of {@link AbstractIdentifierNodeParser

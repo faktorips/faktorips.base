@@ -11,7 +11,7 @@
 package org.faktorips.datatype;
 
 import org.faktorips.util.DatatypeComparator;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Abstract super class for Datatype implementations.

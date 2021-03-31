@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public abstract class NewProductDefinitionWizard extends ResizableWizard implements INewWizard {
 

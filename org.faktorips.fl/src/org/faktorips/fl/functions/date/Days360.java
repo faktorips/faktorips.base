@@ -21,7 +21,7 @@ import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.functions.AbstractFlFunction;
 import org.faktorips.fl.functions.Messages;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Calculates the difference between two date values based on the ISMA 30/360 calendar.

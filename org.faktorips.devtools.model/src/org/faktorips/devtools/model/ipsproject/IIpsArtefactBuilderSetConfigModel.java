@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

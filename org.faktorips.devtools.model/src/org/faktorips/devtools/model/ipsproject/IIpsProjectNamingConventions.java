@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.ipsproject;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Naming conventions for the various IPS elements. This is a separate class as it is sometimes

@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 
 /**

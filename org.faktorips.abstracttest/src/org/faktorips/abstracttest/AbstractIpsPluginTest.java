@@ -115,9 +115,10 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.util.BeanUtil;
 import org.faktorips.devtools.model.util.IpsProjectUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.junit.After;
 import org.junit.Before;
 import org.w3c.dom.Document;
@@ -1427,7 +1428,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             String code,
             Object invalidObject,
             String property,
-            int severity) {
+            Severity severity) {
 
         assertThat(list, hasSize(1));
         Message message = list.getFirstMessage(severity);

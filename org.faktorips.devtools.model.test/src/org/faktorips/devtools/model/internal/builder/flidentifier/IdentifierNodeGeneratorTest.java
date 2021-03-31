@@ -23,7 +23,8 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.InvalidIde
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +52,7 @@ public class IdentifierNodeGeneratorTest {
     public void setUp() throws Exception {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0, 17),
                 ipsProject);
-        invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", 0));
+        invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", Severity.NONE));
         @SuppressWarnings("unchecked")
         CompilationResult<JavaCodeFragment> anyCompilationResult = any(CompilationResult.class);
         when(generator.generateNode(any(IdentifierNode.class), anyCompilationResult)).thenCallRealMethod();

@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.JdtClasspat
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.JdtClasspathEntryCreator.ReferenceFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

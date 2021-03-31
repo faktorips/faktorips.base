@@ -130,7 +130,7 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Section to display and edit a ips test case.

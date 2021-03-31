@@ -128,7 +128,7 @@ import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Section to display and edit the test case type.

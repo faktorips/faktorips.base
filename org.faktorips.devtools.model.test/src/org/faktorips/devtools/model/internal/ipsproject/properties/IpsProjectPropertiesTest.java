@@ -45,7 +45,7 @@ import org.faktorips.devtools.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;

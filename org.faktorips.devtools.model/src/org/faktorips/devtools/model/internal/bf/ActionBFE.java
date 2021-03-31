@@ -18,8 +18,8 @@ import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

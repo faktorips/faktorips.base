@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -219,7 +219,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         assertEquals(1, messageList.size());
         assertEquals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
-                messageList.getMessage(0).getInvalidObjectProperties()[1].getProperty());
+                messageList.getMessage(0).getInvalidObjectProperties().get(1).getProperty());
     }
 
     @Test
@@ -233,7 +233,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         assertEquals(1, messageList.size());
         assertEquals(IAssociation.PROPERTY_NAME,
-                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+                messageList.getMessage(0).getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test
@@ -248,7 +248,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         assertEquals(1, messageList.size());
         assertEquals(IAssociation.PROPERTY_NAME,
-                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+                messageList.getMessage(0).getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test

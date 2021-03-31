@@ -75,8 +75,9 @@ import org.faktorips.devtools.model.type.ITypeHierarchy;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -1217,7 +1218,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
                         IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY));
         Message message = messageList
                 .getMessageByCode(IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY);
-        assertThat(message, Matchers.hasSeverity(Message.ERROR));
+        assertThat(message, Matchers.hasSeverity(Severity.ERROR));
         assertThat(message,
                 hasInvalidObject(superPolicyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS));
         assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.util;
 
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Enum representation of {@link Message#getSeverity()}.

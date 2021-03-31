@@ -17,8 +17,8 @@ import java.util.Optional;
 
 import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.StringUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.values.NullObjectSupport;
 
 /**

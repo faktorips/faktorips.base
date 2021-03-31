@@ -16,7 +16,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.functions.Messages;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.faktorips.values.ObjectUtil;
 
 /**

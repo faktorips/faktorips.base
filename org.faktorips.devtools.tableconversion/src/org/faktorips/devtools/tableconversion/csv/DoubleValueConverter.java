@@ -16,7 +16,7 @@ import java.text.ParseException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DoubleDatatype;
 import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 public class DoubleValueConverter extends NumberValueConverter {
 

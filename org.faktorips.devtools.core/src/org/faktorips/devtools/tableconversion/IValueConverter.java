@@ -11,7 +11,7 @@
 package org.faktorips.devtools.tableconversion;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Interface for converters able to transform a string representation of a value to an instance of a

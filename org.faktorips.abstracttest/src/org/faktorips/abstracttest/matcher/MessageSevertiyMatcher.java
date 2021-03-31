@@ -9,8 +9,9 @@
  *******************************************************************************/
 package org.faktorips.abstracttest.matcher;
 
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
@@ -19,10 +20,10 @@ import org.hamcrest.Description;
  */
 public class MessageSevertiyMatcher extends BaseMatcher<Message> {
 
-    private final int severity;
+    private final Severity severity;
 
     /** @param severity the expected severity. */
-    MessageSevertiyMatcher(int severity) {
+    MessageSevertiyMatcher(Severity severity) {
         super();
         this.severity = severity;
     }
@@ -30,16 +31,16 @@ public class MessageSevertiyMatcher extends BaseMatcher<Message> {
     @Override
     public void describeTo(Description description) {
         switch (severity) {
-            case Message.ERROR:
+            case ERROR:
                 description.appendText("a message with severity ERROR");
                 break;
-            case Message.INFO:
+            case INFO:
                 description.appendText("a message with severity INFO");
                 break;
-            case Message.NONE:
+            case NONE:
                 description.appendText("a message with severity NONE");
                 break;
-            case Message.WARNING:
+            case WARNING:
                 description.appendText("a message with severity WARNING");
                 break;
             default:

@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.internal.model.testcase;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 public class IpsTestRunnerTest extends AbstractIpsPluginTest {

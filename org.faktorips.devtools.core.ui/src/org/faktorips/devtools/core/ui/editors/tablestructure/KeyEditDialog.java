@@ -52,8 +52,8 @@ import org.faktorips.devtools.model.tablestructure.IKey;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.model.util.ArrayElementMover;
 import org.faktorips.devtools.model.util.CollectionUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A dialog to edit a unique or foreign key.

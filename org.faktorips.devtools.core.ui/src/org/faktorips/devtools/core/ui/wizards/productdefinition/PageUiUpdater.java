@@ -15,8 +15,8 @@ import java.beans.PropertyChangeListener;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public abstract class PageUiUpdater implements PropertyChangeListener {
 

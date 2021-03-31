@@ -18,7 +18,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * {@link AbstractBaseVarArgFunction} for {@link JavaCodeFragment Java code} generating functions.

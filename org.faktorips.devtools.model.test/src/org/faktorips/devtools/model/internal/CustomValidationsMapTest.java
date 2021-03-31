@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

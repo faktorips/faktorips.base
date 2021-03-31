@@ -47,8 +47,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.ArrayElementMover;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Implementation of IIpsObjectPath.

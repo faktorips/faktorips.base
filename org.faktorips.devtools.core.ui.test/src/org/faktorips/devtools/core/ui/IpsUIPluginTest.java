@@ -52,8 +52,8 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizard
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

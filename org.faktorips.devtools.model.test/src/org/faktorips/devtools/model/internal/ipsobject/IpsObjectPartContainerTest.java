@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -70,9 +70,10 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.DOMException;
@@ -1114,8 +1115,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
-            return 0;
+        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+            return Severity.NONE;
         }
 
         @Override
@@ -1275,8 +1276,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
-            return 0;
+        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+            return Severity.NONE;
         }
 
         @Override

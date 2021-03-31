@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO.I
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

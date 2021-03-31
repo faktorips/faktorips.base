@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.plugin;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Abstract class to be implemented by individual validation tasks.

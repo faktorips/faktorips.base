@@ -79,10 +79,10 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -3181,9 +3181,9 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         Message message = result
                 .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
-        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(productCmptType, message.getInvalidObjectProperties().get(0).getObject());
         assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
-                message.getInvalidObjectProperties()[0].getProperty());
+                message.getInvalidObjectProperties().get(0).getProperty());
         assertEquals(Message.ERROR, message.getSeverity());
     }
 
@@ -3298,7 +3298,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertNotNull(message);
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
-                message.getInvalidObjectProperties()[0]);
+                message.getInvalidObjectProperties().get(0));
     }
 
     @Test
@@ -3315,9 +3315,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertNotNull(message);
-        assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE), message.getInvalidObjectProperties()[0]);
+        assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE),
+                message.getInvalidObjectProperties().get(0));
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
-                message.getInvalidObjectProperties()[1]);
+                message.getInvalidObjectProperties().get(1));
     }
 
 }

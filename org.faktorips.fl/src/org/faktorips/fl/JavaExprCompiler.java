@@ -62,7 +62,7 @@ import org.faktorips.fl.operations.PlusPrimitiveInt;
 import org.faktorips.fl.operations.SubtractDecimalDecimal;
 import org.faktorips.fl.operations.SubtractIntInt;
 import org.faktorips.fl.operations.SubtractMoneyMoney;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * This {@link ExprCompiler} implementation generates {@link JavaCodeFragment Java source code}.

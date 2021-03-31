@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionCom
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The second page of the {@link NewProductWizard}. In this page you could select the concrete

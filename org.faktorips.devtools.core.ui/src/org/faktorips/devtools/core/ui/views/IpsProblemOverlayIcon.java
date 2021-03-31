@@ -15,7 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Severity;
 
 public class IpsProblemOverlayIcon {
 
@@ -43,12 +44,12 @@ public class IpsProblemOverlayIcon {
     /**
      * Get the overly image descriptor for the specified severity @see {@link Message}
      */
-    public static ImageDescriptor getOverlay(int ipsMessageSeverity) {
-        if (ipsMessageSeverity == Message.ERROR) {
+    public static ImageDescriptor getOverlay(Severity ipsMessageSeverity) {
+        if (ipsMessageSeverity == Severity.ERROR) {
             return getErrorOverlay();
-        } else if (ipsMessageSeverity == Message.WARNING) {
+        } else if (ipsMessageSeverity == Severity.WARNING) {
             return getWarningOverlay();
-        } else if (ipsMessageSeverity == Message.INFO) {
+        } else if (ipsMessageSeverity == Severity.INFO) {
             return getInfoOverlay();
         }
         return null;
@@ -57,7 +58,7 @@ public class IpsProblemOverlayIcon {
     /**
      * Create a new image descriptor with overlays for the given severity over the baseImage
      */
-    public static ImageDescriptor createOverlayIcon(Image baseImage, int ipsMessageSeverity) {
+    public static ImageDescriptor createOverlayIcon(Image baseImage, Severity ipsMessageSeverity) {
         if (baseImage != null) {
             return new DecorationOverlayIcon(baseImage, new ImageDescriptor[] { null, null,
                     getOverlay(ipsMessageSeverity), null });

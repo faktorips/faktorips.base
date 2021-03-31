@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Marks classes generated for a select set of types as dirty to trigger the clean build.

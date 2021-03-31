@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.IpsValidation;
 import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 public class NewPcTypePage extends NewTypePage {
 

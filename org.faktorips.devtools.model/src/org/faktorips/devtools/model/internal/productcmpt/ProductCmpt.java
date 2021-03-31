@@ -68,8 +68,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -244,7 +245,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                     NLS.bind(Messages.ProductCmpt_Error_IdsNotUnique,
                             IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                                     .getVersionConceptNameSingular()),
-                    ipsProject.getReadOnlyProperties().getDuplicateProductComponentSeverity().getIntRepresentation(),
+                    Severity.valueOf(
+                            ipsProject.getReadOnlyProperties().getDuplicateProductComponentSeverity().toString()),
                     this));
         }
     }

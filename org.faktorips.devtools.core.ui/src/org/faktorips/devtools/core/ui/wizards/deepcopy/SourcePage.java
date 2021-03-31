@@ -75,8 +75,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Page to let the user select products related to each other.
@@ -260,7 +260,7 @@ public class SourcePage extends WizardPage {
         String deactivationHintText = NLS.bind(Messages.SourcePage_deactivationHintText, generationConceptNamePlural);
         deactivationHint.setText(deactivationHintText);
         deactivationHint.setImage(
-                IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(Message.INFO), false));
+                IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(Severity.INFO), false));
         deactivationHintData = new GridData();
         deactivationHintData.exclude = true;
         deactivationHint.setLayoutData(deactivationHintData);
@@ -704,15 +704,17 @@ public class SourcePage extends WizardPage {
         }
 
         if (SourcePage.this.getTargetPackage() != null && !SourcePage.this.getTargetPackage().exists()) {
+            // type 20 = Severity.WARNING
             setMessage(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated,
-                    SourcePage.this.getTargetPackage().getName()), Message.WARNING);
+                    SourcePage.this.getTargetPackage().getName()), 20);
         } else if (SourcePage.this.getTargetPackage() == null) {
             setErrorMessage(Messages.SourcePage_msgBadTargetPackage);
             return;
         }
 
         if (getPresentationModel().getTreeStatus().getCopyOrLink(getStructure().getRoot()) != CopyOrLink.COPY) {
-            setMessage(Messages.SourcePage_msgNothingSelected, Message.WARNING);
+            // type 20 = Severity.WARNING
+            setMessage(Messages.SourcePage_msgNothingSelected, 20);
             return;
         }
 
@@ -781,8 +783,9 @@ public class SourcePage extends WizardPage {
                         progressMonitor = new NullProgressMonitor();
                     }
                     progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
-                     @SuppressWarnings("deprecation")
-       org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 6);
+                    @SuppressWarnings("deprecation")
+                    org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                            progressMonitor, 6);
                     getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
                     progressMonitor.worked(1);
                     tree.refresh();

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.extproperties;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Element;
 

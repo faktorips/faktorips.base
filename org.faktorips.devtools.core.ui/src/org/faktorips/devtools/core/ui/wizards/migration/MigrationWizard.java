@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Supports migration for an IpsProject

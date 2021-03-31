@@ -72,7 +72,8 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Severity;
 
 /**
  * A toolkit to create controls with a common look and feel.
@@ -1068,15 +1069,15 @@ public class UIToolkit {
      * Converts the severity constant from <code>{@link Message}</code> to the constant of
      * <code>{@link IMessageProvider}</code>.
      */
-    public static int convertToJFaceSeverity(int severity) {
+    public static int convertToJFaceSeverity(Severity severity) {
         switch (severity) {
-            case Message.ERROR:
+            case ERROR:
                 return IMessageProvider.ERROR;
-            case Message.INFO:
+            case INFO:
                 return IMessageProvider.INFORMATION;
-            case Message.WARNING:
+            case WARNING:
                 return IMessageProvider.WARNING;
-            case Message.NONE:
+            case NONE:
                 return IMessageProvider.NONE;
         }
         return IMessageProvider.NONE;

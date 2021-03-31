@@ -14,8 +14,8 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefini
 import org.faktorips.devtools.model.internal.tablecontents.SingleTableContentsValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class NewTableContentsValidator extends NewProductDefinitionValidator {
 

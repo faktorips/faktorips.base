@@ -60,7 +60,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Page to show the test case structure and replace product cmpt or deselect test objects.

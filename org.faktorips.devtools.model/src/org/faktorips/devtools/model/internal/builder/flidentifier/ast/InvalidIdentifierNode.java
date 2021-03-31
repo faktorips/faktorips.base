@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier.ast;
 
 import org.faktorips.devtools.model.util.TextRegion;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * This node is a special kind of {@link IdentifierNode}. It do not relay represent any identifier

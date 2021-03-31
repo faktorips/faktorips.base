@@ -30,9 +30,9 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.junit.Test;
 
 public class SingleValueHolderValidatorTest {
@@ -103,7 +103,8 @@ public class SingleValueHolderValidatorTest {
 
         assertThat(messages.size(), is(1));
         Message message = messages
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND);
+                .getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND);
         assertThat(message, is(notNullValue()));
         verifyObjectProperties(message, attributeValue, valueHolder);
 
@@ -127,7 +128,8 @@ public class SingleValueHolderValidatorTest {
 
         assertThat(messages.size(), is(1));
         Message message = messages
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID);
+                .getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID);
         assertThat(message, is(notNullValue()));
         verifyObjectProperties(message, attributeValue, valueHolder);
     }
@@ -197,8 +199,8 @@ public class SingleValueHolderValidatorTest {
     }
 
     private void verifyObjectProperties(Message message, IAttributeValue parent, SingleValueHolder valueHolder) {
-        ObjectProperty firstObjectProperty = message.getInvalidObjectProperties()[0];
-        ObjectProperty secondObjectProperty = message.getInvalidObjectProperties()[1];
+        ObjectProperty firstObjectProperty = message.getInvalidObjectProperties().get(0);
+        ObjectProperty secondObjectProperty = message.getInvalidObjectProperties().get(1);
 
         assertThat(firstObjectProperty.getObject(), is((Object)parent));
         assertThat(firstObjectProperty.getProperty(), is(IAttributeValue.PROPERTY_VALUE_HOLDER));

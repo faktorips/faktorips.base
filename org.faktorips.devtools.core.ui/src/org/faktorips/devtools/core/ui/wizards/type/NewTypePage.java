@@ -32,8 +32,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsValidation;
 import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * An abstract superclass that implements common behavior of the policy and product component type

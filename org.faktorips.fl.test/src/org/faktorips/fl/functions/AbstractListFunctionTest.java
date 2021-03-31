@@ -22,7 +22,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.JavaExprCompiler;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

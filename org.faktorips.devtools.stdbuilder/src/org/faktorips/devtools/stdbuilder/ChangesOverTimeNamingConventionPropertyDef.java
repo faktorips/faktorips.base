@@ -13,7 +13,7 @@ import org.faktorips.devtools.model.internal.ipsproject.ChangesOverTimeNamingCon
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.util.message.Message;
+import org.faktorips.runtime.Message;
 
 /**
  * Property Definition that mirrors the {@link ChangesOverTimeNamingConvention} setting from the

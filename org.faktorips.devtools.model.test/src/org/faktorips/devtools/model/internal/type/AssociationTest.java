@@ -37,8 +37,8 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -287,8 +287,9 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         assertNotNull(message);
         assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_SINGULAR, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(association, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_SINGULAR,
+                message.getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test
@@ -300,8 +301,9 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         assertNotNull(message);
         assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(association, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL,
+                message.getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test
@@ -336,8 +338,9 @@ public class AssociationTest extends AbstractIpsPluginTest {
                 IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET);
 
         assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(association, message.getInvalidObjectProperties()[0].getObject());
-        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL, message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(association, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(IAssociation.PROPERTY_TARGET_ROLE_PLURAL,
+                message.getInvalidObjectProperties().get(0).getProperty());
     }
 
     @Test

@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Unique key validator, validates two-column-range key items. Objects of this kind of class,

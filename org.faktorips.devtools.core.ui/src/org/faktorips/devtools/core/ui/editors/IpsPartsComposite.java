@@ -60,7 +60,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * A composite that shows parts in a table viewer and provides an area containing a new, edit and

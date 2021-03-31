@@ -13,7 +13,7 @@ package org.faktorips.devtools.tableconversion.excel;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Converts from String to String :-)

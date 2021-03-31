@@ -36,8 +36,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 public class StatusPage extends WizardPage implements PropertyChangeListener {
 
@@ -163,11 +163,11 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
             if (element instanceof Message) {
                 Message msg = (Message)element;
                 switch (msg.getSeverity()) {
-                    case Message.ERROR:
+                    case ERROR:
                         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
-                    case Message.WARNING:
+                    case WARNING:
                         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
-                    case Message.INFO:
+                    case INFO:
                         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
                     default:
                 }

@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Refactoring processor for the "Rename IPS Object" - refactoring.

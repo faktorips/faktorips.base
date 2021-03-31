@@ -21,8 +21,8 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Composite for configuring CSV table format options like field delimiters, date formats and the

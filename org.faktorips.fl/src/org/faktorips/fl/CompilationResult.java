@@ -12,8 +12,8 @@ package org.faktorips.fl;
 
 import org.faktorips.codegen.CodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 
 /**
  * The result of a compilation. The result consists of a list of messages generated during the
