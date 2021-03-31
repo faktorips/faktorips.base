@@ -28,7 +28,7 @@ class DerivedUnionAssociationTmpl {
         «ENDIF»
         «overrideAnnotationForPublishedMethodOrIf(it, needOverride(currentContextType))»
         public «List_(targetInterfaceName)» «methodNameGetter»() {
-            «List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
+            «List_(targetInterfaceName)» result = new «ArrayList»(«methodNameGetNumOfInternal»());
             «IF isImplementedInSuperclass(currentContextType)»
                 result.addAll(super.«methodNameGetter»());
             «ENDIF»

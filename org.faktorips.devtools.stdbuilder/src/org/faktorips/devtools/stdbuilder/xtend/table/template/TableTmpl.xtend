@@ -61,7 +61,7 @@ class TableTmpl {
         */
         public «method(name)»{
             super();
-            rows = new «ArrayList(tableRowName)»();
+            rows = new «ArrayList»();
             «init()»;
         }
 
@@ -72,7 +72,7 @@ class TableTmpl {
         */
         public «method(name, List_(tableRowName), " content")»{
             super();
-            rows = new «ArrayList(tableRowName)»(content);
+            rows = new «ArrayList»(content);
             «init()»;
         }
     '''

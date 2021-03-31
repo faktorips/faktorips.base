@@ -571,27 +571,17 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(rulesVariableNameNotViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
-            if (true) {
-                body.append("<");
-                body.appendClassName(String.class.getName());
-                body.append(">");
-            }
+            body.append("<>");
             body.appendln("();");
             body.append(rulesVariableNameViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
-            if (true) {
-                body.append("<");
-                body.appendClassName(String.class.getName());
-                body.append(">");
-            }
+            body.append("<>");
             body.appendln("();");
             body.appendClassName(List.class.getName());
-            if (true) {
-                body.append("<");
-                body.appendClassName(Element.class.getName());
-                body.append(">");
-            }
+            body.append("<");
+            body.appendClassName(Element.class.getName());
+            body.append(">");
             body.append(" ");
             body.append(ruleListName);
             body.append(" = ");

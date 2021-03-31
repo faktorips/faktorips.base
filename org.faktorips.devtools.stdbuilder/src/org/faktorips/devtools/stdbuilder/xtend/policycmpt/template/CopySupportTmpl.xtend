@@ -44,7 +44,7 @@ class CopySupportTmpl {
                 */
                @Override
                public «implClassName» «newCopy» {
-                   «Map(IModelObject, IModelObject)» copyMap = new «HashMap(IModelObject, IModelObject)»();
+                   «Map(IModelObject, IModelObject)» copyMap = new «HashMap»();
                    «implClassName» newCopy = «newCopyInternal("copyMap")»;
                    «copyAssociationsInternal("newCopy", "copyMap")»;
                    return newCopy;

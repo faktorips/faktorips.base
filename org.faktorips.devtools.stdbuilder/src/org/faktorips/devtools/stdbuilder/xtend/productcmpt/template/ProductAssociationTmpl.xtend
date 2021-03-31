@@ -33,7 +33,7 @@ class ProductAssociationTmpl {
              * @generated
              */
             «IF oneToMany»
-                private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(0);
+                private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap»(0);
             «ELSE»
                 private «IProductComponentLink(targetInterfaceName)» «field(fieldName)» = null;
             «ENDIF»
@@ -80,7 +80,7 @@ class ProductAssociationTmpl {
                                «IF constrain»
                                    return «ListUtil».«convert("super."+methodNameGetter+"()", targetInterfaceName+".class")»;
                                «ELSE»
-                                   «List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«fieldName».size());
+                                   «List_(targetInterfaceName)» result = new «ArrayList»(«fieldName».size());
                                    for («IProductComponentLink(targetInterfaceName)» «getterLoopVarName» : «fieldName».values()) {
                                        result.add(«getterLoopVarName».«getTarget»);
                                    }
@@ -118,7 +118,7 @@ class ProductAssociationTmpl {
                                    return «ListUtil».«convert("super."+methodNameGetter+"(effectiveDate)", targetClassGenerationName + ".class")»;
                                «ELSE»
                                    «List_("? extends " +targetInterfaceName)» targets = «methodNameGetter»();
-                                   «List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
+                                   «List_(targetClassGenerationName)» result = new «ArrayList»();
                                    for («targetInterfaceName» target : targets) {
                                        «targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
                                        if (gen != null) {
@@ -227,7 +227,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
                     «checkRepositoryModifyable»
-                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, "«it.name»"));
+                    this.«fieldName».put(target.getId(), new «ProductComponentLink»(this, target, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -249,7 +249,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target, cardinality);
                 «ELSE»
                     «checkRepositoryModifyable»
-                    this.«fieldName».put(target.getId(), new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality, "«it.name»"));
+                    this.«fieldName».put(target.getId(), new «ProductComponentLink»(this, target, cardinality, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -293,7 +293,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target);
                 «ELSE»
                     «checkRepositoryModifyable»
-                    «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target, "«it.name»"));
+                    «fieldName» = (target == null ? null : new «ProductComponentLink»(this, target, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -315,7 +315,7 @@ class ProductAssociationTmpl {
                     super.«methodNameSetOrAdd»(target, cardinality);
                 «ELSE»
                     «checkRepositoryModifyable»
-                    «fieldName» = (target == null ? null : new «ProductComponentLink(targetInterfaceName)»(this, target, cardinality, "«it.name»"));
+                    «fieldName» = (target == null ? null : new «ProductComponentLink»(this, target, cardinality, "«it.name»"));
                 «ENDIF»
             }
         «ENDIF»
@@ -388,7 +388,7 @@ class ProductAssociationTmpl {
             «IF hasSupertype»
                 super.«getLinks»;
             «ELSE»
-                new «ArrayList(IProductComponentLink("? extends " + IProductComponent))»();
+                new «ArrayList»();
             «ENDIF»
             «FOR it : associations»
                 «IF !derivedUnion && !constrain»
@@ -420,15 +420,15 @@ class ProductAssociationTmpl {
                 «List_(Element)» associationElements = elementsMap.get(«constantNameXmlTag»);
                 if (associationElements != null) {
                 «IF oneToMany»
-                    this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(associationElements.size());
+                    this.«fieldName» = new «LinkedHashMap»(associationElements.size());
                     for (Element element : associationElements) {
-                        «IProductComponentLink(targetInterfaceName)» link = new «ProductComponentLink(targetInterfaceName)»(this);
+                        «IProductComponentLink(targetInterfaceName)» link = new «ProductComponentLink»(this);
                         link.initFromXml(element);
                         this.«fieldName».put(link.getTargetId(), link);
                     }
                 «ELSE»
                     Element element = associationElements.get(0);
-                    «fieldName» = new «ProductComponentLink(targetInterfaceName)»(this);
+                    «fieldName» = new «ProductComponentLink»(this);
                     «fieldName».initFromXml(element);
                 «ENDIF»
                 }

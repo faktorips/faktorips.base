@@ -48,7 +48,7 @@ def package static field (XPolicyAssociation it) '''
             «getAnnotations(POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD)»
             «getAnnotations(POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)»
             «IF oneToMany»
-                private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList(targetInterfaceName)»();
+                private «List_(targetInterfaceName)» «field(fieldName)»  = new «ArrayList»();
             «ELSE»
                 private «targetClassName» «field(fieldName)» = null;
             «ENDIF»
@@ -178,7 +178,7 @@ def private static getters (XPolicyAssociation it) '''
                     }
                     «IF derived»
                         «List_(targetInterfaceName)» elements = «methodNameGetter»();
-                        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+                        «List_(targetInterfaceName)» result = new  «ArrayList»();
                         for («targetInterfaceName» element : elements) {
                             «val targetClass = targetPolicyCmptClass»
                             if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {
@@ -187,7 +187,7 @@ def private static getters (XPolicyAssociation it) '''
                         }
         «««FIPS-1142.remove this if-else
                     «ELSE»
-                        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
+                        «List_(targetInterfaceName)» result = new  «ArrayList»();
                         for («targetInterfaceName» «targetClassName.toFirstLower()» : «fieldName») {
                                 «val targetClass = targetPolicyCmptClass»
                                 if («targetClassName.toFirstLower()».«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {

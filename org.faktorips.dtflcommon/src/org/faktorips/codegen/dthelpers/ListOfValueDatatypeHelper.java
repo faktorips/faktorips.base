@@ -83,7 +83,7 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         builder.append("new "); //$NON-NLS-1$
         builder.appendClassName(ArrayList.class);
-        builder.appendGenerics(getBasicJavaClassName());
+        builder.appendGenerics(""); //$NON-NLS-1$
         builder.appendParameters(new String[] { expression });
         return builder.getFragment();
     }

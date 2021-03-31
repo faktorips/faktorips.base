@@ -90,7 +90,7 @@ class ProductAttributeTmpl {
             public «List_("String")» «method(methodNameGetter, Locale, "locale")»
             «IF genInterface»;«ELSE»
             {
-                «List_("String")» result = new «ArrayList("String")»();
+                «List_("String")» result = new «ArrayList»();
                 for («DefaultInternationalString» internationalString : «fieldName») {
                     result.add(internationalString.get(locale));
                 }
@@ -187,7 +187,7 @@ class ProductAttributeTmpl {
                         «MultiValueXmlHelper».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
                     «ELSE»
                         «val singlgeVal = singleValueOfMultiValueAttribute»
-                        «List_("String")» stringList«singlgeVal.fieldName.toFirstUpper» = new «ArrayList("String")»();
+                        «List_("String")» stringList«singlgeVal.fieldName.toFirstUpper» = new «ArrayList»();
                         for («singlgeVal.javaClassName» value : this.«singlgeVal.fieldName») {
                             String stringValue = «singlgeVal.getToStringExpression("value")»;
                             stringList«singlgeVal.fieldName.toFirstUpper».add(stringValue);

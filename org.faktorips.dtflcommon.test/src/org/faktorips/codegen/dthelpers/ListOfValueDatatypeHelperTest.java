@@ -45,14 +45,14 @@ public class ListOfValueDatatypeHelperTest {
     @Test
     public void testNewInstance() {
         when(elementDatatypeHelper.getJavaClassName()).thenReturn("Integer");
-        assertEquals("new ArrayList<Integer>(xxx)", listOfValueDatatypeHelper.newInstance("xxx").getSourcecode());
+        assertEquals("new ArrayList<>(xxx)", listOfValueDatatypeHelper.newInstance("xxx").getSourcecode());
     }
 
     @Test
     public void testValueOfExpression() {
         when(elementDatatypeHelper.getJavaClassName()).thenReturn("Integer");
 
-        assertEquals("new ArrayList<Integer>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
+        assertEquals("new ArrayList<>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
                 .getSourcecode());
     }
 
@@ -64,7 +64,7 @@ public class ListOfValueDatatypeHelperTest {
         when(primitiveElementDatatypeHelper.getWrapperTypeHelper()).thenReturn(DatatypeHelper.INTEGER);
         listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(primitiveElementDatatypeHelper);
 
-        assertEquals("new ArrayList<Integer>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
+        assertEquals("new ArrayList<>(test)", listOfValueDatatypeHelper.valueOfExpression("test")
                 .getSourcecode());
     }
 }

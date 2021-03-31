@@ -156,7 +156,7 @@ class DefaultAndAllowedValuesTmpl {
                 «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported)»
                     «EnumValues» values = «ValueToXmlHelper».«getEnumValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (values != null) {
-                        «ArrayList(javaClassUsedForValueSet)» enumValues = new «ArrayList(javaClassUsedForValueSet)»();
+                        «List_(javaClassUsedForValueSet)» enumValues = new «ArrayList»();
                         for (int i = 0; i < values.«getNumberOfValues()»; i++) {
                             enumValues.add(«getValueSetNewInstanceFromExpression("values.getValue(i)", "getRepository()")»);
                         }

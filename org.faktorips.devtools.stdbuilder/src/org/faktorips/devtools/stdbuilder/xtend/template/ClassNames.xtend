@@ -132,8 +132,8 @@ class ClassNames {
     }
 
     // ArrayList.name does return java.util.ArrayList. Thats why we have to use the string reference in addImport
-    def static ArrayList(AbstractGeneratorModelNode it, String genericType) {
-        addImport("java.util.ArrayList") + "<" + genericType + ">"
+    def static ArrayList(AbstractGeneratorModelNode it) {
+        addImport("java.util.ArrayList") + "<>"
     }
 
     def static Arrays(AbstractGeneratorModelNode it) { addImport(typeof(Arrays)) }
@@ -142,12 +142,12 @@ class ClassNames {
         addImport(typeof(Map)) + "<" + genericKey + ", " + genericValue + ">"
     }
 
-    def static HashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
-        addImport(typeof(HashMap)) + "<" + genericKey + ", " + genericValue + ">"
+    def static HashMap(AbstractGeneratorModelNode it) {
+        addImport(typeof(HashMap)) + "<>"
     }
 
-    def static LinkedHashMap(AbstractGeneratorModelNode it, String genericKey, String genericValue) {
-        addImport(typeof(LinkedHashMap)) + "<" + genericKey + ", " + genericValue + ">"
+    def static LinkedHashMap(AbstractGeneratorModelNode it) {
+        addImport(typeof(LinkedHashMap)) + "<>"
     }
 
     def static Iterator(AbstractGeneratorModelNode it, String genericType) {
@@ -166,8 +166,8 @@ class ClassNames {
         addImport(typeof(IProductComponentGeneration))
     }
 
-    def static ProductComponentLink(AbstractGeneratorModelNode it, String genericType) {
-        addImport(typeof(ProductComponentLink)) + "<" + genericType + ">"
+    def static ProductComponentLink(AbstractGeneratorModelNode it) {
+        addImport(typeof(ProductComponentLink)) + "<>"
     }
 
     def static IProductComponentLink(AbstractGeneratorModelNode it, String genericType) {

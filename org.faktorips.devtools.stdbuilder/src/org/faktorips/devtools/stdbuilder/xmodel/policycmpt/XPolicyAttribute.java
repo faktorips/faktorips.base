@@ -582,10 +582,7 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment result = new JavaCodeFragment();
         result.append("new "); //$NON-NLS-1$
         result.appendClassName(UnrestrictedValueSet.class);
-        result.append("<"); //$NON-NLS-1$
-        result.appendClassName(getJavaClassUsedForValueSet());
-        result.append(">"); //$NON-NLS-1$
-        result.append("("); //$NON-NLS-1$
+        result.append("<>("); //$NON-NLS-1$
         result.append(getAttribute().getValueSet().isContainsNull());
         result.appendln(")"); //$NON-NLS-1$
         return result;

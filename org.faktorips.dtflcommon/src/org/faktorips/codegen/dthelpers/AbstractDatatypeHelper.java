@@ -118,15 +118,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Code sample
      * 
      * <pre>
-     * new DefaultEnumValueSet(new GeneratedGender[] { GeneratedGender.getGeneratedGender(Integer.valueOf(1)),
-     *         GeneratedGender.getGeneratedGender(Integer.valueOf(2)), GeneratedGender.getGeneratedGender(null) }, true,
-     *         GeneratedGender.getGeneratedGender(null));
-     * </pre>
-     * 
-     * Java 5 code sample
-     * 
-     * <pre>
-     *  (IEnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
+     *  (IEnumValueSet)new DefaultEnumValueSet&lt;&gt;(
      *      true,
      *      GeneratedGender.getGeneratedGender(null),
      *      GeneratedGender.getGeneratedGender(Integer.valueOf(1)),
@@ -141,9 +133,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(OrderedValueSet.class);
-        frag.append("<"); //$NON-NLS-1$
-        frag.appendClassName(getJavaClassName());
-        frag.append(">("); //$NON-NLS-1$
+        frag.append("<>("); //$NON-NLS-1$
         frag.append(containsNull);
         frag.append(", "); //$NON-NLS-1$
         frag.append(newInstance(null));
@@ -163,9 +153,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new "); //$NON-NLS-1$
         frag.appendClassName(OrderedValueSet.class);
-        frag.append("<"); //$NON-NLS-1$
-        frag.appendClassName(getJavaClassName());
-        frag.append(">"); //$NON-NLS-1$
+        frag.append("<>"); //$NON-NLS-1$
         frag.append("("); //$NON-NLS-1$
         frag.append(valueCollection);
         frag.append(", "); //$NON-NLS-1$
