@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -40,6 +39,7 @@ public class IpsProjectCreationProperties {
      * Default constructor.
      * <p>
      * Initializes the default: a Model-Project with Groovy support enabled, if available.
+     * 
      */
     public IpsProjectCreationProperties() {
         initializeDefaults();
@@ -53,7 +53,7 @@ public class IpsProjectCreationProperties {
         isModelProject = true;
         isProductDefinitionProject = false;
         isPersistentProject = false;
-        isGroovySupport = IpsClasspathContainerInitializer.isGroovySupportAvailable();
+        isGroovySupport = true;
         locales = new ArrayList<>();
     }
 
@@ -132,19 +132,24 @@ public class IpsProjectCreationProperties {
     /**
      * Checks whether all required properties for creating a Faktor-IPS project are set.
      * 
-     * @implNote Does not check whether the properties have a valid format.
+     * @implNote This method does not check whether the properties have a valid format or are
+     *           available
      * 
      * @return An error message which is empty if there are no errors.
      */
     public String checkForRequiredProperties() {
-        boolean existingRuntimeIDPrefix = getRuntimeIdPrefix() != null
-                && IpsStringUtils.isNotEmpty(getRuntimeIdPrefix());
-        boolean existingSourceFolderName = sourceFolderName != null && IpsStringUtils.isNotEmpty(sourceFolderName);
-        boolean existingBasePackageName = basePackageName != null && IpsStringUtils.isNotEmpty(basePackageName);
+        boolean existingRuntimeIDPrefix = IpsStringUtils.isNotEmpty(getRuntimeIdPrefix());
+        boolean existingSourceFolderName = IpsStringUtils.isNotEmpty(sourceFolderName);
+        boolean existingBasePackageName = IpsStringUtils.isNotEmpty(basePackageName);
         boolean existingLocales = locales != null && !locales.isEmpty();
 
+        boolean existingPersistenceSupport = true;
+        if (isPersistentProject) {
+            existingPersistenceSupport = IpsStringUtils.isNotEmpty(persistenceSupport);
+        }
+
         if (existingRuntimeIDPrefix && existingSourceFolderName
-                && existingBasePackageName && existingLocales) {
+                && existingBasePackageName && existingLocales && existingPersistenceSupport) {
             return IpsStringUtils.EMPTY;
         }
 
@@ -163,17 +168,8 @@ public class IpsProjectCreationProperties {
         if (!existingLocales) {
             errorMessage.append("locales;\n"); //$NON-NLS-1$
         }
-
-        if (isPersistentProject) {
-            boolean existingPersistenceSupport = persistenceSupport != null
-                    && IpsStringUtils.isNotEmpty(persistenceSupport);
-            if (!existingPersistenceSupport) {
-                errorMessage.append("persistenceSupport;\n"); //$NON-NLS-1$
-            }
-        }
-
-        if (isGroovySupport && !IpsClasspathContainerInitializer.isGroovySupportAvailable()) {
-            errorMessage.append("\nGroovy support is activeted but not installed.\n"); //$NON-NLS-1$
+        if (!existingPersistenceSupport) {
+            errorMessage.append("persistenceSupport;\n"); //$NON-NLS-1$
         }
 
         return errorMessage.toString();

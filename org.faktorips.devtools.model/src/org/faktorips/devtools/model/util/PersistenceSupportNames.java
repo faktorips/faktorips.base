@@ -30,7 +30,7 @@ public class PersistenceSupportNames {
     /**
      * The ID for using Eclipse Link 1.1 for persistence support.
      */
-    public static final String ID_ECLIPSE_LINK_1_1 = "EclipseLink 2.1"; //$NON-NLS-1$
+    public static final String ID_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
 
     /**
      * The ID for using Eclipse Link 2.5 for persistence support.
@@ -46,5 +46,9 @@ public class PersistenceSupportNames {
      * The ID for using Generic JPA 2.1 for persistence support.
      */
     public static final String ID_GENERIC_JPA_2_1 = "Generic JPA 2.1"; //$NON-NLS-1$
+
+    private PersistenceSupportNames() {
+        // Utility class
+    }
 
 }

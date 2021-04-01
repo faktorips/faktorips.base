@@ -11,6 +11,7 @@ package org.faktorips.m2e.ipsconfigurator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -65,8 +66,11 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     private static final String MANIFEST_FILE = "MANIFEST.MF";
 
     private static final String DEPENDENCY_IPS_GROUP_ID = "org.faktorips";
-
     private static final String MAVEN_PROPERTY_IPS_VERSION = "faktorips.version";
+
+    private static final String MAVEN_PLUGINS_GROUP_ID = "org.apache.maven.plugins";
+    private static final String MAVEN_JAR_PLUGIN_ARTIFACT_ID = "maven-jar-plugin";
+    private static final String MAVEN_SOURCE_PLUGIN_ARTIFACT_ID = "maven-source-plugin";
 
     @Override
     public boolean canConfigure(IProject project) {
@@ -114,7 +118,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      */
     private String checkForRequiredIpsObjectPathProperties(IIpsObjectPath ipsObjectPath) {
         boolean existsOutputFolderForMergableSources = ipsObjectPath.getOutputFolderForMergableSources() != null;
-        boolean existsOutputFolderForDerivedSources = ipsObjectPath.getOutputFolderForMergableSources() != null;
+        boolean existsOutputFolderForDerivedSources = ipsObjectPath.getOutputFolderForDerivedSources() != null;
 
         if (existsOutputFolderForMergableSources && existsOutputFolderForDerivedSources) {
             return IpsStringUtils.EMPTY;
@@ -173,7 +177,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             if (manifestFile.exists()) {
                 manifest = new Manifest(manifestFile.getContents());
             } else {
-                manifestFile.create(null, true, new NullProgressMonitor());
+                manifestFile.create(InputStream.nullInputStream(), true, new NullProgressMonitor());
                 manifest = new Manifest();
             }
             addIpsManifestFileAttributes(manifest, ipsProject.getProperties().getIpsObjectPath(), creationProperties);
@@ -252,6 +256,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         addMavenProperties(mavenModel);
         addMavenDependencies(mavenModel, creationProperties);
         addMavenResources(build, resourcesPath, creationProperties);
+        addMavenPluginManagement(build);
         addMavenPlugins(build);
 
         mavenModel.setBuild(build);
@@ -283,7 +288,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      */
     private void addMavenProperties(Model mavenModel) {
         String version = getIpsVersionForMaven();
-        mavenModel.addProperty(MAVEN_PROPERTY_IPS_VERSION, version);
+        if (!mavenModel.getProperties().containsKey(MAVEN_PROPERTY_IPS_VERSION)) {
+            mavenModel.addProperty(MAVEN_PROPERTY_IPS_VERSION, version);
+        }
     }
 
     /**
@@ -360,17 +367,84 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     private void addMavenResources(Build mavenBuild,
             String resourcesPath,
             IpsProjectCreationProperties creationProperties) {
-        Resource resourceFolder = new Resource();
-        resourceFolder.setDirectory(resourcesPath);
-        resourceFolder.addInclude("**/*.xml");
-        resourceFolder.addInclude("**/*.properties");
-        mavenBuild.addResource(resourceFolder);
 
-        Resource sourceFolder = new Resource();
-        String sourcFolderName = creationProperties.getSourceFolderName();
-        sourceFolder.setDirectory(sourcFolderName);
-        sourceFolder.setTargetPath(sourcFolderName);
-        mavenBuild.addResource(sourceFolder);
+        // Since resources does not have IDs, the directory is taken as identifier
+        Map<String, Resource> resources = mavenBuild.getResources().stream()
+                .collect(Collectors.toMap(Resource::getDirectory, Function.identity()));
+
+        String includeXML = "**/*.xml";
+        String includeProperties = "**/*.properties";
+        Resource resourcesFolderResource;
+        if (resources.containsKey(resourcesPath)) {
+            resourcesFolderResource = resources.get(resourcesPath);
+            if (!resourcesFolderResource.getIncludes().contains(includeXML)) {
+                resourcesFolderResource.addInclude(includeXML);
+            }
+            if (!resourcesFolderResource.getIncludes().contains(includeProperties)) {
+                resourcesFolderResource.addInclude(includeProperties);
+            }
+        } else {
+            resourcesFolderResource = new Resource();
+            resourcesFolderResource.setDirectory(resourcesPath);
+            resourcesFolderResource.addInclude(includeXML);
+            resourcesFolderResource.addInclude(includeProperties);
+            mavenBuild.addResource(resourcesFolderResource);
+        }
+
+        Resource sourceFolderResource;
+        String sourceFolderName = creationProperties.getSourceFolderName();
+        if (resources.containsKey(sourceFolderName)) {
+            sourceFolderResource = resources.get(sourceFolderName);
+            if (IpsStringUtils.isEmpty(sourceFolderResource.getTargetPath())) {
+                sourceFolderResource.setTargetPath(sourceFolderName);
+            }
+        } else {
+            sourceFolderResource = new Resource();
+            sourceFolderResource.setDirectory(sourceFolderName);
+            sourceFolderResource.setTargetPath(sourceFolderName);
+            mavenBuild.addResource(sourceFolderResource);
+        }
+
+    }
+
+    /**
+     * Adds all plugins to the Maven Plugin-Management required for using Faktor-IPS.
+     * <p>
+     * Here, the versions of the plugins are defined.
+     * 
+     * @param mavenBuild The build of the selected Maven project
+     * 
+     */
+    private void addMavenPluginManagement(Build mavenBuild) {
+        PluginManagement pluginManagement = mavenBuild.getPluginManagement();
+        if (pluginManagement == null) {
+            pluginManagement = new PluginManagement();
+        }
+
+        Map<String, Plugin> managementPlugins = pluginManagement.getPlugins().stream()
+                .collect(Collectors.toMap(Plugin::getArtifactId, Function.identity()));
+
+        // Jar plugin
+        Plugin jarPlugin;
+        if (!managementPlugins.containsKey(MAVEN_JAR_PLUGIN_ARTIFACT_ID)) {
+            jarPlugin = new Plugin();
+            jarPlugin.setGroupId(MAVEN_PLUGINS_GROUP_ID);
+            jarPlugin.setArtifactId(MAVEN_JAR_PLUGIN_ARTIFACT_ID);
+            jarPlugin.setVersion("3.2.0");
+            pluginManagement.addPlugin(jarPlugin);
+        }
+
+        // Source plugin
+        Plugin sourcePlugin;
+        if (!managementPlugins.containsKey(MAVEN_SOURCE_PLUGIN_ARTIFACT_ID)) {
+            sourcePlugin = new Plugin();
+            sourcePlugin.setGroupId(MAVEN_PLUGINS_GROUP_ID);
+            sourcePlugin.setArtifactId(MAVEN_SOURCE_PLUGIN_ARTIFACT_ID);
+            sourcePlugin.setVersion("3.2.1");
+            pluginManagement.addPlugin(sourcePlugin);
+        }
+
+        mavenBuild.setPluginManagement(pluginManagement);
     }
 
     /**
@@ -383,68 +457,29 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @param mavenBuild The build of the selected Maven project
      */
     private void addMavenPlugins(Build mavenBuild) {
-        PluginManagement pluginManagement = mavenBuild.getPluginManagement();
-        if (pluginManagement == null) {
-            pluginManagement = new PluginManagement();
-        }
-
-        // Plugin management
-
-        Map<String, Plugin> managementPlugins = pluginManagement.getPlugins().stream()
-                .collect(Collectors.toMap(Plugin::getArtifactId, Function.identity()));
-
-        String mavenPluginsGroupId = "org.apache.maven.plugins";
-
-        // Jar plugin
-        Plugin jarPlugin;
-        String jarPluginArtifactId = "maven-jar-plugin";
-        if (!managementPlugins.containsKey(jarPluginArtifactId)) {
-            jarPlugin = new Plugin();
-            jarPlugin.setGroupId(mavenPluginsGroupId);
-            jarPlugin.setArtifactId(jarPluginArtifactId);
-            jarPlugin.setVersion("3.2.0");
-            pluginManagement.addPlugin(jarPlugin);
-        }
-
-        // Source plugin
-        Plugin sourcePlugin;
-        String sourcePluginArtifactId = "maven-source-plugin";
-        if (!managementPlugins.containsKey(jarPluginArtifactId)) {
-            sourcePlugin = new Plugin();
-            sourcePlugin.setGroupId(mavenPluginsGroupId);
-            sourcePlugin.setArtifactId(sourcePluginArtifactId);
-            sourcePlugin.setVersion("3.2.1");
-            pluginManagement.addPlugin(sourcePlugin);
-        }
-
-        mavenBuild.setPluginManagement(pluginManagement);
-
-        // Build plugins
-
         Map<String, Plugin> buildPlugins = mavenBuild.getPlugins().stream()
                 .collect(Collectors.toMap(Plugin::getArtifactId, Function.identity()));
 
         // Jar plugin
-        if (buildPlugins.containsKey(jarPluginArtifactId)) {
-            jarPlugin = buildPlugins.get(jarPluginArtifactId);
-            Xpp3Dom configuration = (Xpp3Dom)jarPlugin.getConfiguration();
-            configuration.addChild(createJarPluginSkipConfiguration());
-            configuration.addChild(createJarPluginArchiveConfiguration());
+        Plugin jarPlugin;
+        if (buildPlugins.containsKey(MAVEN_JAR_PLUGIN_ARTIFACT_ID)) {
+            jarPlugin = buildPlugins.get(MAVEN_JAR_PLUGIN_ARTIFACT_ID);
         } else {
             jarPlugin = new Plugin();
-            jarPlugin.setGroupId(mavenPluginsGroupId);
-            jarPlugin.setArtifactId(jarPluginArtifactId);
-            jarPlugin.setConfiguration(createJarPluginConfiguration());
+            jarPlugin.setGroupId(MAVEN_PLUGINS_GROUP_ID);
+            jarPlugin.setArtifactId(MAVEN_JAR_PLUGIN_ARTIFACT_ID);
             mavenBuild.addPlugin(jarPlugin);
         }
+        addJarPluginConfiguration(jarPlugin);
 
         // Source plugin
-        if (buildPlugins.containsKey(sourcePluginArtifactId)) {
-            sourcePlugin = buildPlugins.get(sourcePluginArtifactId);
+        Plugin sourcePlugin;
+        if (buildPlugins.containsKey(MAVEN_SOURCE_PLUGIN_ARTIFACT_ID)) {
+            sourcePlugin = buildPlugins.get(MAVEN_SOURCE_PLUGIN_ARTIFACT_ID);
         } else {
             sourcePlugin = new Plugin();
-            sourcePlugin.setGroupId(mavenPluginsGroupId);
-            sourcePlugin.setArtifactId(sourcePluginArtifactId);
+            sourcePlugin.setGroupId(MAVEN_PLUGINS_GROUP_ID);
+            sourcePlugin.setArtifactId(MAVEN_SOURCE_PLUGIN_ARTIFACT_ID);
             mavenBuild.addPlugin(sourcePlugin);
         }
         String id = "attach-sources";
@@ -453,7 +488,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 .filter(execution -> execution.getId().equals(id))
                 .findAny();
         if (pluginExecution.isPresent()) {
-            pluginExecution.get().addGoal(goal);
+            if (!pluginExecution.get().getGoals().contains(goal)) {
+                pluginExecution.get().addGoal(goal);
+            }
         } else {
             PluginExecution execution = new PluginExecution();
             execution.setId(id);
@@ -468,18 +505,16 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * The configuration has to be the following DOM object:<br>
      * {@code org.codehaus.plexus.util.xml.Xpp3Dom}
      * 
-     * @return The creates configuration
+     * @param jarPlugin The Maven-Jar-Plugin to be configured
      */
-    private Xpp3Dom createJarPluginConfiguration() {
-        Xpp3Dom configuration = new Xpp3Dom("configuration");
-
-        Xpp3Dom skip = createJarPluginSkipConfiguration();
-        configuration.addChild(skip);
-
-        Xpp3Dom archive = createJarPluginArchiveConfiguration();
-        configuration.addChild(archive);
-
-        return configuration;
+    private void addJarPluginConfiguration(Plugin jarPlugin) {
+        Xpp3Dom configuration = (Xpp3Dom)jarPlugin.getConfiguration();
+        if (configuration == null) {
+            configuration = new Xpp3Dom("configuration");
+            jarPlugin.setConfiguration(configuration);
+        }
+        addJarPluginSkipConfiguration(configuration);
+        addJarPluginArchiveConfiguration(configuration);
     }
 
     /**
@@ -487,12 +522,16 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * <p>
      * {@code skip} should be set to {@code false}.
      * 
-     * @return the created configuration element
+     * @param configuration The configuration of the plugin
      */
-    private Xpp3Dom createJarPluginSkipConfiguration() {
-        Xpp3Dom skip = new Xpp3Dom("skip");
+    private void addJarPluginSkipConfiguration(Xpp3Dom configuration) {
+        String skipConfig = "skip";
+        Xpp3Dom skip = configuration.getChild(skipConfig);
+        if (skip == null) {
+            skip = new Xpp3Dom(skipConfig);
+            configuration.addChild(skip);
+        }
         skip.setValue("false");
-        return skip;
     }
 
     /**
@@ -500,15 +539,23 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * <p>
      * {@code archive} should point to the manifest file.
      * 
-     * @return the created configuration element
+     * @param configuration The configuration of the plugin
      */
-    private Xpp3Dom createJarPluginArchiveConfiguration() {
-        Xpp3Dom archive = new Xpp3Dom("archive");
-        Xpp3Dom manifestFile = new Xpp3Dom("manifestFile");
+    private void addJarPluginArchiveConfiguration(Xpp3Dom configuration) {
+        String archiveConfig = "archive";
+        Xpp3Dom archive = configuration.getChild(archiveConfig);
+        if (archive == null) {
+            archive = new Xpp3Dom(archiveConfig);
+            configuration.addChild(archive);
+        }
+        String manifestConfig = "manifestFile";
+        Xpp3Dom manifestFile = archive.getChild(manifestConfig);
+        if (manifestFile == null) {
+            manifestFile = new Xpp3Dom(manifestConfig);
+            archive.addChild(manifestFile);
+        }
         String manifestFilePath = META_INF_FOLDER.concat("/").concat(MANIFEST_FILE);
         manifestFile.setValue(manifestFilePath);
-        archive.addChild(manifestFile);
-        return archive;
     }
 
     /**

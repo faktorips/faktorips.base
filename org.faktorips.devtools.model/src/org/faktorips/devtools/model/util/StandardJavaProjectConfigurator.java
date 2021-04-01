@@ -80,6 +80,6 @@ public class StandardJavaProjectConfigurator {
     private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
         String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
         return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
-                || Integer.parseInt(targetVersion[0]) > 1;
+                || Integer.parseInt(targetVersion[0]) >= 10;
     }
 }

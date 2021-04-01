@@ -258,7 +258,7 @@ public class ProjectUtil {
             }
         }
 
-        IIpsProject ipsProject = ProjectUtil.createDefaultIpsProject(javaProject, creationProperties);
+        IIpsProject ipsProject = createDefaultIpsProject(javaProject, creationProperties);
 
         IFolder ipsModelFolder = ipsProject.getProject().getFolder(creationProperties.getSourceFolderName());
         if (!ipsModelFolder.exists()) {
@@ -346,8 +346,8 @@ public class ProjectUtil {
         IIpsObjectPath path = new IpsObjectPath(ipsProject);
         path.setOutputDefinedPerSrcFolder(false);
         path.setBasePackageNameForMergableJavaClasses(creationProperties.getBasePackageName());
-        path.setOutputFolderForMergableSources(javaSrcFolder);
         path.setBasePackageNameForDerivedJavaClasses(creationProperties.getBasePackageName());
+        path.setOutputFolderForMergableSources(javaSrcFolder);
         if (javaSrcFolder.exists()) {
             String derivedsrcFolderName = creationProperties.isModelProject() ? "resources" : "derived"; //$NON-NLS-1$//$NON-NLS-2$
             IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path(derivedsrcFolderName));
