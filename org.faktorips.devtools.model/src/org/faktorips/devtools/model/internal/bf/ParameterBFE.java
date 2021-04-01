@@ -20,12 +20,14 @@ import org.faktorips.devtools.model.bf.BFElementType;
 import org.faktorips.devtools.model.bf.IParameterBFE;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class ParameterBFE extends BFElement implements IParameterBFE {
 
     private String datatype = ""; //$NON-NLS-1$

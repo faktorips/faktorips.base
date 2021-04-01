@@ -19,7 +19,9 @@ import org.faktorips.devtools.core.ui.wizards.bf.OpenNewBFWizardAction;
  * Opens the wizard for creating a new business function.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class NewBusinessFunctionAction extends Action {
 
     private IWorkbenchWindow window;

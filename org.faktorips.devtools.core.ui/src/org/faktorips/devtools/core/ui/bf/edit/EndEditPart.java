@@ -27,7 +27,9 @@ import org.faktorips.runtime.MessageList;
  * An edit part that provides a nonresizable figure for the end business function element.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class EndEditPart extends NodeEditPart {
 
     @Override

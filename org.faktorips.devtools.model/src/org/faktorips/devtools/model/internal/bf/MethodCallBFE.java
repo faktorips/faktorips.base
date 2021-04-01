@@ -24,6 +24,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public abstract class MethodCallBFE extends BFElement implements IMethodCallBFE {
 
     private String executableMethodName = ""; //$NON-NLS-1$

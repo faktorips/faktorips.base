@@ -20,7 +20,9 @@ import org.faktorips.util.memento.Memento;
  * This command deletes the control flow object that is provided to it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class DeleteConnectionCommand extends Command {
 
     private IBusinessFunction businessFunction;

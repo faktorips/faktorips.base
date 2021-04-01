@@ -14,7 +14,9 @@ package org.faktorips.devtools.core.ui.bf.edit;
  * The edit part for the decision model object.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class DecisionEditPart extends AbstractDecisionEditPart {
     // used in BusinessFunctionEditPartFactory
 }

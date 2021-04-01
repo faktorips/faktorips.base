@@ -26,7 +26,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * within the provided ips project and referenced projects can be selected from.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionRefControl extends IpsObjectRefControl {
 
     private IBusinessFunction currentBusinessFunction;

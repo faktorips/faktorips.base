@@ -20,6 +20,8 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.type.IMethod;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class CallMethodDecisionPropertySection extends CallMethodPropertySection {
 
     private Label valueLabel;

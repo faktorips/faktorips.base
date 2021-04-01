@@ -28,15 +28,17 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.bf.IActionBFE;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A specialization of {@link NodeEditPart} that creates the figure for an action, creates the
  * connection anchores and implements the error display.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public abstract class ActionEditPart extends NodeEditPart {
 
     private ImageDescriptor imageDescriptor;

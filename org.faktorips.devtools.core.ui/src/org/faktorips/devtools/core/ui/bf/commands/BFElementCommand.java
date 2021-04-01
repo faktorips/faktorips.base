@@ -19,7 +19,9 @@ import org.faktorips.util.memento.Memento;
  * functionality.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public abstract class BFElementCommand extends org.eclipse.gef.commands.Command {
 
     protected IBusinessFunction businessFunction;

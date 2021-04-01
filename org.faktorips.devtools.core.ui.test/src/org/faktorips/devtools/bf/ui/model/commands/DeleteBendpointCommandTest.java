@@ -25,6 +25,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class DeleteBendpointCommandTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;

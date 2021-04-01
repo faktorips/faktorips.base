@@ -18,7 +18,9 @@ import org.faktorips.devtools.core.ui.wizards.NewIpsObjectWizard;
  * A wizard responsible for the creation of a new business function.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class NewBFWizard extends NewIpsObjectWizard {
 
     @Override

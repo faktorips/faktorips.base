@@ -21,7 +21,9 @@ import org.faktorips.devtools.model.bf.IControlFlow;
  * Creates edit parts for the business function and all of its children.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionEditPartFactory implements EditPartFactory {
 
     @Override

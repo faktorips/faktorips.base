@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.businessfct.BusinessFunction;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -93,6 +92,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateNameForBusinessFunction() throws CoreException {
+        @SuppressWarnings("deprecation")
         IpsObjectType type = IpsObjectType.BUSINESS_FUNCTION;
         testCommonJavaTypeNameValidation(type);
     }
@@ -322,7 +322,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Business function
-        BusinessFunction bf = (BusinessFunction)newIpsObject(ipsProject, IpsObjectType.BUSINESS_FUNCTION, "1test");
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.model.businessfct.BusinessFunction bf = (org.faktorips.devtools.model.businessfct.BusinessFunction)newIpsObject(
+                ipsProject, IpsObjectType.BUSINESS_FUNCTION, "1test");
         ml = bf.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
 

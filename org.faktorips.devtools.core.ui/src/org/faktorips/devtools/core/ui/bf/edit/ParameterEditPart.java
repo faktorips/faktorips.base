@@ -47,7 +47,9 @@ import org.faktorips.devtools.model.bf.Size;
  * the business function editor.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ParameterEditPart extends AbstractGraphicalEditPart implements ContentsChangeListener {
 
     private RectangleFigure lowerRectangle;

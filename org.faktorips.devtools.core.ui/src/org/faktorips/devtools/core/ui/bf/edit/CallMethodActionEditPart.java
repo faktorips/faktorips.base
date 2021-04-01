@@ -18,7 +18,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * views.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class CallMethodActionEditPart extends ActionEditPart {
 
     public CallMethodActionEditPart() {

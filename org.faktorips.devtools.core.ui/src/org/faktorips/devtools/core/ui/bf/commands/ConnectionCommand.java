@@ -23,6 +23,8 @@ import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.util.memento.Memento;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class ConnectionCommand extends Command {
 
     protected IBFElement sourceNode;
@@ -54,13 +56,15 @@ public class ConnectionCommand extends Command {
                 return false;
             }
             if ((sourceNode.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL
-                    || sourceNode.getType() == BFElementType.ACTION_INLINE || sourceNode.getType() == BFElementType.ACTION_METHODCALL)
+                    || sourceNode.getType() == BFElementType.ACTION_INLINE
+                    || sourceNode.getType() == BFElementType.ACTION_METHODCALL)
                     && !sourceNode.getOutgoingControlFlow().isEmpty()) {
                 return false;
             }
         }
         if (targetNode != null) {
-            if ((targetNode.getType() == BFElementType.DECISION || targetNode.getType() == BFElementType.DECISION_METHODCALL)
+            if ((targetNode.getType() == BFElementType.DECISION
+                    || targetNode.getType() == BFElementType.DECISION_METHODCALL)
                     && !targetNode.getIncomingControlFlow().isEmpty()) {
                 return false;
             }
@@ -68,7 +72,8 @@ public class ConnectionCommand extends Command {
                 return false;
             }
             if ((targetNode.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL
-                    || targetNode.getType() == BFElementType.ACTION_INLINE || targetNode.getType() == BFElementType.ACTION_METHODCALL)
+                    || targetNode.getType() == BFElementType.ACTION_INLINE
+                    || targetNode.getType() == BFElementType.ACTION_METHODCALL)
                     && !targetNode.getIncomingControlFlow().isEmpty()) {
                 return false;
             }

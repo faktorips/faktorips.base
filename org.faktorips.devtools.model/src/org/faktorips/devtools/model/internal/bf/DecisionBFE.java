@@ -24,6 +24,8 @@ import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class DecisionBFE extends MethodCallBFE implements IDecisionBFE {
 
     private String datatype = Datatype.BOOLEAN.getQualifiedName();

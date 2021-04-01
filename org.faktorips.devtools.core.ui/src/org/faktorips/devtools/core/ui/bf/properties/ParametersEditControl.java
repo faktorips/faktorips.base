@@ -55,15 +55,17 @@ import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IParameterBFE;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A control consisting of a table and an add and remove button by means of which parameters of a
  * business function can be defined.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ParametersEditControl extends Composite {
 
     private IBusinessFunction paramContainer;
@@ -469,7 +471,6 @@ public class ParametersEditControl extends Composite {
         fTableViewer.setCellModifier(new ParametersCellModifier());
     }
 
-    @SuppressWarnings("deprecation")
     private SubjectControlContentAssistant installParameterTypeContentAssist(Control control) {
         if (!(control instanceof Text)) {
             return null;

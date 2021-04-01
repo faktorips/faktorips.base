@@ -207,6 +207,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testRemoveEntry() {
         toc.removeEntry(new QualifiedNameType("MotorProduct", IpsObjectType.PRODUCT_CMPT));

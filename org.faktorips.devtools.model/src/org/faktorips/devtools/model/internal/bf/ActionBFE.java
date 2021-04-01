@@ -23,6 +23,8 @@ import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class ActionBFE extends MethodCallBFE implements IActionBFE {
 
     public ActionBFE(IIpsObject parent, String id) {

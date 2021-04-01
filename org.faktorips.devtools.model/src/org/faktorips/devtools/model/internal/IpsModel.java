@@ -243,6 +243,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return customModelExtensions;
     }
 
+    @SuppressWarnings("deprecation")
     private void initIpsObjectTypes() {
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$

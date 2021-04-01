@@ -30,7 +30,9 @@ import org.faktorips.devtools.model.bf.IMethodCallBFE;
  * action can be edited with it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class CallBusinessFunctionActionPropertySection extends AbstractPropertySection {
 
     private BusinessFunctionRefControl businessFunctionField;

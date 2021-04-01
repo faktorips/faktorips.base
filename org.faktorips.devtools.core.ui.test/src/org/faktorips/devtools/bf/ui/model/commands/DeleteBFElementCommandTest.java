@@ -24,6 +24,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class DeleteBFElementCommandTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;

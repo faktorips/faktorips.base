@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.bf.edit;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class CallMethodDecisionEditPart extends AbstractDecisionEditPart {
     // used in BusinessFunctionEditPartFactory
 }

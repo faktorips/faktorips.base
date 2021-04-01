@@ -22,7 +22,9 @@ import org.faktorips.runtime.MessageList;
  * The edit part of the merge business function element.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class MergeEditPart extends NodeEditPart {
 
     private ScalableRhombFigure errorDisplay;

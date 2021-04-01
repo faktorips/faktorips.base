@@ -56,7 +56,6 @@ import org.faktorips.devtools.core.ui.actions.IpsPropertiesAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
 import org.faktorips.devtools.core.ui.actions.IpsTestCaseCopyAction;
 import org.faktorips.devtools.core.ui.actions.MigrateProjectAction;
-import org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumContentAction;
 import org.faktorips.devtools.core.ui.actions.NewEnumTypeAction;
 import org.faktorips.devtools.core.ui.actions.NewFileResourceAction;
@@ -266,6 +265,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(newMenu);
     }
 
+    @SuppressWarnings("deprecation")
     private void addModelMenueItems(MenuManager newMenu, IWorkbenchWindow workbenchWindow) {
         // Model side elements
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
@@ -278,7 +278,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             newMenu.add(new NewEnumTypeAction(workbenchWindow));
         }
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
-            newMenu.add(new NewBusinessFunctionAction(workbenchWindow));
+            newMenu.add(new org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction(workbenchWindow));
         }
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
             newMenu.add(new NewTableStructureAction(workbenchWindow));

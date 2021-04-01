@@ -24,10 +24,10 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 
 /**
  * Default implementation of the project naming conventions.
@@ -96,6 +96,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return validateIpsObjectNameInternal(type, name, false);
     }
 
+    @SuppressWarnings("deprecation")
     private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck) {
         MessageList result = new MessageList();
 

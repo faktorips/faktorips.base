@@ -622,7 +622,6 @@ public class MessageList implements Serializable, Iterable<Message> {
             return false;
         }
         try {
-            @SuppressWarnings("unchecked")
             MessageList other = (MessageList)obj;
             if (getMessages() == null) {
                 if (other.getMessages() != null) {

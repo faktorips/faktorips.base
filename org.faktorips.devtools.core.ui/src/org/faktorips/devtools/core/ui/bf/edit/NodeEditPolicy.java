@@ -21,11 +21,13 @@ import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 
 /**
- * This policy creates the ConnectionCreateion command which is reponsible for establishing a
+ * This policy creates the ConnectionCreateion command which is responsible for establishing a
  * connection and reconnection of a control flow object.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class NodeEditPolicy extends GraphicalNodeEditPolicy {
 
     @Override

@@ -31,6 +31,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     private Location location;

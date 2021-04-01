@@ -31,7 +31,10 @@ import org.faktorips.devtools.model.bf.IBusinessFunction;
 
 /**
  * Provides display text and images for business function elements. It is used by the property view.
+ * 
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionLabelProvider implements ILabelProvider {
 
     @Override

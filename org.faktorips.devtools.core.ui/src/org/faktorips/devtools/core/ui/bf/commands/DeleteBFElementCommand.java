@@ -20,7 +20,9 @@ import org.faktorips.util.ArgumentCheck;
  * starting from it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class DeleteBFElementCommand extends BFElementCommand {
 
     private IBFElement bfElement;

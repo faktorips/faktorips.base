@@ -40,6 +40,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.util.LocalizedStringsSet;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     public static final String PACKAGE_STRUCTURE_KIND_ID = "BusinessFunctionBuilder.bf.stdbuilder.devtools.faktorips.org"; //$NON-NLS-1$

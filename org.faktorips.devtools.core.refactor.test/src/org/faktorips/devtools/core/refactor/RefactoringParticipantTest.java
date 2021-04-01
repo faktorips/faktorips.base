@@ -18,8 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -199,9 +197,12 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         return newTestCaseType(ipsProject, name);
     }
 
-    protected IBusinessFunction createBusinessFunction(String name) throws CoreException {
-        IBusinessFunction businessFunction = (IBusinessFunction)newIpsObject(ipsProject,
-                BusinessFunctionIpsObjectType.getInstance(), name);
+    @SuppressWarnings("deprecation")
+    protected org.faktorips.devtools.model.bf.IBusinessFunction createBusinessFunction(String name)
+            throws CoreException {
+        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
+                ipsProject,
+                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(), name);
         businessFunction.newStart(new Location(0, 0));
         businessFunction.newEnd(new Location(10, 10));
         IControlFlow controlFlow = businessFunction.newControlFlow();

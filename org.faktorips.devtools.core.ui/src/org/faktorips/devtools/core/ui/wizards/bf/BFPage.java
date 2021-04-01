@@ -26,7 +26,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
  * The wizard page for the new business function wizard.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BFPage extends IpsObjectPage {
 
     public BFPage(IStructuredSelection selection) {

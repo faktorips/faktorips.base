@@ -18,8 +18,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
-import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -177,15 +175,17 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         tableStructureReferences.check(TARGET_PACKAGE_NAME + '.' + tableStructure.getName());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testMoveBusinessFunction() throws CoreException {
-        IBusinessFunction businessFunction = createBusinessFunction(ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
+        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction(
+                ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
 
         saveIpsSrcFile(businessFunction);
         performMoveRefactoring(businessFunction, targetIpsPackageFragment);
 
         checkIpsSourceFile(businessFunction.getName(), businessFunction.getName(), originalIpsPackageFragment,
-                targetIpsPackageFragment, BusinessFunctionIpsObjectType.getInstance());
+                targetIpsPackageFragment, org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance());
     }
 
     @Test

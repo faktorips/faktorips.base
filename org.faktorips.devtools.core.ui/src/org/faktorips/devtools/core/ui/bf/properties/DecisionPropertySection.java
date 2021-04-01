@@ -23,7 +23,9 @@ import org.faktorips.devtools.model.bf.IDecisionBFE;
  * edited with it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class DecisionPropertySection extends NamedOnlyBFElementsPropertySection {
 
     private DatatypeRefControl datatypeField;

@@ -101,6 +101,7 @@ public class RuleFunctionsControl extends EditTableControl {
         layouter.addColumnData(new ColumnWeightData(100, true));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];

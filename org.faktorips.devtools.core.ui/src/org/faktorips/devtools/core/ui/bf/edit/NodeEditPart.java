@@ -42,7 +42,9 @@ import org.faktorips.runtime.MessageList;
  * model object.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public abstract class NodeEditPart extends AbstractGraphicalEditPart implements org.eclipse.gef.NodeEditPart,
         ContentsChangeListener {
 

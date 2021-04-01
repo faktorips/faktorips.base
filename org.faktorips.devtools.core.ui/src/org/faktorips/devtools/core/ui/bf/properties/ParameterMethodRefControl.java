@@ -42,7 +42,9 @@ import org.faktorips.util.StringUtil;
  * methods of a provided business function parameter.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ParameterMethodRefControl extends TextButtonControl {
 
     private IType parameterType;

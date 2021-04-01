@@ -20,7 +20,9 @@ import org.faktorips.util.memento.Memento;
  * This command resizes the rectangular figure that displays the parameters of a business function.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ParameterFigureConstraintCommand extends org.eclipse.gef.commands.Command {
 
     private Rectangle constraint;

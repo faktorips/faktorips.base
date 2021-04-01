@@ -21,7 +21,9 @@ import org.faktorips.util.ArgumentCheck;
  * that is provided to it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class CreateBFElementCommand extends BFElementCommand {
 
     private Point location;

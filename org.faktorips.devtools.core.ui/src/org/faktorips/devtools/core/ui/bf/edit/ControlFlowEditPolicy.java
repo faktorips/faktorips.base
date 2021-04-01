@@ -20,7 +20,9 @@ import org.faktorips.devtools.model.bf.IControlFlow;
  * This policy is responsible for the deletion of a control flow.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ControlFlowEditPolicy extends org.eclipse.gef.editpolicies.ConnectionEditPolicy {
 
     @Override

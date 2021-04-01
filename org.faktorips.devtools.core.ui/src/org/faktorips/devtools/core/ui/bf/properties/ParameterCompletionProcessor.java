@@ -25,7 +25,9 @@ import org.faktorips.devtools.model.type.IType;
  * function.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ParameterCompletionProcessor extends AbstractCompletionProcessor {
 
     private IBusinessFunction businessFunction;

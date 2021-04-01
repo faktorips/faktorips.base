@@ -11,11 +11,11 @@
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,8 +23,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -202,15 +200,17 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         tableStructureReferences.check(NEW_NAME);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testRenameBusinessFunction() throws CoreException {
-        IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
+        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
 
         saveIpsSrcFile(businessFunction);
         performRenameRefactoring(businessFunction, NEW_NAME);
 
         checkIpsSourceFile(businessFunction.getName(), NEW_NAME, businessFunction.getIpsPackageFragment(),
-                businessFunction.getIpsPackageFragment(), BusinessFunctionIpsObjectType.getInstance());
+                businessFunction.getIpsPackageFragment(),
+                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance());
     }
 
     @Test

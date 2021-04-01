@@ -31,7 +31,9 @@ import org.faktorips.devtools.model.bf.IBFElement;
  * element can be edited with it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection {
 
     private Text nameField;

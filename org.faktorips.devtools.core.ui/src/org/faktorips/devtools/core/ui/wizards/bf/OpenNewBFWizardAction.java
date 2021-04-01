@@ -13,6 +13,8 @@ package org.faktorips.devtools.core.ui.wizards.bf;
 import org.eclipse.ui.INewWizard;
 import org.faktorips.devtools.core.ui.wizards.OpenNewWizardAction;
 
+/** @deprecated for removal since 21.6 */
+@Deprecated
 // TODO has to be registered
 public class OpenNewBFWizardAction extends OpenNewWizardAction {
 

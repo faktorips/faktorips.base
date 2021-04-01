@@ -21,7 +21,9 @@ import org.faktorips.runtime.MessageList;
  * The edit part for the decision model object.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public abstract class AbstractDecisionEditPart extends NodeEditPart {
 
     private ScalableRhombFigure errorDisplay;

@@ -11,15 +11,14 @@
 package org.faktorips.devtools.core.refactor;
 
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
@@ -148,7 +147,9 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
     @Test
     public void testMoveBusinessFunction() throws CoreException {
-        IBusinessFunction businessFunction = createBusinessFunction(ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction(
+                ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
 
         saveIpsSrcFile(businessFunction);
         performFullBuild(ipsProject);

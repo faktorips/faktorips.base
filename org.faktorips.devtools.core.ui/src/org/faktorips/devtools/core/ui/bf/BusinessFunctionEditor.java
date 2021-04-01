@@ -62,7 +62,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  * The editor for business functions.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
         ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
 
@@ -187,7 +189,6 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     }
 
     // TODO part of this code is duplicate in IpsObjectEditor
-    @SuppressWarnings("deprecation")
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         IIpsModel model = IIpsModel.get();

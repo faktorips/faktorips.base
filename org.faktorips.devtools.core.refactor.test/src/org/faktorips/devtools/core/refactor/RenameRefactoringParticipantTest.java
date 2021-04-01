@@ -19,10 +19,10 @@ import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
@@ -385,7 +384,8 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     @Test
     public void testRenameBusinessFunction() throws CoreException {
-        IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
 
         saveIpsSrcFile(businessFunction);
         performFullBuild(ipsProject);

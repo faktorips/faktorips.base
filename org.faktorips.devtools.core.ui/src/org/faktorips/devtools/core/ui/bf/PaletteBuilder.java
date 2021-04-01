@@ -36,7 +36,9 @@ import org.faktorips.devtools.model.internal.bf.ControlFlow;
  * Builds the palette that is needed by the business function edtior.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class PaletteBuilder {
 
     private List<PaletteContainer> createCategories(PaletteRoot root) {

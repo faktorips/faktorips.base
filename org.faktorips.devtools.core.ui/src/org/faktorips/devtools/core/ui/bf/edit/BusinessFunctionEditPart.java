@@ -31,7 +31,9 @@ import org.faktorips.devtools.model.bf.IBusinessFunction;
  * The edit part of the business function object.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionEditPart extends AbstractGraphicalEditPart implements ContentsChangeListener {
 
     @Override

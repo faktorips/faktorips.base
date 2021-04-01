@@ -30,7 +30,9 @@ import org.faktorips.devtools.model.bf.IBusinessFunction;
  * commands and policies.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class BusinessFunctionXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
     @Override

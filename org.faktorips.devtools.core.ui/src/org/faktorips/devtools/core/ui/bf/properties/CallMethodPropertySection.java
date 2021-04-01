@@ -40,7 +40,9 @@ import org.faktorips.devtools.model.type.IType;
  * edited with it.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class CallMethodPropertySection extends AbstractPropertySection implements ContentsChangeListener {
 
     protected Text parameterSelectionControl;

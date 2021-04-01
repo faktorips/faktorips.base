@@ -60,7 +60,6 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
 import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
@@ -385,7 +384,10 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // toc file builder
         builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
-        builders.put(BuilderKindIds.BUSINESS_FUNCTION, new BusinessFunctionBuilder(this));
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder businessFunctionBuilder = new org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder(
+                this);
+        builders.put(BuilderKindIds.BUSINESS_FUNCTION, businessFunctionBuilder);
         // New enum type builder
         builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));

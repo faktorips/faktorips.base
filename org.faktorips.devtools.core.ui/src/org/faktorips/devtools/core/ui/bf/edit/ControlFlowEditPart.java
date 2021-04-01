@@ -39,7 +39,9 @@ import org.faktorips.runtime.MessageList;
  * label widget for which it is the controller for. The label positioned to the line figure.
  * 
  * @author Peter Erzberger
+ * @deprecated for removal since 21.6
  */
+@Deprecated
 public class ControlFlowEditPart extends AbstractConnectionEditPart implements ContentsChangeListener {
 
     private CLabel label;
