@@ -88,7 +88,7 @@ public interface IV extends ITimedConfigurableModelObject, IDeltaSupport,
 	 * @param p
 	 *            Der neue P.
 	 * @param initPropertiesWithConfiguratedDefaults
-	 *            <code>true</code> falls die Eigenschaften mit den Defaultwerte
+	 *            <code>true</code> falls die Eigenschaften mit den Defaultwerten
 	 *            aus P belegt werden sollen.
 	 * 
 	 * @generated
