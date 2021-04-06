@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -97,7 +98,7 @@ public class DocumentationContext {
     /**
      * All {@link IIpsSrcFile}s, which should be documented within the Export
      */
-    private List<IIpsSrcFile> documentedSrcFiles;
+    private Set<IIpsSrcFile> documentedSrcFiles;
 
     public DocumentationContext() {
         this(new PluginResourceFacade());
@@ -136,10 +137,10 @@ public class DocumentationContext {
         return documentedIpsObjectTypes;
     }
 
-    public List<IIpsSrcFile> getDocumentedSourceFiles() {
+    public Set<IIpsSrcFile> getDocumentedSourceFiles() {
         if (documentedSrcFiles == null) {
             try {
-                documentedSrcFiles = ipsProject.findAllIpsSrcFiles(getDocumentedIpsObjectTypes());
+                documentedSrcFiles = new LinkedHashSet<>(ipsProject.findAllIpsSrcFiles(getDocumentedIpsObjectTypes()));
             } catch (CoreRuntimeException e) {
                 addStatus(new IpsStatus(
                         IStatus.ERROR,

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -39,9 +40,7 @@ public class IpsObjectPathContainerFactory {
      * @return The new factory.
      */
     public static final IpsObjectPathContainerFactory newFactoryBasedOnExtensions() {
-        List<IIpsObjectPathContainerType> types = new ExtensionPoints().createExecutableExtensions(
-                ExtensionPoints.IPS_OBJECT_PATH_CONTAINER_TYPE, ExtensionPoints.CONFIG_ELEMENT_CONTAINER_TYPE,
-                ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS, IIpsObjectPathContainerType.class);
+        List<IIpsObjectPathContainerType> types = IIpsModelExtensions.get().getIpsObjectPathContainerTypes();
         return newFactory(types);
     }
 
@@ -61,7 +60,7 @@ public class IpsObjectPathContainerFactory {
             IIpsObjectPathContainerType otherType = newFactory.getContainerType(type.getId());
             if (otherType != null && otherType != type) {
                 IpsLog.log(new IpsStatus("Can't register type " + type //$NON-NLS-1$
-                + ", as another type is registered with the same id, id=" + type.getId())); //$NON-NLS-1$
+                        + ", as another type is registered with the same id, id=" + type.getId())); //$NON-NLS-1$
                 continue;
             }
             newFactory.registerContainerType(type);

@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.context;
 
 import static org.junit.Assert.fail;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -47,9 +47,9 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
             private boolean alreadyAdded = false;
 
             @Override
-            public List<IIpsSrcFile> getDocumentedSourceFiles() {
+            public Set<IIpsSrcFile> getDocumentedSourceFiles() {
 
-                List<IIpsSrcFile> documentedSourceFiles = super.getDocumentedSourceFiles();
+                Set<IIpsSrcFile> documentedSourceFiles = super.getDocumentedSourceFiles();
                 if (alreadyAdded) {
                     return documentedSourceFiles;
                 }

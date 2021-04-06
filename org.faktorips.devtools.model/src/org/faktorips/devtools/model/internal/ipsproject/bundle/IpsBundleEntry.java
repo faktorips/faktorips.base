@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
+import org.faktorips.devtools.model.ipsproject.bundle.IIpsBundleEntry;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -47,7 +48,7 @@ import org.faktorips.runtime.MessageList;
  * 
  * @author dirmeier
  */
-public class IpsBundleEntry extends IpsLibraryEntry {
+public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     private static final String XML_ATTRIBUTE_PATH = "bundlePath"; //$NON-NLS-1$
 
@@ -83,8 +84,7 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     }
 
     private void initFolderBundle(IPath bundlePath) throws IOException {
-        IpsFolderBundle ipsFolderBundle;
-        ipsFolderBundle = ipsStorageFactory.createFolderBundle(getIpsProject(), bundlePath);
+        IpsFolderBundle ipsFolderBundle = ipsStorageFactory.createFolderBundle(getIpsProject(), bundlePath);
         ipsFolderBundle.initBundle();
         ipsBundle = ipsFolderBundle;
     }

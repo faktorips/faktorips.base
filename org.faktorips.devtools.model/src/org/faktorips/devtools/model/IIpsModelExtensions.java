@@ -18,9 +18,11 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
+import org.faktorips.devtools.model.internal.IpsObjectPathContainerFactory;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
@@ -158,5 +160,11 @@ public interface IIpsModelExtensions {
                 .getOrDefault(versionProviderId, DefaultVersionProvider::new)
                 .createVersionProvider(ipsProject);
     }
+
+    /**
+     * Returns a all registered {@link IIpsObjectPathContainerType IIpsObjectPathContainerTypes} to
+     * be used by the {@link IpsObjectPathContainerFactory}.
+     */
+    List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes();
 
 }

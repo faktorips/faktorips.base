@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.standard;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +61,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     @SuppressWarnings("deprecation")
     @Override
     public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
-        List<IIpsSrcFile> srcFiles = context.getDocumentedSourceFiles();
+        List<IIpsSrcFile> srcFiles = new ArrayList<>(context.getDocumentedSourceFiles());
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
         IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();
 

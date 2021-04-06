@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -80,7 +81,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                 HtmlExportMessages.ProjectOverviewPageElement_created)
                 + " " //$NON-NLS-1$
                 + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK, getContext())
-                .addStyles(Style.SMALL);
+                        .addStyles(Style.SMALL);
         addPageElements(createCreationTime);
     }
 
@@ -189,11 +190,12 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
                 new TextPageElement(getContext().getMessage(
                         HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
-                        getContext()), messageListTablePageElement }));
+                        getContext()),
+                messageListTablePageElement }));
     }
 
     private MessageList validateLinkedObjects() {
-        List<IIpsSrcFile> srcFiles = getContext().getDocumentedSourceFiles();
+        Set<IIpsSrcFile> srcFiles = getContext().getDocumentedSourceFiles();
         MessageList ml = new MessageList();
         for (IIpsSrcFile srcFile : srcFiles) {
             try {

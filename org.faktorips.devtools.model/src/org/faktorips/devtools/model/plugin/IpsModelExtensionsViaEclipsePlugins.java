@@ -27,12 +27,14 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitionExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions;
+import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsExtension;
 import org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions;
@@ -72,6 +74,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     private final Supplier<Map<Class<?>, List<IExtensionPropertyDefinition>>> extensionPropertyDefinitions;
 
     private final Supplier<Map<String, IVersionProviderFactory>> versionProviderFactories;
+
+    private final Supplier<List<IIpsObjectPathContainerType>> ipsObjectPathContainerTypes;
 
     /**
      * Returns the singleton instance initialized from the Eclipse {@link Platform}.
@@ -113,6 +117,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         deepCopyOperationFixups = new DeepCopyOperationFixupExtensions(extensionPoints);
         extensionPropertyDefinitions = new ExtensionPropertyDefinitionExtensions(extensionPoints);
         versionProviderFactories = new VersionProviderFactoryExtensions(extensionPoints);
+        ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
     }
 
     @Override
@@ -180,6 +185,11 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     @Override
     public List<IIpsProjectConfigurator> getIpsProjectConfigurators() {
         return ipsProjectConfigurators.get();
+    }
+
+    @Override
+    public List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes() {
+        return ipsObjectPathContainerTypes.get();
     }
 
 }

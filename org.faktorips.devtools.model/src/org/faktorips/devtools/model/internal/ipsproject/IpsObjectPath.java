@@ -46,9 +46,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.ArrayElementMover;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of IIpsObjectPath.
@@ -637,12 +637,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     private void searchEntry(AbstractSearch search,
             IpsObjectPathSearchContext searchContext,
             IIpsObjectPathEntry entry) {
-        if (entry.isContainer()) {
-            searchContainerIpsObjectPath(search, searchContext, entry);
-        } else if (searchContext.visitAndConsiderContentsOf(entry)) {
-            search.processEntry(entry);
-            if (!search.isStopSearch()) {
-                searchReferencedProject(search, searchContext, entry);
+        if (searchContext.visitAndConsiderContentsOf(entry)) {
+            if (entry.isContainer()) {
+                searchContainerIpsObjectPath(search, searchContext, entry);
+            } else {
+                search.processEntry(entry);
+                if (!search.isStopSearch()) {
+                    searchReferencedProject(search, searchContext, entry);
+                }
             }
         }
     }

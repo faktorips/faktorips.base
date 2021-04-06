@@ -16,7 +16,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -31,7 +33,7 @@ public class IpsElementInDocumentedSourceFileFilterTest {
         IIpsSrcFile element = mock(IIpsSrcFile.class);
         IIpsSrcFile filteredElement = mock(IIpsSrcFile.class);
 
-        List<IIpsSrcFile> documentedSourceFiles = new ArrayList<IIpsSrcFile>(1);
+        Set<IIpsSrcFile> documentedSourceFiles = new LinkedHashSet<>(1);
         documentedSourceFiles.add(element);
 
         DocumentationContext context = mock(DocumentationContext.class);
@@ -55,7 +57,7 @@ public class IpsElementInDocumentedSourceFileFilterTest {
 
         when(filteredObject.getIpsSrcFile()).thenReturn(filteredSrcFile);
 
-        List<IIpsSrcFile> documentedSourceFiles = new ArrayList<IIpsSrcFile>(1);
+        Set<IIpsSrcFile> documentedSourceFiles = new LinkedHashSet<>(1);
         documentedSourceFiles.add(srcFile);
 
         DocumentationContext context = mock(DocumentationContext.class);

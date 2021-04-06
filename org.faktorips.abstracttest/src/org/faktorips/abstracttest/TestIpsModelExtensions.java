@@ -17,6 +17,7 @@ import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -55,6 +56,8 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
     private IIpsModelPreferences modelPreferences;
 
     private List<IIpsProjectConfigurator> ipsProjectConfigurators;
+
+    private List<IIpsObjectPathContainerType> ipsObjectPathContainerTypes;
 
     public TestIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -145,6 +148,20 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
      */
     public void setModelPreferences(IIpsModelPreferences modelPreferences) {
         this.modelPreferences = modelPreferences;
+    }
+
+    /**
+     * Sets the IIpsObjectPathContainerTypes. This method overwrites the
+     * IIpsObjectPathContainerTypes registered via extension points.
+     */
+    @Override
+    public List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes() {
+        return ipsObjectPathContainerTypes != null ? ipsObjectPathContainerTypes
+                : super.getIpsObjectPathContainerTypes();
+    }
+
+    public void setIpsObjectPathContainerTypes(List<IIpsObjectPathContainerType> ipsObjectPathContainerTypes) {
+        this.ipsObjectPathContainerTypes = ipsObjectPathContainerTypes;
     }
 
     public TestIpsModelExtensions with(IIpsModelPreferences modelPreferences) {
