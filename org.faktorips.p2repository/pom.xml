@@ -33,7 +33,8 @@
         <faktorips-maven-plugin.build.directory>${project.build.directory}/../../faktorips-maven-plugin/target</faktorips-maven-plugin.build.directory>
         <snapshotQualifier>-SNAPSHOT</snapshotQualifier>
         <versionQualifier></versionQualifier>
-        <skip-doc-upload>true</skip-doc-upload>
+        <wagon-ssh-version>3.4.1</wagon-ssh-version>
+        <skip-doc-upload>false</skip-doc-upload>
     </properties>
 
     <parent>
@@ -213,7 +214,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>wagon-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>2.0.2</version>
                         <executions>
                             <execution>
                                 <id>upload-repository</id>
@@ -249,6 +250,7 @@
                                 </goals>
                                 <configuration>
                                     <skip>${skip-doc-upload}</skip>
+                                    <serverId>doc.faktorzehn.org</serverId>
                                     <fromDir>${faktorips-maven-plugin.build.directory}/site</fromDir>
                                     <includes>**/*</includes>
                                     <url>scp://doc@doc.faktorzehn.org:2004</url>
@@ -256,6 +258,13 @@
                                 </configuration>
                             </execution>
                         </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>${wagon-ssh-version}</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
 
                     <plugin>
