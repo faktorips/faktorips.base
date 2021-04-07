@@ -18,6 +18,7 @@
     </organization>
 
     <scm>
+        <url>https://github.com/faktorips/faktorips.base</url>
         <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
     </scm>
 
