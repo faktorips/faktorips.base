@@ -10,6 +10,8 @@
     <version>@version@</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
+    <description>Maven plugin for building Faktor-IPS projects</description>
+    <url>https://doc.faktorzehn.org/faktorips-maven-plugin/</url>
 
     <organization>
         <name>Faktor Zehn GmbH</name>

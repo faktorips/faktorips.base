@@ -13,6 +13,8 @@
     <artifactId>faktorips-maven-archetype</artifactId>
     <version>@version@</version>
     <name>Faktor-IPS Archetype</name>
+    <description>Maven archetype for Faktor-IPS projects</description>
+    <url>http://faktorzehn.org</url>
 
     <packaging>maven-archetype</packaging>
 
