@@ -33,6 +33,7 @@
         <faktorips-maven-plugin.build.directory>${project.build.directory}/../../faktorips-maven-plugin/target</faktorips-maven-plugin.build.directory>
         <snapshotQualifier>-SNAPSHOT</snapshotQualifier>
         <versionQualifier></versionQualifier>
+        <skip-doc-upload>true</skip-doc-upload>
     </properties>
 
     <parent>
@@ -247,6 +248,7 @@
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
+                                    <skip>${skip-doc-upload}</skip>
                                     <fromDir>${faktorips-maven-plugin.build.directory}/site</fromDir>
                                     <includes>**/*</includes>
                                     <url>scp://doc@doc.faktorzehn.org:2004</url>
