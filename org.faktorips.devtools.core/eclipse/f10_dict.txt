@@ -10134,3 +10134,4 @@ html
 xvfb
 jenkins
 configurator
+unicode

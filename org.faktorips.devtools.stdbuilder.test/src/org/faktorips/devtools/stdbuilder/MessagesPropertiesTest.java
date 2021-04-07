@@ -11,17 +11,14 @@
 package org.faktorips.devtools.stdbuilder;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -123,20 +120,6 @@ public class MessagesPropertiesTest {
     }
 
     @Test
-    public void shouldCallPropertyStore() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
-        validationMessages.put("key", "value");
-
-        OutputStream outputStream = mock(OutputStream.class);
-        validationMessages.store(outputStream);
-
-        verify(outputStream, times(9 + System.lineSeparator().length())).write(anyInt());
-        verify(outputStream).flush();
-        verify(outputStream).close();
-        verifyNoMoreInteractions(outputStream);
-    }
-
-    @Test
     public void shouldNotBeModifiedAfterStore() throws Exception {
         MessagesProperties validationMessages = new MessagesProperties();
         assertFalse(validationMessages.isModified());
@@ -169,15 +152,21 @@ public class MessagesPropertiesTest {
         validationMessages.put("aaa1", "123");
         validationMessages.put("aaa0", "123");
         validationMessages.put("abc", "312");
+        validationMessages.put("bcd", "312");
+        validationMessages.put("cde", "312");
+        validationMessages.put("def", "312");
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         validationMessages.store(outputStream);
 
         String propertyText = outputStream.toString();
-        int pos0 = propertyText.indexOf("aaa0");
-        int pos1 = propertyText.indexOf("aaa1");
 
-        assertTrue(pos0 < pos1);
+        assertThat(propertyText, is("aaa0=123\n"
+                + "aaa1=123\n"
+                + "abc=312\n"
+                + "bcd=312\n"
+                + "cde=312\n"
+                + "def=312\n"));
     }
 
 }
