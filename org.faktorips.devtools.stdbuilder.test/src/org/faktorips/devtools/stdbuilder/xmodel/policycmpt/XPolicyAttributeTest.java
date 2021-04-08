@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -606,5 +608,111 @@ public class XPolicyAttributeTest {
         doReturn(valueSet).when(attribute).getValueSet();
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
+    }
+
+    @Test
+    public void testIsGenerateGetAllowedValuesForAndGetDefaultValue_isNotProductConfiguredButSuperTypeIs() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
+
+        doReturn(false).when(xPolicyAttribute).isValueSetConfiguredByProduct();
+        doReturn(true).when(xPolicyAttribute).isOverwrite();
+
+        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
+        doReturn(false).when(xSuperAttribute).isOverwrite();
+        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
+
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(true).when(valueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
+        when(attribute.getValueSet()).thenReturn(valueSet);
+
+        IValueSet superValueSet = mock(IValueSet.class);
+        doReturn(false).when(superValueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
+        doReturn(superValueSet).when(superAttribute).getValueSet();
+
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
+    }
+
+    @Test
+    public void testIsGenerateGetAllowedValuesForAndGetDefaultValue_isProductConfigured() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
+
+        doReturn(true).when(xPolicyAttribute).isValueSetConfiguredByProduct();
+        doReturn(true).when(xPolicyAttribute).isOverwrite();
+
+        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
+        doReturn(false).when(xSuperAttribute).isOverwrite();
+        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
+
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(true).when(valueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
+        when(attribute.getValueSet()).thenReturn(valueSet);
+
+        IValueSet superValueSet = mock(IValueSet.class);
+        doReturn(false).when(superValueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
+        doReturn(superValueSet).when(superAttribute).getValueSet();
+
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(false));
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSet_isNotProductConfiguredButSuperTypeIs() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
+
+        doReturn(false).when(xPolicyAttribute).isValueSetConfiguredByProduct();
+        doReturn(true).when(xPolicyAttribute).isOverwrite();
+
+        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
+        doReturn(false).when(xSuperAttribute).isOverwrite();
+        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
+
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(false).when(valueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
+        when(attribute.getValueSet()).thenReturn(valueSet);
+
+        IValueSet superValueSet = mock(IValueSet.class);
+        doReturn(false).when(superValueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
+        doReturn(superValueSet).when(superAttribute).getValueSet();
+
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
+
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSet_isProductConfigured() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
+
+        doReturn(true).when(xPolicyAttribute).isValueSetConfiguredByProduct();
+        doReturn(true).when(xPolicyAttribute).isOverwrite();
+
+        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
+        doReturn(false).when(xSuperAttribute).isOverwrite();
+        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
+
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(true).when(valueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
+        when(attribute.getValueSet()).thenReturn(valueSet);
+
+        IValueSet superValueSet = mock(IValueSet.class);
+        doReturn(false).when(superValueSet).isContainsNull();
+        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
+        doReturn(superValueSet).when(superAttribute).getValueSet();
+
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(false));
+
     }
 }

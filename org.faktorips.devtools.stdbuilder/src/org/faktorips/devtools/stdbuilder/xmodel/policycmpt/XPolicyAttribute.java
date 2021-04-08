@@ -324,6 +324,10 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().isProductRelevant();
     }
 
+    public boolean isValueSetConfiguredByProduct() {
+        return getAttribute().isValueSetConfiguredByProduct();
+    }
+
     /**
      * Returns whether this attribute is product relevant at some point in the class hierarchy.
      */
@@ -335,8 +339,10 @@ public class XPolicyAttribute extends XAttribute {
         if (isConstant()) {
             return false;
         } else {
-            return (isProductRelevant() && isChangeable()) || !isValueSetUnrestricted()
-                    || isUnrestrictedButStillNeedsAllowedValues();
+            return (isProductRelevant() && isChangeable())
+                    || !isValueSetUnrestricted()
+                    || isUnrestrictedButStillNeedsAllowedValues()
+                    || isNotConfiguredOverrideConfigured();
         }
     }
 
@@ -372,8 +378,14 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isGenerateConstantForValueSet() {
         boolean isGenerateForValueSetType = isValueSetRange() || isNonExtensibleEnumValueSet()
-                || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength();
+                || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength()
+                || isNotConfiguredOverrideConfigured();
         return isConcreteOrNotProductRelevant() && isGenerateForValueSetType;
+    }
+
+    private boolean isNotConfiguredOverrideConfigured() {
+        return !isValueSetConfiguredByProduct() && isOverrideGetAllowedValuesFor()
+                && getOverwrittenAttribute().isValueSetConfiguredByProduct();
     }
 
     private boolean isConcreteOrNotProductRelevant() {
