@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
@@ -76,6 +77,28 @@ public class PolicyAssociation extends Association {
     @Override
     public ProductCmptType getMatchingAssociationSourceType() {
         return (ProductCmptType)super.getMatchingAssociationSourceType();
+    }
+
+    /**
+     * Returns the matching product component type association or <code>null</code> if no matching
+     * association is defined for this association.
+     * 
+     * @return The matching association
+     */
+    @Override
+    public ProductAssociation getMatchingAssociation() {
+        return (ProductAssociation)super.getMatchingAssociation();
+    }
+
+    /**
+     * Returns the matching product component type association or an {@link Optional#empty() empty
+     * Optional} if no matching association is defined for this association.
+     * 
+     * @return The matching association
+     */
+    @Override
+    public Optional<ProductAssociation> findMatchingAssociation() {
+        return Optional.ofNullable(getMatchingAssociation());
     }
 
     @Override

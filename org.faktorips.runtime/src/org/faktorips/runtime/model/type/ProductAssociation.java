@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
@@ -415,6 +416,28 @@ public class ProductAssociation extends Association {
     @Override
     public PolicyCmptType getMatchingAssociationSourceType() {
         return (PolicyCmptType)super.getMatchingAssociationSourceType();
+    }
+
+    /**
+     * Returns the matching policy component type association or <code>null</code> if no matching
+     * association is defined for this association.
+     * 
+     * @return The matching association
+     */
+    @Override
+    public PolicyAssociation getMatchingAssociation() {
+        return (PolicyAssociation)super.getMatchingAssociation();
+    }
+
+    /**
+     * Returns the matching policy component type association or an {@link Optional#empty() empty
+     * Optional} if no matching association is defined for this association.
+     * 
+     * @return The matching association
+     */
+    @Override
+    public Optional<PolicyAssociation> findMatchingAssociation() {
+        return Optional.ofNullable(getMatchingAssociation());
     }
 
     /**

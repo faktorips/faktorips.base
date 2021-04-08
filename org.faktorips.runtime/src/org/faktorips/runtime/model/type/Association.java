@@ -179,7 +179,28 @@ public abstract class Association extends TypePart {
      * @return The matching association
      */
     public Association getMatchingAssociation() {
-        return getMatchingAssociationSourceType().getAssociation(getMatchingAssociationName());
+        Type matchingAssociationSourceType = getMatchingAssociationSourceType();
+        if (matchingAssociationSourceType == null) {
+            return null;
+        }
+        return matchingAssociationSourceType.getAssociation(getMatchingAssociationName());
+    }
+
+    /**
+     * Returns the matching product respectively policy component type association or an
+     * {@link Optional#empty() empty Optional} if no matching association is defined for this
+     * association.
+     * <p>
+     * Example: Taking two policy component types called 'Policy' and 'Coverage' with a composition
+     * association between them. Policy is constrained by the product component type 'Product' and
+     * coverage by 'CoverageType'. There is also an association from 'Product' to 'CoverageType'.
+     * The product association configures the policy association. If this is a association for the
+     * policy association this method returns the matching product association and vice versa.
+     * 
+     * @return The matching association
+     */
+    public Optional<? extends Association> findMatchingAssociation() {
+        return Optional.ofNullable(getMatchingAssociation());
     }
 
     /**

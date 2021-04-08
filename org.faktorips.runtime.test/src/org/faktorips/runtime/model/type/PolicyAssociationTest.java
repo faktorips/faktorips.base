@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -130,6 +131,32 @@ public class PolicyAssociationTest {
     public void testGetMatchingAssociationSourceType() throws Exception {
         assertNull(association0To1.getMatchingAssociationSourceType());
         assertEquals(Product.class, association1To10.getMatchingAssociationSourceType().getJavaClass());
+    }
+
+    @Test
+    public void testGetMatchingAssociation() {
+        ProductAssociation matchingAssociation = association1To10.getMatchingAssociation();
+        assertEquals("Matching", matchingAssociation.getName());
+        assertEquals("Matching", matchingAssociation.getNamePlural());
+        assertEquals(Product.class, matchingAssociation.getType().getJavaClass());
+    }
+
+    @Test
+    public void testGetMatchingAssociation_NoMatching() {
+        assertNull(association0To1.getMatchingAssociation());
+    }
+
+    @Test
+    public void testFindMatchingAssociation() {
+        ProductAssociation matchingAssociation = association1To10.getMatchingAssociation();
+        assertEquals("Matching", matchingAssociation.getName());
+        assertEquals("Matching", matchingAssociation.getNamePlural());
+        assertEquals(Product.class, matchingAssociation.getType().getJavaClass());
+    }
+
+    @Test
+    public void testFindMatchingAssociation_NoMatching() {
+        assertEquals(Optional.empty(), association0To1.findMatchingAssociation());
     }
 
     @Test
@@ -520,12 +547,19 @@ public class PolicyAssociationTest {
     }
 
     @IpsProductCmptType(name = "MyProduct")
+    @IpsAssociations({ "Matching" })
     private static abstract class Product extends ProductComponent {
+
+        private Target target;
 
         public Product(IRuntimeRepository repository, String id, String productKindId, String versionId) {
             super(repository, id, productKindId, versionId);
         }
 
+        @IpsAssociation(name = "Matching", pluralName = "Matching", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
+        public List<Target> getMatchings() {
+            return Arrays.asList(target);
+        }
     }
 
 }

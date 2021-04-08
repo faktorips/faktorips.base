@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -190,6 +191,32 @@ public class ProductAssociationTest {
     public void testGetMatchingAssociationSourceType() throws Exception {
         assertNull(association.getMatchingAssociationSourceType());
         assertEquals(Policy.class, association2.getMatchingAssociationSourceType().getJavaClass());
+    }
+
+    @Test
+    public void testGetMatchingAssociation() {
+        PolicyAssociation matchingAssociation = overriddenAsso.getMatchingAssociation();
+        assertEquals("Matching", matchingAssociation.getName());
+        assertEquals("Matching", matchingAssociation.getNamePlural());
+        assertEquals(Policy.class, matchingAssociation.getType().getJavaClass());
+    }
+
+    @Test
+    public void testGetMatchingAssociation_NoMatching() {
+        assertNull(association.getMatchingAssociation());
+    }
+
+    @Test
+    public void testFindMatchingAssociation() {
+        PolicyAssociation matchingAssociation = overriddenAsso.getMatchingAssociation();
+        assertEquals("Matching", matchingAssociation.getName());
+        assertEquals("Matching", matchingAssociation.getNamePlural());
+        assertEquals(Policy.class, matchingAssociation.getType().getJavaClass());
+    }
+
+    @Test
+    public void testFindMatchingAssociation_NoMatching() {
+        assertEquals(Optional.empty(), association.findMatchingAssociation());
     }
 
     @Test
@@ -661,6 +688,7 @@ public class ProductAssociationTest {
         }
 
         @IpsAssociation(name = "overriddenAsso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsMatchingAssociation(source = Policy.class, name = "Matching")
         public Target getOverriddenAsso() {
             return target;
         }
@@ -729,7 +757,6 @@ public class ProductAssociationTest {
 
         @Override
         @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
-        @IpsMatchingAssociation(source = Policy.class, name = "Matching")
         public Target getOverriddenAsso() {
             return super.getOverriddenAsso();
         }
@@ -864,12 +891,20 @@ public class ProductAssociationTest {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
+    @IpsAssociations({ "Matching" })
     @IpsConfiguredBy(Source.class)
     private class Policy implements IModelObject {
+
+        private Target target;
 
         @Override
         public MessageList validate(IValidationContext context) {
             return null;
+        }
+
+        @IpsAssociation(name = "Matching", pluralName = "Matching", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
+        public List<Target> getMatchings() {
+            return Arrays.asList(target);
         }
     }
 }
