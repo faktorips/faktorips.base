@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.LinkedHashMap;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
@@ -23,8 +22,11 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -33,19 +35,21 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
-import org.faktorips.devtools.core.ui.controls.Radiobutton;
+import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 
 public final class AddIpsNatureDialog extends TitleAreaDialog {
 
-    private String sourceFolderName;
-    private String basePackageName;
-    private String runtimeIdPrefix;
+    private static final int MODEL_PROJECT_OPTION = 1;
+    private static final int PRODUCT_DEFINITION_PROJECT_OPTION = 2;
+    private static final int FULL_PROJECT_OPTION = 3;
 
-    private boolean isModelProject;
-    private boolean isProductDefinitionProject;
-    private boolean isPersistentProject;
+    /**
+     * Wrapper containing all properties for adding the IPS nature.
+     */
+    private IpsProjectCreationProperties ipsProjectCreationProperties;
 
     private IJavaProject javaProject;
 
@@ -53,14 +57,15 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
     private Text basePackageText;
     private Text runtimeIdText;
 
-    private Radiobutton modelProjectButton;
-    private Radiobutton productDefinitionProjectButton;
-    private Radiobutton fullProjectButton;
+    private Button enableGroovyCheckbox;
+    private Button enablePersistenceCheckbox;
 
-    private Checkbox enablePersistenceCheckbox;
+    private Combo persistenceSupport;
 
     private Image dlgTitleImage;
     private Button okButton;
+
+    private RadioButtonGroup<Integer> projectSelectionGroup;
 
     private SupportedLanguagesControl supportedLanguagesControl;
 
@@ -79,10 +84,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         super(parentShell);
         this.javaProject = javaProject;
 
-        sourceFolderName = Messages.AddIpsNatureDialog_defaultSourceFolderName;
-        basePackageName = Messages.AddIpsNatureDialog_basePackage_default;
-        runtimeIdPrefix = Messages.AddIpsNatureDialog_defaultRuntimeIdPrefix;
-        isModelProject = true;
+        ipsProjectCreationProperties = new IpsProjectCreationProperties();
     }
 
     @Override
@@ -127,7 +129,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_sourceFolderName, false);
         sourceFolderText = kit.createText(textComposite);
-        sourceFolderText.setText(sourceFolderName);
+        sourceFolderText.setText(ipsProjectCreationProperties.getSourceFolderName());
         sourceFolderText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent event) {
@@ -137,7 +139,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_basePackageName, false);
         basePackageText = kit.createText(textComposite);
-        basePackageText.setText(basePackageName);
+        basePackageText.setText(ipsProjectCreationProperties.getBasePackageName());
         basePackageText.addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent event) {
@@ -147,25 +149,60 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_runtimeIdPrefix, false);
         runtimeIdText = kit.createText(textComposite);
-        runtimeIdText.setText(runtimeIdPrefix);
+        runtimeIdText.setText(ipsProjectCreationProperties.getRuntimeIdPrefix());
     }
 
-    @SuppressWarnings("deprecation")
     private void createProjectTypeGroup(UIToolkit kit, Composite parent) {
-        RadioButtonGroup<?> group = kit.createRadiobuttonGroup(parent, SWT.SHADOW_IN,
-                Messages.AddIpsNatureDialog_ProjectType);
 
-        modelProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_modelProject);
-        modelProjectButton.setChecked(isModelProject && !isProductDefinitionProject);
+        LinkedHashMap<Integer, String> radioButtons = new LinkedHashMap<>();
+        radioButtons.put(MODEL_PROJECT_OPTION, Messages.AddIpsNatureDialog_modelProject);
+        radioButtons.put(PRODUCT_DEFINITION_PROJECT_OPTION, Messages.AddIpsNatureDialog_productDefinitionProject);
+        radioButtons.put(FULL_PROJECT_OPTION, Messages.AddIpsNatureDialog_fullProject);
 
-        productDefinitionProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_productDefinitionProject);
-        productDefinitionProjectButton.setChecked(isProductDefinitionProject && !isModelProject);
+        projectSelectionGroup = kit.createRadioButtonGroup(
+                parent, Messages.AddIpsNatureDialog_ProjectType, 1, radioButtons);
 
-        fullProjectButton = group.addRadiobutton(Messages.AddIpsNatureDialog_fullProject);
-        fullProjectButton.setChecked(isModelProject && isProductDefinitionProject);
+        boolean isModelProject = ipsProjectCreationProperties.isModelProject();
+        boolean isProductDefinitionProject = ipsProjectCreationProperties.isProductDefinitionProject();
 
-        enablePersistenceCheckbox = kit.createCheckbox(group.getComposite());
-        enablePersistenceCheckbox.setText(Messages.AddIpsNatureDialog_PersistenceSupport);
+        projectSelectionGroup.getRadioButton(MODEL_PROJECT_OPTION)
+                .setSelection(isModelProject && !isProductDefinitionProject);
+        projectSelectionGroup.getRadioButton(PRODUCT_DEFINITION_PROJECT_OPTION)
+                .setSelection(!isModelProject && isProductDefinitionProject);
+        projectSelectionGroup.getRadioButton(FULL_PROJECT_OPTION)
+                .setSelection(isModelProject && isProductDefinitionProject);
+
+        if (isGroovyAvailable()) {
+            enableGroovyCheckbox = kit.createButton(projectSelectionGroup.getComposite(),
+                    Messages.AddIpsNatureDialog_GroovySupport, SWT.CHECK);
+            enableGroovyCheckbox.setSelection(ipsProjectCreationProperties.isGroovySupport());
+        }
+
+        enablePersistenceCheckbox = kit.createButton(projectSelectionGroup.getComposite(),
+                Messages.AddIpsNatureDialog_PersistenceSupport, SWT.CHECK);
+        enablePersistenceCheckbox.setSelection(ipsProjectCreationProperties.isPersistentProject());
+        enablePersistenceCheckbox.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (enablePersistenceCheckbox.getSelection()) {
+                    persistenceSupport.setEnabled(true);
+                    // Generic JPA 2.0 is default
+                    persistenceSupport.select(3);
+                } else {
+                    persistenceSupport.setEnabled(false);
+                    persistenceSupport.select(0);
+                }
+            }
+        });
+
+        persistenceSupport = kit.createCombo(projectSelectionGroup.getComposite());
+        persistenceSupport.setEnabled(false);
+        persistenceSupport.add(PersistenceSupportNames.ID_NONE);
+        persistenceSupport.add(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1);
+        persistenceSupport.add(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5);
+        persistenceSupport.add(PersistenceSupportNames.ID_GENERIC_JPA_2);
+        persistenceSupport.add(PersistenceSupportNames.ID_GENERIC_JPA_2_1);
+        persistenceSupport.select(0);
     }
 
     /**
@@ -268,12 +305,23 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            sourceFolderName = sourceFolderText.getText();
-            runtimeIdPrefix = runtimeIdText.getText();
-            basePackageName = basePackageText.getText();
-            isModelProject = modelProjectButton.isChecked() || fullProjectButton.isChecked();
-            isProductDefinitionProject = productDefinitionProjectButton.isChecked() || fullProjectButton.isChecked();
-            isPersistentProject = enablePersistenceCheckbox.isChecked();
+            ipsProjectCreationProperties.setSourceFolderName(sourceFolderText.getText());
+            ipsProjectCreationProperties.setRuntimeIdPrefix(runtimeIdText.getText());
+            ipsProjectCreationProperties.setBasePackageName(basePackageText.getText());
+
+            boolean isFullProject = projectSelectionGroup.getRadioButton(FULL_PROJECT_OPTION).getSelection();
+            boolean isModelProject = isFullProject
+                    || projectSelectionGroup.getRadioButton(MODEL_PROJECT_OPTION).getSelection();
+            boolean isProductDefinitionProject = isFullProject
+                    || projectSelectionGroup.getRadioButton(PRODUCT_DEFINITION_PROJECT_OPTION).getSelection();
+            ipsProjectCreationProperties.setModelProject(isModelProject);
+            ipsProjectCreationProperties.setProductDefinitionProject(isProductDefinitionProject);
+
+            ipsProjectCreationProperties.setPersistentProject(enablePersistenceCheckbox.getSelection());
+            ipsProjectCreationProperties.setPersistenceSupport(persistenceSupport.getText());
+            ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
+
+            ipsProjectCreationProperties.setLocales(supportedLanguagesControl.getLocales());
         }
         super.buttonPressed(buttonId);
     }
@@ -289,32 +337,12 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         return contents;
     }
 
-    public String getSourceFolderName() {
-        return sourceFolderName;
+    public IpsProjectCreationProperties getIpsProjectCreationProperties() {
+        return ipsProjectCreationProperties;
     }
 
-    public String getBasePackageName() {
-        return basePackageName;
+    private boolean isGroovyAvailable() {
+        return IpsClasspathContainerInitializer.isGroovySupportAvailable()
+                || IpsClasspathContainerInitializer.isGroovySupportedByAddIpsNatureExtension(javaProject.getProject());
     }
-
-    public String getRuntimeIdPrefix() {
-        return runtimeIdPrefix;
-    }
-
-    public boolean isModelProject() {
-        return isModelProject;
-    }
-
-    public boolean isProductDefinitionProject() {
-        return isProductDefinitionProject;
-    }
-
-    public boolean isPersistentProject() {
-        return isPersistentProject;
-    }
-
-    public List<Locale> getLocales() {
-        return supportedLanguagesControl.getLocales();
-    }
-
 }

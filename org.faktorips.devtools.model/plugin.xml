@@ -22,6 +22,7 @@
    <extension-point id="ipsModelPreferences" name="Ips Model Preferences" schema="schema/ipsModelPreferences.exsd"/>
    <extension-point id="classLoaderProviderFactory" name="Classpath Provider" schema="schema/classLoaderProviderFactory.exsd"/>
    <extension-point id="workspaceInteractions" name="Workspace Interactions" schema="schema/workspaceInteractions.exsd"/>
+   <extension-point id="addIpsNature" name="Add IPS-Nature" schema="schema/addIpsNature.exsd"/>
    
 <!-- 
     Extensions to the Java perspective

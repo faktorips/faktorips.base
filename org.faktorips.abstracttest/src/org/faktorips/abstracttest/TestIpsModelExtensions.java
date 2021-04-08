@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
@@ -52,6 +53,8 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
     private IClassLoaderProviderFactory classLoaderProviderFactory;
 
     private IIpsModelPreferences modelPreferences;
+
+    private List<IIpsProjectConfigurator> ipsProjectConfigurators;
 
     public TestIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -114,6 +117,21 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
      */
     public void setClassLoaderProviderFactory(IClassLoaderProviderFactory classLoaderProviderFactory) {
         this.classLoaderProviderFactory = classLoaderProviderFactory;
+    }
+
+    @Override
+    public List<IIpsProjectConfigurator> getIpsProjectConfigurators() {
+        return ipsProjectConfigurators != null ? ipsProjectConfigurators : super.getIpsProjectConfigurators();
+    }
+
+    /**
+     * Sets the {@link IIpsProjectConfigurator project-configurators}. This method overwrites the
+     * configurators registered via extension points.
+     * 
+     * @param ipsProjectConfigurators The passed IPS project-configurators
+     */
+    public void setIpsProjectConfigurators(List<IIpsProjectConfigurator> ipsProjectConfigurators) {
+        this.ipsProjectConfigurators = ipsProjectConfigurators;
     }
 
     @Override

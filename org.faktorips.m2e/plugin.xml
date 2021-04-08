@@ -20,5 +20,11 @@
             id="org.faktorips.maven.mavenVersionProvider">
       </versionProvider>
    </extension>
+   <extension
+         point="org.faktorips.devtools.model.addIpsNature">
+      <ipsProjectConfigurator
+            class="org.faktorips.m2e.ipsconfigurator.MavenIpsProjectConfigurator">
+      </ipsProjectConfigurator>
+   </extension>
 
 </plugin>

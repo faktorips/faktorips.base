@@ -21,14 +21,18 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -36,9 +40,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Utilities for the creation and modification of projects.
@@ -100,22 +106,11 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates and returns an IPS project based on the given Java project.
-     * 
-     * @param javaProject The Java project to use as base for the IPS project.
-     * @param runtimeIdPrefix The prefix for the runtime IDs to be used in the new project.
-     * @param mergableFolder The source folder for mergable Java files.
-     * @param derivedFolder The source folder for derived Java files.
-     * @param srcFolder The source folder for IPS objects.
-     * @param isProductDefinitionProject <code>true</code> to create a project which is capable of
-     *            product definitions.
-     * @param isModelProject <code>true</code> to create a project which is capable of model
-     *            objects.
-     * 
-     * @throws CoreException In case of any errors.
-     * 
-     * @since 2.6
+     * @deprecated since 21.6; use
+     *             {@link ProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *             instead
      */
+    @Deprecated
     // CSOFF: ParameterNumber
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             boolean isProductDefinitionProject,
@@ -226,23 +221,62 @@ public class ProjectUtil {
     }
 
     /**
-     * Creates and returns an <code>IIpsProject</code> based on the given <code>IJavaProject</code>.
+     * Creates and returns an {@link IIpsProject} based on the given <code>IJavaProject</code> and
+     * the inserted properties {@link IpsProjectCreationProperties} required for creating an IPS
+     * project.
+     * <p>
+     * Uses {@link IIpsProjectConfigurator IIpsProjectConfigurators} provided by the extension point
+     * {@value ExtensionPoints#ADD_IPS_NATURE} to add Faktor-IPS-dependencies in a way matching the
+     * used dependency management, defaulting to Eclipse Java project libraries.
      * 
-     * @param javaProject The <code>IJavaProject</code> which is to be extended with IPS
-     *            capabilities.
-     * @param runtimeIdPrefix The prefix for runtime IDs to be used in this project.
-     * @param isProductDefinitionProject Must be <code>true</code> if this is a product definition
-     *            project.
-     * @param isModelProject Must be <code>true</code> if this is a model project.
-     * @param isPersistentProject Must be true if persistence support should be enabled for the
-     *            project
-     * @param supportedLocales List of locales that will reflect the languages supported by the
-     *            project
-     * 
-     * @throws CoreException In case of any Errors.
-     * 
-     * @since 3.1
+     * @param javaProject the selected java project
+     * @param creationProperties the required properties {@link IpsProjectCreationProperties} for
+     *            creating a Faktor-IPS project
+     * @return the created and configured Faktor-IPS project
      */
+    public static IIpsProject createIpsProject(IJavaProject javaProject,
+            IpsProjectCreationProperties creationProperties)
+            throws CoreException {
+
+        String errorMessage = creationProperties.checkForRequiredProperties();
+        if (IpsStringUtils.isNotEmpty(errorMessage)) {
+            throw new CoreException(
+                    new IpsStatus(errorMessage));
+        }
+
+        IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
+        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+        for (IPackageFragmentRoot root : roots) {
+            if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
+                if (root.getCorrespondingResource() instanceof IProject) {
+                    throw new CoreException(
+                            new IpsStatus(Messages.ProjectUtil_msgSourceInProjectImpossible));
+                }
+                javaSrcFolder = (IFolder)root.getCorrespondingResource();
+                break;
+            }
+        }
+
+        IIpsProject ipsProject = createDefaultIpsProject(javaProject, creationProperties);
+
+        IFolder ipsModelFolder = ipsProject.getProject().getFolder(creationProperties.getSourceFolderName());
+        if (!ipsModelFolder.exists()) {
+            ipsModelFolder.create(true, true, new NullProgressMonitor());
+        }
+
+        initializeDefaultIpsObjectPath(creationProperties, ipsProject, javaSrcFolder, ipsModelFolder);
+
+        executeProjectConfigurators(ipsProject, creationProperties);
+
+        return ipsProject;
+    }
+
+    /**
+     * @deprecated since 21.6; use
+     *             {@link ProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *             instead
+     */
+    @Deprecated
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             String runtimeIdPrefix,
             boolean isProductDefinitionProject,
@@ -250,47 +284,172 @@ public class ProjectUtil {
             boolean isPersistentProject,
             List<Locale> supportedLocales) throws CoreException {
 
-        addIpsRuntimeLibraries(javaProject);
-        IIpsModel ipsModel = IIpsModel.get();
-        IIpsProject ipsProject = ipsModel.createIpsProject(javaProject);
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setRuntimeIdPrefix(runtimeIdPrefix);
-        props.setProductDefinitionProject(isProductDefinitionProject);
-        props.setModelProject(isModelProject);
-        props.setPersistenceSupport(isPersistentProject);
+        IpsProjectCreationProperties creationProperties = new IpsProjectCreationProperties();
+        creationProperties.setRuntimeIdPrefix(runtimeIdPrefix);
+        creationProperties.setProductDefinitionProject(isProductDefinitionProject);
+        creationProperties.setModelProject(isModelProject);
+        creationProperties.setPersistentProject(isPersistentProject);
+        creationProperties.setLocales(supportedLocales);
 
-        // use the first registered builder set info as default
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
-        props.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
+        IIpsProject ipsProject = createDefaultIpsProject(javaProject, creationProperties);
 
-        props.setPredefinedDatatypesUsed(ipsModel.getPredefinedValueDatatypes());
-        DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", //$NON-NLS-1$ //$NON-NLS-2$
-                true);
-        props.setProductCmptNamingStrategy(namingStrategy);
-        props.setMinRequiredVersionNumber(
-                "org.faktorips.feature", //$NON-NLS-1$
-                Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$
-        props.setChangesOverTimeNamingConventionIdForGeneratedCode(IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getId());
-        IIpsArtefactBuilderSetInfo builderSetInfo = ipsModel.getIpsArtefactBuilderSetInfo(props.getBuilderSetId());
-        if (builderSetInfo != null) {
-            props.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
-        }
-
-        for (int i = 0; i < supportedLocales.size(); i++) {
-            Locale locale = supportedLocales.get(i);
-            props.addSupportedLanguage(locale);
-            if (i == 0) {
-                props.setDefaultLanguage(locale);
-            }
-        }
-
-        setDefaultFunctionsLanguageLocale(props);
-
-        ipsProject.setProperties(props);
+        StandardJavaProjectConfigurator.configureDefaultIpsProject(javaProject);
 
         return ipsProject;
     }
 
+    /**
+     * Creates a default {@link IIpsProject} and sets all properties which are definitely required
+     * for the usage of Faktor-IPS in any cases.
+     * 
+     * @param javaProject The selected java project
+     * @param creationProperties The properties required for creating an {@link IIpsProject}
+     * @return The created IPS project
+     * @throws CoreException If creating or configuring the IPS project failed
+     */
+    private static IIpsProject createDefaultIpsProject(IJavaProject javaProject,
+            IpsProjectCreationProperties creationProperties) throws CoreException {
+
+        IIpsModel ipsModel = IIpsModel.get();
+        IIpsProject ipsProject = ipsModel.createIpsProject(javaProject);
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+
+        initializeIpsProjectPropertiesDefaults(ipsProjectProperties, creationProperties, ipsModel, ipsProject);
+
+        initializeBuilderSetConfigModel(ipsProjectProperties, creationProperties);
+
+        initializesLocales(ipsProjectProperties, creationProperties);
+
+        setDefaultFunctionsLanguageLocale(ipsProjectProperties);
+
+        ipsProject.setProperties(ipsProjectProperties);
+
+        return ipsProject;
+    }
+
+    /**
+     * Initializes the default {@link IIpsObjectPath}.
+     * 
+     * @param creationProperties The {@link IIpsProjectProperties} of the created
+     *            {@link IIpsProject}
+     * @param ipsProject The created {@link IIpsProject}
+     * @param javaSrcFolder The java source folder
+     * @param ipsModelFolder The model folder
+     * @throws CoreException If initializing the object path failed
+     */
+    private static void initializeDefaultIpsObjectPath(IpsProjectCreationProperties creationProperties,
+            IIpsProject ipsProject,
+            IFolder javaSrcFolder,
+            IFolder ipsModelFolder) throws CoreException {
+        IJavaProject javaProject = ipsProject.getJavaProject();
+        IIpsObjectPath path = new IpsObjectPath(ipsProject);
+        path.setOutputDefinedPerSrcFolder(false);
+        path.setBasePackageNameForMergableJavaClasses(creationProperties.getBasePackageName());
+        path.setBasePackageNameForDerivedJavaClasses(creationProperties.getBasePackageName());
+        path.setOutputFolderForMergableSources(javaSrcFolder);
+        if (javaSrcFolder.exists()) {
+            String derivedsrcFolderName = creationProperties.isModelProject() ? "resources" : "derived"; //$NON-NLS-1$//$NON-NLS-2$
+            IFolder derivedsrcFolder = javaSrcFolder.getParent().getFolder(new Path(derivedsrcFolderName));
+            if (!derivedsrcFolder.exists()) {
+                derivedsrcFolder.create(true, true, new NullProgressMonitor());
+                IClasspathEntry derivedsrc = JavaCore.newSourceEntry(derivedsrcFolder.getFullPath());
+                IClasspathEntry[] rawClassPath = javaProject.getRawClasspath();
+                IClasspathEntry[] newClassPath = new IClasspathEntry[rawClassPath.length + 1];
+                System.arraycopy(rawClassPath, 0, newClassPath, 0, rawClassPath.length);
+                newClassPath[newClassPath.length - 1] = derivedsrc;
+                javaProject.setRawClasspath(newClassPath, new NullProgressMonitor());
+            }
+            path.setOutputFolderForDerivedSources(derivedsrcFolder);
+        }
+        path.newSourceFolderEntry(ipsModelFolder);
+        ipsProject.setIpsObjectPath(path);
+    }
+
+    /**
+     * Initializes the default {@link IIpsProjectProperties}.
+     * 
+     * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
+     *            {@link IIpsProject}
+     * @param creationProperties The properties required for creating an {@link IIpsProject}
+     * @param ipsModel The {@link IIpsModel}
+     * @param ipsProject The created {@link IIpsProject}
+     */
+    private static void initializeIpsProjectPropertiesDefaults(IIpsProjectProperties ipsProjectProperties,
+            IpsProjectCreationProperties creationProperties,
+            IIpsModel ipsModel,
+            IIpsProject ipsProject) {
+        ipsProjectProperties.setRuntimeIdPrefix(creationProperties.getRuntimeIdPrefix());
+        ipsProjectProperties.setProductDefinitionProject(creationProperties.isProductDefinitionProject());
+        ipsProjectProperties.setModelProject(creationProperties.isModelProject());
+        ipsProjectProperties.setPersistenceSupport(creationProperties.isPersistentProject());
+
+        // use the first registered builder set info as default
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
+        ipsProjectProperties.setBuilderSetId(builderSetInfos.length > 0 ? builderSetInfos[0].getBuilderSetId() : ""); //$NON-NLS-1$
+
+        ipsProjectProperties.setPredefinedDatatypesUsed(ipsModel.getPredefinedValueDatatypes());
+        DateBasedProductCmptNamingStrategy namingStrategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", //$NON-NLS-1$ //$NON-NLS-2$
+                true);
+        ipsProjectProperties.setProductCmptNamingStrategy(namingStrategy);
+        ipsProjectProperties.setChangesOverTimeNamingConventionIdForGeneratedCode(
+                IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getId());
+        ipsProjectProperties.setMinRequiredVersionNumber(
+                "org.faktorips.feature", //$NON-NLS-1$
+                Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsModel
+                .getIpsArtefactBuilderSetInfo(ipsProjectProperties.getBuilderSetId());
+        if (builderSetInfo != null) {
+            ipsProjectProperties.setBuilderSetConfig(builderSetInfo.createDefaultConfiguration(ipsProject));
+        }
+    }
+
+    /**
+     * Initializes the default {@link IIpsArtefactBuilderSetConfigModel} of an {@link IIpsProject}.
+     * 
+     * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
+     *            {@link IIpsProject}
+     * @param creationProperties The properties required for creating an {@link IIpsProject}
+     */
+    private static void initializeBuilderSetConfigModel(IIpsProjectProperties ipsProjectProperties,
+            IpsProjectCreationProperties creationProperties) {
+        IIpsArtefactBuilderSetConfigModel builderSetConfig = ipsProjectProperties.getBuilderSetConfig();
+
+        String persistenceDescription = builderSetConfig
+                .getPropertyDescription(PersistenceSupportNames.STD_BUILDER_PROPERTY_PERSISTENCE_PROVIDER);
+        builderSetConfig.setPropertyValue(PersistenceSupportNames.STD_BUILDER_PROPERTY_PERSISTENCE_PROVIDER,
+                creationProperties.getPersistenceSupport(), persistenceDescription);
+
+        if (creationProperties.isModelProject()) {
+            builderSetConfig.setPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED,
+                    "false", //$NON-NLS-1$
+                    null);
+        }
+    }
+
+    /**
+     * Initializes the default {@link Locale Locales} of an {@link IIpsProject}.
+     * 
+     * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
+     *            {@link IIpsProject}
+     * @param creationProperties The properties required for creating an {@link IIpsProject}
+     */
+    private static void initializesLocales(IIpsProjectProperties ipsProjectProperties,
+            IpsProjectCreationProperties creationProperties) {
+        List<Locale> supportedLocales = creationProperties.getLocales();
+        for (int i = 0; i < supportedLocales.size(); i++) {
+            Locale locale = supportedLocales.get(i);
+            ipsProjectProperties.addSupportedLanguage(locale);
+            if (i == 0) {
+                ipsProjectProperties.setDefaultLanguage(locale);
+            }
+        }
+    }
+
+    /**
+     * Initializes the default formula language of an {@link IIpsProject}.
+     * 
+     * @param properties The {@link IIpsProjectProperties} of the created {@link IIpsProject}
+     */
     private static void setDefaultFunctionsLanguageLocale(IIpsProjectProperties properties) {
         ISupportedLanguage defaultLanguage = properties.getDefaultLanguage();
         if (defaultLanguage.getLocale().getLanguage().equals(Locale.GERMAN.getLanguage())) {
@@ -298,23 +457,6 @@ public class ProjectUtil {
         } else {
             properties.setFormulaLanguageLocale(Locale.ENGLISH);
         }
-    }
-
-    private static void addIpsRuntimeLibraries(IJavaProject javaProject) throws JavaModelException {
-        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        if (targetVersionIsAtLeast5(javaProject)) {
-            IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
-            System.arraycopy(oldEntries, 0, entries, 0, oldEntries.length);
-            entries[oldEntries.length] = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
-                    .newDefaultEntryPath());
-            javaProject.setRawClasspath(entries, null);
-        }
-    }
-
-    private static boolean targetVersionIsAtLeast5(IJavaProject javaProject) {
-        String[] targetVersion = javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true).split("\\."); //$NON-NLS-1$
-        return (Integer.parseInt(targetVersion[0]) == 1 && Integer.parseInt(targetVersion[1]) >= 5)
-                || Integer.parseInt(targetVersion[0]) > 1;
     }
 
     /**
@@ -337,4 +479,35 @@ public class ProjectUtil {
         return true;
     }
 
+    /**
+     * Executes all responsible {@link IIpsProjectConfigurator project-configurators}.
+     * <p>
+     * The configurators are provided by the extension point {@link ExtensionPoints#ADD_IPS_NATURE}.
+     * 
+     * @implNote If no extension is responsible for configuring the project, use the
+     *           {@link StandardJavaProjectConfigurator}
+     * 
+     * @param ipsProject The created {@link IIpsProject}
+     * @param creationProperties The {@link IpsProjectCreationProperties} required for creating an
+     *            {@link IIpsProject}
+     * @throws CoreException If the execution of one of the configurators failed
+     */
+    private static void executeProjectConfigurators(IIpsProject ipsProject,
+            IpsProjectCreationProperties creationProperties)
+            throws CoreException {
+        List<IIpsProjectConfigurator> ipsProjectConfigurators = IIpsModelExtensions.get()
+                .getIpsProjectConfigurators();
+
+        boolean isExtensionResponsible = false;
+        for (IIpsProjectConfigurator configurator : ipsProjectConfigurators) {
+            if (configurator.canConfigure(ipsProject.getProject())) {
+                isExtensionResponsible = true;
+                configurator.configureIpsProject(ipsProject, creationProperties);
+            }
+        }
+        if (!isExtensionResponsible) {
+            StandardJavaProjectConfigurator.configureGroovyIpsProject(ipsProject.getJavaProject(),
+                    creationProperties.isGroovySupport());
+        }
+    }
 }

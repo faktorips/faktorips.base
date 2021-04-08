@@ -29,7 +29,6 @@ public class Messages extends NLS {
     public static String AddIpsNatureAction_msgIPSNatureAlreadySet;
     public static String AddIpsNatureAction_mustSelectAJavaProject;
     public static String AddIpsNatureAction_readdNature;
-    public static String AddIpsNatureAction_msgSourceInProjectImpossible;
     public static String AddIpsNatureAction_msgErrorCreatingIPSProject;
 
     public static String ExpandAllAction_Selection_Description;

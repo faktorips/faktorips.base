@@ -110,6 +110,11 @@ public interface IIpsModelExtensions {
     IIpsWorkspaceInteractions getWorkspaceInteractions();
 
     /**
+     * Returns the available configurators for adding the IPS nature to a project.
+     */
+    List<IIpsProjectConfigurator> getIpsProjectConfigurators();
+
+    /**
      * Returns the {@link IdentifierFilter} who calls the extension points
      * {@link IFlIdentifierFilterExtension}
      */

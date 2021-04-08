@@ -24,11 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
-    public static String AddIpsNatureDialog_basePackage_default;
     public static String AddIpsNatureDialog_basePackageName;
     public static String AddIpsNatureDialog_basePackageNameNotValid;
-    public static String AddIpsNatureDialog_defaultRuntimeIdPrefix;
-    public static String AddIpsNatureDialog_defaultSourceFolderName;
     public static String AddIpsNatureDialog_dialogMessage;
     public static String AddIpsNatureDialog_dialogTitle;
     public static String AddIpsNatureDialog_ErrorNoSourceFolderName;
@@ -36,6 +33,7 @@ public class Messages extends NLS {
     public static String AddIpsNatureDialog_modelProject;
     public static String AddIpsNatureDialog_productDefinitionProject;
     public static String AddIpsNatureDialog_PersistenceSupport;
+    public static String AddIpsNatureDialog_GroovySupport;
     public static String AddIpsNatureDialog_ProjectType;
     public static String AddIpsNatureDialog_runtimeIdPrefix;
     public static String AddIpsNatureDialog_sourceFolderName;
