@@ -28,6 +28,8 @@ public class Messages extends NLS {
     public static String AddIpsNatureDialog_basePackageNameNotValid;
     public static String AddIpsNatureDialog_dialogMessage;
     public static String AddIpsNatureDialog_dialogTitle;
+    public static String AddIpsNatureDialog_ErrorDialogText;
+    public static String AddIpsNatureDialog_ErrorDialogTitle;
     public static String AddIpsNatureDialog_ErrorNoSourceFolderName;
     public static String AddIpsNatureDialog_fullProject;
     public static String AddIpsNatureDialog_modelProject;

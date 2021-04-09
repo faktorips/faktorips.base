@@ -11,7 +11,11 @@
 package org.faktorips.devtools.model.plugin;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 
 /**
  * Extension of status that sets the correct plug-in id and provides some convenience constructors.
@@ -62,6 +66,59 @@ public class IpsStatus extends Status {
      */
     public IpsStatus(int severity, int code, String message, Throwable exception) {
         super(severity, IpsModelActivator.PLUGIN_ID, code, message, exception);
+    }
+
+    /**
+     * Creates a new status from the given {@link MessageList}.
+     * <ul>
+     * <li>If the {@linkplain MessageList#isEmpty() MessageList is empty}, a
+     * {@link Status#OK_STATUS} will be returned.</li>
+     * <li>If the {@link MessageList} contains exactly one {@link Message}, an {@link IpsStatus} for
+     * that Message is returned.</li>
+     * <li>Otherwise a {@link MultiStatus} containing an {@link IpsStatus} for every {@link Message}
+     * in the {@link MessageList} is returned.</li>
+     * </ul>
+     *
+     * @see #of(Message)
+     */
+    public static IStatus of(MessageList messages) {
+        if (messages == null || messages.isEmpty()) {
+            return Status.OK_STATUS;
+        }
+        if (messages.size() == 1) {
+            return IpsStatus.of(messages.getMessage(0));
+        }
+        return new MultiStatus(IpsModelActivator.PLUGIN_ID, toEclipseSeverity(messages.getSeverity()),
+                messages.stream().map(IpsStatus::of).toArray(IStatus[]::new), messages.getText(), null);
+    }
+
+    /**
+     * <ul>
+     * <li>If the {@linkplain Message} is {@code null}, a {@link Status#OK_STATUS} will be
+     * returned.</li>
+     * <li>Otherwise creates a new {@link IpsStatus} from the given {@link Message}, using its
+     * {@link Severity} and text.</li>
+     * </ul>
+     */
+    public static IStatus of(Message message) {
+        if (message == null) {
+            return Status.OK_STATUS;
+        }
+        return new IpsStatus(toEclipseSeverity(message.getSeverity()), message.getText());
+    }
+
+    private static int toEclipseSeverity(Severity serverity) {
+        switch (serverity) {
+            case ERROR:
+                return IStatus.ERROR;
+            case WARNING:
+                return IStatus.WARNING;
+            case INFO:
+                return IStatus.INFO;
+            case NONE:
+            default:
+                return IStatus.OK;
+        }
     }
 
 }

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -37,8 +38,11 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
+import org.faktorips.runtime.MessageList;
 
 public final class AddIpsNatureDialog extends TitleAreaDialog {
 
@@ -322,6 +326,14 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
             ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
 
             ipsProjectCreationProperties.setLocales(supportedLanguagesControl.getLocales());
+            MessageList messages = ipsProjectCreationProperties.validate(javaProject);
+            if (messages.containsErrorMsg()) {
+                ErrorDialog.openError(getParentShell(),
+                        Messages.bind(Messages.AddIpsNatureDialog_ErrorDialogTitle, javaProject.getElementName()),
+                        Messages.AddIpsNatureDialog_ErrorDialogText,
+                        IpsStatus.of(messages));
+                return;
+            }
         }
         super.buttonPressed(buttonId);
     }
@@ -343,6 +355,6 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
     private boolean isGroovyAvailable() {
         return IpsClasspathContainerInitializer.isGroovySupportAvailable()
-                || IpsClasspathContainerInitializer.isGroovySupportedByAddIpsNatureExtension(javaProject.getProject());
+                || IpsProjectConfigurators.isGroovySupported(javaProject);
     }
 }

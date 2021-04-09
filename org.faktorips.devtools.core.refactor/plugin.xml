@@ -33,4 +33,10 @@
             name="StdBuilderPullUpParticipant">
       </pullUpParticipant>
    </extension>
+   <extension
+         point="org.faktorips.devtools.model.addIpsNature">
+      <ipsProjectConfigurator
+            class="org.faktorips.devtools.core.refactor.modules.ModuleIpsProjectConfigurator">
+      </ipsProjectConfigurator>
+   </extension>
 </plugin>

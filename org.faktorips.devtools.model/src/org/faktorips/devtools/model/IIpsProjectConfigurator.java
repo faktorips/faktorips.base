@@ -9,12 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.StandardJavaProjectConfigurator;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Implementations for the Faktor-IPS model extension point {@value ExtensionPoints#ADD_IPS_NATURE}
@@ -36,17 +37,34 @@ public interface IIpsProjectConfigurator {
      * @implNote If no extension is responsible for a project, the standard configurator
      *           {@link StandardJavaProjectConfigurator} will be used.
      * 
-     * @param project the project to be configured
+     * @param javaProject the project to be configured
      * @return whether this configurator can configure the project
      */
-    boolean canConfigure(IProject project);
+    boolean canConfigure(IJavaProject javaProject);
 
     /**
-     * Checks whether Groovy is supported by the extension.
+     * Checks whether Groovy is supported for the given project by this extension.
      * 
      * @return {@code true} if Groovy is supported by the extension, else {@code false}
      */
-    boolean isGroovySupported();
+    boolean isGroovySupported(IJavaProject javaProject);
+
+    /**
+     * Validates whether the given {@link IpsProjectCreationProperties} are set to values this
+     * configurator can use to configure the given {@link IJavaProject}.
+     * <p>
+     * This method will only be called if {@link #canConfigure(IJavaProject)} returns {@code true}
+     * for the given {@link IJavaProject}.
+     * 
+     * @param javaProject the {@link IJavaProject} to be configured
+     * @param creationProperties the properties defining how the project should be configured
+     * @return an empty {@link MessageList} if this configurator can configure the project with the
+     *         given properties, otherwise a {@link MessageList} that
+     *         {@link MessageList#containsErrorMsg() contains an error message}
+     */
+    default MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+        return MessageList.of();
+    }
 
     /**
      * Configures an existent project, which already contains the IPS-Nature, for the usage of

@@ -52,6 +52,7 @@ import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.runtime.MessageList;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -135,7 +136,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     @Test(expected = CoreException.class)
     public void testCreateIpsProject_missingCreationProperties() throws CoreException {
         creationProperties = mock(IpsProjectCreationProperties.class);
-        when(creationProperties.checkForRequiredProperties()).thenReturn("error");
+        when(creationProperties.validate(javaProject)).thenReturn(MessageList.ofErrors("error"));
         ProjectUtil.createIpsProject(javaProject, creationProperties);
     }
 

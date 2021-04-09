@@ -18,9 +18,9 @@ import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
 import org.junit.Before;
@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
 
-    private static IJavaProject javaProject;
+    private IJavaProject javaProject;
 
     @Override
     @Before
@@ -38,6 +38,7 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
         javaProject = addJavaCapabilities(platformProject);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testConfigureDefaultIpsProject() throws CoreException {
         List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
@@ -55,26 +56,60 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(containsIpsClasspathContainer, is(true));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
-    public void testConfigureDefaultIpsProject_malformedJavaVersion() throws CoreException {
-        javaProject.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "5.5");
-        IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-        StandardJavaProjectConfigurator.configureDefaultIpsProject(javaProject);
-        assertThat(javaProject.getRawClasspath(), is(classpathEntries));
-    }
-
-    @Test
-    public void testConfigureDefaultIpsProject_invalidJavaVersion() throws CoreException {
-        javaProject.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
-        IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-        StandardJavaProjectConfigurator.configureDefaultIpsProject(javaProject);
-        assertThat(javaProject.getRawClasspath(), is(classpathEntries));
-    }
-
-    @Test
-    public void testConfigureGroovyIpsProject_groovyEnabled() throws CoreException {
+    public void testConfigureDefaultIpsProject_Module() throws CoreException {
+        convertToModuleProject(javaProject);
         List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
-        StandardJavaProjectConfigurator.configureGroovyIpsProject(javaProject, true);
+
+        StandardJavaProjectConfigurator.configureDefaultIpsProject(javaProject);
+
+        List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
+        assertThat(classpathEntriesAfter.size(), is(classpathEntriesBefore.size() + 1));
+
+        Optional<IClasspathEntry> ipsClasspathContainerEntry = classpathEntriesAfter.stream()
+                .filter(entry -> IpsClasspathContainerInitializer.CONTAINER_ID.equals(entry.getPath().segment(0)))
+                .findFirst();
+        assertThat(ipsClasspathContainerEntry.isPresent(), is(true));
+        Optional<IClasspathAttribute> moduleAttribute = Arrays
+                .stream(ipsClasspathContainerEntry.get().getExtraAttributes())
+                .filter(a -> IClasspathAttribute.MODULE.equals(a.getName())).findFirst();
+        assertThat(moduleAttribute.isPresent(), is(true));
+        assertThat(moduleAttribute.get().getValue(), is("true"));
+
+        for (IClasspathEntry entry : classpathEntriesBefore) {
+            assertThat(classpathEntriesAfter.contains(entry), is(true));
+        }
+    }
+
+    @Test
+    public void testConfigureJavaProject_Module() throws CoreException {
+        convertToModuleProject(javaProject);
+        List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
+
+        StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false);
+
+        List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
+        assertThat(classpathEntriesAfter.size(), is(classpathEntriesBefore.size() + 1));
+        for (IClasspathEntry entry : classpathEntriesBefore) {
+            assertThat(classpathEntriesAfter.contains(entry), is(true));
+        }
+
+        Optional<IClasspathEntry> ipsClasspathContainerEntry = classpathEntriesAfter.stream()
+                .filter(entry -> IpsClasspathContainerInitializer.CONTAINER_ID.equals(entry.getPath().segment(0)))
+                .findFirst();
+        assertThat(ipsClasspathContainerEntry.isPresent(), is(true));
+        Optional<IClasspathAttribute> moduleAttribute = Arrays
+                .stream(ipsClasspathContainerEntry.get().getExtraAttributes())
+                .filter(a -> IClasspathAttribute.MODULE.equals(a.getName())).findFirst();
+        assertThat(moduleAttribute.isPresent(), is(true));
+        assertThat(moduleAttribute.get().getValue(), is("true"));
+    }
+
+    @Test
+    public void testConfigureJavaProject_GroovyEnabled() throws CoreException {
+        List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
+        StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, true);
 
         List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
         assertThat(classpathEntriesBefore.size(), is(classpathEntriesAfter.size() - 1));
@@ -88,16 +123,13 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
                 .findFirst();
         assertThat(containsIpsClasspathContainer.isPresent(), is(true));
         String bundles = containsIpsClasspathContainer.get().getPath().lastSegment().toString();
-        // Here, simply checking for "true", as expected, is not possible, since tests within an
-        // environment without Groovy installed would fail
-        assertThat(bundles.contains("org.faktorips.runtime.groovy"),
-                is(IpsClasspathContainerInitializer.isGroovySupportAvailable()));
+        assertThat(bundles.contains("org.faktorips.runtime.groovy"), is(true));
     }
 
     @Test
-    public void testConfigureGroovyIpsProject_groovyDisabled() throws CoreException {
+    public void testConfigureJavaProject_GroovyDisabled() throws CoreException {
         List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
-        StandardJavaProjectConfigurator.configureGroovyIpsProject(javaProject, false);
+        StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false);
 
         List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
         assertThat(classpathEntriesBefore.size(), is(classpathEntriesAfter.size() - 1));
@@ -112,21 +144,5 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(containsIpsClasspathContainer.isPresent(), is(true));
         String bundles = containsIpsClasspathContainer.get().getPath().lastSegment().toString();
         assertThat(bundles.contains("org.faktorips.runtime.groovy"), is(false));
-    }
-
-    @Test
-    public void testConfigureGroovyIpsProject_malformedJavaVersion() throws CoreException {
-        javaProject.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "5.5");
-        IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-        StandardJavaProjectConfigurator.configureGroovyIpsProject(javaProject, true);
-        assertThat(javaProject.getRawClasspath(), is(classpathEntries));
-    }
-
-    @Test
-    public void testConfigureGroovyIpsProject_invalidJavaVersion() throws CoreException {
-        javaProject.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
-        IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-        StandardJavaProjectConfigurator.configureGroovyIpsProject(javaProject, true);
-        assertThat(javaProject.getRawClasspath(), is(classpathEntries));
     }
 }

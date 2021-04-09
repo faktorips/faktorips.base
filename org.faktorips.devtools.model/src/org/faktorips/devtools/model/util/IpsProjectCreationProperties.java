@@ -12,16 +12,27 @@ package org.faktorips.devtools.model.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * Stores and provides inserted properties required for creating {@link IIpsProject IIpsProjects}.
+ * Stores and provides properties required for creating {@link IIpsProject IIpsProjects}.
  * 
  * @author Florian Orendi
  */
 public class IpsProjectCreationProperties {
+
+    public static final String MSG_CODE_MISSING_PROPERTY = "MISSING_PROPERTY"; //$NON-NLS-1$
+    public static final String PROPERTY_RUNTIME_ID_PREFIX = "runtimeIdPrefix"; //$NON-NLS-1$
+    public static final String PROPERTY_SOURCE_FOLDER_NAME = "sourceFolderName"; //$NON-NLS-1$
+    public static final String PROPERTY_BASE_PACKAGE_NAME = "basePackageName"; //$NON-NLS-1$
+    public static final String PROPERTY_PERSISTENCE_SUPPORT = "persistenceSupport"; //$NON-NLS-1$
+    public static final String PROPERTY_LOCALES = "locales"; //$NON-NLS-1$
 
     private String runtimeIdPrefix;
     private String sourceFolderName;
@@ -129,53 +140,75 @@ public class IpsProjectCreationProperties {
         this.locales = locales;
     }
 
+    private String getPropertyName(String property) {
+        switch (property) {
+            case PROPERTY_RUNTIME_ID_PREFIX:
+                return Messages.IpsProjectCreationProperties_runtimeIdPrefix;
+            case PROPERTY_SOURCE_FOLDER_NAME:
+                return Messages.IpsProjectCreationProperties_sourceFolderName;
+            case PROPERTY_BASE_PACKAGE_NAME:
+                return Messages.IpsProjectCreationProperties_basePackageName;
+            case PROPERTY_PERSISTENCE_SUPPORT:
+                return Messages.IpsProjectCreationProperties_persistenceSupport;
+            case PROPERTY_LOCALES:
+                return Messages.IpsProjectCreationProperties_locales;
+
+            default:
+                return property;
+        }
+    }
+
+    private void validateNonEmpty(MessageList messages, String property, Supplier<String> getter) {
+        if (IpsStringUtils.isEmpty(getter.get())) {
+            missingProperty(messages, property);
+        }
+    }
+
+    private void missingProperty(MessageList messages, String property) {
+        messages.newError(MSG_CODE_MISSING_PROPERTY,
+                Messages.bind(Messages.IpsProjectCreationProperties_MsgText_MissingProperty,
+                        getPropertyName(property)),
+                this,
+                property);
+    }
+
     /**
      * Checks whether all required properties for creating a Faktor-IPS project are set.
      * 
      * @implNote This method does not check whether the properties have a valid format or are
      *           available
      * 
-     * @return An error message which is empty if there are no errors.
+     * @return an empty {@link MessageList} if all required properties are filled, one containing at
+     *         least one error message otherwise
      */
-    // CSOFF: CyclomaticComplexity
-    // CSOFF: BooleanExpressionComplexity
-    public String checkForRequiredProperties() {
-        boolean existingRuntimeIDPrefix = IpsStringUtils.isNotEmpty(getRuntimeIdPrefix());
-        boolean existingSourceFolderName = IpsStringUtils.isNotEmpty(sourceFolderName);
-        boolean existingBasePackageName = IpsStringUtils.isNotEmpty(basePackageName);
-        boolean existingLocales = locales != null && !locales.isEmpty();
-
-        boolean existingPersistenceSupport = true;
+    public MessageList validateRequiredProperties() {
+        MessageList messages = new MessageList();
+        validateNonEmpty(messages, PROPERTY_RUNTIME_ID_PREFIX, this::getRuntimeIdPrefix);
+        validateNonEmpty(messages, PROPERTY_SOURCE_FOLDER_NAME, this::getSourceFolderName);
+        validateNonEmpty(messages, PROPERTY_BASE_PACKAGE_NAME, this::getBasePackageName);
         if (isPersistentProject) {
-            existingPersistenceSupport = IpsStringUtils.isNotEmpty(persistenceSupport);
+            validateNonEmpty(messages, PROPERTY_PERSISTENCE_SUPPORT, this::getPersistenceSupport);
         }
-
-        if (existingRuntimeIDPrefix && existingSourceFolderName
-                && existingBasePackageName && existingLocales && existingPersistenceSupport) {
-            return IpsStringUtils.EMPTY;
+        if (locales == null || locales.isEmpty()) {
+            missingProperty(messages, PROPERTY_LOCALES);
         }
-
-        StringBuilder errorMessage = new StringBuilder(
-                "There are missing properties for creating an IPS project:\n"); //$NON-NLS-1$
-
-        if (!existingRuntimeIDPrefix) {
-            errorMessage.append("runtime-ID prefix;\n"); //$NON-NLS-1$
-        }
-        if (!existingSourceFolderName) {
-            errorMessage.append("source folder name;\n"); //$NON-NLS-1$
-        }
-        if (!existingBasePackageName) {
-            errorMessage.append("base package name;\n"); //$NON-NLS-1$
-        }
-        if (!existingLocales) {
-            errorMessage.append("locales;\n"); //$NON-NLS-1$
-        }
-        if (!existingPersistenceSupport) {
-            errorMessage.append("persistenceSupport;\n"); //$NON-NLS-1$
-        }
-
-        return errorMessage.toString();
+        return messages;
     }
-    // CSON: BooleanExpressionComplexity
-    // CSON: CyclomaticComplexity
+
+    /**
+     * Validates whether these {@link IpsProjectCreationProperties} allow the given
+     * {@link IJavaProject} to be turned into an {@link IIpsProject}.
+     * 
+     * @return an empty {@link MessageList} if all validation succeeds, one containing at least one
+     *         error message otherwise
+     * @see #validateRequiredProperties()
+     * @see IIpsProjectConfigurator#validate(IJavaProject, IpsProjectCreationProperties)
+     */
+    public MessageList validate(IJavaProject javaProject) {
+        MessageList errorMessages = validateRequiredProperties();
+        IpsProjectConfigurators.applicableTo(javaProject)
+                .map(c -> c.validate(javaProject, this))
+                .forEach(errorMessages::add);
+        return errorMessages;
+    }
 }

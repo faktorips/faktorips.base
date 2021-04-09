@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
@@ -73,12 +74,12 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     private static final String MAVEN_SOURCE_PLUGIN_ARTIFACT_ID = "maven-source-plugin";
 
     @Override
-    public boolean canConfigure(IProject project) {
-        return MavenPlugin.getMavenProjectRegistry().getProject(project) != null;
+    public boolean canConfigure(IJavaProject javaProject) {
+        return MavenPlugin.getMavenProjectRegistry().getProject(javaProject.getProject()) != null;
     }
 
     @Override
-    public boolean isGroovySupported() {
+    public boolean isGroovySupported(IJavaProject javaProject) {
         return true;
     }
 
@@ -88,8 +89,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         IProject project = ipsProject.getProject();
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
 
-        String errorMessage = creationProperties.checkForRequiredProperties()
-                .concat(checkForRequiredIpsObjectPathProperties(ipsObjectPath));
+        String errorMessage = checkForRequiredIpsObjectPathProperties(ipsObjectPath);
 
         if (IpsStringUtils.isNotEmpty(errorMessage)) {
             throw new CoreException(new IpsStatus(errorMessage));

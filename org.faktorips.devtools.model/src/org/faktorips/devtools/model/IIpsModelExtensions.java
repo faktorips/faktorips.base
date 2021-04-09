@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
+import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -113,6 +114,8 @@ public interface IIpsModelExtensions {
 
     /**
      * Returns the available configurators for adding the IPS nature to a project.
+     *
+     * @see IpsProjectConfigurators#applicableTo(org.eclipse.jdt.core.IJavaProject)
      */
     List<IIpsProjectConfigurator> getIpsProjectConfigurators();
 

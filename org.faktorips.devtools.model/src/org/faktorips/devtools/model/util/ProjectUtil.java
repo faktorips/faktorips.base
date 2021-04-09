@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -44,7 +45,7 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Utilities for the creation and modification of projects.
@@ -238,10 +239,9 @@ public class ProjectUtil {
             IpsProjectCreationProperties creationProperties)
             throws CoreException {
 
-        String errorMessage = creationProperties.checkForRequiredProperties();
-        if (IpsStringUtils.isNotEmpty(errorMessage)) {
-            throw new CoreException(
-                    new IpsStatus(errorMessage));
+        MessageList errorMessages = creationProperties.validate(javaProject);
+        if (errorMessages.containsErrorMsg()) {
+            throw new CoreException(IpsStatus.of(errorMessages));
         }
 
         IFolder javaSrcFolder = javaProject.getProject().getFolder("src"); //$NON-NLS-1$
@@ -495,19 +495,14 @@ public class ProjectUtil {
     private static void executeProjectConfigurators(IIpsProject ipsProject,
             IpsProjectCreationProperties creationProperties)
             throws CoreException {
-        List<IIpsProjectConfigurator> ipsProjectConfigurators = IIpsModelExtensions.get()
-                .getIpsProjectConfigurators();
-
         boolean isExtensionResponsible = false;
-        for (IIpsProjectConfigurator configurator : ipsProjectConfigurators) {
-            if (configurator.canConfigure(ipsProject.getProject())) {
-                isExtensionResponsible = true;
-                configurator.configureIpsProject(ipsProject, creationProperties);
-            }
+        for (IIpsProjectConfigurator configurator : IpsProjectConfigurators.applicableTo(ipsProject.getJavaProject())
+                .collect(Collectors.toList())) {
+            isExtensionResponsible = true;
+            configurator.configureIpsProject(ipsProject, creationProperties);
         }
         if (!isExtensionResponsible) {
-            StandardJavaProjectConfigurator.configureGroovyIpsProject(ipsProject.getJavaProject(),
-                    creationProperties.isGroovySupport());
+            new StandardJavaProjectConfigurator().configureIpsProject(ipsProject, creationProperties);
         }
     }
 }

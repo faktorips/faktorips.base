@@ -94,18 +94,19 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCanConfigure() {
-        assertThat(mavenIpsProjectConfigurator.canConfigure(ipsProject.getProject()), is(true));
+        assertThat(mavenIpsProjectConfigurator.canConfigure(ipsProject.getJavaProject()), is(true));
     }
 
     @Test
     public void testCanNotConfigure() throws Exception {
         ipsProject = newIpsProject();
-        assertThat(mavenIpsProjectConfigurator.canConfigure(ipsProject.getProject()), is(false));
+        assertThat(mavenIpsProjectConfigurator.canConfigure(ipsProject.getJavaProject()), is(false));
     }
 
     @Test
     public void testIsGroovySupported() throws Exception {
-        assertThat(mavenIpsProjectConfigurator.isGroovySupported(), is(true));
+        ipsProject = newIpsProject();
+        assertThat(mavenIpsProjectConfigurator.isGroovySupported(ipsProject.getJavaProject()), is(true));
     }
 
     @Test(expected = CoreException.class)

@@ -198,8 +198,8 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         sb.append('(');
         sb.append(cardinality.getLowerBound());
         sb.append("..");
-        sb.append(
-                new Integer(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*" : cardinality.getUpperBound());
+        sb.append(Integer.valueOf(Integer.MAX_VALUE).equals(cardinality.getUpperBound()) ? "*"
+                : cardinality.getUpperBound());
         sb.append(", default:");
         sb.append(cardinality.getDefaultCardinality());
         sb.append(')');

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -29,7 +28,6 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
@@ -52,28 +50,6 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      */
     public static final boolean isGroovySupportAvailable() {
         return Platform.getBundle(GROOVY_BUNDLE) != null;
-    }
-
-    /**
-     * Checks whether at least one extension of the extension point
-     * {@link ExtensionPoints#ADD_IPS_NATURE} supports Groovy and is responsible for configuring the
-     * passed {@link IProject}.
-     * <p>
-     * Is this the case, the {@link #GROOVY_BUNDLE} has not to be installed in Eclipse.
-     * 
-     * @return {@code true} whether at least on extension supports Groovy, else {@code false}
-     */
-    public static final boolean isGroovySupportedByAddIpsNatureExtension(IProject project) {
-        List<IIpsProjectConfigurator> ipsProjectConfigurators = IpsModelExtensionsViaEclipsePlugins.get()
-                .getIpsProjectConfigurators();
-        boolean isGroovySupportedByExtension = false;
-        for (IIpsProjectConfigurator configurator : ipsProjectConfigurators) {
-            if (configurator.canConfigure(project) && configurator.isGroovySupported()) {
-                isGroovySupportedByExtension = true;
-                break;
-            }
-        }
-        return isGroovySupportedByExtension;
     }
 
     /**

@@ -57,14 +57,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
@@ -325,40 +322,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new Java Project for the given platform project.
      */
     protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
-        IJavaProject javaProject = JavaCore.create(project);
-        // add Java nature
-        IpsProjectUtil.addNature(project, JavaCore.NATURE_ID);
-        javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-        // create bin folder and set as output folder.
-        IFolder binFolder = project.getFolder("bin");
-        if (!binFolder.exists()) {
-            binFolder.create(true, true, null);
-        }
-        IFolder srcFolder = project.getFolder(OUTPUT_FOLDER_NAME_MERGABLE);
-        javaProject.setOutputLocation(binFolder.getFullPath(), null);
-        if (!srcFolder.exists()) {
-            srcFolder.create(true, true, null);
-        }
-        IFolder extFolder = project.getFolder(OUTPUT_FOLDER_NAME_DERIVED);
-        if (!extFolder.exists()) {
-            extFolder.create(true, true, null);
-        }
-        IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
-        IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
-        IClasspathEntry[] entries = new IClasspathEntry[2];
-        entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
-        entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
-        javaProject.setRawClasspath(entries, null);
-        addSystemLibraries(javaProject);
-        return javaProject;
+        return JavaProjectUtil.addJavaCapabilities(project);
     }
 
-    private void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {
-        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-        IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
-        System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-        newEntries[oldEntries.length] = JavaRuntime.getDefaultJREContainerEntry();
-        javaProject.setRawClasspath(newEntries, null);
+    /**
+     * Converts the given Java project to a Java 11 module project.
+     */
+    protected void convertToModuleProject(IJavaProject javaProject) {
+        JavaProjectUtil.convertToModuleProject(javaProject);
     }
 
     protected void addIpsCapabilities(IProject project) throws CoreException {

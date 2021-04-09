@@ -9,22 +9,42 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.util;
 
+import static org.faktorips.abstracttest.matcher.FluentAssert.when;
+import static org.faktorips.abstracttest.matcher.Matchers.containsErrorMsg;
+import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
+import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
-public class IpsProjectCreationPropertiesTest {
+public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
     private IpsProjectCreationProperties properties;
 
+    @Override
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         properties = new IpsProjectCreationProperties();
         properties.getLocales().add(new Locale("en"));
     }
@@ -44,71 +64,150 @@ public class IpsProjectCreationPropertiesTest {
     }
 
     @Test
-    public void testCheckForRequiredProperties() {
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(true));
+    public void testValidateRequiredProperties() {
+        assertThat(properties.validateRequiredProperties(), isEmpty());
     }
 
     @Test
-    public void testCheckForRequiredProperties_emptyBasePackage() {
+    public void testValidateRequiredProperties_EmptyBasePackage() {
         properties.setBasePackageName("");
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_BASE_PACKAGE_NAME));
     }
 
     @Test
-    public void testCheckForRequiredProperties_emptyRuntimeIdPrefix() {
+    public void testValidateRequiredProperties_EmptyRuntimeIdPrefix() {
         properties.setRuntimeIdPrefix("");
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_RUNTIME_ID_PREFIX));
     }
 
     @Test
-    public void testCheckForRequiredProperties_emptySourceFolder() {
+    public void testValidateRequiredProperties_EmptySourceFolder() {
         properties.setSourceFolderName("");
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_SOURCE_FOLDER_NAME));
     }
 
     @Test
-    public void testCheckForRequiredProperties_emptyPersistenceSupport() {
+    public void testValidateRequiredProperties_EmptyPersistenceSupport() {
         properties.setPersistentProject(true);
         properties.setPersistenceSupport("");
-        assertThat(properties.isPersistentProject(), is(true));
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_PERSISTENCE_SUPPORT));
     }
 
     @Test
-    public void testCheckForRequiredProperties_emptyLocales() {
+    public void testValidateRequiredProperties_EmptyPersistenceSupport_NonPersistentProject() {
+        properties.setPersistentProject(false);
+        properties.setPersistenceSupport("");
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, isEmpty());
+    }
+
+    @Test
+    public void testValidateRequiredProperties_EmptyLocales() {
         properties.getLocales().clear();
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_LOCALES));
     }
 
     @Test
-    public void testCheckForRequiredProperties_nullBasePackage() {
+    public void testValidateRequiredProperties_NullBasePackage() {
         properties.setBasePackageName(null);
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_BASE_PACKAGE_NAME));
     }
 
     @Test
-    public void testCheckForRequiredProperties_nullRuntimeIdPrefix() {
+    public void testValidateRequiredProperties_NullRuntimeIdPrefix() {
         properties.setRuntimeIdPrefix(null);
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_RUNTIME_ID_PREFIX));
     }
 
     @Test
-    public void testCheckForRequiredProperties_nullSourceFolder() {
+    public void testValidateRequiredProperties_NullSourceFolder() {
         properties.setSourceFolderName(null);
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_SOURCE_FOLDER_NAME));
     }
 
     @Test
-    public void testCheckForRequiredProperties_nullPersistenceSupport() {
+    public void testValidateRequiredProperties_NullPersistenceSupport() {
         properties.setPersistentProject(true);
         properties.setPersistenceSupport(null);
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_PERSISTENCE_SUPPORT));
     }
 
     @Test
-    public void testCheckForRequiredProperties_nullLocales() {
+    public void testValidateRequiredProperties_NullPersistenceSupport_NonPersistentProject() {
+        properties.setPersistentProject(false);
+        properties.setPersistenceSupport(null);
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, isEmpty());
+    }
+
+    @Test
+    public void testValidateRequiredProperties_NullLocales() {
         properties.setLocales(null);
-        assertThat(properties.checkForRequiredProperties().isEmpty(), is(false));
+
+        MessageList messages = properties.validateRequiredProperties();
+
+        assertThat(messages, containsErrorMsg());
+        assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
+        assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
+                hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_LOCALES));
     }
 
     @Test
@@ -144,5 +243,77 @@ public class IpsProjectCreationPropertiesTest {
         assertThat(properties.isPersistentProject(), is(isPersistenceProject));
         assertThat(properties.isGroovySupport(), is(isGroovySupport));
         assertThat(properties.getLocales(), is(locales));
+    }
+
+    @Test
+    public void testValidate() throws Exception {
+        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+            IProject project = newPlatformProject(UUID.randomUUID().toString());
+            IJavaProject javaProject = addJavaCapabilities(project);
+            StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
+            NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
+            ValidationErrorIpsProjectConfigurator validationErrorIpsProjectConfigurator = new ValidationErrorIpsProjectConfigurator();
+
+            when(configuratorsAre(nonApplicableIpsProjectConfigurator, standardJavaProjectConfigurator))
+                    .assertThat(properties.validate(javaProject), isEmpty());
+            when(configuratorsAre(standardJavaProjectConfigurator, validationErrorIpsProjectConfigurator))
+                    .assertThat(properties.validate(javaProject), containsErrorMsg());
+        }
+    }
+
+    private SetUp configuratorsAre(IIpsProjectConfigurator... configurators) {
+        return () -> ((TestIpsModelExtensions)IIpsModelExtensions.get()).setIpsProjectConfigurators(
+                Arrays.asList(configurators));
+    }
+
+    private static class NonApplicableIpsProjectConfigurator implements IIpsProjectConfigurator {
+
+        @Override
+        public boolean canConfigure(IJavaProject javaProject) {
+            return false;
+        }
+
+        @Override
+        public boolean isGroovySupported(IJavaProject javaProject) {
+            return true;
+        }
+
+        @Override
+        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+            fail("Validation should never be called when canConfigure returns false");
+            return null;
+        }
+
+        @Override
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
+                throws CoreException {
+            fail("should never be called");
+        }
+
+    }
+
+    private static class ValidationErrorIpsProjectConfigurator implements IIpsProjectConfigurator {
+
+        @Override
+        public boolean canConfigure(IJavaProject javaProject) {
+            return true;
+        }
+
+        @Override
+        public boolean isGroovySupported(IJavaProject javaProject) {
+            return true;
+        }
+
+        @Override
+        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+            return MessageList.ofErrors("Not OK");
+        }
+
+        @Override
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
+                throws CoreException {
+            fail("should never be called");
+        }
+
     }
 }

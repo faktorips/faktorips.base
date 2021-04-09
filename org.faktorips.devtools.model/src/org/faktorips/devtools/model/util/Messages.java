@@ -27,6 +27,12 @@ public class Messages extends NLS {
     public static String IpsProjectCreation_defaultRuntimeIdPrefix;
     public static String IpsProjectCreation_defaultBasePackageName;
     public static String IpsProjectCreation_defaultSourceFolderName;
+    public static String IpsProjectCreationProperties_basePackageName;
+    public static String IpsProjectCreationProperties_locales;
+    public static String IpsProjectCreationProperties_MsgText_MissingProperty;
+    public static String IpsProjectCreationProperties_persistenceSupport;
+    public static String IpsProjectCreationProperties_runtimeIdPrefix;
+    public static String IpsProjectCreationProperties_sourceFolderName;
 
     public static String ProjectUtil_msgSourceInProjectImpossible;
 }
