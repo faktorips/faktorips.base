@@ -251,28 +251,15 @@ class PolicyCmptAttributeTmpl {
       /**
        * @generated
        */
-      «IF abstract»
-        protected abstract
-      «ELSEIF overwriteAbstract && overwrittenAttribute.generateInitPropertiesFromXML»
-        @Override
-        protected
-      «ELSE»
-        private
-      «ENDIF»  
       «IF datatypeExtensibleEnum»
-        void «method(methodNameDoInitFromXml, Map("String", "String"),"propMap", "IRuntimeRepository", "productRepository")»
+        private void «method(methodNameDoInitFromXml, Map("String", "String"),"propMap", "IRuntimeRepository", "productRepository")»{
       «ELSE»
-        void «method(methodNameDoInitFromXml, Map("String", "String"),"propMap")»
+        private void «method(methodNameDoInitFromXml, Map("String", "String"),"propMap")»{
       «ENDIF»
-      «IF abstract»            
-        ;
-      «ELSE»
-        {
-            if (propMap.containsKey(«constantNamePropertyName»)) {
-                this.«fieldName» = «getNewInstanceFromExpression("propMap.get(" + constantNamePropertyName + ")", "productRepository")»;
-            }
-        }
-      «ENDIF»
+          if (propMap.containsKey(«constantNamePropertyName»)) {
+              this.«fieldName» = «getNewInstanceFromExpression("propMap.get(" + constantNamePropertyName + ")", "productRepository")»;
+          }
+      }
     «ENDIF»
   '''
 

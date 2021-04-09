@@ -485,7 +485,7 @@ public class XPolicyCmptClass extends XType {
      * initPropertiesFromXML-Method. <code>false</code> otherwise.
      */
     public boolean isGenerateInitPropertiesFromXML() {
-        for (XPolicyAttribute attr : getAttributesIncludingAbstract()) {
+        for (XPolicyAttribute attr : getAttributes()) {
             if (attr.isGenerateInitPropertiesFromXML()) {
                 return true;
             }

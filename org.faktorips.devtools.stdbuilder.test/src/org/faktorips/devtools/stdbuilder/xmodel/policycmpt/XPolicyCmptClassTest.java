@@ -232,7 +232,7 @@ public class XPolicyCmptClassTest {
         list.add(attr1);
         list.add(attr2);
         list.add(attr3);
-        doReturn(list).when(policyCmptClass).getAttributesIncludingAbstract();
+        doReturn(list).when(policyCmptClass).getAttributes();
         return policyCmptClass;
     }
 

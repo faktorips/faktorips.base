@@ -449,7 +449,7 @@ public class XPolicyAttribute extends XAttribute {
         boolean hasExplicitValue = isChangeable() || isDerivedByExplicitMethodCall();
         boolean cantUseMemberFromParent = !isOverwrite() || isAttributeTypeChangedByOverwrite();
         boolean overwritesAbstractAttribute = isOverwrite() && getOverwrittenAttribute().isAbstract();
-        return hasExplicitValue && (cantUseMemberFromParent || overwritesAbstractAttribute);
+        return hasExplicitValue && (cantUseMemberFromParent || overwritesAbstractAttribute) && !isAbstract();
     }
 
     protected boolean isDerivedByExplicitMethodCall() {
