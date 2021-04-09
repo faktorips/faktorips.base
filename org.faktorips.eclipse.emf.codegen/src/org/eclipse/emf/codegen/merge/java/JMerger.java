@@ -685,6 +685,8 @@ public class JMerger {
                                     for (StringTokenizer stringTokenizer = new StringTokenizer(clientStrings,
                                             ", \t\n\r\f"); stringTokenizer.hasMoreTokens();) {
                                         String token = stringTokenizer.nextToken();
+                                        // make warning free javadoc (no html docs)
+                                        token = token.replace('[', '<').replace(']', '>');
                                         if (!additionalStrings.contains(token)) {
                                             additionalStrings.add(token);
                                         }
