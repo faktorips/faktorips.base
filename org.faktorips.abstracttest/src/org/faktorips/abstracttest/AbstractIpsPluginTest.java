@@ -33,6 +33,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -77,6 +78,7 @@ import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
@@ -1477,6 +1479,20 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     protected final void resetNumberContentChangeEvents() {
         contentsChangeListener.numberContentChangeEvents = 0;
+    }
+
+    /**
+     * Gets the {@link IIpsProject}'s properties, applies the given modifier and sets the changed
+     * properties.
+     */
+    protected void setProjectProperty(IIpsProject ipsProject, Consumer<IIpsProjectProperties> propertiesModifier) {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        propertiesModifier.accept(properties);
+        try {
+            ipsProject.setProperties(properties);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private static class TestChangeListener implements ContentsChangeListener {

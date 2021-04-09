@@ -303,6 +303,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     @SuppressWarnings("deprecation")
     @Test
     public void testValidateBusinessFunctions() throws CoreException {
+        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(true));
         validationRule.setAppliedForAllBusinessFunctions(true);
         MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
@@ -312,8 +313,34 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         validationRule.setAppliedForAllBusinessFunctions(false);
         msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        msgList = msgList
+                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
+        assertThat(msgList, isEmpty());
+
+        validationRule.setAppliedForAllBusinessFunctions(false);
+        validationRule.addBusinessFunction("function");
+        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
+                isEmpty());
+        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
+        assertThat(msgList,
+                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testValidateBusinessFunctions_DisabledInProject() throws CoreException {
+        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(false));
+        validationRule.setAppliedForAllBusinessFunctions(true);
+        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
         msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertFalse(msgList.isEmpty());
+        assertThat(msgList, isEmpty());
+
+        validationRule.setAppliedForAllBusinessFunctions(false);
+        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
+        msgList = msgList
+                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
+        assertThat(msgList, isEmpty());
 
         validationRule.setAppliedForAllBusinessFunctions(false);
         validationRule.addBusinessFunction("function");

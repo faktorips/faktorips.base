@@ -42,10 +42,10 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.MarkerEnumUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -248,7 +248,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
             list.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
                     IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         }
-        if (isAppliedForAllBusinessFunctions()) {
+        if (isAppliedForAllBusinessFunctions()
+                && ipsProject.getProperties().isBusinessFunctionsForValidationRulesEnabled()) {
             list.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
                     org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
                     Message.WARNING,
