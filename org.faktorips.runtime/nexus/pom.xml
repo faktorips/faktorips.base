@@ -73,6 +73,7 @@
                                         exports org.faktorips.runtime.test;
                                         exports org.faktorips.runtime.util;
                                         exports org.faktorips.runtime.util.function;
+                                        exports org.faktorips.runtime.validation;
                                     }
                                 </moduleInfoSource>
                             </module>
