@@ -683,7 +683,7 @@ public class JMerger {
                                             matcher.end(matcher.groupCount()));
 
                                     for (StringTokenizer stringTokenizer = new StringTokenizer(clientStrings,
-                                            ", \t\n\r\f"); stringTokenizer.hasMoreTokens();) {
+                                            ", \t\n\r\f*"); stringTokenizer.hasMoreTokens();) {
                                         String token = stringTokenizer.nextToken();
                                         // make warning free javadoc (no html docs)
                                         token = token.replace('[', '<').replace(']', '>');

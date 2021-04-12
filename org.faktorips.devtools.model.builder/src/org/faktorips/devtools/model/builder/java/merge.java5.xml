@@ -9,7 +9,7 @@
 	<merge:dictionaryPattern name="generatedRestrainedModifableMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
 
 	<merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags"/>
-	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
+	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
 	<merge:pull sourceGet="Type/getSuperclass" targetMarkup="^gen$" targetPut="Type/setSuperclass"/>
 	<merge:pull sourceGet="Initializer/getBody" targetMarkup="^gen$" targetPut="Initializer/setBody"/>
 	<merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody"/>
@@ -21,7 +21,7 @@
 	<merge:pull sourceGet="Field/getType" targetMarkup="^gen$" targetPut="Field/setType"/>
 	<merge:pull sourceGet="Field/getInitializer" targetMarkup="^gen$" targetPut="Field/setInitializer"/>
 	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
-	<merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface"/>
+	<merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface"/>
 	<merge:pull sourceGet="EnumConstant/getArguments" targetMarkup="^gen$" targetPut="EnumConstant/setArguments"/>
 	<merge:pull sourceGet="EnumConstant/getBody" targetMarkup="^gen$" targetPut="EnumConstant/setBody"/>
 	<!-- This is only for annotation type declarations - as far we do not generate our own annotations it is not really needed -->
