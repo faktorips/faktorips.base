@@ -182,9 +182,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             }
             addIpsManifestFileAttributes(manifest, ipsProject.getProperties().getIpsObjectPath(), creationProperties);
 
-            FileOutputStream fileOutputStream = new FileOutputStream(manifestFile.getLocation().toFile());
-            manifest.write(fileOutputStream);
-            fileOutputStream.close();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(manifestFile.getLocation().toFile())) {
+                manifest.write(fileOutputStream);
+            }
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e.getMessage(), e));
         }

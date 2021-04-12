@@ -27,6 +27,10 @@ import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
  */
 public class StandardJavaProjectConfigurator {
 
+    private StandardJavaProjectConfigurator() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Configures a {@link IJavaProject} for the usage of Faktor-IPS.
      * 

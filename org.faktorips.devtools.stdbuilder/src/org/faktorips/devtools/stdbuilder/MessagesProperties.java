@@ -148,7 +148,7 @@ public class MessagesProperties {
         private static final long serialVersionUID = 7627392983212145038L;
 
         /** A table of hex digits */
-        private static final char[] hexDigit = {
+        private static final char[] HEX_DIGITS = {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
         };
 
@@ -199,6 +199,7 @@ public class MessagesProperties {
          * 
          * Copied from Properties#saveConvert(String, boolean, boolean)
          */
+        // CSOFF: CyclomaticComplexity
         private String saveConvert(String theString,
                 boolean escapeSpace) {
             int len = theString.length();
@@ -244,9 +245,12 @@ public class MessagesProperties {
                         outBuffer.append('\\');
                         outBuffer.append('f');
                         break;
-                    case '=': // Fall through
-                    case ':': // Fall through
-                    case '#': // Fall through
+                    case '=':
+                        // Fall through
+                    case ':':
+                        // Fall through
+                    case '#':
+                        // Fall through
                     case '!':
                         outBuffer.append('\\');
                         outBuffer.append(aChar);
@@ -266,6 +270,7 @@ public class MessagesProperties {
             }
             return outBuffer.toString();
         }
+        // CSON: CyclomaticComplexity
 
         /**
          * Convert a nibble to a hex character.
@@ -275,7 +280,7 @@ public class MessagesProperties {
          * @param nibble the nibble to convert.
          */
         private static char toHex(int nibble) {
-            return hexDigit[(nibble & 0xF)];
+            return HEX_DIGITS[(nibble & 0xF)];
         }
 
         /**

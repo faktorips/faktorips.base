@@ -685,9 +685,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             return lookup.getEnumValue(id);
         }
         List<T> enumValues = getEnumValues(clazz);
-        if (enumValues == null) {
-            return null;
-        }
         try {
             Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId", new Class[0]); //$NON-NLS-1$
             enumValueIdMethod.setAccessible(true);

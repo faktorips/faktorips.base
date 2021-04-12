@@ -137,6 +137,8 @@ public class IpsProjectCreationProperties {
      * 
      * @return An error message which is empty if there are no errors.
      */
+    // CSOFF: CyclomaticComplexity
+    // CSOFF: BooleanExpressionComplexity
     public String checkForRequiredProperties() {
         boolean existingRuntimeIDPrefix = IpsStringUtils.isNotEmpty(getRuntimeIdPrefix());
         boolean existingSourceFolderName = IpsStringUtils.isNotEmpty(sourceFolderName);
@@ -174,4 +176,6 @@ public class IpsProjectCreationProperties {
 
         return errorMessage.toString();
     }
+    // CSON: BooleanExpressionComplexity
+    // CSON: CyclomaticComplexity
 }

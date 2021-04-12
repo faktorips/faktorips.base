@@ -339,10 +339,12 @@ public class XPolicyAttribute extends XAttribute {
         if (isConstant()) {
             return false;
         } else {
+            // CSOFF: BooleanExpressionComplexity
             return (isProductRelevant() && isChangeable())
                     || !isValueSetUnrestricted()
                     || isUnrestrictedButStillNeedsAllowedValues()
                     || isNotConfiguredOverrideConfigured();
+            // CSON: BooleanExpressionComplexity
         }
     }
 
@@ -377,9 +379,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
+        // CSOFF: BooleanExpressionComplexity
         boolean isGenerateForValueSetType = isValueSetRange() || isNonExtensibleEnumValueSet()
                 || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength()
                 || isNotConfiguredOverrideConfigured();
+        // CSON: BooleanExpressionComplexity
         return isConcreteOrNotProductRelevant() && isGenerateForValueSetType;
     }
 

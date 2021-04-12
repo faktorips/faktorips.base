@@ -91,7 +91,6 @@ public class ExtensionPoints {
      */
     public static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
 
-    private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
     /**
      * The name of the {@link IConfigurationElement configuration element} property
      * {@value #CONFIG_ELEMENT_PROPERTY_PROVIDER}.
@@ -103,6 +102,8 @@ public class ExtensionPoints {
      * {@value #CONFIG_ELEMENT_PROPERTY_CLASS}.
      */
     public static final String CONFIG_ELEMENT_PROPERTY_CLASS = "class"; //$NON-NLS-1$
+
+    private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
 
     private final IExtensionRegistry registry;
 

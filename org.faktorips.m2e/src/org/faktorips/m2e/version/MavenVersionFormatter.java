@@ -19,6 +19,10 @@ import java.util.regex.Pattern;
  */
 public class MavenVersionFormatter {
 
+    private MavenVersionFormatter() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Formats a version to be compatible with the Maven format.
      * 
