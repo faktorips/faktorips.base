@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -65,6 +67,8 @@ public class EclipseRunMojo extends AbstractMojo {
      * Lock object to ensure thread-safety
      */
     private static final Object CREATE_LOCK = new Object();
+
+    private static final ConcurrentMap<String, Object> WORKSPACE_LOCKS = new ConcurrentHashMap<>();
 
     /**
      * Work area. This includes:
@@ -268,8 +272,6 @@ public class EclipseRunMojo extends AbstractMojo {
         }
         EquinoxInstallation installation;
         synchronized (CREATE_LOCK) {
-            // we only need to lock the creation of the eclipse installations, as those will then
-            // each run separately
             installation = createEclipseInstallation();
         }
         runEclipse(installation);
@@ -331,14 +333,17 @@ public class EclipseRunMojo extends AbstractMojo {
     void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException, MojoFailureException {
         try {
             File workspace = new File(work, "data").getAbsoluteFile();
-            if (clearWorkspaceBeforeLaunch) {
-                FileUtils.deleteDirectory(workspace);
-            }
-            LaunchConfiguration cli = createCommandLine(runtime);
-            getLog().info("Expected eclipse log file: " + new File(workspace, ".metadata/.log").getCanonicalPath());
-            int returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
-            if (returnCode != 0) {
-                throw new MojoExecutionException("Error while executing platform (return code: " + returnCode + ")");
+            synchronized (WORKSPACE_LOCKS.computeIfAbsent(workspace.getAbsolutePath(), k -> new Object())) {
+                if (clearWorkspaceBeforeLaunch) {
+                    FileUtils.deleteDirectory(workspace);
+                }
+                LaunchConfiguration cli = createCommandLine(runtime);
+                getLog().info("Expected eclipse log file: " + new File(workspace, ".metadata/.log").getCanonicalPath());
+                int returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
+                if (returnCode != 0) {
+                    throw new MojoExecutionException(
+                            "Error while executing platform (return code: " + returnCode + ")");
+                }
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error while executing platform", e);
