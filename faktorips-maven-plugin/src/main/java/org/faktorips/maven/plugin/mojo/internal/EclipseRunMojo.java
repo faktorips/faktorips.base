@@ -345,9 +345,11 @@ public class EclipseRunMojo extends AbstractMojo {
                             "Error while executing platform (return code: " + returnCode + ")");
                 }
             }
+            // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             throw new MojoExecutionException("Error while executing platform", e);
         }
+        // CSON: IllegalCatchCheck
     }
 
     @SuppressWarnings("unused")
@@ -400,9 +402,11 @@ public class EclipseRunMojo extends AbstractMojo {
     private String[] splitArgLine(String argumentLine) throws MojoExecutionException {
         try {
             return CommandLineUtils.translateCommandline(argumentLine);
+            // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             throw new MojoExecutionException("Error parsing commandline: " + e.getMessage(), e);
         }
+        // CSON: IllegalCatchCheck
     }
 
     private void addProgramArgs(EquinoxLaunchConfiguration cli, String... arguments) {
