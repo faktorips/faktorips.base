@@ -177,7 +177,7 @@ def private static getters (XPolicyAssociation it) '''
                         return null;
                     }
                     «IF derived»
-                        «List_(targetInterfaceName)» elements = «methodNameGetter»();
+                        «List_("? extends " + targetInterfaceName)» elements = «methodNameGetter»();
                         «List_(targetInterfaceName)» result = new  «ArrayList»();
                         for («targetInterfaceName» element : elements) {
                             «val targetClass = targetPolicyCmptClass»

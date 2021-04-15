@@ -38,7 +38,7 @@ class AssociationTmpl {
                 */
                 «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
                 «overrideAnnotationForPublishedMethodImplementation()»
-                public «IF sourceModelNode.abstract && !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»
+                public «IF sourceModelNode.abstract && !genInterface()»abstract«ENDIF» «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
                 «IF sourceModelNode.abstract || genInterface()»;«ELSE» {
 «««                 non-abstract classes may not contain an abstract method, so a dummy body has to be generated
                         return «Collections()».emptyList();
