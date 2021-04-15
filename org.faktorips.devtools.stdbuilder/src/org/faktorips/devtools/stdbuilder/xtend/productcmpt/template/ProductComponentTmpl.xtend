@@ -163,7 +163,7 @@ class ProductComponentTmpl {
                     @Override
                     public «policyInterfaceName» «createPolicyComponent» {
                         «IF !configurationForPolicyCmptType»
-                            return null;
+                            throw new UnsupportedOperationException("This product component type does not configure a policy component type.");
                         «ELSE»
                             return «policyCmptClass.methodNameCreatePolicyCmpt»();
                         «ENDIF»
