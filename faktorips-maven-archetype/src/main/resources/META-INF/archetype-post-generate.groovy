@@ -45,6 +45,10 @@ private void executePostprocessor() {
     VersionSupport versionSupport = new VersionSupport(projectPath)
     versionSupport.setMinVersion(ipsVersion)
 
+    String configureIpsBuild = properties.get("IPS-ConfigureIpsBuild")
+    FaktoripsMavenPluginSupport ipsMavenPluginSupport = new FaktoripsMavenPluginSupport(projectPath, lineSeparator)
+    ipsMavenPluginSupport.configureIpsBuild(configureIpsBuild)
+
     String isGroovySupport = properties.get("IPS-IsGroovySupport")
     GroovySupport groovySupport = new GroovySupport(projectPath, lineSeparator)
     groovySupport.setGroovySupport(isGroovySupport)
@@ -146,10 +150,75 @@ class VersionSupport {
 }
 
 //////////////////////////////////////////////////////////////
-// FaktorIPS Groovy support
+// Faktor-IPS Maven Build
 //////////////////////////////////////////////////////////////
 /**
- * Adds the FaktorIPS Groovy Maven dependency if required.
+ * Adds the Faktor-IPS Maven Plugin if required.
+ */
+class FaktoripsMavenPluginSupport {
+
+    // The template to be replaced in order to set the dependency
+    private final String MAVEN_PLUGIN_TEMPLATE = '<!-- $IpsMavenPluginTemplate$ -->'
+    private final String MAVEN_PLUGIN_MANAGEMENT_TEMPLATE = '<!-- $IpsMavenPluginManagementTemplate$ -->'
+
+    // Using the version provided by the generated pom.xml
+    // Single quotes are used here because interpolation is not required
+    private final String VERSION = '\${faktor-ips.version}'
+
+    // ATTENTION: this dependency uses the version specified within the existing pom.xml
+    // Single quotes are necessary to escape the dollar sign
+    // Using the system specific line separators (Groovy uses LF only)
+    // The indentation fits to the maven dependencies
+    private final String PLUGIN_CONFIGURATION = """<plugin>$lineSeparator\
+                <groupId>org.faktorips</groupId>$lineSeparator\
+                <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
+                <executions>$lineSeparator\
+                    <execution>$lineSeparator\
+                        <goals>$lineSeparator\
+                            <goal>faktorips-build</goal>$lineSeparator\
+                        </goals>$lineSeparator\
+                        <phase>process-resources</phase>$lineSeparator\
+                    </execution>$lineSeparator\
+                </executions>$lineSeparator\
+            </plugin>"""
+    private final String PLUGIN_MANAGEMENT = """<plugin>$lineSeparator\
+                    <groupId>org.faktorips</groupId>$lineSeparator\
+                    <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
+                    <version>$VERSION</version>$lineSeparator\
+                </plugin>"""
+
+    private final String POM = "pom.xml"
+
+    private final Path projectPath
+    private final String lineSeparator
+
+    FaktoripsMavenPluginSupport(Path projectPath, String lineSeparator) {
+        this.projectPath = projectPath
+        this.lineSeparator = lineSeparator
+    }
+
+    /**
+     * Adds the FaktorIPS Groovy Maven dependency to the pom.xml if required.
+     *
+     * @param configureIpsBuild Is true when Faktor-IPS Maven Build should be configured, otherwise false
+     */
+    void configureIpsBuild(String configureIpsBuild) {
+        File ipsProject = new File(projectPath.resolve(POM).toString())
+        if (!Boolean.valueOf(configureIpsBuild)) {
+            String empty = ipsProject.text.replace(MAVEN_PLUGIN_TEMPLATE, "").replace(MAVEN_PLUGIN_MANAGEMENT_TEMPLATE, "")
+            ipsProject.text = empty
+        } else {
+            String configured = ipsProject.text.replace(MAVEN_PLUGIN_TEMPLATE, PLUGIN_CONFIGURATION).replace(MAVEN_PLUGIN_MANAGEMENT_TEMPLATE, PLUGIN_MANAGEMENT)
+            ipsProject.text = configured
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////
+// Faktor-IPS Groovy support
+//////////////////////////////////////////////////////////////
+/**
+ * Adds the Faktor-IPS Groovy Maven dependency if required.
  */
 class GroovySupport {
 
@@ -183,7 +252,7 @@ class GroovySupport {
     /**
      * Adds the FaktorIPS Groovy Maven dependency to the pom.xml if required.
      *
-     * @param isGroovySupportSelected Is true whether Groovy support is selected, else false
+     * @param isGroovySupportSelected Is true when Groovy support is selected, otherwise false
      */
     void setGroovySupport(String isGroovySupportSelected) {
         File ipsProject = new File(projectPath.resolve(POM).toString())

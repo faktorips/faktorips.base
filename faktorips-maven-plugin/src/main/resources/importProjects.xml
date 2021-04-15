@@ -1,14 +1,18 @@
 <project name="importProjects" default="import">
-	<taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask" />
-	<taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullBuildTask" />
-	<taskdef name="faktorips.exportHtml" classname="org.faktorips.devtools.ant.ExportHtmlTask" />
-	<taskdef name="faktorips.configureJdk" classname="org.faktorips.devtools.ant.ConfigureJdkTask" />
+    <taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask" />
+    <taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullBuildTask" />
+    <taskdef name="faktorips.exportHtml" classname="org.faktorips.devtools.ant.ExportHtmlTask" />
+    <taskdef name="faktorips.configureJdk" classname="org.faktorips.devtools.ant.ConfigureJdkTask" />
+    <taskdef name="faktorips.mavenImport" classname="org.faktorips.devtools.ant.MavenProjectImportTask" />
+    <taskdef name="faktorips.mavenRefresh" classname="org.faktorips.devtools.ant.MavenProjectRefreshTask" />
 
-	<target name="import">
-		<echo message="Building ${projectName}" />
-		<faktorips.configureJdk dir="${jdk.dir}" />
-		<faktorips.import dir="${sourcedir}" copy="false" />
-		<faktorips.fullBuild />
-		<faktorips.exportHtml ipsProjectName="${projectName}" showValidationErrors="true" showInheritedObjectPartsInTable="true" locale="de" destination="${sourcedir}/target/html/" ipsObjectTypes="ALL" />
-	</target>
+    <target name="import">
+        <echo message="Building ${projectName}" />
+        <faktorips.configureJdk dir="${jdk.dir}" />
+        <faktorips.import dir="${sourcedir}" copy="false" />
+        <faktorips.mavenImport dir="${sourcedir}" />
+        <faktorips.mavenRefresh updateSnapshots="true" />
+        <faktorips.fullBuild />
+        <faktorips.exportHtml ipsProjectName="${projectName}" showValidationErrors="true" showInheritedObjectPartsInTable="true" locale="de" destination="${sourcedir}/target/html/" ipsObjectTypes="ALL" />
+    </target>
 </project>

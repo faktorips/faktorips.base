@@ -51,6 +51,10 @@
             <defaultValue>${artifactId.concat(".")}</defaultValue>
             <validationRegex>[a-zA-Z](?:\.?[a-zA-Z\d])*\.</validationRegex>
         </requiredProperty>
+        <requiredProperty key="IPS-ConfigureIpsBuild">
+            <defaultValue>true</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
     </requiredProperties>
 
     <fileSets>

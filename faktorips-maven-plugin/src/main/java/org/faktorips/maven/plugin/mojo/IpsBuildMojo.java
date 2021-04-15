@@ -289,6 +289,13 @@ public class IpsBuildMojo extends AbstractMojo {
     private String jdkId;
 
     /**
+     * Whether to import the fips project as a maven project. If set to {@code true} the m2e plugin
+     * will be used to import the pom.xml of the fips project.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean importAsMavenProject;
+
+    /**
      * The version of Faktor-IPS to be installed.
      */
     @Parameter(property = "faktorips.repository.version", defaultValue = "latest")
@@ -348,9 +355,17 @@ public class IpsBuildMojo extends AbstractMojo {
     @Component
     private ToolchainManager toolchainManager;
 
+    /**
+     * Returns the name of the project in a way that it can be used in the ant script. It should be
+     * the same as seen in eclipse. For example in the project or package explorer.
+     * <p>
+     * The variable used in the ant script is {@code -DprojectName=Project_Name}
+     * 
+     * @return the name of the project
+     */
     public String getProjectName() {
         File eclipseProjectFile = new File(project.getBasedir().getAbsolutePath(), ".project");
-        if (eclipseProjectFile.exists()) {
+        if (eclipseProjectFile.exists() && !importAsMavenProject) {
             try {
                 DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                 Document doc = documentBuilder.parse(eclipseProjectFile);
@@ -359,16 +374,28 @@ public class IpsBuildMojo extends AbstractMojo {
                 getLog().error("Can't read Eclipse .project file to find project name", e);
             }
         }
-        // TODO FIPS-5457 : when we import the project as a maven project instead of as an existing
-        // eclipse project, we need to use
-        // return project.getName();
+        if (importAsMavenProject) {
+            return project.getName();
+        }
         return project.getBasedir().getName();
     }
 
+    /**
+     * Gets the default fips repository https://update.faktorzehn.org/faktorips/[VERSION] with the
+     * correct version.
+     * 
+     * @return the default repository
+     */
     public String getFipsRepository() {
         return fipsRepository.replace("${faktorips.repository.version}", fipsRepositoryVersion);
     }
 
+    /**
+     * Either returns the custom path to the ant script or the standard ant script configured with
+     * the correct default values.
+     * 
+     * @return the path to the ant script
+     */
     public String getPathToAntScript() {
         if (antScriptPath == null) {
             try {
@@ -381,19 +408,31 @@ public class IpsBuildMojo extends AbstractMojo {
                 List<String> replaced = script.lines()
                         .filter(line -> usesCustomJdk || !line.contains("faktorips.configureJdk"))
                         .filter(line -> exportHtml || !line.contains("faktorips.exportHtml"))
+                        .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenRefresh"))
+                        .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenImport"))
+                        .filter(line -> !importAsMavenProject || !line.contains("faktorips.import"))
                         .collect(Collectors.toList());
+
                 Files.write(Paths.get(antScriptPath), replaced, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
             } catch (IOException e) {
                 getLog().error("Can't create ant script in " + antScriptPath, e);
             }
         }
         return antScriptPath;
+
     }
 
     private boolean usesCustomJdk() {
         return jdkDir != null || jdkId != null;
     }
 
+    /**
+     * Either returns the custom path to the jdk, the jdk with the {@link #jdkId} configured in the
+     * ~/.m2/toolchains.xml or {@code null} if nothing is found.
+     * 
+     * @return the path to the jdk or {@code null}
+     * @throws MojoExecutionException - if the toolchains are misconfigured
+     */
     public String getPathToJdk() throws MojoExecutionException {
         if (jdkDir != null) {
             return jdkDir;
@@ -410,8 +449,8 @@ public class IpsBuildMojo extends AbstractMojo {
                             + ". Current Java runtime will be used to build the project.");
                 }
             }
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -434,6 +473,12 @@ public class IpsBuildMojo extends AbstractMojo {
         addDependency("org.eclipse.jdt.junit5.runtime");
         if (exportHtml) {
             addDependency("org.faktorips.devtools.htmlexport");
+        }
+        if (importAsMavenProject) {
+            addDependency("org.eclipse.m2e.core");
+            addDependency("org.eclipse.m2e.maven.runtime");
+            addDependency("org.faktorips.m2e");
+            addDependency("org.eclipse.m2e.lifecyclemapping.defaults");
         }
         dependencies.addAll(additionalPlugins);
 
