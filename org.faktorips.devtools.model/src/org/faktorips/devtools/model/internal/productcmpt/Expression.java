@@ -45,10 +45,10 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.fl.JavaExprCompiler;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -186,7 +186,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() {
-        HashMap<String, EnumDatatype> enumtypes = new HashMap<String, EnumDatatype>();
+        HashMap<String, EnumDatatype> enumtypes = new HashMap<>();
         collectEnumsAllowedInFormula(enumtypes);
         return enumtypes.values().toArray(new EnumDatatype[enumtypes.size()]);
     }

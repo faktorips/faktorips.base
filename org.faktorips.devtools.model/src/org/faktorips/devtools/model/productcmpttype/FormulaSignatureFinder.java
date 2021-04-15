@@ -18,9 +18,10 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 
 /**
- * A type hierarchy finder that looks for {@link IProductCmptTypeMethod IProductCmptTypeMethods} which are formula methods
- * with the specified formula name. If the flag <code>findAllSignaturesInHierarchy</code> is set to
- * true the search process is interrupted after the first method is found.
+ * A type hierarchy finder that looks for {@link IProductCmptTypeMethod IProductCmptTypeMethods}
+ * which are formula methods with the specified formula name. If the flag
+ * <code>findAllSignaturesInHierarchy</code> is set to true the search process is interrupted after
+ * the first method is found.
  * 
  * @author Peter Erzberger
  */
@@ -34,7 +35,7 @@ public class FormulaSignatureFinder extends TypeHierarchyVisitor<IProductCmptTyp
         super(ipsProject);
         this.formulaName = formulaName;
         this.findAllSignaturesInHierarchy = findAllSignaturesInHierarchy;
-        methods = new ArrayList<IMethod>();
+        methods = new ArrayList<>();
     }
 
     /**
@@ -42,7 +43,7 @@ public class FormulaSignatureFinder extends TypeHierarchyVisitor<IProductCmptTyp
      * only makes sense to call this method after visiting of the type hierarchy has been finished.
      */
     public List<IMethod> getMethods() {
-        return new ArrayList<IMethod>(methods);
+        return new ArrayList<>(methods);
     }
 
     @Override

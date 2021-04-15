@@ -90,9 +90,9 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.memento.Memento;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.memento.Memento;
 
 /**
  * Dialog to edit an attribute.
@@ -352,7 +352,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void createCategoryCombo(Composite workArea) {
         Combo categoryCombo = getToolkit().createCombo(workArea);
-        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<>(
                 categoryCombo, IProductCmptCategory.class);
 
         CategoryPmo pmo = new CategoryPmo(attribute);
@@ -662,7 +662,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     ((IpsModel)IIpsModel.get()).executeModificationsWithSingleEvent(
-                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                            new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
                                 @Override
                                 protected boolean execute() throws CoreException {
@@ -879,7 +879,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelTemporalType);
         Combo temporalMappingCombo = getToolkit().createCombo(workArea);
-        temporalMappingField = new EnumField<DateTimeMapping>(temporalMappingCombo, DateTimeMapping.class);
+        temporalMappingField = new EnumField<>(temporalMappingCombo, DateTimeMapping.class);
         getBindingContext().bindContent(temporalMappingField, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_TEMPORAL_MAPPING);
 

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -85,14 +84,11 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
                 editor = getCellEditorInternal(combo);
             } else if (type.equals("integer")) { //$NON-NLS-1$
                 editor = new TextCellEditor(viewer.getTable());
-                editor.setValidator(new ICellEditorValidator() {
-                    @Override
-                    public String isValid(Object value) {
-                        if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
-                            return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;
-                        }
-                        return null;
+                editor.setValidator(value -> {
+                    if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
+                        return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;
                     }
+                    return null;
                 });
             }
             return editor;

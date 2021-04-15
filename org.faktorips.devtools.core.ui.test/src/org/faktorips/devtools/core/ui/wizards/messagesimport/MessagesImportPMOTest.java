@@ -89,7 +89,8 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
     @Test
     public void testNoExistFilename() {
         pmo.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
-        pmo.setFilename("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
+        pmo.setFilename(
+                "src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
         assertEquals((new Message(MessagesImportPMO.MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist,
                 Message.ERROR)), pmo.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
     }

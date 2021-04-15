@@ -45,7 +45,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
-    private ArrayList<String> visibleProperties = new ArrayList<String>(10);
+    private ArrayList<String> visibleProperties = new ArrayList<>(10);
 
     private Checkbox changeOverTimeCheckbox;
     private Text targetRoleSingularTextProdCmptType;

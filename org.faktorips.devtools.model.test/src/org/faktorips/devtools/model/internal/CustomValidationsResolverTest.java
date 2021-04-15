@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class CustomValidationsResolverTest {
 
-    private List<ICustomValidation<?>> allValidations = new ArrayList<ICustomValidation<?>>();
+    private List<ICustomValidation<?>> allValidations = new ArrayList<>();
     private ValidationOnAttribute validationOnAttribute = new ValidationOnAttribute();
     private ValidationOnIAttribute validationOnIAttribute = new ValidationOnIAttribute();
     private ValidationOnPolicyCmptType validationOnPolicyCmptType = new ValidationOnPolicyCmptType();
@@ -44,7 +44,7 @@ public class CustomValidationsResolverTest {
 
     @Before
     public void setUp() {
-        allValidations = new ArrayList<ICustomValidation<?>>();
+        allValidations = new ArrayList<>();
         allValidations.add(validationOnIAttribute);
         allValidations.add(validationOnPolicyCmptType);
         allValidations.add(validationOnAttribute);
@@ -105,7 +105,7 @@ public class CustomValidationsResolverTest {
 
     @Test
     public void testGetCustomValidations_InterfacesOnly() {
-        allValidations = new ArrayList<ICustomValidation<?>>();
+        allValidations = new ArrayList<>();
         allValidations.add(validationOnIAttribute);
         allValidations.add(validationOnIPolicyCmptType);
 

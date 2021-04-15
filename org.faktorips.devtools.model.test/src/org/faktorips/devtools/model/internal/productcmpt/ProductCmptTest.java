@@ -18,13 +18,13 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -1249,7 +1249,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
                 .newGeneration(new GregorianCalendar(2010, 0, 1));
         IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt
                 .newGeneration(new GregorianCalendar(2011, 0, 1));
-        ArrayList<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
+        ArrayList<IProductCmptLink> links = new ArrayList<>();
         links.add(productCmpt.newLink("asdff"));
         links.add(productCmpt.newLink("asdff2"));
         links.add(generation1.newLink("asd1"));
@@ -1297,7 +1297,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         when(formula1.dependsOn()).thenReturn(dependencyMap1);
         when(formula2.dependsOn()).thenReturn(dependencyMap2);
 
-        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<IDependency, List<IDependencyDetail>>();
+        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<>();
         productCmptSpy.dependsOn(detailsResult);
 
         assertEquals(1, detailsResult.size());

@@ -151,7 +151,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             }
             // no links in string try to paste ips object parts
             try {
-                List<IIpsObjectPart> newParts = new ArrayList<IIpsObjectPart>();
+                List<IIpsObjectPart> newParts = new ArrayList<>();
                 if (states != null) {
                     for (IpsObjectPartState state : states) {
                         newParts.add(state.newPart(parent));
@@ -329,8 +329,8 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
         StringTokenizer tokenizer = new StringTokenizer(resourceLinks, ","); //$NON-NLS-1$
         int count = tokenizer.countTokens();
-        List<Object> result = new ArrayList<Object>(1);
-        List<String> links = new ArrayList<String>(count);
+        List<Object> result = new ArrayList<>(1);
+        List<String> links = new ArrayList<>(count);
 
         while (tokenizer.hasMoreTokens()) {
             links.add(tokenizer.nextToken());
@@ -381,7 +381,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
-                contents = XmlUtil.nodeToString(
+            contents = XmlUtil.nodeToString(
                     ipsObject.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument()),
                     encoding);
         } catch (TransformerException e) {

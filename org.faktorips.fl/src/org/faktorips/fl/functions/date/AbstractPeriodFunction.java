@@ -20,15 +20,16 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.functions.AbstractFlFunction;
 import org.faktorips.fl.functions.Messages;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 public abstract class AbstractPeriodFunction extends AbstractFlFunction {
 
     static final String NO_PERIOD_SUPPORT = "NO_PERIOD_SUPPORT";
     private Period period;
 
-    public AbstractPeriodFunction(String name, String description, FunctionSignatures functionSignature, Period period) {
+    public AbstractPeriodFunction(String name, String description, FunctionSignatures functionSignature,
+            Period period) {
         super(name, description, functionSignature);
         this.period = period;
     }
@@ -44,7 +45,7 @@ public abstract class AbstractPeriodFunction extends AbstractFlFunction {
             return new CompilationResultImpl(fragment, getType());
         } else {
             String code = ExprCompiler.PREFIX + NO_PERIOD_SUPPORT;
-            String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
+            String text = Messages.INSTANCE.getString(code, datatype);
             Message msg = Message.newError(code, text);
             return new CompilationResultImpl(msg);
         }

@@ -93,7 +93,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     private void init() {
         dependantsForMap.clear();
         dependsOnMap.clear();
-        List<IIpsSrcFile> allSrcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> allSrcFiles = new ArrayList<>();
         ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allSrcFiles);
         for (IIpsSrcFile file : allSrcFiles) {
             if (!file.exists()) {
@@ -148,7 +148,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     }
 
     private Collection<IDependency> getDependantsAsList(Object target) {
-        return new ArrayList<IDependency>(dependantsForMap.get(target));
+        return new ArrayList<>(dependantsForMap.get(target));
     }
 
     @Override

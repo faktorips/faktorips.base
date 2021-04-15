@@ -38,7 +38,7 @@ public class TestConfigurationElement
     private String name;
     private Map<String, String> attributes;
     private String value;
-    private Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
+    private Map<String, Object> executableExtensionMap = new HashMap<>();
     private IConfigurationElement[] children;
 
     private IExtension extension;
@@ -86,7 +86,7 @@ public class TestConfigurationElement
 
     @Override
     public IConfigurationElement[] getChildren(String name) throws InvalidRegistryObjectException {
-        ArrayList<IConfigurationElement> result = new ArrayList<IConfigurationElement>();
+        ArrayList<IConfigurationElement> result = new ArrayList<>();
         for (IConfigurationElement element : children) {
             if (element.getName().equals(name)) {
                 result.add(element);

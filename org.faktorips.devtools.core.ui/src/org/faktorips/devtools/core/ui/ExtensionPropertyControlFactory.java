@@ -123,7 +123,7 @@ public class ExtensionPropertyControlFactory {
             String position) {
 
         // find all extension property definitions for the given position
-        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<ExtPropControlData>();
+        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<>();
         for (ExtPropControlData element : extPropData) {
             if (position.equals(element.extProperty.getPosition())) {
                 extPropertiesForPosition.add(element);
@@ -139,7 +139,7 @@ public class ExtensionPropertyControlFactory {
      */
     public void createControls(Composite workArea, UIToolkit uiToolkit, IIpsObjectPartContainer ipsObjectPart) {
         // find all extension property definitions for the given position
-        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<ExtPropControlData>();
+        ArrayList<ExtPropControlData> extPropertiesForPosition = new ArrayList<>();
         for (ExtPropControlData element : extPropData) {
             if (!"false".equals(element.extProperty.getPosition())) { //$NON-NLS-1$
                 extPropertiesForPosition.add(element);
@@ -189,7 +189,7 @@ public class ExtensionPropertyControlFactory {
             IIpsObjectPartContainer ipsObjectPart,
             Position position) {
 
-        List<IpsSection> sections = new ArrayList<IpsSection>(extPropData.length);
+        List<IpsSection> sections = new ArrayList<>(extPropData.length);
         for (ExtPropControlData extPropControlData : extPropData) {
             try {
                 IExtensionPropertySectionFactory sectionFactory = IpsUIPlugin.getDefault()

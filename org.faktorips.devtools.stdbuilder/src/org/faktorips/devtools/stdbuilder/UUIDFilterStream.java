@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public class UUIDFilterStream extends FilterInputStream {
 
-    private LinkedList<Integer> potentialUUID = new LinkedList<Integer>();
+    private LinkedList<Integer> potentialUUID = new LinkedList<>();
 
     public UUIDFilterStream(InputStream in) {
         super(in);

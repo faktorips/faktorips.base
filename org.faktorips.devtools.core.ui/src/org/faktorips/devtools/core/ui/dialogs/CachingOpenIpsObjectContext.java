@@ -35,7 +35,7 @@ public abstract class CachingOpenIpsObjectContext implements ISelectIpsObjectCon
         if (srcFiles == null) {
             synchronized (this) {
                 if (srcFiles == null) {
-                    srcFiles = new ArrayList<IIpsSrcFile>();
+                    srcFiles = new ArrayList<>();
                     srcFiles = loadIpsSrcFiles(progressMonitor);
                 }
             }

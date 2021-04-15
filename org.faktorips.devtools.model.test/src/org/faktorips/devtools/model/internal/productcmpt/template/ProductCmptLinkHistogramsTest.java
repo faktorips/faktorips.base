@@ -161,7 +161,8 @@ public class ProductCmptLinkHistogramsTest {
 
         Collection<IProductCmptLinkContainer> elements = Lists.newArrayList(c1, c2, c3);
         Function<IProductCmptLinkContainer, Cardinality> elementToValueFunction = c -> (c == c1 || c == c2)
-                ? Cardinality.UNDEFINED : c111;
+                ? Cardinality.UNDEFINED
+                : c111;
         LinkContainerHistogram h = new LinkContainerHistogram(elementToValueFunction, elements);
 
         // Undefined cardinality occurs most often

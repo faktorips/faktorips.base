@@ -50,13 +50,13 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     private TableStructureType type = TableStructureType.MULTIPLE_CONTENTS;
 
-    private List<IColumn> columns = new ArrayList<IColumn>(2);
+    private List<IColumn> columns = new ArrayList<>(2);
 
-    private List<IColumnRange> ranges = new ArrayList<IColumnRange>(0);
+    private List<IColumnRange> ranges = new ArrayList<>(0);
 
-    private List<IIndex> indices = new ArrayList<IIndex>(1);
+    private List<IIndex> indices = new ArrayList<>(1);
 
-    private List<IForeignKey> foreignKeys = new ArrayList<IForeignKey>(0);
+    private List<IForeignKey> foreignKeys = new ArrayList<>(0);
 
     public TableStructure(IIpsSrcFile file) {
         super(file);
@@ -71,7 +71,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
+        ArrayList<IDependency> dependencies = new ArrayList<>();
         for (IColumn column : columns) {
             String datatype = column.getDatatype();
             IDependency dependency = new DatatypeDependency(getQualifiedNameType(), datatype);
@@ -138,7 +138,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public int[] moveColumns(int[] indexes, boolean up) {
-        ListElementMover<IColumn> mover = new ListElementMover<IColumn>(columns);
+        ListElementMover<IColumn> mover = new ListElementMover<>(columns);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -205,7 +205,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public int[] moveRanges(int[] indexes, boolean up) {
-        ListElementMover<IColumnRange> mover = new ListElementMover<IColumnRange>(ranges);
+        ListElementMover<IColumnRange> mover = new ListElementMover<>(ranges);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -223,7 +223,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public IIndex[] getUniqueKeys() {
-        ArrayList<IIndex> result = new ArrayList<IIndex>();
+        ArrayList<IIndex> result = new ArrayList<>();
         for (IIndex index : indices) {
             if (index.isUniqueKey()) {
                 result.add(index);
@@ -276,7 +276,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public int[] moveIndex(int[] indexes, boolean up) {
-        ListElementMover<IIndex> mover = new ListElementMover<IIndex>(indices);
+        ListElementMover<IIndex> mover = new ListElementMover<>(indices);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -323,7 +323,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public int[] moveForeignKeys(int[] indexes, boolean up) {
-        ListElementMover<IForeignKey> mover = new ListElementMover<IForeignKey>(foreignKeys);
+        ListElementMover<IForeignKey> mover = new ListElementMover<>(foreignKeys);
         int[] result = mover.move(indexes, up);
         objectHasChanged();
         return result;
@@ -360,7 +360,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
             return new ITableAccessFunction[0];
         }
 
-        List<ITableAccessFunction> functions = new ArrayList<ITableAccessFunction>();
+        List<ITableAccessFunction> functions = new ArrayList<>();
 
         // add functions for each key and column which is not in the key
         for (IIndex index : indices) {
@@ -380,7 +380,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     @Override
     public IColumn[] getColumnsNotInKey(IKey key) {
         ArgumentCheck.notNull(key);
-        List<IColumn> columnsNotInKey = new ArrayList<IColumn>(columns);
+        List<IColumn> columnsNotInKey = new ArrayList<>(columns);
         IKeyItem[] items = key.getKeyItems();
         for (IKeyItem item : items) {
             IColumn[] columnsInItem = item.getColumns();
@@ -411,7 +411,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     @Override
     protected IIpsElement[] getChildrenThis() {
         int size = columns.size() + ranges.size() + indices.size() + foreignKeys.size();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        List<IIpsElement> children = new ArrayList<>(size);
         children.addAll(columns);
         children.addAll(ranges);
         children.addAll(indices);
@@ -518,7 +518,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     public boolean hasIndexWithSameDatatype() {
-        Set<List<String>> keysDatatypes = new HashSet<List<String>>();
+        Set<List<String>> keysDatatypes = new HashSet<>();
         for (IIndex index : indices) {
             List<String> keyDatatype = index.getDatatypes();
             if (keysDatatypes.contains(keyDatatype)) {

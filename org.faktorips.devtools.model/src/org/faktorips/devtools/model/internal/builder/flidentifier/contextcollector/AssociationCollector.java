@@ -59,7 +59,7 @@ public class AssociationCollector extends AbstractProductCmptCollector {
     }
 
     private Set<IProductCmpt> getAllProductCmpts() {
-        LinkedHashSet<IProductCmpt> result = new LinkedHashSet<IProductCmpt>();
+        LinkedHashSet<IProductCmpt> result = new LinkedHashSet<>();
         try {
             IType target = getAssociation().findTarget(getIpsProject());
             if (target instanceof IPolicyCmptType) {
@@ -77,7 +77,7 @@ public class AssociationCollector extends AbstractProductCmptCollector {
     }
 
     private Set<IProductCmpt> getLinkedProductCmpts(Set<IProductCmpt> contextProductCmpts) {
-        Set<IProductCmpt> newContextCmpts = new LinkedHashSet<IProductCmpt>();
+        Set<IProductCmpt> newContextCmpts = new LinkedHashSet<>();
         try {
             IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
             if (matchingAssociation == null) {

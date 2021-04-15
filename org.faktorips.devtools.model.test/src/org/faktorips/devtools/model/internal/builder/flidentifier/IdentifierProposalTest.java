@@ -11,8 +11,8 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class IdentifierProposalTest {
         IdentifierProposal enumClass3 = new IdentifierProposal("AAenumClass", "AAenumClass", "description", "",
                 IdentifierNodeType.ENUM_CLASS);
 
-        List<IdentifierProposal> list = new ArrayList<IdentifierProposal>();
+        List<IdentifierProposal> list = new ArrayList<>();
         list.add(enumClass1);
         list.add(enumClass2);
         list.add(enumClass3);
@@ -48,7 +48,7 @@ public class IdentifierProposalTest {
     @Test
     public void testCompareToWholeList() {
         List<IdentifierProposal> sortedList = initList();
-        List<IdentifierProposal> unsortedList = new ArrayList<IdentifierProposal>();
+        List<IdentifierProposal> unsortedList = new ArrayList<>();
         unsortedList.add(sortedList.get(2));
         unsortedList.add(sortedList.get(6));
         unsortedList.add(sortedList.get(1));
@@ -86,7 +86,7 @@ public class IdentifierProposalTest {
         IdentifierProposal enumValue2 = new IdentifierProposal("WenumValue", "WenumValue", "description", "",
                 IdentifierNodeType.ENUM_VALUE);
 
-        List<IdentifierProposal> sortedList = new ArrayList<IdentifierProposal>();
+        List<IdentifierProposal> sortedList = new ArrayList<>();
         sortedList.add(param1);
         sortedList.add(param2);
         sortedList.add(attribute1);

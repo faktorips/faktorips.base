@@ -104,7 +104,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                 ids = getAllValueIdsFromClass();
             }
             int indexOfNull = getIndeoxOfNullOrNullObject(ids);
-            ArrayList<String> result = new ArrayList<String>();
+            ArrayList<String> result = new ArrayList<>();
             result.addAll(Arrays.asList(ids));
             if (!includeNull && indexOfNull >= 0) {
                 result.remove(indexOfNull);
@@ -129,7 +129,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * throws IllegalArgumentException
      */
     private String[] getAllValueIdsFromClass() throws IllegalAccessException, InvocationTargetException {
-        Object[] values = (Object[])getGetAllValuesMethod().invoke(null, new Object[0]);
+        Object[] values = (Object[])getGetAllValuesMethod().invoke(null);
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
             ids[i] = valueToString(values[i]);
@@ -157,7 +157,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     public Method getGetAllValuesMethod() {
         if (getAllValuesMethod == null && getAllValuesMethodName != null) {
             try {
-                getAllValuesMethod = getAdaptedClass().getMethod(getAllValuesMethodName, new Class[0]);
+                getAllValuesMethod = getAdaptedClass().getMethod(getAllValuesMethodName);
                 if (getAllValuesMethod == null) {
                     throw new NullPointerException();
                 }
@@ -179,7 +179,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     public Method getGetNameMethod() {
         if (getNameMethod == null && getNameMethodName != null) {
             try {
-                getNameMethod = getAdaptedClass().getMethod(getNameMethodName, new Class[0]);
+                getNameMethod = getAdaptedClass().getMethod(getNameMethodName);
                 // CSOFF: Illegal Catch
             } catch (Exception e) {
                 // CSON: Illegal Catch
@@ -215,7 +215,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             if (value == null) {
                 return null;
             }
-            return (String)getGetNameMethod().invoke(value, new Object[0]);
+            return (String)getGetNameMethod().invoke(value);
 
             // CSOFF: Illegal Catch
         } catch (Exception e) {

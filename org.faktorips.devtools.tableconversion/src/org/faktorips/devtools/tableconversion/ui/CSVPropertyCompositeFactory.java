@@ -82,7 +82,7 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
         // decimalGroupingText = toolkit.createText(root);
         // TextField groupingSeparatorTextField = new TextField(decimalGroupingText);
         // groupingSeparatorTextField.addChangeListener(this);
-        //        decimalGroupingText.setText(","); //$NON-NLS-1$
+        // decimalGroupingText.setText(","); //$NON-NLS-1$
 
         initializeProperties();
 

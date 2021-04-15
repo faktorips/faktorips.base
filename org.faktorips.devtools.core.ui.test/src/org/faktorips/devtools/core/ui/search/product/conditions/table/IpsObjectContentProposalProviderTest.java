@@ -21,7 +21,7 @@ public class IpsObjectContentProposalProviderTest {
 
     @Test
     public void test() {
-        List<String> ipsObjects = new ArrayList<String>();
+        List<String> ipsObjects = new ArrayList<>();
 
         ipsObjects.add("Vollkasko");
         ipsObjects.add("Teilkasko");
@@ -48,7 +48,7 @@ public class IpsObjectContentProposalProviderTest {
 
     @Test
     public void testQualified() {
-        List<String> ipsObjects = new ArrayList<String>();
+        List<String> ipsObjects = new ArrayList<>();
 
         ipsObjects.add("xyz.Vollkasko");
         ipsObjects.add("zyx.Teilkasko");

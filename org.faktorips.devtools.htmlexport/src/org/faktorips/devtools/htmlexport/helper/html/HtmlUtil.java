@@ -135,7 +135,7 @@ public class HtmlUtil {
      * 
      */
     public String createHtmlElementOpenTag(String element, String id, String classes) {
-        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
+        List<HtmlAttribute> attributes = new ArrayList<>();
 
         if (StringUtils.isNotBlank(classes)) {
             attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
@@ -194,7 +194,7 @@ public class HtmlUtil {
     }
 
     public String createLinkOpenTag(String href, String anchor, String target, String classes, String title) {
-        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
+        List<HtmlAttribute> attributes = new ArrayList<>();
 
         if (StringUtils.isBlank(anchor)) {
             attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
@@ -240,7 +240,7 @@ public class HtmlUtil {
      * 
      */
     public String createImage(String src, String alt) {
-        List<HtmlAttribute> attributes = new ArrayList<HtmlAttribute>();
+        List<HtmlAttribute> attributes = new ArrayList<>();
         attributes.add(new HtmlAttribute("src", src)); //$NON-NLS-1$
         attributes.add(new HtmlAttribute("alt", alt)); //$NON-NLS-1$
         return createHtmlElement("img", attributes); //$NON-NLS-1$

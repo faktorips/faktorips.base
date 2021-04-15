@@ -31,7 +31,7 @@ public class StyledTextModifyListener implements ExtendedModifyListener {
         StyledText styledText = (StyledText)event.getSource();
 
         String text = styledText.getText();
-        List<StyleRange> ranges = new ArrayList<StyleRange>();
+        List<StyleRange> ranges = new ArrayList<>();
         int color = 0;
 
         for (int i = 0, n = text.length(); i < n; i++) {

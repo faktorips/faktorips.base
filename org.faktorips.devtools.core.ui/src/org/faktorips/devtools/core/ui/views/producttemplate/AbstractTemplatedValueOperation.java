@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 /** Base class for operations that modify templated values. */
 public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunnable {
 
-    private Set<IIpsSrcFile> filesToSave = new HashSet<IIpsSrcFile>();
+    private Set<IIpsSrcFile> filesToSave = new HashSet<>();
 
     public AbstractTemplatedValueOperation() {
         super();

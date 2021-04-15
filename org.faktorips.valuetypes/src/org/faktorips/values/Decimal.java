@@ -120,17 +120,19 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         this.value = value;
     }
 
+    @Override
     public boolean isNull() {
         return false;
     }
 
+    @Override
     public boolean isNotNull() {
         return true;
     }
 
     /**
-     * Returns the <em>scale</em> of this BigDecimal. (The scale is the number of digits to the right
-     * of the decimal point.)
+     * Returns the <em>scale</em> of this BigDecimal. (The scale is the number of digits to the
+     * right of the decimal point.)
      * 
      * @return the scale of this Decimal.
      */
@@ -497,9 +499,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * <p>
      * Note that since Decimal objects are immutable, calls of this method do <em>not</em> result in
      * the original object being modified, contrary to the usual convention of having methods named
-     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead, <code>setScale</code>
-     * returns an object with the proper scale; the returned object may or may not be newly
-     * allocated.
+     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead,
+     * <code>setScale</code> returns an object with the proper scale; the returned object may or may
+     * not be newly allocated.
      * 
      * @deprecated since 21.6. Use {@link #setScale(int, RoundingMode)} instead.
      * 
@@ -537,9 +539,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * <p>
      * Note that since Decimal objects are immutable, calls of this method do <em>not</em> result in
      * the original object being modified, contrary to the usual convention of having methods named
-     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead, <code>setScale</code>
-     * returns an object with the proper scale; the returned object may or may not be newly
-     * allocated.
+     * <code>set<em>X</em></code> mutate field <code><em>X</em></code>. Instead,
+     * <code>setScale</code> returns an object with the proper scale; the returned object may or may
+     * not be newly allocated.
      * 
      * @param scale scale of the Decimal value to be returned.
      * 
@@ -646,6 +648,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Override
     public int compareTo(Decimal d) {
         if (d.isNull()) {
             return 1;

@@ -28,7 +28,7 @@ public class QualifierCollector extends AbstractProductCmptCollector {
 
     @Override
     protected Set<IProductCmpt> getContextProductCmpts() {
-        return new LinkedHashSet<IProductCmpt>(Arrays.asList(((QualifierNode)getNode()).getProductCmpt()));
+        return new LinkedHashSet<>(Arrays.asList(((QualifierNode)getNode()).getProductCmpt()));
     }
 
 }

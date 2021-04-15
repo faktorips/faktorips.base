@@ -89,7 +89,7 @@ public class TableContentsStructureCache {
      */
     public List<IIpsSrcFile> getTableContents(IIpsSrcFile tableStructure) {
         checkedInit();
-        return new ArrayList<IIpsSrcFile>(tableStructureMap.get(tableStructure));
+        return new ArrayList<>(tableStructureMap.get(tableStructure));
     }
 
     private void checkedInit() {
@@ -201,9 +201,9 @@ public class TableContentsStructureCache {
 
         private final MultiMap<IIpsSrcFile, IIpsSrcFile> structureToContentMap = MultiMap.createWithSetsAsValues();
 
-        private final ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile>();
+        private final ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<>();
 
-        private final Set<IIpsSrcFile> contentWithInvlidStructure = new HashSet<IIpsSrcFile>();
+        private final Set<IIpsSrcFile> contentWithInvlidStructure = new HashSet<>();
 
         /**
          * Returns the set of table contents for the given table structure.

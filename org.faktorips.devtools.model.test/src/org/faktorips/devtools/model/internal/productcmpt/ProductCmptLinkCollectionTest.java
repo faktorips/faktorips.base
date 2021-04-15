@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -128,7 +128,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     public void testGetLinksAsMap() {
         setUpCollectionWithLinks();
         Map<String, List<IProductCmptLink>> map = linkCollection.getLinksAsMap();
-        assertEquals(3, map.keySet().size());
+        assertEquals(3, map.size());
 
         List<IProductCmptLink> linksOne = map.get("oneAssociation");
         assertEquals(link1, linksOne.get(0));
@@ -153,7 +153,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         linkCollection.addLink(linkWithNullAssoc);
 
         Map<String, List<IProductCmptLink>> map = linkCollection.getLinksAsMap();
-        assertEquals(4, map.keySet().size());
+        assertEquals(4, map.size());
 
         List<IProductCmptLink> linksOne = map.get("oneAssociation");
         assertEquals(link1, linksOne.get(0));

@@ -105,7 +105,7 @@ public class CategoryPage extends IpsObjectEditorPage {
      */
     class CategoryCompositionSection extends IpsSection {
 
-        private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<IProductCmptCategory, CategorySection>();
+        private final Map<IProductCmptCategory, CategorySection> categoriesToSections = new LinkedHashMap<>();
 
         private final IAction newCategoryAction;
 
@@ -167,7 +167,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         private void createCategorySections() {
             // Determine lastCategoryState
-            List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
+            List<IProductCmptCategory> categories = new ArrayList<>();
             try {
                 categories.addAll(getProductCmptType().findCategories(getProductCmptType().getIpsProject()));
             } catch (CoreException e) {
@@ -430,7 +430,7 @@ public class CategoryPage extends IpsObjectEditorPage {
 
         private Object obtainCategoryState() throws CoreException {
             List<IProductCmptCategory> categories = getProductCmptType().findCategories(getIpsProject());
-            List<CategoryState> categoryState = new ArrayList<CategoryState>(categories.size());
+            List<CategoryState> categoryState = new ArrayList<>(categories.size());
             for (IProductCmptCategory category : categories) {
                 categoryState.add(new CategoryState(category.getId(), category.getPosition()));
             }

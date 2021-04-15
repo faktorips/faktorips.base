@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.IIpsElement;
  */
 public class IpsSearchResultLabelProvider extends DefaultLabelProvider {
 
-    private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
+    private List<ILabelProviderListener> listeners = new ArrayList<>();
 
     @Override
     public void addListener(ILabelProviderListener listener) {

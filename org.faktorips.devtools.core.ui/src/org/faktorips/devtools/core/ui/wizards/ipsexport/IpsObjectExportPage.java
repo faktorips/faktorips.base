@@ -53,9 +53,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 
 /**
  * Base wizard page for configuring an IPS object for export.
@@ -187,7 +187,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         // must not be empty
         if (fileFormatControl.getSelectionIndex() == -1) {
             setErrorMessage(Messages.IpsObjectExportPage_msgMissingFileFormat);
-            return;
         }
     }
 
@@ -235,7 +234,6 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         }
         if (!project.exists()) {
             setErrorMessage(Messages.IpsObjectExportPage_msgNonExistingProject);
-            return;
         }
     }
 

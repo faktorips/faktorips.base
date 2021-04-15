@@ -297,7 +297,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         protected IUnresolvedReference createUnresolvedReference(Object objectId, String targetRole, String targetId)
                 throws SecurityException, NoSuchMethodException {
             if ("InsuredPerson".equals(targetRole)) {
-                Method m = getClass().getMethod("setInsuredPerson", new Class[] { PcA.class });
+                Method m = getClass().getMethod("setInsuredPerson", PcA.class);
                 return new DefaultUnresolvedReference(this, objectId, m, PcA.class, targetId);
             }
             return null;

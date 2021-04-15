@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,21 +62,17 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     protected Ordering<TemplateUsageViewItem> getOrdering(ImmutableList<TemplateUsageViewItem> elements) {
         final Ordering<TemplateUsageViewItem> secOrder = Ordering.explicit(elements);
 
-        Ordering<TemplateUsageViewItem> order = Ordering.from(new Comparator<TemplateUsageViewItem>() {
-
-            @Override
-            public int compare(TemplateUsageViewItem o1, TemplateUsageViewItem o2) {
-                if (o1.isSameValueAsTemplateValue()) {
-                    return -1;
-                } else if (o2.isSameValueAsTemplateValue()) {
-                    return 1;
-                } else if (o1.isDeletedValue()) {
-                    return -1;
-                } else if (o2.isDeletedValue()) {
-                    return 1;
-                } else {
-                    return secOrder.compare(o1, o2);
-                }
+        Ordering<TemplateUsageViewItem> order = Ordering.from((o1, o2) -> {
+            if (o1.isSameValueAsTemplateValue()) {
+                return -1;
+            } else if (o2.isSameValueAsTemplateValue()) {
+                return 1;
+            } else if (o1.isDeletedValue()) {
+                return -1;
+            } else if (o2.isDeletedValue()) {
+                return 1;
+            } else {
+                return secOrder.compare(o1, o2);
             }
         });
         return order;

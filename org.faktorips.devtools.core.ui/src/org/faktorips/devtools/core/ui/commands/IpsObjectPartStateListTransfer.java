@@ -72,7 +72,7 @@ public class IpsObjectPartStateListTransfer extends ByteArrayTransfer {
                 return null;
             }
 
-            List<IpsObjectPartState> states = new ArrayList<IpsObjectPartState>();
+            List<IpsObjectPartState> states = new ArrayList<>();
             try {
                 ByteArrayInputStream in = new ByteArrayInputStream(buffer);
                 DataInputStream readIn = new DataInputStream(in);

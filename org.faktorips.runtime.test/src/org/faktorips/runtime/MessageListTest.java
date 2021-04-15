@@ -39,7 +39,7 @@ public class MessageListTest {
     @Test
     public void testOf_EmptyArray() {
         assertThat(MessageList.of(), is(emptyMessageList));
-        assertThat(MessageList.of(new Message[0]), is(emptyMessageList));
+        assertThat(MessageList.of(), is(emptyMessageList));
     }
 
     @Test
@@ -528,12 +528,12 @@ public class MessageListTest {
         Message msg1 = new Message("1", "text1", Message.ERROR, this, "name");
         Message msg2 = new Message("2", "text2", Message.ERROR, "invalid object", "name");
         Message msg3 = new Message("2", "text3", Message.ERROR, this, "descriptopm");
-        Message msg4 = new Message("2", "text4", Message.ERROR, new ObjectProperty[] {
-                new ObjectProperty(this, "description"), new ObjectProperty(this, "name") });
-        Message msg5 = new Message("5", "text5", Message.ERROR, new ObjectProperty[] {
-                new ObjectProperty(this, "index", 1), new ObjectProperty(this, "index", 2) });
-        Message msg6 = new Message("6", "text6", Message.ERROR, new ObjectProperty[] {
-                new ObjectProperty(this, "index", 3), new ObjectProperty(this, "index", 4) });
+        Message msg4 = new Message("2", "text4", Message.ERROR, new ObjectProperty(this, "description"),
+                new ObjectProperty(this, "name"));
+        Message msg5 = new Message("5", "text5", Message.ERROR, new ObjectProperty(this, "index", 1),
+                new ObjectProperty(this, "index", 2));
+        Message msg6 = new Message("6", "text6", Message.ERROR, new ObjectProperty(this, "index", 3),
+                new ObjectProperty(this, "index", 4));
 
         list.add(msg1);
         list.add(msg2);
@@ -629,9 +629,7 @@ public class MessageListTest {
         list.add(error2);
         list.add(warning1);
 
-        MessageList transformedList = list.map(m -> {
-            return new Message.Builder(m).text("transformed text").create();
-        });
+        MessageList transformedList = list.map(m -> new Message.Builder(m).text("transformed text").create());
 
         assertThat(transformedList.getMessage(0), is(new Message("error", "transformed text", Severity.ERROR)));
         assertThat(transformedList.getMessage(1), is(new Message("error", "transformed text", Severity.ERROR)));
@@ -648,9 +646,8 @@ public class MessageListTest {
         list.add(error2);
         list.add(warning1);
 
-        MessageList transformedList = list.map(m -> m.getSeverity().equals(Severity.WARNING), m -> {
-            return new Message.Builder(m).text("transformed text").create();
-        });
+        MessageList transformedList = list.map(m -> m.getSeverity().equals(Severity.WARNING),
+                m -> new Message.Builder(m).text("transformed text").create());
 
         assertThat(transformedList.getMessage(0), is(new Message("error", "e1", Severity.ERROR)));
         assertThat(transformedList.getMessage(1), is(new Message("error", "e2", Severity.ERROR)));

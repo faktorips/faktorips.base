@@ -51,7 +51,7 @@ public class PersistentTypeInfoSection extends IpsSection {
 
     private UIToolkit uiToolkit;
 
-    private List<Control> persistentComposites = new ArrayList<Control>();
+    private List<Control> persistentComposites = new ArrayList<>();
 
     public PersistentTypeInfoSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(ID, parent, GridData.FILL_HORIZONTAL, toolkit);
@@ -80,7 +80,7 @@ public class PersistentTypeInfoSection extends IpsSection {
         @Override
         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
             try {
-                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
                 if (oldValue != null && enabled == oldValue) {
                     return;
                 }
@@ -111,13 +111,13 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite detailComposite = toolkit.createLabelEditColumnComposite(client);
         toolkit.createLabel(detailComposite, Messages.PersistentTypeInfoSection_labelPersistentType);
         Combo persistentTypeCombo = toolkit.createCombo(detailComposite);
-        EnumField<PersistentType> persistentTypeField = new EnumField<PersistentType>(persistentTypeCombo,
+        EnumField<PersistentType> persistentTypeField = new EnumField<>(persistentTypeCombo,
                 PersistentType.class);
 
         Label inheritanceStrateyLabel = toolkit.createLabel(detailComposite,
                 Messages.PersistentTypeInfoSection_labelInheritanceStrategy);
         Combo inheritanceStrategyCombo = toolkit.createCombo(detailComposite);
-        EnumField<InheritanceStrategy> inheritanceStrategyField = new EnumField<InheritanceStrategy>(
+        EnumField<InheritanceStrategy> inheritanceStrategyField = new EnumField<>(
                 inheritanceStrategyCombo, InheritanceStrategy.class);
         persistentComposites.add(inheritanceStrateyLabel);
         persistentComposites.add(inheritanceStrategyCombo);
@@ -150,7 +150,7 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
-        EnumField<DiscriminatorDatatype> descriminatorDatatypeField = new EnumField<DiscriminatorDatatype>(
+        EnumField<DiscriminatorDatatype> descriminatorDatatypeField = new EnumField<>(
                 descriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnValue);

@@ -203,7 +203,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         attribute.setDatatype(datatype.getQualifiedName());
 
         Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
+        ArrayList<Datatype> vdlist = new ArrayList<>();
         vdlist.addAll(Arrays.asList(vds));
         vdlist.add(datatype);
 

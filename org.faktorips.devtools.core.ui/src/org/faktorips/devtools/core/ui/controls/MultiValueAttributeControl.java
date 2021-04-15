@@ -30,7 +30,8 @@ public class MultiValueAttributeControl extends TextButtonControl {
     private MultiValueAttributeHandler handler;
 
     public MultiValueAttributeControl(Composite parent, UIToolkit toolkit,
-            IProductCmptTypeAttribute productCmptTypeAttribute, IAttributeValue attributeValue, ValueDatatype datatype) {
+            IProductCmptTypeAttribute productCmptTypeAttribute, IAttributeValue attributeValue,
+            ValueDatatype datatype) {
         super(parent, toolkit, ""); //$NON-NLS-1$
         handler = new MultiValueAttributeHandler(parent.getShell(), productCmptTypeAttribute, attributeValue, datatype);
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("MultiValueAttribute.gif", true)); //$NON-NLS-1$

@@ -61,7 +61,7 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
 
     @Override
     public Object[] getElements() {
-        Set<IIpsProject> projects = new HashSet<IIpsProject>();
+        Set<IIpsProject> projects = new HashSet<>();
 
         Object[] elements = super.getElements();
         for (Object object : elements) {

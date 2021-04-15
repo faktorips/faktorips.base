@@ -55,7 +55,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
         super.setUp();
 
         ipsProject = newIpsProject();
-        generatedJavaElements = new ArrayList<IJavaElement>();
+        generatedJavaElements = new ArrayList<>();
         builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 

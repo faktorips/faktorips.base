@@ -53,7 +53,7 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
     @Override
     public String[] getDiscreteValues() {
         String[] values = super.getDiscreteValues();
-        List<String> newValues = new ArrayList<String>();
+        List<String> newValues = new ArrayList<>();
         newValues.add(getDisableValue(null));
         newValues.addAll(Arrays.asList(values));
         return newValues.toArray(new String[newValues.size()]);

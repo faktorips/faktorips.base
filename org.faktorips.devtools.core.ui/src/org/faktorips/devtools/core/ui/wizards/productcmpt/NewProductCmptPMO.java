@@ -79,7 +79,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private ProductCmptViewItem selectedTemplate;
 
-    private final Set<IProductCmptType> baseTypes = new TreeSet<IProductCmptType>(new BaseTypeComparator());
+    private final Set<IProductCmptType> baseTypes = new TreeSet<>(new BaseTypeComparator());
 
     private String kindId = StringUtils.EMPTY;
 
@@ -91,9 +91,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private boolean singleTypeSelection = false;
 
-    private final List<IProductCmptType> subtypes = new ArrayList<IProductCmptType>();
+    private final List<IProductCmptType> subtypes = new ArrayList<>();
 
-    private final List<ProductCmptViewItem> templates = new ArrayList<ProductCmptViewItem>();
+    private final List<ProductCmptViewItem> templates = new ArrayList<>();
 
     private IProductCmptGeneration addToProductCmptGeneration;
 
@@ -165,7 +165,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         baseTypes.clear();
         try {
             IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
-            Set<IIpsSrcFile> concreteTypes = new HashSet<IIpsSrcFile>();
+            Set<IIpsSrcFile> concreteTypes = new HashSet<>();
             // 1. making a list containing all NOT ABSTRACT types if the new product component is
             // not a template
             for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
@@ -180,7 +180,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreException {
-        Set<IIpsSrcFile> superTypes = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> superTypes = new HashSet<>();
         for (IIpsSrcFile ipsSrcFile : types) {
             if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
                 continue;
@@ -315,13 +315,13 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             return;
         }
         List<IIpsSrcFile> templateSrcFiles;
-        Map<String, ProductCmptViewItem> viewItemNames = new LinkedHashMap<String, ProductCmptViewItem>();
+        Map<String, ProductCmptViewItem> viewItemNames = new LinkedHashMap<>();
         if (selectedBaseType != null && selectedType == null) {
             templateSrcFiles = getIpsProject().findAllProductTemplates(selectedBaseType, true);
         } else if (selectedType != null) {
             templateSrcFiles = getIpsProject().findCompatibleProductTemplates(selectedType);
         } else {
-            templateSrcFiles = new ArrayList<IIpsSrcFile>();
+            templateSrcFiles = new ArrayList<>();
         }
         templates.add(NULL_TEMPLATE);
         for (IIpsSrcFile ipsSrcFile : templateSrcFiles) {

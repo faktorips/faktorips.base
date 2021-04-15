@@ -96,7 +96,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private List<String> getHeadlineWithCategory(String productGenerationAttributeTableGenerationFrom) {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.add(productGenerationAttributeTableGenerationFrom);
         if (productCmpt.allowGenerations()) {
@@ -247,7 +247,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addPolicyCmptTypeAttibutes() {
-        List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+        List<IPolicyCmptTypeAttribute> policyCmptTypeAttributes = new ArrayList<>();
 
         IPolicyCmptType policyCmptType = getPolicyCmptType();
 
@@ -426,7 +426,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addAssociations() {
-        List<IAssociation> notDerivedUnionAssociations = new ArrayList<IAssociation>();
+        List<IAssociation> notDerivedUnionAssociations = new ArrayList<>();
 
         List<IAssociation> allAssociations = getAllAssociations();
         for (IAssociation association : allAssociations) {
@@ -480,7 +480,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         IPageElement targetLink = new PageElementUtils(getContext()).createLinkPageElement(getContext(), target,
                 TargetType.CONTENT, target.getName(), true);
 
-        Set<Style> cardinalityStyles = new HashSet<Style>();
+        Set<Style> cardinalityStyles = new HashSet<>();
         cardinalityStyles.add(Style.INDENTION);
 
         IPageElement cardinalities = new TextPageElement(
@@ -499,7 +499,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         } catch (CoreException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding all associations of " //$NON-NLS-1$
                     + productCmptType.getQualifiedName(), e));
-            associations = new ArrayList<IAssociation>();
+            associations = new ArrayList<>();
         }
         return associations;
     }
@@ -516,7 +516,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
 
         List<IValidationRule> validationRules = policyCmptType.findAllValidationRules(getContext().getIpsProject());
-        List<IValidationRule> productConfigurableValidationRules = new ArrayList<IValidationRule>();
+        List<IValidationRule> productConfigurableValidationRules = new ArrayList<>();
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.isConfigurableByProductComponent()) {
                 productConfigurableValidationRules.add(validationRule);

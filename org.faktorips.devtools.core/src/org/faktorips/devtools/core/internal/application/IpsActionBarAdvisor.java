@@ -815,9 +815,9 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         if (page.getPerspective().getId().equals("org.eclipse.team.ui.TeamSynchronizingPerspective")) { //$NON-NLS-1$
             IViewReference[] refs = page.getViewReferences();
-            for (int i = 0; i < refs.length; i++) {
-                if (!refs[i].getId().equals("org.eclipse.team.sync.views.SynchronizeView")) { //$NON-NLS-1$
-                    page.hideView(refs[i]);
+            for (IViewReference ref : refs) {
+                if (!ref.getId().equals("org.eclipse.team.sync.views.SynchronizeView")) { //$NON-NLS-1$
+                    page.hideView(ref);
                 }
             }
 

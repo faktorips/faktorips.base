@@ -57,8 +57,9 @@ public class IpsCheckConditionsOperation {
     public IpsCheckConditionsOperation(IIpsRefactoring refactoring, int conditionType, boolean ensureEditorsSaved) {
         ArgumentCheck.notNull(refactoring);
         this.ensureEditorsSaved = ensureEditorsSaved;
-        ltkCheckOperation = conditionType == NONE ? null : new CheckConditionsOperation((Refactoring)refactoring,
-                conditionType);
+        ltkCheckOperation = conditionType == NONE ? null
+                : new CheckConditionsOperation((Refactoring)refactoring,
+                        conditionType);
     }
 
     public void run(IProgressMonitor progressMonitor) throws CoreException {

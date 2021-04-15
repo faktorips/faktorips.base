@@ -158,7 +158,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         integerNewAttributeValue.setValue(ValueFactory.createStringValue("4"));
         booleanNewAttributeValue.setValue(ValueFactory.createStringValue("false"));
 
-        assertTrue(stringNewAttributeValue.validate(ipsProject).toString(), stringNewAttributeValue.isValid(ipsProject));
+        assertTrue(stringNewAttributeValue.validate(ipsProject).toString(),
+                stringNewAttributeValue.isValid(ipsProject));
         assertTrue(integerNewAttributeValue.validate(ipsProject).toString(),
                 integerNewAttributeValue.isValid(ipsProject));
         assertTrue(booleanNewAttributeValue.validate(ipsProject).toString(),
@@ -299,10 +300,12 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         paymentMode.setAbstract(true);
         validationMessageList = paymentMode.validate(ipsProject);
         assertEquals(2, validationMessageList.size());
-        assertFalse(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
-                .getMessage(0).getCode());
-        assertFalse(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
-                .getMessage(1).getCode());
+        assertFalse(
+                IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
+                        .getMessage(0).getCode());
+        assertFalse(
+                IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
+                        .getMessage(1).getCode());
     }
 
     @Test
@@ -406,7 +409,8 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                 IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE
                         + "not expected but message list was: " + messageList.toString(),
                 messageList
-                        .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
+                        .getMessageByCode(
+                                IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
     private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreException {

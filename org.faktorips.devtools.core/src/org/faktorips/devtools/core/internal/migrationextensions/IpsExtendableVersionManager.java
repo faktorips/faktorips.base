@@ -53,7 +53,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
         Version currentVersion = Version.parseVersion(getCurrentVersion());
         Version otherVersionVersion = Version.parseVersion(otherVersion);
-        SortedSet<Version> versionsWithMigration = new TreeSet<Version>(getRegisteredMigrations().keySet());
+        SortedSet<Version> versionsWithMigration = new TreeSet<>(getRegisteredMigrations().keySet());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(otherVersionVersion) > 0 && version.compareTo(currentVersion) <= 0) {
                 return false;
@@ -74,8 +74,8 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
     private List<AbstractIpsProjectMigrationOperation> getMigrationOperations(IIpsProject projectToMigrate,
             Version projectsVersion) {
-        SortedSet<Version> versionsWithMigration = new TreeSet<Version>(getRegisteredMigrations().keySet());
-        List<AbstractIpsProjectMigrationOperation> result = new ArrayList<AbstractIpsProjectMigrationOperation>();
+        SortedSet<Version> versionsWithMigration = new TreeSet<>(getRegisteredMigrations().keySet());
+        List<AbstractIpsProjectMigrationOperation> result = new ArrayList<>();
         Version currentVersion = Version.parseVersion(getCurrentVersion());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(currentVersion) <= 0) {

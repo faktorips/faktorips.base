@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 
 /**
  * Provides labels for links. {@link IProductCmptLink}s are displayed as the target object including

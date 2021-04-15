@@ -70,7 +70,8 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         Set<QualifiedNameType> qnt = archive.getQNameTypes();
         assertEquals(6, qnt.size());
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(
+                qnt.contains(new QualifiedNameType("mycompany.motor.MotorCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.home.HomePolicy", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
@@ -109,7 +110,8 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         Set<QualifiedNameType> qnt = archive.getQNameTypes();
         assertEquals(2, qnt.size());
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
+        assertTrue(
+                qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
 
         assertFalse(coreExceptionThrownOnGetResourceAsStream(archive));
     }
@@ -189,7 +191,8 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         Set<QualifiedNameType> qnt = archive.getQNameTypes();
         assertEquals(2, qnt.size());
         assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorPolicy", IpsObjectType.POLICY_CMPT_TYPE)));
-        assertTrue(qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
+        assertTrue(
+                qnt.contains(new QualifiedNameType("mycompany.motor.MotorProduct", IpsObjectType.PRODUCT_CMPT_TYPE)));
 
         assertTrue(coreExceptionThrownOnGetResourceAsStream(archive));
 

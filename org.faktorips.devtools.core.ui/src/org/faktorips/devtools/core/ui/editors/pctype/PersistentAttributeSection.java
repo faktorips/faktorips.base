@@ -26,8 +26,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -47,12 +45,12 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
-    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<Integer, AttrPropertyAndLabel>();
+    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<>();
 
     private ResourceManager resourceManager;
 
@@ -82,13 +80,9 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(ipsObject, parent, null, ExpandableComposite.TITLE_BAR,
                 Messages.PersistentAttributeSection_titleAttributes, toolkit);
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (resourceManager != null) {
-                    resourceManager.dispose();
-                }
+        addDisposeListener($ -> {
+            if (resourceManager != null) {
+                resourceManager.dispose();
             }
         });
     }
@@ -157,7 +151,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             public Object[] getElements(Object inputElement) {
                 List<IPolicyCmptTypeAttribute> pcAttributes = ((IPolicyCmptType)getIpsObject())
                         .getPolicyCmptTypeAttributes();
-                List<IPolicyCmptTypeAttribute> persistableAttributes = new ArrayList<IPolicyCmptTypeAttribute>();
+                List<IPolicyCmptTypeAttribute> persistableAttributes = new ArrayList<>();
                 for (IPolicyCmptTypeAttribute pcAttribute : pcAttributes) {
                     if (pcAttribute.getPersistenceAttributeInfo().isTransient()) {
                         continue;

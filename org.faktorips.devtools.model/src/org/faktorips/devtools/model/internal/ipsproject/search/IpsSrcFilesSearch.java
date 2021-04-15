@@ -27,7 +27,7 @@ public class IpsSrcFilesSearch extends AbstractSearch {
 
     private final IpsObjectType[] ipsObjectTypes;
 
-    private final List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+    private final List<IIpsSrcFile> srcFiles = new ArrayList<>();
 
     /**
      * If no {@link IpsObjectType} as parameter is given all supported {@link IpsObjectType

@@ -62,8 +62,8 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
 
     private boolean inclJavaSources;
     private boolean inclJavaBinaries;
-    private Set<IFolder> handledRootFolders = new HashSet<IFolder>();
-    private Set<String> handledEntries = new HashSet<String>(1000);
+    private Set<IFolder> handledRootFolders = new HashSet<>();
+    private Set<String> handledEntries = new HashSet<>(1000);
 
     /**
      * Creates a new operation to create an IPS archive. From the given project the content from all
@@ -71,7 +71,7 @@ public class CreateIpsArchiveOperation implements IWorkspaceRunnable {
      */
     public CreateIpsArchiveOperation(IIpsProject projectToArchive, File archive) {
         this.archive = archive;
-        List<IIpsPackageFragmentRoot> rootsInt = new ArrayList<IIpsPackageFragmentRoot>();
+        List<IIpsPackageFragmentRoot> rootsInt = new ArrayList<>();
         IIpsPackageFragmentRoot[] candidateRoots = projectToArchive.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot candidateRoot : candidateRoots) {
             if (candidateRoot.isBasedOnSourceFolder()) {

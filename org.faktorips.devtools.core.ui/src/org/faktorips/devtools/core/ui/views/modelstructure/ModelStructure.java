@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -41,7 +40,6 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -88,11 +86,11 @@ import org.faktorips.devtools.model.type.IType;
  */
 public final class ModelStructure extends AbstractShowInSupportingViewPart implements ICollectorFinishedListener {
 
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"; //$NON-NLS-1$
+
     private static final String CONTEXT_MENU_GROUP_OPEN = "open"; //$NON-NLS-1$
 
     private static final String OPEN_PARENT_ASSOCIATION_TYPE_EDITOR_ACTION_ID = "OpenParentAssociationTypeEditorAction"; //$NON-NLS-1$
-
-    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"; //$NON-NLS-1$
 
     private static final String MENU_GROUP_INFO = "group.info"; //$NON-NLS-1$
     private static final String MENU_GROUP_CONTENT_PROVIDER = "group.contentprovider"; //$NON-NLS-1$
@@ -146,7 +144,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new ModelStructureDropListener(this));
-        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+        dropTarget.setTransfer(FileTransfer.getInstance());
 
         panel = uiToolkit.createGridComposite(parent, 1, false, true, new GridData(SWT.FILL, SWT.FILL, true, true));
         label = uiToolkit.createLabel(panel, "", SWT.LEFT, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
@@ -172,7 +170,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
         treeViewer.setLabelProvider(decoratingLabelProvider);
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        getSite().setSelectionProvider(treeViewer); // necessary for the context menu
+        // necessary for the context menu
+        getSite().setSelectionProvider(treeViewer);
 
         // initialize the empty message
         infoMessageLabel = uiToolkit.createLabel(panel, "", SWT.WRAP, new GridData(SWT.FILL, SWT.FILL, //$NON-NLS-1$
@@ -242,18 +241,15 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         getSite().registerContextMenu(manager, treeViewer);
         MenuCleaner.addDefaultCleaner(manager);
 
-        manager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                IIpsSrcFile srcFile = getCurrentlySelectedIpsSrcFile();
+        manager.addMenuListener(manager1 -> {
+            IIpsSrcFile srcFile = getCurrentlySelectedIpsSrcFile();
 
-                if (srcFile == null) { // show the menu only on non-structure nodes
-                    contextMenu.setVisible(false);
-                } else {
-                    addOpenSourceAssociationTargetingTypeEditorAction(manager);
-                }
+            if (srcFile == null) {
+                // show the menu only on non-structure nodes
+                contextMenu.setVisible(false);
+            } else {
+                addOpenSourceAssociationTargetingTypeEditorAction(manager1);
             }
-
         });
 
     }
@@ -305,7 +301,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         TypedSelection<IAdaptable> typedSelection;
         ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                 .getSelectionService();
-        typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selectionService.getSelection());
+        typedSelection = new TypedSelection<>(IAdaptable.class, selectionService.getSelection());
         return typedSelection;
     }
 
@@ -326,7 +322,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
      */
     public void showStructure(IIpsProject input) {
         List<IType> result = AbstractModelStructureContentProvider.getProjectITypes(input,
-                new IpsObjectType[] { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE });
+                IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
         List<IType> projectSpecificITypes = AbstractModelStructureContentProvider.getProjectSpecificITypes(result,
                 input);
         if (projectSpecificITypes.isEmpty()) {
@@ -371,7 +367,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     private TreePath[] computePathsForIType(IType typeToExpand) {
         List<ComponentNode> rootElements = this.provider.getStoredRootElements();
-        List<List<ComponentNode>> paths = new ArrayList<List<ComponentNode>>();
+        List<List<ComponentNode>> paths = new ArrayList<>();
 
         for (ComponentNode rootElement : rootElements) {
             computePathForIType(typeToExpand, rootElement, new ArrayList<ComponentNode>(), paths);
@@ -396,7 +392,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
         Object[] children = provider.getChildren(position);
         for (Object child : children) {
-            computePathForIType(typeToExpand, (ComponentNode)child, new ArrayList<ComponentNode>(pathHead), foundPaths);
+            computePathForIType(typeToExpand, (ComponentNode)child, new ArrayList<>(pathHead), foundPaths);
         }
     }
 
@@ -491,20 +487,20 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
      */
     private void initContentProviders() {
         if (contentProviderActions == null || contentProviderActions.isEmpty()) {
-            contentProviderActions = new ArrayList<IAction>();
+            contentProviderActions = new ArrayList<>();
 
             IExtensionRegistry registry = Platform.getExtensionRegistry();
             IExtensionPoint extensionPoint = registry
                     .getExtensionPoint(MODEL_STRUCTURE_CONTENT_PROVIDER_EXTENSION_POINT_ID);
             IExtension[] extensions = extensionPoint.getExtensions();
 
-            for (int i = 0; i < extensions.length; i++) {
-                IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-                for (int j = 0; j < elements.length; j++) {
+            for (IExtension extension : extensions) {
+                IConfigurationElement[] elements = extension.getConfigurationElements();
+                for (IConfigurationElement element : elements) {
                     try {
-                        Object contentProvider = elements[j].createExecutableExtension("class"); //$NON-NLS-1$
+                        Object contentProvider = element.createExecutableExtension("class"); //$NON-NLS-1$
                         if (contentProvider instanceof AbstractModelStructureContentProvider) {
-                            String label = elements[j].getAttribute("label"); //$NON-NLS-1$
+                            String label = element.getAttribute("label"); //$NON-NLS-1$
 
                             Action contentProviderAction = createContentProviderAction(label,
                                     (AbstractModelStructureContentProvider)contentProvider);
@@ -610,7 +606,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     private Action createContentProviderAction(final String label,
             final AbstractModelStructureContentProvider contentProvider) {
         return new Action(label, IAction.AS_RADIO_BUTTON) {
-            AbstractModelStructureContentProvider newProvider = contentProvider;
+            private final AbstractModelStructureContentProvider newProvider = contentProvider;
 
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -666,7 +662,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     private void toggleShowTypeState() {
         Object input = treeViewer.getInput();
 
-        if (input instanceof IIpsProject) { // switch the viewShowState for project selections
+        if (input instanceof IIpsProject) {
+            // switch the viewShowState for project selections
             provider.toggleShowTypeState();
             treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
         } else if (input instanceof IPolicyCmptType) {
@@ -712,14 +709,11 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         }
 
         try {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (!treeViewer.getControl().isDisposed()) {
-                        Object input = treeViewer.getInput();
-                        if (input instanceof ComponentNode || input instanceof IIpsProject || input instanceof IType) {
-                            treeViewer.refresh();
-                        }
+            Runnable runnable = () -> {
+                if (!treeViewer.getControl().isDisposed()) {
+                    Object input = treeViewer.getInput();
+                    if (input instanceof ComponentNode || input instanceof IIpsProject || input instanceof IType) {
+                        treeViewer.refresh();
                     }
                 }
             };

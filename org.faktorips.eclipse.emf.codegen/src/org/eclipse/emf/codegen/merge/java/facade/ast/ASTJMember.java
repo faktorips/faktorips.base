@@ -185,7 +185,7 @@ public abstract class ASTJMember<T extends BodyDeclaration> extends ASTJNode<T> 
     @Override
     public List<JNode> getChildren() {
         if (!isDisposed()) {
-            List<JNode> children = new ArrayList<JNode>();
+            List<JNode> children = new ArrayList<>();
             children.addAll(getAnnotationList());
             if (!children.isEmpty()) {
                 return Collections.unmodifiableList(children);
@@ -195,7 +195,7 @@ public abstract class ASTJMember<T extends BodyDeclaration> extends ASTJNode<T> 
     }
 
     protected List<JNode> getAnnotationList() {
-        List<JNode> annotations = new ArrayList<JNode>();
+        List<JNode> annotations = new ArrayList<>();
         ListRewrite listRewrite = rewriter.getListRewrite(getASTNode(), getASTNode().getModifiersProperty());
 
         @SuppressWarnings("unchecked")

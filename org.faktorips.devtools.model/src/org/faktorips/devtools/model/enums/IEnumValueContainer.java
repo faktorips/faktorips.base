@@ -41,21 +41,23 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<IEnumValue> getEnumValues();
 
     /**
-     * Returns a list of all {@link IEnumValue IEnumValues} belonging to this enum. {@link IEnumValue IEnumValues} from
-     * inside AND outside the container will be taking into account.
+     * Returns a list of all {@link IEnumValue IEnumValues} belonging to this enum.
+     * {@link IEnumValue IEnumValues} from inside AND outside the container will be taking into
+     * account.
      * <p>
      * E.g: If the {@link IEnumValueContainer} is an {@link IEnumContent}, this method will return
-     * all {@link IEnumValue IEnumValues} from the {@link IEnumContent} and also all {@link IEnumValue} form
-     * its corresponding {@link EnumType}. Otherwise only the {@link IEnumValue IEnumValues} of the
-     * {@link EnumType} are identified.
+     * all {@link IEnumValue IEnumValues} from the {@link IEnumContent} and also all
+     * {@link IEnumValue} form its corresponding {@link EnumType}. Otherwise only the
+     * {@link IEnumValue IEnumValues} of the {@link EnumType} are identified.
      */
     public List<IEnumValue> findAggregatedEnumValues();
 
     /**
      * Returns the {@link IEnumValue} for the provided value of the identifier attribute.
      * <p>
-     * This method can be applied to {@link IEnumValueContainer IEnumValueContainers} that contain their own values and
-     * also those {@link IEnumValueContainer IEnumValueContainers} which are extensible.
+     * This method can be applied to {@link IEnumValueContainer IEnumValueContainers} that contain
+     * their own values and also those {@link IEnumValueContainer IEnumValueContainers} which are
+     * extensible.
      * <p>
      * Returns {@code null} if no {@link IEnumValue} could be found for the given identifier
      * attribute value, if the referenced {@link IEnumType} isn't known or no valid identifier
@@ -84,8 +86,9 @@ public interface IEnumValueContainer extends IIpsObject {
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject);
 
     /**
-     * Creates and returns a new {@link IEnumValue} that has as many {@link IEnumAttributeValue IEnumAttributeValues} as
-     * the corresponding {@link IEnumType} has {@link IEnumAttribute IEnumAttributes}.
+     * Creates and returns a new {@link IEnumValue} that has as many {@link IEnumAttributeValue
+     * IEnumAttributeValues} as the corresponding {@link IEnumType} has {@link IEnumAttribute
+     * IEnumAttributes}.
      * <p>
      * If the {@link IEnumType} referenced by this {@link IEnumValueContainer} cannot be found then
      * no {@link IEnumValue} will be created and null will be returned.
@@ -106,22 +109,27 @@ public interface IEnumValueContainer extends IIpsObject {
      */
     public IEnumType findEnumType(IIpsProject ipsProject);
 
-    /** Returns how many {@link IEnumValue IEnumValues} this {@link IEnumValueContainer} currently contains. */
+    /**
+     * Returns how many {@link IEnumValue IEnumValues} this {@link IEnumValueContainer} currently
+     * contains.
+     */
     public int getEnumValuesCount();
 
     /**
-     * Moves the given {@link IEnumValue IEnumValues} up or down by 1 and returns the their new positions. This
-     * operation assures that there aren't any {@link ContentChangeEvent ContentChangeEvents} fired while moving the
-     * individual {@link IEnumValue IEnumValues}. Instead, a {@code WHOLE_CONTENT_CHANGED} event will be fired
-     * after every {@link IEnumValue IEnumValues} has been moved.
+     * Moves the given {@link IEnumValue IEnumValues} up or down by 1 and returns the their new
+     * positions. This operation assures that there aren't any {@link ContentChangeEvent
+     * ContentChangeEvents} fired while moving the individual {@link IEnumValue IEnumValues}.
+     * Instead, a {@code WHOLE_CONTENT_CHANGED} event will be fired after every {@link IEnumValue
+     * IEnumValues} has been moved.
      * 
-     * @param enumValuesToMove A list containing the {@link IEnumValue IEnumValues} that shall be moved.
+     * @param enumValuesToMove A list containing the {@link IEnumValue IEnumValues} that shall be
+     *            moved.
      * @param up Flag indicating whether to move up ({@code true}) or down ({@code false} ).
      * 
      * @throws CoreException If an error occurs while moving the {@link IEnumValue IEnumValues}.
      * @throws NullPointerException If {@code enumValuesToMove} is {@code null}.
-     * @throws NoSuchElementException If any of the given {@link IEnumValue IEnumValues} is not part of this
-     *             {@link IEnumValueContainer}.
+     * @throws NoSuchElementException If any of the given {@link IEnumValue IEnumValues} is not part
+     *             of this {@link IEnumValueContainer}.
      */
     public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreException;
 
@@ -141,19 +149,20 @@ public interface IEnumValueContainer extends IIpsObject {
     public void clear();
 
     /**
-     * Deletes the given {@link IEnumValue IEnumValues} from this {@link IEnumValueContainer}. This operation
-     * assures that no {@link ContentChangeEvent ContentChangeEvents} are fired during the deletion of the individual
-     * {@link IEnumValue IEnumValues}. Instead a {@code WHOLE_CONTENT_CHANGED} event will be fired after every
-     * {@link IEnumValue} has been deleted.
+     * Deletes the given {@link IEnumValue IEnumValues} from this {@link IEnumValueContainer}. This
+     * operation assures that no {@link ContentChangeEvent ContentChangeEvents} are fired during the
+     * deletion of the individual {@link IEnumValue IEnumValues}. Instead a
+     * {@code WHOLE_CONTENT_CHANGED} event will be fired after every {@link IEnumValue} has been
+     * deleted.
      * <p>
      * If {@code null} is given nothing will happen. If an {@link IEnumValue} is not part of this
      * {@link IEnumValueContainer} the {@link IEnumValue} will be skipped.
      * <p>
-     * Returns {@code true} if any {@link IEnumValue IEnumValues} were deleted, {@code false} if not (following
-     * the behavior of the Java collections here).
+     * Returns {@code true} if any {@link IEnumValue IEnumValues} were deleted, {@code false} if not
+     * (following the behavior of the Java collections here).
      * 
-     * @param enumValuesToDelete A list containing all {@link IEnumValue IEnumValues} that should be deleted
-     *            from this {@link IEnumValueContainer}.
+     * @param enumValuesToDelete A list containing all {@link IEnumValue IEnumValues} that should be
+     *            deleted from this {@link IEnumValueContainer}.
      */
     public boolean deleteEnumValues(List<IEnumValue> enumValuesToDelete);
 

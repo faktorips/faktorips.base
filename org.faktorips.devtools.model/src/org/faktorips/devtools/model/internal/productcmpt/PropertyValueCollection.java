@@ -47,7 +47,7 @@ public class PropertyValueCollection {
      */
     public PropertyValueCollection(IPropertyValueContainer propertyValueContainer) {
         this.propertyValueContainer = propertyValueContainer;
-        classToInstancesMap = new ClassToInstancesMap<IPropertyValue>();
+        classToInstancesMap = new ClassToInstancesMap<>();
     }
 
     /**
@@ -126,7 +126,7 @@ public class PropertyValueCollection {
      */
     private static <T extends IPropertyValue> List<T> getPropertyValuesFromList(List<IPropertyValue> valueList,
             String propertyName) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         if (propertyName == null || valueList == null) {
             return result;
         }
@@ -147,7 +147,7 @@ public class PropertyValueCollection {
      * @return a list of property values of the indicated type, or an empty list if none exist.
      */
     public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> clazz) {
-        return new ArrayList<T>(classToInstancesMap.get(clazz));
+        return new ArrayList<>(classToInstancesMap.get(clazz));
     }
 
     /**
@@ -163,7 +163,7 @@ public class PropertyValueCollection {
     public List<IPropertyValue> newPropertyValues(IPropertyValueContainer container,
             IProductCmptProperty property,
             String partId) {
-        ArrayList<IPropertyValue> result = new ArrayList<IPropertyValue>();
+        ArrayList<IPropertyValue> result = new ArrayList<>();
         for (PropertyValueType valueType : property.getPropertyValueTypes()) {
             IPropertyValue propertyValue = newPropertyValue(property, partId, valueType.getInterfaceClass());
             result.add(propertyValue);

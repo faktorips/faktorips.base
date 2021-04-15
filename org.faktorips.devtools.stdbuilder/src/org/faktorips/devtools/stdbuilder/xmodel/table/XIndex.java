@@ -48,13 +48,13 @@ public class XIndex extends AbstractGeneratorModelNode {
     /**
      * range key names uncapitalized
      */
-    private List<String> rangeKeyNames = new ArrayList<String>();
-    private List<IKeyItem> rangeKeys = new ArrayList<IKeyItem>();
+    private List<String> rangeKeyNames = new ArrayList<>();
+    private List<IKeyItem> rangeKeys = new ArrayList<>();
     /**
      * column key names uncapitalized
      */
-    private List<String> columnKeyNames = new ArrayList<String>();
-    private List<XColumn> columnKeys = new ArrayList<XColumn>();
+    private List<String> columnKeyNames = new ArrayList<>();
+    private List<XColumn> columnKeys = new ArrayList<>();
 
     public XIndex(IIndex index, GeneratorModelContext context, ModelService modelService) {
         super(index, context, modelService);
@@ -190,7 +190,7 @@ public class XIndex extends AbstractGeneratorModelNode {
     }
 
     private List<IKeyItem> getRangeKeysNotFirst() {
-        List<IKeyItem> rangeKeysForGeneric = new ArrayList<IKeyItem>();
+        List<IKeyItem> rangeKeysForGeneric = new ArrayList<>();
         if (isFirstKeyRange()) {
             rangeKeysForGeneric.addAll(rangeKeys.subList(1, rangeKeys.size()));
         } else {
@@ -211,7 +211,7 @@ public class XIndex extends AbstractGeneratorModelNode {
      * @return class of the field for this index as @GenericTypeStringWrapper
      */
     public GenericTypeStringWrapper getStructureClass() {
-        List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
+        List<IKeyItem> keyItems = new ArrayList<>();
         keyItems.add(getIndex().getKeyItems()[0]);
         keyItems.addAll(getRangeKeysNotFirst());
         return getStructureClass(keyItems);
@@ -221,7 +221,7 @@ public class XIndex extends AbstractGeneratorModelNode {
         if (keyItems.size() == 0) {
             return new GenericTypeStringWrapper(getResultStructureClassName(), tableRowClass);
         } else {
-            List<GenericTypeStringWrapper> structureClassGenArgs = new ArrayList<GenericTypeStringWrapper>();
+            List<GenericTypeStringWrapper> structureClassGenArgs = new ArrayList<>();
             if (keyItems.get(0).isRange()) {
                 structureClassGenArgs.add(new GenericTypeStringWrapper(getJavaClassName(keyItems.get(0))));
             } else {
@@ -249,10 +249,10 @@ public class XIndex extends AbstractGeneratorModelNode {
      */
     public List<XColumnRangeSearchStructure> getKeyItemsForInitKeyMap() {
 
-        List<XColumnRangeSearchStructure> rangeKeyItemHelpers = new ArrayList<XColumnRangeSearchStructure>();
+        List<XColumnRangeSearchStructure> rangeKeyItemHelpers = new ArrayList<>();
 
         List<IKeyItem> keyItemList = getRangeKeysNotFirst();
-        ArrayList<IKeyItem> processedKeys = new ArrayList<IKeyItem>();
+        ArrayList<IKeyItem> processedKeys = new ArrayList<>();
 
         String prevStructureName = "";
         for (ListIterator<IKeyItem> iterator = keyItemList.listIterator(keyItemList.size()); iterator.hasPrevious();) {
@@ -271,7 +271,7 @@ public class XIndex extends AbstractGeneratorModelNode {
     }
 
     public List<XColumn> getColumnsForFirstKey() {
-        ArrayList<XColumn> columns = new ArrayList<XColumn>();
+        ArrayList<XColumn> columns = new ArrayList<>();
         for (IColumn column : getIndex().getKeyItemAt(0).getColumns()) {
             columns.add(getModelNode(column, XColumn.class));
         }
@@ -282,7 +282,7 @@ public class XIndex extends AbstractGeneratorModelNode {
      * @return parameters with data type as a list for constructor
      */
     public List<MethodParameter> getConstructorParameters() {
-        List<MethodParameter> params = new ArrayList<MethodParameter>();
+        List<MethodParameter> params = new ArrayList<>();
         for (XColumn key : columnKeys) {
             params.add(new MethodParameter(key.getDatatypeName(), key.getAttributeName()));
         }
@@ -322,7 +322,7 @@ public class XIndex extends AbstractGeneratorModelNode {
      * @return parameters with data type as a list for find row methods
      */
     public List<MethodParameter> getMethodParametersFindRow() {
-        List<MethodParameter> params = new ArrayList<MethodParameter>();
+        List<MethodParameter> params = new ArrayList<>();
         String parameterName;
         for (IKeyItem key : getIndex().getKeyItems()) {
             if (key.isRange()) {

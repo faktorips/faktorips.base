@@ -87,7 +87,8 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
     /**
      * Creates a new <code>EnumTypeGeneralInfoSection</code>.
      * 
-     * @param enumType The <code>IEnumType</code> the <code>EnumTypeEditor</code> is currently editing.
+     * @param enumType The <code>IEnumType</code> the <code>EnumTypeEditor</code> is currently
+     *            editing.
      * @param parent The parent UI composite to attach this info section to.
      * @param toolkit The UI toolkit to be used to create new UI elements.
      * 

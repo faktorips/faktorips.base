@@ -31,7 +31,7 @@ public class DefaultReferenceResolver {
         for (IUnresolvedReference unresolvedReference : store.getAllUnresolvedReferences()) {
             DefaultUnresolvedReference reference = (DefaultUnresolvedReference)unresolvedReference;
             Object target = store.getObject(reference.getTargetClass(), reference.getTargetId());
-            reference.getEstablishMethod().invoke(reference.getSourceObj(), new Object[] { target });
+            reference.getEstablishMethod().invoke(reference.getSourceObj(), target);
         }
     }
 

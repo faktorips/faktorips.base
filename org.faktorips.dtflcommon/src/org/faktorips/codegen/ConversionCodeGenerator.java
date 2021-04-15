@@ -49,7 +49,7 @@ import org.faktorips.datatype.ListOfTypeDatatype;
  */
 public class ConversionCodeGenerator<T extends CodeFragment> implements ConversionMatrix {
 
-    private FromToConversionMap<T> fromToConversionMap = new FromToConversionMap<T>();
+    private FromToConversionMap<T> fromToConversionMap = new FromToConversionMap<>();
 
     /**
      * Returns a default ConversionCodeGenerator that contains the following conversions.
@@ -64,7 +64,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
      * </ul>
      */
     public static final ConversionCodeGenerator<JavaCodeFragment> getDefault() {
-        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<>();
         ccg.add(new BooleanToPrimitiveBooleanCg());
         ccg.add(new IntegerToBigDecimalCg());
         ccg.add(new IntegerToDecimalCg());
@@ -175,7 +175,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
 
     private static class FromToConversionMap<T extends CodeFragment> {
 
-        private final Map<Datatype, Map<Datatype, SingleConversionCg<T>>> internalMap = new ConcurrentHashMap<Datatype, Map<Datatype, SingleConversionCg<T>>>();
+        private final Map<Datatype, Map<Datatype, SingleConversionCg<T>>> internalMap = new ConcurrentHashMap<>();
 
         /**
          * Return single conversion code generator given from-datatype and to-datatype
@@ -205,7 +205,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         }
 
         private Map<Datatype, SingleConversionCg<T>> getMapValueOfFromDatatype(Datatype from) {
-            return internalMap.computeIfAbsent(from, $ -> new ConcurrentHashMap<Datatype, SingleConversionCg<T>>());
+            return internalMap.computeIfAbsent(from, $ -> new ConcurrentHashMap<>());
         }
 
         private boolean nullCheck(Datatype from, Datatype to) {

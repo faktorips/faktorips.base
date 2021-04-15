@@ -21,7 +21,7 @@ public class ContainsTextTestLayouter extends AbstractTestLayouter {
 
     public ContainsTextTestLayouter(String... texts) {
         super();
-        textList = new ArrayList<String>(Arrays.asList(texts));
+        textList = new ArrayList<>(Arrays.asList(texts));
     }
 
     @Override

@@ -47,10 +47,10 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     private ITestCaseTestCaseTypeDelta in;
 
     // Contains the list from the delta from the test case side for faster search
-    private List<ITestPolicyCmptLink> missingTestPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
-    private List<ITestObject> missingTestObjects = new ArrayList<ITestObject>();
-    private List<ITestAttribute> missingTestAttributes = new ArrayList<ITestAttribute>();
-    private List<ITestAttributeValue> missingTestAttributeValues = new ArrayList<ITestAttributeValue>();
+    private List<ITestPolicyCmptLink> missingTestPolicyCmptLinks = new ArrayList<>();
+    private List<ITestObject> missingTestObjects = new ArrayList<>();
+    private List<ITestAttribute> missingTestAttributes = new ArrayList<>();
+    private List<ITestAttributeValue> missingTestAttributeValues = new ArrayList<>();
 
     public TestCaseDeltaContentProvider(ITestCase testCase) {
         testCaseContentProvider = new TestCaseContentProvider(TestCaseContentProvider.COMBINED, testCase);
@@ -96,7 +96,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
 
         inputChanged(null, in, inputElement);
 
-        ArrayList<TestCaseDeltaType> result = new ArrayList<TestCaseDeltaType>();
+        ArrayList<TestCaseDeltaType> result = new ArrayList<>();
         boolean doNotShowDifferentSortOrder = false;
 
         if (in.getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt().length > 0
@@ -149,7 +149,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        ArrayList<Object> result = new ArrayList<Object>();
+        ArrayList<Object> result = new ArrayList<>();
 
         if (parentElement == TestCaseDeltaType.MISSING_ROOT_TEST_OBJECT) {
             result.addAll(Arrays.asList(in.getTestValueParametersWithMissingTestValue()));
@@ -208,7 +208,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
             int size = elements.length;
-            ArrayList<Object> out = new ArrayList<Object>(size);
+            ArrayList<Object> out = new ArrayList<>(size);
             for (int i = 0; i < size; ++i) {
                 Object element = elements[i];
                 if (select(viewer, parent, element)) {

@@ -28,7 +28,7 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
     public InternationalStringTraversalStrategy(CellTrackingEditingSupport<LocalizedString> editingSupport,
             IIpsProject ipsProject, int columnIndex, IInternationalString internationalString) {
         super(editingSupport);
-        supportedLocales = new ArrayList<Locale>();
+        supportedLocales = new ArrayList<>();
         this.columnIndex = columnIndex;
         for (ISupportedLanguage language : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
             supportedLocales.add(language.getLocale());

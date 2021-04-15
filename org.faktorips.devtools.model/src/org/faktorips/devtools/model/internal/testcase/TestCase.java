@@ -56,9 +56,9 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
@@ -72,7 +72,7 @@ public class TestCase extends IpsObject implements ITestCase {
     private String testCaseTypeName = ""; //$NON-NLS-1$
 
     /** Children */
-    private List<IIpsObjectPart> testObjects = new ArrayList<IIpsObjectPart>();
+    private List<IIpsObjectPart> testObjects = new ArrayList<>();
 
     public TestCase(IIpsSrcFile file) {
         super(file);
@@ -147,7 +147,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        Set<IpsObjectDependency> dependencies = new HashSet<IpsObjectDependency>();
+        Set<IpsObjectDependency> dependencies = new HashSet<>();
         // the test case depends on the test case type
         if (StringUtils.isNotEmpty(testCaseTypeName)) {
             IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
@@ -190,7 +190,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException {
-        List<ITestPolicyCmpt> allPolicyCmpts = new ArrayList<ITestPolicyCmpt>();
+        List<ITestPolicyCmpt> allPolicyCmpts = new ArrayList<>();
         ITestPolicyCmpt[] testCmpts = getTestPolicyCmpts();
         for (ITestPolicyCmpt testCmpt : testCmpts) {
             addChildTestPolicyCmpt(allPolicyCmpts, testCmpt);
@@ -229,7 +229,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public String[] getReferencedProductCmpts() throws CoreException {
-        List<String> relatedProductCmpts = new ArrayList<String>();
+        List<String> relatedProductCmpts = new ArrayList<>();
         ITestPolicyCmpt[] allTestPolicyCmpt = getAllTestPolicyCmpt();
         for (ITestPolicyCmpt element : allTestPolicyCmpt) {
             if (element.hasProductCmpt()) {
@@ -431,8 +431,8 @@ public class TestCase extends IpsObject implements ITestCase {
      * If the test parameter doesn't exist order the test object to the end of the test object list.
      */
     private List<IIpsObjectPart> getCorrectSortOrderOfRootObjects(IIpsProject ipsProject) throws CoreException {
-        List<IIpsObjectPart> newTestObjectOrder = new ArrayList<IIpsObjectPart>(testObjects.size());
-        HashMap<ITestParameter, List<ITestObject>> oldTestObject = new HashMap<ITestParameter, List<ITestObject>>(
+        List<IIpsObjectPart> newTestObjectOrder = new ArrayList<>(testObjects.size());
+        HashMap<ITestParameter, List<ITestObject>> oldTestObject = new HashMap<>(
                 testObjects.size());
         for (IIpsObjectPart iIpsObjectPart : testObjects) {
             ITestObject testObject = (ITestObject)iIpsObjectPart;
@@ -456,7 +456,7 @@ public class TestCase extends IpsObject implements ITestCase {
             }
 
             List<ITestObject> oldObjectsToTestParam = oldTestObject.computeIfAbsent(testParameter,
-                    $ -> new ArrayList<ITestObject>(1));
+                    $ -> new ArrayList<>(1));
             oldObjectsToTestParam.add(testObject);
         }
 
@@ -520,7 +520,7 @@ public class TestCase extends IpsObject implements ITestCase {
     @Override
     public ITestRule[] getTestRule(String testRuleParameter) {
         List<TestObject> testRules = getTestObjects(null, TestRule.class, null);
-        List<ITestRule> result = new ArrayList<ITestRule>();
+        List<ITestRule> result = new ArrayList<>();
         for (TestObject testObject : testRules) {
             ITestRule element = (ITestRule)testObject;
             if (element.getTestParameterName().equals(testRuleParameter)) {
@@ -777,7 +777,7 @@ public class TestCase extends IpsObject implements ITestCase {
         } else {
             ITestPolicyCmpt parent = newTestPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
-            ArrayList<String> names = new ArrayList<String>();
+            ArrayList<String> names = new ArrayList<>();
             for (ITestPolicyCmptLink link : links) {
                 if (link.isComposition()) {
                     ITestPolicyCmpt child = link.findTarget();
@@ -796,7 +796,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
-        Set<IValidationRule> result = new HashSet<IValidationRule>();
+        Set<IValidationRule> result = new HashSet<>();
         ITestCaseType testCaseTypeFound = findTestCaseType(ipsProject);
         if (testCaseTypeFound != null) {
             result.addAll(Arrays.asList(testCaseTypeFound.getTestRuleCandidates(ipsProject)));
@@ -821,7 +821,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * case.
      */
     private Collection<IValidationRule> getTestCaseTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
-        List<IValidationRule> result = new ArrayList<IValidationRule>();
+        List<IValidationRule> result = new ArrayList<>();
         getValidationRules(getTestPolicyCmpts(), result, ipsProject);
         return result;
     }
@@ -913,7 +913,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * parameters are returned.
      */
     private List<TestObject> getTestObjects(TestParameterType type, Class<?> parameterClass, String name) {
-        List<TestObject> result = new ArrayList<TestObject>(testObjects.size());
+        List<TestObject> result = new ArrayList<>(testObjects.size());
         for (IIpsObjectPart iIpsObjectPart : testObjects) {
             TestObject testObject = (TestObject)iIpsObjectPart;
             boolean addParameter = true;
@@ -1000,7 +1000,6 @@ public class TestCase extends IpsObject implements ITestCase {
             Message msg = new Message(MSGCODE_TEST_CASE_TYPE_NOT_FOUND, text, Message.ERROR, this,
                     ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
             messageList.add(msg);
-            return;
         }
     }
 

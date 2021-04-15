@@ -15,13 +15,7 @@ import org.faktorips.devtools.core.ui.table.CellTrackingEditingSupport;
 
 public abstract class FormattedCellEditingSupport<T, V> extends CellTrackingEditingSupport<T> {
 
-    public static final EditCondition DEFAULT_EDIT_CONDITION = new EditCondition() {
-
-        @Override
-        public boolean isEditable() {
-            return true;
-        }
-    };
+    public static final EditCondition DEFAULT_EDIT_CONDITION = () -> true;
 
     private final IElementModifier<T, V> elementModifier;
 

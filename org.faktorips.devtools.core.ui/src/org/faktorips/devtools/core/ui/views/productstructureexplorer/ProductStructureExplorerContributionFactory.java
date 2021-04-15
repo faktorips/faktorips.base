@@ -66,7 +66,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     private void createAddNewProductCmpt(IServiceLocator serviceLocator,
             IContributionRoot additions,
             ISelection selection) {
-        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<>(
                 IProductCmptStructureReference.class, selection);
         if (typedSelection.isValid()
                 && (typedSelection.getFirstElement() instanceof IProductCmptReference || typedSelection
@@ -109,7 +109,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                         StringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
                 itemParameter.label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         associationReference.getAssociation());
-                HashMap<String, String> parameters = new HashMap<String, String>();
+                HashMap<String, String> parameters = new HashMap<>();
                 parameters.put(AddNewProductCmptCommand.PARAMETER_SELECTED_ASSOCIATION, associationReference
                         .getAssociation().getName());
                 itemParameter.parameters = parameters;
@@ -133,7 +133,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     private void createAddExistingProductCmpt(IServiceLocator serviceLocator,
             IContributionRoot additions,
             ISelection selection) {
-        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<>(
                 IProductCmptStructureReference.class, selection);
         if (typedSelection.isValid()
                 && (typedSelection.getFirstElement() instanceof IProductCmptReference || typedSelection
@@ -188,7 +188,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     }
 
     private void createAddTableMenu(IServiceLocator serviceLocator, IContributionRoot additions, ISelection selection) {
-        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
+        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {
             IProductCmptReference productCmptRef = typedSelection.getFirstElement();
@@ -241,7 +241,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
                 StringUtils.EMPTY, AddNewTableContentsHandler.COMMAND_ID, SWT.PUSH);
         itemParameter.label = label;
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, String> parameters = new HashMap<>();
         if (tableContentUsage != null) {
             parameters.put(AddNewTableContentsHandler.PARAMETER_TABLE_USAGE, tableContentUsage.getPropertyName());
         }
@@ -261,7 +261,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
                 StringUtils.EMPTY, SelectExistingTableContentsHandler.COMMAND_ID, SWT.PUSH);
         itemParameter.label = label;
-        HashMap<String, String> parameters = new HashMap<String, String>();
+        HashMap<String, String> parameters = new HashMap<>();
         if (tableContentUsage != null) {
             parameters.put(SelectExistingTableContentsHandler.PARAMETER_TABLE_USAGE,
                     tableContentUsage.getPropertyName());

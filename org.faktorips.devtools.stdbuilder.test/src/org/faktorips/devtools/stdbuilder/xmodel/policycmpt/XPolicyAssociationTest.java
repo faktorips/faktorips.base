@@ -11,9 +11,9 @@
 package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -116,7 +116,7 @@ public class XPolicyAssociationTest {
             String inverseName,
             boolean isDerivedUnion,
             XDerivedUnionAssociation subsettedDU) {
-        Answer<Object> myAnswer = new Answer<Object>() {
+        Answer<Object> myAnswer = new Answer<>() {
 
             @SuppressWarnings("unchecked")
             @Override

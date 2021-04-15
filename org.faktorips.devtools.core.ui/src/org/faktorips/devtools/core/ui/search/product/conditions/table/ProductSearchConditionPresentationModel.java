@@ -242,7 +242,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
             return;
         }
         Collection<?> allowedValuesInCondition = getConditionType().getAllowedValues(getSearchedElement());
-        allowedValues = new ArrayList<String>();
+        allowedValues = new ArrayList<>();
 
         for (Object object : allowedValuesInCondition) {
             allowedValues.add(object.toString());

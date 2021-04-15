@@ -21,7 +21,7 @@ import org.faktorips.fl.JavaExprCompilerAbstractTest;
 public abstract class FunctionAbstractTest extends JavaExprCompilerAbstractTest {
 
     protected void registerFunction(FlFunction<JavaCodeFragment> function) {
-        DefaultFunctionResolver<JavaCodeFragment> resolver = new DefaultFunctionResolver<JavaCodeFragment>();
+        DefaultFunctionResolver<JavaCodeFragment> resolver = new DefaultFunctionResolver<>();
         resolver.add(function);
         getCompiler().add(resolver);
     }

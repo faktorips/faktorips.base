@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -53,17 +51,14 @@ public class SetStructureDialog extends EditDialog {
         getToolkit().createFormLabel(workArea, Messages.SetStructureDialog_labelNewStructure);
         template = new TableStructureRefControl(contents.getIpsProject(), workArea, getToolkit());
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        template.getTextControl().addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (StringUtils.isEmpty(template.getText())) {
-                    getButton(OK).setEnabled(false);
-                    String msg = NLS.bind(Messages.SetStructureDialog_msgStructureDontExist, template.getText());
-                    setMessage(msg, IMessageProvider.ERROR);
-                } else {
-                    getButton(OK).setEnabled(true);
-                    setMessage(message);
-                }
+        template.getTextControl().addModifyListener($ -> {
+            if (StringUtils.isEmpty(template.getText())) {
+                getButton(OK).setEnabled(false);
+                String msg = NLS.bind(Messages.SetStructureDialog_msgStructureDontExist, template.getText());
+                setMessage(msg, IMessageProvider.ERROR);
+            } else {
+                getButton(OK).setEnabled(true);
+                setMessage(message);
             }
         });
         super.setMessage(message);

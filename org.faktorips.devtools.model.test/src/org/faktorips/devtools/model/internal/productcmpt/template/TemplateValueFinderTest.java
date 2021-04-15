@@ -11,8 +11,8 @@ package org.faktorips.devtools.model.internal.productcmpt.template;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +52,7 @@ public class TemplateValueFinderTest {
 
     @Before
     public void setUp() {
-        finder = new TemplateValueFinder<ITemplatedValue, ITemplatedValueContainer>(value, ITemplatedValue.class,
+        finder = new TemplateValueFinder<>(value, ITemplatedValue.class,
                 identifier, ipsProject);
     }
 

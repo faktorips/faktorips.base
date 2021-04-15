@@ -59,7 +59,7 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
     protected TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class,
+            return new TypedSelection<>(IAdaptable.class,
                     new StructuredSelection(((IFileEditorInput)input).getFile()));
         } else {
             return null;

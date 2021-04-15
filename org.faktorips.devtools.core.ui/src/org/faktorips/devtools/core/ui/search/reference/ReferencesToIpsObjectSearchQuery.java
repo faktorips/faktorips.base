@@ -37,7 +37,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
      */
     @Override
     protected IIpsElement[] findReferences() throws CoreException {
-        Set<IIpsElement> result = new LinkedHashSet<IIpsElement>();
+        Set<IIpsElement> result = new LinkedHashSet<>();
         IIpsProject[] referencingProjects = referenced.getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject referencingProject : referencingProjects) {
             Set<IIpsElement> foundResults = findReferencingIpsObjTypes(referencingProject);
@@ -48,7 +48,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
     }
 
     protected Set<IIpsElement> findReferencingIpsObjTypes(IIpsProject referencingIpsProject) throws CoreException {
-        Set<IIpsElement> resultSet = new LinkedHashSet<IIpsElement>();
+        Set<IIpsElement> resultSet = new LinkedHashSet<>();
         List<IIpsSrcFile> ipsSrcFiles = referencingIpsProject.findAllIpsSrcFiles();
         return checkIIPsSrcFileDependencies(resultSet, ipsSrcFiles);
     }

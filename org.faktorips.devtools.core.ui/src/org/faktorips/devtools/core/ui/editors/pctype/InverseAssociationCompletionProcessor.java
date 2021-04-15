@@ -49,8 +49,10 @@ public class InverseAssociationCompletionProcessor extends AbstractCompletionPro
             return;
         }
         List<IAssociation> associationCandidates = target.findAssociationsForTargetAndAssociationType(association
-                .getPolicyCmptType().getQualifiedName(), association.getAssociationType()
-                .getCorrespondingAssociationType(), ipsProject, false);
+                .getPolicyCmptType().getQualifiedName(),
+                association.getAssociationType()
+                        .getCorrespondingAssociationType(),
+                ipsProject, false);
         for (IAssociation association : associationCandidates) {
             // only association with name starts with prefix
             if (association.getName().toLowerCase().startsWith(prefix)) {

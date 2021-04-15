@@ -256,7 +256,7 @@ public class JavaCodeFragment extends CodeFragment {
     }
 
     List<String> splitToplevelGenericTypesByColon(String genericsDefinition) {
-        LinkedList<String> result = new LinkedList<String>();
+        LinkedList<String> result = new LinkedList<>();
         int depth = 0;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < genericsDefinition.length(); i++) {

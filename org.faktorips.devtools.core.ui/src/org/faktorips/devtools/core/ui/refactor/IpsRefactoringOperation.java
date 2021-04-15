@@ -14,14 +14,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
@@ -118,14 +116,11 @@ public class IpsRefactoringOperation {
                 CheckConditionsOperation.ALL_CONDITIONS);
         try {
             ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-            dialog.run(true, refactoring.isCancelable(), new IRunnableWithProgress() {
-                @Override
-                public void run(IProgressMonitor monitor) {
-                    try {
-                        ResourcesPlugin.getWorkspace().run(performOperation, monitor);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+            dialog.run(true, refactoring.isCancelable(), monitor -> {
+                try {
+                    ResourcesPlugin.getWorkspace().run(performOperation, monitor);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
             });
         } catch (InvocationTargetException e) {
@@ -158,14 +153,11 @@ public class IpsRefactoringOperation {
                 IpsCheckConditionsOperation.ALL_CONDITIONS, refactoring.isSourceFilesSavedRequired());
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
-            dialog.run(true, refactoring.isCancelable(), new IRunnableWithProgress() {
-                @Override
-                public void run(IProgressMonitor monitor) {
-                    try {
-                        checkConditionsOperation.run(monitor);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+            dialog.run(true, refactoring.isCancelable(), monitor -> {
+                try {
+                    checkConditionsOperation.run(monitor);
+                } catch (CoreException e) {
+                    throw new RuntimeException(e);
                 }
             });
         } catch (InvocationTargetException e) {
@@ -209,12 +201,7 @@ public class IpsRefactoringOperation {
     private boolean requestUserConfirmation(RefactoringStatus status) {
         final Dialog dialog = RefactoringUI.createRefactoringStatusDialog(status, shell, "Refactoring Status", false); //$NON-NLS-1$
         final int[] result = new int[1];
-        Runnable openDialogRunnable = new Runnable() {
-            @Override
-            public void run() {
-                result[0] = dialog.open();
-            }
-        };
+        Runnable openDialogRunnable = () -> result[0] = dialog.open();
         shell.getDisplay().syncExec(openDialogRunnable);
         return result[0] == IDialogConstants.OK_ID;
     }

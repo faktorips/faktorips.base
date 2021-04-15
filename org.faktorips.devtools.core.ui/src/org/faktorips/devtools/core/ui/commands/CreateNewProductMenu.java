@@ -53,7 +53,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
     protected IContributionItem[] getContributionItems() {
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention();
-        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>();
+        List<IContributionItem> contributionItems = new ArrayList<>();
 
         CommandContributionItemParameter createNewVersionParameter = new CommandContributionItemParameter(
                 serviceLocator, null, COMMAND_CREATE_NEW_VERSION, SWT.PUSH);

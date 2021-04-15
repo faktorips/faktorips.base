@@ -56,7 +56,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * Maps values of the identifier attribute to concrete {@link IEnumValue}s. Used for quick
      * {@link IEnumValue} access by identifier value.
      */
-    private final Map<String, IEnumValue> enumValuesByIdentifier = new ConcurrentHashMap<String, IEnumValue>(16, 0.75f,
+    private final Map<String, IEnumValue> enumValuesByIdentifier = new ConcurrentHashMap<>(16, 0.75f,
             1);
 
     /**
@@ -74,21 +74,21 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      */
     protected EnumValueContainer(IIpsSrcFile file) {
         super(file);
-        enumValues = new IpsObjectPartCollection<IEnumValue>(this, EnumValue.class, IEnumValue.class,
+        enumValues = new IpsObjectPartCollection<>(this, EnumValue.class, IEnumValue.class,
                 IEnumValue.XML_TAG);
         uniqueIdentifierValidator = new UniqueIdentifierValidator(this);
     }
 
     @Override
     public List<IEnumValue> getEnumValues() {
-        List<IEnumValue> valuesList = new ArrayList<IEnumValue>();
+        List<IEnumValue> valuesList = new ArrayList<>();
         valuesList.addAll(enumValues.asList());
         return valuesList;
     }
 
     @Override
     public List<String> findAllIdentifierAttributeValues(IIpsProject ipsProject) {
-        List<String> valueIds = new ArrayList<String>();
+        List<String> valueIds = new ArrayList<>();
         IEnumType enumType = findEnumType(ipsProject);
         IEnumAttribute isIdentifierEnumAttribute = enumType.findIdentiferAttribute(ipsProject);
         List<IEnumValue> allEnumValues = findAggregatedEnumValues();
@@ -379,7 +379,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public Map<String, ValueTypeMismatch> checkAllEnumAttributeValueTypeMismatch() {
-        Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<String, ValueTypeMismatch>(16, 0.9f, 1);
+        Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<>(16, 0.9f, 1);
         IEnumType enumType = findEnumType(getIpsProject());
         if (enumType != null) {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);

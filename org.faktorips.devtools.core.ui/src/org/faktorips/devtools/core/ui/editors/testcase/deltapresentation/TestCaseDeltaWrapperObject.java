@@ -49,7 +49,9 @@ public class TestCaseDeltaWrapperObject {
      */
     private TestCaseDeltaType deltaType;
 
-    /** The content provider of the test case used to get the children of the wrapped base object. */
+    /**
+     * The content provider of the test case used to get the children of the wrapped base object.
+     */
     private TestCaseContentProvider testCaseContentProvider;
 
     /**

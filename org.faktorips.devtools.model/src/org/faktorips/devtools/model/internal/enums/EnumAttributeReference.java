@@ -22,7 +22,8 @@ public class EnumAttributeReference extends PartReference {
     /**
      * Creates a new <code>EnumAttributeReference</code>.
      * 
-     * @param parent The <code>IEnumContent</code> this <code>EnumAttributeReference</code> belongs to.
+     * @param parent The <code>IEnumContent</code> this <code>EnumAttributeReference</code> belongs
+     *            to.
      * @param id A unique ID for this <code>EnumAttributeReference</code>.
      */
     public EnumAttributeReference(IIpsMetaObject parent, String id) {

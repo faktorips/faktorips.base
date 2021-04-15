@@ -60,7 +60,7 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
         if (window != null) {
             selection = window.getSelectionService().getSelection();
         }
-        return new TypedSelection<IAdaptable>(IAdaptable.class, selection);
+        return new TypedSelection<>(IAdaptable.class, selection);
     }
 
     @Override

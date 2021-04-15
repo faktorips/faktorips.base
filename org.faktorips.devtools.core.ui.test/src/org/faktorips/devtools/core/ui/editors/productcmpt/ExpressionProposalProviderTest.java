@@ -94,7 +94,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetProposalsWithoutFunctions() {
         proposalProvider = new ExpressionProposalProvider(formula, parser);
-        List<IdentifierProposal> list = new ArrayList<IdentifierProposal>();
+        List<IdentifierProposal> list = new ArrayList<>();
         IdentifierProposal identifierProposal1 = mock(IdentifierProposal.class);
         IdentifierProposal identifierProposal2 = mock(IdentifierProposal.class);
         when(identifierProposal1.getText()).thenReturn(IDENTIFIER_PROPOSAL1);

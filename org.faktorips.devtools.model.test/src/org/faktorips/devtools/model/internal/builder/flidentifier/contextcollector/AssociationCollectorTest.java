@@ -10,9 +10,9 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -103,7 +103,7 @@ public class AssociationCollectorTest {
 
     @Before
     public void setUpProductCmpts() throws Exception {
-        productCmptsFiles = new ArrayList<IIpsSrcFile>();
+        productCmptsFiles = new ArrayList<>();
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(productCmpt);
         productCmptsFiles.add(ipsSrcFile);
@@ -191,7 +191,7 @@ public class AssociationCollectorTest {
     private Set<IProductCmpt> createContextProductCmpts() {
         GregorianCalendar validFrom = mockValidFrom();
         when(contextProductCmpt2.getGenerationEffectiveOn(validFrom)).thenReturn(contextProductCmptGeneration);
-        LinkedHashSet<IProductCmpt> context = new LinkedHashSet<IProductCmpt>();
+        LinkedHashSet<IProductCmpt> context = new LinkedHashSet<>();
         context.add(contextProductCmpt1);
         context.add(contextProductCmpt2);
         return context;
@@ -206,7 +206,7 @@ public class AssociationCollectorTest {
     }
 
     private List<IProductCmptLink> createLinks() throws Exception {
-        ArrayList<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
+        ArrayList<IProductCmptLink> result = new ArrayList<>();
         when(productCmptLink.findTarget(ipsProject)).thenReturn(productCmpt);
         result.add(productCmptLink);
         return result;

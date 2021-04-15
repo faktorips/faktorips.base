@@ -34,6 +34,10 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
  */
 public class ContentPageUtil {
 
+    private ContentPageUtil() {
+        // Utility class
+    }
+
     public static ICompositePageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
             DocumentationContext context) throws CoreException {
 

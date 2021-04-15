@@ -26,7 +26,7 @@ public class SimpleGetterMethodAnnotationProcessorTest {
         SimpleGetterMethodModelDescriptor<?> descriptor = new SimpleGetterMethodModelDescriptor(null);
         Method annotatedElement = getClass().getMethod("bar");
 
-        new SimpleGetterMethodAnnotationProcessor<DummyAnnotation, SimpleGetterMethodModelDescriptor<?>>(
+        new SimpleGetterMethodAnnotationProcessor<>(
                 DummyAnnotation.class, nameAccessor).process(descriptor, null, annotatedElement);
 
         assertThat(descriptor.getGetterMethod(), is(annotatedElement));
@@ -37,7 +37,7 @@ public class SimpleGetterMethodAnnotationProcessorTest {
         DummyAnnotation annotation = SimpleGetterMethodAnnotationProcessorTest.class
                 .getAnnotation(DummyAnnotation.class);
 
-        new SimpleGetterMethodAnnotationProcessor<DummyAnnotation, SimpleGetterMethodModelDescriptor<?>>(
+        new SimpleGetterMethodAnnotationProcessor<>(
                 DummyAnnotation.class, nameAccessor).getName(annotation);
 
         verify(nameAccessor).getName(annotation);

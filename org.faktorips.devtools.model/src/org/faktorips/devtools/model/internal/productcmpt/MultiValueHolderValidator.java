@@ -55,9 +55,9 @@ public class MultiValueHolderValidator implements IValueHolderValidator {
         }
         if (messages.containsErrorMsg()) {
             messages.newError(MSGCODE_CONTAINS_INVALID_VALUE,
-                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, new ObjectProperty[] {
-                            new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
-                            new ObjectProperty(valueHolder, IValueHolder.PROPERTY_VALUE) });
+                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText,
+                    new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
+                    new ObjectProperty(valueHolder, IValueHolder.PROPERTY_VALUE));
         }
         return messages;
     }

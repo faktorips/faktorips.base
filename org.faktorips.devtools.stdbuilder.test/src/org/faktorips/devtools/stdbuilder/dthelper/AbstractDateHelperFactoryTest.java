@@ -58,7 +58,7 @@ public class AbstractDateHelperFactoryTest {
     }
 
     protected AbstractDateHelperFactory<ValueDatatype> getDatatypeHelperFactory() {
-        AbstractDateHelperFactory<ValueDatatype> dateHelperFactory = new AbstractDateHelperFactory<ValueDatatype>(
+        AbstractDateHelperFactory<ValueDatatype> dateHelperFactory = new AbstractDateHelperFactory<>(
                 ValueDatatype.class) {
 
             @Override

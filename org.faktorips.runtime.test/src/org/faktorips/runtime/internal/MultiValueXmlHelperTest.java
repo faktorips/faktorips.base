@@ -53,7 +53,7 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
 
     @Test
     public void addValuesToElement() {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         stringList.add("foo");
         stringList.add(null);
         stringList.add("bar");
@@ -80,7 +80,7 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
 
     @Test
     public void roundTripTest() {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         stringList.add("foo");
         stringList.add(null);
         stringList.add("bar");

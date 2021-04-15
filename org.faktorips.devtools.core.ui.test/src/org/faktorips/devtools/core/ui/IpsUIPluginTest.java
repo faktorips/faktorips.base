@@ -46,11 +46,9 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DefaultDeepCopySmartModeBehavior;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -78,25 +76,11 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         super.setUp();
 
         // PropertyEditFieldFactory setup code
-        editFieldFactory = new IExtensionPropertyEditFieldFactory() {
-            @Override
-            public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPart,
-                    Composite extensionArea,
-                    UIToolkit toolkit) {
-                return null;
-            }
-        };
-        editFieldFactory2 = new IExtensionPropertyEditFieldFactory() {
-            @Override
-            public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPart,
-                    Composite extensionArea,
-                    UIToolkit toolkit) {
-                return null;
-            }
-        };
-        HashMap<String, Object> execAttr = new HashMap<String, Object>();
+        editFieldFactory = (ipsObjectPart, extensionArea, toolkit) -> null;
+        editFieldFactory2 = (ipsObjectPart, extensionArea, toolkit) -> null;
+        HashMap<String, Object> execAttr = new HashMap<>();
         execAttr.put("class", editFieldFactory);
-        editFieldFactoryAttributes = new HashMap<String, String>();
+        editFieldFactoryAttributes = new HashMap<>();
         editFieldFactoryAttributes.put("propertyId", "additionalProperty");
         TestConfigurationElement configEl = new TestConfigurationElement("", editFieldFactoryAttributes, "",
                 new IConfigurationElement[0], execAttr);
@@ -104,9 +88,9 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
                 IpsUIPlugin.PLUGIN_ID + "." + IpsUIPlugin.EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY,
                 configEl);
 
-        HashMap<String, Object> execAttr2 = new HashMap<String, Object>();
+        HashMap<String, Object> execAttr2 = new HashMap<>();
         execAttr2.put("class", editFieldFactory2);
-        Map<String, String> editFieldFactory2Attributes = new HashMap<String, String>();
+        Map<String, String> editFieldFactory2Attributes = new HashMap<>();
         editFieldFactory2Attributes.put("propertyId", "additionalProperty2");
         TestConfigurationElement configEl2 = new TestConfigurationElement("", editFieldFactory2Attributes, "",
                 new IConfigurationElement[0], execAttr2);
@@ -141,10 +125,10 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
             }
         };
 
-        execAttr = new HashMap<String, Object>();
+        execAttr = new HashMap<>();
         execAttr.put("class", TestTableFormat.class.getName());
         execAttr.put("guiClass", tableFormatPropertiesFactory);
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("defaultExtension", ".ext");
         attributes.put("guiClass", tableFormatPropertiesFactory.getClass().getName());
         attributes.put("class", TestTableFormat.class.getName());
@@ -243,7 +227,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(PRODUCT_GIF, LINK_GIF,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(PRODUCT_GIF,
+                LINK_GIF,
                 IDecoration.BOTTOM_LEFT);
         Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage(PRODUCT_GIF, false);
         ImageDescriptor sharedOverlayByImage = IpsUIPlugin.getImageHandling()
@@ -255,7 +240,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage_Empty() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(StringUtils.EMPTY,
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
+                StringUtils.EMPTY,
                 StringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);
@@ -281,7 +267,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     public void testGetDeepCopySmartModeBehavior_NoExtensionDefined() {
         IpsUIPlugin.getDefault().setExtensionRegistry(new TestExtensionRegistry(
                 new IExtensionPoint[] { TestMockingUtils.mockExtensionPoint(IpsUIPlugin.PLUGIN_ID,
-                        IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD, new IExtension[0]) }));
+                        IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD) }));
         IpsUIPlugin.getDefault().initDeepCopySmartModeBehavior();
 
         IDeepCopySmartModeBehavior deepCopySmartModeBehavior = IpsUIPlugin.getDefault().getDeepCopySmartModeBehavior();
@@ -303,17 +289,12 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     public void testGetDeepCopySmartModeBehavior_MultipleExtensionsDefined() throws Exception {
         IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior1 = new DefaultDeepCopySmartModeBehavior();
         IDeepCopySmartModeBehavior testDeepCopySmartModeBehavior2 = new DefaultDeepCopySmartModeBehavior();
-        ILogListener listener = new ILogListener() {
-
-            @Override
-            public void logging(IStatus status, String plugin) {
-                assertEquals(IStatus.ERROR, status.getSeverity());
-                assertThat(status.getMessage(),
-                        containsString(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD));
-                assertThat(status.getMessage(),
-                        containsString(IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR));
-            }
-
+        ILogListener listener = (status, plugin) -> {
+            assertEquals(IStatus.ERROR, status.getSeverity());
+            assertThat(status.getMessage(),
+                    containsString(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD));
+            assertThat(status.getMessage(),
+                    containsString(IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR));
         };
         try {
             IpsPlugin.getDefault().getLog().addLogListener(listener);
@@ -332,7 +313,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     private void mockBehaviorExtensions(IDeepCopySmartModeBehavior... testDeepCopySmartModeBehaviors) {
         IExtension[] extensions = new IExtension[testDeepCopySmartModeBehaviors.length];
         for (int i = 0; i < testDeepCopySmartModeBehaviors.length; i++) {
-            Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
+            Map<String, Object> executableExtensionMap = new HashMap<>();
             executableExtensionMap.put("class", testDeepCopySmartModeBehaviors[i]);
             extensions[i] = TestMockingUtils.mockExtension("TestDeepCopySmartModeBehavior",
                     new TestConfigurationElement(IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR,

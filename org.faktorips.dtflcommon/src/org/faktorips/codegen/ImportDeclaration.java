@@ -53,8 +53,8 @@ public class ImportDeclaration {
      * Creates a new import declaration.
      */
     public ImportDeclaration() {
-        classes = new ArrayList<String>();
-        packages = new ArrayList<String>();
+        classes = new ArrayList<>();
+        packages = new ArrayList<>();
     }
 
     /**
@@ -195,7 +195,7 @@ public class ImportDeclaration {
     }
 
     public Set<String> getImports() {
-        Set<String> allImports = new LinkedHashSet<String>();
+        Set<String> allImports = new LinkedHashSet<>();
         allImports.addAll(packages);
         allImports.addAll(classes);
         return allImports;

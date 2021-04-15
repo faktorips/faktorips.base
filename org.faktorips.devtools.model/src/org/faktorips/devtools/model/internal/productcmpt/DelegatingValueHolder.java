@@ -185,7 +185,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
         Preconditions.checkArgument(delegate instanceof AbstractValueHolder,
                 "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
 
-        return new DelegatingValueHolder<U>(parent, (AbstractValueHolder<U>)delegate);
+        return new DelegatingValueHolder<>(parent, (AbstractValueHolder<U>)delegate);
     }
 
 }

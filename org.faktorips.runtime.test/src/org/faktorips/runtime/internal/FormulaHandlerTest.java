@@ -89,8 +89,8 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
     @Test
     public void testAddFormulasToElement() throws Exception {
         Element element = getTestDocument().getDocumentElement();
-        Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
-        Map<String, String> nameToExpressionMap = new LinkedHashMap<String, String>();
+        Map<String, String> availableFormulars = new LinkedHashMap<>();
+        Map<String, String> nameToExpressionMap = new LinkedHashMap<>();
         IFormulaEvaluator formulaEvaluator = mock(IFormulaEvaluator.class);
         when(formulaEvaluator.getNameToExpressionMap()).thenReturn(nameToExpressionMap);
 

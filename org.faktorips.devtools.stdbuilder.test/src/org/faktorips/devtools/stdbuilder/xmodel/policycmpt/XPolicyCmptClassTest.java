@@ -122,7 +122,7 @@ public class XPolicyCmptClassTest {
     private void setupAttributeList() {
         IPolicyCmptTypeAttribute attr1 = mock(IPolicyCmptTypeAttribute.class);
         IPolicyCmptTypeAttribute attr2 = mock(IPolicyCmptTypeAttribute.class);
-        List<IPolicyCmptTypeAttribute> attrList = new ArrayList<IPolicyCmptTypeAttribute>();
+        List<IPolicyCmptTypeAttribute> attrList = new ArrayList<>();
         attrList.add(attr1);
         attrList.add(attr2);
 
@@ -155,7 +155,7 @@ public class XPolicyCmptClassTest {
     private void setupAssociationList() {
         IPolicyCmptTypeAssociation assoc1 = mock(IPolicyCmptTypeAssociation.class);
         IPolicyCmptTypeAssociation assoc2 = mock(IPolicyCmptTypeAssociation.class);
-        List<IPolicyCmptTypeAssociation> assocList = new ArrayList<IPolicyCmptTypeAssociation>();
+        List<IPolicyCmptTypeAssociation> assocList = new ArrayList<>();
         assocList.add(assoc1);
         assocList.add(assoc2);
 
@@ -215,14 +215,14 @@ public class XPolicyCmptClassTest {
         assertFalse(policyCmptClass.isGenerateInitPropertiesFromXML());
 
         policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        Set<XPolicyAttribute> list = new HashSet<XPolicyAttribute>();
+        Set<XPolicyAttribute> list = new HashSet<>();
         doReturn(list).when(policyCmptClass).getAttributes();
         assertFalse(policyCmptClass.isGenerateInitPropertiesFromXML());
     }
 
     private XPolicyCmptClass setUpAttrList(boolean init1, boolean init2, boolean init3) {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
-        Set<XPolicyAttribute> list = new HashSet<XPolicyAttribute>();
+        Set<XPolicyAttribute> list = new HashSet<>();
         XPolicyAttribute attr1 = mock(XPolicyAttribute.class);
         XPolicyAttribute attr2 = mock(XPolicyAttribute.class);
         XPolicyAttribute attr3 = mock(XPolicyAttribute.class);
@@ -244,7 +244,7 @@ public class XPolicyCmptClassTest {
 
         XPolicyCmptClass xPolicyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         xPolicyCmptClass.findDetailToMasterDerivedUnionAssociations(
-                Arrays.asList(new XPolicyAssociation[] { associationNode1, associationNode2 }));
+                Arrays.asList(associationNode1, associationNode2));
 
         verify(associationNode1).getSubsettedDetailToMasterAssociations();
         verify(associationNode2, times(0)).getSubsettedDetailToMasterAssociations();
@@ -265,7 +265,7 @@ public class XPolicyCmptClassTest {
         when(a3.isChangingOverTime()).thenReturn(true);
         when(a3.isGenerateInitWithProductData()).thenReturn(true);
 
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+        doReturn(new HashSet<>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
         Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(true, true);
@@ -290,7 +290,7 @@ public class XPolicyCmptClassTest {
         when(a3.isChangingOverTime()).thenReturn(false);
         when(a3.isGenerateInitWithProductData()).thenReturn(true);
 
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+        doReturn(new HashSet<>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
         Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(true, false);
@@ -318,7 +318,7 @@ public class XPolicyCmptClassTest {
         when(a3.isChangingOverTime()).thenReturn(true);
         when(a3.isGenerateInitWithoutProductData()).thenReturn(true);
 
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+        doReturn(new HashSet<>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
         Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(false, true);
@@ -345,7 +345,7 @@ public class XPolicyCmptClassTest {
         when(a3.isChangingOverTime()).thenReturn(false);
         when(a3.isGenerateInitWithoutProductData()).thenReturn(true);
 
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
+        doReturn(new HashSet<>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
         Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(false, false);
@@ -360,7 +360,7 @@ public class XPolicyCmptClassTest {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(true,
+        doReturn(new HashSet<>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(true,
                 true);
         doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(false, true);
 
@@ -383,7 +383,7 @@ public class XPolicyCmptClassTest {
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
         doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(true, false);
-        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(false,
+        doReturn(new HashSet<>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(false,
                 false);
 
         assertTrue(policyCmptClass.isGenerateAttributeInitCode(false));

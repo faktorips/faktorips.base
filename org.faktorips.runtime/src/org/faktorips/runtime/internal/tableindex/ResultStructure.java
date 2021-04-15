@@ -26,7 +26,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
     private final Set<R> resultSet;
 
     ResultStructure() {
-        resultSet = new HashSet<R>();
+        resultSet = new HashSet<>();
     }
 
     ResultStructure(R result) {
@@ -35,21 +35,21 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
     }
 
     ResultStructure(Set<R> result) {
-        resultSet = new HashSet<R>(result);
+        resultSet = new HashSet<>(result);
     }
 
     /**
      * Creates a new {@link ResultSet} with the given resultValue as its only result value.
      */
     public static <R> ResultStructure<R> createWith(R resultValue) {
-        return new ResultStructure<R>(resultValue);
+        return new ResultStructure<>(resultValue);
     }
 
     /**
      * Creates a new {@link ResultSet} with the given set of result values.
      */
     public static <R> ResultStructure<R> createWith(Set<R> resultValues) {
-        return new ResultStructure<R>(resultValues);
+        return new ResultStructure<>(resultValues);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
 
     @Override
     public ResultStructure<R> copy() {
-        return new ResultStructure<R>(this.resultSet);
+        return new ResultStructure<>(this.resultSet);
     }
 
 }

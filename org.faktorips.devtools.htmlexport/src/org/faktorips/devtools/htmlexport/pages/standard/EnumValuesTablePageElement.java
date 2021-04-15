@@ -68,7 +68,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IEnumValue rowData) {
-        List<String> valueData = new ArrayList<String>();
+        List<String> valueData = new ArrayList<>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
             addEnumAttributeValue(valueData, rowData, enumAttribute);
@@ -96,7 +96,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
 
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         for (IEnumAttribute enumAttribute : enumAttributes) {
             headline.add(getContext().getLabel(enumAttribute));

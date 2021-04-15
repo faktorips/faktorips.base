@@ -32,8 +32,8 @@ import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.DesignTimeSeverity;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.Decimal;
 
 /**

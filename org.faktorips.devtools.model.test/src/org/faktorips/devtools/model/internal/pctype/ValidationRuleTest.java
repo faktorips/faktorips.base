@@ -213,7 +213,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.addValidatedAttribute("a");
         validationRule.setCheckValueAgainstValueSetRule(true);
         validationRule.setCategory("foo");
-        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+        validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
         Element element = validationRule.toXml(newDocument());
 
@@ -368,7 +368,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateMarker() throws CoreException {
-        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+        validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setMarkerEnumsEnabled(true);
         properties.addMarkerEnum("markerEnum");
@@ -387,7 +387,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateMarker_InvalidMarkerEnum() throws CoreException {
-        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+        validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
         MessageList msgList = validationRule.validate(ipsProject);
 
@@ -452,14 +452,14 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetMarkers() {
-        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+        validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
         List<String> markers = validationRule.getMarkers();
         assertEquals(2, markers.size());
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
 
-        validationRule.setMarkers(Arrays.asList(new String[] { "otherMarker", "marker2", "anotherMarker" }));
+        validationRule.setMarkers(Arrays.asList("otherMarker", "marker2", "anotherMarker"));
         markers = validationRule.getMarkers();
         assertEquals(3, markers.size());
         assertTrue(markers.contains("otherMarker"));
@@ -469,7 +469,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetMarkes() {
-        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2", "marker3" }));
+        validationRule.setMarkers(Arrays.asList("marker1", "marker2", "marker3"));
 
         List<String> markers = validationRule.getMarkers();
         assertEquals(3, markers.size());

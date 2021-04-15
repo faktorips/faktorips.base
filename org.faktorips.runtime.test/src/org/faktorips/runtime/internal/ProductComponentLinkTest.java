@@ -31,7 +31,7 @@ public class ProductComponentLinkTest {
     @Before
     public void setUp() throws Exception {
         ProductComponentGeneration generationMock = mock(ProductComponentGeneration.class);
-        ProductComponentLink<IProductComponent> link = new ProductComponentLink<IProductComponent>(generationMock);
+        ProductComponentLink<IProductComponent> link = new ProductComponentLink<>(generationMock);
         linkSpy = spy(link);
         when(linkSpy.getTargetId()).thenReturn(null);
         when(linkSpy.getAssociationName()).thenReturn("associationName");

@@ -33,9 +33,9 @@ public class SortedByDependency<T extends IIpsObject> {
     private Set<T> sortedFixDifferences(Collection<T> objectsToFix) {
         MultiMap<T, T> dependencies = getDependencyMap(objectsToFix);
 
-        LinkedHashSet<T> result = new LinkedHashSet<T>();
+        LinkedHashSet<T> result = new LinkedHashSet<>();
 
-        Set<T> roots = new HashSet<T>(dependencies.keySet());
+        Set<T> roots = new HashSet<>(dependencies.keySet());
         Collection<T> values = dependencies.values();
         roots.removeAll(values);
         result.addAll(roots);
@@ -66,7 +66,7 @@ public class SortedByDependency<T extends IIpsObject> {
     }
 
     private HashMap<QualifiedNameType, T> map(Collection<T> objectsToFix) {
-        HashMap<QualifiedNameType, T> map = new HashMap<QualifiedNameType, T>();
+        HashMap<QualifiedNameType, T> map = new HashMap<>();
         for (T ipsObject : objectsToFix) {
             map.put(ipsObject.getQualifiedNameType(), ipsObject);
         }

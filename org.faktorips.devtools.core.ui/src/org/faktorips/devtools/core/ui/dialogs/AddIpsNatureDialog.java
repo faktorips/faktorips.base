@@ -21,8 +21,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -134,22 +132,12 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_sourceFolderName, false);
         sourceFolderText = kit.createText(textComposite);
         sourceFolderText.setText(ipsProjectCreationProperties.getSourceFolderName());
-        sourceFolderText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent event) {
-                sourceFolderModified();
-            }
-        });
+        sourceFolderText.addModifyListener($ -> sourceFolderModified());
 
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_basePackageName, false);
         basePackageText = kit.createText(textComposite);
         basePackageText.setText(ipsProjectCreationProperties.getBasePackageName());
-        basePackageText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent event) {
-                basePackageModified();
-            }
-        });
+        basePackageText.addModifyListener($ -> basePackageModified());
 
         kit.createLabel(textComposite, Messages.AddIpsNatureDialog_runtimeIdPrefix, false);
         runtimeIdText = kit.createText(textComposite);

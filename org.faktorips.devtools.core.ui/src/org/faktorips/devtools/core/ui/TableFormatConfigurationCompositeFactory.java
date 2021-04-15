@@ -31,7 +31,7 @@ import org.faktorips.runtime.MessageList;
  */
 public abstract class TableFormatConfigurationCompositeFactory implements ValueChangeListener {
 
-    private ArrayList<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
+    private ArrayList<ValueChangeListener> listeners = new ArrayList<>();
 
     /**
      * Creates a Composite to configure <code>ITableFormat</code> properties.

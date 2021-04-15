@@ -21,7 +21,8 @@ import java.io.Serializable;
  * <p>
  * The following are scenarios where you might need to present a different text for a message:
  * <ul>
- * <li>You have limited space available for the text, for example if your display is a terminal.</li>
+ * <li>You have limited space available for the text, for example if your display is a
+ * terminal.</li>
  * <li>You present the text to a different user group, e.g. internet users instead of your
  * backoffice employees.</li>
  * </ul>

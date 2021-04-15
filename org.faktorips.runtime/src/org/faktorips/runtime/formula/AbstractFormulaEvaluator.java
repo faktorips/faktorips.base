@@ -86,7 +86,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
      */
     @Override
     public Map<String, String> getNameToExpressionMap() {
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new LinkedHashMap<>();
         map.putAll(nameToExpressionMap);
         return map;
     }

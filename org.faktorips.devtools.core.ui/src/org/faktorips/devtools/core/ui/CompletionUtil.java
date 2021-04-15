@@ -19,15 +19,12 @@ import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.ui.internal.text.HTMLTextPresenter;
@@ -71,7 +68,8 @@ public class CompletionUtil {
      * {@link ContentAssistHandler#createHandlerForText(Text, SubjectControlContentAssistant)} to
      * avoid the deprecated warning in a lot of source sections.
      */
-    public static ContentAssistHandler createHandlerForText(Text text, SubjectControlContentAssistant contentAssistant) {
+    public static ContentAssistHandler createHandlerForText(Text text,
+            SubjectControlContentAssistant contentAssistant) {
         return ContentAssistHandler.createHandlerForText(text, contentAssistant);
     }
 
@@ -108,12 +106,8 @@ public class CompletionUtil {
         contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
         configure(contentAssistant, PreferenceConstants.getPreferenceStore());
         contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-        contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
-            @Override
-            public IInformationControl createInformationControl(Shell parent) {
-                return new DefaultInformationControl(parent, new HTMLTextPresenter(true));
-            }
-        });
+        contentAssistant.setInformationControlCreator(
+                parent -> new DefaultInformationControl(parent, new HTMLTextPresenter(true)));
         return contentAssistant;
     }
 

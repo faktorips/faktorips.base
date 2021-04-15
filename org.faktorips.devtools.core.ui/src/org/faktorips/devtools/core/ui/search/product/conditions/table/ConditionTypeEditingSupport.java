@@ -42,7 +42,7 @@ class ConditionTypeEditingSupport extends EnhancedCellTrackingEditingSupport {
         ProductSearchConditionPresentationModel model = element;
 
         List<IConditionType> conditionTypes = model.getConditionsWithSearchableElements();
-        List<String> conditionTypeNames = new ArrayList<String>(conditionTypes.size());
+        List<String> conditionTypeNames = new ArrayList<>(conditionTypes.size());
 
         for (IConditionType conditionType : conditionTypes) {
             conditionTypeNames.add(conditionType.getName());

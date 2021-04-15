@@ -51,6 +51,7 @@ public class ValidationUtilsTest extends AbstractIpsPluginTest {
 
         ValidationUtils.checkValue("x", "x", attribute, IAttribute.PROPERTY_DEFAULT_VALUE, ml);
         assertNotNull(ml
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
+                .getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
     }
 }

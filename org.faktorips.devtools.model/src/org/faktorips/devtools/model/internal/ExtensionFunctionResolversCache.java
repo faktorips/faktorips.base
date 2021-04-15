@@ -85,7 +85,7 @@ public class ExtensionFunctionResolversCache {
     }
 
     protected List<FunctionResolver<JavaCodeFragment>> createExtendingFunctionResolvers() {
-        ArrayList<FunctionResolver<JavaCodeFragment>> resolvers = new ArrayList<FunctionResolver<JavaCodeFragment>>();
+        ArrayList<FunctionResolver<JavaCodeFragment>> resolvers = new ArrayList<>();
         for (IFunctionResolverFactory<JavaCodeFragment> factory : resolverFactories.getSortedValues()) {
             if (isActive(factory)) {
                 FunctionResolver<JavaCodeFragment> resolver = createFuntionResolver(factory);
@@ -111,7 +111,7 @@ public class ExtensionFunctionResolversCache {
         } catch (Exception e) {
             // CSON: IllegalCatch
             IpsLog.log(new IpsStatus("Unable to create the function resolver for the following factory: " //$NON-NLS-1$
-            + factory.getClass(), e));
+                    + factory.getClass(), e));
         }
         return null;
     }

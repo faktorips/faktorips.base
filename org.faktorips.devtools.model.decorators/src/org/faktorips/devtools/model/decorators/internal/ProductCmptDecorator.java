@@ -106,6 +106,6 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
             superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
             return getProductCmptIconDesc(superType);
         }
-        return () -> getDefaultImageDescriptor();
+        return this::getDefaultImageDescriptor;
     }
 }

@@ -124,7 +124,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
     }
 
     private void setUpGenerationOrder() {
-        List<IProductCmptGeneration> genList = new ArrayList<IProductCmptGeneration>();
+        List<IProductCmptGeneration> genList = new ArrayList<>();
         genList.add(gen1);
         genList.add(gen2);
         genList.add(genLatest);
@@ -133,7 +133,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
     }
 
     private void setUpLinksForLinkContainer(IProductCmptLinkContainer container, IProductCmptLink... links) {
-        List<IProductCmptLink> genLinks = new ArrayList<IProductCmptLink>();
+        List<IProductCmptLink> genLinks = new ArrayList<>();
         genLinks.addAll(Arrays.asList(links));
         when(container.getLinksAsList()).thenReturn(genLinks);
         for (IProductCmptLink link : links) {

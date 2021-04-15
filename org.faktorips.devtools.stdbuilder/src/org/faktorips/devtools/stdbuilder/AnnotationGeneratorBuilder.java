@@ -78,11 +78,11 @@ public class AnnotationGeneratorBuilder {
     }
 
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {
-        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap = new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>();
+        HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap = new HashMap<>();
         List<IAnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
 
         for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
-            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<IAnnotationGenerator>();
+            ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<>();
             for (IAnnotationGeneratorFactory annotationGeneratorFactory : factories) {
                 IAnnotationGenerator annotationGenerator;
                 annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
@@ -96,7 +96,7 @@ public class AnnotationGeneratorBuilder {
     }
 
     private List<IAnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {
-        List<IAnnotationGeneratorFactory> factories = new ArrayList<IAnnotationGeneratorFactory>();
+        List<IAnnotationGeneratorFactory> factories = new ArrayList<>();
         for (IAnnotationGeneratorFactory annotationGeneratorFactorie : annotationGeneratorFactories) {
             if (annotationGeneratorFactorie.isRequiredFor(ipsProject)) {
                 factories.add(annotationGeneratorFactorie);

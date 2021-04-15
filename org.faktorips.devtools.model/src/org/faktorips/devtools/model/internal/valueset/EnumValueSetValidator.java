@@ -111,7 +111,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
             if (indexes.size() <= 1) {
                 continue;
             }
-            List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
+            List<ObjectProperty> ops = new ArrayList<>(indexes.size());
             ops.add(getParentOp());
             for (Integer index : indexes) {
                 ops.add(new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_VALUES, index));

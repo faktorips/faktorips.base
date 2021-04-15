@@ -85,7 +85,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIpsObjectsByIpsObjectType() throws CoreException {
-        List<IIpsObject> result = new ArrayList<IIpsObject>();
+        List<IIpsObject> result = new ArrayList<>();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
         IIpsObject obj = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "mycompany.motor.Policy");
@@ -96,10 +96,10 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIpsObjects() throws CoreException {
-        List<IIpsObject> result = new ArrayList<IIpsObject>();
+        List<IIpsObject> result = new ArrayList<>();
         pack.findIpsObjects(result);
         assertEquals(2, result.size());
-        List<QualifiedNameType> qnts = new ArrayList<QualifiedNameType>();
+        List<QualifiedNameType> qnts = new ArrayList<>();
         for (IIpsObject ipsObject : result) {
             qnts.add(ipsObject.getQualifiedNameType());
         }

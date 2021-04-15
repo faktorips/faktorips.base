@@ -17,8 +17,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -43,21 +41,15 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
 
     private ISelectionProvider delegate;
 
-    private ISelectionChangedListener selectionListener = new ISelectionChangedListener() {
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            if (event.getSelectionProvider() == delegate) {
-                fireSelectionChanged(event.getSelection());
-            }
+    private ISelectionChangedListener selectionListener = event -> {
+        if (event.getSelectionProvider() == delegate) {
+            fireSelectionChanged(event.getSelection());
         }
     };
 
-    private ISelectionChangedListener postSelectionListener = new ISelectionChangedListener() {
-        @Override
-        public void selectionChanged(SelectionChangedEvent event) {
-            if (event.getSelectionProvider() == delegate) {
-                firePostSelectionChanged(event.getSelection());
-            }
+    private ISelectionChangedListener postSelectionListener = event -> {
+        if (event.getSelectionProvider() == delegate) {
+            firePostSelectionChanged(event.getSelection());
         }
     };
 
@@ -101,8 +93,8 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
     private void fireSelectionChanged(ListenerList<?> list, ISelection selection) {
         SelectionChangedEvent event = new SelectionChangedEvent(delegate, selection);
         Object[] listeners = list.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            ISelectionChangedListener listener = (ISelectionChangedListener)listeners[i];
+        for (Object listener2 : listeners) {
+            ISelectionChangedListener listener = (ISelectionChangedListener)listener2;
             listener.selectionChanged(event);
         }
     }
@@ -129,14 +121,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
 
         };
         control.addFocusListener(listener);
-        control.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                control.removeFocusListener(listener);
-            }
-
-        });
+        control.addDisposeListener($ -> control.removeFocusListener(listener));
     }
 
     // IPostSelectionProvider Implementation

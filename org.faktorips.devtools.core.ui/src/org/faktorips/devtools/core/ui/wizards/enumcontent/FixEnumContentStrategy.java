@@ -77,7 +77,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
             AssignContentAttributesPage<IEnumType, IEnumAttribute> assignEnumAttributesPage) {
         // Collect all obsolete EnumAttributeValues to delete.
         List<Integer> notAssignedColumns = assignEnumAttributesPage.getCurrentlyNotAssignedColumns();
-        List<IEnumAttributeValue> enumAttributeValuesToDelete = new ArrayList<IEnumAttributeValue>();
+        List<IEnumAttributeValue> enumAttributeValuesToDelete = new ArrayList<>();
         for (Integer currentNotAssignedColumn : notAssignedColumns) {
             for (IEnumValue currentEnumValue : getContentValues()) {
                 enumAttributeValuesToDelete

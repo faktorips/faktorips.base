@@ -85,12 +85,12 @@ public class CreateNewGenerationAction extends IpsAction {
             }
             return timedIpsObjects;
         } else {
-            return new ArrayList<ITimedIpsObject>(0);
+            return new ArrayList<>(0);
         }
     }
 
     private List<ITimedIpsObject> collectTimedIpsObjects(TypedSelection<IAdaptable> typedSelection) {
-        List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
+        List<ITimedIpsObject> timedIpsObjects = new ArrayList<>(typedSelection.getElementCount());
         for (IAdaptable selectedElement : typedSelection.getElements()) {
             IIpsObject ipsObject = selectedElement.getAdapter(IIpsObject.class);
             if (ipsObject instanceof ITimedIpsObject) {

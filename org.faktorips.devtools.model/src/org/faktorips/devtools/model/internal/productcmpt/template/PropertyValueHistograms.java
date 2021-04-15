@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifi
 
 public class PropertyValueHistograms {
 
-    private final Map<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>> propertyValueHistorgram = new HashMap<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>>();
+    private final Map<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>> propertyValueHistorgram = new HashMap<>();
 
     private PropertyValueHistograms(Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues) {
         for (Entry<ITemplatedValueIdentifier, Collection<IPropertyValue>> propertyValuesEntry : propertyToValues
@@ -47,7 +47,7 @@ public class PropertyValueHistograms {
     private void populateHistogram(ITemplatedValueIdentifier name, Collection<IPropertyValue> propertyValues) {
         if (!propertyValues.isEmpty()) {
             PropertyValueType valueType = getPropertyValueType(propertyValues);
-            propertyValueHistorgram.put(name, new Histogram<Object, IPropertyValue>(valueType.getValueGetter(),
+            propertyValueHistorgram.put(name, new Histogram<>(valueType.getValueGetter(),
                     valueType.getValueComparator(), propertyValues));
         }
     }

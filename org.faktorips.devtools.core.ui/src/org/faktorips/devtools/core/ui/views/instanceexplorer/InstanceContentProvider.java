@@ -50,7 +50,8 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
         // Nothing to do
     }
 
-    private InstanceIpsSrcFileViewItem[] collectIpsSrcFileViewItems(IIpsMetaClass ipsMetaClass, IProgressMonitor monitor) {
+    private InstanceIpsSrcFileViewItem[] collectIpsSrcFileViewItems(IIpsMetaClass ipsMetaClass,
+            IProgressMonitor monitor) {
         this.ipsMetaClass = ipsMetaClass;
         if (ipsMetaClass == null) {
             monitor.done();

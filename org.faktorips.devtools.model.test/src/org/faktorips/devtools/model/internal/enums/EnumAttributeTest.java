@@ -12,12 +12,12 @@ package org.faktorips.devtools.model.internal.enums;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -150,7 +150,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     public void testXml() throws ParserConfigurationException, CoreException {
         Element xmlElement = genderEnumAttributeId.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
-        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME, attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
+        assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME,
+                attributes.getNamedItem(IIpsElement.PROPERTY_NAME).getTextContent());
         assertEquals(Datatype.STRING.getQualifiedName(), attributes.getNamedItem(IEnumAttribute.PROPERTY_DATATYPE)
                 .getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE).getTextContent()));
@@ -280,7 +281,8 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         validationMessageList = attribute.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList
-                .getMessageByCode(IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES));
+                .getMessageByCode(
+                        IEnumAttribute.MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES));
     }
 
     @Test

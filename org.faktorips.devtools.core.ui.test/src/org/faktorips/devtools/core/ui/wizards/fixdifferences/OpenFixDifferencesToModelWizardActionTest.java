@@ -50,7 +50,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void setUp() throws Exception {
         super.setUp();
         openFixDifferencesToModelWizardAction = new OpenFixDifferencesToModelWizardAction();
-        ipsElementsToFix = new HashSet<IFixDifferencesToModelSupport>();
+        ipsElementsToFix = new HashSet<>();
         ipsProject = newIpsProject();
         root = ipsProject.findIpsPackageFragmentRoot("productdef");
 
@@ -248,7 +248,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     }
 
     private static Matcher<IFixDifferencesToModelSupport> containsDifferenceToModel(final IIpsProject ipsProject) {
-        return new TypeSafeMatcher<IFixDifferencesToModelSupport>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description arg0) {

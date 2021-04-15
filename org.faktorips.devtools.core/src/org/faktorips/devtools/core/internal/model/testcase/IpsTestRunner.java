@@ -71,11 +71,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
-import org.faktorips.runtime.Message;
-import org.faktorips.runtime.MessageList;
 
 /**
  * Class to run ips test cases in a second VM.
@@ -129,7 +129,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     private String testsuites;
 
     /** List storing the registered ips test run listeners */
-    private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<IIpsTestRunListener>();
+    private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<>();
 
     /** Error details in case multiline errors */
     private ArrayList<String> errorDetailList;
@@ -510,7 +510,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // get source container from the project
         ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
-        List<ISourceContainer> sourceContainer = new ArrayList<ISourceContainer>(
+        List<ISourceContainer> sourceContainer = new ArrayList<>(
                 Arrays.asList(sc.getSourceContainers()));
 
         // get source container from the workspace
@@ -518,7 +518,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         sourceContainer.addAll(Arrays.asList(sc.getSourceContainers()));
 
         // get source container from the classpath
-        List<IRuntimeClasspathEntry> classpaths = new ArrayList<IRuntimeClasspathEntry>();
+        List<IRuntimeClasspathEntry> classpaths = new ArrayList<>();
         classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
         IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
         classpaths.toArray(entries);
@@ -586,10 +586,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             server.setSoTimeout(ACCEPT_TIMEOUT);
             try {
                 Socket socket = server.accept();
-                try {
+                try (socket) {
                     readMessage(socket);
-                } finally {
-                    socket.close();
                 }
             } finally {
                 server.close();
@@ -664,7 +662,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         } else if (newLine.startsWith(SocketIpsTestRunner.TEST_ERROR)) {
             // format
             // qualifiedTestName{message}{StacktraceElem1}{StacktraceElem2}...{StacktraceElemN}
-            errorDetailList = new ArrayList<String>();
+            errorDetailList = new ArrayList<>();
             String errorDetails = newLine.substring(SocketIpsTestRunner.TEST_ERROR.length());
             qualifiedTestName = errorDetails.substring(0, errorDetails.indexOf(BRACELEFT));
             parseErrorStack(errorDetailList, errorDetails);
@@ -684,7 +682,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         String failureDetailsLine = newLine.substring(SocketIpsTestRunner.TEST_FAILED.length());
         String qualifiedTest = failureDetailsLine.substring(0,
                 failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
-        List<String> failureTokens = new ArrayList<String>(6);
+        List<String> failureTokens = new ArrayList<>(6);
         while (failureDetailsLine.length() > 0) {
             String token = ""; //$NON-NLS-1$
             int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
@@ -796,7 +794,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * and referenced projects by the referenced projects ...
      */
     private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException {
-        List<String> repositoryPackages = new ArrayList<String>();
+        List<String> repositoryPackages = new ArrayList<>();
         getRepositoryPackages(ipsProject, repositoryPackages);
         List<IIpsProject> ipsProjects = ipsProject.getAllReferencedIpsProjects();
         for (IIpsProject ipsProject2 : ipsProjects) {
@@ -853,14 +851,14 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     private void notifyTestEntry(String qualifiedName, String fullPath) {
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testTableEntry(qualifiedName, fullPath);
         }
     }
 
     private void notifyTestEntries(String[] qualifiedNames, String[] fullPaths) {
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testTableEntries(qualifiedNames, fullPaths);
         }
@@ -877,7 +875,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         }
         testRunnerMonitor.subTask(qualifiedTestName);
 
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testStarted(qualifiedTestName);
         }
@@ -885,7 +883,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestFinished(String qualifiedTestName) {
         testRunnerMonitor.worked(1);
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testFinished(qualifiedTestName);
         }
@@ -893,7 +891,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestFailureOccured(String testFailureOccured, String[] failureDetails) {
         // defensive copy to avoid concurrent modification exceptions
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testFailureOccured(testFailureOccured, failureDetails);
         }
@@ -901,21 +899,21 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void notifyTestRunStarted(int count, String repositoryPackage, String testPackage) {
         testRunnerMonitor.beginTask(Messages.IpsTestRunner_Job_Name, count);
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testRunStarted(count, repositoryPackage, testPackage);
         }
     }
 
     private void notifyTestRunEnded(String elapsedTime) {
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testRunEnded(elapsedTime);
         }
     }
 
     private void notifyTestErrorOccured(String qualifiedTestName, String[] errorDetails) {
-        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<IIpsTestRunListener>(fIpsTestRunListeners);
+        List<IIpsTestRunListener> copy = new CopyOnWriteArrayList<>(fIpsTestRunListeners);
         for (IIpsTestRunListener listener : copy) {
             listener.testErrorOccured(qualifiedTestName, errorDetails);
         }

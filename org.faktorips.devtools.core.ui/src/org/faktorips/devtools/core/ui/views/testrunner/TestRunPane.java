@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -56,16 +56,16 @@ public class TestRunPane {
 
     private boolean showErrorsOrFailureOnly = false;
 
-    private List<TableItem> tableFailureItems = new ArrayList<TableItem>();
+    private List<TableItem> tableFailureItems = new ArrayList<>();
 
     private int currErrorOrFailure = 0;
 
     private IpsTestRunnerViewPart testRunnerViewPart;
 
-    private List<String> missingTestEntries = new ArrayList<String>();
+    private List<String> missingTestEntries = new ArrayList<>();
 
     // Maps test Ids to the stored table items.
-    private Map<String, TestTableEntry> fTableItemMap = new HashMap<String, TestTableEntry>();
+    private Map<String, TestTableEntry> fTableItemMap = new HashMap<>();
 
     private final ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
             "obj16/test.gif"); //$NON-NLS-1$
@@ -277,7 +277,7 @@ public class TestRunPane {
     public List<String[]> getAllFailureDetailsOfSelectedTestCase() {
         TableItem ti = getSelectedItem();
         if (ti == null) {
-            return new ArrayList<String[]>(0);
+            return new ArrayList<>(0);
         }
         TestTableEntry entry = (TestTableEntry)ti.getData();
         return entry.getFailureOrErrorDetailList();
@@ -458,8 +458,8 @@ public class TestRunPane {
         private String fullPath;
         private TableItem tableItem;
         private int status = UNKNOWN;
-        private List<String> failures = new ArrayList<String>();
-        private List<String[]> failureDetailList = new ArrayList<String[]>();
+        private List<String> failures = new ArrayList<>();
+        private List<String[]> failureDetailList = new ArrayList<>();
         private String[] errorDetails = EMPTY_STRING_ARRAY;
 
         TestTableEntry(String qualifiedTestName, TableItem tableItem) {
@@ -529,7 +529,7 @@ public class TestRunPane {
 
         public List<String[]> getFailureOrErrorDetailList() {
             if (errorDetails.length > 0) {
-                ArrayList<String[]> result = new ArrayList<String[]>(1);
+                ArrayList<String[]> result = new ArrayList<>(1);
                 result.add(errorDetails);
                 return result;
             } else {
@@ -592,7 +592,7 @@ public class TestRunPane {
     }
 
     private void removeNonErrorsAndFailuresFromTable() {
-        List<Integer> nonErrorsOrFailuresIndices = new ArrayList<Integer>();
+        List<Integer> nonErrorsOrFailuresIndices = new ArrayList<>();
         for (TestTableEntry testTableEntry : fTableItemMap.values()) {
             if (!(testTableEntry.isError() || testTableEntry.isFailure())) {
                 TableItem tableItem = testTableEntry.getTableItem();

@@ -35,7 +35,7 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
     }
 
     public static <O> StructuredViewerField<O> newInstance(StructuredViewer viewer, Class<O> type) {
-        return new StructuredViewerField<O>(viewer, type);
+        return new StructuredViewerField<>(viewer, type);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
 
     @Override
     public T parseContent() {
-        TypedSelection<T> selection = new TypedSelection<T>(type, structuredViewer.getSelection());
+        TypedSelection<T> selection = new TypedSelection<>(type, structuredViewer.getSelection());
         if (!selection.isValid()) {
             return null;
         }

@@ -105,7 +105,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
 
         WildcardMatcher typeNameMatcher = new WildcardMatcher(getSearchModel().getSrcFilePattern());
 
-        Set<IIpsSrcFile> hits = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> hits = new HashSet<>();
         for (IIpsSrcFile srcFile : searchedSrcFiles) {
 
             if (typeNameMatcher.isMatching(srcFile.getIpsObjectName())) {
@@ -122,7 +122,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
         Set<IIpsSrcFile> ipsSrcFilesInScope = getSearchModel().getSearchScope().getSelectedIpsSrcFiles();
 
-        Set<IIpsSrcFile> selectedSrcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> selectedSrcFiles = new HashSet<>();
 
         List<IpsObjectType> objectTypes = getAllowedIpsObjectTypes();
         for (IIpsSrcFile srcFile : ipsSrcFilesInScope) {

@@ -11,10 +11,10 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -117,9 +117,9 @@ public class RangeStructureTest {
 
     private void createStructure(RangeType keyType) {
         structure = RangeStructure.create(keyType);
-        structure.put(-5, new ResultStructure<String>("A"));
-        structure.put(2, new ResultStructure<String>("B"));
-        structure.put(10, new ResultStructure<String>("C"));
+        structure.put(-5, new ResultStructure<>("A"));
+        structure.put(2, new ResultStructure<>("B"));
+        structure.put(10, new ResultStructure<>("C"));
     }
 
     public void resultSetForKeyWayOutOfLowerBound(Matcher<Iterable<? super String>> matcher) {
@@ -167,7 +167,7 @@ public class RangeStructureTest {
     }
 
     private static Matcher<Iterable<? super String>> isEmpty() {
-        return new IsEmpty<String>();
+        return new IsEmpty<>();
     }
 
     private static class IsEmpty<T> extends BaseMatcher<Iterable<? super T>> {
@@ -189,8 +189,8 @@ public class RangeStructureTest {
 
     @Test
     public void testIsEmptyMatcher() {
-        Set<String> set = new HashSet<String>();
-        IsEmpty<String> matcher = new IsEmpty<String>();
+        Set<String> set = new HashSet<>();
+        IsEmpty<String> matcher = new IsEmpty<>();
         assertTrue(matcher.matches(set));
 
         set.add("String");
@@ -199,7 +199,7 @@ public class RangeStructureTest {
 
     @Test
     public void testDescribeEmptyMatcher() {
-        IsEmpty<String> matcher = new IsEmpty<String>();
+        IsEmpty<String> matcher = new IsEmpty<>();
         Description description = mock(Description.class);
         matcher.describeTo(description);
         verify(description).appendText("an empty Iterable");
@@ -222,8 +222,8 @@ public class RangeStructureTest {
     public void testCopy_DeepCopyOfMapContent() {
         RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
                 .create(RangeType.LOWER_BOUND_EQUAL);
-        structure.put(1, new ResultStructure<String>("ONE"));
-        structure.put(2, new ResultStructure<String>("TWO"));
+        structure.put(1, new ResultStructure<>("ONE"));
+        structure.put(2, new ResultStructure<>("TWO"));
 
         RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
 
@@ -237,7 +237,7 @@ public class RangeStructureTest {
     public void testCopy_CopyOfObject() {
         RangeStructure<Integer, ResultStructure<String>, String> structure = RangeStructure
                 .create(RangeType.LOWER_BOUND_EQUAL);
-        structure.put(1, new ResultStructure<String>("ONE"));
+        structure.put(1, new ResultStructure<>("ONE"));
 
         RangeStructure<Integer, ResultStructure<String>, String> copiedStructure = structure.copy();
 

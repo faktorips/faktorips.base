@@ -45,8 +45,9 @@ public abstract class AbstractJNode implements JNode {
 
     protected String computeQualifiedName() {
         JNode parent = getParent();
-        return parent == null || parent instanceof JCompilationUnit ? getName() : parent.getQualifiedName() + "."
-                + getName();
+        return parent == null || parent instanceof JCompilationUnit ? getName()
+                : parent.getQualifiedName() + "."
+                        + getName();
     }
 
     protected String getName(JInitializer initializer) {

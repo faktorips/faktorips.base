@@ -29,7 +29,7 @@ public class RunAndStoreExpectedResultListener implements IIpsTestRunListener {
 
     public RunAndStoreExpectedResultListener(TestCaseSection testCaseSection) {
         this.testCaseSection = testCaseSection;
-        failureDetailsList = new ArrayList<String[]>();
+        failureDetailsList = new ArrayList<>();
     }
 
     /**

@@ -119,7 +119,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForMergableArtefacts();
         MessageList msgList = project.validate();
         assertFalse(msgList.toString(), msgList.containsErrorMsg());
-        assertEquals(expPackage, archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType()));
+        assertEquals(expPackage,
+                archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType()));
     }
 
     @Test
@@ -393,7 +394,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         ipsObjectPath.newArchiveEntry(dummyArchivePath);
         dummyProject.setIpsObjectPath(ipsObjectPath);
 
-        List<IIpsElement> childList = new ArrayList<IIpsElement>();
+        List<IIpsElement> childList = new ArrayList<>();
         IIpsPackageFragmentRoot[] roots = dummyProject.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();

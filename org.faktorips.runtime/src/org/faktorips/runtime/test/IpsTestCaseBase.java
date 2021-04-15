@@ -274,7 +274,11 @@ public abstract class IpsTestCaseBase extends IpsTest2 {
      * @param message an optional message test to describe the assert
      * 
      */
-    protected void assertNull(Object object, IpsTestResult result, String testObject, String attribute, String message) {
+    protected void assertNull(Object object,
+            IpsTestResult result,
+            String testObject,
+            String attribute,
+            String message) {
         if (object != null) {
             fail(null, object, result, testObject, attribute, message);
         }

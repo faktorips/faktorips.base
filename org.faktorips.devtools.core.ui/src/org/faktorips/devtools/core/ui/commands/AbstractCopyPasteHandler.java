@@ -50,7 +50,7 @@ public abstract class AbstractCopyPasteHandler extends AbstractHandler {
     protected static Object[] getDataArray(List<IpsObjectPartState> copiedObjects,
             List<IResource> resourceItems,
             List<String> copiedResourceLinks) {
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         // add copied resources
         if (resourceItems.size() > 0) {
             IResource[] res = new IResource[resourceItems.size()];
@@ -82,7 +82,7 @@ public abstract class AbstractCopyPasteHandler extends AbstractHandler {
             List<IResource> resourceItems,
             List<String> copiedResourceLinks) {
 
-        List<Transfer> resultList = new ArrayList<Transfer>();
+        List<Transfer> resultList = new ArrayList<>();
         if (resourceItems.size() > 0) {
             resultList.add(ResourceTransfer.getInstance());
         }

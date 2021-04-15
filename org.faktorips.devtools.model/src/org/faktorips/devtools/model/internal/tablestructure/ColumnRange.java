@@ -24,9 +24,9 @@ import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -129,7 +129,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     }
 
     protected void validateColumn(String column, String propertyName, String propertyDisplayName, MessageList list) {
-        if (ValidationUtils.checkStringPropertyNotEmpty(column, propertyDisplayName, this, propertyName, "", list)) { //$NON-NLS-1$ 
+        if (ValidationUtils.checkStringPropertyNotEmpty(column, propertyDisplayName, this, propertyName, "", list)) { //$NON-NLS-1$
             if (getTableStructure().getColumn(column) == null) {
                 String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, column);
                 list.add(new Message("", text, Message.ERROR, this, propertyName)); //$NON-NLS-1$
@@ -213,7 +213,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
 
     @Override
     public IColumn[] getColumns() {
-        List<IColumn> columns = new ArrayList<IColumn>();
+        List<IColumn> columns = new ArrayList<>();
         if (!rangeType.isOneColumnTo()) {
             if (getTableStructure().getColumn(from) != null) {
                 columns.add(getTableStructure().getColumn(from));

@@ -38,34 +38,34 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     /** Contains product component IDs as keys and instances of product components as values. */
-    private HashMap<String, IProductComponent> productCmpts = new HashMap<String, IProductComponent>();
+    private HashMap<String, IProductComponent> productCmpts = new HashMap<>();
 
     /**
      * A map that contains a list (value) by product component id (key). Each list contains the
      * generations for the product component.
      */
-    private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<String, SortedSet<IProductComponentGeneration>>();
+    private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<>();
 
-    private List<ITable<?>> tables = new ArrayList<ITable<?>>();
+    private List<ITable<?>> tables = new ArrayList<>();
 
     /**
      * Contains the table contents for structures that allow multiple contents key is the qName,
      * value the table.
      */
-    private Map<String, ITable<?>> multipleContentTables = new HashMap<String, ITable<?>>();
+    private Map<String, ITable<?>> multipleContentTables = new HashMap<>();
 
     /** Contains all test cases with their qualified name as key. */
-    private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<String, IpsTestCaseBase>();
+    private HashMap<String, IpsTestCaseBase> testCasesByQName = new HashMap<>();
 
     /**
      * Contains all enumeration values for the Faktor-IPS enumerations which content is deferred.
      */
-    private Map<Class<?>, List<?>> enumValuesMap = new HashMap<Class<?>, List<?>>();
+    private Map<Class<?>, List<?>> enumValuesMap = new HashMap<>();
 
-    private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<XmlAdapter<?, ?>>();
+    private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<>();
 
     /** Contains all maps for all other runtime objects with their qualified name as key. */
-    private Map<Class<?>, Map<String, IRuntimeObject>> customRuntimeObjectsByType = new HashMap<Class<?>, Map<String, IRuntimeObject>>();
+    private Map<Class<?>, Map<String, IRuntimeObject>> customRuntimeObjectsByType = new HashMap<>();
 
     public InMemoryRuntimeRepository() {
         super("InMemoryRuntimeRepository");
@@ -183,7 +183,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * @param enumValues The value of the enumeration type as list.
      */
     public <T> void putEnumValues(Class<T> enumType, List<T> enumValues) {
-        List<T> copy = new ArrayList<T>(enumValues);
+        List<T> copy = new ArrayList<>(enumValues);
         enumValuesMap.put(enumType, copy);
     }
 
@@ -273,7 +273,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
         return productCmptGenLists.computeIfAbsent(productCmptId,
-                $ -> new TreeSet<IProductComponentGeneration>(
+                $ -> new TreeSet<>(
                         new ProductCmptGenerationComparator(TimeZone.getDefault())));
     }
 
@@ -387,7 +387,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
             String ipsObjectQualifiedName,
             T runtimeObject) {
         Map<String, IRuntimeObject> customRuntimeObjects = customRuntimeObjectsByType.computeIfAbsent(type,
-                $ -> new HashMap<String, IRuntimeObject>());
+                $ -> new HashMap<>());
         customRuntimeObjects.put(ipsObjectQualifiedName, runtimeObject);
     }
 

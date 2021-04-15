@@ -308,7 +308,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        Set<IDependency> dependencySet = new HashSet<IDependency>();
+        Set<IDependency> dependencySet = new HashSet<>();
 
         if (!StringUtils.isEmpty(productCmptType)) {
             IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
@@ -365,7 +365,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             Map<IDependency, IExpressionDependencyDetail> formulaDependencies) {
         for (Entry<IDependency, IExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
             List<IDependencyDetail> dependenciesDetailsList = details.computeIfAbsent(entry.getKey(),
-                    $ -> new ArrayList<IDependencyDetail>());
+                    $ -> new ArrayList<>());
             dependenciesDetailsList.add(entry.getValue());
         }
     }
@@ -422,7 +422,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public void fixAllDifferencesToModel(final IIpsProject ipsProject) throws CoreException {
         ((IpsModel)getIpsModel())
-                .executeModificationsWithSingleEvent(new SingleEventModification<Object>(getIpsSrcFile()) {
+                .executeModificationsWithSingleEvent(new SingleEventModification<>(getIpsSrcFile()) {
 
                     @Override
                     protected boolean execute() throws CoreException {
@@ -576,7 +576,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>();
+        List<IIpsElement> children = new ArrayList<>();
         if (allowGenerations()) {
             IIpsElement[] childrenThis = super.getChildrenThis();
             children.addAll(Arrays.asList(childrenThis));
@@ -645,7 +645,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public List<IProductCmptGeneration> getProductCmptGenerations() {
-        List<IProductCmptGeneration> generations = new ArrayList<IProductCmptGeneration>();
+        List<IProductCmptGeneration> generations = new ArrayList<>();
         List<IIpsObjectGeneration> ipsObjectGenerations = getGenerations();
         for (IIpsObjectGeneration ipsObjectGeneration : ipsObjectGenerations) {
             generations.add((IProductCmptGeneration)ipsObjectGeneration);
@@ -682,7 +682,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IProductCmptCategory category,
             IIpsProject ipsProject) throws CoreException {
 
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        List<IPropertyValue> propertyValues = new ArrayList<>();
 
         IProductCmptType contextType = findProductCmptType(ipsProject);
         if (contextType == null) {
@@ -700,7 +700,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     private List<IPropertyValue> findPropertyValuesForNoCategory(IProductCmptGeneration generation) {
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        List<IPropertyValue> propertyValues = new ArrayList<>();
         propertyValues.addAll(getAllPropertyValues());
         propertyValues.addAll(generation.getAllPropertyValues());
         return propertyValues;

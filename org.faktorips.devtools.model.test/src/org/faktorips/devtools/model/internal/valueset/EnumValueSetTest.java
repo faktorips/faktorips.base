@@ -655,7 +655,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, list.size());
 
         Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
+        ArrayList<Datatype> vdlist = new ArrayList<>();
         vdlist.addAll(Arrays.asList(vds));
         vdlist.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -800,7 +800,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(3, set.size());
         verify(mockedListener, times(3)).contentsChanged(any(ContentChangeEvent.class));
 
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         values.add("4");
         values.add("five");
         values.add("SIX");
@@ -827,7 +827,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(6, set.size());
         verify(mockedListener, times(6)).contentsChanged(any(ContentChangeEvent.class));
 
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         values.add("two");
         values.add("4");
         values.add("SIX");

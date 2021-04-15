@@ -24,7 +24,7 @@ import org.faktorips.datatype.Datatype;
  */
 public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider<JavaCodeFragment> {
 
-    private Map<Datatype, DatatypeHelper> helpers = new HashMap<Datatype, DatatypeHelper>();
+    private Map<Datatype, DatatypeHelper> helpers = new HashMap<>();
 
     public DefaultDatatypeHelperProvider() {
         helpers.put(Datatype.INTEGER, DatatypeHelper.INTEGER);

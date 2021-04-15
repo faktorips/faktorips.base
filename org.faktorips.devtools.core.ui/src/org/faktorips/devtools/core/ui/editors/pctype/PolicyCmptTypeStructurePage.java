@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -87,13 +85,10 @@ class PolicyCmptTypeStructurePage extends PolicyCmptTypeEditorPage {
             }
         };
         getIpsObject().getIpsModel().addChangeListener(changeListener);
-        getPartControl().addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                IIpsModel model = IIpsModel.get();
-                if (model != null) {
-                    model.removeChangeListener(changeListener);
-                }
+        getPartControl().addDisposeListener($ -> {
+            IIpsModel model = IIpsModel.get();
+            if (model != null) {
+                model.removeChangeListener(changeListener);
             }
         });
     }

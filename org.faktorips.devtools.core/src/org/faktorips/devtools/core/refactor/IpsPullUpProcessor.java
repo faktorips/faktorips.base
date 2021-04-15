@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Abstract base class for all Faktor-IPS "Pull Up" refactoring processors.
@@ -54,7 +54,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
                 .createExecutableExtensions(ExtensionPoints.PULL_UP_PARTICIPANTS,
                         "pullUpParticipant", "class", RefactoringParticipant.class); //$NON-NLS-1$ //$NON-NLS-2$
-        List<RefactoringParticipant> initializedParticipants = new ArrayList<RefactoringParticipant>(
+        List<RefactoringParticipant> initializedParticipants = new ArrayList<>(
                 participants.size());
         for (RefactoringParticipant participant : participants) {
             boolean initialized = participant.initialize(this, getIpsElement(), new IpsPullUpArguments(target));
@@ -86,7 +86,6 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
         if (target.equals(getIpsObjectPart().getIpsObject())) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetEqualsCurrentContainer,
                     getLocalizedContainerCaption()));
-            return;
         }
     }
 

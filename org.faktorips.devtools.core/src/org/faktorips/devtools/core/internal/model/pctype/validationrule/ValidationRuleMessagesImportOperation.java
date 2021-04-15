@@ -153,7 +153,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     private void initResultFields() {
-        importedMessageKeys = new HashMap<String, IValidationRule>();
+        importedMessageKeys = new HashMap<>();
         missingMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_MISSING_MESSAGE,
                 Messages.ValidationRuleMessagesPropertiesImporter_status_missingMessage, null);
         illegalMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_ILLEGAL_MESSAGE,

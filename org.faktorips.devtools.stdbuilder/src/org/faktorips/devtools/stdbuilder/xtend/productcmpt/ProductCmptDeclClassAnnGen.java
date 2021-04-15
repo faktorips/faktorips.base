@@ -32,7 +32,7 @@ public class ProductCmptDeclClassAnnGen extends AbstractTypeDeclClassAnnGen {
 
         XProductCmptClass prod = (XProductCmptClass)modelNode;
         annotation.append(createAnnConfigures(prod)).append(createAnnProductCmptTypeGen(prod))
-        .append(createAnnTableUsages(prod));
+                .append(createAnnTableUsages(prod));
 
         return annotation;
     }

@@ -90,7 +90,7 @@ public abstract class AbstractCompareItem
      * The list of children of this <code>AbstractCompareItem</code>. This list is empty if this
      * compare-item is a leaf in its tree.
      */
-    private final List<AbstractCompareItem> childItems = new ArrayList<AbstractCompareItem>();
+    private final List<AbstractCompareItem> childItems = new ArrayList<>();
 
     /**
      * The range this <code>AbstractCompareItem</code>'s string representation inhabits in the

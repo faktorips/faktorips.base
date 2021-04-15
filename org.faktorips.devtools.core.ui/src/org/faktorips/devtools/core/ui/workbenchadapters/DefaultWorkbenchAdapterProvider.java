@@ -23,7 +23,7 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
     private final Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
 
     public DefaultWorkbenchAdapterProvider() {
-        workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
+        workbenchAdapterMap = new HashMap<>();
         registerAdapters();
     }
 

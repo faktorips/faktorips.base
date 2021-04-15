@@ -26,7 +26,7 @@ public class Log4jLoggingFrameworkConnectorTest {
 
     @Before
     public void setUp() {
-        usedClasses = new ArrayList<String>();
+        usedClasses = new ArrayList<>();
         connector = new Log4jLoggingFrameworkConnector();
 
     }

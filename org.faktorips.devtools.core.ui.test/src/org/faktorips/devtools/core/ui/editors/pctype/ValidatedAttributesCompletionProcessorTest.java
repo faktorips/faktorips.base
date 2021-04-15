@@ -52,7 +52,7 @@ public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPlugi
 
         IValidationRule rule = pcType.newRule();
         ValidatedAttributesCompletionProcessor processor = new ValidatedAttributesCompletionProcessor(rule);
-        List<ICompletionProposal> proposals = new ArrayList<ICompletionProposal>();
+        List<ICompletionProposal> proposals = new ArrayList<>();
         processor.doComputeCompletionProposals("", 0, proposals);
         assertEquals(5, proposals.size());
 

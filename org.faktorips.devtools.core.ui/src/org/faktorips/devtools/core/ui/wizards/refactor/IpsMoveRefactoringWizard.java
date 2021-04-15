@@ -15,10 +15,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -112,30 +110,27 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             treeViewer.setContentProvider(new MoveContentProvider());
             treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
             setReferencingAndReferencedProjectsAsInput();
-            treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent event) {
-                    IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-                    if (selection.getFirstElement() != null) {
-                        // Only package fragments are valid selections
-                        if (selection.getFirstElement() instanceof IIpsPackageFragment) {
-                            userInputChanged();
-                        } else {
-                            if (initialSelectionOccurred) {
-                                setErrorMessage(Messages.MoveUserInputPage_msgSelectOnlyPackages);
-                                setPageComplete(false);
-                            }
+            treeViewer.addSelectionChangedListener(event -> {
+                IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+                if (selection.getFirstElement() != null) {
+                    // Only package fragments are valid selections
+                    if (selection.getFirstElement() instanceof IIpsPackageFragment) {
+                        userInputChanged();
+                    } else {
+                        if (initialSelectionOccurred) {
+                            setErrorMessage(Messages.MoveUserInputPage_msgSelectOnlyPackages);
+                            setPageComplete(false);
                         }
                     }
-                    initialSelectionOccurred = true;
                 }
+                initialSelectionOccurred = true;
             });
         }
 
         private void setReferencingAndReferencedProjectsAsInput() {
             IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
             IIpsProject[] allProjects = ipsProject.getIpsModel().getIpsProjects();
-            List<IIpsProject> refProjectsList = new ArrayList<IIpsProject>();
+            List<IIpsProject> refProjectsList = new ArrayList<>();
             refProjectsList.add(0, ipsProject);
             for (IIpsProject project : allProjects) {
                 if (ipsProject.isReferencing(project) || ipsProject.isReferencedBy(project, true)) {

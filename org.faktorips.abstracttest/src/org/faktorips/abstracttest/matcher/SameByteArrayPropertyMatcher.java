@@ -29,7 +29,7 @@ public class SameByteArrayPropertyMatcher<T> extends SamePropertyMatcher<T, byte
     public static <T> Matcher<T> sameByteArray(Function<T, byte[]> propertyGetter,
             String propertyDescription,
             T objectToMatch) {
-        return new SameByteArrayPropertyMatcher<T>(propertyGetter, propertyDescription, objectToMatch);
+        return new SameByteArrayPropertyMatcher<>(propertyGetter, propertyDescription, objectToMatch);
     }
 
 }

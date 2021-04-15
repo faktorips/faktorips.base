@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccess;
 import org.faktorips.devtools.core.ui.IDataChangeableReadAccessWithListenerSupport;
@@ -53,12 +52,7 @@ public abstract class IpsAction extends Action {
     public IpsAction(ISelectionProvider selectionProvider) {
         this.selectionProvider = selectionProvider;
         if (selectionProvider != null) {
-            adjustEnableStateListener = new ISelectionChangedListener() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent event) {
-                    updateEnabledProperty();
-                }
-            };
+            adjustEnableStateListener = $ -> updateEnabledProperty();
             selectionProvider.addSelectionChangedListener(adjustEnableStateListener);
         }
     }
@@ -80,7 +74,7 @@ public abstract class IpsAction extends Action {
      * ips object.
      */
     private List<Object> mapIpsSrcFilesToIpsObjects(IStructuredSelection selection) {
-        List<Object> selectedIpsObjects = new ArrayList<Object>((selection).size());
+        List<Object> selectedIpsObjects = new ArrayList<>((selection).size());
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object select = iter.next();
             if (select instanceof IIpsSrcFile) {
@@ -100,7 +94,7 @@ public abstract class IpsAction extends Action {
      * empty array if the selection is empty or does not contain <code>IpsObject</code>s.
      */
     protected IIpsObject[] getIpsObjectsForSelection(IStructuredSelection selection) {
-        List<IIpsObject> ipsObjects = new ArrayList<IIpsObject>();
+        List<IIpsObject> ipsObjects = new ArrayList<>();
         for (Iterator<Object> i = getSelectionIterator(selection); i.hasNext();) {
             ipsObjects.add(getIpsObjectForSelection(i.next()));
         }
@@ -113,7 +107,7 @@ public abstract class IpsAction extends Action {
      * the selection is empty or does not contain <code>IIpsSrcFiles</code>s.
      */
     protected IIpsSrcFile[] getIpsSrcFilesForSelection(IStructuredSelection selection) {
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
         for (Iterator<?> i = getSelectionIterator(selection); i.hasNext();) {
             IIpsSrcFile ipsSrcFile = getIpsSrcFileForSelection(i.next());
             if (ipsSrcFile != null) {

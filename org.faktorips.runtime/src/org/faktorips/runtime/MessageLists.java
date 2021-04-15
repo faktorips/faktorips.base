@@ -72,7 +72,7 @@ public class MessageLists {
             return emptyMessageList();
         }
         return StreamSupport.stream(unsortedMessageList.spliterator(), false)
-                .collect(Collectors.groupingBy(m -> m.getSeverity()))
+                .collect(Collectors.groupingBy(Message::getSeverity))
                 .entrySet().stream().sorted((e1, e2) -> e2.getKey().compareTo(e1.getKey()))
                 .flatMap(e -> e.getValue().stream())
                 .collect(collectMessages());
@@ -139,12 +139,12 @@ public class MessageLists {
 
         @Override
         public Supplier<MessageList> supplier() {
-            return () -> new MessageList();
+            return MessageList::new;
         }
 
         @Override
         public BiConsumer<MessageList, MessageList> accumulator() {
-            return (ml1, ml2) -> ml1.add(ml2);
+            return MessageList::add;
         }
 
         @Override
@@ -173,12 +173,12 @@ public class MessageLists {
 
         @Override
         public Supplier<MessageList> supplier() {
-            return () -> new MessageList();
+            return MessageList::new;
         }
 
         @Override
         public BiConsumer<MessageList, Message> accumulator() {
-            return (messageList, message) -> messageList.add(message);
+            return MessageList::add;
         }
 
         @Override

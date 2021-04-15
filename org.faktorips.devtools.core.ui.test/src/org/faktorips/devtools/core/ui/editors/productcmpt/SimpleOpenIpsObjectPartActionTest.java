@@ -33,7 +33,7 @@ public class SimpleOpenIpsObjectPartActionTest {
         final IIpsObjectPartContainer foo = mockPart(workbenchAdapter, fooImage);
         final IIpsObjectPartContainer bar = mockPart(workbenchAdapter, barImage);
         Supplier<IIpsObjectPartContainer> partSupplier = () -> foo;
-        SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer> action = new SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer>(
+        SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer> action = new SimpleOpenIpsObjectPartAction<>(
                 partSupplier, container -> container == foo ? "foo" : "bar");
 
         assertThat(action.getText(), is("foo"));
@@ -53,7 +53,7 @@ public class SimpleOpenIpsObjectPartActionTest {
         ImageDescriptor fooImage = mock(ImageDescriptor.class);
         final IIpsObjectPartContainer foo = mockPart(workbenchAdapter, fooImage);
         Supplier<IIpsObjectPartContainer> partSupplier = () -> foo;
-        SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer> action = new SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer>(
+        SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer> action = new SimpleOpenIpsObjectPartAction<>(
                 partSupplier, container -> container == foo ? "foo" : "bar");
 
         assertThat(action.getText(), is("foo"));

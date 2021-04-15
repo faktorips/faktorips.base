@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 public abstract class AbstractPageElement implements IPageElement {
 
     private final DocumentationContext context;
-    private Set<Style> styles = new LinkedHashSet<Style>();
+    private Set<Style> styles = new LinkedHashSet<>();
     private String id;
     private String anchor;
 
@@ -56,7 +56,7 @@ public abstract class AbstractPageElement implements IPageElement {
         if (styles == null) {
             return Collections.emptySet();
         }
-        return new HashSet<Style>(styles);
+        return new HashSet<>(styles);
     }
 
     @Override

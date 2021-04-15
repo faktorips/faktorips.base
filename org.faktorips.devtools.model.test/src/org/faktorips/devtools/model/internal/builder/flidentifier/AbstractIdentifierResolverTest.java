@@ -71,10 +71,11 @@ public class AbstractIdentifierResolverTest {
         doReturn(identifierNodeGeneratorFactory).when(abstractIdentifierResolver).getGeneratorFactory();
         doReturn(new CompilationResultImpl()).when(abstractIdentifierResolver).getStartingCompilationResult();
         when(identifierNodeGeneratorFactory.getGeneratorForInvalidNode()).thenReturn(
-                new IdentifierNodeGenerator<JavaCodeFragment>(identifierNodeGeneratorFactory) {
+                new IdentifierNodeGenerator<>(identifierNodeGeneratorFactory) {
 
                     @Override
-                    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
+                    protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(
+                            IdentifierNode identifierNode,
                             CompilationResult<JavaCodeFragment> contextCompilationResult) {
                         return expectedResult;
                     }

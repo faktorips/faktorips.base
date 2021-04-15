@@ -57,7 +57,7 @@ public class LinksContentProvider implements ITreeContentProvider {
      * association names from the links in the generation and product component.
      */
     protected DetachedAssociationViewItem[] getDetachedAssociationViewItems(IProductCmptGeneration gen) {
-        List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
+        List<DetachedAssociationViewItem> items = new ArrayList<>();
         items.addAll(getAssociationItemsForLinkContainer(gen.getProductCmpt()));
         items.addAll(getAssociationItemsForLinkContainer(gen));
         return items.toArray(new DetachedAssociationViewItem[items.size()]);
@@ -66,9 +66,10 @@ public class LinksContentProvider implements ITreeContentProvider {
     /**
      * find association using the product cmpt's project
      */
-    protected List<DetachedAssociationViewItem> getAssociationItemsForLinkContainer(IProductCmptLinkContainer linkContainer) {
-        List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
-        Set<String> associations = new LinkedHashSet<String>();
+    protected List<DetachedAssociationViewItem> getAssociationItemsForLinkContainer(
+            IProductCmptLinkContainer linkContainer) {
+        List<DetachedAssociationViewItem> items = new ArrayList<>();
+        Set<String> associations = new LinkedHashSet<>();
         List<IProductCmptLink> links = linkContainer.getLinksAsList();
         for (IProductCmptLink link : links) {
             if (associations.add(link.getAssociation())) {
@@ -81,7 +82,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     protected AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
-        ArrayList<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
+        ArrayList<AssociationViewItem> items = new ArrayList<>();
         List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
             if (association.isRelevant()) {

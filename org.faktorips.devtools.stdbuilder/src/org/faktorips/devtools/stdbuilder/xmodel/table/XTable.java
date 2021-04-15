@@ -55,7 +55,7 @@ public class XTable extends XTableStructure {
 
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
-        LinkedHashSet<String> interfaces = new LinkedHashSet<String>();
+        LinkedHashSet<String> interfaces = new LinkedHashSet<>();
         interfaces.add(addImport(ITable.class));
         return interfaces;
     }
@@ -81,7 +81,7 @@ public class XTable extends XTableStructure {
      * @return all indices of table as a list of {@link XIndex}
      */
     public List<XIndex> getIndexModelNodes() {
-        List<XIndex> result = new ArrayList<XIndex>();
+        List<XIndex> result = new ArrayList<>();
         List<IIndex> indices = getIndices();
         for (int i = 0; i < indices.size(); i++) {
             XIndex indexNode = getModelNode(indices.get(i), XIndex.class);
@@ -98,7 +98,7 @@ public class XTable extends XTableStructure {
      * @return names of all valid columns as joined String list with ","
      */
     public String getColumnNames() {
-        List<String> columnNames = new ArrayList<String>();
+        List<String> columnNames = new ArrayList<>();
         List<XColumn> columns = getValidColumns();
         for (XColumn column : columns) {
             columnNames.add(StringUtils.uncapitalize(column.getName()));
@@ -111,7 +111,7 @@ public class XTable extends XTableStructure {
      * @return a list of indices those have only column key items
      */
     public List<XIndex> getColumnKeyIndexModelNodes() {
-        List<XIndex> keyIndices = new ArrayList<XIndex>();
+        List<XIndex> keyIndices = new ArrayList<>();
         for (XIndex index : getIndexModelNodes()) {
             if (index.hasColumnKeys()) {
                 keyIndices.add(index);
@@ -155,7 +155,7 @@ public class XTable extends XTableStructure {
      */
     private Set<IIndex> getIndicesForKeysWithSameDatatypeSequence() {
         List<IIndex> keys = getIndices();
-        Set<IIndex> sameDatatype = new HashSet<IIndex>();
+        Set<IIndex> sameDatatype = new HashSet<>();
         int i = 0;
         for (IIndex key : keys) {
             for (int j = i + 1; j < keys.size(); j++) {

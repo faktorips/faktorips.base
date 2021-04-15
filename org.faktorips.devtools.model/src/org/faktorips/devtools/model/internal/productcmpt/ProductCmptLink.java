@@ -41,10 +41,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.NullSafeComparableComparator;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -237,7 +237,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         getName());
             } else {
                 msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
-                        new Object[] { associationLabel, getName(), IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true) });
+                        new Object[] { associationLabel, getName(), IIpsModelExtensions.get().getModelPreferences()
+                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -488,7 +489,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Comparator<Object> getValueComparator() {
-        return new NullSafeComparableComparator<Object>();
+        return new NullSafeComparableComparator<>();
     }
 
     @Override

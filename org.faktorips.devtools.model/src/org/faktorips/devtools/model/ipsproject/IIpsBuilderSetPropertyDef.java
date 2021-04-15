@@ -47,7 +47,8 @@ public interface IIpsBuilderSetPropertyDef {
 
     /**
      * Returns the type specified in the plug-in descriptor. The possible types are defined in the
-     * schema. Currently supported are <em>boolean, enumeration, string, integer, extensionPoint</em>.
+     * schema. Currently supported are <em>boolean, enumeration, string, integer,
+     * extensionPoint</em>.
      */
     public String getType();
 

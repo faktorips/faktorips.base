@@ -35,7 +35,7 @@ public class RequireBundleChanger {
     public RequireBundleChanger(Attributes attributes) {
         this.attributes = attributes;
         buffer = new StringBuffer();
-        requireBundles = new LinkedHashMap<String, RequireBundleManifestElement>();
+        requireBundles = new LinkedHashMap<>();
     }
 
     /**

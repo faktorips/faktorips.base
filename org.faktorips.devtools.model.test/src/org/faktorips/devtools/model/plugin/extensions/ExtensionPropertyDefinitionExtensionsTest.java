@@ -28,7 +28,7 @@ public class ExtensionPropertyDefinitionExtensionsTest {
     @Test
     public void testInitExtensionProperty() throws Exception {
         StringExtensionPropertyDefinition definition = new StringExtensionPropertyDefinition();
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("extendedType", ProductCmptTypeAttribute.class.getCanonicalName());
         attributes.put("defaultValue", "test123");
         attributes.put("position", "top");

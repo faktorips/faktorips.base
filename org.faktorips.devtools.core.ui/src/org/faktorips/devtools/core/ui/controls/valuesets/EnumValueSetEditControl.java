@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
@@ -85,13 +84,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     }
 
     private void setUpDisposeListener(final IIpsProject project) {
-        disposeListener = new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                project.getIpsModel().removeChangeListener(changeListener);
-            }
-        };
+        disposeListener = $ -> project.getIpsModel().removeChangeListener(changeListener);
         addDisposeListener(disposeListener);
     }
 

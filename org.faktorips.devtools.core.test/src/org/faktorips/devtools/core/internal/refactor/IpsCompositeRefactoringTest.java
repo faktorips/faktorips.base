@@ -78,7 +78,7 @@ public class IpsCompositeRefactoringTest {
         when(ipsElement2.getIpsProject()).thenReturn(ipsProject);
         when(refactoring1.toLtkRefactoring()).thenReturn(ltkRefactoring1);
         when(refactoring2.toLtkRefactoring()).thenReturn(ltkRefactoring2);
-        ipsCompositeRefactoring = new TestIpsCompositeRefactoring(new LinkedHashSet<IIpsElement>(Arrays.asList(
+        ipsCompositeRefactoring = new TestIpsCompositeRefactoring(new LinkedHashSet<>(Arrays.asList(
                 ipsElement1, ipsElement2)));
     }
 
@@ -89,7 +89,7 @@ public class IpsCompositeRefactoringTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalArgumentExceptionIfDifferentTypesOfElementsGiven() {
-        Set<IIpsElement> elements = new LinkedHashSet<IIpsElement>();
+        Set<IIpsElement> elements = new LinkedHashSet<>();
         elements.add(mock(IIpsObject.class));
         elements.add(mock(IIpsObjectPart.class));
         new TestIpsCompositeRefactoring(elements);
@@ -97,7 +97,7 @@ public class IpsCompositeRefactoringTest {
 
     @Test
     public void testNoIllegalArgumentExceptionIfDifferentTypesOfIpsObjectsGiven() {
-        Set<IIpsElement> elements = new LinkedHashSet<IIpsElement>();
+        Set<IIpsElement> elements = new LinkedHashSet<>();
         elements.add(mock(IPolicyCmptType.class));
         elements.add(mock(IProductCmptType.class));
         new TestIpsCompositeRefactoring(elements);
@@ -158,7 +158,7 @@ public class IpsCompositeRefactoringTest {
 
     @Test
     public void testIsCancelableOnlyOneRefactoring() {
-        ipsCompositeRefactoring = new TestIpsCompositeRefactoring(new LinkedHashSet<IIpsElement>(
+        ipsCompositeRefactoring = new TestIpsCompositeRefactoring(new LinkedHashSet<>(
                 Arrays.asList(ipsElement1)));
         assertFalse(ipsCompositeRefactoring.isCancelable());
     }
@@ -170,7 +170,7 @@ public class IpsCompositeRefactoringTest {
 
     @Test
     public void testGetIpsElements() {
-        assertEquals(new LinkedHashSet<IIpsElement>(Arrays.asList(ipsElement1, ipsElement2)),
+        assertEquals(new LinkedHashSet<>(Arrays.asList(ipsElement1, ipsElement2)),
                 ipsCompositeRefactoring.getIpsElements());
     }
 

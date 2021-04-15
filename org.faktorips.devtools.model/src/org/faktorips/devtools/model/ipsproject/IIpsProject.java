@@ -49,8 +49,8 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.model.enumtype.EnumType;
 
 /**
  * Project to develop IPS objects.
@@ -241,15 +241,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * If there is no referencing project, this project is returned.
      * <p>
      * Although you get a minimal set of IPS projects for your search, you have to look for
-     * duplicate results. E.g. in your project structure you have a project called <em>ipsProject</em>
-     * and you have two projects <em>RefProject1</em> and <em>RefProject2</em> that both referencing
-     * <em>ipsProject</em>. In <em>ipsProject</em> there is a <code>ProductCmptType</code> and a derived
-     * <code>ProductCmpt</code> you want to find. Because there are maybe other
-     * <code>ProductCmpt</code>s referencing you <code>ProductCmptType</code> you have to search in
-     * all IPS projects, referencing your <em>ipsProject</em>. This is exactly the usage of this
-     * method. The problem is, you get two projects, both referencing <em>ipsProject</em>. If you add
-     * all results of search in project <em>RefProject1</em> and <em>RefProject2</em> you found the
-     * <code>ProductCmpt</code> in <em>ipsProject</em> twice.
+     * duplicate results. E.g. in your project structure you have a project called
+     * <em>ipsProject</em> and you have two projects <em>RefProject1</em> and <em>RefProject2</em>
+     * that both referencing <em>ipsProject</em>. In <em>ipsProject</em> there is a
+     * <code>ProductCmptType</code> and a derived <code>ProductCmpt</code> you want to find. Because
+     * there are maybe other <code>ProductCmpt</code>s referencing you <code>ProductCmptType</code>
+     * you have to search in all IPS projects, referencing your <em>ipsProject</em>. This is exactly
+     * the usage of this method. The problem is, you get two projects, both referencing
+     * <em>ipsProject</em>. If you add all results of search in project <em>RefProject1</em> and
+     * <em>RefProject2</em> you found the <code>ProductCmpt</code> in <em>ipsProject</em> twice.
      * 
      * 
      * @return The IPS projects referencing this project excluding projects that are referenced by

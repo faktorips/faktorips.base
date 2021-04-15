@@ -108,7 +108,7 @@ public class ProductSearchQueryTest {
         IIpsSrcFile selectedSrcFile = mock(IIpsSrcFile.class);
         when(selectedSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
 
-        Set<IIpsSrcFile> selectedFiles = new HashSet<IIpsSrcFile>(Arrays.asList(wrongObjectType, wrongProductCmptType,
+        Set<IIpsSrcFile> selectedFiles = new HashSet<>(Arrays.asList(wrongObjectType, wrongProductCmptType,
                 selectedSrcFile));
 
         when(scope.getSelectedIpsSrcFiles()).thenReturn(selectedFiles);

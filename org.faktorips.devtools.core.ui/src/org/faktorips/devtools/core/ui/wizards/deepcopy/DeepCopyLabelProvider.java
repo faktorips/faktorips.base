@@ -72,7 +72,8 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         if (element instanceof IProductCmptStructureReference) {
             IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
             if (deepCopyPreview.getPresentationModel().getTreeStatus().isEnabled(reference)
-                    && deepCopyPreview.getPresentationModel().getTreeStatus().getCopyOrLink(reference) == CopyOrLink.COPY) {
+                    && deepCopyPreview.getPresentationModel().getTreeStatus()
+                            .getCopyOrLink(reference) == CopyOrLink.COPY) {
                 return deepCopyPreview.getNewName(reference.getWrappedIpsObject());
             }
         }
@@ -152,7 +153,8 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         if (item instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)item;
             String packageName = ""; //$NON-NLS-1$
-            if (deepCopyPreview.getPresentationModel().getTreeStatus().getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
+            if (deepCopyPreview.getPresentationModel().getTreeStatus()
+                    .getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
                 packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
                         .getTargetPackage(), productCmptReference.getWrappedIpsObject(), segmentsToIgnore);
             } else {

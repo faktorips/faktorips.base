@@ -12,9 +12,9 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -268,7 +268,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     private static List<Element> getChildElementsByTagName(Element prodCmptElement, String tagName) {
-        List<Element> linkElements = new ArrayList<Element>();
+        List<Element> linkElements = new ArrayList<>();
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);

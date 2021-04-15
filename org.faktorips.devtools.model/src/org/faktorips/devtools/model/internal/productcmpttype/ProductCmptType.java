@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -77,11 +76,11 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.IElementMover;
 import org.faktorips.devtools.model.util.SubListElementMover;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -121,22 +120,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * meantime, finders must take this map into account to determine the correct
      * {@link IProductCmptCategory} of an {@link IProductCmptProperty}.
      */
-    private Map<IProductCmptProperty, String> pendingPolicyChanges = new HashMap<IProductCmptProperty, String>();
+    private Map<IProductCmptProperty, String> pendingPolicyChanges = new HashMap<>();
 
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
 
-        tableStructureUsages = new IpsObjectPartCollection<ITableStructureUsage>(this, TableStructureUsage.class,
+        tableStructureUsages = new IpsObjectPartCollection<>(this, TableStructureUsage.class,
                 ITableStructureUsage.class, TableStructureUsage.TAG_NAME);
-        attributes = new IpsObjectPartCollection<IProductCmptTypeAttribute>(this, ProductCmptTypeAttribute.class,
+        attributes = new IpsObjectPartCollection<>(this, ProductCmptTypeAttribute.class,
                 IProductCmptTypeAttribute.class, ProductCmptTypeAttribute.TAG_NAME);
-        methods = new IpsObjectPartCollection<IProductCmptTypeMethod>(this, ProductCmptTypeMethod.class,
+        methods = new IpsObjectPartCollection<>(this, ProductCmptTypeMethod.class,
                 IProductCmptTypeMethod.class, BaseMethod.XML_ELEMENT_NAME);
-        associations = new IpsObjectPartCollection<IProductCmptTypeAssociation>(this, ProductCmptTypeAssociation.class,
+        associations = new IpsObjectPartCollection<>(this, ProductCmptTypeAssociation.class,
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
-        categories = new IpsObjectPartCollection<IProductCmptCategory>(this, ProductCmptCategory.class,
+        categories = new IpsObjectPartCollection<>(this, ProductCmptCategory.class,
                 IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
-        propertyReferences = new IpsObjectPartCollection<IProductCmptPropertyReference>(this,
+        propertyReferences = new IpsObjectPartCollection<>(this,
                 ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
                 ProductCmptPropertyReference.XML_TAG_NAME);
     }
@@ -501,7 +500,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptTypeMethod> getNonFormulaProductCmptTypeMethods() {
-        ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
+        ArrayList<IProductCmptTypeMethod> result = new ArrayList<>();
         for (IProductCmptTypeMethod method : methods) {
             if (!method.isFormulaSignatureDefinition()) {
                 result.add(method);
@@ -526,7 +525,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) {
-        ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
+        ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<>();
         for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
                 IProductCmptTypeMethod overloadedMethod = method.findOverloadedFormulaMethod(ipsProject);
@@ -553,7 +552,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptTypeMethod> getFormulaSignatures() {
-        ArrayList<IProductCmptTypeMethod> result = new ArrayList<IProductCmptTypeMethod>();
+        ArrayList<IProductCmptTypeMethod> result = new ArrayList<>();
         for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition()) {
                 result.add(method);
@@ -575,7 +574,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         List<IMethod> candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = findSignaturesOfOverloadedFormulas(ipsProject);
-        List<IMethod> result = new ArrayList<IMethod>(candidates.size());
+        List<IMethod> result = new ArrayList<>(candidates.size());
         for (IMethod candidate : candidates) {
             if (overloadedMethods.contains(candidate)) {
                 continue;
@@ -631,7 +630,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) {
-        ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
+        ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<>();
         List<IProductCmptTypeMethod> formulaSignatures = getFormulaSignatures();
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
             if (formulaSignature.isOverloadsFormula()) {
@@ -722,7 +721,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
             String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeNotValid, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_VALID, text, Message.WARNING, this,
                     PROPERTY_POLICY_CMPT_TYPE));
-            return;
         }
     }
 
@@ -784,7 +782,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        Set<IDependency> dependencies = new HashSet<IDependency>();
+        Set<IDependency> dependencies = new HashSet<>();
         if (!StringUtils.isEmpty(getPolicyCmptType())) {
             IDependency dependency = IpsObjectDependency.createConfiguresDependency(getQualifiedNameType(),
                     new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
@@ -920,7 +918,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IProductCmptCategory> getCategories(Position position) {
-        List<IProductCmptCategory> positionCategories = new ArrayList<IProductCmptCategory>();
+        List<IProductCmptCategory> positionCategories = new ArrayList<>();
         for (IProductCmptCategory category : categories) {
             if (position.equals(category.getPosition())) {
                 positionCategories.add(category);
@@ -932,8 +930,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreException {
         // Collect all categories from the supertype hierarchy
-        final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<IProductCmptType, List<IProductCmptCategory>>();
-        TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<IProductCmptType>(ipsProject) {
+        final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<>();
+        TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<>(ipsProject) {
             @Override
             protected boolean visit(IProductCmptType currentType) {
                 typesToOriginalCategories.put(currentType, currentType.getCategories());
@@ -943,7 +941,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         visitor.start(this);
 
         // Sort so categories originating from farther up in the hierarchy are listed at the top
-        List<IProductCmptCategory> sortedCategories = new ArrayList<IProductCmptCategory>();
+        List<IProductCmptCategory> sortedCategories = new ArrayList<>();
         for (int i = visitor.getVisited().size() - 1; i >= 0; i--) {
             IType type = visitor.getVisited().get(i);
             sortedCategories.addAll(typesToOriginalCategories.get(type));
@@ -1088,8 +1086,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         // Split the categories to be moved according to position
-        List<IProductCmptCategory> leftCategories = new ArrayList<IProductCmptCategory>();
-        List<IProductCmptCategory> rightCategories = new ArrayList<IProductCmptCategory>();
+        List<IProductCmptCategory> leftCategories = new ArrayList<>();
+        List<IProductCmptCategory> rightCategories = new ArrayList<>();
         for (IProductCmptCategory category : categories) {
             List<IProductCmptCategory> targetList = category.isAtLeftPosition() ? leftCategories : rightCategories;
             targetList.add(category);
@@ -1113,7 +1111,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             indices[i] = contextCategories.indexOf(categories.get(i));
         }
 
-        SubListElementMover<IProductCmptCategory> mover = new SubListElementMover<IProductCmptCategory>(
+        SubListElementMover<IProductCmptCategory> mover = new SubListElementMover<>(
                 this.categories.getBackingList(), contextCategories);
         int[] newIndices = mover.move(indices, up);
         return !Arrays.equals(indices, newIndices);
@@ -1162,7 +1160,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             final boolean up) throws CoreException {
 
         return (int[])((IpsModel)getIpsModel())
-                .executeModificationsWithSingleEvent(new SingleEventModification<Object>(getIpsSrcFile()) {
+                .executeModificationsWithSingleEvent(new SingleEventModification<>(getIpsSrcFile()) {
                     private Object result;
 
                     @Override
@@ -1191,7 +1189,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             boolean up) {
 
         List<IProductCmptPropertyReference> contextReferences = getProductCmptPropertyReferences(contextProperties);
-        IElementMover mover = new SubListElementMover<IProductCmptPropertyReference>(
+        IElementMover mover = new SubListElementMover<>(
                 propertyReferences.getBackingList(), contextReferences);
         int[] newIndices = mover.move(movedIndices, up);
 
@@ -1203,7 +1201,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private List<IProductCmptPropertyReference> getProductCmptPropertyReferences(
             List<IProductCmptProperty> properties) {
-        List<IProductCmptPropertyReference> references = new ArrayList<IProductCmptPropertyReference>(
+        List<IProductCmptPropertyReference> references = new ArrayList<>(
                 properties.size());
         for (IProductCmptProperty property : properties) {
             for (IProductCmptPropertyReference reference : propertyReferences) {
@@ -1271,17 +1269,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * {@link Position#LEFT} are stored before all categories with {@link Position#RIGHT}.
      */
     void sortCategoriesAccordingToPosition() {
-        Collections.sort(categories.getBackingList(), new Comparator<IProductCmptCategory>() {
-            @Override
-            public int compare(IProductCmptCategory o1, IProductCmptCategory o2) {
-                if (o1.isAtLeftPosition() && o2.isAtRightPosition()) {
-                    return -1;
-                }
-                if (o1.isAtRightPosition() && o2.isAtLeftPosition()) {
-                    return 1;
-                }
-                return 0;
+        Collections.sort(categories.getBackingList(), (o1, o2) -> {
+            if (o1.isAtLeftPosition() && o2.isAtRightPosition()) {
+                return -1;
             }
+            if (o1.isAtRightPosition() && o2.isAtLeftPosition()) {
+                return 1;
+            }
+            return 0;
         });
     }
 
@@ -1309,7 +1304,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * properties.
      */
     List<IProductCmptPropertyReference> getPropertyReferences() {
-        return new ArrayList<IProductCmptPropertyReference>(propertyReferences.getBackingList());
+        return new ArrayList<>(propertyReferences.getBackingList());
     }
 
     /**
@@ -1368,13 +1363,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         private final boolean searchSupertypeHierarchy;
 
-        private List<IProductCmptProperty> attributes = new ArrayList<IProductCmptProperty>();
-        private List<IProductCmptProperty> tableStructureUsages = new ArrayList<IProductCmptProperty>();
-        private List<IProductCmptProperty> formulaSignatureDefinitions = new ArrayList<IProductCmptProperty>();
-        private List<IProductCmptProperty> policyCmptTypeAttributes = new ArrayList<IProductCmptProperty>();
-        private List<IProductCmptProperty> validationRules = new ArrayList<IProductCmptProperty>();
+        private List<IProductCmptProperty> attributes = new ArrayList<>();
+        private List<IProductCmptProperty> tableStructureUsages = new ArrayList<>();
+        private List<IProductCmptProperty> formulaSignatureDefinitions = new ArrayList<>();
+        private List<IProductCmptProperty> policyCmptTypeAttributes = new ArrayList<>();
+        private List<IProductCmptProperty> validationRules = new ArrayList<>();
 
-        private Set<IPolicyCmptType> visitedPolicyCmptTypes = new LinkedHashSet<IPolicyCmptType>();
+        private Set<IPolicyCmptType> visitedPolicyCmptTypes = new LinkedHashSet<>();
 
         public ProductCmptPropertyCollector(ProductCmptPropertyType propertyType, boolean searchSupertypeHierarchy,
                 IIpsProject ipsProject) {
@@ -1437,7 +1432,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         public List<IProductCmptProperty> getProperties() {
-            List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>(size());
+            List<IProductCmptProperty> properties = new ArrayList<>(size());
             properties.addAll(attributes);
             properties.addAll(tableStructureUsages);
             properties.addAll(formulaSignatureDefinitions);
@@ -1447,7 +1442,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         public Map<String, IProductCmptProperty> getPropertyMap() {
-            Map<String, IProductCmptProperty> propertyMap = new LinkedHashMap<String, IProductCmptProperty>(size());
+            Map<String, IProductCmptProperty> propertyMap = new LinkedHashMap<>(size());
             add(propertyMap, attributes);
             add(propertyMap, tableStructureUsages);
             add(propertyMap, formulaSignatureDefinitions);
@@ -1472,7 +1467,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
          */
         private void fixOverwrittenPolicyCmptTypeAttributes(Map<String, IProductCmptProperty> propertyMap) {
             // Iteration trough policy component types starts from the bottom of the hierarchy
-            Set<String> analyzedPolicyAttributes = new HashSet<String>();
+            Set<String> analyzedPolicyAttributes = new HashSet<>();
             for (IPolicyCmptType policyCmptType : visitedPolicyCmptTypes) {
                 for (IPolicyCmptTypeAttribute attribute : policyCmptType.getPolicyCmptTypeAttributes()) {
                     if (!attribute.isOverwrite() || analyzedPolicyAttributes.contains(attribute.getName())) {

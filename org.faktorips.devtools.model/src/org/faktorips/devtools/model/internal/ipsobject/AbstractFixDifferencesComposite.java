@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
  */
 public abstract class AbstractFixDifferencesComposite extends PlatformObject implements IFixDifferencesComposite {
 
-    private final List<IFixDifferencesComposite> children = new ArrayList<IFixDifferencesComposite>();
+    private final List<IFixDifferencesComposite> children = new ArrayList<>();
 
     @Override
     public final boolean isEmpty() {
@@ -64,7 +64,7 @@ public abstract class AbstractFixDifferencesComposite extends PlatformObject imp
 
     @Override
     public List<IFixDifferencesComposite> getChildren() {
-        return new CopyOnWriteArrayList<IFixDifferencesComposite>(children);
+        return new CopyOnWriteArrayList<>(children);
     }
 
     /**

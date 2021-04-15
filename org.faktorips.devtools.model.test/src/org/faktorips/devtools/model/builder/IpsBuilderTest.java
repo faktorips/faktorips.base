@@ -197,7 +197,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private static class TestDependencyIpsArtefactBuilder extends AbstractArtefactBuilder {
 
-        private List<IIpsObject> builtIpsObjects = new ArrayList<IIpsObject>();
+        private List<IIpsObject> builtIpsObjects = new ArrayList<>();
         private IIpsProject ipsProjectOfBeforeBuildProcess;
         private IIpsProject ipsProjectOfAfterBuildProcess;
 
@@ -266,7 +266,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IMarker[] markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
         assertTrue(markers.length > 0);
         assertEquals(msgList.size(), markers.length);
-        Map<String, Integer> msgTexts = new HashMap<String, Integer>();
+        Map<String, Integer> msgTexts = new HashMap<>();
         for (Object name : msgList) {
             Message msg = (Message)name;
             if (msg.getSeverity() == Message.ERROR) {
@@ -277,7 +277,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             }
         }
         for (IMarker marker : markers) {
-            assertTrue(msgTexts.keySet().contains(marker.getAttribute(IMarker.MESSAGE)));
+            assertTrue(msgTexts.containsKey(marker.getAttribute(IMarker.MESSAGE)));
             assertEquals(msgTexts.get(marker.getAttribute(IMarker.MESSAGE)), marker.getAttribute(IMarker.SEVERITY));
         }
 
@@ -1060,7 +1060,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         IFile propertiesFile = spy(ipsProject.getIpsProjectPropertiesFile());
         IFile manifestFile = mock(IFile.class);
-        when(manifestFile.findMarkers(IpsBuilder.PROBLEM_MARKER, true, IResource.DEPTH_ZERO)).thenReturn(new IMarker[0]);
+        when(manifestFile.findMarkers(IpsBuilder.PROBLEM_MARKER, true, IResource.DEPTH_ZERO))
+                .thenReturn(new IMarker[0]);
 
         IMarker marker2222 = mock(IMarker.class);
         IMarker marker3333 = mock(IMarker.class);

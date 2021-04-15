@@ -145,7 +145,7 @@ public class EnumTypeDatatypeAdapterTest {
         setUpEnumValueWithIndex("B", valueB, 1);
         setUpEnumValueWithIndex("C", valueC, 2);
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("C");
         list.add("B");
         list.add(null);
@@ -191,7 +191,7 @@ public class EnumTypeDatatypeAdapterTest {
 
     @Test
     public void test_getAllValueIds_EnumContentNotNull_ResultContainsNull() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("result1");
         list.add("result2");
 
@@ -206,7 +206,7 @@ public class EnumTypeDatatypeAdapterTest {
     @Test
     public void test_getAllValueIds_EnumContentNotNull() {
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("result1");
 
         when(enumContent.getIpsProject()).thenReturn(ipsProject);

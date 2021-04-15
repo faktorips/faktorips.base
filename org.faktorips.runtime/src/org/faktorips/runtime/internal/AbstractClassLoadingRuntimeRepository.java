@@ -95,7 +95,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             Constructor<?> constructor = getProductComponentConstructor(implementationClassName);
             productCmpt = (ProductComponent)constructor
-                    .newInstance(new Object[] { this, ipsObjectId, kindId, versionId });
+                    .newInstance(this, ipsObjectId, kindId, versionId);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Can't create product component instance for class name \""
                     + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
@@ -114,7 +114,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             Class<?> implClass = getClass(implementationClassName, getClassLoader());
             Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
             Constructor<?> constructor = implClass
-                    .getConstructor(new Class[] { runtimeRepoClass, String.class, String.class, String.class });
+                    .getConstructor(runtimeRepoClass, String.class, String.class, String.class);
             return constructor;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(
@@ -140,7 +140,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             Constructor<T> constructor,
             int startIndex) {
         T enumValue = null;
-        ArrayList<T> enumValues = new ArrayList<T>();
+        ArrayList<T> enumValues = new ArrayList<>();
         int valueCounterForIndexParameter = startIndex;
         for (List<Object> enumValueAsStrings : enumValueList) {
             constructor.setAccessible(true);
@@ -342,7 +342,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         Table<?> table;
         try {
             Constructor<?> constructor = getTableConstructor(implClass, tocEntry);
-            table = (Table<?>)constructor.newInstance(new Object[0]);
+            table = (Table<?>)constructor.newInstance();
         } catch (IllegalAccessException e) {
             throw createCannotInstantiateException(e, tocEntry);
         } catch (InstantiationException e) {
@@ -372,7 +372,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     private Constructor<?> getTableConstructor(Class<?> implClass, TableContentTocEntry tocEntry) {
         Constructor<?> constructor;
         try {
-            constructor = implClass.getConstructor(new Class[0]);
+            constructor = implClass.getConstructor();
         } catch (NoSuchMethodException e) {
             throw createCannotInstantiateException(e, tocEntry);
         }
@@ -384,7 +384,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         IpsTestCaseBase test;
         try {
             Constructor<?> constructor = getTestCaseConstructor(tocEntry);
-            test = (IpsTestCaseBase)constructor.newInstance(new Object[] { tocEntry.getIpsObjectQualifiedName() });
+            test = (IpsTestCaseBase)constructor.newInstance(tocEntry.getIpsObjectQualifiedName());
         } catch (IllegalAccessException e) {
             throw createCannotInstantiateException(e, tocEntry);
         } catch (InstantiationException e) {
@@ -411,7 +411,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     private Constructor<?> getTestCaseConstructor(TestCaseTocEntry tocEntry) {
         try {
             Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
-            Constructor<?> constructor = implClass.getConstructor(new Class[] { String.class });
+            Constructor<?> constructor = implClass.getConstructor(String.class);
             return constructor;
         } catch (NoSuchMethodException e) {
             throw createCannotInstantiateException(e, tocEntry);

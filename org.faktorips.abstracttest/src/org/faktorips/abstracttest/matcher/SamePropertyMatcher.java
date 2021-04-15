@@ -63,6 +63,6 @@ public class SamePropertyMatcher<T, P> extends BaseMatcher<T> {
     public static <T, P> Matcher<T> same(Function<T, P> propertyGetter,
             String propertyDescription,
             T objectToMatch) {
-        return new SamePropertyMatcher<T, P>(propertyGetter, propertyDescription, objectToMatch);
+        return new SamePropertyMatcher<>(propertyGetter, propertyDescription, objectToMatch);
     }
 }

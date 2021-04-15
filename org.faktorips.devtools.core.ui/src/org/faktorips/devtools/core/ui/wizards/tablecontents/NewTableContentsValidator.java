@@ -57,7 +57,8 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
 
     private void validateStructure(MessageList result) {
         if (getPmo().getSelectedStructure() == null) {
-            result.add(new Message(MSG_NO_STRUCTURE, Messages.NewTableContentsValidator_msg_noStructure, Message.ERROR));
+            result.add(
+                    new Message(MSG_NO_STRUCTURE, Messages.NewTableContentsValidator_msg_noStructure, Message.ERROR));
         } else {
             validateSelectedStructure(result, getPmo().getIpsProject(), getPmo().getSelectedStructure());
         }

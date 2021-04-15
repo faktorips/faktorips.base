@@ -63,7 +63,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
                 IDecisionBFE.XML_TAG);
         parameters = new BFElementIpsObjectPartCollection<>(this, ParameterBFE.class, IParameterBFE.class,
                 IParameterBFE.XML_TAG);
-        controlFlows = new IpsObjectPartCollection<IControlFlow>(this, ControlFlow.class, IControlFlow.class,
+        controlFlows = new IpsObjectPartCollection<>(this, ControlFlow.class, IControlFlow.class,
                 IControlFlow.XML_TAG);
     }
 
@@ -108,7 +108,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
 
     @Override
     public List<IParameterBFE> getParameterBFEs() {
-        ArrayList<IParameterBFE> returnValue = new ArrayList<IParameterBFE>();
+        ArrayList<IParameterBFE> returnValue = new ArrayList<>();
         for (IIpsObjectPart parameterBFE : parameters.getParts()) {
             returnValue.add((IParameterBFE)parameterBFE);
         }
@@ -161,7 +161,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
 
     @Override
     public List<IControlFlow> getControlFlows() {
-        return new ArrayList<IControlFlow>(controlFlows.getBackingList());
+        return new ArrayList<>(controlFlows.getBackingList());
     }
 
     @Override
@@ -223,7 +223,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
     @Override
     public List<IBFElement> getBFElements() {
         int size = simpleElements.size() + actions.size() + decisions.size() + parameters.size();
-        List<IBFElement> nodeList = new ArrayList<IBFElement>(size);
+        List<IBFElement> nodeList = new ArrayList<>(size);
         nodeList.addAll(simpleElements.getBackingList());
         nodeList.addAll(actions.getBackingList());
         nodeList.addAll(decisions.getBackingList());
@@ -268,7 +268,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
 
     // TODO testing Decision_MethodCall
     private void validateBFElementNameCollision(MessageList msgList) {
-        Map<String, List<IBFElement>> elements = new HashMap<String, List<IBFElement>>();
+        Map<String, List<IBFElement>> elements = new HashMap<>();
 
         for (IBFElement element : getBFElements()) {
             String key;
@@ -326,12 +326,12 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
     }
 
     private List<IBFElement> getValue(Map<String, List<IBFElement>> elements, String key) {
-        List<IBFElement> list = elements.computeIfAbsent(key, $ -> new ArrayList<IBFElement>());
+        List<IBFElement> list = elements.computeIfAbsent(key, $ -> new ArrayList<>());
         return list;
     }
 
     private void validateOnlyOneElementAllowed(MessageList msgList, BFElementType type, String msgCode) {
-        List<IBFElement> startElements = new ArrayList<IBFElement>();
+        List<IBFElement> startElements = new ArrayList<>();
         for (IBFElement element : simpleElements) {
             if (element.getType().equals(type)) {
                 startElements.add(element);
@@ -362,12 +362,12 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
         }
 
         List<IBFElement> elements = getBFElementsWithoutParameters();
-        ArrayList<IBFElement> successfullyCheckedForStart = new ArrayList<IBFElement>(elements.size());
+        ArrayList<IBFElement> successfullyCheckedForStart = new ArrayList<>(elements.size());
         for (IBFElement element : elements) {
             traceToStart(element, successfullyCheckedForStart, new ArrayList<IBFElement>(elements.size()));
         }
 
-        ArrayList<IBFElement> successfullyCheckedForEnd = new ArrayList<IBFElement>(elements.size());
+        ArrayList<IBFElement> successfullyCheckedForEnd = new ArrayList<>(elements.size());
         for (IBFElement element : elements) {
             traceToEnd(element, successfullyCheckedForEnd, new ArrayList<IBFElement>(elements.size()));
         }
@@ -424,7 +424,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
             if (addIfPredecessorValid(source, current, successfullyChecked, currentTrace)) {
                 continue;
             }
-            ArrayList<IBFElement> newTrace = new ArrayList<IBFElement>(currentTrace.size() + 10);
+            ArrayList<IBFElement> newTrace = new ArrayList<>(currentTrace.size() + 10);
             newTrace.addAll(currentTrace);
             traceToStart(source, successfullyChecked, newTrace);
         }
@@ -473,7 +473,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
             if (addIfPredecessorValid(target, current, successfullyChecked, currentTrace)) {
                 continue;
             }
-            ArrayList<IBFElement> newTrace = new ArrayList<IBFElement>(currentTrace.size() + 10);
+            ArrayList<IBFElement> newTrace = new ArrayList<>(currentTrace.size() + 10);
             newTrace.addAll(currentTrace);
             traceToEnd(target, successfullyChecked, newTrace);
         }
@@ -481,7 +481,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        List<IDependency> dependencies = new ArrayList<IDependency>();
+        List<IDependency> dependencies = new ArrayList<>();
         for (IIpsObjectPart part : actions.getParts()) {
             IActionBFE action = (IActionBFE)part;
             if (action.getType() == BFElementType.ACTION_BUSINESSFUNCTIONCALL) {
@@ -510,7 +510,7 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
     @Override
     public List<IBFElement> getBFElementsWithoutParameters() {
         int size = simpleElements.size() + actions.size() + decisions.size();
-        List<IBFElement> nodeList = new ArrayList<IBFElement>(size);
+        List<IBFElement> nodeList = new ArrayList<>(size);
         nodeList.addAll(simpleElements.getBackingList());
         nodeList.addAll(actions.getBackingList());
         nodeList.addAll(decisions.getBackingList());
@@ -525,12 +525,9 @@ public class BusinessFunction extends BaseIpsObject implements org.faktorips.dev
         }
 
         public IBFElement newBFElement(final Location location, final BFElementType type) {
-            IpsObjectPartInitializer<T> initializer = new IpsObjectPartInitializer<T>() {
-                @Override
-                public void initialize(T part) {
-                    ((BFElement)part).setLocation(location);
-                    ((BFElement)part).setType(type);
-                }
+            IpsObjectPartInitializer<T> initializer = part -> {
+                ((BFElement)part).setLocation(location);
+                ((BFElement)part).setType(type);
             };
 
             return newPart(initializer);

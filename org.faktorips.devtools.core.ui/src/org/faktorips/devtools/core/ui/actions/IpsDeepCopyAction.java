@@ -76,26 +76,22 @@ public class IpsDeepCopyAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        final TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection,
+        final TypedSelection<IAdaptable> typedSelection = new TypedSelection<>(IAdaptable.class, selection,
                 1);
 
-        BusyIndicator.showWhile(shell.getDisplay(), new Runnable() {
-
-            @Override
-            public void run() {
-                IProductCmptGeneration generation = null;
-                if (typedSelection.getElement().getAdapter(IProductCmptGeneration.class) != null) {
-                    generation = typedSelection.getElement().getAdapter(
-                            IProductCmptGeneration.class);
-                } else if (typedSelection.getElement().getAdapter(IProductCmpt.class) != null) {
-                    IProductCmpt root = typedSelection.getElement().getAdapter(IProductCmpt.class);
-                    IIpsObjectGeneration[] generationsOrderedByValidDate = root.getGenerationsOrderedByValidDate();
-                    generation = (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length
-                            - 1];
-                }
-                if (generation != null) {
-                    runCopyWizard(generation);
-                }
+        BusyIndicator.showWhile(shell.getDisplay(), () -> {
+            IProductCmptGeneration generation = null;
+            if (typedSelection.getElement().getAdapter(IProductCmptGeneration.class) != null) {
+                generation = typedSelection.getElement().getAdapter(
+                        IProductCmptGeneration.class);
+            } else if (typedSelection.getElement().getAdapter(IProductCmpt.class) != null) {
+                IProductCmpt root = typedSelection.getElement().getAdapter(IProductCmpt.class);
+                IIpsObjectGeneration[] generationsOrderedByValidDate = root.getGenerationsOrderedByValidDate();
+                generation = (IProductCmptGeneration)generationsOrderedByValidDate[generationsOrderedByValidDate.length
+                        - 1];
+            }
+            if (generation != null) {
+                runCopyWizard(generation);
             }
         });
     }

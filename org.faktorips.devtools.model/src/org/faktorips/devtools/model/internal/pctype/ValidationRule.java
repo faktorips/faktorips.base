@@ -62,12 +62,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private String msgCode = ""; //$NON-NLS-1$
 
-    private List<String> validatedAttributes = new ArrayList<String>();
+    private List<String> validatedAttributes = new ArrayList<>();
 
     private MessageSeverity msgSeverity = MessageSeverity.ERROR;
 
     /** The qualified names of the business functions this rule is used in. */
-    private ArrayList<String> functions = new ArrayList<String>(0);
+    private ArrayList<String> functions = new ArrayList<>(0);
 
     private boolean appliedForAllBusinessFunction = true;
 
@@ -80,7 +80,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private boolean changingOverTime = true;
 
     /** The markers that are applied to this rule. */
-    private List<String> markers = new ArrayList<String>();
+    private List<String> markers = new ArrayList<>();
 
     /**
      * Flag which is <code>true</code> if this rule is a default rule for validating the value of an
@@ -215,7 +215,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     private Set<String> getUsedMarkerIds() {
-        Set<String> usedMarkerIds = new LinkedHashSet<String>();
+        Set<String> usedMarkerIds = new LinkedHashSet<>();
         for (String usedMarker : markers) {
             usedMarkerIds.add(usedMarker);
         }
@@ -279,7 +279,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) {
         List<IAttribute> attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(getPolicyCmptType());
-        Set<String> attributeNames = new HashSet<String>(attributes.size());
+        Set<String> attributeNames = new HashSet<>(attributes.size());
         for (IAttribute attribute : attributes) {
             attributeNames.add(attribute.getName());
         }
@@ -305,8 +305,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 if (validatedAttributes.get(i).equals(validatedAttributes.get(r))) {
                     String text = Messages.ValidationRule_msgDuplicateEntries;
                     list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
-                            new ObjectProperty[] { new ObjectProperty(this, "validatedAttributes", i), //$NON-NLS-1$
-                                    new ObjectProperty(this, "validatedAttributes", r) })); //$NON-NLS-1$
+                            new ObjectProperty(this, "validatedAttributes", i), //$NON-NLS-1$
+                            new ObjectProperty(this, "validatedAttributes", r))); //$NON-NLS-1$
                 }
             }
         }
@@ -467,9 +467,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private void appendChildrenFor(String elementType, List<String> childElements, Element newElement) {
         Document doc = newElement.getOwnerDocument();
-        for (int i = 0; i < childElements.size(); i++) {
+        for (String childElement : childElements) {
             Element element = doc.createElement(elementType);
-            element.setAttribute("name", childElements.get(i)); //$NON-NLS-1$
+            element.setAttribute("name", childElement); //$NON-NLS-1$
             newElement.appendChild(element);
         }
     }

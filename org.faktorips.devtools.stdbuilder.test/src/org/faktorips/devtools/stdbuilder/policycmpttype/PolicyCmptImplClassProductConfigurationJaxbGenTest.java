@@ -36,7 +36,8 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
                 + System.lineSeparator();
         assertEquals(testSsourcecode, codeFragment.getSourcecode());
         ImportDeclaration importDeclaration = codeFragment.getImportDeclaration();
-        assertTrue(importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));
+        assertTrue(
+                importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));
 
     }
 

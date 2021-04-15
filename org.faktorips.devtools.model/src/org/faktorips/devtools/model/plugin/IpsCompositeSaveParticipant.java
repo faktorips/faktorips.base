@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class IpsCompositeSaveParticipant implements ISaveParticipant {
 
-    private Set<ISaveParticipant> saveParticipants = new HashSet<ISaveParticipant>();
+    private Set<ISaveParticipant> saveParticipants = new HashSet<>();
 
     public void addSaveParticipant(ISaveParticipant participant) {
         if (participant == null) {

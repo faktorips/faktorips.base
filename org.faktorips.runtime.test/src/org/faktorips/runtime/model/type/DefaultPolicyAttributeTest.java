@@ -182,7 +182,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(source, null, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "foo", "bar"), valueSet);
     }
 
     @Test
@@ -198,7 +198,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "foo", "bar"), valueSet);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, new ValidationContext());
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -237,7 +237,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -308,7 +308,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "foo", "bar"), valueSet);
     }
 
     @Test
@@ -320,7 +320,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "foo", "bar"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "foo", "bar"), valueSet);
     }
 
     @Test
@@ -332,7 +332,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, new ValidationContext());
 
         assertTrue(valueSet instanceof OrderedValueSet);
-        assertEquals(new OrderedValueSet<String>(false, null, "lorem", "ipsum"), valueSet);
+        assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -353,7 +353,7 @@ public class DefaultPolicyAttributeTest {
         ValueSet<?> valueSet = attribute.getValueSet(vertrag, null);
 
         assertTrue(valueSet instanceof DefaultRange);
-        assertEquals(new DefaultRange<String>("A", "Z"), valueSet);
+        assertEquals(new DefaultRange<>("A", "Z"), valueSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -565,7 +565,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
         Produkt produkt = new Produkt();
-        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(produkt, null, valueSet);
 
@@ -577,7 +577,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
         Produkt produkt = new Produkt();
-        OrderedValueSet<Integer> valueSet = new OrderedValueSet<Integer>(false, null, 1, 2, 3);
+        OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, 1, 2, 3);
 
         attribute.setValueSet(produkt, null, valueSet);
 
@@ -612,7 +612,7 @@ public class DefaultPolicyAttributeTest {
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
-        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(produkt, effectiveDate, valueSet);
 
@@ -626,7 +626,7 @@ public class DefaultPolicyAttributeTest {
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
-        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(produkt, null, valueSet);
 
@@ -659,7 +659,7 @@ public class DefaultPolicyAttributeTest {
         vertrag.effectiveFrom = effectiveFrom;
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
-        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(vertrag, valueSet);
 
@@ -673,7 +673,7 @@ public class DefaultPolicyAttributeTest {
         ConfVertrag vertrag = new ConfVertrag();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
-        OrderedValueSet<String> valueSet = new OrderedValueSet<String>(false, null, "A", "B", "C");
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(vertrag, valueSet);
 
@@ -765,7 +765,7 @@ public class DefaultPolicyAttributeTest {
          */
         @IpsAllowedValues("attr2")
         public ValueSet<String> getSetOfAllowedValuesForAttr2(IValidationContext context) {
-            return new UnrestrictedValueSet<String>(false);
+            return new UnrestrictedValueSet<>(false);
         }
 
         @IpsAttribute(name = "attrChangingOverTime", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
@@ -784,7 +784,7 @@ public class DefaultPolicyAttributeTest {
          */
         @IpsAllowedValues("attrChangingOverTime")
         public ValueSet<String> getSetOfAllowedValuesForAttrChangingOverTime(IValidationContext context) {
-            return new OrderedValueSet<String>(false, null, "foo", "bar");
+            return new OrderedValueSet<>(false, null, "foo", "bar");
         }
 
         @IpsAttribute(name = "attrWithValueSetWithoutValidationContext", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
@@ -865,7 +865,7 @@ public class DefaultPolicyAttributeTest {
     private class Produkt extends ProductComponent {
 
         private String defaultValueAttr1 = "foobar";
-        private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<String>();
+        private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<>();
 
         public Produkt() {
             super(repository, "id", "kindId", "versionId");
@@ -904,7 +904,7 @@ public class DefaultPolicyAttributeTest {
 
         @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
         public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
-            return new OrderedValueSet<String>(false, null, "lorem", "ipsum");
+            return new OrderedValueSet<>(false, null, "lorem", "ipsum");
         }
 
         @Override
@@ -967,7 +967,7 @@ public class DefaultPolicyAttributeTest {
     private class ProduktGen extends ProductComponentGeneration {
 
         private String defaultValueAttrChangingOverTime = "blub";
-        private ValueSet<String> allowedValuesForAttrChangingOverTime = new OrderedValueSet<String>(false, null,
+        private ValueSet<String> allowedValuesForAttrChangingOverTime = new OrderedValueSet<>(false, null,
                 "foo", "bar");
 
         public ProduktGen() {
@@ -1023,7 +1023,7 @@ public class DefaultPolicyAttributeTest {
          */
         @IpsAllowedValues("attr1")
         public ValueSet<String> getSetOfAllowedValuesForAttr1(IValidationContext context) {
-            return new DefaultRange<String>("A", "Z");
+            return new DefaultRange<>("A", "Z");
         }
 
         @Override
@@ -1093,7 +1093,7 @@ public class DefaultPolicyAttributeTest {
         @IpsAllowedValues("attrWithoutNull")
         public ValueSet<Integer> getSetOfAllowedValuesForAttrWithoutNull(
                 @SuppressWarnings("unused") IValidationContext context) {
-            return new UnrestrictedValueSet<Integer>(false);
+            return new UnrestrictedValueSet<>(false);
         }
 
         @IpsAttribute(name = "attrWithValueSetWithoutValidationContext", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
@@ -1108,7 +1108,7 @@ public class DefaultPolicyAttributeTest {
 
         @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
         public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
-            return new OrderedValueSet<String>(false, null, "lorem", "ipsum");
+            return new OrderedValueSet<>(false, null, "lorem", "ipsum");
         }
 
         @IpsAttribute(name = "attrWithValueSetWithTooManyArgs", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)

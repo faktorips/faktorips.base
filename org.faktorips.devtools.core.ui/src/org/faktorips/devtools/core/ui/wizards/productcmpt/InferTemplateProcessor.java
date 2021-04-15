@@ -61,7 +61,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
 
     private IProductCmptGeneration templateGeneration;
 
-    private final Set<IIpsSrcFile> srcFilesToSave = new HashSet<IIpsSrcFile>();
+    private final Set<IIpsSrcFile> srcFilesToSave = new HashSet<>();
 
     private final List<IProductCmpt> productCmpts;
 

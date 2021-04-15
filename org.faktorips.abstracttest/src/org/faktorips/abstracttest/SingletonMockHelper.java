@@ -40,7 +40,7 @@ public class SingletonMockHelper {
      * method.
      */
     public SingletonMockHelper() {
-        singletonMap = new HashMap<Field, Object>();
+        singletonMap = new HashMap<>();
     }
 
     /**

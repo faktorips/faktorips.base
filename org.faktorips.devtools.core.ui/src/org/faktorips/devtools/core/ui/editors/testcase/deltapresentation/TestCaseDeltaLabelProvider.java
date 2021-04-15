@@ -39,7 +39,7 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
     /** The test case label provider, to display objects in the context of the test case tree */
     private TestCaseLabelProvider testCaseLabelProvider;
 
-    private ArrayList<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
+    private ArrayList<ILabelProviderListener> listeners = new ArrayList<>();
 
     private ResourceManager resourceManager;
 

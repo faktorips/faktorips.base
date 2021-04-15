@@ -104,7 +104,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
          * Collect the potential different IPS projects of the selected elements as we want to
          * batch-execute the action on all projects.
          */
-        Set<IIpsProject> ipsProjects = new HashSet<IIpsProject>();
+        Set<IIpsProject> ipsProjects = new HashSet<>();
         for (IAdaptable adaptable : typedSelection.getElements()) {
             IIpsProject ipsProject = null;
             if (adaptable instanceof IIpsElement) {
@@ -168,7 +168,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 for (IIpsProject ipsProject : ipsProjects) {
-                    List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+                    List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
                     IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
                     for (IIpsPackageFragmentRoot root : fragmentRoots) {
                         for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
@@ -192,7 +192,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
 
             private Set<Locale> getSupportedLocales(IIpsProject ipsProject) {
                 Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
-                Set<Locale> supportedLocales = new HashSet<Locale>(supportedLanguages.size());
+                Set<Locale> supportedLocales = new HashSet<>(supportedLanguages.size());
                 for (ISupportedLanguage language : supportedLanguages) {
                     Locale locale = language.getLocale();
                     if (locale != null) {

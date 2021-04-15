@@ -43,8 +43,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * (with the name) as value. If there are multiple properties with a name, the value is a list
      * containing all the objects with the same name.
      */
-    private Map<String, ObjectProperty[]> properties = new HashMap<String, ObjectProperty[]>();
-    private List<String> duplicateProperties = new ArrayList<String>();
+    private Map<String, ObjectProperty[]> properties = new HashMap<>();
+    private List<String> duplicateProperties = new ArrayList<>();
 
     public DuplicatePropertyNameValidator(IIpsProject ipsProject) {
         super(ipsProject);

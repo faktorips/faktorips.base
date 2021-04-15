@@ -140,7 +140,7 @@ public class UniqueIdentifierValidatorTest {
     }
 
     private void createValues() {
-        List<IEnumValue> values = new ArrayList<IEnumValue>();
+        List<IEnumValue> values = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             IEnumValue enumValue = mock(IEnumValue.class);
             createAttributeValues(enumValue, i);
@@ -150,7 +150,7 @@ public class UniqueIdentifierValidatorTest {
     }
 
     private void createAttributeValues(IEnumValue enumValue, int i) {
-        List<IEnumAttributeValue> enumAttributeValues = new ArrayList<IEnumAttributeValue>();
+        List<IEnumAttributeValue> enumAttributeValues = new ArrayList<>();
         for (int j = 0; j < 2; j++) {
             IEnumAttributeValue enumAttributeValue = mock(IEnumAttributeValue.class);
             when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);

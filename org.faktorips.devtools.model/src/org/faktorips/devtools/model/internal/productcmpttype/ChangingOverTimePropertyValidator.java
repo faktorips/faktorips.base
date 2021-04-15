@@ -61,7 +61,8 @@ public class ChangingOverTimePropertyValidator {
     public void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
         if (productCmptType != null && !StringUtils.isEmpty(property.getName())) {
             if (!productCmptType.isChangingOverTime() && property.isChangingOverTime()) {
-                String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
+                String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences()
+                        .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
                 String text = NLS.bind(Messages.ProductCmptPropertyValidator_msgTypeDoesNotAcceptChangingOverTime,
                         property.getName(), changingOverTimePluralName);
                 messageList.add(Message.newError(MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME, text, property,

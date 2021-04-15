@@ -122,7 +122,7 @@ public class ProjectUtil {
             IFolder derivedFolder,
             IFolder srcFolder) throws CoreException {
 
-        List<Locale> supportedLocales = new ArrayList<Locale>(1);
+        List<Locale> supportedLocales = new ArrayList<>(1);
         supportedLocales.add(IIpsModel.get().getMultiLanguageSupport().getLocalizationLocale());
         IIpsProject ipsProject = createIpsProject(javaProject, runtimeIdPrefix, isProductDefinitionProject,
                 isModelProject,

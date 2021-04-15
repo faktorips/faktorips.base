@@ -428,8 +428,8 @@ public class PolicyAssociationTest {
     private static class Source implements IModelObject {
 
         private Target target;
-        private final List<Target> targets1toN = new ArrayList<PolicyAssociationTest.Target>();
-        private final List<Target> moreTargets1toN = new ArrayList<PolicyAssociationTest.Target>();
+        private final List<Target> targets1toN = new ArrayList<>();
+        private final List<Target> moreTargets1toN = new ArrayList<>();
 
         @Override
         public MessageList validate(IValidationContext context) {

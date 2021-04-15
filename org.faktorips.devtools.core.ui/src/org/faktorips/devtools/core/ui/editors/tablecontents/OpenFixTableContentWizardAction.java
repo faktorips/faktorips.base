@@ -62,7 +62,7 @@ public class OpenFixTableContentWizardAction extends Action {
 
     @Override
     public void run() {
-        FixContentWizard<ITableStructure, IColumn> wizard = new FixContentWizard<ITableStructure, IColumn>(
+        FixContentWizard<ITableStructure, IColumn> wizard = new FixContentWizard<>(
                 tableContents, new FixTableContentStrategy(tableContents));
         WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();

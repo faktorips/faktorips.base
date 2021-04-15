@@ -126,7 +126,8 @@ public class TestValueTest extends AbstractIpsPluginTest {
         // check if the message is a warning, because it will be validated as error in the parameter
         param.setValueDatatype("x");
         ml = valueObjectInput.validate(project);
-        assertEquals(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, ml.getFirstMessage(Message.WARNING).getCode());
+        assertEquals(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND,
+                ml.getFirstMessage(Message.WARNING).getCode());
     }
 
     @Test

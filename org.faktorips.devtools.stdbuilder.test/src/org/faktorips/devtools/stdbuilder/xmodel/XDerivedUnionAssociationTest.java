@@ -66,7 +66,7 @@ public class XDerivedUnionAssociationTest {
         XAssociation association2 = mock(XAssociation.class);
         when(association2.isSubsetOf(xDerivedUnionAssociation)).thenReturn(false);
 
-        Set<XAssociation> associations = new LinkedHashSet<XAssociation>();
+        Set<XAssociation> associations = new LinkedHashSet<>();
         associations.add(association1);
         associations.add(association2);
         doReturn(associations).when(xType).getAssociations();
@@ -114,7 +114,7 @@ public class XDerivedUnionAssociationTest {
 
         IAssociation association2 = mock(IAssociation.class);
         when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        ArrayList<IAssociation> associations = new ArrayList<>();
         associations.add(association2);
 
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
@@ -147,7 +147,7 @@ public class XDerivedUnionAssociationTest {
 
         IAssociation association2 = mock(IAssociation.class);
         when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        ArrayList<IAssociation> associations = new ArrayList<>();
         associations.add(association2);
 
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
@@ -181,7 +181,7 @@ public class XDerivedUnionAssociationTest {
 
         IAssociation association2 = mock(IAssociation.class);
         when(association2.getSubsettedDerivedUnion()).thenReturn(DERIVED_UNION_NAME);
-        ArrayList<IAssociation> associations = new ArrayList<IAssociation>();
+        ArrayList<IAssociation> associations = new ArrayList<>();
         associations.add(association2);
 
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));

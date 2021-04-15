@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.util;
 
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -28,18 +27,15 @@ public class TreeSetHelper {
      * tree set.
      */
     public static TreeSet<IIpsSrcFile> newIpsSrcFileTreeSet() {
-        return new TreeSet<IIpsSrcFile>(new Comparator<IIpsSrcFile>() {
-            @Override
-            public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
-                if (o1.equals(o2)) {
-                    return 0;
-                }
-                int result = o1.getName().compareToIgnoreCase(o2.getName());
-                if (result == 0) {
-                    return -1;
-                } else {
-                    return result;
-                }
+        return new TreeSet<>((o1, o2) -> {
+            if (o1.equals(o2)) {
+                return 0;
+            }
+            int result = o1.getName().compareToIgnoreCase(o2.getName());
+            if (result == 0) {
+                return -1;
+            } else {
+                return result;
             }
         });
     }

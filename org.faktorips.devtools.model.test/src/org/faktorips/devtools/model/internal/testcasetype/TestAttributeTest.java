@@ -49,7 +49,8 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        ITestCaseType type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "PremiumCalculation");
+        ITestCaseType type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
+                "PremiumCalculation");
         testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
 

@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.testcase.ITestCase;
  */
 public class IpsSrcFileCollection {
 
-    private Map<IIpsSrcFile, CollectionItem> collection = new HashMap<IIpsSrcFile, CollectionItem>();
+    private Map<IIpsSrcFile, CollectionItem> collection = new HashMap<>();
 
     /**
      * Create a new collection based on the given {@link IIpsSrcFile IIpsSrcFiles}. Using this
@@ -105,7 +105,7 @@ public class IpsSrcFileCollection {
             metaClassName = baseMetaClass.getQualifiedName();
         }
 
-        Map<String, CollectionItem> itemsByName = new HashMap<String, CollectionItem>();
+        Map<String, CollectionItem> itemsByName = new HashMap<>();
         for (IIpsSrcFile file : metaObjectsSrcFiles) {
             CollectionItem item = itemsByName.get(file.getName());
             CollectionItem newItem = new CollectionItem();

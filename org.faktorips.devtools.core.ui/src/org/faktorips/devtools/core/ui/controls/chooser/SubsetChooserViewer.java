@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -26,8 +24,6 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -71,13 +67,7 @@ public class SubsetChooserViewer {
     }
 
     private void addDisposeListener(Composite parent) {
-        parent.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                model.dispose();
-            }
-        });
+        parent.addDisposeListener(e -> model.dispose());
     }
 
     protected void initViewers() {
@@ -170,20 +160,16 @@ public class SubsetChooserViewer {
         preDefinedValuesTableViewer.setInput(model);
         resultingValuesTableViewer.setInput(model);
 
-        model.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (AbstractSubsetChooserModel.PROPERTY_RESULTING_VALUES.equals(evt.getPropertyName())) {
-                    resultingValuesTableViewer.refresh();
-                }
-                if (AbstractSubsetChooserModel.PROPERTY_PREDEFINED_VALUES.equals(evt.getPropertyName())) {
-                    preDefinedValuesTableViewer.refresh();
-                }
-                IStructuredSelection selection = (IStructuredSelection)resultingValuesTableViewer.getSelection();
-                if (selection.getFirstElement() != null) {
-                    resultingValuesTableViewer.reveal(selection.getFirstElement());
-                }
+        model.addPropertyChangeListener(evt -> {
+            if (AbstractSubsetChooserModel.PROPERTY_RESULTING_VALUES.equals(evt.getPropertyName())) {
+                resultingValuesTableViewer.refresh();
+            }
+            if (AbstractSubsetChooserModel.PROPERTY_PREDEFINED_VALUES.equals(evt.getPropertyName())) {
+                preDefinedValuesTableViewer.refresh();
+            }
+            IStructuredSelection selection = (IStructuredSelection)resultingValuesTableViewer.getSelection();
+            if (selection.getFirstElement() != null) {
+                resultingValuesTableViewer.reveal(selection.getFirstElement());
             }
         });
     }

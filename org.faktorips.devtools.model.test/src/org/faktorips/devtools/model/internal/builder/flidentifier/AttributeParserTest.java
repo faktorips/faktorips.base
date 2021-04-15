@@ -197,7 +197,7 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testfindAttributes() throws CoreException {
         AttributeParser spy = spy(attributeParser);
-        ArrayList<IAttribute> arrayList = new ArrayList<IAttribute>();
+        ArrayList<IAttribute> arrayList = new ArrayList<>();
         arrayList.add(attribute);
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
@@ -213,7 +213,7 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testfindAttributes_staticAttributes() {
         AttributeParser spy = spy(attributeParser);
-        List<IAttribute> arrayList = new ArrayList<IAttribute>();
+        List<IAttribute> arrayList = new ArrayList<>();
         arrayList.add(attribute4);
         doReturn(true).when(spy).isContextTypeFormulaType();
         doReturn(false).when(attribute4).isChangingOverTime();
@@ -238,7 +238,7 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     private ArrayList<IAttribute> listOfAttributes() {
-        ArrayList<IAttribute> list = new ArrayList<IAttribute>();
+        ArrayList<IAttribute> list = new ArrayList<>();
         list.add(attribute2);
         list.add(attribute3);
         return list;

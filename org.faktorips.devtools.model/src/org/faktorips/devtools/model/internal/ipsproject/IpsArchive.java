@@ -154,7 +154,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     @Override
     public Set<QualifiedNameType> getQNameTypes() throws CoreException {
         readArchiveContentIfNecessary();
-        TreeSet<QualifiedNameType> qualifiedNameTypes = new TreeSet<QualifiedNameType>();
+        TreeSet<QualifiedNameType> qualifiedNameTypes = new TreeSet<>();
         for (IPath path : paths.keySet()) {
             if (QualifiedNameType.representsQualifiedNameType(path.toString())) {
                 QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(path.toString());
@@ -169,9 +169,9 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         readArchiveContentIfNecessary();
         Set<QualifiedNameType> qnts = packs.get(packName);
         if (qnts == null) {
-            return new HashSet<QualifiedNameType>(0);
+            return new HashSet<>(0);
         }
-        Set<QualifiedNameType> packContent = new HashSet<QualifiedNameType>(qnts);
+        Set<QualifiedNameType> packContent = new HashSet<>(qnts);
         return packContent;
     }
 
@@ -191,8 +191,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     private void readArchiveContentIfNecessary() {
         synchronized (this) {
             if (!exists()) {
-                packs = new HashMap<String, Set<QualifiedNameType>>();
-                paths = new LinkedHashMap<IPath, IpsObjectProperties>();
+                packs = new HashMap<>();
+                paths = new LinkedHashMap<>();
                 return;
             }
             if (packs == null || paths == null) {
@@ -201,7 +201,6 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             }
             if (getActualFileModificationStamp() != modificationStamp) {
                 readArchiveContent();
-                return;
             }
         }
     }
@@ -222,7 +221,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("Reading archive content from disk: " + this); //$NON-NLS-1$
         }
-        packs = new HashMap<String, Set<QualifiedNameType>>(200);
+        packs = new HashMap<>(200);
 
         File file = getFileFromPath();
 
@@ -245,14 +244,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     private void indexContent(JarFile jar) {
-        SortedMap<IPath, IpsObjectProperties> pathsTmp = new TreeMap<IPath, IpsObjectProperties>(
-                new Comparator<IPath>() {
-
-                    @Override
-                    public int compare(IPath o1, IPath o2) {
-                        return o1.toString().compareTo(o2.toString());
-                    }
-                });
+        SortedMap<IPath, IpsObjectProperties> pathsTmp = new TreeMap<>(Comparator.comparing(IPath::toString));
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration<?> e = jar.entries(); e.hasMoreElements();) {
             JarEntry entry = (JarEntry)e.nextElement();
@@ -281,11 +273,11 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             if (QualifiedNameType.representsQualifiedNameType(path.toString())) {
                 QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(path.toString());
                 Set<QualifiedNameType> content = packs.computeIfAbsent(qualifedNameType.getPackageName(),
-                        $ -> new HashSet<QualifiedNameType>());
+                        $ -> new HashSet<>());
                 content.add(qualifedNameType);
             }
         }
-        paths = new LinkedHashMap<IPath, IpsObjectProperties>(pathsTmp);
+        paths = new LinkedHashMap<>(pathsTmp);
     }
 
     private File getFileFromPath() {

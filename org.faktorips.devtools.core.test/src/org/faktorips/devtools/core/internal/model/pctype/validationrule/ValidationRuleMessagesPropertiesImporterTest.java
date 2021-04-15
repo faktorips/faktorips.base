@@ -70,7 +70,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     @Before
     public void setUp() throws CoreException {
         when(ipsSrcFile.isMutable()).thenReturn(true);
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> srcFiles = new ArrayList<>();
         srcFiles.add(ipsSrcFile);
         when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
         when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
@@ -151,14 +151,14 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
         when(rule.getMessageCode()).thenReturn(MSG_CODE);
         when(rule.getMessageText()).thenReturn(new ValidationRuleMessageText());
-        ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
+        ArrayList<IValidationRule> rules = new ArrayList<>();
         rules.add(rule);
         when(policyCmptType.getValidationRules()).thenReturn(rules);
     }
 
     @Test
     public void shouldImportMessagesWithStatusIllegalMessage() throws Exception {
-        ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
+        ArrayList<IValidationRule> rules = new ArrayList<>();
         when(policyCmptType.getValidationRules()).thenReturn(rules);
         Properties properties = new Properties();
         properties.setProperty(TEST_POLICY_TEST_RULE, "TestMessage");
@@ -201,7 +201,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
         IValidationRuleMessageText messageText = mock(IValidationRuleMessageText.class);
         when(rule.getMessageText()).thenReturn(messageText);
-        ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
+        ArrayList<IValidationRule> rules = new ArrayList<>();
         rules.add(rule);
         when(policyCmptType.getValidationRules()).thenReturn(rules);
         Properties properties = new Properties();

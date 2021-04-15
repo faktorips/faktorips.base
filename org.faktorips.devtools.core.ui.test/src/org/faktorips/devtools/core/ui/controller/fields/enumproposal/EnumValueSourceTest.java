@@ -10,8 +10,8 @@
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class EnumValueSourceTest {
         when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(datatype.isEnum()).thenReturn(true);
 
-        List<String> valueSetValues = new ArrayList<String>();
+        List<String> valueSetValues = new ArrayList<>();
         valueSetValues.add("eins");
         valueSetValues.add("zwei");
         valueSetValues.add("drei");

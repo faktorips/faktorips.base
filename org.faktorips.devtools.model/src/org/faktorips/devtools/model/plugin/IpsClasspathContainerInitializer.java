@@ -92,8 +92,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     private static final boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
         ArgumentCheck.notNull(bundleId);
         String[] bundleIds = getAdditionalBundleIds(containerEntry);
-        for (int i = 0; i < bundleIds.length; i++) {
-            if (bundleId.equals(bundleIds[i])) {
+        for (String bundleId2 : bundleIds) {
+            if (bundleId.equals(bundleId2)) {
                 return true;
             }
         }
@@ -142,7 +142,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      *         if both additional libraries are included.
      */
     public static final IPath newEntryPath(boolean includeJoda, boolean includeGroovy) {
-        List<String> bundleIds = new ArrayList<String>();
+        List<String> bundleIds = new ArrayList<>();
         if (includeJoda) {
             bundleIds.add(JODA_BUNDLE);
         }
@@ -185,7 +185,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
         public IpsClasspathContainer(IPath containerPath) {
             this.containerPath = containerPath;
-            ArrayList<IClasspathEntry> entryList = new ArrayList<IClasspathEntry>();
+            ArrayList<IClasspathEntry> entryList = new ArrayList<>();
 
             IClasspathEntry runtime = JavaCore.newLibraryEntry(getBundlePath(RUNTIME_BUNDLE, false),
                     getBundlePath(RUNTIME_BUNDLE, true), null);

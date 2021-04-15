@@ -344,8 +344,8 @@ public abstract class Type extends ModelElement {
 
     static class AttributeCollector<T extends Attribute> extends TypeHierarchyVisitor {
 
-        private final List<T> result = new ArrayList<T>(30);
-        private final Set<String> attributeNames = new HashSet<String>();
+        private final List<T> result = new ArrayList<>(30);
+        private final Set<String> attributeNames = new HashSet<>();
 
         @Override
         public boolean visitType(Type type) {
@@ -389,8 +389,8 @@ public abstract class Type extends ModelElement {
 
     static class AssociationsCollector<T extends Association> extends TypeHierarchyVisitor {
 
-        private final List<T> result = new ArrayList<T>();
-        private final Set<String> associationNames = new HashSet<String>();
+        private final List<T> result = new ArrayList<>();
+        private final Set<String> associationNames = new HashSet<>();
 
         @Override
         public boolean visitType(Type type) {

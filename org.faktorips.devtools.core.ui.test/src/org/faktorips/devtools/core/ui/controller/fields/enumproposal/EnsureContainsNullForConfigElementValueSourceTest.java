@@ -10,8 +10,8 @@
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -42,7 +42,7 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
 
     @Before
     public void setUp() {
-        valueList = new ArrayList<String>();
+        valueList = new ArrayList<>();
         valueList.add("eins");
         valueList.add("zwei");
         valueList.add("drei");

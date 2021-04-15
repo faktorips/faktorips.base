@@ -22,9 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
@@ -50,7 +48,8 @@ public class PackageNameEditDialog extends StatusDialog {
      *            SPECIFIC_BASE_PACKAGE_DERIVED
      * @see IIpsObjectPathEntryAttribute
      */
-    public PackageNameEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+    public PackageNameEditDialog(Shell parent, IIpsSrcFolderEntry srcFolderEntry,
+            IIpsObjectPathEntryAttribute attribute) {
         super(parent);
 
         this.setTitle(Messages.PackageNameEditDialog_dialog_title);
@@ -72,21 +71,14 @@ public class PackageNameEditDialog extends StatusDialog {
         buttonDefaultPackageNameSelected = new Button(group, SWT.RADIO);
         String defaultPackageName = getDefaultPackageName();
         buttonDefaultPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_default_folder
-                + " (" + defaultPackageName + ")"); //$NON-NLS-1$//$NON-NLS-2$ 
+                + " (" + defaultPackageName + ")"); //$NON-NLS-1$//$NON-NLS-2$
         buttonCustomPackageNameSelected = new Button(group, SWT.RADIO);
         buttonCustomPackageNameSelected.setText(Messages.PackageNameEditDialog_button_text_use_specific_folder);
 
         text = new Text(group, SWT.BORDER | SWT.SINGLE);
 
         final TextField specificPackageNameTextField = new TextField(text);
-        specificPackageNameTextField.addChangeListener(new ValueChangeListener() {
-
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                selectedPackageName = e.field.getText();
-
-            }
-        });
+        specificPackageNameTextField.addChangeListener(e -> selectedPackageName = e.field.getText());
 
         text.setLayoutData(new GridData(SWT.HORIZONTAL));
 

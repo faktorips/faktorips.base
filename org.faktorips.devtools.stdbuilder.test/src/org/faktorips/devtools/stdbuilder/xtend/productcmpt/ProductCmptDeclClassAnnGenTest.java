@@ -100,7 +100,7 @@ public class ProductCmptDeclClassAnnGenTest {
         XTableUsage table2 = mock(XTableUsage.class);
         when(table2.getName()).thenReturn("table2");
 
-        when(product.getAllDeclaredTables()).thenReturn(new LinkedHashSet<XTableUsage>(Arrays.asList(table1, table2)));
+        when(product.getAllDeclaredTables()).thenReturn(new LinkedHashSet<>(Arrays.asList(table1, table2)));
         return product;
     }
 }

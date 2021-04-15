@@ -42,8 +42,8 @@ import org.faktorips.runtime.MessageList;
  */
 public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
-    private List<IProductCmptGeneration> affectedProductCmptsGenerations = new ArrayList<IProductCmptGeneration>();
-    private List<ITestCase> affectedTestCases = new ArrayList<ITestCase>();
+    private List<IProductCmptGeneration> affectedProductCmptsGenerations = new ArrayList<>();
+    private List<ITestCase> affectedTestCases = new ArrayList<>();
 
     public RenameValidationRuleProcessor(IValidationRule rule) {
         super(rule, rule.getName());
@@ -113,7 +113,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         result.add(getValidationRule().getIpsSrcFile());
         searchAffectedProductCmptGenerations(result);
         searchAffectedTestCases(result);
@@ -130,7 +130,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
     private List<IProductCmptGeneration> searchProductCmptGenerations() {
         try {
-            affectedProductCmptsGenerations = new ArrayList<IProductCmptGeneration>();
+            affectedProductCmptsGenerations = new ArrayList<>();
             IProductCmptType productCmptType = getValidationRule().findProductCmptType(getIpsProject());
             if (productCmptType != null) {
                 Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
@@ -156,7 +156,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private List<ITestCase> searchTestCases() {
-        affectedTestCases = new ArrayList<ITestCase>();
+        affectedTestCases = new ArrayList<>();
         List<ITestCase> allTestCases = getAllTestCases();
         for (ITestCase testCase : allTestCases) {
             if (isTestCaseUsingValidationRule(testCase)) {
@@ -171,7 +171,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
      * renamed validation rule. It also takes all referencing {@link IIpsProject}s into account.
      */
     private List<ITestCase> getAllTestCases() {
-        List<ITestCase> allTestCases = new ArrayList<ITestCase>();
+        List<ITestCase> allTestCases = new ArrayList<>();
         IIpsProject[] ipsProjects = getValidationRule().getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
             List<IIpsSrcFile> testCaseSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.TEST_CASE);

@@ -51,7 +51,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     private final PMO pmo;
 
-    private final List<INewProductDefinitionOperationParticipant> participants = new ArrayList<INewProductDefinitionOperationParticipant>();
+    private final List<INewProductDefinitionOperationParticipant> participants = new ArrayList<>();
 
     protected NewProductDefinitionOperation(PMO pmo) {
         this.pmo = pmo;

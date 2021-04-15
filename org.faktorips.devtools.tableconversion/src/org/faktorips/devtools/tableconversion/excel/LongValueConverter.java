@@ -45,7 +45,8 @@ public class LongValueConverter extends AbstractValueConverter {
             messageList
                     .add(ExtSystemsMessageUtil
                             .createConvertExtToIntErrorMessage(
-                                    "" + externalDataValue, externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName())); //$NON-NLS-1$
+                                    "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
+                                    getSupportedDatatype().getQualifiedName()));
         }
         return externalDataValue.toString();
     }

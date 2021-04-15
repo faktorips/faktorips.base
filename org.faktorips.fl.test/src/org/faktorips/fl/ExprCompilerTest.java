@@ -89,7 +89,7 @@ public class ExprCompilerTest {
 
     @Before
     public void setUp() throws Exception {
-        compiler = new ExprCompiler<CodeFragment>() {
+        compiler = new ExprCompiler<>() {
 
             @Override
             protected void registerDefaults() {
@@ -123,48 +123,41 @@ public class ExprCompilerTest {
         };
         Locale.setDefault(Locale.ENGLISH);
         compiler.setLocale(Locale.ENGLISH);
-        compiler.setDatatypeHelperProvider(new DatatypeHelperProvider<CodeFragment>() {
+        compiler.setDatatypeHelperProvider(datatype -> new BaseDatatypeHelper<>() {
 
             @Override
-            public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(final Datatype datatype) {
-                return new BaseDatatypeHelper<CodeFragment>() {
-
-                    @Override
-                    public Datatype getDatatype() {
-                        return datatype;
-                    }
-
-                    @Override
-                    public void setDatatype(Datatype datatype) {
-                    }
-
-                    @Override
-                    public CodeFragment nullExpression() {
-                        return new CodeFragment("null");
-                    }
-
-                    @Override
-                    public CodeFragment newInstance(String value) {
-                        return new CodeFragment(value);
-                    }
-
-                    @Override
-                    public CodeFragment newInstanceFromExpression(String expression) {
-                        return new CodeFragment(expression);
-                    }
-
-                    @Override
-                    public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
-                        return new CodeFragment(expression);
-                    }
-
-                    @Override
-                    public CodeFragment getToStringExpression(String fieldName) {
-                        return new CodeFragment(fieldName);
-                    }
-                };
+            public Datatype getDatatype() {
+                return datatype;
             }
 
+            @Override
+            public void setDatatype(Datatype datatype) {
+            }
+
+            @Override
+            public CodeFragment nullExpression() {
+                return new CodeFragment("null");
+            }
+
+            @Override
+            public CodeFragment newInstance(String value) {
+                return new CodeFragment(value);
+            }
+
+            @Override
+            public CodeFragment newInstanceFromExpression(String expression) {
+                return new CodeFragment(expression);
+            }
+
+            @Override
+            public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
+                return new CodeFragment(expression);
+            }
+
+            @Override
+            public CodeFragment getToStringExpression(String fieldName) {
+                return new CodeFragment(fieldName);
+            }
         });
     }
 
@@ -204,11 +197,11 @@ public class ExprCompilerTest {
 
     @Test
     public void testGetFunctions() {
-        DefaultFunctionResolver<CodeFragment> r1 = new DefaultFunctionResolver<CodeFragment>();
+        DefaultFunctionResolver<CodeFragment> r1 = new DefaultFunctionResolver<>();
         FlFunction<CodeFragment> f1 = createFunction("IF1",
                 new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         r1.add(f1);
-        DefaultFunctionResolver<CodeFragment> r2 = new DefaultFunctionResolver<CodeFragment>();
+        DefaultFunctionResolver<CodeFragment> r2 = new DefaultFunctionResolver<>();
         FlFunction<CodeFragment> f2 = createFunction("IF2",
                 new Datatype[] { Datatype.PRIMITIVE_BOOLEAN, AnyDatatype.INSTANCE, AnyDatatype.INSTANCE });
         FlFunction<CodeFragment> f3 = createFunction("IF3",
@@ -302,7 +295,7 @@ public class ExprCompilerTest {
 
     private void registerAddIntInt() {
         compiler.register(
-                new AbstractBinaryOperation<CodeFragment>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
+                new AbstractBinaryOperation<>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
 
                     @Override
                     public CompilationResult<CodeFragment> generate(CompilationResult<CodeFragment> lhs,

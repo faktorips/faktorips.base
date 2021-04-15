@@ -43,7 +43,7 @@ public class ControlFlow extends AtomicIpsObjectPart implements IControlFlow {
 
     private String sourceId;
 
-    private List<Location> bendpoints = new ArrayList<Location>();
+    private List<Location> bendpoints = new ArrayList<>();
 
     public ControlFlow(IIpsObject parent, String id) {
         super(parent, id);

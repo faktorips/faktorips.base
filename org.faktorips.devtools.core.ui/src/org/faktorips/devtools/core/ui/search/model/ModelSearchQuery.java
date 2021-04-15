@@ -123,7 +123,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     private Set<IType> getTypes(Set<IIpsSrcFile> searchedSrcFiles) {
-        Set<IType> types = new HashSet<IType>(searchedSrcFiles.size());
+        Set<IType> types = new HashSet<>(searchedSrcFiles.size());
 
         for (IIpsSrcFile srcFile : searchedSrcFiles) {
             if (srcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE
@@ -138,7 +138,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
 
     @Override
     protected List<IpsObjectType> getAllowedIpsObjectTypes() {
-        List<IpsObjectType> objectTypes = new ArrayList<IpsObjectType>();
+        List<IpsObjectType> objectTypes = new ArrayList<>();
         objectTypes.add(IpsObjectType.POLICY_CMPT_TYPE);
         objectTypes.add(IpsObjectType.PRODUCT_CMPT_TYPE);
         return objectTypes;
@@ -154,7 +154,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
      */
     @Override
     public String getResultLabel(int matchingCount) {
-        List<Object> args = new ArrayList<Object>();
+        List<Object> args = new ArrayList<>();
 
         String message;
         if (isOnlyTypeNameSearch()) {

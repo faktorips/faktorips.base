@@ -45,11 +45,13 @@ public final class MenuCleaner implements IMenuListener {
 
     public static final String WHITE_LIST_IPS_PREFIX = "org.faktorips"; //$NON-NLS-1$
 
-    /** All items matching at least one of the prefixes contained in this set will be filtered out. */
-    private final Set<String> filteredPrefixes = new HashSet<String>();
+    /**
+     * All items matching at least one of the prefixes contained in this set will be filtered out.
+     */
+    private final Set<String> filteredPrefixes = new HashSet<>();
 
     /** All items belonging to a group contained in this set will be filtered out. */
-    private final Set<String> filteredMenuGroups = new HashSet<String>();
+    private final Set<String> filteredMenuGroups = new HashSet<>();
 
     /**
      * In white list mode every item that is not in the set of filtered prefixes or filtered menu

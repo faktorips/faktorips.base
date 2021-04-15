@@ -122,9 +122,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         // check only that the name must not be empty and is not qualified,
         // the other naming conventions are specified in the implementation of
         // IProductCmptNamingStrategy
-        List<String> validNames = new ArrayList<String>();
-        List<String> invalidNames = new ArrayList<String>();
-        List<String> invalidNamesMsgCodes = new ArrayList<String>();
+        List<String> validNames = new ArrayList<>();
+        List<String> invalidNames = new ArrayList<>();
+        List<String> invalidNamesMsgCodes = new ArrayList<>();
 
         // check unqualified names
         invalidNames.add("");
@@ -163,9 +163,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     private void testCommonJavaTypeNameValidation(IpsObjectType type) throws CoreException {
-        List<String> validNames = new ArrayList<String>();
-        List<String> invalidNames = new ArrayList<String>();
-        List<String> invalidNamesMsgCodes = new ArrayList<String>();
+        List<String> validNames = new ArrayList<>();
+        List<String> invalidNames = new ArrayList<>();
+        List<String> invalidNamesMsgCodes = new ArrayList<>();
 
         // check unqualified names
         getCommonJavaTypeQualifiedNamesTestData(validNames, invalidNames, invalidNamesMsgCodes);
@@ -183,9 +183,9 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     private void testCommonOSNameValidation(IpsObjectType type) throws CoreException {
-        List<String> validNames = new ArrayList<String>();
-        List<String> invalidNames = new ArrayList<String>();
-        List<String> invalidNamesMsgCodes = new ArrayList<String>();
+        List<String> validNames = new ArrayList<>();
+        List<String> invalidNames = new ArrayList<>();
+        List<String> invalidNamesMsgCodes = new ArrayList<>();
 
         // check unqualified names
         validNames.add("test test");

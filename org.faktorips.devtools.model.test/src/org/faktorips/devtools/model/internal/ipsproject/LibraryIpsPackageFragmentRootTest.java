@@ -146,10 +146,10 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIpsSourceFiles() throws CoreException {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);
         assertEquals(2, result.size());
-        List<QualifiedNameType> qualifiedNameTypes = new ArrayList<QualifiedNameType>();
+        List<QualifiedNameType> qualifiedNameTypes = new ArrayList<>();
         for (IIpsSrcFile pcTypeSrcFile : result) {
             qualifiedNameTypes.add(pcTypeSrcFile.getQualifiedNameType());
         }
@@ -157,11 +157,11 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertTrue(qualifiedNameTypes
                 .contains(new QualifiedNameType("motor.collision.CollisionCoverage", IpsObjectType.POLICY_CMPT_TYPE)));
 
-        result = new ArrayList<IIpsSrcFile>();
+        result = new ArrayList<>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT_TYPE, null, result);
         assertEquals(1, result.size());
 
-        result = new ArrayList<IIpsSrcFile>();
+        result = new ArrayList<>();
         root.findIpsSourceFiles(IpsObjectType.PRODUCT_CMPT, null, result);
         assertEquals(1, result.size());
     }

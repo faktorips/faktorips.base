@@ -37,7 +37,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         result.add(getIpsSrcFile());
         return result;
     }

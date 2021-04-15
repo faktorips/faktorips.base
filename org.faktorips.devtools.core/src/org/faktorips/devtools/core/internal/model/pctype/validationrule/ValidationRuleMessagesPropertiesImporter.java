@@ -62,7 +62,7 @@ public class ValidationRuleMessagesPropertiesImporter extends ValidationRuleMess
     }
 
     void setProperties(Properties properties) {
-        HashMap<String, String> contentMap = new HashMap<String, String>();
+        HashMap<String, String> contentMap = new HashMap<>();
         for (Entry<Object, Object> pair : properties.entrySet()) {
             contentMap.put(pair.getKey().toString(), pair.getValue().toString());
         }

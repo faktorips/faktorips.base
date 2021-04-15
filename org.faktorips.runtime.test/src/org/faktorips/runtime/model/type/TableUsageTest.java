@@ -106,7 +106,7 @@ public class TableUsageTest {
     @Test
     public void testGetTableUsages() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(ChildProduct.class);
-        List<String> tableNames = new ArrayList<String>();
+        List<String> tableNames = new ArrayList<>();
         for (TableUsage tableUsageModel : productCmptType.getTableUsages()) {
             tableNames.add(tableUsageModel.getName());
         }
@@ -144,7 +144,7 @@ public class TableUsageTest {
     @Test
     public void testGetDeclaredTableUsages() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
-        List<String> tableNames = new ArrayList<String>();
+        List<String> tableNames = new ArrayList<>();
         for (TableUsage tableUsageModel : productCmptType.getDeclaredTableUsages()) {
             tableNames.add(tableUsageModel.getName());
         }

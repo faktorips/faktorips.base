@@ -75,7 +75,6 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
         }
         if (newName.equals(originalName)) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEqualsOriginalName);
-            return;
         }
     }
 

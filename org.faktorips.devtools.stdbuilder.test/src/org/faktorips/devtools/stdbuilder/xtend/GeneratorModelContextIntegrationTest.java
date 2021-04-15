@@ -113,7 +113,7 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
     }
 
     private void addEntry(IpsObjectPath ipsObjectPath, IpsBundleEntry ipsBundleEntry) throws CoreException {
-        List<IIpsObjectPathEntry> entries = new LinkedList<IIpsObjectPathEntry>(
+        List<IIpsObjectPathEntry> entries = new LinkedList<>(
                 Arrays.asList(ipsObjectPath.getEntries()));
         entries.add(ipsBundleEntry);
         ipsObjectPath.setEntries(entries.toArray(new IIpsObjectPathEntry[entries.size()]));

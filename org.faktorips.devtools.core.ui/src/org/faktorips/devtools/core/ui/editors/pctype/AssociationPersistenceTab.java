@@ -131,7 +131,7 @@ class AssociationPersistenceTab {
         // persistence is enabled initialize enable / disable bindings
         // disable all persistent controls if attribute is marked as transient
         getBindingContext().add(
-                new PropertyChangeBinding<Boolean>(allPersistentProps, association.getPersistenceAssociatonInfo(),
+                new PropertyChangeBinding<>(allPersistentProps, association.getPersistenceAssociatonInfo(),
                         IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
                     @Override
                     public void propertyChanged(Boolean old, Boolean newValue) {
@@ -147,7 +147,7 @@ class AssociationPersistenceTab {
                 });
         // disable join table
         getBindingContext().add(
-                new PropertyChangeBinding<Boolean>(joinTableComposite, association.getPersistenceAssociatonInfo(),
+                new PropertyChangeBinding<>(joinTableComposite, association.getPersistenceAssociatonInfo(),
                         IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
                     @Override
                     public void propertyChanged(Boolean old, Boolean newValue) {
@@ -169,7 +169,7 @@ class AssociationPersistenceTab {
                 });
         // disable cascade type checkboxes
         getBindingContext().add(
-                new PropertyChangeBinding<Boolean>(cascadeTypesComposite, association.getPersistenceAssociatonInfo(),
+                new PropertyChangeBinding<>(cascadeTypesComposite, association.getPersistenceAssociatonInfo(),
                         IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.TYPE) {
                     @Override
                     public void propertyChanged(Boolean old, Boolean newValue) {
@@ -235,7 +235,7 @@ class AssociationPersistenceTab {
 
         getToolkit().createFormLabel(otherPropsComposite, Messages.AssociationEditDialog_labelFetchType);
         Combo fetchTypeCombo = getToolkit().createCombo(otherPropsComposite);
-        ComboField<FetchType> fetchTypeField = new EnumField<FetchType>(fetchTypeCombo, FetchType.class);
+        ComboField<FetchType> fetchTypeField = new EnumField<>(fetchTypeCombo, FetchType.class);
         getBindingContext().bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
                 IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
 

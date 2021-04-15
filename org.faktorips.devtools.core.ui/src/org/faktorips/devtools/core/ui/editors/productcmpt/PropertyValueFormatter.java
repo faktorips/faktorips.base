@@ -32,63 +32,36 @@ import org.faktorips.devtools.model.productcmpt.PropertyValueType;
  */
 public class PropertyValueFormatter {
 
-    public static final Function<IAttributeValue, String> ATTRIBUTE_VALUE = new Function<IAttributeValue, String>() {
-        @Override
-        public String apply(IAttributeValue attributeValue) {
-            return attributeValue != null ? AttributeValueFormatter.format(attributeValue) : StringUtils.EMPTY;
-        }
+    public static final Function<IAttributeValue, String> ATTRIBUTE_VALUE = attributeValue -> attributeValue != null
+            ? AttributeValueFormatter.format(attributeValue)
+            : StringUtils.EMPTY;
+
+    public static final Function<IConfiguredValueSet, String> CONFIGURED_VALUESET = configuredValueSet -> configuredValueSet != null
+            ? AnyValueSetFormat.newInstance(configuredValueSet).format(configuredValueSet.getValueSet())
+            : StringUtils.EMPTY;
+
+    public static final Function<IConfiguredDefault, String> CONFIGURED_DEFAULT = configuredDefault -> {
+        UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
+        return configuredDefault != null ? datatypeFormatter.formatValue(
+                configuredDefault.findValueDatatype(configuredDefault.getIpsProject()),
+                configuredDefault.getValue()) : StringUtils.EMPTY;
     };
 
-    public static final Function<IConfiguredValueSet, String> CONFIGURED_VALUESET = new Function<IConfiguredValueSet, String>() {
+    public static final Function<ITableContentUsage, String> TABLE_CONTENT_USAGE = tableContentUsage -> tableContentUsage != null
+            ? getValueOrNullPresentation(tableContentUsage.getTableContentName())
+            : StringUtils.EMPTY;
 
-        @Override
-        public String apply(IConfiguredValueSet configuredValueSet) {
-            return configuredValueSet != null
-                    ? AnyValueSetFormat.newInstance(configuredValueSet).format(configuredValueSet.getValueSet())
-                    : StringUtils.EMPTY;
+    public static final Function<IFormula, String> FORMULA = formula -> formula != null
+            ? getValueOrNullPresentation(formula.getExpression())
+            : StringUtils.EMPTY;
+    public static final Function<IValidationRuleConfig, String> VALIDATION_RULE_CONFIG = ruleConfig -> {
+        if (ruleConfig == null) {
+            return StringUtils.EMPTY;
         }
-    };
-
-    public static final Function<IConfiguredDefault, String> CONFIGURED_DEFAULT = new Function<IConfiguredDefault, String>() {
-
-        @Override
-        public String apply(IConfiguredDefault configuredDefault) {
-            UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
-            return configuredDefault != null ? datatypeFormatter.formatValue(
-                    configuredDefault.findValueDatatype(configuredDefault.getIpsProject()),
-                    configuredDefault.getValue()) : StringUtils.EMPTY;
-        }
-    };
-
-    public static final Function<ITableContentUsage, String> TABLE_CONTENT_USAGE = new Function<ITableContentUsage, String>() {
-
-        @Override
-        public String apply(ITableContentUsage tableContentUsage) {
-            return tableContentUsage != null ? getValueOrNullPresentation(tableContentUsage.getTableContentName())
-                    : StringUtils.EMPTY;
-        }
-    };
-
-    public static final Function<IFormula, String> FORMULA = new Function<IFormula, String>() {
-
-        @Override
-        public String apply(IFormula formula) {
-            return formula != null ? getValueOrNullPresentation(formula.getExpression()) : StringUtils.EMPTY;
-        }
-
-    };
-    public static final Function<IValidationRuleConfig, String> VALIDATION_RULE_CONFIG = new Function<IValidationRuleConfig, String>() {
-
-        @Override
-        public String apply(IValidationRuleConfig ruleConfig) {
-            if (ruleConfig == null) {
-                return StringUtils.EMPTY;
-            }
-            if (ruleConfig.isActive()) {
-                return Messages.ValidationRuleConfigEditComposite_activated;
-            } else {
-                return Messages.ValidationRuleConfigEditComposite_deactivated;
-            }
+        if (ruleConfig.isActive()) {
+            return Messages.ValidationRuleConfigEditComposite_activated;
+        } else {
+            return Messages.ValidationRuleConfigEditComposite_deactivated;
         }
     };
 

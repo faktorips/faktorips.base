@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ClassToInstancesMap<T> {
 
-    private final ConcurrentHashMap<Class<? extends T>, List<? extends T>> internalMap = new ConcurrentHashMap<Class<? extends T>, List<? extends T>>();
+    private final ConcurrentHashMap<Class<? extends T>, List<? extends T>> internalMap = new ConcurrentHashMap<>();
 
     /**
      * Getting the list of instances stored of the type given by the key. If there is no element for
@@ -182,7 +182,7 @@ public class ClassToInstancesMap<T> {
      */
     public synchronized <K extends T> List<K> removeAll(Class<K> key) {
         List<K> list = getInstanceList(key);
-        List<K> result = new ArrayList<K>(list);
+        List<K> result = new ArrayList<>(list);
         list.clear();
         return result;
     }
@@ -201,7 +201,7 @@ public class ClassToInstancesMap<T> {
      * @return All values stored in this map in one collection.
      */
     private List<T> valuesInternal() {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         for (List<? extends T> list : internalMap.values()) {
             result.addAll(list);
         }
@@ -215,16 +215,10 @@ public class ClassToInstancesMap<T> {
      * @return All values stored in this map in one collection.
      */
     public List<T> values() {
-        ArrayList<T> result = new ArrayList<T>();
+        ArrayList<T> result = new ArrayList<>();
         Set<Class<? extends T>> keySet = internalMap.keySet();
-        ArrayList<Class<? extends T>> sortedKeySet = new ArrayList<Class<? extends T>>(keySet);
-        Collections.sort(sortedKeySet, new Comparator<Class<? extends T>>() {
-
-            @Override
-            public int compare(Class<? extends T> o1, Class<? extends T> o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        ArrayList<Class<? extends T>> sortedKeySet = new ArrayList<>(keySet);
+        Collections.sort(sortedKeySet, Comparator.comparing(Class::getName));
 
         for (Class<? extends T> key : sortedKeySet) {
             result.addAll(internalMap.get(key));

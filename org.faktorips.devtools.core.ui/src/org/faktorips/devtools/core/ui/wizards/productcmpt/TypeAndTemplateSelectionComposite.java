@@ -28,8 +28,6 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -96,13 +94,9 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         setLayoutAndLayoutData();
 
         createControls();
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                resourceManager.dispose();
-                bindingContext.dispose();
-            }
+        addDisposeListener($ -> {
+            resourceManager.dispose();
+            bindingContext.dispose();
         });
     }
 
@@ -142,7 +136,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         setupViewer(typeListViewer, typeFilter);
         typeListViewer.setContentProvider(new ArrayContentProvider());
         ColumnViewerToolTipSupport.enableFor(typeListViewer, ToolTip.NO_RECREATE);
-        typeListField = new StructuredViewerField<IIpsObject>(typeListViewer, IIpsObject.class);
+        typeListField = new StructuredViewerField<>(typeListViewer, IIpsObject.class);
 
         templateFilter = new TypeSelectionFilter();
         templateTreeViewer = new TreeViewer(templateBlockComposite,
@@ -151,7 +145,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         templateTreeViewer.setContentProvider(new TreeContentProvider());
         templateTreeViewer.expandAll();
         ColumnViewerToolTipSupport.enableFor(templateTreeViewer, ToolTip.NO_RECREATE);
-        templateListField = new StructuredViewerField<ProductCmptViewItem>(templateTreeViewer,
+        templateListField = new StructuredViewerField<>(templateTreeViewer,
                 ProductCmptViewItem.class);
 
         Composite descriptionLabelComposite = toolkit.createGridComposite(this, 1, false, false);
@@ -237,7 +231,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         bindingContext.add(ViewerRefreshBinding.refreshAndExpand(templateTreeViewer, pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
 
-        bindingContext.add(new PropertyChangeBinding<ProductCmptViewItem>(compositeDescription, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(compositeDescription, pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TEMPLATE, ProductCmptViewItem.class) {
             @Override
             protected void propertyChanged(ProductCmptViewItem oldValue, ProductCmptViewItem newValue) {
@@ -245,7 +239,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
             }
         });
 
-        bindingContext.add(new PropertyChangeBinding<IProductCmptType>(compositeDescription, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(compositeDescription, pmo,
                 NewProductCmptPMO.PROPERTY_SELECTED_TYPE, IProductCmptType.class) {
             @Override
             protected void propertyChanged(IProductCmptType oldValue, IProductCmptType newValue) {

@@ -47,7 +47,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
 
         ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();
-        ArrayList<CompilationResultImpl> convertedResults = new ArrayList<CompilationResultImpl>(argResults.length);
+        ArrayList<CompilationResultImpl> convertedResults = new ArrayList<>(argResults.length);
         Datatype expectedArgType = getExpectedDatatypeForArgResultConversion(argResults);
 
         for (int i = 0; i < argResults.length; i++) {
@@ -58,8 +58,8 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
             if (!expectedArgType.equals(argDatatype)) {
 
                 if (!ccg.canConvert(argDatatype, expectedArgType)) {
-                    String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { expectedArgType,
-                            Integer.valueOf(i), argDatatype });
+                    String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, expectedArgType, Integer.valueOf(i),
+                            argDatatype);
                     Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
                     return new CompilationResultImpl(msg);
                 }
@@ -78,8 +78,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
         CompilationResult<JavaCodeFragment>[] compilationResults = new CompilationResult[convertedResults.size()];
         compileInternal(returnValue, convertedResults.toArray(compilationResults), fragment);
 
-        for (int i = 0; i < convertedResults.size(); i++) {
-            CompilationResultImpl compilationResult = convertedResults.get(i);
+        for (CompilationResultImpl compilationResult : convertedResults) {
             returnValue.addMessages(compilationResult.getMessages());
         }
 

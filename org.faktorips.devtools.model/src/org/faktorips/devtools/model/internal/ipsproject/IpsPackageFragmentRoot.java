@@ -92,7 +92,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      */
     private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         IFolder folder = (IFolder)getCorrespondingResource();
-        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>();
+        List<IIpsPackageFragment> list = new ArrayList<>();
         // add the default package
         list.add(new IpsPackageFragment(this, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE));
         getIpsPackageFragments(folder, IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE, list);
@@ -102,11 +102,11 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
-        List<IResource> childResources = new ArrayList<IResource>();
+        List<IResource> childResources = new ArrayList<>();
         IResource[] children = cont.members();
-        for (int i = 0; i < children.length; i++) {
-            if (!isPackageFragment(children[i])) {
-                childResources.add(children[i]);
+        for (IResource child : children) {
+            if (!isPackageFragment(child)) {
+                childResources.add(child);
             }
         }
         IResource[] resArray = new IResource[childResources.size()];

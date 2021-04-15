@@ -134,7 +134,7 @@ public class PolicyCmptType extends Type {
 
     @Override
     public List<PolicyAttribute> getDeclaredAttributes() {
-        return new ArrayList<PolicyAttribute>(attributes.values());
+        return new ArrayList<>(attributes.values());
     }
 
     @Override
@@ -144,7 +144,7 @@ public class PolicyCmptType extends Type {
 
     @Override
     public List<PolicyAttribute> getAttributes() {
-        AttributeCollector<PolicyAttribute> attrCollector = new AttributeCollector<PolicyAttribute>();
+        AttributeCollector<PolicyAttribute> attrCollector = new AttributeCollector<>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
     }
@@ -177,7 +177,7 @@ public class PolicyCmptType extends Type {
 
     @Override
     public List<PolicyAssociation> getDeclaredAssociations() {
-        return new ArrayList<PolicyAssociation>(new LinkedHashSet<PolicyAssociation>(associations.values()));
+        return new ArrayList<>(new LinkedHashSet<>(associations.values()));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class PolicyCmptType extends Type {
 
     @Override
     public List<PolicyAssociation> getAssociations() {
-        AssociationsCollector<PolicyAssociation> asscCollector = new AssociationsCollector<PolicyAssociation>();
+        AssociationsCollector<PolicyAssociation> asscCollector = new AssociationsCollector<>();
         asscCollector.visitHierarchy(this);
         return asscCollector.getResult();
     }
@@ -241,7 +241,7 @@ public class PolicyCmptType extends Type {
      * @return the list of {@link ValidationRule ValidationRules} declared in this type
      */
     public List<ValidationRule> getDeclaredValidationRules() {
-        return new ArrayList<ValidationRule>(validationRules.values());
+        return new ArrayList<>(validationRules.values());
     }
 
     /**
@@ -315,8 +315,8 @@ public class PolicyCmptType extends Type {
     }
 
     static class RuleCollector extends TypeHierarchyVisitor {
-        private final List<ValidationRule> result = new ArrayList<ValidationRule>();
-        private final Set<String> validationRulesNames = new HashSet<String>();
+        private final List<ValidationRule> result = new ArrayList<>();
+        private final Set<String> validationRulesNames = new HashSet<>();
 
         @Override
         public boolean visitType(Type type) {

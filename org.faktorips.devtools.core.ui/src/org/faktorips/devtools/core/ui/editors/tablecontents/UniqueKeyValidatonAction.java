@@ -9,9 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -38,14 +35,10 @@ public class UniqueKeyValidatonAction extends Action {
 
     @Override
     public void run() {
-        IpsUIPlugin.getDefault().runWorkspaceModification(new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                ITableContents tableContents = (ITableContents)tableViewer.getInput();
-                TableRows tableRows = (TableRows)tableContents.getTableRows();
-                tableRows.validateUniqueKeysManually();
-            }
+        IpsUIPlugin.getDefault().runWorkspaceModification($ -> {
+            ITableContents tableContents = (ITableContents)tableViewer.getInput();
+            TableRows tableRows = (TableRows)tableContents.getTableRows();
+            tableRows.validateUniqueKeysManually();
         });
         tableViewer.refresh(true);
     }

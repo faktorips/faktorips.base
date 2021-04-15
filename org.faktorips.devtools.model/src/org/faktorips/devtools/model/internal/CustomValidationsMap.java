@@ -38,7 +38,7 @@ import org.faktorips.devtools.model.type.IAttribute;
  */
 public class CustomValidationsMap {
 
-    private final ConcurrentHashMap<Class<? extends IIpsObjectPartContainer>, Set<ICustomValidation<? extends IIpsObjectPartContainer>>> internalMap = new ConcurrentHashMap<Class<? extends IIpsObjectPartContainer>, Set<ICustomValidation<? extends IIpsObjectPartContainer>>>();
+    private final ConcurrentHashMap<Class<? extends IIpsObjectPartContainer>, Set<ICustomValidation<? extends IIpsObjectPartContainer>>> internalMap = new ConcurrentHashMap<>();
 
     /**
      * Returns the set of custom validations stored for the requested class. If there is no element
@@ -50,7 +50,7 @@ public class CustomValidationsMap {
      * @return A list of instances of the given class
      */
     public <K extends IIpsObjectPartContainer> Set<ICustomValidation<?>> get(Class<K> key) {
-        return new HashSet<ICustomValidation<?>>(getInternal(key));
+        return new HashSet<>(getInternal(key));
     }
 
     /**
@@ -67,8 +67,8 @@ public class CustomValidationsMap {
      * @type K a sub class of {@link IIpsObjectPartContainer}.
      */
     private <K extends IIpsObjectPartContainer> Set<ICustomValidation<?>> getInternal(Class<K> key) {
-    	return internalMap.computeIfAbsent(key,
-                $ -> new HashSet<ICustomValidation<? extends IIpsObjectPartContainer>>());
+        return internalMap.computeIfAbsent(key,
+                $ -> new HashSet<>());
     }
 
     /**
@@ -146,7 +146,7 @@ public class CustomValidationsMap {
      * @return All values stored in this map in one collection.
      */
     private Set<ICustomValidation<? extends IIpsObjectPartContainer>> valuesInternal() {
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> result = new HashSet<ICustomValidation<? extends IIpsObjectPartContainer>>();
+        Set<ICustomValidation<? extends IIpsObjectPartContainer>> result = new HashSet<>();
         for (Set<ICustomValidation<? extends IIpsObjectPartContainer>> list : internalMap.values()) {
             result.addAll(list);
         }

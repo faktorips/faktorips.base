@@ -11,9 +11,6 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.custom.ExtendedModifyListener;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.util.ArgumentCheck;
@@ -75,22 +72,14 @@ public abstract class AbstractStyledTextField<T> extends DefaultEditField<T> {
     @Override
     protected void addListenerToControl() {
         final ExtendedModifyListener styledTextModifyListener = new StyledTextModifyListener();
-        final ModifyListener modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(AbstractStyledTextField.this),
-                        immediatelyNotifyListener);
-            }
-        };
+        final ModifyListener modifyListener = $ -> notifyChangeListeners(
+                new FieldValueChangedEvent(AbstractStyledTextField.this),
+                immediatelyNotifyListener);
         styledText.addModifyListener(modifyListener);
         styledText.addExtendedModifyListener(styledTextModifyListener);
-        styledText.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                styledText.removeModifyListener(modifyListener);
-                styledText.removeExtendedModifyListener(styledTextModifyListener);
-            }
+        styledText.addDisposeListener($ -> {
+            styledText.removeModifyListener(modifyListener);
+            styledText.removeExtendedModifyListener(styledTextModifyListener);
         });
     }
 }

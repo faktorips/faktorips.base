@@ -44,7 +44,7 @@ public class SimpleOpenIpsObjectPartAction<T extends IIpsObjectPartContainer> ex
      * function as {@link #getText() text} and {@link #getToolTipText() tooltip text}.
      */
     public SimpleOpenIpsObjectPartAction(Supplier<T> partSupplier, Function<T, String> captionGenerator) {
-        super(new SuppliedSelectionProvider<T>(partSupplier));
+        super(new SuppliedSelectionProvider<>(partSupplier));
         this.partSupplier = partSupplier;
         this.captionGenerator = captionGenerator;
     }

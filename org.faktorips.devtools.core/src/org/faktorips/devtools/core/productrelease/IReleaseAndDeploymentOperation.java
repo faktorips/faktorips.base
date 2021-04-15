@@ -18,7 +18,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This interface is implemented for a release deployment extension. The implementation is
- * referenced by the extension <em>releaseDeploymentExtension</em> in the attribute <em>operation</em>.
+ * referenced by the extension <em>releaseDeploymentExtension</em> in the attribute
+ * <em>operation</em>.
  * 
  * @author dirmeier
  */

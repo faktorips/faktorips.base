@@ -26,8 +26,8 @@ import org.faktorips.runtime.MessageList;
 public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     private final IMultiValueHolder multiValueHolder;
-    private final List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
-    private final List<ListChooserValue> sourceValues = new ArrayList<ListChooserValue>();
+    private final List<ListChooserValue> resultingValues = new ArrayList<>();
+    private final List<ListChooserValue> sourceValues = new ArrayList<>();
 
     public MultiValueSubsetChooserModel(List<String> allValues, IMultiValueHolder multiValueHolder,
             ValueDatatype datatype, IAttributeValue attributeValue) {
@@ -77,14 +77,14 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     protected void moveInternal(List<ListChooserValue> selectedValues, boolean up) {
-        ListElementMover<ListChooserValue> mover = new ListElementMover<ListChooserValue>(resultingValues);
+        ListElementMover<ListChooserValue> mover = new ListElementMover<>(resultingValues);
         mover.move(getValueIndices(selectedValues), up);
         updateMultiValueHolder();
     }
 
     @Override
     protected void moveToPositionInternal(List<ListChooserValue> selectedValues, int targetIndex, boolean insertBelow) {
-        ListElementMover<ListChooserValue> mover = new ListElementMover<ListChooserValue>(resultingValues);
+        ListElementMover<ListChooserValue> mover = new ListElementMover<>(resultingValues);
         mover.moveToIndex(getValueIndices(selectedValues), targetIndex, insertBelow);
         updateMultiValueHolder();
     }

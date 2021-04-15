@@ -58,7 +58,7 @@ public class IpsSrcFilesSearchInSrcFolderTest extends AbstractIpsPluginTest {
         IIpsSrcFolderEntry entry = mock(IIpsSrcFolderEntry.class);
         when(entry.getType()).thenReturn(IpsObjectPathEntry.TYPE_SRC_FOLDER);
         when(entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(
-                new ArrayList<IIpsSrcFile>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
+                new ArrayList<>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
 
         search.processEntry(entry);
         List<IIpsSrcFile> ipsSrcFiles = search.getIpsSrcFiles();
@@ -72,7 +72,7 @@ public class IpsSrcFilesSearchInSrcFolderTest extends AbstractIpsPluginTest {
         search = new IpsSrcFilesSearchInSrcFolder(IpsObjectType.POLICY_CMPT_TYPE);
         IIpsArchiveEntry entry = mock(IIpsArchiveEntry.class);
         when(entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(
-                new ArrayList<IIpsSrcFile>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
+                new ArrayList<>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
         when(entry.getType()).thenReturn(IpsObjectPathEntry.TYPE_ARCHIVE);
         search.processEntry(entry);
         List<IIpsSrcFile> ipsSrcFiles = search.getIpsSrcFiles();

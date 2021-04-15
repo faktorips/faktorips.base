@@ -28,7 +28,7 @@ public class DefaultFunctionResolverTest {
 
     @Before
     public void setUp() throws Exception {
-        resolver = new DefaultFunctionResolver<JavaCodeFragment>();
+        resolver = new DefaultFunctionResolver<>();
     }
 
     @Test

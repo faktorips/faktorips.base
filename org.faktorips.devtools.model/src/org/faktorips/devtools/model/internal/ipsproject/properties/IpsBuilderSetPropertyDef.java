@@ -288,9 +288,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             ILog logger,
             IIpsModel ipsModel) {
 
-        Map<String, Object> properties = new HashMap<String, Object>();
-        List<String> discreteValues = new ArrayList<String>();
-        List<String> jdkComplianceLevelList = new ArrayList<String>();
+        Map<String, Object> properties = new HashMap<>();
+        List<String> discreteValues = new ArrayList<>();
+        List<String> jdkComplianceLevelList = new ArrayList<>();
 
         if (!retrieveProperties(logger, registry, builderSetId, element, properties, discreteValues)) {
             return null;

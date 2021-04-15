@@ -116,7 +116,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
         @Override
         protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-            return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+            return new LinkedHashMap<>();
         }
 
         @Override

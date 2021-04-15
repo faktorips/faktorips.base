@@ -88,7 +88,7 @@ public class EnumValueSetSourceTest {
     public void testGetValues() {
         when(valueSetOwner.getValueSet()).thenReturn(enumValueSet);
         when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
-        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "value1", "value2" }));
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList("value1", "value2"));
 
         List<String> values = valueSource.getValues();
 

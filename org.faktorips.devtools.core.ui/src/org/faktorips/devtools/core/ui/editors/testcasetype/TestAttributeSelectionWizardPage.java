@@ -26,15 +26,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredList;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -105,23 +102,17 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         checkbox.setChecked(showSubtypes);
 
         CheckboxField field = new CheckboxField(checkbox);
-        field.addChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(final FieldValueChangedEvent e) {
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
-                            setListElements(getElements());
-                            wizard.setShowSubtypeAttributes(showSubtypes);
-                        } catch (CoreException ex) {
-                            IpsPlugin.logAndShowErrorDialog(ex);
-                        }
-                    }
-                };
-                BusyIndicator.showWhile(TestAttributeSelectionWizardPage.this.getShell().getDisplay(), runnable);
-            }
+        field.addChangeListener(e -> {
+            Runnable runnable = () -> {
+                try {
+                    showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
+                    setListElements(getElements());
+                    wizard.setShowSubtypeAttributes(showSubtypes);
+                } catch (CoreException ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
+                }
+            };
+            BusyIndicator.showWhile(TestAttributeSelectionWizardPage.this.getShell().getDisplay(), runnable);
         });
 
         setControl(group);
@@ -135,7 +126,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
     private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
         List<? extends IAttribute> attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
-        List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<IPolicyCmptTypeAttribute>();
+        List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<>();
         for (IAttribute attribute : attributes) {
             IPolicyCmptTypeAttribute policyCmptarttribute = (IPolicyCmptTypeAttribute)attribute;
             if (isAllowedAttribute(policyCmptarttribute)) {
@@ -227,12 +218,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
         text.setText((fFilter == null ? "" : fFilter)); //$NON-NLS-1$
 
-        Listener listener = new Listener() {
-            @Override
-            public void handleEvent(Event e) {
-                fFilteredList.setFilter(fFilterText.getText());
-            }
-        };
+        Listener listener = $ -> fFilteredList.setFilter(fFilterText.getText());
         text.addListener(SWT.Modify, listener);
 
         text.addKeyListener(new KeyListener() {

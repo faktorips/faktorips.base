@@ -1281,7 +1281,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
-        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
+        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
         for (IIpsObjectPathEntry bPathEntrie : bPathEntries) {
             newbPathEntries.add(bPathEntrie);

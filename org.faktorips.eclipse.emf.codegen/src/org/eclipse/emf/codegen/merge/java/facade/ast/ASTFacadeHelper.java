@@ -139,7 +139,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Map of nodes to node contents. Used for caching only.
      */
-    protected Map<ASTNode, String> nodeContents = new HashMap<ASTNode, String>();
+    protected Map<ASTNode, String> nodeContents = new HashMap<>();
 
     @Override
     public void reset() {
@@ -431,8 +431,9 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Copies the ASTJField node.
      * <p>
-     * The copied field should <strong>not</strong> be modified (using set methods) nor read (using get
-     * methods), and can <strong>only</strong> be inserted into the same tree that context node belongs to.
+     * The copied field should <strong>not</strong> be modified (using set methods) nor read (using
+     * get methods), and can <strong>only</strong> be inserted into the same tree that context node
+     * belongs to.
      * <p>
      * If the source field has only 1 variable, returned field is replaced by contents of original
      * field declaration. The returned field will have no internal structure.
@@ -508,7 +509,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     public List<ASTJNode<?>> copyAndConvert(List<? extends ASTNode> astNodes, ASTJNode<?> contextNode) {
         @SuppressWarnings("unchecked")
         List<ASTNode> copySubtrees = ASTNode.copySubtrees(contextNode.getWrappedObject().getAST(), astNodes);
-        List<ASTJNode<?>> result = new ArrayList<ASTJNode<?>>();
+        List<ASTJNode<?>> result = new ArrayList<>();
         for (ASTNode copiedNode : copySubtrees) {
             result.add((ASTJNode<?>)controlModel.getFacadeHelper().convertToNode(copiedNode));
         }

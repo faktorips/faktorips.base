@@ -121,7 +121,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private IMemento fMemento;
 
     /* Queue used for processing Tree Entries */
-    private List<TestCaseEntry> fTableEntryQueue = new ArrayList<TestCaseEntry>();
+    private List<TestCaseEntry> fTableEntryQueue = new ArrayList<>();
 
     /* Is the UI disposed */
     private boolean fIsDisposed = false;
@@ -170,7 +170,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
     // Contains the map to do the mapping between the test case ids (unique id in the table run pane
     // table) and the test case qualified name
-    private Map<String, String> testId2TestQualifiedNameMap = new HashMap<String, String>();
+    private Map<String, String> testId2TestQualifiedNameMap = new HashMap<>();
 
     private ResourceManager resourceManager;
 
@@ -557,8 +557,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         toolBar.add(fStopTestRunAction);
         toolBar.add(fRerunLastTestAction);
 
-        for (int i = 0; i < fToggleOrientationActions.length; ++i) {
-            viewMenu.add(fToggleOrientationActions[i]);
+        for (ToggleOrientationAction fToggleOrientationAction : fToggleOrientationActions) {
+            viewMenu.add(fToggleOrientationAction);
         }
 
         actionBars.updateActionBars();
@@ -603,8 +603,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
         boolean horizontal = orientation == VIEW_ORIENTATION_HORIZONTAL;
         fSashForm.setOrientation(horizontal ? SWT.HORIZONTAL : SWT.VERTICAL);
-        for (int i = 0; i < fToggleOrientationActions.length; ++i) {
-            fToggleOrientationActions[i].setChecked(fOrientation == fToggleOrientationActions[i].getOrientation());
+        for (ToggleOrientationAction fToggleOrientationAction : fToggleOrientationActions) {
+            fToggleOrientationAction.setChecked(fOrientation == fToggleOrientationAction.getOrientation());
         }
         fCurrentOrientation = orientation;
         GridLayout layout = (GridLayout)fCounterComposite.getLayout();
@@ -731,17 +731,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     private void reset(final int testCount) {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                setStatusBarMessage(""); //$NON-NLS-1$
-                fCounterPanel.reset();
-                fProgressBar.reset();
-                start(testCount);
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            setStatusBarMessage(""); //$NON-NLS-1$
+            fCounterPanel.reset();
+            fProgressBar.reset();
+            start(testCount);
         });
 
         fExecutedTests = 0;
@@ -787,14 +784,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     //
 
     private void aboutToStart() {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (!isDisposed()) {
-                    fTestRunPane.aboutToStart();
-                }
-                fFailurePane.aboutToStart();
+        postSyncRunnable(() -> {
+            if (!isDisposed()) {
+                fTestRunPane.aboutToStart();
             }
+            fFailurePane.aboutToStart();
         });
     }
 
@@ -805,63 +799,48 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     private void postStartTest(final String testId) {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                fTestRunPane.startTest(testId, scrollLocked);
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            fTestRunPane.startTest(testId, scrollLocked);
         });
     }
 
     private void postErrorInTest(final String testId, final String[] errorDetails) {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                fTestRunPane.errorInTest(testId, errorDetails);
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            fTestRunPane.errorInTest(testId, errorDetails);
         });
     }
 
     private void postEndTest(final String testId) {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                handleEndTest();
-                fTestRunPane.endTest(testId);
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            handleEndTest();
+            fTestRunPane.endTest(testId);
         });
     }
 
     private void postFailureTest(final String testId, final String[] failureDetails) {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails), failureDetails);
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            fTestRunPane.failureTest(testId, failureDetailsToString(failureDetails), failureDetails);
         });
     }
 
     private void postEndTestRun() {
-        postSyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
-                }
-                fTestRunPane.selectFirstFailureOrError();
+        postSyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
             }
+            fTestRunPane.selectFirstFailureOrError();
         });
     }
 
@@ -935,14 +914,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
             // set correct total size
             // if there are more test case executed as previously expected
             // e.g. if an ips test case starts itself several ips tests
-            postSyncRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    if (isDisposed()) {
-                        return;
-                    }
-                    fCounterPanel.setTotal(fCounterPanel.getTotal() + 1);
+            postSyncRunnable(() -> {
+                if (isDisposed()) {
+                    return;
                 }
+                fCounterPanel.setTotal(fCounterPanel.getTotal() + 1);
             });
         }
         fExecutedTests++;

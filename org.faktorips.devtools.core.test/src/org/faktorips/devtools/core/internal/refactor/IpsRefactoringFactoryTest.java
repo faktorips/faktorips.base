@@ -145,7 +145,7 @@ public class IpsRefactoringFactoryTest {
 
     @Test
     public void testCreateFullyConfiguredCompositeMoveRefactoring() {
-        Set<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(mock(IIpsObject.class),
+        Set<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(mock(IIpsObject.class),
                 mock(IIpsObject.class)));
         IIpsPackageFragment targetIpsPackageFragment = mock(IIpsPackageFragment.class);
 

@@ -26,8 +26,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -102,7 +100,7 @@ public class InferTemplateWizard extends NewProductWizard {
     }
 
     private static List<IProductCmpt> templateExistsIn(Collection<IProductCmpt> productCmpts) {
-        List<IProductCmpt> result = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> result = new ArrayList<>();
         for (IProductCmpt productCmpt : productCmpts) {
             if (productCmpt.isUsingTemplate()) {
                 result.add(productCmpt);
@@ -153,12 +151,7 @@ public class InferTemplateWizard extends NewProductWizard {
         }
 
         private void makeTableUnselectable(final Table table) {
-            table.addListener(SWT.EraseItem, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    table.setSelection(-1);
-                }
-            });
+            table.addListener(SWT.EraseItem, $ -> table.setSelection(-1));
             table.setSelection(-1);
         }
 

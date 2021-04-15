@@ -15,7 +15,6 @@ import java.util.HashSet;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -164,13 +163,9 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
 
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeTableImport(structure, new Path(filename), tableRows, getNullRepresentation(),
-                            ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
-                }
-            };
+            IWorkspaceRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
+                    getNullRepresentation(),
+                    ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
             IIpsModel.get().runAndQueueChangeEvents(runnable, null);
 
             if (!messageList.isEmpty()) {

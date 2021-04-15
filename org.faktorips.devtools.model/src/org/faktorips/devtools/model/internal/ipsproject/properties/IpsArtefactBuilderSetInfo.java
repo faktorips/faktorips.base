@@ -34,9 +34,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A class that hold information about IIpsArtefactBuilderSets that are registered with the
@@ -202,7 +202,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             ILog logger) {
 
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren(BUILDER_SET_PROPERTY_DEF);
-        Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<String, IIpsBuilderSetPropertyDef>();
+        Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<>();
         for (IConfigurationElement builderSetPropertyDefElement : builderSetPropertyDefElements) {
             IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef
                     .loadExtensions(builderSetPropertyDefElement, registry, builderSetId, logger, ipsModel);

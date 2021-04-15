@@ -82,13 +82,13 @@ public class XEnumType extends XClass {
         if (isAbstract()) {
             return getExtendedOrImplementedInterfaces();
         } else {
-            return new LinkedHashSet<String>();
+            return new LinkedHashSet<>();
         }
     }
 
     @Override
     public LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
-        LinkedHashSet<String> interfaces = new LinkedHashSet<String>();
+        LinkedHashSet<String> interfaces = new LinkedHashSet<>();
         if (hasSuperEnumType()) {
             interfaces.add(addImport(getSuperEnumType().getQualifiedClassName()));
         }
@@ -129,7 +129,7 @@ public class XEnumType extends XClass {
         } else {
             enumAttributes = getEnumType().getEnumAttributes(includeLiteralName);
         }
-        return new ArrayList<XEnumAttribute>(initNodesForParts(enumAttributes, XEnumAttribute.class));
+        return new ArrayList<>(initNodesForParts(enumAttributes, XEnumAttribute.class));
     }
 
     public List<XEnumAttribute> getDeclaredAttributesWithoutLiteralName() {
@@ -141,7 +141,7 @@ public class XEnumType extends XClass {
     }
 
     public List<XEnumAttribute> getAllAttributesWithField() {
-        List<XEnumAttribute> results = new ArrayList<XEnumAttribute>();
+        List<XEnumAttribute> results = new ArrayList<>();
         List<XEnumAttribute> attributeModelNodes = getAttributes(true, false);
         for (XEnumAttribute attribute : attributeModelNodes) {
             if (attribute.isGenerateField()) {
@@ -153,7 +153,7 @@ public class XEnumType extends XClass {
 
     public List<XEnumAttribute> getAllUniqueAttributesWithoutLiteralName() {
         List<XEnumAttribute> attributeModelNodes = getAttributes(true, false);
-        List<XEnumAttribute> results = new ArrayList<XEnumAttribute>();
+        List<XEnumAttribute> results = new ArrayList<>();
 
         for (XEnumAttribute attribute : attributeModelNodes) {
             if (attribute.isUnique()) {
@@ -449,11 +449,11 @@ public class XEnumType extends XClass {
     }
 
     public List<XEnumValue> getEnumValues() {
-        return new ArrayList<XEnumValue>(initNodesForParts(getEnumType().getEnumValues(), XEnumValue.class));
+        return new ArrayList<>(initNodesForParts(getEnumType().getEnumValues(), XEnumValue.class));
     }
 
     public List<MethodParameter> getConstructorParameters() {
-        List<MethodParameter> parameters = new ArrayList<MethodParameter>();
+        List<MethodParameter> parameters = new ArrayList<>();
         if (isIndexFieldRequired()) {
             parameters.add(new MethodParameter("int", getVarNameIndex()));
         }
@@ -467,7 +467,7 @@ public class XEnumType extends XClass {
     }
 
     public List<MethodParameter> getStringConstructorParameters() {
-        List<MethodParameter> parameters = new ArrayList<MethodParameter>();
+        List<MethodParameter> parameters = new ArrayList<>();
         if (isIndexFieldRequired()) {
             parameters.add(new MethodParameter("int", getVarNameIndex()));
         }

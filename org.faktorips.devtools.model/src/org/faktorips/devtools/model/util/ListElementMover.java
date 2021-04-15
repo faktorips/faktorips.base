@@ -92,7 +92,7 @@ public class ListElementMover<T> implements IElementMover {
         if (targetIndex < 0 || targetIndex > list.size()) {
             return;
         }
-        List<T> buffer = new ArrayList<T>();
+        List<T> buffer = new ArrayList<>();
         int delta = insertBelow ? 1 : 0;
         for (int selectedInd : selectedindices) {
             buffer.add(list.get(selectedInd));

@@ -35,7 +35,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
     private static final Set<String> fgTags;
 
     static {
-        fgTags = new HashSet<String>();
+        fgTags = new HashSet<>();
         fgTags.add("b"); //$NON-NLS-1$
         fgTags.add("br"); //$NON-NLS-1$
         fgTags.add("br/"); //$NON-NLS-1$
@@ -54,7 +54,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         fgTags.add("pre"); //$NON-NLS-1$
         fgTags.add("head"); //$NON-NLS-1$
 
-        fgEntityLookup = new HashMap<String, String>(7);
+        fgEntityLookup = new HashMap<>(7);
         fgEntityLookup.put("lt", "<"); //$NON-NLS-1$ //$NON-NLS-2$
         fgEntityLookup.put("gt", ">"); //$NON-NLS-1$ //$NON-NLS-2$
         fgEntityLookup.put("nbsp", " "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -233,7 +233,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
         return EMPTY_STRING;
     }
 
-/**
+    /**
      * A '<' has been read. Process a html tag
      */
     private String processHTMLTag() throws IOException {

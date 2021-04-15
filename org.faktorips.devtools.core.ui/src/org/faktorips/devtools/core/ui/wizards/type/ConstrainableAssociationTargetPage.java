@@ -92,7 +92,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
 
     private void bindContext() {
         bindingContext.bindContent(viewer, IType.class, pmo, ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET);
-        bindingContext.add(new PropertyChangeBinding<IType>(composite, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_TARGET, IType.class) {
 
             @Override
@@ -100,7 +100,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
                 setPageComplete(pmo.getSelectedTarget() != null);
             }
         });
-        bindingContext.add(new PropertyChangeBinding<IAssociation>(composite, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION, IAssociation.class) {
 
             @Override

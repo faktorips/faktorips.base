@@ -31,7 +31,7 @@ class FormulaHandler {
 
     private IFormulaEvaluator formulaEvaluator;
 
-    private Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
+    private Map<String, String> availableFormulars = new LinkedHashMap<>();
 
     public FormulaHandler(Object callerObject, IRuntimeRepository repository) {
         this.callerObject = callerObject;
@@ -83,7 +83,7 @@ class FormulaHandler {
      * @throws NullPointerException if element is <code>null</code>.
      */
     protected Map<String, String> getCompiledExpressionsFromFormulas(Element element) {
-        Map<String, String> expressions = new LinkedHashMap<String, String>();
+        Map<String, String> expressions = new LinkedHashMap<>();
         NodeList formulas = element.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA);
         for (int i = 0; i < formulas.getLength(); i++) {
             Element aFormula = (Element)formulas.item(i);

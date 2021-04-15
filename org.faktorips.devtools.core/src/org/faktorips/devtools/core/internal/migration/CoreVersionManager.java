@@ -77,8 +77,8 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
         try {
             AbstractIpsProjectMigrationOperation[] operations = getMigrationOperations(null, otherVersion);
-            for (int i = 0; i < operations.length; i++) {
-                if (!operations[i].isEmpty()) {
+            for (AbstractIpsProjectMigrationOperation operation : operations) {
+                if (!operation.isEmpty()) {
                     return false;
                 }
             }
@@ -112,7 +112,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
             String versionToStart) throws CoreException {
-        ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
+        ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<>();
         String migrationClassName = null;
         try {
             AbstractIpsProjectMigrationOperation migrationOperation = null;
@@ -123,9 +123,9 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 String packageName = QNameUtil.getPackageName(CoreVersionManager.class.getName());
                 migrationClassName = packageName + ".Migration_" + underscoreVersion; //$NON-NLS-1$
                 Class<?> clazz = Class.forName(migrationClassName, true, loader);
-                Constructor<?> constructor = clazz.getConstructor(new Class[] { IIpsProject.class, String.class });
+                Constructor<?> constructor = clazz.getConstructor(IIpsProject.class, String.class);
                 migrationOperation = (AbstractIpsProjectMigrationOperation)constructor
-                        .newInstance(new Object[] { projectToMigrate, getFeatureId() });
+                        .newInstance(projectToMigrate, getFeatureId());
                 operations.add(migrationOperation);
                 version = migrationOperation.getTargetVersion();
             }

@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Allows easy creation of {@linkplain IProject projects} with different configurations.
@@ -52,12 +51,7 @@ public class PlatformProjectBuilder {
      * Creates a new platform project with the given name and opens it.
      */
     private IProject newPlatformProject(final String name, final IProjectDescription description) throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                internalNewPlatformProject(name, description);
-            }
-        };
+        IWorkspaceRunnable runnable = $ -> internalNewPlatformProject(name, description);
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
         return workspace.getRoot().getProject(name);

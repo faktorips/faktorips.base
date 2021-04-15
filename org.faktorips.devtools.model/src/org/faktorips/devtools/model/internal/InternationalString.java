@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -50,15 +49,9 @@ import org.w3c.dom.Element;
 public class InternationalString implements IInternationalString {
 
     private static final DistinctElementComparator<LocalizedString> COMPARATOR = DistinctElementComparator
-            .createComparator(new Comparator<LocalizedString>() {
+            .createComparator((o1, o2) -> ObjectUtils.compare(o1.getValue(), o2.getValue()));
 
-                @Override
-                public int compare(LocalizedString o1, LocalizedString o2) {
-                    return ObjectUtils.compare(o1.getValue(), o2.getValue());
-                }
-            });
-
-    private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<Locale, LocalizedString>();
+    private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<>();
 
     private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 

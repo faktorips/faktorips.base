@@ -18,23 +18,25 @@ public class MinMaxLongTest extends FunctionAbstractTest {
     public void testCompile() throws Exception {
         registerFunction(new MinMaxLong("MAX", "", true));
         execAndTestSuccessfull("MAX(a; b)", Long.valueOf(4), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.LONG }, new Object[] { Long.valueOf(4), Long.valueOf(3) }, Datatype.LONG);
+                Datatype.LONG }, new Object[] { Long.valueOf(4), Long.valueOf(3) }, Datatype.LONG);
         execAndTestSuccessfull("MAX(a; b)", Long.valueOf(4), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
         execAndTestSuccessfull("MAX(a; b)", Long.valueOf(4), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.PRIMITIVE_LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.PRIMITIVE_LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
         execAndTestSuccessfull("MAX(a; b)", Long.valueOf(4), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.PRIMITIVE_LONG, Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.PRIMITIVE_LONG, Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) },
+                Datatype.LONG);
 
         registerFunction(new MinMaxLong("MIN", "", false));
         execAndTestSuccessfull("MIN(a; b)", Long.valueOf(3), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.LONG }, new Object[] { Long.valueOf(4), Long.valueOf(3) }, Datatype.LONG);
+                Datatype.LONG }, new Object[] { Long.valueOf(4), Long.valueOf(3) }, Datatype.LONG);
         execAndTestSuccessfull("MIN(a; b)", Long.valueOf(3), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
         execAndTestSuccessfull("MIN(a; b)", Long.valueOf(3), new String[] { "a", "b" }, new Datatype[] {
-            Datatype.PRIMITIVE_LONG, Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.PRIMITIVE_LONG, Datatype.LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) },
+                Datatype.LONG);
         execAndTestSuccessfull("MIN(a; b)", Long.valueOf(3), new String[] { "a", "b" }, new Datatype[] { Datatype.LONG,
-            Datatype.PRIMITIVE_LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
+                Datatype.PRIMITIVE_LONG }, new Object[] { Long.valueOf(3), Long.valueOf(4) }, Datatype.LONG);
 
     }
 

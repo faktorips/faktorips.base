@@ -11,8 +11,8 @@ package org.faktorips.devtools.model.internal.builder;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -243,10 +243,10 @@ public class DependencyResolverTest {
         doReturn(superProductCmptType).when(spyIpsSrcFile2).getQualifiedNameType();
         doReturn(subProductCmptType).when(spyIpsSrcFile3).getQualifiedNameType();
 
-        List<IIpsSrcFile> addedOrChangesIpsSrcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> addedOrChangesIpsSrcFiles = new ArrayList<>();
         addedOrChangesIpsSrcFiles.add(spyIpsSrcFile1);
         addedOrChangesIpsSrcFiles.add(spyIpsSrcFile2);
-        List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<>();
         removedIpsSrcFiles.add(spyIpsSrcFile3);
 
         dependencyResolver.collectDependenciesForIncrementalBuild(addedOrChangesIpsSrcFiles, removedIpsSrcFiles);
@@ -448,7 +448,8 @@ public class DependencyResolverTest {
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
         assertEquals(1, collectedDependencies.get(ipsProject2).size());
         assertEquals(1, collectedDependencies.get(ipsProject3).size());
-        assertThat(collectedDependencies.get(ipsProject1), hasItems(depConfiguresSuperProductCmptToSuperPolicyCmptType));
+        assertThat(collectedDependencies.get(ipsProject1),
+                hasItems(depConfiguresSuperProductCmptToSuperPolicyCmptType));
         assertThat(collectedDependencies.get(ipsProject2), hasItems(depSubtype));
         assertThat(collectedDependencies.get(ipsProject3), hasItems(depInstanceOfProductCmpt));
     }

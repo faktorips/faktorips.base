@@ -64,7 +64,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
     private final IProductCmptType productCmptType;
-    private final List<IDeltaEntry> entries = new ArrayList<IDeltaEntry>();
+    private final List<IDeltaEntry> entries = new ArrayList<>();
     private final IProductCmptLinkContainer linkContainer;
 
     public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer,
@@ -260,7 +260,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     @Override
     public IDeltaEntry[] getEntries(DeltaType type) {
-        List<IDeltaEntry> result = new ArrayList<IDeltaEntry>(entries.size());
+        List<IDeltaEntry> result = new ArrayList<>(entries.size());
         for (IDeltaEntry entry : entries) {
             if (entry.getDeltaType().equals(type)) {
                 result.add(entry);
@@ -285,8 +285,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     class HierarchyVisitor extends TypeHierarchyVisitor<IProductCmptType> {
 
-        private List<ITableStructureUsage> tableStructureUsages = new ArrayList<ITableStructureUsage>();
-        private List<IProductCmptTypeAttribute> attributes = new ArrayList<IProductCmptTypeAttribute>();
+        private List<ITableStructureUsage> tableStructureUsages = new ArrayList<>();
+        private List<IProductCmptTypeAttribute> attributes = new ArrayList<>();
 
         public HierarchyVisitor(IIpsProject ipsProject) {
             super(ipsProject);

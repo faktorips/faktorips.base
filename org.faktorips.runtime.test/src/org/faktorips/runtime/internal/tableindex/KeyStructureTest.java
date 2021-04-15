@@ -11,9 +11,9 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
@@ -146,8 +146,8 @@ public class KeyStructureTest {
     }
 
     private void initKeyStructureMap(AbstractMapStructure<String, ResultStructure<Integer>, Integer> structure) {
-        ResultStructure<Integer> first = new ResultStructure<Integer>(1);
-        ResultStructure<Integer> second = new ResultStructure<Integer>(2);
+        ResultStructure<Integer> first = new ResultStructure<>(1);
+        ResultStructure<Integer> second = new ResultStructure<>(2);
         structure.put("ID_1", first);
         structure.put("ID_2", second);
     }

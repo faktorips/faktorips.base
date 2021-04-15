@@ -128,7 +128,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
      */
     private void printAllTests(int testCount) {
         List<IpsTest2> tests = getTests();
-        List<IpsTest2> testCases = new ArrayList<IpsTest2>(testCount);
+        List<IpsTest2> testCases = new ArrayList<>(testCount);
         writer.print(":");
         // get all test cases as flat structured list
         for (IpsTest2 currTest : tests) {
@@ -160,7 +160,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     @Override
     protected List<IRuntimeRepository> createRepositories() throws Exception {
         List<String> repositoryNameList = getRepositoryListFromInputString(getRepositoryPackages());
-        List<IRuntimeRepository> runtimeRepositories = new ArrayList<IRuntimeRepository>(repositoryNameList.size());
+        List<IRuntimeRepository> runtimeRepositories = new ArrayList<>(repositoryNameList.size());
         for (String repositoryName : repositoryNameList) {
             runtimeRepositories.add(ClassloaderRuntimeRepository.create(repositoryName, getClassLoader()));
         }

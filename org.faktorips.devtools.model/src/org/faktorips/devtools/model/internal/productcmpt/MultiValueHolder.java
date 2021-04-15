@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
-import org.faktorips.util.collections.ListComparator;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.collections.ListComparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -180,7 +180,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
      */
     @Override
     public String getStringValue() {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for (ISingleValueHolder holder : values) {
             stringList.add(holder.getStringValue());
         }

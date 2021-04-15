@@ -45,7 +45,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IValidationRule rule) {
-        List<String> ruleData = new ArrayList<String>();
+        List<String> ruleData = new ArrayList<>();
 
         ruleData.add(getContext().getLabel(rule));
         ruleData.add(rule.getMessageCode());
@@ -74,7 +74,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
 
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineName));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageCode));

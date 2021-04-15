@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -52,17 +50,14 @@ public class SetProductCmptTypeDialog extends EditDialog {
         getToolkit().createFormLabel(workArea, Messages.SetTemplateDialog_labelNewTemplate);
         template = new ProductCmptType2RefControl(productCmpt.getIpsProject(), workArea, getToolkit(), true);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        template.getTextControl().addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (StringUtils.isEmpty(template.getText())) {
-                    getButton(OK).setEnabled(false);
-                    String msg = NLS.bind(Messages.SetTemplateDialog_msgTemplateDoesNotExist, template.getText());
-                    setMessage(msg, IMessageProvider.ERROR);
-                } else {
-                    getButton(OK).setEnabled(true);
-                    setMessage(message);
-                }
+        template.getTextControl().addModifyListener($ -> {
+            if (StringUtils.isEmpty(template.getText())) {
+                getButton(OK).setEnabled(false);
+                String msg = NLS.bind(Messages.SetTemplateDialog_msgTemplateDoesNotExist, template.getText());
+                setMessage(msg, IMessageProvider.ERROR);
+            } else {
+                getButton(OK).setEnabled(true);
+                setMessage(message);
             }
         });
         super.setMessage(message);

@@ -96,7 +96,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     @Test
     public void testEncapsulateComponentTypes_NonEmptyListInput() throws CoreException {
         IIpsProject project = newIpsProject();
-        ArrayList<IType> components = new ArrayList<IType>();
+        ArrayList<IType> components = new ArrayList<>();
         PolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Component");
         components.add(type);
         List<ComponentNode> encapsulatedComponentTypes = ComponentNode.encapsulateComponentTypes(components, null,
@@ -109,7 +109,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     @Test(expected = NullPointerException.class)
     public void testEncapsulateComponentTypes_NullProjectAndNonEmptyListInput() throws CoreException {
         IIpsProject project = newIpsProject();
-        ArrayList<IType> components = new ArrayList<IType>();
+        ArrayList<IType> components = new ArrayList<>();
         components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));
 
         ComponentNode.encapsulateComponentTypes(components, null, null);

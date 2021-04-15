@@ -37,7 +37,7 @@ public class IpsCutHandler extends AbstractCopyPasteHandler {
     }
 
     public void cutToClipboard(IStructuredSelection selection, Clipboard clipboard) {
-        List<IpsObjectPartState> removedObjects = new ArrayList<IpsObjectPartState>();
+        List<IpsObjectPartState> removedObjects = new ArrayList<>();
         IIpsObjectPart part;
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object selected = iter.next();
@@ -49,7 +49,7 @@ public class IpsCutHandler extends AbstractCopyPasteHandler {
         }
 
         if (removedObjects.size() > 0) {
-            ArrayList<IResource> emptyList = new ArrayList<IResource>(0);
+            ArrayList<IResource> emptyList = new ArrayList<>(0);
             clipboard.setContents(getDataArray(removedObjects, emptyList, null),
                     getTypeArray(removedObjects, emptyList, null));
         }

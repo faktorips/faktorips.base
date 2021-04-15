@@ -40,7 +40,7 @@ public abstract class AbstractIpsSrcFileContentProposalProvider implements ICont
     public IContentProposal[] getProposals(String contents, int position) {
         String prefix = StringUtils.left(contents, position);
         searchPattern.setPattern(prefix);
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
+        List<IContentProposal> result = new ArrayList<>();
         for (IIpsSrcFile ipsSrcFile : getIpsSrcFiles()) {
             if (ipsSrcFile.exists() && (filter == null || filter.select(ipsSrcFile))) {
                 String unqualifiedName = ipsSrcFile.getIpsObjectName();

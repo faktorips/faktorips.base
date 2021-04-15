@@ -42,15 +42,14 @@ public class DateISOStringFormatTest extends AbstractIpsPluginTest {
         formated = format.format(input);
         assertEquals(format.getNullString(), formated);
     }
-    
-    
+
     @Test
     public void testNullStringRep() {
         DateISOStringFormat format = new DateISOStringFormat();
         format.initFormat(Locale.GERMANY);
         format.setNullString(Messages.DefaultValueRepresentation_EditField);
-        String input= "";
-        String formated= format.format(input);
+        String input = "";
+        String formated = format.format(input);
         assertEquals(Messages.DefaultValueRepresentation_EditField, formated);
 
     }

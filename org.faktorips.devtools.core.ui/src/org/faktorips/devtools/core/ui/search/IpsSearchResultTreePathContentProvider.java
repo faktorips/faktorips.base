@@ -51,7 +51,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     @Override
     public void searchResultChanged(SearchResultEvent e) {
         if (e instanceof RemoveAllEvent) {
-            ipsElementTree = new HashMap<IIpsElement, IpsSearchResultTreePathContentProvider.IpsElementSearchTreeNode>();
+            ipsElementTree = new HashMap<>();
             return;
         }
         if (e instanceof MatchEvent) {
@@ -59,7 +59,6 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             if (matchEvent.getKind() == MatchEvent.ADDED) {
                 addMatches(matchEvent.getMatches());
             }
-            return;
         }
     }
 
@@ -109,7 +108,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             return;
         }
 
-        ipsElementTree = new HashMap<IIpsElement, IpsSearchResultTreePathContentProvider.IpsElementSearchTreeNode>();
+        ipsElementTree = new HashMap<>();
         addElements(((AbstractTextSearchResult)result).getElements());
 
     }
@@ -173,9 +172,9 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
 
         AbstractTreeViewer viewer = (AbstractTreeViewer)page.getViewer();
 
-        Set<Object> toRemove = new HashSet<Object>();
-        Set<IIpsElement> toAdd = new HashSet<IIpsElement>();
-        Set<Object> toUpdate = new HashSet<Object>();
+        Set<Object> toRemove = new HashSet<>();
+        Set<IIpsElement> toAdd = new HashSet<>();
+        Set<Object> toUpdate = new HashSet<>();
         for (Object updatedObject : updatedElements) {
             IIpsElement updatedElement = null;
             if (updatedObject instanceof Object[]) {
@@ -254,7 +253,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         private final Set<IIpsElement> children;
 
         protected IpsElementSearchTreeNode() {
-            this.children = new HashSet<IIpsElement>();
+            this.children = new HashSet<>();
         }
 
         protected void addChild(IIpsElement child) {

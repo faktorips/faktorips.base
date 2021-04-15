@@ -118,7 +118,7 @@ public class PolicyAssociation extends Association {
      *             this model type association or that association is not accessible for any reason
      */
     public List<IModelObject> getTargetObjects(IModelObject source) {
-        List<IModelObject> targets = new ArrayList<IModelObject>();
+        List<IModelObject> targets = new ArrayList<>();
         Object object = invokeMethod(getGetterMethod(), source);
         if (object instanceof Iterable<?>) {
             for (Object target : (Iterable<?>)object) {

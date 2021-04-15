@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
@@ -106,18 +105,14 @@ public class IpsObjectPathContainer {
      */
     public Control createControl(final Composite parent) throws CoreException {
         final UIToolkit toolkit = new UIToolkit(null);
-        ipsObjectPathContainerPmo.addPropertyChangeListener(new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent pce) {
-                if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {
-                    if (Boolean.FALSE.equals(pce.getOldValue()) && Boolean.TRUE.equals(pce.getNewValue())) {
-                        boolean openQuestion = MessageDialog.openQuestion(parent.getShell(),
-                                Messages.UseManifest_Question_Title, Messages.UseManifest_Question_Message);
-                        if (!openQuestion) {
-                            ipsObjectPathContainerPmo.setUsingManifest(false);
-                            ipsObjectPathContainerPmo.setDataChanged(false);
-                        }
+        ipsObjectPathContainerPmo.addPropertyChangeListener(pce -> {
+            if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {
+                if (Boolean.FALSE.equals(pce.getOldValue()) && Boolean.TRUE.equals(pce.getNewValue())) {
+                    boolean openQuestion = MessageDialog.openQuestion(parent.getShell(),
+                            Messages.UseManifest_Question_Title, Messages.UseManifest_Question_Message);
+                    if (!openQuestion) {
+                        ipsObjectPathContainerPmo.setUsingManifest(false);
+                        ipsObjectPathContainerPmo.setDataChanged(false);
                     }
                 }
             }

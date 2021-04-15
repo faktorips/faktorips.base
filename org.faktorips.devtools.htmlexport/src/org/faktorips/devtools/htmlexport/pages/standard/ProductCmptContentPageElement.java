@@ -21,7 +21,6 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
-import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -58,10 +57,10 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-            new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-            new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
-                    TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(),
+                new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+                new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
+                        TargetType.CONTENT, getContext().getLabel(productCmptType), true)));
     }
 
     private IProductCmptType findProductCmptType() {
@@ -119,7 +118,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
 
-        List<String> validFroms = new ArrayList<String>();
+        List<String> validFroms = new ArrayList<>();
 
         for (IIpsObjectGeneration ipsObjectGeneration : generations) {
             GregorianCalendar validFrom = ipsObjectGeneration.getValidFrom();
@@ -127,7 +126,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
 
         wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-        .createTextPageElements(validFroms)), getContext()));
+                .createTextPageElements(validFroms)), getContext()));
         addPageElements(wrapper);
     }
 }

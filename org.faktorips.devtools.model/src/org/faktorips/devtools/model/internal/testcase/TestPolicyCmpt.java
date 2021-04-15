@@ -43,10 +43,10 @@ import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.util.ListElementMover;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -66,9 +66,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /** if productCmpt is empty then the test policy cmpt is stored */
     private String policyCmptType = ""; //$NON-NLS-1$
 
-    private List<ITestAttributeValue> testAttributeValues = new ArrayList<ITestAttributeValue>(0);
+    private List<ITestAttributeValue> testAttributeValues = new ArrayList<>(0);
 
-    private List<ITestPolicyCmptLink> testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>(0);
+    private List<ITestPolicyCmptLink> testPolicyCmptLinks = new ArrayList<>(0);
 
     public TestPolicyCmpt(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
@@ -77,7 +77,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     @Override
     protected IIpsElement[] getChildrenThis() {
         int size = testAttributeValues.size() + testPolicyCmptLinks.size();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        List<IIpsElement> children = new ArrayList<>(size);
         children.addAll(testAttributeValues);
         children.addAll(testPolicyCmptLinks);
         return children.toArray(new IIpsElement[children.size()]);
@@ -85,8 +85,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     protected void reinitPartCollectionsThis() {
-        testAttributeValues = new ArrayList<ITestAttributeValue>();
-        testPolicyCmptLinks = new ArrayList<ITestPolicyCmptLink>();
+        testAttributeValues = new ArrayList<>();
+        testPolicyCmptLinks = new ArrayList<>();
     }
 
     @Override
@@ -320,7 +320,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName) {
-        List<ITestPolicyCmptLink> links = new ArrayList<ITestPolicyCmptLink>();
+        List<ITestPolicyCmptLink> links = new ArrayList<>();
         for (ITestPolicyCmptLink element : testPolicyCmptLinks) {
             if (element.getTestPolicyCmptTypeParameter().equals(typeParameterName)) {
                 links.add(element);
@@ -597,7 +597,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public int[] moveTestPolicyCmptLink(int[] indexes, boolean up) {
-        ListElementMover<ITestPolicyCmptLink> mover = new ListElementMover<ITestPolicyCmptLink>(testPolicyCmptLinks);
+        ListElementMover<ITestPolicyCmptLink> mover = new ListElementMover<>(testPolicyCmptLinks);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;
@@ -632,17 +632,17 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         List<ITestPolicyCmptLink> oldLinks = testPolicyCmptLinks;
         IIpsProject ipsProject = getIpsProject();
         // fill temporary storage of the links for a test parameter
-        HashMap<ITestPolicyCmptTypeParameter, List<ITestPolicyCmptLink>> param2Links = new HashMap<ITestPolicyCmptTypeParameter, List<ITestPolicyCmptLink>>(
+        HashMap<ITestPolicyCmptTypeParameter, List<ITestPolicyCmptLink>> param2Links = new HashMap<>(
                 oldLinks.size());
         for (ITestPolicyCmptLink testPolicyCmptLink : oldLinks) {
             ITestPolicyCmptTypeParameter paramOfLink = testPolicyCmptLink.findTestPolicyCmptTypeParameter(ipsProject);
             List<ITestPolicyCmptLink> linkList = param2Links.computeIfAbsent(paramOfLink,
-                    $ -> new ArrayList<ITestPolicyCmptLink>());
+                    $ -> new ArrayList<>());
             linkList.add(testPolicyCmptLink);
         }
 
         // sort the list of links for each parameter in order of their parameter
-        List<ITestPolicyCmptLink> newChildList = new ArrayList<ITestPolicyCmptLink>();
+        List<ITestPolicyCmptLink> newChildList = new ArrayList<>();
         ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null) {
             throw new RuntimeException("Test parameter not found: " + testPolicyCmptType + "!"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -672,7 +672,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * @throws CoreException in case of an error
      */
     void fixDifferentTestAttrValueSortOrder() throws CoreException {
-        List<ITestAttributeValue> newTestAttrValueList = new ArrayList<ITestAttributeValue>();
+        List<ITestAttributeValue> newTestAttrValueList = new ArrayList<>();
         ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
         ITestAttribute[] testAttr = param.getTestAttributes();
         for (ITestAttribute element : testAttr) {
@@ -954,7 +954,6 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 Message msg = new Message(MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK, text, Message.ERROR, this,
                         ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
                 list.add(msg);
-                return;
             }
         }
     }

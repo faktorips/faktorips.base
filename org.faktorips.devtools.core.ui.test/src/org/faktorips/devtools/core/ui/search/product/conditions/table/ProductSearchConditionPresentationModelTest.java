@@ -145,7 +145,7 @@ public class ProductSearchConditionPresentationModelTest {
     private PolicyAttributeConditionType createConditionwithSearchableElements() {
         PolicyAttributeConditionType condition = mock(PolicyAttributeConditionType.class);
 
-        List<IIpsElement> list = new ArrayList<IIpsElement>();
+        List<IIpsElement> list = new ArrayList<>();
         list.add(ipsElement);
 
         when(condition.getSearchableElements(any(IProductCmptType.class))).thenReturn(list);

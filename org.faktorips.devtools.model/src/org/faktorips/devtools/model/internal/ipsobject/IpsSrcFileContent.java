@@ -86,7 +86,7 @@ public class IpsSrcFileContent {
         ByteArrayInputStream is = null;
         try {
             is = new ByteArrayInputStream(xml.getBytes(encoding));
-                Document doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
+            Document doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
             ipsObject.initFromXml(doc.getDocumentElement());
             modified = newModified;
             parsable = true;
@@ -210,7 +210,7 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                        DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
                 Document doc = builder.parse(is);
                 ipsObject.initFromXml(doc.getDocumentElement());
             }
@@ -294,7 +294,7 @@ public class IpsSrcFileContent {
         try {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
             Method readMethod = propertyDescriptor.getReadMethod();
-            Object result = readMethod.invoke(ipsObject, new Object[0]);
+            Object result = readMethod.invoke(ipsObject);
             return result == null ? null : "" + result; //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
             // due to documentation this method should return null in case of property does not
@@ -310,39 +310,34 @@ public class IpsSrcFileContent {
         if (!modified) {
             return;
         }
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                try {
-                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
-                    }
-                                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-                    String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-                    String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding);
-                    ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
-                    IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
-                    EclipseIOUtil.writeToFile(file, is, force, true, monitor);
-                    modificationStamp = file.getModificationStamp();
-                    if (modStampsAfterSave == null) {
-                        modStampsAfterSave = new ArrayList<Long>(1);
-                    }
-                    modStampsAfterSave.add(Long.valueOf(modificationStamp));
-                    markAsUnmodified();
-                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                                + IpsSrcFileContent.this);
-                    }
-                    clearRootPropertyCache();
-                } catch (Exception e) {
-                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                        System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this); //$NON-NLS-1$
-                    }
-                    throw new CoreException(new IpsStatus(e));
+        IWorkspaceRunnable runnable = monitor1 -> {
+            try {
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
                 }
+                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+                String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+                String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding);
+                ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
+                IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
+                EclipseIOUtil.writeToFile(file, is, force, true, monitor1);
+                modificationStamp = file.getModificationStamp();
+                if (modStampsAfterSave == null) {
+                    modStampsAfterSave = new ArrayList<>(1);
+                }
+                modStampsAfterSave.add(Long.valueOf(modificationStamp));
+                markAsUnmodified();
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                            + IpsSrcFileContent.this);
+                }
+                clearRootPropertyCache();
+            } catch (Exception e) {
+                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                    System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this); //$NON-NLS-1$
+                }
+                throw new CoreException(new IpsStatus(e));
             }
-
         };
         ResourcesPlugin.getWorkspace().run(runnable, monitor);
     }

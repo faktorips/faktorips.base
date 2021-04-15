@@ -11,10 +11,8 @@
 package org.faktorips.devtools.core.ui.internal.generationdate;
 
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -105,14 +103,10 @@ public class GenerationDateViewer extends ComboViewer {
                 // Nothing to do
             }
         });
-        addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                GenerationDate adjDate = getSelectedDate();
-                if (adjDate != null) {
-                    updateButtons();
-                }
+        addSelectionChangedListener($ -> {
+            GenerationDate adjDate = getSelectedDate();
+            if (adjDate != null) {
+                updateButtons();
             }
         });
     }

@@ -41,7 +41,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
         LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(Parent.class, PartHolder2.class,
@@ -58,7 +58,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_tooMany() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Cannot find part Track in " + PartHolder3.class.getCanonicalName());
@@ -68,7 +68,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_tooFew() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter method found for annotated part \"Trick\"");
@@ -78,7 +78,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_manyTooFew() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         expectedEx.expect(IllegalStateException.class);
         expectedEx.expectMessage("No getter methods found for annotated parts \"Trick\", \"Track\"");
@@ -88,7 +88,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_Interface() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
         LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(ParentInterface.class,
@@ -105,7 +105,7 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Test
     public void testCreateParts_SubInterface() throws Exception {
-        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
 
         LinkedHashMap<String, DummyElement> parts = simpleTypePartsReader.createParts(SubInterface.class,

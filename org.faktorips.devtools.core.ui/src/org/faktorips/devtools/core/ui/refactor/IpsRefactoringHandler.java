@@ -90,7 +90,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
         }
 
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        Set<IIpsElement> selectedIpsElements = new LinkedHashSet<IIpsElement>(structuredSelection.size());
+        Set<IIpsElement> selectedIpsElements = new LinkedHashSet<>(structuredSelection.size());
         for (Object selectedElement : structuredSelection.toArray()) {
             if (!(selectedElement instanceof IAdaptable)) {
                 break;

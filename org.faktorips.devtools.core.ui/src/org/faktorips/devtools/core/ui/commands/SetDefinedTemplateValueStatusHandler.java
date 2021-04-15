@@ -9,15 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.commands;
 
- import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
- /**
-  * A handler to set the template value status of property values to
-  * {@link TemplateValueStatus#DEFINED}.
-  */
- public class SetDefinedTemplateValueStatusHandler extends SetTemplateValueStatusHandler {
+/**
+ * A handler to set the template value status of property values to
+ * {@link TemplateValueStatus#DEFINED}.
+ */
+public class SetDefinedTemplateValueStatusHandler extends SetTemplateValueStatusHandler {
 
-     public SetDefinedTemplateValueStatusHandler() {
-         super(TemplateValueStatus.DEFINED);
-     }
- }
+    public SetDefinedTemplateValueStatusHandler() {
+        super(TemplateValueStatus.DEFINED);
+    }
+}

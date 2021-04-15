@@ -311,10 +311,12 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     /**
      * Returns true if this instance represents the special case null, otherwise false.
      */
+    @Override
     public boolean isNull() {
         return false;
     }
 
+    @Override
     public boolean isNotNull() {
         return true;
     }
@@ -578,6 +580,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *             <code>Money.Null</code>
      * @throws NullPointerException if the other money object is <code>null</code>.
      */
+    @Override
     public int compareTo(Money other) {
         // First check the currencies
         if (other.isNull()) {

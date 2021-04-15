@@ -17,8 +17,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A function that counts the instances of the path
@@ -46,7 +46,7 @@ public class Count extends AbstractFlFunction {
             fragment.append(argResults[0].getCodeFragment());
             fragment.append(".size()"); //$NON-NLS-1$
         } else {
-            String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { argType });
+            String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, argType);
             Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
             return new CompilationResultImpl(msg);
         }

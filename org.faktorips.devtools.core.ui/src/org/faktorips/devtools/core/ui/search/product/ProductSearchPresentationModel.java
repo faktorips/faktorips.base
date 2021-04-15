@@ -59,7 +59,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     private static final IConditionType[] CONDITION_TYPES = { new ProductAttributeConditionType(),
             new PolicyAttributeConditionType(), new ProductComponentAssociationConditionType() };
 
-    private List<ProductSearchConditionPresentationModel> conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>();
+    private List<ProductSearchConditionPresentationModel> conditionPMOs = new ArrayList<>();
 
     private IProductCmptType productCmptType;
 
@@ -201,7 +201,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
             return Collections.emptyList();
         }
 
-        List<IConditionType> conditionsWithSearchableElements = new ArrayList<IConditionType>();
+        List<IConditionType> conditionsWithSearchableElements = new ArrayList<>();
         for (IConditionType conditionType : CONDITION_TYPES) {
             List<IIpsElement> searchableElements = conditionType.getSearchableElements(productCmptType);
             if (!searchableElements.isEmpty()) {
@@ -233,7 +233,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         if (settingIsValid(SRC_FILE_PATTERN, settings)) {
             setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
         }
-        conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>(new ConditionPMOPersistence(this,
+        conditionPMOs = new ArrayList<>(new ConditionPMOPersistence(this,
                 settings).loadConditions());
     }
 

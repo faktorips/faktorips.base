@@ -17,8 +17,8 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 
 /**
- * A described element is an element that supports attaching {@link IDescription IDescriptions} in different
- * languages to it.
+ * A described element is an element that supports attaching {@link IDescription IDescriptions} in
+ * different languages to it.
  * <p>
  * Descriptions can be attached for all languages that are supported by the IPS project the
  * described element belongs to.

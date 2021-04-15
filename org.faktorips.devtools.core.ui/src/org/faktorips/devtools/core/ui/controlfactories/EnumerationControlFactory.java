@@ -63,10 +63,8 @@ public class EnumerationControlFactory extends DefaultControlFactory {
     /**
      * This method returns <code>true</code> if:
      * <ul>
-     * <li>
-     * the value set is <code>null</code> or</li>
-     * <li>
-     * the value set is not an enum</li>
+     * <li>the value set is <code>null</code> or</li>
+     * <li>the value set is not an enum</li>
      * </ul>
      * For enum value sets, content proposal will be added by the super implementation:
      * {@link ValueDatatypeControlFactory#adaptEnumValueProposal(UIToolkit, Text, IValueSet, ValueDatatype, IIpsProject)}
@@ -88,7 +86,7 @@ public class EnumerationControlFactory extends DefaultControlFactory {
         Combo combo = new Combo(parent, SWT.NONE);
         combo.setItems(proposalsAsString);
 
-        return new FormattingComboField<String>(combo, inputFormat);
+        return new FormattingComboField<>(combo, inputFormat);
     }
 
     private String[] getProposals(ValueDatatype datatype, IInputFormat<String> inputFormat) {

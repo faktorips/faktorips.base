@@ -105,13 +105,14 @@ public class ProductCmptPage extends WizardPage {
         Composite dateComposite = toolkit.createGridComposite(nameAndIdComposite, 3, false, false);
 
         DateControl dateControl = new DateControl(dateComposite, toolkit);
-        effectiveDateField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
+        effectiveDateField = new DateControlField<>(dateControl,
+                GregorianCalendarFormat.newInstance());
 
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention();
         versionIdLabel = toolkit.createLabel(dateComposite,
                 changesOverTimeNamingConvention.getVersionConceptNameSingular()
-                + Messages.ProductCmptPage_label_versionSuffix);
+                        + Messages.ProductCmptPage_label_versionSuffix);
         versionIdText = toolkit.createText(dateComposite);
 
         if (pmo.hasRuntimeId()) {
@@ -223,7 +224,7 @@ public class ProductCmptPage extends WizardPage {
                 getPage().setTitle(
                         NLS.bind(
                                 pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle : Messages.ProductCmptPage_title,
-                                        IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
+                                IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
             } else {
                 getPage().setTitle(StringUtils.EMPTY);
             }

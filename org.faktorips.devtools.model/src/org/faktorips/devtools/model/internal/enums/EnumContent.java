@@ -35,9 +35,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
@@ -77,7 +77,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
         super(file);
 
         enumType = StringUtils.EMPTY;
-        enumAttributeReferences = new IpsObjectPartCollection<IPartReference>(this, EnumAttributeReference.class,
+        enumAttributeReferences = new IpsObjectPartCollection<>(this, EnumAttributeReference.class,
                 IPartReference.class, EnumAttributeReference.XML_TAG);
     }
 
@@ -262,7 +262,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
     @Override
     public List<IPartReference> getEnumAttributeReferences() {
-        List<IPartReference> referencesList = new ArrayList<IPartReference>();
+        List<IPartReference> referencesList = new ArrayList<>();
         IIpsObjectPart[] parts = enumAttributeReferences.getParts();
         for (IIpsObjectPart part : parts) {
             referencesList.add((IPartReference)part);

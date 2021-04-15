@@ -34,10 +34,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -194,7 +194,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     private int getAssociationIndex() {
-        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
+        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<>();
         List<IPolicyCmptTypeAssociation> ass = getPolicyCmptType().getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation as : ass) {
             if (getTarget().equals(as.getTarget())) {
@@ -416,7 +416,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (getMaxCardinality() != 1 && getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
             String text = Messages.Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION, text, Message.ERROR, this,
-                    new String[] { PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE }));
+                    PROPERTY_MAX_CARDINALITY, IAssociation.PROPERTY_ASSOCIATION_TYPE));
         }
         validateDerivedUnion(list, ipsProject);
         validateInverseRelation(list, ipsProject);
@@ -560,7 +560,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 || (!inverseAss.isAssoziation() && !getAssociationType().isAssoziation()))) {
             String text = Messages.Association_msg_InverseAssociationMustBeOfTypeAssociation;
             list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH, text, Message.ERROR, this,
-                    new String[] { PROPERTY_INVERSE_ASSOCIATION }));
+                    PROPERTY_INVERSE_ASSOCIATION));
             return false;
         }
         return true;

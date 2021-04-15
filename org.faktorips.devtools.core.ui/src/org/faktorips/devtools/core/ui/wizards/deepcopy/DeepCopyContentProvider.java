@@ -75,7 +75,8 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
     }
 
     private Object[] getRefChildrenFor(IProductCmptReference parentElement) {
-        return addTblUsages(parentElement, structure.getChildProductCmptTypeAssociationReferences(parentElement, false));
+        return addTblUsages(parentElement,
+                structure.getChildProductCmptTypeAssociationReferences(parentElement, false));
     }
 
     private Object[] getChildrenFor(IProductCmptStructureReference parentElement) {
@@ -99,7 +100,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
             return productCmptReferencesOrTypes;
         }
         // filter association targets from the list
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
         for (Object productCmptReferencesOrType : productCmptReferencesOrTypes) {
             if (productCmptReferencesOrType instanceof IProductCmptTypeAssociationReference) {
                 IProductCmptTypeAssociationReference productCmptTypeRelationReference = (IProductCmptTypeAssociationReference)productCmptReferencesOrType;

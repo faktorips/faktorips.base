@@ -25,7 +25,7 @@ public abstract class AbstractLayouter extends AbstractTextGenerator implements 
      */
     private StringBuilder content = new StringBuilder();
 
-    private Set<LayoutResource> layoutResources = new HashSet<LayoutResource>();
+    private Set<LayoutResource> layoutResources = new HashSet<>();
 
     public AbstractLayouter() {
         super();

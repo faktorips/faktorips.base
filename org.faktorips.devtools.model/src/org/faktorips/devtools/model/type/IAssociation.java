@@ -439,8 +439,9 @@ public interface IAssociation extends ITypePart {
     /**
      * Searches the derived union association and returns it, if it exists. Returns
      * <code>null</code> if the derived union does not exist. Note that this method does not check
-     * if the association referred by this one as a derived union is <strong>really</strong> a derived union.
-     * It just returns the association that is defined as being subsetted by this one.
+     * if the association referred by this one as a derived union is <strong>really</strong> a
+     * derived union. It just returns the association that is defined as being subsetted by this
+     * one.
      * 
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.

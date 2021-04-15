@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

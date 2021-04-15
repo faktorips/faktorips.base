@@ -71,11 +71,11 @@ public class JMerger {
     protected JPatternDictionary sourcePatternDictionary;
     protected JPatternDictionary targetPatternDictionary;
 
-    protected Map<JNode, JNode> sourceToTargetMap = new LinkedHashMap<JNode, JNode>();
-    protected Map<JNode, JNode> targetToSourceMap = new LinkedHashMap<JNode, JNode>();
-    protected Map<JNode, List<JNode>> orderedSourceChildrenMap = new HashMap<JNode, List<JNode>>();
+    protected Map<JNode, JNode> sourceToTargetMap = new LinkedHashMap<>();
+    protected Map<JNode, JNode> targetToSourceMap = new LinkedHashMap<>();
+    protected Map<JNode, List<JNode>> orderedSourceChildrenMap = new HashMap<>();
 
-    private Set<JNode> additionallyAnnotatedMembers = new HashSet<JNode>();
+    private Set<JNode> additionallyAnnotatedMembers = new HashSet<>();
 
     protected boolean fixInterfaceBrace;
     protected boolean isBlocked = false;
@@ -240,7 +240,7 @@ public class JMerger {
     }
 
     public void setRetainedAnnotations(List<String> retainedAnnotations) {
-        this.retainedAnnotations = new HashSet<String>(retainedAnnotations);
+        this.retainedAnnotations = new HashSet<>(retainedAnnotations);
     }
 
     public void remerge() {
@@ -431,7 +431,7 @@ public class JMerger {
                     if (facadeHelper.isSibilingTraversalExpensive() && parent != nextTargetNodeParent) {
                         parent = nextTargetNodeParent;
                         children = nextTargetNodeParent == null ? null
-                                : new ArrayList<JNode>(nextTargetNodeParent.getChildren());
+                                : new ArrayList<>(nextTargetNodeParent.getChildren());
                     }
 
                     int previousTargetNodeIndex = 0;
@@ -481,7 +481,7 @@ public class JMerger {
     }
 
     protected void sweepTargetCompilationUnit() {
-        Set<JNode> sweptNodes = new HashSet<JNode>(targetToSourceMap.size());
+        Set<JNode> sweptNodes = new HashSet<>(targetToSourceMap.size());
         for (Map.Entry<JNode, JNode> entry : targetToSourceMap.entrySet()) {
             if (entry.getValue() == null) {
                 JNode node = entry.getKey();
@@ -645,7 +645,7 @@ public class JMerger {
                                 continue;
                             }
 
-                            targetPutMethod.invoke(targetNode, new Object[] { value });
+                            targetPutMethod.invoke(targetNode, value);
                             targetCompilationChanged = true;
                             if (targetPutMethod.getName().equals("setBody") && sourceNode instanceof JMethod) {
                                 JMethod sourceMethod = (JMethod)sourceNode;
@@ -667,7 +667,7 @@ public class JMerger {
                     // source method return type is array (getExceptions),
                     // target is not array (i.e. addException)
                     else {
-                        ArrayList<String> additionalStrings = new ArrayList<String>();
+                        ArrayList<String> additionalStrings = new ArrayList<>();
                         String[] sourceStrings = (String[])value;
                         if (sourceStrings != null) {
                             additionalStrings.addAll(Arrays.asList(sourceStrings));
@@ -711,7 +711,7 @@ public class JMerger {
                                     : Arrays.<String> asList(oldStringValues);
                             for (String string : additionalStrings) {
                                 if (!old.contains(string)) {
-                                    targetPutMethod.invoke(targetNode, new Object[] { string });
+                                    targetPutMethod.invoke(targetNode, string);
                                     targetCompilationChanged = true;
                                 }
                             }
@@ -754,7 +754,7 @@ public class JMerger {
                 JNode parent = sourceNode.getParent();
                 List<JNode> children = orderedSourceChildrenMap.get(parent);
                 if (children == null) {
-                    children = new ArrayList<JNode>();
+                    children = new ArrayList<>();
                     orderedSourceChildrenMap.put(parent, children);
                 }
                 children.add(sourceNode);
@@ -969,8 +969,8 @@ public class JMerger {
             if (sourceNode != null) {
                 List<JNode> sourceChildren = sourceNode.getChildren();
                 if (targetNode == null) {
-                    for (int i = 0, size = sourceChildren.size(); i < size; i++) {
-                        mapChildren(sourceChildren.get(i), null);
+                    for (JNode sourceChild : sourceChildren) {
+                        mapChildren(sourceChild, null);
                     }
                 } else {
                     List<JNode> targetChildren = targetNode.getChildren();

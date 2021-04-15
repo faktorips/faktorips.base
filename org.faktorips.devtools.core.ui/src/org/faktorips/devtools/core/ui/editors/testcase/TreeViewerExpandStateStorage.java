@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TreeViewerExpandStateStorage {
 
     /** Stores the expanded items */
-    private ArrayList<String> expandedItems = new ArrayList<String>();
+    private ArrayList<String> expandedItems = new ArrayList<>();
 
     /** Tree viewer which will be analyzed and restored */
     private TreeViewer treeViewer;
@@ -50,7 +50,7 @@ public class TreeViewerExpandStateStorage {
         if (selectedTreeItems.length > 0) {
             selectedTreeItem = selectedTreeItems[0];
         }
-        expandedItems = new ArrayList<String>();
+        expandedItems = new ArrayList<>();
         storeCheckedElements();
         checkExpandedStatus(expandedItems, treeViewer.getTree().getItems(), ""); //$NON-NLS-1$
         if (treeViewer instanceof CheckboxTreeViewer) {
@@ -96,7 +96,7 @@ public class TreeViewerExpandStateStorage {
 
         // 1. get all element
         checkboxTreeViewer.setAllChecked(true);
-        List<Object> elementsToUncheck = new ArrayList<Object>();
+        List<Object> elementsToUncheck = new ArrayList<>();
         elementsToUncheck.addAll(Arrays.asList(checkboxTreeViewer.getCheckedElements()));
         // 2. remove all previous checked elements
         for (Object checkedElement : checkedElements) {

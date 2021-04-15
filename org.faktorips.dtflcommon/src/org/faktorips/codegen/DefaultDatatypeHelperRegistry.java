@@ -20,7 +20,7 @@ import org.faktorips.datatype.Datatype;
  */
 public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
 
-    private Map<Datatype, DatatypeHelper> helpers = new HashMap<Datatype, DatatypeHelper>(20);
+    private Map<Datatype, DatatypeHelper> helpers = new HashMap<>(20);
 
     /**
      * Returns a new empty registry.

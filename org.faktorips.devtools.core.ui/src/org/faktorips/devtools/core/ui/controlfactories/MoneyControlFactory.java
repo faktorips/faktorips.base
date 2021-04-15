@@ -66,6 +66,6 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
         MoneyFormat inputFormat = (MoneyFormat)getInputFormat(datatype, valueSet, ipsProject);
         control.addPaintListener(new CurrencySymbolPainter(inputFormat));
-        return new FormattingTextField<String>(control, inputFormat);
+        return new FormattingTextField<>(control, inputFormat);
     }
 }

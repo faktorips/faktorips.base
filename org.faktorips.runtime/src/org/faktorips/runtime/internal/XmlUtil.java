@@ -110,7 +110,7 @@ public enum XmlUtil {
      * @return all child elements with the matching tag name
      */
     public static final List<Element> getElements(Node parent, String tagName) {
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> elements = new ArrayList<>();
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -190,7 +190,7 @@ public enum XmlUtil {
             String nodeName,
             String attributeName,
             String attributeValue) {
-        List<Element> result = new ArrayList<Element>();
+        List<Element> result = new ArrayList<>();
         NodeList nl = elem.getChildNodes();
         for (int i = 0, max = nl.getLength(); i < max; i++) {
             if (!(nl.item(i) instanceof Element)) {

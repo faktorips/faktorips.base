@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * An adapter that adapts a table access function to the FlFunction interfaces.
@@ -101,7 +101,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     private List<Datatype> findArgTypes() {
         if (cachedArgTypes == null) {
-            ArrayList<Datatype> newCachedArgTypes = new ArrayList<Datatype>();
+            ArrayList<Datatype> newCachedArgTypes = new ArrayList<>();
             IIpsProject project = getIpsProject();
             for (String argType : fct.getArgTypes()) {
                 newCachedArgTypes.add(project.findValueDatatype(argType));

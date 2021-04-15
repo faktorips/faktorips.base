@@ -62,7 +62,9 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     /** The UI control to set the <code>name</code> property. */
     private Text nameText;
 
-    /** Keep track of the content of the name field to be able to determine whether it has changed. */
+    /**
+     * Keep track of the content of the name field to be able to determine whether it has changed.
+     */
     private final String initialName;
 
     /**
@@ -231,17 +233,17 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     /**
-     * Searches all the <code>IEnumType</code>s that are subclasses of the <code>IEnumType</code> the
-     * <code>IEnumAttribute</code> to edit belongs to. All those sub <code>IEnumType</code>s and the
-     * <code>IEnumType</code> itself will not be available in the data type selection.
+     * Searches all the <code>IEnumType</code>s that are subclasses of the <code>IEnumType</code>
+     * the <code>IEnumAttribute</code> to edit belongs to. All those sub <code>IEnumType</code>s and
+     * the <code>IEnumType</code> itself will not be available in the data type selection.
      * <p>
-     * Also, if the <code>IEnumType</code> does contain values all <code>IEnumType</code> that do not
-     * contain values will be disallowed to select, too.
+     * Also, if the <code>IEnumType</code> does contain values all <code>IEnumType</code> that do
+     * not contain values will be disallowed to select, too.
      */
     private void filterDatatypes() {
         IEnumType enumType = enumAttribute.getEnumType();
         IIpsProject ipsProject = enumType.getIpsProject();
-        List<Datatype> disallowedDatatypes = new ArrayList<Datatype>();
+        List<Datatype> disallowedDatatypes = new ArrayList<>();
 
         // Disallow parent EnumType.
         disallowedDatatypes.add(new EnumTypeDatatypeAdapter(enumType, null));
@@ -277,8 +279,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /**
      * Binds the contents of the fields to the contents of the super enumeration attribute if the
-     * <code>IEnumAttribute</code> to be edited is marked as being inherited. Otherwise the contens are
-     * bound to the respective properties of the attribute.
+     * <code>IEnumAttribute</code> to be edited is marked as being inherited. Otherwise the contens
+     * are bound to the respective properties of the attribute.
      * <p>
      * Also handles the enabled states of the fields.
      * <p>

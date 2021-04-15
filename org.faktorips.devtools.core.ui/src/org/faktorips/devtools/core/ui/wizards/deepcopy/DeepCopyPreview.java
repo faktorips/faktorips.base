@@ -55,9 +55,9 @@ public class DeepCopyPreview {
     }
 
     private void initCaches() {
-        filename2referenceMap = new HashMap<String, IProductCmptStructureReference>();
-        oldObject2newNameMap = new HashMap<IIpsObject, String>();
-        errorElements = new HashMap<IProductCmptStructureReference, String>();
+        filename2referenceMap = new HashMap<>();
+        oldObject2newNameMap = new HashMap<>();
+        errorElements = new HashMap<>();
     }
 
     /**
@@ -396,7 +396,7 @@ public class DeepCopyPreview {
             throw new CoreException(status);
         }
 
-        Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
+        Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<>();
 
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = presentationModel.getTargetPackageRoot();

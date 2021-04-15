@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
  */
 class IdentifierProposalCollector {
 
-    private ArrayList<IdentifierProposal> proposals = new ArrayList<IdentifierProposal>();
+    private ArrayList<IdentifierProposal> proposals = new ArrayList<>();
 
     public boolean addMatchingNode(String text, String description, String prefix, IdentifierNodeType nodeType) {
         return addMatchingNode(text, text, description, prefix, nodeType);

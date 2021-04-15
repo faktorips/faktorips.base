@@ -86,11 +86,11 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         Object value = getValue(modelObject);
         if (value == null) {
-            return new OrderedValueSet<Object>(true, null);
+            return new OrderedValueSet<>(true, null);
         } else if (value instanceof NullObject) {
-            return new OrderedValueSet<Object>(true, value);
+            return new OrderedValueSet<>(true, value);
         } else {
-            return new OrderedValueSet<Object>(false, null, value);
+            return new OrderedValueSet<>(false, null, value);
         }
     }
 

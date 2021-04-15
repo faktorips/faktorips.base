@@ -43,8 +43,8 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         IProductCmpt cmpt2 = newProductCmpt(ipsProject, "home2.ProductA");
         cmpt2.setProductCmptType(subtype.getQualifiedName());
 
-        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem.createItems(Arrays.asList(new IIpsSrcFile[] {
-                cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), type);
+        InstanceIpsSrcFileViewItem[] items = InstanceIpsSrcFileViewItem
+                .createItems(Arrays.asList(cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile()), type);
         assertEquals(3, items.length);
         assertEquals(cmpt0.getIpsSrcFile(), items[0].getIpsSrcFile());
         assertTrue(items[0].isDuplicateName());
@@ -62,8 +62,8 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         assertEquals(0, items.length);
 
         // MetaObjectClass = null !
-        items = InstanceIpsSrcFileViewItem.createItems(Arrays.asList(new IIpsSrcFile[] { cmpt0.getIpsSrcFile(),
-                cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile() }), null);
+        items = InstanceIpsSrcFileViewItem
+                .createItems(Arrays.asList(cmpt0.getIpsSrcFile(), cmpt1.getIpsSrcFile(), cmpt2.getIpsSrcFile()), null);
         assertFalse(items[0].isInstanceOfMetaClass());
         assertFalse(items[1].isInstanceOfMetaClass());
         assertFalse(items[2].isInstanceOfMetaClass());

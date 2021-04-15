@@ -89,7 +89,8 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetIpsObject() throws CoreException {
-        IpsSrcFileImmutable srcFileImm2 = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
+        IpsSrcFileImmutable srcFileImm2 = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct",
+                file.getContents());
         IProductCmpt prodImm2 = (IProductCmpt)srcFileImm2.getIpsObject();
         assertEquals(productImmutable.getQualifiedName(), prodImm2.getQualifiedName());
 
@@ -142,7 +143,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
         // nothing was saved
         IProductCmpt prodImm2 = (IProductCmpt)new IpsSrcFileImmutable("ProdImm2.ipsproduct", file.getContents())
-        .getIpsObject();
+                .getIpsObject();
         assertEquals(1, prodImm2.getNumOfGenerations());
     }
 

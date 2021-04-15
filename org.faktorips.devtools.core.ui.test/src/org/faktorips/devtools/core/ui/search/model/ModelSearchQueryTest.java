@@ -91,7 +91,7 @@ public class ModelSearchQueryTest {
         IIpsObject object2 = mock(IpsObject.class);
         when(srcFile2.getIpsObject()).thenReturn(object2);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -130,7 +130,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingAttr");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IAttribute.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -142,7 +142,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -197,7 +197,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IMethod.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -209,7 +209,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -264,7 +264,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IAssociation.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -276,7 +276,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -331,7 +331,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(ITableStructureUsage.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -343,7 +343,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -398,7 +398,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IValidationRule.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -410,7 +410,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -464,7 +464,7 @@ public class ModelSearchQueryTest {
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("Matching");
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IAttribute.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -476,7 +476,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 
@@ -497,7 +497,7 @@ public class ModelSearchQueryTest {
         ILabel label = mock(ILabel.class);
         when(label.getValue()).thenReturn("MatchingLabel");
 
-        List<ILabel> labels = new ArrayList<ILabel>();
+        List<ILabel> labels = new ArrayList<>();
         labels.add(label);
         when(matchingAttribute.getLabels()).thenReturn(labels);
 
@@ -520,7 +520,7 @@ public class ModelSearchQueryTest {
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(propertyId);
 
-        Set<Class<? extends IIpsObjectPart>> set = new HashSet<Class<? extends IIpsObjectPart>>();
+        Set<Class<? extends IIpsObjectPart>> set = new HashSet<>();
         set.add(IAttribute.class);
         when(searchModel.getSearchedClazzes()).thenReturn(set);
 
@@ -532,7 +532,7 @@ public class ModelSearchQueryTest {
         when(srcFile2.getIpsObjectName()).thenReturn("SourceFile2");
         when(srcFile2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
 
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
         srcFiles.add(srcFile1);
         srcFiles.add(srcFile2);
 

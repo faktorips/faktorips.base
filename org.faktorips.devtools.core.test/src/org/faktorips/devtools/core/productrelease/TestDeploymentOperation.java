@@ -31,7 +31,7 @@ public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperati
 
     @Override
     public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject) {
-        ArrayList<ITargetSystem> result = new ArrayList<ITargetSystem>();
+        ArrayList<ITargetSystem> result = new ArrayList<>();
         result.add(new DefaultTargetSystem("System A") {
 
             @Override

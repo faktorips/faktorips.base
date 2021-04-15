@@ -148,7 +148,7 @@ public class ProductCmptType extends Type {
      * @return A list of {@link TableUsage TableUsages} declared in this type
      */
     public List<TableUsage> getDeclaredTableUsages() {
-        return new ArrayList<TableUsage>(tableUsages.values());
+        return new ArrayList<>(tableUsages.values());
     }
 
     /**
@@ -238,7 +238,7 @@ public class ProductCmptType extends Type {
 
     @Override
     public List<ProductAttribute> getDeclaredAttributes() {
-        return new ArrayList<ProductAttribute>(attributes.values());
+        return new ArrayList<>(attributes.values());
     }
 
     @Override
@@ -248,7 +248,7 @@ public class ProductCmptType extends Type {
 
     @Override
     public List<ProductAttribute> getAttributes() {
-        AttributeCollector<ProductAttribute> attrCollector = new AttributeCollector<ProductAttribute>();
+        AttributeCollector<ProductAttribute> attrCollector = new AttributeCollector<>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
     }
@@ -274,7 +274,7 @@ public class ProductCmptType extends Type {
 
     @Override
     public List<ProductAssociation> getDeclaredAssociations() {
-        return new ArrayList<ProductAssociation>(new LinkedHashSet<ProductAssociation>(associations.values()));
+        return new ArrayList<>(new LinkedHashSet<>(associations.values()));
     }
 
     @Override
@@ -289,14 +289,14 @@ public class ProductCmptType extends Type {
 
     @Override
     public List<ProductAssociation> getAssociations() {
-        AssociationsCollector<ProductAssociation> asscCollector = new AssociationsCollector<ProductAssociation>();
+        AssociationsCollector<ProductAssociation> asscCollector = new AssociationsCollector<>();
         asscCollector.visitHierarchy(this);
         return asscCollector.getResult();
     }
 
     static class TableUsagesCollector extends TypeHierarchyVisitor {
 
-        private List<TableUsage> result = new ArrayList<TableUsage>();
+        private List<TableUsage> result = new ArrayList<>();
 
         @Override
         public boolean visitType(Type type) {

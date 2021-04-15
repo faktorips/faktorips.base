@@ -81,7 +81,8 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
                 "TestTableContents");
         tableStructure = (ITableStructure)newIpsObject(root.getDefaultIpsPackageFragment(),
                 IpsObjectType.TABLE_STRUCTURE, "TestTableStructure");
-        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
+        List<IpsObjectType> allowedTypes = new ArrayList<>(
+                Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
         // config should not support TableStructure and TableContents
         allowedTypes.remove(IpsObjectType.TABLE_STRUCTURE);
         allowedTypes.remove(IpsObjectType.TABLE_CONTENTS);

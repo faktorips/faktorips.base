@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.tablestructure;
 
-
 public interface IColumnRange extends IKeyItem {
 
     public static final String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$

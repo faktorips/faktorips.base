@@ -33,7 +33,7 @@ import org.faktorips.util.ClassToInstancesMap;
  */
 public class GeneratorModelCaches {
 
-    private final Map<AbstractGeneratorModelNode, ClassToInstancesMap<AbstractGeneratorModelNode>> caches = new HashMap<AbstractGeneratorModelNode, ClassToInstancesMap<AbstractGeneratorModelNode>>();
+    private final Map<AbstractGeneratorModelNode, ClassToInstancesMap<AbstractGeneratorModelNode>> caches = new HashMap<>();
 
     /**
      * Getting the list of cached nodes. The sourceNode is the object which needs to cache the nodes
@@ -53,7 +53,8 @@ public class GeneratorModelCaches {
         return cachedList;
     }
 
-    public <T extends AbstractGeneratorModelNode> boolean isCached(AbstractGeneratorModelNode sourceNodee, Class<T> type) {
+    public <T extends AbstractGeneratorModelNode> boolean isCached(AbstractGeneratorModelNode sourceNodee,
+            Class<T> type) {
         ClassToInstancesMap<AbstractGeneratorModelNode> classToInstanceMap = getClassToInstanceMap(sourceNodee, false);
         return classToInstanceMap.containsValuesOf(type);
     }
@@ -62,7 +63,7 @@ public class GeneratorModelCaches {
             boolean putNew) {
         ClassToInstancesMap<AbstractGeneratorModelNode> classToInstancesMap = caches.get(node);
         if (classToInstancesMap == null) {
-            classToInstancesMap = new ClassToInstancesMap<AbstractGeneratorModelNode>();
+            classToInstancesMap = new ClassToInstancesMap<>();
             if (putNew) {
                 caches.put(node, classToInstancesMap);
             }

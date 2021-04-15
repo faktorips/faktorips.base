@@ -199,7 +199,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * implicitly assigned to the corresponding default {@link IProductCmptCategory}.
      */
     @Test
-    public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory() throws CoreException {
+    public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory()
+            throws CoreException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
@@ -533,7 +534,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         property3.setCategory(CATEGORY_NAME);
 
         assertArrayEquals(new int[] { 0 }, category.moveProductCmptProperties(new int[] { 1 }, true, superProductType));
-        assertArrayEquals(new int[] { 1, 0 }, category.moveProductCmptProperties(new int[] { 2, 1 }, true, productType));
+        assertArrayEquals(new int[] { 1, 0 },
+                category.moveProductCmptProperties(new int[] { 2, 1 }, true, productType));
 
         List<IProductCmptProperty> superProperties = category.findProductCmptProperties(superProductType, true,
                 ipsProject);
@@ -597,7 +599,8 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
         property3.setCategory(CATEGORY_NAME);
 
-        assertArrayEquals(new int[] { 0, 2 }, category.moveProductCmptProperties(new int[] { 0, 2 }, true, productType));
+        assertArrayEquals(new int[] { 0, 2 },
+                category.moveProductCmptProperties(new int[] { 0, 2 }, true, productType));
         assertEquals(property1, category.findProductCmptProperties(productType, false, ipsProject).get(0));
         assertEquals(property2, category.findProductCmptProperties(productType, false, ipsProject).get(1));
         assertEquals(property3, category.findProductCmptProperties(productType, false, ipsProject).get(2));

@@ -51,7 +51,7 @@ public class CustomValidationsResolver {
      */
     private CustomValidationsMap resolvedMap = new CustomValidationsMap();
 
-    private Set<Class<? extends IIpsObjectPartContainer>> resolvedTypes = new HashSet<Class<? extends IIpsObjectPartContainer>>();
+    private Set<Class<? extends IIpsObjectPartContainer>> resolvedTypes = new HashSet<>();
 
     /**
      * Returns an unmodifiable set of custom validations for the given type.
@@ -83,7 +83,7 @@ public class CustomValidationsResolver {
 
     private <T extends IIpsObjectPartContainer> List<ICustomValidation<?>> resolveAllCustomValidationsFor(
             Class<T> type) {
-        List<ICustomValidation<?>> validations = new ArrayList<ICustomValidation<?>>();
+        List<ICustomValidation<?>> validations = new ArrayList<>();
         collectCustomValidations(type, validations);
         return validations;
     }
@@ -157,7 +157,7 @@ public class CustomValidationsResolver {
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
         List<ICustomValidation> allValidations = extensionPoints.createExecutableExtensions(
                 ExtensionPoints.CUSTOM_VALIDATION, "customValidation", "validationClass", ICustomValidation.class); //$NON-NLS-1$ //$NON-NLS-2$
-        List<ICustomValidation<?>> typeSafe = new ArrayList<ICustomValidation<?>>();
+        List<ICustomValidation<?>> typeSafe = new ArrayList<>();
         for (ICustomValidation customValidation : allValidations) {
             typeSafe.add(customValidation);
         }

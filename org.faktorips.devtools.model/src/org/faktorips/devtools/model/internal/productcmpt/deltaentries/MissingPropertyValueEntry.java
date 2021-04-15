@@ -64,7 +64,8 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getDescription() {
-        StringBuilder description = new StringBuilder(IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(property));
+        StringBuilder description = new StringBuilder(
+                IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(property));
         description.append(" ("); //$NON-NLS-1$
         description.append(getLocalizedLabel(getPropertyType()));
         description.append(')');

@@ -51,7 +51,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
             String implementationClassName);
 
     public static Set<ITocEntryFactory<?>> getBaseTocEntryFactories() {
-        HashSet<ITocEntryFactory<?>> set = new HashSet<ITocEntryFactory<?>>();
+        HashSet<ITocEntryFactory<?>> set = new HashSet<>();
         set.add(new ProductCmptTocEntryFactory());
         set.add(new TableContentTocEntryFactory());
         set.add(new TestCaseTocEntryFactory());
@@ -81,7 +81,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     versionId, xmlResourceName, implementationClassName, generationImplClassName, validTo);
 
             NodeList nl = entryElement.getElementsByTagName(GenerationTocEntry.XML_TAG);
-            List<GenerationTocEntry> generationEntries = new ArrayList<GenerationTocEntry>(nl.getLength());
+            List<GenerationTocEntry> generationEntries = new ArrayList<>(nl.getLength());
             for (int i = 0; i < nl.getLength(); i++) {
                 GenerationTocEntry entry = GenerationTocEntry.createFromXml(newEntry, (Element)nl.item(i));
                 generationEntries.add(entry);

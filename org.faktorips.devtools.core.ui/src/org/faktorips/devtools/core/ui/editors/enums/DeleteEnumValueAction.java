@@ -68,7 +68,7 @@ public class DeleteEnumValueAction extends Action {
         // Determine EnumValues to delete and obtain the last selected item.
         @SuppressWarnings("unchecked")
         Iterator<IEnumValue> selectedEnumValues = selection.iterator();
-        List<IEnumValue> enumValuesToDelete = new ArrayList<IEnumValue>();
+        List<IEnumValue> enumValuesToDelete = new ArrayList<>();
         IEnumValue lastSelectedEnumValue = null;
         while (selectedEnumValues.hasNext()) {
             IEnumValue currentSelectedEnumValue = selectedEnumValues.next();

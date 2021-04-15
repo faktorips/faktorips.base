@@ -11,9 +11,6 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
@@ -93,20 +90,10 @@ public abstract class AbstractComboField<T> extends DefaultEditField<T> {
 
     @Override
     protected void addListenerToControl() {
-        final ModifyListener modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(AbstractComboField.this), immediatelyNotifyListener);
-            }
-        };
+        final ModifyListener modifyListener = $ -> notifyChangeListeners(
+                new FieldValueChangedEvent(AbstractComboField.this), immediatelyNotifyListener);
         combo.addModifyListener(modifyListener);
-        combo.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                combo.removeModifyListener(modifyListener);
-            }
-        });
+        combo.addDisposeListener($ -> combo.removeModifyListener(modifyListener));
     }
 
 }

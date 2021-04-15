@@ -131,14 +131,11 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
     private void postImageChange() {
         Shell shell = getEditorSite().getShell();
         if (shell != null && !shell.isDisposed()) {
-            shell.getDisplay().syncExec(new Runnable() {
-                @Override
-                public void run() {
-                    if (isActive()) {
-                        refresh();
-                    }
-                    setTitleImage(getDecoratedImage());
+            shell.getDisplay().syncExec(() -> {
+                if (isActive()) {
+                    refresh();
                 }
+                setTitleImage(getDecoratedImage());
             });
         }
     }

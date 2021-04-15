@@ -86,7 +86,7 @@ public class CommonTypeFinder {
      *         nor one of its super types
      */
     private IProductCmptType findMostSpecificType(Set<IProductCmptType> candidateTypes, IProductCmpt cmpt) {
-        CommonTypeVisitor<IProductCmptType> typeHierarchyVisitor = new CommonTypeVisitor<IProductCmptType>(
+        CommonTypeVisitor<IProductCmptType> typeHierarchyVisitor = new CommonTypeVisitor<>(
                 cmpt.getIpsProject(), candidateTypes);
         typeHierarchyVisitor.start(cmpt.findProductCmptType(cmpt.getIpsProject()));
         return typeHierarchyVisitor.getCommonType();
@@ -102,10 +102,10 @@ public class CommonTypeFinder {
      *         super-types
      */
     private LinkedHashSet<IProductCmptType> createTypeHierarchy(IProductCmpt cmpt) {
-        TypeHierarchyVisitor<IProductCmptType> superTypeFinder = new TypeHierarchyFinder<IProductCmptType>(
+        TypeHierarchyVisitor<IProductCmptType> superTypeFinder = new TypeHierarchyFinder<>(
                 cmpt.getIpsProject());
         superTypeFinder.start(cmpt.findProductCmptType(cmpt.getIpsProject()));
-        return new LinkedHashSet<IProductCmptType>(superTypeFinder.getVisited());
+        return new LinkedHashSet<>(superTypeFinder.getVisited());
     }
 
     /**
@@ -143,7 +143,9 @@ public class CommonTypeFinder {
         }
     }
 
-    /** A {@link TypeHierarchyVisitor} that collects the entire hierarchy upwards from a given type. */
+    /**
+     * A {@link TypeHierarchyVisitor} that collects the entire hierarchy upwards from a given type.
+     */
     private static class TypeHierarchyFinder<T extends IType> extends TypeHierarchyVisitor<T> {
 
         public TypeHierarchyFinder(IIpsProject ipsProject) {

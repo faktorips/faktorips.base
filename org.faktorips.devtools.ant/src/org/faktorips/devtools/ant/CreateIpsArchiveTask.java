@@ -12,7 +12,6 @@ package org.faktorips.devtools.ant;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -32,7 +31,7 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
     private boolean inclJavaBinaries = false;
     private File archiveFile;
     private String ipsProjectName;
-    private List<IIpsPackageFragmentRoot> fragmentRootRepresentations = new ArrayList<IIpsPackageFragmentRoot>();
+    private List<IIpsPackageFragmentRoot> fragmentRootRepresentations = new ArrayList<>();
 
     public CreateIpsArchiveTask() {
         super("CreateIpsArchiveTask");
@@ -60,9 +59,8 @@ public class CreateIpsArchiveTask extends AbstractIpsTask {
             operation.setInclJavaSources(inclJavaSources);
             operation.run(null);
         } else {
-            List<IIpsPackageFragmentRoot> ipsPackageFragmentRoots = new ArrayList<IIpsPackageFragmentRoot>();
-            for (Iterator<IIpsPackageFragmentRoot> it = fragmentRootRepresentations.iterator(); it.hasNext();) {
-                IIpsPackageFragmentRoot fragmentRoot = it.next();
+            List<IIpsPackageFragmentRoot> ipsPackageFragmentRoots = new ArrayList<>();
+            for (IIpsPackageFragmentRoot fragmentRoot : fragmentRootRepresentations) {
                 IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoot(fragmentRoot.getName());
                 if (root == null) {
                     throw new BuildException("The IpsPackageFragmentRoot: " + fragmentRoot.getName()

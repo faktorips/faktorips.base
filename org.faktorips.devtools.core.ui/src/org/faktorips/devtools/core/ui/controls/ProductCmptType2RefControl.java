@@ -51,7 +51,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
             return allProductCmptTypes;
         }
 
-        Set<IIpsSrcFile> filteredProductCmptTypes = new LinkedHashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> filteredProductCmptTypes = new LinkedHashSet<>();
 
         for (IIpsSrcFile ipsSrcFile : allProductCmptTypes) {
             if (!Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {

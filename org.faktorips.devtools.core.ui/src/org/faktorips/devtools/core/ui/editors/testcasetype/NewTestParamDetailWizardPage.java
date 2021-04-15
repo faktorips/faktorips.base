@@ -110,12 +110,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        wizard.postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                updateSetPageComplete();
-            }
-        });
+        wizard.postAsyncRunnable(this::updateSetPageComplete);
     }
 
     private boolean validatePage() {

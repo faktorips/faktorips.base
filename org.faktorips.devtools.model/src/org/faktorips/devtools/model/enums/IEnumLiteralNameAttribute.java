@@ -11,16 +11,18 @@
 package org.faktorips.devtools.model.enums;
 
 /**
- * Each <code>IEnumType</code> that contains values (that means it is not abstract and it does define
- * its values in the model) needs to specify exactly one <code>IEnumLiteralNameAttribute</code>.
+ * Each <code>IEnumType</code> that contains values (that means it is not abstract and it does
+ * define its values in the model) needs to specify exactly one
+ * <code>IEnumLiteralNameAttribute</code>.
  * <p>
  * The value of this attribute specifies the name of the enumeration literal that will be used in
  * the generated source code.
  * <p>
- * The <code>IEnumLiteralNameAttribute</code> can refer to another <code>IEnumAttribute</code> being its
- * provider for a default value.
+ * The <code>IEnumLiteralNameAttribute</code> can refer to another <code>IEnumAttribute</code> being
+ * its provider for a default value.
  * <p>
- * <code>IEnumLiteralNameAttribute</code>s are always of data type <code>String</code> and <code>unique</code>.
+ * <code>IEnumLiteralNameAttribute</code>s are always of data type <code>String</code> and
+ * <code>unique</code>.
  * 
  * @author Alexander Weickmann
  * 
@@ -64,11 +66,12 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
     /**
      * Sets the default value provider attribute.
      * 
-     * @param defaultValueProviderAttributeName The unqualified name of the <code>IEnumAttribute</code>
-     *            that shall be used as default value provider attribute for the enumeration
-     *            literals.
+     * @param defaultValueProviderAttributeName The unqualified name of the
+     *            <code>IEnumAttribute</code> that shall be used as default value provider attribute
+     *            for the enumeration literals.
      * 
-     * @throws NullPointerException If <code>defaultValueProviderAttributeName</code> is <code>null</code>.
+     * @throws NullPointerException If <code>defaultValueProviderAttributeName</code> is
+     *             <code>null</code>.
      */
     public void setDefaultValueProviderAttribute(String defaultValueProviderAttributeName);
 
@@ -76,8 +79,8 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
      * Returns the name of the <code>IEnumAttribute</code> currently being used as default value
      * provider attribute for enumeration literals.
      * <p>
-     * Returns an empty <code>String</code> if there is no default value provider attribute and never
-     * returns <code>null</code>.
+     * Returns an empty <code>String</code> if there is no default value provider attribute and
+     * never returns <code>null</code>.
      */
     public String getDefaultValueProviderAttribute();
 

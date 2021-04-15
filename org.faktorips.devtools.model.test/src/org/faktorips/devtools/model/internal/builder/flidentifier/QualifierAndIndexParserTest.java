@@ -111,7 +111,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     }
 
     private void initProdCmptAndType() {
-        ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> list = new ArrayList<>();
         list.add(productCmptIpsSrcFileOther);
         list.add(productCmptIpsSrcFile);
 

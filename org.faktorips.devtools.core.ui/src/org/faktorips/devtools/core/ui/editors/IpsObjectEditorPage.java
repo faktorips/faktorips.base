@@ -66,8 +66,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
     /**
      * Returns the <code>IIpsObject</code> of the <code>IIpsSrcFile</code> being edited. Returns
-     * <code>null</code> if the source file couldn't determine the IPS object (e.g. if the source file
-     * is stored outside an IPS package).
+     * <code>null</code> if the source file couldn't determine the IPS object (e.g. if the source
+     * file is stored outside an IPS package).
      */
     public IIpsObject getIpsObject() {
         /*
@@ -200,9 +200,9 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * Refreshes the page with the data from the model.
      * <p>
-     * The default implementation refreshes all ancestors that are instances of <code>IpsSection</code>.
-     * By ancestors we mean the children of the composite that represents this page and its
-     * children.
+     * The default implementation refreshes all ancestors that are instances of
+     * <code>IpsSection</code>. By ancestors we mean the children of the composite that represents
+     * this page and its children.
      */
     public void refresh() {
         if (!(getPartControl() instanceof Composite)) {
@@ -237,8 +237,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * <p>
      * If the user can't change the data shown in the editor's at all, he also can't change the data
      * shown on this page. If the user can change editor's data in general, the
-     * <code>computeDataChangeableState()</code> is called to evaluate if the data shown on this page
-     * can be changed.
+     * <code>computeDataChangeableState()</code> is called to evaluate if the data shown on this
+     * page can be changed.
      * 
      * @see #computeDataChangeableState()
      */
@@ -261,8 +261,8 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     }
 
     /**
-     * Resets the data changeable state to it's default, which is <code>true</code>, so that it matches
-     * the initial state of controls which are by default enabled / editable.
+     * Resets the data changeable state to it's default, which is <code>true</code>, so that it
+     * matches the initial state of controls which are by default enabled / editable.
      */
     protected void resetDataChangeableState() {
         dataChangeable = true;
@@ -291,7 +291,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
         }
 
         if (dataChangeableStateChangeListeners == null) {
-            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>();
+            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<>();
         }
 
         dataChangeableStateChangeListeners.add(listener);

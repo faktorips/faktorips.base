@@ -36,17 +36,18 @@ public class TableUsage extends TypePart {
 
     /**
      * Returns the table the given product component references for this table usage. If this table
-     * usage is changing over time (resides in the generation) the date is used to retrieve the correct
-     * generation. If the date is <code>null</code> the latest generation is used. If the table usage is
-     * not changing over time the date will be ignored.
+     * usage is changing over time (resides in the generation) the date is used to retrieve the
+     * correct generation. If the date is <code>null</code> the latest generation is used. If the
+     * table usage is not changing over time the date will be ignored.
      * 
      * 
      * @param productComponent The product component that holds the table instance
-     * @param effectiveDate the date to determine the product component generation. If <code>null</code>
-     *            the latest generation is used. Is ignored if the table usage configuration is not
-     *            changing over time.
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the table usage
+     *            configuration is not changing over time.
      * 
-     * @return The table instance hold by the product component and is identified by this table usage
+     * @return The table instance hold by the product component and is identified by this table
+     *         usage
      */
     public ITable<?> getTable(IProductComponent productComponent, Calendar effectiveDate) {
         try {

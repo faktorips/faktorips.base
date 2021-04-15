@@ -20,8 +20,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumLiteralNameAttributeValue</code>, see the corresponding interface for
- * more details.
+ * Implementation of <code>IEnumLiteralNameAttributeValue</code>, see the corresponding interface
+ * for more details.
  * 
  * @see IEnumLiteralNameAttributeValue
  * 
@@ -45,8 +45,9 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
 
         char[] characters = getValue().getContentAsString().toCharArray();
         for (int i = 0; i < characters.length; i++) {
-            boolean validCharacter = i == 0 ? Character.isJavaIdentifierStart(characters[i]) : Character
-                    .isJavaIdentifierPart(characters[i]);
+            boolean validCharacter = i == 0 ? Character.isJavaIdentifierStart(characters[i])
+                    : Character
+                            .isJavaIdentifierPart(characters[i]);
             if (!validCharacter) {
                 String text = NLS.bind(Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
                         getValue());

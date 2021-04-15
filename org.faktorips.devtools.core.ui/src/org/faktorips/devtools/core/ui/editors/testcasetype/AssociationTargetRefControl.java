@@ -45,7 +45,7 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
 
     protected List<IIpsObject> getIpsObjects() throws CoreException {
         if (policyCmptTypeTarget == null) {
-            return new ArrayList<IIpsObject>();
+            return new ArrayList<>();
         }
 
         /*
@@ -59,9 +59,9 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
         ITypeHierarchy subTypeHierarchy = policyCmptTypeTarget.getSubtypeHierarchy();
         List<IType> subTypes = subTypeHierarchy.getAllSubtypes(policyCmptTypeTarget);
         if (subTypes == null) {
-            subTypes = new ArrayList<IType>();
+            subTypes = new ArrayList<>();
         }
-        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>(subTypes);
+        ArrayList<IIpsObject> result = new ArrayList<>(subTypes);
         result.add(policyCmptTypeTarget);
         return result;
     }

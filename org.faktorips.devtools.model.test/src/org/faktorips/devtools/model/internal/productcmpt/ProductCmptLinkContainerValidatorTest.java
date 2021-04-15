@@ -67,7 +67,7 @@ public class ProductCmptLinkContainerValidatorTest {
         messageList.add(Message.newError("code3", "errorText2"));
         when(association.validate(any(IIpsProject.class))).thenReturn(messageList);
 
-        List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> associations = new ArrayList<>();
         associations.add(association);
         when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
 

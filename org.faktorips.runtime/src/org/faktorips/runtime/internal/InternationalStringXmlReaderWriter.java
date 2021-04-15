@@ -90,7 +90,7 @@ public class InternationalStringXmlReaderWriter {
      *         international string represented by the given {@link Element}.
      */
     public static Collection<LocalizedString> fromXml(Element element) {
-        List<LocalizedString> localizedStrings = new ArrayList<LocalizedString>();
+        List<LocalizedString> localizedStrings = new ArrayList<>();
         if (!element.getNodeName().equals(XML_TAG)) {
             return localizedStrings;
         }

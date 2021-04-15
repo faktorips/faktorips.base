@@ -103,7 +103,7 @@ public class TypedSelection<T> {
 
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-            elements = new ArrayList<T>(structuredSelection.size());
+            elements = new ArrayList<>(structuredSelection.size());
             boolean elementTypesValid = initElements(type, structuredSelection);
             isValidSelection = elementTypesValid && (minElements <= elements.size())
                     && (elements.size() <= maxElements);
@@ -165,7 +165,7 @@ public class TypedSelection<T> {
      * @return the created instance
      */
     public static <T> TypedSelection<T> create(final Class<T> type, final ISelection selection) {
-        return new TypedSelection<T>(type, selection);
+        return new TypedSelection<>(type, selection);
     }
 
     /**
@@ -179,7 +179,7 @@ public class TypedSelection<T> {
      * @return the created instance
      */
     public static <T> TypedSelection<T> createAnyCount(final Class<T> type, final ISelection selection) {
-        return new TypedSelection<T>(type, selection, 1, INFINITY);
+        return new TypedSelection<>(type, selection, 1, INFINITY);
     }
 
     /**
@@ -196,7 +196,7 @@ public class TypedSelection<T> {
     public static <T> TypedSelection<T> createAtLeast(final Class<T> type,
             final ISelection selection,
             final int minElements) {
-        return new TypedSelection<T>(type, selection, minElements, INFINITY);
+        return new TypedSelection<>(type, selection, minElements, INFINITY);
     }
 
     /**
@@ -211,7 +211,7 @@ public class TypedSelection<T> {
      * @return the created instance
      */
     public static <T> TypedSelection<T> create(final Class<T> type, final ISelection selection, final int elements) {
-        return new TypedSelection<T>(type, selection, elements);
+        return new TypedSelection<>(type, selection, elements);
     }
 
     /**
@@ -229,7 +229,7 @@ public class TypedSelection<T> {
             final ISelection selection,
             final int minElements,
             final int maxElements) {
-        return new TypedSelection<T>(type, selection, minElements, maxElements);
+        return new TypedSelection<>(type, selection, minElements, maxElements);
     }
 
     /**
@@ -244,8 +244,8 @@ public class TypedSelection<T> {
     public static boolean isEqual(final ISelection selection, final Collection<?> collection) {
         if (selection instanceof StructuredSelection) {
             StructuredSelection structuredSelection = (StructuredSelection)selection;
-            Set<Object> providerElements = new HashSet<Object>(Arrays.asList(structuredSelection.toArray()));
-            Set<Object> modelElements = new HashSet<Object>(collection);
+            Set<Object> providerElements = new HashSet<>(Arrays.asList(structuredSelection.toArray()));
+            Set<Object> modelElements = new HashSet<>(collection);
             return providerElements.equals(modelElements);
         }
         return false;

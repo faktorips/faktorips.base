@@ -358,7 +358,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             Combo constrainedCombo = getToolkit().createCombo(workArea);
             getBindingContext().bindEnabled(constrainedCombo, pmoAssociation,
                     PmoAssociation.PROPERTY_MATCHING_EXPLICITLY);
-            ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<IPolicyCmptTypeAssociation>(
+            ComboViewerField<IPolicyCmptTypeAssociation> comboViewerField = new ComboViewerField<>(
                     constrainedCombo, IPolicyCmptTypeAssociation.class);
             comboViewerField.setAllowEmptySelection(true);
             comboViewerField.setLabelProvider(new MatchingAssociationLabelProvider());

@@ -21,11 +21,11 @@ import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArt
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.ChildElement.child;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -83,13 +83,14 @@ public class IpsArtefactBuilderSetInfoTest {
                 configElement("builderSet", clazz(DefaultBuilderSet.class.getName()), child(propertyDef1),
                         child(propertyDef2), child(propertyDef3)));
 
-        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset",
+        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
+                "artefactbuilderset",
                 extension);
 
         registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
 
         logger = new TestLogger();
-        ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<IIpsArtefactBuilderSetInfo>();
+        ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<>();
         IIpsModel ipsModel = mock(IIpsModel.class);
 
         IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
@@ -124,7 +125,7 @@ public class IpsArtefactBuilderSetInfoTest {
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_OK() {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(LOGGING_CONNECTORS, "true");
         properties.put(USE_CHANGE_LISTENER, "false");
         IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
@@ -137,7 +138,7 @@ public class IpsArtefactBuilderSetInfoTest {
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_UnknownProperty() {
         IIpsProject ipsProject = mock(IIpsProject.class);
-        Map<String, String> properties = new HashMap<String, String>();
+        Map<String, String> properties = new HashMap<>();
         properties.put(LOGGING_CONNECTORS, "true");
         properties.put(USE_CHANGE_LISTENER, "false");
         properties.put("hanswurst", "false");
@@ -180,8 +181,8 @@ public class IpsArtefactBuilderSetInfoTest {
     }
 
     private static TestConfigurationElement configElement(String name, ConfigElementModifier... modifiers) {
-        Map<String, String> attributes = new HashMap<String, String>();
-        List<IConfigurationElement> children = new LinkedList<IConfigurationElement>();
+        Map<String, String> attributes = new HashMap<>();
+        List<IConfigurationElement> children = new LinkedList<>();
         for (ConfigElementModifier modifier : modifiers) {
             if (modifier instanceof AttributeSetter) {
                 ((AttributeSetter)modifier).set(attributes);

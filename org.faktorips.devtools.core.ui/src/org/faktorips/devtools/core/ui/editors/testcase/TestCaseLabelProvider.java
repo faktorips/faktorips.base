@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.core.runtime.CoreException;
@@ -75,12 +74,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         this.ipsProject = ipsProject;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
         this.canShowPolicyComponentType = canShowPolicyComponentType;
-        this.canShowPolicyComponentType.addValueChangeListener(new IValueChangeListener<Boolean>() {
-            @Override
-            public void handleValueChange(ValueChangeEvent<? extends Boolean> event) {
-                propagateEvent();
-            }
-        });
+        this.canShowPolicyComponentType.addValueChangeListener($ -> propagateEvent());
     }
 
     /**

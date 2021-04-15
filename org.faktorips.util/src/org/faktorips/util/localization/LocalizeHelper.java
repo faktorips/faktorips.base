@@ -103,8 +103,8 @@ public class LocalizeHelper {
                 writeln(bw, "#" + comments);
             }
             writeln(bw, "#" + new Date().toString());
-            for (Iterator iter = content.keySet().iterator(); iter.hasNext();) {
-                String key = (String)iter.next();
+            for (Object element : content.keySet()) {
+                String key = (String)element;
                 bw.write(key);
                 bw.write("=");
                 bw.write((String)content.get(key));
@@ -289,9 +289,9 @@ public class LocalizeHelper {
             sync(sourceProperties, targetProperties);
             if (modifiedFiles.size() > 0) {
                 System.out.println("Modified files:");
-                for (Iterator iter = modifiedFiles.iterator(); iter.hasNext();) {
+                for (Object modifiedFile : modifiedFiles) {
                     System.out.print("  ");
-                    System.out.println(iter.next());
+                    System.out.println(modifiedFile);
                 }
             }
         } catch (IOException e) {
@@ -375,8 +375,8 @@ public class LocalizeHelper {
                 Set srcKeys = sourceProps.keySet();
                 boolean modified = false;
 
-                for (Iterator iter = srcKeys.iterator(); iter.hasNext();) {
-                    String key = (String)iter.next();
+                for (Object srcKey : srcKeys) {
+                    String key = (String)srcKey;
                     if (targetProps.getProperty(key) == null) {
                         targetProps.setProperty(key, ">TRANSLATE_ME<" + sourceProps.getProperty(key));
                         modified = true;
@@ -398,8 +398,8 @@ public class LocalizeHelper {
                     // store the target in same order as the source
                     SortedProperties newTargetProps = new SortedProperties();
                     Set srcKeySet = sourceProps.keySet();
-                    for (Iterator iter = srcKeySet.iterator(); iter.hasNext();) {
-                        String key = (String)iter.next();
+                    for (Object element : srcKeySet) {
+                        String key = (String)element;
                         String property = targetProps.getProperty(key);
                         newTargetProps.setProperty(key, property);
                     }

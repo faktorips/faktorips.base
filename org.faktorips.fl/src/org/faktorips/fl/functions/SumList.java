@@ -40,8 +40,7 @@ public class SumList extends AbstractListFunction {
     }
 
     private CompilationResult<JavaCodeFragment> createInvalidDatatypeResult(Datatype basicDatatype) {
-        String text = Messages.INSTANCE.getString(MSG_CODE_SUM_INVALID_DATATYPE, new Object[] { getName(),
-                basicDatatype.getName() });
+        String text = Messages.INSTANCE.getString(MSG_CODE_SUM_INVALID_DATATYPE, getName(), basicDatatype.getName());
         return new CompilationResultImpl(Message.newError(MSG_CODE_SUM_INVALID_DATATYPE, text));
     }
 

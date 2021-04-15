@@ -40,7 +40,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
-    private ArrayList<String> visibleProperties = new ArrayList<String>(10);
+    private ArrayList<String> visibleProperties = new ArrayList<>(10);
 
     private Text targetRoleSingularText;
     private Text targetRolePluralText;

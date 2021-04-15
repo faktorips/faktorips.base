@@ -22,15 +22,11 @@ import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -136,42 +132,29 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         targetSystemViewer.setInput(new String[] {});
 
         projectSelectComboViewer.setContentProvider(new ArrayContentProvider());
-        projectSelectComboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                TypedSelection<IIpsProject> typedSelection = new TypedSelection<IIpsProject>(IIpsProject.class,
-                        event.getSelection());
-                if (typedSelection.isValid()) {
-                    IIpsProject selectedProject = typedSelection.getFirstElement();
-                    updateIpsProject(selectedProject);
-                } else {
-                    updateIpsProject(null);
-                }
+        projectSelectComboViewer.addSelectionChangedListener(event -> {
+            TypedSelection<IIpsProject> typedSelection = new TypedSelection<>(IIpsProject.class,
+                    event.getSelection());
+            if (typedSelection.isValid()) {
+                IIpsProject selectedProject = typedSelection.getFirstElement();
+                updateIpsProject(selectedProject);
+            } else {
+                updateIpsProject(null);
             }
         });
 
-        newVersionText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent event) {
-                if (ipsProject != null) {
-                    updateMessage();
-                }
-                updatePageComplete();
+        newVersionText.addModifyListener($ -> {
+            if (ipsProject != null) {
+                updateMessage();
             }
+            updatePageComplete();
         });
 
         IIpsProject[] projects = new IIpsProject[0];
         try {
             projects = IIpsModel.get().getIpsProductDefinitionProjects();
-            ArrayList<IIpsProject> sortedProjectList = new ArrayList<IIpsProject>(Arrays.asList(projects));
-            Collections.sort(sortedProjectList, new Comparator<IIpsProject>() {
-
-                @Override
-                public int compare(IIpsProject o1, IIpsProject o2) {
-                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-                }
-            });
+            ArrayList<IIpsProject> sortedProjectList = new ArrayList<>(Arrays.asList(projects));
+            Collections.sort(sortedProjectList, Comparator.comparing(p -> p.getName().toLowerCase()));
             projectSelectComboViewer.setInput(sortedProjectList);
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -259,7 +242,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     }
 
     private List<ITargetSystem> updateSelectedTargetSystem(List<ITargetSystem> availableTargetSystems) {
-        List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
+        List<ITargetSystem> selected = new ArrayList<>();
         String[] prevSelected = getDialogSettings()
                 .getArray(SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
         if (prevSelected != null) {
@@ -302,7 +285,6 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                     || !newVersion.equals(ipsProject.getVersionProvider().getProjectVersion().asString());
             if (!correctNewVersion) {
                 setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
-                return;
             }
         }
     }
@@ -340,7 +322,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     }
 
     public List<ITargetSystem> getSelectedTargetSystems() {
-        List<ITargetSystem> result = new ArrayList<ITargetSystem>();
+        List<ITargetSystem> result = new ArrayList<>();
         for (Object checkedItem : targetSystemViewer.getCheckedElements()) {
             if (checkedItem instanceof ITargetSystem) {
                 ITargetSystem targetSystem = (ITargetSystem)checkedItem;

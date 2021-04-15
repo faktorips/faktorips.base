@@ -49,12 +49,12 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     public RenameAssociationProcessor(IAssociation association) {
         super(association, association.getName(), association.getTargetRolePlural());
 
-        derivedUnionSubsets = new HashSet<IAssociation>();
+        derivedUnionSubsets = new HashSet<>();
     }
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         try {
             result.add(getAssociation().getIpsSrcFile());
             if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
@@ -119,7 +119,6 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         if (getAssociation().is1ToMany() && getNewPluralName().isEmpty()) {
             status.addFatalError(
                     Messages.RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations);
-            return;
         }
     }
 

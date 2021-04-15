@@ -28,7 +28,7 @@ import org.faktorips.runtime.Message;
 public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFragment> {
 
     // map with (String) identifiers as keys and FragmentDatatypeWrapper instances as values.
-    private Map<String, FragmentDatatypeWrapper> identifiers = new HashMap<String, FragmentDatatypeWrapper>();
+    private Map<String, FragmentDatatypeWrapper> identifiers = new HashMap<>();
 
     /**
      * Creates a new resolver.

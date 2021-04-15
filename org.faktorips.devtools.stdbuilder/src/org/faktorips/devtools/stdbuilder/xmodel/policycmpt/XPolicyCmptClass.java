@@ -166,7 +166,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
-        LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
+        LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<>();
         if (isFirstConfigurableInHierarchy()) {
             extendedInterfaces.add(getConfigurationClassName());
         } else if (!hasSupertype()) {
@@ -266,7 +266,7 @@ public class XPolicyCmptClass extends XType {
                         .getProductCmptTypeAttributes();
                 nodesForParts = initNodesForParts(productCmptTypeAttributes, XProductAttribute.class);
             } else {
-                nodesForParts = new LinkedHashSet<XProductAttribute>();
+                nodesForParts = new LinkedHashSet<>();
             }
             putToCache(nodesForParts);
             return nodesForParts;
@@ -307,7 +307,7 @@ public class XPolicyCmptClass extends XType {
      */
     protected Set<XDetailToMasterDerivedUnionAssociation> findDetailToMasterDerivedUnionAssociations(
             Collection<? extends XPolicyAssociation> associations) {
-        Set<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
+        Set<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<>();
         for (XPolicyAssociation association : associations) {
             if (!association.isDerived()) {
                 resultingAssociations.addAll(association.getSubsettedDetailToMasterAssociations());
@@ -331,7 +331,7 @@ public class XPolicyCmptClass extends XType {
         if (isConfigured()) {
             return initNodesForParts(getProductCmptType().getTableStructureUsages(), XTableUsage.class);
         } else {
-            return new LinkedHashSet<XTableUsage>();
+            return new LinkedHashSet<>();
         }
     }
 

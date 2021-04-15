@@ -62,7 +62,7 @@ public class IpsElementDragListener implements DragSourceListener {
      * @return an array of string containing the filenames
      */
     public static String[] getFilenames(IStructuredSelection selection) {
-        ArrayList<String> list = new ArrayList<String>(selection.size());
+        ArrayList<String> list = new ArrayList<>(selection.size());
         Iterator<?> iter = selection.iterator();
         while (iter.hasNext()) {
             Object selected = iter.next();

@@ -126,7 +126,7 @@ public class IpsRefactoringProcessorTest {
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
         when(ipsSrcFile.getCorrespondingResource().isSynchronized(anyInt())).thenReturn(false);
-        Set<IIpsSrcFile> affectedFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> affectedFiles = new HashSet<>();
         affectedFiles.add(ipsSrcFile);
         when(testProcessorSpy.getAffectedIpsSrcFiles()).thenReturn(affectedFiles);
 
@@ -193,7 +193,7 @@ public class IpsRefactoringProcessorTest {
 
         @Override
         protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-            return new HashSet<IIpsSrcFile>();
+            return new HashSet<>();
 
         }
 

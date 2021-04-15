@@ -73,7 +73,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testCopy_Map() {
-        HashMap<ObjectProperty, ObjectProperty> invalidObjectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        HashMap<ObjectProperty, ObjectProperty> invalidObjectPropertyMap = new HashMap<>();
         invalidObjectPropertyMap.put(new ObjectProperty("a", "a"), new ObjectProperty("b", "b"));
 
         Message msg = new Message("code", "text", Message.INFO);
@@ -87,10 +87,10 @@ public class MessageTest extends XmlAbstractTestCase {
         ObjectProperty op0 = new ObjectProperty(oldObject, "prop0");
         ObjectProperty op1 = new ObjectProperty(this, "prop1");
         ObjectProperty op2 = new ObjectProperty(oldObject, "prop2");
-        msg = new Message("code", "text", Message.ERROR, new ObjectProperty[] { op0, op1, op2 });
+        msg = new Message("code", "text", Message.ERROR, op0, op1, op2);
         Object newObject = new Object();
 
-        HashMap<ObjectProperty, ObjectProperty> objectPropertyMap = new HashMap<ObjectProperty, ObjectProperty>();
+        HashMap<ObjectProperty, ObjectProperty> objectPropertyMap = new HashMap<>();
         objectPropertyMap.put(op0, new ObjectProperty(newObject, "prop0"));
         objectPropertyMap.put(op2, new ObjectProperty(newObject, "prop2"));
 
@@ -108,7 +108,7 @@ public class MessageTest extends XmlAbstractTestCase {
     @Test
     public void testCreateCopyWithMarkers() {
 
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(mock(IMarker.class));
         Message msg = new Message("code", "text", Message.INFO, Collections.<ObjectProperty> emptyList(),
                 Collections.<MsgReplacementParameter> emptyList(), markers);
@@ -177,7 +177,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testMessage_StringStringintObjectStringArray() {
-        Message msg = new Message("code", "text", Message.INFO, this, new String[] { "p1", "p2" });
+        Message msg = new Message("code", "text", Message.INFO, this, "p1", "p2");
         assertEquals("code", msg.getCode());
         assertEquals("text", msg.getText());
         assertEquals(Message.INFO, msg.getSeverity());
@@ -235,7 +235,7 @@ public class MessageTest extends XmlAbstractTestCase {
         String expected = "ERROR 1[]" + LINE_SEPARATOR + "blabla";
         assertEquals(expected, msg.toString());
 
-        msg = new Message("code", "blabla", Message.INFO, "ObjectA", new String[] { "p1", "p2" });
+        msg = new Message("code", "blabla", Message.INFO, "ObjectA", "p1", "p2");
         expected = "INFO code[ObjectA.p1, ObjectA.p2]" + LINE_SEPARATOR + "blabla";
         assertEquals(expected, msg.toString());
     }
@@ -291,7 +291,7 @@ public class MessageTest extends XmlAbstractTestCase {
         ObjectProperty[] op = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pB") };
         msg = new Message("1", "blabla", Message.ERROR, op);
-        msg2 = new Message("1", "blabla", Message.ERROR, "objectA", new String[] { "pA", "pB" });
+        msg2 = new Message("1", "blabla", Message.ERROR, "objectA", "pA", "pB");
         assertFalse(msg.equals(msg2));
 
         // different referenced object properties (different property)
@@ -415,7 +415,7 @@ public class MessageTest extends XmlAbstractTestCase {
         IMarker marker1 = mock(IMarker.class);
         IMarker marker2 = mock(IMarker.class);
         IMarker marker3 = mock(IMarker.class);
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(marker1);
         markers.add(marker2);
 
@@ -438,7 +438,7 @@ public class MessageTest extends XmlAbstractTestCase {
         message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
         assertTrue(message.hasMarkers());
         // 2 markers
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(mock(IMarker.class));
         markers.add(mock(IMarker.class));
         message = Message.warning("text").code("1").markers(markers).create();
@@ -456,7 +456,7 @@ public class MessageTest extends XmlAbstractTestCase {
         message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
         assertEquals(1, message.getMarkers().size());
 
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(mock(IMarker.class));
         markers.add(mock(IMarker.class));
         message = Message.warning("text").code("1").markers(markers).create();
@@ -559,7 +559,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testBuilderWithMessage() {
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(mock(IMarker.class));
 
         Message message = Message.error("messageText") //
@@ -576,7 +576,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testBuilderWithMessageAndAddObjectProperty() {
-        Set<IMarker> markers = new HashSet<IMarker>();
+        Set<IMarker> markers = new HashSet<>();
         markers.add(mock(IMarker.class));
 
         Message message = Message.error("messageText") //

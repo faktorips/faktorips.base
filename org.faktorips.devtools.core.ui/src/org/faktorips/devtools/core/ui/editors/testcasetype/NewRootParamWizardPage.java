@@ -105,14 +105,11 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (e.field == editFieldDatatypeOrRule) {
             datatypeChanged(editFieldDatatypeOrRule.getText());
         }
-        wizard.postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (wizard.getShell().isDisposed()) {
-                    return;
-                }
-                updateSetPageComplete();
+        wizard.postAsyncRunnable(() -> {
+            if (wizard.getShell().isDisposed()) {
+                return;
             }
+            updateSetPageComplete();
         });
     }
 
@@ -283,7 +280,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         } else {
             allowedValues = TestParameterType.values();
         }
-        editFieldParamType = new EnumField<TestParameterType>(wizard.getUiToolkit().createCombo(c), allowedValues);
+        editFieldParamType = new EnumField<>(wizard.getUiToolkit().createCombo(c), allowedValues);
         editFieldParamType.addChangeListener(this);
     }
 }

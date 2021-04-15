@@ -78,7 +78,8 @@ final class ProductCmptTypeAttributeExpectations {
         assertFalse(oldProductGenInterface.getMethod("get" + oldNameCamelCase, new String[0]).exists());
         assertFalse(oldProductGenClass.getField(oldName).exists());
         assertFalse(oldProductGenClass.getMethod("get" + oldNameCamelCase, new String[0]).exists());
-        assertFalse(oldProductGenClass.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature }).exists());
+        assertFalse(
+                oldProductGenClass.getMethod("set" + oldNameCamelCase, new String[] { datatypeSignature }).exists());
         assertFalse(oldPolicyClass.getMethod("get" + oldNameCamelCase, new String[0]).exists());
 
         assertTrue(productGenInterface.getMethod("get" + newNameCamelCase, new String[0]).exists());
@@ -92,7 +93,8 @@ final class ProductCmptTypeAttributeExpectations {
         return getJavaType(
                 "",
                 getPublishedInterfaceName(productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject),
-                        ipsProject), true, false, ipsProject);
+                        ipsProject),
+                true, false, ipsProject);
     }
 
     private IType getProductGenClass(IProductCmptType productCmptType) {

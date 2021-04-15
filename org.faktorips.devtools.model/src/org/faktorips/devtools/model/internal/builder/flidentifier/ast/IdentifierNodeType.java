@@ -31,7 +31,8 @@ public enum IdentifierNodeType {
     PARAMETER(ParameterNode.class, -1) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForParameterNode();
         }
     },
@@ -39,7 +40,8 @@ public enum IdentifierNodeType {
     ATTRIBUTE(AttributeNode.class, 2) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForAttributeNode();
         }
 
@@ -48,7 +50,8 @@ public enum IdentifierNodeType {
     ASSOCIATION(AssociationNode.class, 3) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForAssociationNode();
         }
     },
@@ -56,7 +59,8 @@ public enum IdentifierNodeType {
     INDEX(IndexNode.class, 4) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForIndexBasedAssociationNode();
         }
     },
@@ -64,7 +68,8 @@ public enum IdentifierNodeType {
     QUALIFIER(QualifierNode.class, 5) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForQualifiedAssociationNode();
         }
     },
@@ -72,7 +77,8 @@ public enum IdentifierNodeType {
     ENUM_CLASS(EnumClassNode.class, 6) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForEnumClassNode();
         }
     },
@@ -80,7 +86,8 @@ public enum IdentifierNodeType {
     ENUM_VALUE(EnumValueNode.class, 7) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForEnumValueNode();
         }
     },
@@ -88,7 +95,8 @@ public enum IdentifierNodeType {
     INVALID_IDENTIFIER(InvalidIdentifierNode.class, Integer.MAX_VALUE) {
 
         @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+                IdentifierNodeGeneratorFactory<T> factory) {
             return factory.getGeneratorForInvalidNode();
         }
     };
@@ -142,5 +150,6 @@ public enum IdentifierNodeType {
         return nodeClass;
     }
 
-    public abstract <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory);
+    public abstract <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(
+            IdentifierNodeGeneratorFactory<T> factory);
 }

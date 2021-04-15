@@ -62,9 +62,9 @@ import org.w3c.dom.Element;
  */
 public class TestCaseBuilder extends AbstractArtefactBuilder {
 
-    private Map<ITestPolicyCmpt, String> objectIdMap = new HashMap<ITestPolicyCmpt, String>();
+    private Map<ITestPolicyCmpt, String> objectIdMap = new HashMap<>();
 
-    private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<Element, ITestPolicyCmpt>();
+    private Map<Element, ITestPolicyCmpt> targetObjectIdMap = new HashMap<>();
 
     public TestCaseBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
@@ -90,7 +90,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         InputStream is = null;
         String content = null;
         try {
-                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+            Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
             Element element = toRuntimeTestCaseXml(doc, testCase);
             String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" //$NON-NLS-1$
                     : testCase.getIpsProject().getXmlFileCharset();
@@ -233,12 +233,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testValues == null) {
             return;
         }
-        for (int i = 0; i < testValues.length; i++) {
-            if (!testValues[i].isValid(getIpsProject())) {
+        for (ITestValue testValue : testValues) {
+            if (!testValue.isValid(getIpsProject())) {
                 continue;
             }
-            Element valueElem = XmlUtil.addNewChild(doc, element, testValues[i].getTestValueParameter());
-            addValueElement(doc, valueElem, "testvalue", testValues[i].getValue());
+            Element valueElem = XmlUtil.addNewChild(doc, element, testValue.getTestValueParameter());
+            addValueElement(doc, valueElem, "testvalue", testValue.getValue());
         }
     }
 
@@ -249,20 +249,20 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testRules == null) {
             return;
         }
-        for (int i = 0; i < testRules.length; i++) {
-            if (!testRules[i].isValid(getIpsProject())) {
+        for (ITestRule testRule : testRules) {
+            if (!testRule.isValid(getIpsProject())) {
                 continue;
             }
-            IValidationRule validationRule = testRules[i].findValidationRule(getIpsProject());
+            IValidationRule validationRule = testRule.findValidationRule(getIpsProject());
             if (validationRule == null) {
                 // validation rule not found ignore element
                 continue;
             }
-            Element ruleElem = XmlUtil.addNewChild(doc, element, testRules[i].getTestParameterName());
+            Element ruleElem = XmlUtil.addNewChild(doc, element, testRule.getTestParameterName());
             ruleElem.setAttribute("type", "testrule");
-            ruleElem.setAttribute("validationRule", testRules[i].getValidationRule());
+            ruleElem.setAttribute("validationRule", testRule.getValidationRule());
             ruleElem.setAttribute("validationRuleMessageCode", validationRule.getMessageCode());
-            ruleElem.setAttribute("violationType", testRules[i].getViolationType().getId());
+            ruleElem.setAttribute("violationType", testRule.getViolationType().getId());
         }
     }
 
@@ -279,44 +279,41 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (testPolicyCmpts == null) {
             return;
         }
-        for (int i = 0; i < testPolicyCmpts.length; i++) {
-            if (!testPolicyCmpts[i].isValid(getIpsProject())) {
+        for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
+            if (!testPolicyCmpt.isValid(getIpsProject())) {
                 continue;
             }
-            Element testPolicyCmptElem = createTestPolicyCmptElem(doc, parent, testPolicyCmpts[i], link);
+            Element testPolicyCmptElem = createTestPolicyCmptElem(doc, parent, testPolicyCmpt, link);
 
             // set object id
             int currObjectId = objectId.nextValue();
-            objectIdMap.put(testPolicyCmpts[i], "" + currObjectId);
+            objectIdMap.put(testPolicyCmpt, "" + currObjectId);
             testPolicyCmptElem.setAttribute("objectId", "" + currObjectId);
 
             String policyCmptTypeQName = null;
             // get the policyCmptTypeQName
-            if (testPolicyCmpts[i].isProductRelevant()) {
-                // the test policy cmpt type parameter is product relevant
-                // the the product cmpt will be used to search the policy cmpt type qualified name
-                ITestPolicyCmpt testPolicyCmpt = testPolicyCmpts[i];
+            if (testPolicyCmpt.isProductRelevant()) {
                 policyCmptTypeQName = getPolicyCmptTypeNameAndSetProductCmptAttr(testPolicyCmpt, testPolicyCmptElem);
             } else {
                 // the test policy cmpt type parameter is not product relevant
                 // then the policy cmpt qualified name is stored on the test policy cmpt
-                policyCmptTypeQName = testPolicyCmpts[i].getPolicyCmptType();
+                policyCmptTypeQName = testPolicyCmpt.getPolicyCmptType();
                 if (StringUtils.isEmpty(policyCmptTypeQName)) {
                     // attribute policyCmptType not set, get the policy cmpt type from test
                     // parameter
-                    policyCmptTypeQName = getPolicyCmptTypeNameFromParameter(testPolicyCmpts[i]);
+                    policyCmptTypeQName = getPolicyCmptTypeNameFromParameter(testPolicyCmpt);
                 }
             }
 
-            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpts[i].getIpsProject()
+            IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpt.getIpsProject()
                     .findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             if (policyCmptTypeSrcFile == null) {
                 throw new CoreException(
                         new IpsStatus(NLS.bind("The policy component type {0} was not found.", policyCmptTypeQName)));
             }
             testPolicyCmptElem.setAttribute("class", getQualifiedClassName(policyCmptTypeSrcFile.getIpsObject()));
-            addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestAttributeValues(), isInput);
-            addAssociations(doc, testPolicyCmptElem, testPolicyCmpts[i].getTestPolicyCmptLinks(), isInput, objectId);
+            addTestAttrValues(doc, testPolicyCmptElem, testPolicyCmpt.getTestAttributeValues(), isInput);
+            addAssociations(doc, testPolicyCmptElem, testPolicyCmpt.getTestPolicyCmptLinks(), isInput, objectId);
         }
     }
 
@@ -388,29 +385,29 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         if (associations.length > 0) {
-            for (int i = 0; i < associations.length; i++) {
-                if (!associations[i].isValid(getIpsProject())) {
+            for (ITestPolicyCmptLink association : associations) {
+                if (!association.isValid(getIpsProject())) {
                     continue;
                 }
-                if (!associationsParentSameType(associations[i], isInput)) {
+                if (!associationsParentSameType(association, isInput)) {
                     continue;
                 }
                 String associationType = "";
-                if (associations[i].isComposition()) {
+                if (association.isComposition()) {
                     try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { associations[i].findTarget() },
-                                associations[i], isInput, objectId);
+                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { association.findTarget() },
+                                association, isInput, objectId);
                     } catch (CoreException e) {
                         throw new RuntimeException(e);
                     }
-                } else if (associations[i].isAssociation()) {
+                } else if (association.isAssociation()) {
                     // @see AbstractModelObject
                     associationType = "association";
                     Element testPolicyCmptElem = XmlUtil.addNewChild(doc, parent,
-                            associations[i].getTestPolicyCmptTypeParameter());
-                    testPolicyCmptElem.setAttribute("target", associations[i].getTarget());
+                            association.getTestPolicyCmptTypeParameter());
+                    testPolicyCmptElem.setAttribute("target", association.getTarget());
                     testPolicyCmptElem.setAttribute("type", associationType);
-                    ITestPolicyCmpt target = associations[i].findTarget();
+                    ITestPolicyCmpt target = association.findTarget();
                     targetObjectIdMap.put(testPolicyCmptElem, target);
                 }
             }
@@ -436,17 +433,17 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             return;
         }
         IIpsProject ipsProject = getIpsProject();
-        for (int i = 0; i < testAttrValues.length; i++) {
-            if (!testAttrValues[i].isValid(getIpsProject())) {
+        for (ITestAttributeValue testAttrValue : testAttrValues) {
+            if (!testAttrValue.isValid(getIpsProject())) {
                 continue;
             }
-            if (testAttrValues[i].isInputAttribute(ipsProject) && isInput
-                    || testAttrValues[i].isExpectedResultAttribute(ipsProject) && !isInput) {
-                ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
+            if (testAttrValue.isInputAttribute(ipsProject) && isInput
+                    || testAttrValue.isExpectedResultAttribute(ipsProject) && !isInput) {
+                ITestAttribute testAttribute = testAttrValue.findTestAttribute(ipsProject);
                 if (testAttribute == null) {
                     throw new CoreException(new IpsStatus(
                             NLS.bind("The test attribute {0} was not found in the test case type definition.",
-                                    testAttrValues[i].getTestAttribute())));
+                                    testAttrValue.getTestAttribute())));
                 }
 
                 // the child name is either the attribute name or the extension attribute (=test
@@ -454,7 +451,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName()
                         : testAttribute.getAttribute();
                 Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, childName);
-                addValueElement(doc, attrValueElem, "property", testAttrValues[i].getValue());
+                addValueElement(doc, attrValueElem, "property", testAttrValue.getValue());
             }
         }
     }

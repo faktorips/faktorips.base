@@ -54,7 +54,7 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
     }
 
     private List<FlFunction<JavaCodeFragment>> getFlFunctionsFor(List<TableData> tableDatas) {
-        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<FlFunction<JavaCodeFragment>>();
+        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<>();
         for (TableData tableData : tableDatas) {
             functions.addAll(getTableAccessFunctionsFor(tableData));
         }
@@ -68,7 +68,7 @@ public abstract class AbstractTableFunctionsResolver implements FunctionResolver
 
     private List<FlFunction<JavaCodeFragment>> getTableAccessFunctionsFor(TableData tableData) {
         ITableAccessFunction[] fcts = tableData.getTableStructure().getAccessFunctions();
-        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<FlFunction<JavaCodeFragment>>();
+        List<FlFunction<JavaCodeFragment>> functions = new ArrayList<>();
         for (ITableAccessFunction tableAccessFunction : fcts) {
             functions.add(createFlFunction(tableAccessFunction, tableData));
         }

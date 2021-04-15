@@ -39,7 +39,7 @@ public class SimpleGetterMethodCollectorTest {
 
     @Test
     public void testGetNames() {
-        SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation> simpleGetterMethodCollector = new SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation> simpleGetterMethodCollector = new SimpleGetterMethodCollector<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         simpleGetterMethodCollector.getNames(AnnotatedDeclaration.from(Parent.class));
 
@@ -48,7 +48,7 @@ public class SimpleGetterMethodCollectorTest {
 
     @Test
     public void testGetNames_noAnnotation() {
-        SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation> simpleGetterMethodCollector = new SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation>(
+        SimpleGetterMethodCollector<DummyElement, ParentAnnotation, ChildAnnotation> simpleGetterMethodCollector = new SimpleGetterMethodCollector<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
         String[] names = simpleGetterMethodCollector.getNames(AnnotatedDeclaration.from(String.class));
 

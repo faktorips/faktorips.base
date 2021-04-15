@@ -37,7 +37,7 @@ public class DefaultInternationalString implements InternationalString {
      * @param localizedStrings the localized strings making up this DefaultInternationalString.
      */
     public DefaultInternationalString(Collection<LocalizedString> localizedStrings, Locale defaultLocale) {
-        Map<Locale, LocalizedString> initialMap = new LinkedHashMap<Locale, LocalizedString>();
+        Map<Locale, LocalizedString> initialMap = new LinkedHashMap<>();
         for (LocalizedString localizedString : localizedStrings) {
             initialMap.put(localizedString.getLocale(), localizedString);
         }
@@ -45,6 +45,7 @@ public class DefaultInternationalString implements InternationalString {
         this.defaultLocale = defaultLocale;
     }
 
+    @Override
     public String get(Locale locale) {
         LocalizedString localizedString = localizedStringMap.get(locale);
         if (localizedString == null && !"".equals(locale.getCountry()) && !"".equals(locale.getLanguage())) {
@@ -66,7 +67,7 @@ public class DefaultInternationalString implements InternationalString {
      * modify this DefaultInternationalString.
      */
     public Collection<LocalizedString> getLocalizedStrings() {
-        return new LinkedHashSet<LocalizedString>(localizedStringMap.values());
+        return new LinkedHashSet<>(localizedStringMap.values());
     }
 
     @Override

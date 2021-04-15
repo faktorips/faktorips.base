@@ -41,7 +41,7 @@ public abstract class ControlComposite extends Composite {
             throw new IllegalArgumentException("Control mustn't be null, eventType=" + eventType); //$NON-NLS-1$
         }
         if (listeningInfo == null) {
-            listeningInfo = new ArrayList<ControlTypeStruct>();
+            listeningInfo = new ArrayList<>();
             broadcastListener = new BroadcastListener();
         }
         for (ControlTypeStruct each : listeningInfo) {

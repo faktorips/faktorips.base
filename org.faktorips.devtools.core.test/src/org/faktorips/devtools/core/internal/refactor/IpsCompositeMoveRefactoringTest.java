@@ -49,14 +49,14 @@ public class IpsCompositeMoveRefactoringTest {
         MockitoAnnotations.initMocks(this);
         when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
         when(ipsObject2.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
-        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1, ipsObject2));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1, ipsObject2));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
     }
 
     @Test
     public void testValidateUserInputTargetPackageNotSet() throws CoreException {
-        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
 
         RefactoringStatus result = ipsCompositeMoveRefactoring.validateUserInput(null);
@@ -86,7 +86,7 @@ public class IpsCompositeMoveRefactoringTest {
 
     @Test
     public void testCreateRefactoringTargetIpsPackageFragmentNotYetSet() {
-        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.createRefactoring(mock(IIpsObject.class));
         // Test successful if no NPE has been thrown

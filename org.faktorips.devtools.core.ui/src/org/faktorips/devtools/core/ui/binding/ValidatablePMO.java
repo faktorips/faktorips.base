@@ -22,7 +22,7 @@ import org.faktorips.runtime.Severity;
 
 public abstract class ValidatablePMO extends PresentationModelObject implements Validatable {
 
-    private Map<ObjectProperty, ObjectProperty> objectPropertyMapping = new HashMap<ObjectProperty, ObjectProperty>();
+    private Map<ObjectProperty, ObjectProperty> objectPropertyMapping = new HashMap<>();
 
     public Map<ObjectProperty, ObjectProperty> getObjectPropertyMapping() {
         return objectPropertyMapping;

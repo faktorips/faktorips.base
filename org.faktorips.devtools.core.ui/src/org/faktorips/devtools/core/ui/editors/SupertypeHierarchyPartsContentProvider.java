@@ -20,8 +20,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
- * <code>SupertypeHierarchyPartsContentProvider</code>s provide a set of <code>IIpsObjectPart</code>s from
- * the supertype hierarchy of an <code>IIpsObject</code>.
+ * <code>SupertypeHierarchyPartsContentProvider</code>s provide a set of
+ * <code>IIpsObjectPart</code>s from the supertype hierarchy of an <code>IIpsObject</code>.
  * 
  * @author Alexander Weickmann
  */
@@ -31,14 +31,14 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
     private List<? extends IIpsObjectPart> providedObjectParts;
 
     /**
-     * The supertypes building the supertype hierarchy to which the provided <code>IIpsObjectPart</code>
-     * s belong to.
+     * The supertypes building the supertype hierarchy to which the provided
+     * <code>IIpsObjectPart</code> s belong to.
      */
     private List<? extends IIpsObject> supertypes;
 
     /**
-     * @param ipsObject The <code>IIpsObject</code> the <code>IIpsObjectPart</code>s available for selection
-     *            belong to.
+     * @param ipsObject The <code>IIpsObject</code> the <code>IIpsObjectPart</code>s available for
+     *            selection belong to.
      */
     public SupertypeHierarchyPartsContentProvider(IIpsObject ipsObject) {
         supertypes = getSupertypes(ipsObject);
@@ -52,7 +52,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)parentElement;
-            List<IIpsObjectPart> parts = new ArrayList<IIpsObjectPart>();
+            List<IIpsObjectPart> parts = new ArrayList<>();
             for (IIpsObjectPart providedObjectPart : providedObjectParts) {
                 if (providedObjectPart.getIpsObject().equals(ipsObject)) {
                     parts.add(providedObjectPart);

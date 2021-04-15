@@ -62,7 +62,7 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
 
     private void updateCell(ViewerCell cell, InstanceIpsSrcFileViewItem item) {
         String elementName = getText(item);
-        List<StyleRange> styleRanges = new ArrayList<StyleRange>();
+        List<StyleRange> styleRanges = new ArrayList<>();
         if (item.isInstanceOfMetaClass()) {
             String typeSuffix = " - " + item.getDefiningMetaClass(); //$NON-NLS-1$
             StyleRange styledType = new StyleRange();

@@ -12,8 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.EnumSet;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -165,12 +163,9 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             openAction = new OpenTableStructuresInEditorAction(getViewer());
             contextMenuManager.add(new Separator());
             contextMenuManager.add(openAction);
-            contextMenuManager.addMenuListener(new IMenuListener() {
-                @Override
-                public void menuAboutToShow(IMenuManager manager) {
-                    if (!getSelection().isEmpty()) {
-                        openAction.updateLabelFromSelection(getViewer().getSelection());
-                    }
+            contextMenuManager.addMenuListener($ -> {
+                if (!getSelection().isEmpty()) {
+                    openAction.updateLabelFromSelection(getViewer().getSelection());
                 }
             });
         }

@@ -84,7 +84,7 @@ public class IpsDecorators implements IIpsDecorators {
     private final IImageHandling imageHandling = new ImageHandling(IpsModelDecoratorsPluginActivator.getBundle());
     private final Map<Class<? extends IIpsElement>, IIpsElementDecorator> decorators = new HashMap<>();
     private final Supplier<IIpsElementDecorator> templateDecorator = CachingSupplier
-            .caching(() -> ProductCmptDecorator.forTemplates());
+            .caching(ProductCmptDecorator::forTemplates);
 
     @SuppressWarnings("deprecation")
     private IpsDecorators() {

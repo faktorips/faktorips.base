@@ -63,8 +63,8 @@ public interface IBaseMethod extends IParameterContainer {
     public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Checks whether the signature of the <code>otherMethod</code> is the same as the signature of this
-     * method. The signature is the same if the name of the method is equal, the number of
+     * Checks whether the signature of the <code>otherMethod</code> is the same as the signature of
+     * this method. The signature is the same if the name of the method is equal, the number of
      * parameters is equal and the data types of the parameters are equal. Note that the return
      * values are not compared.
      * <p>

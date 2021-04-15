@@ -55,8 +55,8 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
     }
 
     private void findAndSetPredecessors() {
-        List<ValueWithoutPropertyEntry> valueWithoutPropertyEntries = new ArrayList<ValueWithoutPropertyEntry>();
-        List<MissingPropertyValueEntry> missingPropertyValueEntries = new ArrayList<MissingPropertyValueEntry>();
+        List<ValueWithoutPropertyEntry> valueWithoutPropertyEntries = new ArrayList<>();
+        List<MissingPropertyValueEntry> missingPropertyValueEntries = new ArrayList<>();
 
         addEntries(getEntries(), valueWithoutPropertyEntries, missingPropertyValueEntries);
         for (IFixDifferencesComposite fixDifferencesComposite : getChildren()) {

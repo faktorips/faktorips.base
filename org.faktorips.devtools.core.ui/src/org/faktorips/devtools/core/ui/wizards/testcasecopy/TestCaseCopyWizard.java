@@ -49,7 +49,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     private TestCaseCopyDesinationPage testCaseCopyDestinationPage;
     private TestCaseStructurePage testCaseStructurePage;
 
-    private List<IIpsPackageFragment> packageFrgmtsCreatedByWizard = new ArrayList<IIpsPackageFragment>(5);
+    private List<IIpsPackageFragment> packageFrgmtsCreatedByWizard = new ArrayList<>(5);
 
     public TestCaseCopyWizard(ITestCase sourceTestCase) {
         super("TestCaseCopyWizard", IpsUIPlugin.getDefault().getDialogSettings(), 600, 800); //$NON-NLS-1$
@@ -305,7 +305,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             ITestObject[] testObjects;
             testObjects = targetTestCase.getAllTestObjects();
 
-            List<ITestObject> testObjectsList = new ArrayList<ITestObject>(testObjects.length);
+            List<ITestObject> testObjectsList = new ArrayList<>(testObjects.length);
             testObjectsList.addAll(Arrays.asList(testObjects));
 
             Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();

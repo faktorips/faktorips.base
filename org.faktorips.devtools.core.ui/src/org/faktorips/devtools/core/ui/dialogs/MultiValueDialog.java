@@ -69,7 +69,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
     private TableViewerColumn setupTableColumns(EditTableControlViewer viewer) {
         TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
         errorColumn.getColumn().setResizable(false);
-        errorColumn.setLabelProvider(new ErrorCellLabelProvider<SingleValueViewItem>(tableModel));
+        errorColumn.setLabelProvider(new ErrorCellLabelProvider<>(tableModel));
         ColumnViewerToolTipSupport.enableFor(viewer.getTableViewer(), ToolTip.NO_RECREATE);
 
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
@@ -93,11 +93,11 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
             formattedCellEditingSupport = new LocalizedStringEditingSupportForSingleValueViewItems(getToolkit(),
                     viewer.getTableViewer(), new InternationalStringMultiValueElementModifier());
         } else {
-            formattedCellEditingSupport = new DatatypeEditingSupport<SingleValueViewItem>(getToolkit(),
+            formattedCellEditingSupport = new DatatypeEditingSupport<>(getToolkit(),
                     viewer.getTableViewer(), attributeValue.getIpsProject(), datatype,
                     new StringMultiValueElementModifier());
         }
-        formattedCellEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy<SingleValueViewItem>(
+        formattedCellEditingSupport.setTraversalStrategy(new EditTableTraversalStrategy<>(
                 formattedCellEditingSupport, 1, tableModel));
         valueColumn.setEditingSupport(formattedCellEditingSupport);
         valueColumn.setLabelProvider(new DatatypeCellLabelProvider(formattedCellEditingSupport));

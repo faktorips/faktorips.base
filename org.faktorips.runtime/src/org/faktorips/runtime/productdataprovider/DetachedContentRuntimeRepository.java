@@ -66,11 +66,11 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
 
     /**
      * Getting the {@link IFormulaEvaluatorFactory} set in the constructor. This could be null if
-     * formula should not be evaluated on the fly. The repository would load the classes containing the
-     * compiled formula.
+     * formula should not be evaluated on the fly. The repository would load the classes containing
+     * the compiled formula.
      * 
-     * @return the {@link IFormulaEvaluatorFactory} of this repository or null if formula should not be
-     *         evaluated
+     * @return the {@link IFormulaEvaluatorFactory} of this repository or null if formula should not
+     *         be evaluated
      */
     @Override
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {

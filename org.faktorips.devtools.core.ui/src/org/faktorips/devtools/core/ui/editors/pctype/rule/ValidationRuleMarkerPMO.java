@@ -51,8 +51,8 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     }
 
     protected void initItems() {
-        Set<String> idSet = new HashSet<String>(getActiveMarkers());
-        items = new ArrayList<MarkerViewItem>();
+        Set<String> idSet = new HashSet<>(getActiveMarkers());
+        items = new ArrayList<>();
         for (String id : markerUtil.getDefinedMarkerIds()) {
             boolean checked = idSet.remove(id);
             items.add(MarkerViewItem.validItem(this, id, checked));
@@ -93,7 +93,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     }
 
     public void updateActiveMarkers() {
-        List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<>();
         for (MarkerViewItem item : items) {
             if (item.isChecked()) {
                 ids.add(item.getId());
@@ -119,7 +119,8 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         private boolean checked;
         private boolean illegalEntry;
 
-        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState, boolean illegalEntry) {
+        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState,
+                boolean illegalEntry) {
             super();
             this.pmo = pmo;
             this.id = id;

@@ -40,11 +40,11 @@ public class ExpressionDependencyDetailTest {
     @Mock
     private IIpsPackageFragment targetIpsPackageFragment;
 
-    private TextRegion textRegion1 = new TextRegion(EXPRESSION_TEXT,15, 24);
+    private TextRegion textRegion1 = new TextRegion(EXPRESSION_TEXT, 15, 24);
 
-    private TextRegion textRegion2 = new TextRegion(EXPRESSION_TEXT,25, 35);
+    private TextRegion textRegion2 = new TextRegion(EXPRESSION_TEXT, 25, 35);
 
-    private TextRegion textRegion3 = new TextRegion(EXPRESSION_TEXT,36, 38);
+    private TextRegion textRegion3 = new TextRegion(EXPRESSION_TEXT, 36, 38);
 
     private ExpressionDependencyDetail expressionDependencyDetail;
 

@@ -118,7 +118,8 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                             Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_KIND_ID));
                 }
                 if (getPmo().isNeedVersionId()
-                        && !getPmo().getVersionId().equals(productCmptNamingStrategy.getVersionId(getPmo().getName()))) {
+                        && !getPmo().getVersionId()
+                                .equals(productCmptNamingStrategy.getVersionId(getPmo().getName()))) {
                     result.add(new Message(MSG_INVALID_VERSION_ID, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidVersionId,
                             convention.getVersionConceptNameSingular()), Message.ERROR, getPmo(),
@@ -155,7 +156,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
             messageList
-            .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                    .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
                             Message.WARNING));
         }
@@ -169,10 +170,12 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
             IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
                     .getIpsProject());
             if (getPmo().getSelectedType() == null
-                    || !getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
+                    || !getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType,
+                            getPmo().getIpsProject())) {
                 result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
                         Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
-                        .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
+                                .getAddToProductCmptGeneration().getProductCmpt().getName()),
+                        Message.WARNING));
             }
         }
         return result;

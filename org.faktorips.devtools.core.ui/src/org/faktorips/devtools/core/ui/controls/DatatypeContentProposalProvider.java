@@ -108,7 +108,7 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
 
         String prefix = StringUtils.left(contents, position);
         searchPattern.setPattern(prefix);
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
+        List<IContentProposal> result = new ArrayList<>();
         for (Datatype type : getDataType()) {
             String unqualifiedName = type.getName();
             if (searchPattern.matches(unqualifiedName)) {

@@ -14,10 +14,10 @@ import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.contains
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -173,7 +173,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmpt productCmpt = ipsProject.findProductCmpt("products.ComfortMotorProduct");
         IProductCmptTreeStructure structure = productCmpt
                 .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<>();
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         for (IProductCmptStructureReference element : toCopy) {
@@ -250,7 +250,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         assertEquals(4, copyCount);
         assertEquals(3, refCount);
 
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<>();
 
         for (IProductCmptReference element : toCopy) {
             IProductCmpt cmpt = element.getProductCmpt();
@@ -317,7 +317,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         IProductCmptTreeStructure structure = product.getStructure(new GregorianCalendar(), ipsProject);
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<>();
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
@@ -353,7 +353,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         createTestContent();
         IProductCmptTreeStructure structure = comfortMotorProduct
                 .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<>();
         Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
 
         for (IProductCmptStructureReference element : toCopy) {
@@ -639,7 +639,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     protected Hashtable<IProductCmptStructureReference, IIpsSrcFile> prependDeepCopyOf(
             Set<IProductCmptStructureReference> toCopy) {
-        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
+        Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<>();
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject ipsObject = element.getWrappedIpsObject();
@@ -788,9 +788,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     private DeepCopyOperation mockSortOrderDependencies() {
-        Set<IProductCmptStructureReference> copyElements = new HashSet<IProductCmptStructureReference>();
-        Set<IProductCmptStructureReference> linkElements = new HashSet<IProductCmptStructureReference>();
-        Map<IProductCmptStructureReference, IIpsSrcFile> handleMap = new HashMap<IProductCmptStructureReference, IIpsSrcFile>();
+        Set<IProductCmptStructureReference> copyElements = new HashSet<>();
+        Set<IProductCmptStructureReference> linkElements = new HashSet<>();
+        Map<IProductCmptStructureReference, IIpsSrcFile> handleMap = new HashMap<>();
         GregorianCalendar oldValidFrom = (GregorianCalendar)Calendar.getInstance();
         GregorianCalendar newValidFrom = (GregorianCalendar)Calendar.getInstance();
         DeepCopyOperation deepCopyOperation = new DeepCopyOperation(structureMock, copyElements, linkElements,

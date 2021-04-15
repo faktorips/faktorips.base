@@ -33,7 +33,7 @@ public class OpenEditorHandler extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
 
-        TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, selection);
+        TypedSelection<IAdaptable> typedSelection = new TypedSelection<>(IAdaptable.class, selection);
         IAdaptable firstElement = typedSelection.getFirstElement();
 
         IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(firstElement, IProductCmptLink.class);

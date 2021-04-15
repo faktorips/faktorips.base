@@ -158,13 +158,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             throw new NullPointerException("Can not get dependency details for null as dependency."); //$NON-NLS-1$
         }
 
-        Map<IDependency, List<IDependencyDetail>> detailMap = new HashMap<IDependency, List<IDependencyDetail>>();
+        Map<IDependency, List<IDependencyDetail>> detailMap = new HashMap<>();
         dependsOn(detailMap);
 
         List<IDependencyDetail> result = detailMap.get(dependency);
 
         if (result == null) {
-            result = new ArrayList<IDependencyDetail>();
+            result = new ArrayList<>();
         }
 
         return result;

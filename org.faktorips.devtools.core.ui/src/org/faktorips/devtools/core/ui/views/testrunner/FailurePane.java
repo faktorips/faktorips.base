@@ -38,8 +38,6 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -371,13 +369,7 @@ public class FailurePane implements IMenuListener {
                 }
             }
         }
-        table.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                resourceManager.dispose();
-            }
-        });
+        table.addDisposeListener($ -> resourceManager.dispose());
     }
 
     /**

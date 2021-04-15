@@ -88,7 +88,7 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
 
         Collections.sort(getSrcFiles(), IPS_OBJECT_COMPARATOR);
 
-        List<IPageElement> items = new ArrayList<IPageElement>();
+        List<IPageElement> items = new ArrayList<>();
         for (IIpsSrcFile srcFile : getSrcFiles()) {
             if (!getFilter().accept(srcFile)) {
                 continue;

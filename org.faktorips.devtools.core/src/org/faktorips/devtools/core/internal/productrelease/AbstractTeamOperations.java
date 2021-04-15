@@ -53,7 +53,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
             Subscriber subscriber = repositoryProvider.getSubscriber();
             subscriber.refresh(resources, IResource.DEPTH_ZERO,
                     new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            List<IResource> syncResources = new ArrayList<IResource>();
+            List<IResource> syncResources = new ArrayList<>();
             for (IResource aResource : resources) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
                 if (syncInfo == null) {

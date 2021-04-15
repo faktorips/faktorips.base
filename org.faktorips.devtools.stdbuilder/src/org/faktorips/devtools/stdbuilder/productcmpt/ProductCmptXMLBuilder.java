@@ -174,7 +174,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
      * @since 3.8 with the introduction of static associations.
      */
     private List<Element> getElements(Element prodCmptElement, String tagName) {
-        List<Element> linkElements = new ArrayList<Element>();
+        List<Element> linkElements = new ArrayList<>();
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);

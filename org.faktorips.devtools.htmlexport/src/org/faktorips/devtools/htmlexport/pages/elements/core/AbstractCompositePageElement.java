@@ -31,7 +31,7 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * the subElements of the CompositePageElement
      */
-    private List<IPageElement> subElements = new ArrayList<IPageElement>();
+    private List<IPageElement> subElements = new ArrayList<>();
     private String title;
     private WrapperType wrapperType = WrapperType.NONE;
 
@@ -50,10 +50,11 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         } catch (RuntimeException e) {
             IpsStatus ipsStatus = new IpsStatus(IStatus.ERROR, "A problem occured while procesing an object", e); //$NON-NLS-1$
             getContext().addStatus(ipsStatus);
-            Set<Style> textStyles = new HashSet<Style>();
+            Set<Style> textStyles = new HashSet<>();
             textStyles.add(Style.BOLD);
             addPageElements(new TextPageElement(
-                    "An error occured while processing current object: " + e.getClass().getSimpleName(), textStyles, getContext())); //$NON-NLS-1$
+                    "An error occured while processing current object: " + e.getClass().getSimpleName(), textStyles, //$NON-NLS-1$
+                    getContext()));
         }
         // CSON: IllegalCatch
     }

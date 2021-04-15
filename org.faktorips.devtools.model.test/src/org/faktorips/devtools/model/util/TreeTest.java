@@ -22,13 +22,13 @@ public class TreeTest {
     @Test
     public void testIsEmpty() {
         assertThat(Tree.emptyTree().isEmpty(), is(true));
-        assertThat(new Tree<String>("").isEmpty(), is(false));
+        assertThat(new Tree<>("").isEmpty(), is(false));
     }
 
     @Test
     public void testGetAllElements() {
 
-        Tree<String> tree = new Tree<String>("a");
+        Tree<String> tree = new Tree<>("a");
         tree.getRoot().addChild("b").addChild("c");
 
         assertThat(tree.getAllElements().size(), is(3));
@@ -38,7 +38,7 @@ public class TreeTest {
     @Test
     public void testTransform() {
 
-        Tree<Integer> intTree = new Tree<Integer>(1);
+        Tree<Integer> intTree = new Tree<>(1);
         intTree.getRoot().addChild(2).addChild(3);
 
         Tree<String> stringTree = intTree.transform(Objects::toString);

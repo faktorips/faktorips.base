@@ -18,10 +18,10 @@ import org.faktorips.devtools.model.enums.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A class that contains validations of the model class <code>IEnumContent</code> that are also used

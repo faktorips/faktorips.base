@@ -26,7 +26,7 @@ public class ParsingContext {
 
     private final IExpression expression;
 
-    private final LinkedList<IdentifierNode> nodes = new LinkedList<IdentifierNode>();
+    private final LinkedList<IdentifierNode> nodes = new LinkedList<>();
 
     private final IIpsProject ipsProject;
 
@@ -56,7 +56,7 @@ public class ParsingContext {
      * first get the previous node.
      */
     public LinkedList<IdentifierNode> getNodes() {
-        return new LinkedList<IdentifierNode>(nodes);
+        return new LinkedList<>(nodes);
     }
 
     public IdentifierNode getPreviousNode() {

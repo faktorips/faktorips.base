@@ -141,14 +141,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
         IEditorInput input = ((IEditorPart)part).getEditorInput();
         if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class,
+            return new TypedSelection<>(IAdaptable.class,
                     new StructuredSelection(((IFileEditorInput)input).getFile()));
         }
         return null;
     }
 
     private IContributionItem[] getContributionItemsForNoSourceCodeFound() {
-        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
+        List<IContributionItem> contributionItems = new ArrayList<>(1);
         IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
         contributionItems.add(noSourceCodeFoundCommand);
         return contributionItems.toArray(new IContributionItem[1]);
@@ -194,7 +194,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
          * "Open in Java Editor" command contribution item for each type itself as well as its
          * members.
          */
-        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(
+        List<IContributionItem> contributionItems = new ArrayList<>(
                 javaTypesToJavaElements.size() * 3);
         List<IType> sortedJavaTypes = sortTypes(javaTypesToJavaElements.keySet());
         for (IType type : sortedJavaTypes) {
@@ -218,7 +218,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
-        Map<IType, Set<IMember>> javaTypesToJavaElements = new LinkedHashMap<IType, Set<IMember>>(2);
+        Map<IType, Set<IMember>> javaTypesToJavaElements = new LinkedHashMap<>(2);
         for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(selectedIpsObjectPartContainer)) {
             IType type = null;
             if (javaElement instanceof IType) {
@@ -256,7 +256,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      * </ol>
      */
     private List<IType> sortTypes(Set<IType> javaTypes) {
-        List<IType> sortedTypes = new ArrayList<IType>(javaTypes.size());
+        List<IType> sortedTypes = new ArrayList<>(javaTypes.size());
         for (IType type : javaTypes) {
             try {
                 if (!type.isInterface()) {
@@ -301,7 +301,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
-        Map<String, Object> arguments = new HashMap<String, Object>(1);
+        Map<String, Object> arguments = new HashMap<>(1);
         arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
 
         return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),

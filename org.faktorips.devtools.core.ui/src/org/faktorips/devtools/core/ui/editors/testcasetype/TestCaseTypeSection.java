@@ -37,14 +37,10 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -54,8 +50,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
@@ -126,9 +120,9 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
-import org.faktorips.runtime.MessageList;
 
 /**
  * Section to display and edit the test case type.
@@ -189,7 +183,7 @@ public class TestCaseTypeSection extends IpsSection {
      * test case type changed, thus if the type of a test policy cmpt type param changed the
      * attribute will show the correct validation result
      */
-    private List<UIController> attributeControllers = new ArrayList<UIController>();
+    private List<UIController> attributeControllers = new ArrayList<>();
 
     /** Object cache for the detail area */
     private SectionDetailObjectCache objectCache;
@@ -275,13 +269,13 @@ public class TestCaseTypeSection extends IpsSection {
     private class SectionDetailObjectCache {
 
         // Containers for all sections and their objects
-        private HashMap<Integer, Section> sections = new HashMap<Integer, Section>();
-        private HashMap<Integer, IIpsObjectPart> sectionObjects = new HashMap<Integer, IIpsObjectPart>();
-        private HashMap<Integer, EditField<?>> sectionFirstEditField = new HashMap<Integer, EditField<?>>();
-        private HashMap<Integer, Integer> attributeIdx = new HashMap<Integer, Integer>();
-        private HashMap<Integer, SectionButtons> sectionButtons = new HashMap<Integer, SectionButtons>();
-        private HashMap<Integer, TableViewer> attributeTableViewers = new HashMap<Integer, TableViewer>();
-        private HashMap<Integer, AttributeDetails> attributeDetailsMap = new HashMap<Integer, AttributeDetails>();
+        private HashMap<Integer, Section> sections = new HashMap<>();
+        private HashMap<Integer, IIpsObjectPart> sectionObjects = new HashMap<>();
+        private HashMap<Integer, EditField<?>> sectionFirstEditField = new HashMap<>();
+        private HashMap<Integer, Integer> attributeIdx = new HashMap<>();
+        private HashMap<Integer, SectionButtons> sectionButtons = new HashMap<>();
+        private HashMap<Integer, TableViewer> attributeTableViewers = new HashMap<>();
+        private HashMap<Integer, AttributeDetails> attributeDetailsMap = new HashMap<>();
 
         /**
          * Returns the key identifier for the given object
@@ -781,14 +775,11 @@ public class TestCaseTypeSection extends IpsSection {
 
             try {
                 if (!object.isValid(object.getIpsProject()) && !e.getState()) {
-                    postAsyncRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isDisposed()) {
-                                return;
-                            }
-                            redrawDetailArea(testPolicyCmptTypeParameter, object);
+                    postAsyncRunnable(() -> {
+                        if (isDisposed()) {
+                            return;
                         }
+                        redrawDetailArea(testPolicyCmptTypeParameter, object);
                     });
                 }
 
@@ -922,7 +913,6 @@ public class TestCaseTypeSection extends IpsSection {
                 if (StringUtils.isNotEmpty(param.getPolicyCmptType())) {
                     IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(cmptType);
-                    return;
                 }
             }
         }
@@ -934,13 +924,7 @@ public class TestCaseTypeSection extends IpsSection {
         super(parent, ExpandableComposite.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                resourceManager.dispose();
-            }
-        });
+        addDisposeListener($ -> resourceManager.dispose());
 
         objectCache = new SectionDetailObjectCache();
 
@@ -1358,19 +1342,16 @@ public class TestCaseTypeSection extends IpsSection {
                         ITestAttribute.PROPERTY_ATTRIBUTE, ITestAttribute.PROPERTY_DATATYPE });
 
         // add listener to the table
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection) {
-                    Object firstElement = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                    if (firstElement instanceof ITestAttribute) {
-                        currSelectedDetailObject = (ITestAttribute)firstElement;
-                        updateDetailButtonStatus((ITestAttribute)firstElement);
-                        selectSection(objectCache.getSection((ITestAttribute)firstElement));
-                        AttributeDetails attributeDetails = objectCache
-                                .getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
-                        attributeDetails.updateDetailAttributeArea((ITestAttribute)firstElement);
-                    }
+        viewer.addSelectionChangedListener(event -> {
+            if (event.getSelection() instanceof IStructuredSelection) {
+                Object firstElement = ((IStructuredSelection)event.getSelection()).getFirstElement();
+                if (firstElement instanceof ITestAttribute) {
+                    currSelectedDetailObject = (ITestAttribute)firstElement;
+                    updateDetailButtonStatus((ITestAttribute)firstElement);
+                    selectSection(objectCache.getSection((ITestAttribute)firstElement));
+                    AttributeDetails attributeDetails = objectCache
+                            .getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
+                    attributeDetails.updateDetailAttributeArea((ITestAttribute)firstElement);
                 }
             }
         });
@@ -1472,7 +1453,7 @@ public class TestCaseTypeSection extends IpsSection {
             allowedValues = TestParameterType.values();
         }
 
-        EnumField<TestParameterType> editFieldType = new EnumField<TestParameterType>(
+        EnumField<TestParameterType> editFieldType = new EnumField<>(
                 toolkit.createCombo(editFieldsComposite), allowedValues);
         addSectionSelectionListeners(editFieldType, label, testParam);
         uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
@@ -1698,13 +1679,10 @@ public class TestCaseTypeSection extends IpsSection {
     private void hookTreeListeners() {
         openInNewEditorAction = new OpenInNewEditorAction();
 
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection) {
-                    IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-                    selectionInTreeChanged(selection);
-                }
+        treeViewer.addSelectionChangedListener(event -> {
+            if (event.getSelection() instanceof IStructuredSelection) {
+                IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+                selectionInTreeChanged(selection);
             }
         });
         new TreeMessageHoverService(treeViewer) {
@@ -1717,20 +1695,17 @@ public class TestCaseTypeSection extends IpsSection {
                 }
             }
         };
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(DoubleClickEvent event) {
-                Object selection = event.getSelection();
-                if (!(selection instanceof IStructuredSelection)) {
-                    return;
-                }
-                Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
-                if (!(selectedObject instanceof IIpsObjectPart)) {
-                    return;
-                }
-                currSelectedDetailObject = (IIpsObjectPart)selectedObject;
-                selectFirstEditFieldInSection(selectedObject);
+        treeViewer.addDoubleClickListener(event -> {
+            Object selection = event.getSelection();
+            if (!(selection instanceof IStructuredSelection)) {
+                return;
             }
+            Object selectedObject = ((IStructuredSelection)selection).getFirstElement();
+            if (!(selectedObject instanceof IIpsObjectPart)) {
+                return;
+            }
+            currSelectedDetailObject = (IIpsObjectPart)selectedObject;
+            selectFirstEditFieldInSection(selectedObject);
         });
         treeViewer.getTree().addKeyListener(new KeyListener() {
             @Override
@@ -1989,7 +1964,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Return the selected attributes in the attribute table
      */
     private Set<ITestAttribute> getSelectedAttributes(ITestAttribute object) {
-        Set<ITestAttribute> testAttributesSelected = new HashSet<ITestAttribute>(1);
+        Set<ITestAttribute> testAttributesSelected = new HashSet<>(1);
         testAttributesSelected.add(object);
 
         ITestParameter param = (ITestParameter)object.getParent();
@@ -2030,7 +2005,7 @@ public class TestCaseTypeSection extends IpsSection {
         redrawDetailArea(testPolicyCmptTypeParameter, testAttribute);
 
         TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParameter);
-        List<ITestAttribute> newAttributeIdx = new ArrayList<ITestAttribute>(selectedAttributes.size());
+        List<ITestAttribute> newAttributeIdx = new ArrayList<>(selectedAttributes.size());
         if (attrTable != null) {
             for (int movedAttributesIndexe : movedAttributesIndexes) {
                 ITestAttribute movedAttribute = objectCache.getAttributeByIndex(Integer.valueOf(movedAttributesIndexe));
@@ -2220,7 +2195,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void redrawDetailArea(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam, IIpsObjectPart selectedObject) {
         // store the expanded sections state
-        List<Integer> expandedSectionKeys = new ArrayList<Integer>();
+        List<Integer> expandedSectionKeys = new ArrayList<>();
         for (Integer key : objectCache.getAllSectionKeys()) {
             if (objectCache.getSectionByKey(key).isExpanded()) {
                 expandedSectionKeys.add(key);
@@ -2259,25 +2234,22 @@ public class TestCaseTypeSection extends IpsSection {
      * Refresh the ui
      */
     private void postRefreshAll() {
-        postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (isDisposed()) {
-                    return;
+        postAsyncRunnable(() -> {
+            if (isDisposed()) {
+                return;
+            }
+            try {
+                setFormRedraw(false);
+                refreshTree();
+                refreshAttributeTable();
+                refreshSectionTitles();
+                // refresh attribute edit fields
+                for (UIController controller : attributeControllers) {
+                    controller.updateUI();
                 }
-                try {
-                    setFormRedraw(false);
-                    refreshTree();
-                    refreshAttributeTable();
-                    refreshSectionTitles();
-                    // refresh attribute edit fields
-                    for (UIController controller : attributeControllers) {
-                        controller.updateUI();
-                    }
-                    updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));
-                } finally {
-                    setFormRedraw(true);
-                }
+                updateTreeButtonStatus(getRootSectionObject(currSelectedDetailObject));
+            } finally {
+                setFormRedraw(true);
             }
         });
     }
@@ -2286,12 +2258,7 @@ public class TestCaseTypeSection extends IpsSection {
      * Select the given test parameter in the tree
      */
     private void postSelectedTestParameterInTree(final ITestParameter testParam) {
-        postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                treeViewer.setSelection(new StructuredSelection(testParam));
-            }
-        });
+        postAsyncRunnable(() -> treeViewer.setSelection(new StructuredSelection(testParam)));
     }
 
     /**

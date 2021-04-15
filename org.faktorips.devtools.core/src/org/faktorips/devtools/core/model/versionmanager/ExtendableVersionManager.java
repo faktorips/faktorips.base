@@ -79,7 +79,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
         if (modelExtensions != null) {
             return modelExtensions.getRegisteredMigrationOperations(contributorName);
         } else {
-            return new HashMap<Version, IIpsProjectMigrationOperationFactory>();
+            return new HashMap<>();
         }
     }
 
@@ -170,7 +170,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
         }
 
         Version otherVersionVersion = Version.parseVersion(otherVersion);
-        SortedSet<Version> versionsWithMigration = new TreeSet<Version>(registeredMigrations.keySet());
+        SortedSet<Version> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
         for (Version version : versionsWithMigration) {
             if (version.compareTo(otherVersionVersion) > 0 && version.compareTo(getVersion()) <= 0) {
                 return false;
@@ -203,8 +203,8 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
             return Collections.emptyList();
         }
 
-        SortedSet<Version> versionsWithMigration = new TreeSet<Version>(registeredMigrations.keySet());
-        List<AbstractIpsProjectMigrationOperation> result = new ArrayList<AbstractIpsProjectMigrationOperation>();
+        SortedSet<Version> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
+        List<AbstractIpsProjectMigrationOperation> result = new ArrayList<>();
 
         for (Version version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(getVersion()) <= 0) {

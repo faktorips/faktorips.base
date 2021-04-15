@@ -55,7 +55,7 @@ public abstract class FacadeHelper {
 
     protected Map<Object, JNode> getObjectToNodeMap() {
         if (objectToNodeMap == null) {
-            objectToNodeMap = new HashMap<Object, JNode>();
+            objectToNodeMap = new HashMap<>();
         }
         return objectToNodeMap;
     }
@@ -237,7 +237,7 @@ public abstract class FacadeHelper {
     public <T extends JNode> List<T> getChildren(JNode node, Class<T> cls) {
         if (node != null && cls != null) {
             List<JNode> allChildren = node.getChildren();
-            List<T> children = new ArrayList<T>(allChildren.size());
+            List<T> children = new ArrayList<>(allChildren.size());
             for (JNode child : allChildren) {
                 if (cls.isInstance(child)) {
                     children.add(cls.cast(child));
@@ -407,8 +407,9 @@ public abstract class FacadeHelper {
      */
     public String applyFormatRules(String value) {
         // do not crash when control model is not set
-        return getControlModel() == null ? value : CodeGenUtil.convertFormat(getControlModel()
-                .getLeadingTabReplacement(), getControlModel().convertToStandardBraceStyle(), value);
+        return getControlModel() == null ? value
+                : CodeGenUtil.convertFormat(getControlModel()
+                        .getLeadingTabReplacement(), getControlModel().convertToStandardBraceStyle(), value);
     }
 
     /**

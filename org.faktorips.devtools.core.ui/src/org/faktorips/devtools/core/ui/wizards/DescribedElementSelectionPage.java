@@ -60,7 +60,7 @@ public class DescribedElementSelectionPage<P extends PresentationModelObject, E 
         this.propertyClass = propertyClass;
         this.labelProvider = labelProvider;
         this.selectableValuesSupplier = selectableValuesSupplier;
-        this.uiUpdater = new ValidatingUiUpdater<P>(this, pmo, validation);
+        this.uiUpdater = new ValidatingUiUpdater<>(this, pmo, validation);
         setTitle(title);
         setDescription(description);
     }
@@ -71,7 +71,7 @@ public class DescribedElementSelectionPage<P extends PresentationModelObject, E 
         UIToolkit toolkit = new UIToolkit(null);
         Composite composite = createRootComposite(parent, toolkit);
 
-        selectionComposite = new ElementSelectionComposite<E>(composite, toolkit, bindingContext, pmo, pmoProperty,
+        selectionComposite = new ElementSelectionComposite<>(composite, toolkit, bindingContext, pmo, pmoProperty,
                 selectableValuesSupplier.get(), labelProvider, propertyClass);
 
         setControl(composite);

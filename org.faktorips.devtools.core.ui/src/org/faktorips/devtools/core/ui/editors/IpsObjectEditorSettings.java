@@ -36,7 +36,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
 
     static final String FILE_NAME = "ips-editor-settings.txt"; //$NON-NLS-1$
 
-    private HashMap<String, Map<String, String>> settings = new HashMap<String, Map<String, String>>();
+    private HashMap<String, Map<String, String>> settings = new HashMap<>();
 
     @Override
     public void put(IIpsSrcFile file, String key, String value) {
@@ -51,7 +51,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
             remove(file, key);
             return;
         }
-        Map<String, String> keyValues = settings.computeIfAbsent(getKey(file), $ -> new HashMap<String, String>());
+        Map<String, String> keyValues = settings.computeIfAbsent(getKey(file), $ -> new HashMap<>());
         keyValues.put(key, value);
     }
 
@@ -115,7 +115,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         } catch (Exception e) {
             // if the settigns are lost, this causes just a small inconveniance for the user, so we
             // just log it
-            settings = new HashMap<String, Map<String, String>>();
+            settings = new HashMap<>();
             IpsPlugin.log(e);
         }
     }
@@ -127,22 +127,16 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         if (!file.exists()) {
             return;
         }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             while (line != null) {
                 line = load(reader, line);
-            }
-        } finally {
-            if (reader != null) {
-                reader.close();
             }
         }
     }
 
     private String load(BufferedReader reader, String line) throws IOException {
-        HashMap<String, String> keyValues = new HashMap<String, String>();
+        HashMap<String, String> keyValues = new HashMap<>();
         settings.put(line, keyValues);
         line = reader.readLine();
         while (line != null) {
@@ -174,17 +168,11 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     public void save(File file) throws IOException {
-        PrintWriter out = null;
-        try {
-            out = new PrintWriter(new FileOutputStream(file));
+        try (PrintWriter out = new PrintWriter(new FileOutputStream(file))) {
             for (String ipsSrcFile : settings.keySet()) {
                 out.println(ipsSrcFile);
                 writeKeyValuePairs(out, settings.get(ipsSrcFile));
 
-            }
-        } finally {
-            if (out != null) {
-                out.close();
             }
         }
     }

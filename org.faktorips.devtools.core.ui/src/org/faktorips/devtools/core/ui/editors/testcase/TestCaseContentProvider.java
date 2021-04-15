@@ -65,7 +65,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      * objects are only used in the user interface to adapt the model objects to the correct content
      * in the tree view
      */
-    private HashMap<String, IDummyTestCaseObject> dummyObjects = new HashMap<String, IDummyTestCaseObject>();
+    private HashMap<String, IDummyTestCaseObject> dummyObjects = new HashMap<>();
 
     /** ips project used to search */
     private IIpsProject ipsProject;
@@ -239,7 +239,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(Object inputElement) {
-        List<ITestObject> elements = new ArrayList<ITestObject>();
+        List<ITestObject> elements = new ArrayList<>();
         if (inputElement instanceof ITestCase) {
             addElementsFor((ITestCase)inputElement, elements);
         }
@@ -268,11 +268,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
      */
     private Object[] sortListAndAddDummyElements(List<ITestObject> elements, ITestCaseType testCaseType) {
         // create helper map
-        List<Object> resultList = new ArrayList<Object>();
-        HashMap<String, List<ITestObject>> name2elements = new HashMap<String, List<ITestObject>>();
+        List<Object> resultList = new ArrayList<>();
+        HashMap<String, List<ITestObject>> name2elements = new HashMap<>();
         for (ITestObject element : elements) {
             List<ITestObject> existingElements = name2elements.computeIfAbsent(element.getTestParameterName(),
-                    $ -> new ArrayList<ITestObject>(1));
+                    $ -> new ArrayList<>(1));
             existingElements.add(element);
         }
 
@@ -367,7 +367,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
         // the result objects type could be ITestPolicyCmpt or ITestPolicyCpmtLink in case of
         // an association
-        ArrayList<IIpsObjectPart> childs = new ArrayList<IIpsObjectPart>();
+        ArrayList<IIpsObjectPart> childs = new ArrayList<>();
 
         ITestPolicyCmpt parent = dummyAssociation.getParentTestPolicyCmpt();
         if (parent != null) {
@@ -427,8 +427,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
         // the result objects type could be IDummyTestCaseObject or ITestPolicyCpmtLink in case of
         // an association
-        ArrayList<Object> childs = new ArrayList<Object>();
-        ArrayList<String> childNames = new ArrayList<String>();
+        ArrayList<Object> childs = new ArrayList<>();
+        ArrayList<String> childNames = new ArrayList<>();
         try {
             // get all child's from the test case type definition
             ITestPolicyCmptTypeParameter typeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
@@ -466,7 +466,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     private Object[] getChildsWithoutDummyAssociationLayer(ITestPolicyCmptLink[] links) {
         // the result objects type could be ITestPolicyCmpt or ITestPolicyCpmtLink in case of an
         // association
-        List<IIpsObjectPart> childTestPolicyCmpt = new ArrayList<IIpsObjectPart>(links.length);
+        List<IIpsObjectPart> childTestPolicyCmpt = new ArrayList<>(links.length);
         for (ITestPolicyCmptLink link : links) {
             if (link.isComposition()) {
                 ITestPolicyCmpt target = null;
@@ -540,7 +540,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         String objectId = StringUtils.substringAfter(id, "#"); //$NON-NLS-1$
-        List<String> objectsToRemove = new ArrayList<String>();
+        List<String> objectsToRemove = new ArrayList<>();
         for (String currId : dummyObjects.keySet()) {
             String currObjectId = currId.indexOf("#") == -1 ? "none" : StringUtils.substringAfter(currId, "#"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             if (currObjectId.startsWith(objectId)) {

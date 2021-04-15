@@ -94,7 +94,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     public List<IIpsObjectPathEntry> resolveEntries() {
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
-            return new ArrayList<IIpsObjectPathEntry>(0);
+            return new ArrayList<>(0);
         }
         return container.resolveEntries();
     }

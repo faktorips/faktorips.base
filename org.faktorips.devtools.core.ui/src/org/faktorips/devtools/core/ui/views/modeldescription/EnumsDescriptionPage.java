@@ -36,7 +36,7 @@ public class EnumsDescriptionPage extends DefaultModelDescriptionPage {
 
     @Override
     protected List<DescriptionItem> createDescriptions() throws CoreException {
-        List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
+        List<DescriptionItem> descriptions = new ArrayList<>();
         if (getIpsObject() != null) {
             // use of
             // org.faktorips.devtools.core.model.enums.IEnumType.findAllEnumAttributes(boolean,

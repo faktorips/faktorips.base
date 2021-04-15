@@ -23,7 +23,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Maps.EntryTransformer;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.TreeMultimap;
@@ -109,7 +108,7 @@ public class Histogram<V, E> {
      */
     public SortedMap<V, Integer> getAbsoluteDistribution() {
         TreeMap<V, Integer> sortedDistribution = Maps
-                .newTreeMap(new DistributionComparator<V>(valueToElements, valueComparator));
+                .newTreeMap(new DistributionComparator<>(valueToElements, valueComparator));
         sortedDistribution.putAll(transformToOccurenceCountMap(valueToElements));
         return Collections.unmodifiableSortedMap(sortedDistribution);
     }
@@ -169,12 +168,8 @@ public class Histogram<V, E> {
      * containing the relative distribution of values.
      */
     private SortedMap<V, Decimal> transformToRelativeDistribution(SortedMap<V, Integer> map) {
-        return Maps.transformEntries(map, new EntryTransformer<V, Integer, Decimal>() {
-            @Override
-            public Decimal transformEntry(V value, Integer elementCount) {
-                return Decimal.valueOf(elementCount).divide(totalCount, SCALE, RoundingMode.HALF_UP);
-            }
-        });
+        return Maps.transformEntries(map,
+                (value, elementCount) -> Decimal.valueOf(elementCount).divide(totalCount, SCALE, RoundingMode.HALF_UP));
     }
 
     /**
@@ -182,14 +177,7 @@ public class Histogram<V, E> {
      * {@code Multimap}, the value is the number of values to that key in the {@code Multimap}.
      */
     private Map<V, Integer> transformToOccurenceCountMap(Multimap<V, E> map) {
-        return Maps.transformEntries(map.asMap(), new EntryTransformer<V, Collection<E>, Integer>() {
-
-            @Override
-            public Integer transformEntry(V value, Collection<E> elements) {
-                return CollectionUtils.size(elements);
-            }
-
-        });
+        return Maps.transformEntries(map.asMap(), ($, elements) -> CollectionUtils.size(elements));
     }
 
     /**
@@ -258,7 +246,7 @@ public class Histogram<V, E> {
             V candidateValue) {
         Decimal relDist = getRelativeDistribution(relativeDistribution, candidateValue);
         if (relDist.greaterThanOrEqual(threshold)) {
-            return new BestValue<V>(candidateValue, relDist);
+            return new BestValue<>(candidateValue, relDist);
         } else {
             return BestValue.<V> missingValue();
         }
@@ -283,7 +271,7 @@ public class Histogram<V, E> {
 
     @SuppressWarnings("unchecked")
     public static <E, V> Histogram<E, V> emptyHistogram() {
-        return new Histogram<E, V>(null, (Collection<V>)Collections.emptyList());
+        return new Histogram<>(null, (Collection<V>)Collections.emptyList());
     }
 
     /**
@@ -399,7 +387,7 @@ public class Histogram<V, E> {
         }
 
         public static <V> BestValue<V> missingValue() {
-            return new BestValue<V>();
+            return new BestValue<>();
         }
 
         /**

@@ -79,7 +79,8 @@ public class AbstractListFunctionTest {
         assertTrue(generateFunctionCode.successfull());
     }
 
-    private AbstractCompilationResult<JavaCodeFragment> mockDelegateFunction(CompilationResult<JavaCodeFragment> delegateResult) {
+    private AbstractCompilationResult<JavaCodeFragment> mockDelegateFunction(
+            CompilationResult<JavaCodeFragment> delegateResult) {
         when(compiler.getDatatypeHelper(datatype)).thenReturn(datatypeHelper);
         when(datatypeHelper.getJavaClassName()).thenReturn("MyJavaClass");
         AbstractCompilationResult<JavaCodeFragment> listArgument = mock(CompilationResultImpl.class);

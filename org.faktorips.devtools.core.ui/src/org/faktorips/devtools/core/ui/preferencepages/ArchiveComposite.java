@@ -155,12 +155,7 @@ public class ArchiveComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
+            Display.getDefault().asyncExec(tableViewer::refresh);
         }
     }
 
@@ -171,7 +166,7 @@ public class ArchiveComposite extends DataChangeableComposite {
         dialog.setMessage(Messages.ArchiveComposite_dialog_message_add);
         dialog.setTitle(Messages.ArchiveComposite_dialog_title_add);
 
-        List<String> alreadyRefArchives = new ArrayList<String>();
+        List<String> alreadyRefArchives = new ArrayList<>();
         IIpsArchiveEntry[] entries = ipsObjectPath.getArchiveEntries();
         for (IIpsArchiveEntry entrie : entries) {
             alreadyRefArchives.add(entrie.getArchiveLocation().toString());
@@ -179,16 +174,13 @@ public class ArchiveComposite extends DataChangeableComposite {
 
         dialog.addFilter(new IpsarViewerFilter(alreadyRefArchives, true));
 
-        ISelectionStatusValidator validator = new ISelectionStatusValidator() {
-            @Override
-            public IStatus validate(Object[] selection) {
-                for (int i = 0; i < selection.length; i++) {
-                    if (selection[i] == null || !(selection[i] instanceof IFile)) {
-                        return new IpsStatus(IStatus.ERROR, Messages.ArchiveComposite_dialog_warning_select_archive);
-                    }
+        ISelectionStatusValidator validator = selection -> {
+            for (Object element : selection) {
+                if (element == null || !(element instanceof IFile)) {
+                    return new IpsStatus(IStatus.ERROR, Messages.ArchiveComposite_dialog_warning_select_archive);
                 }
-                return new IpsStatus(IStatus.OK, " "); //$NON-NLS-1$
             }
+            return new IpsStatus(IStatus.OK, " "); //$NON-NLS-1$
         };
         // prevent user to click OK when a folder is selected, only IPS archives are commitable
         dialog.setValidator(validator);
@@ -252,12 +244,7 @@ public class ArchiveComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
+            Display.getDefault().asyncExec(tableViewer::refresh);
         }
     }
 

@@ -602,7 +602,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         testPolicyCmpt.setName("root2_child2");
 
         ITestPolicyCmpt[] allTestPolicyCmpt = testCase.getAllTestPolicyCmpt();
-        List<String> allTestPolicyCmptNames = new ArrayList<String>();
+        List<String> allTestPolicyCmptNames = new ArrayList<>();
         for (ITestPolicyCmpt element : allTestPolicyCmpt) {
             allTestPolicyCmptNames.add(element.getName());
         }

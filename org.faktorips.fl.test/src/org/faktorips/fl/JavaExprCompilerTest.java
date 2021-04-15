@@ -42,7 +42,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testBinaryOperationCasting() throws Exception {
         // Make only implicit conversions int to Decimal.
-        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<>();
         ccg.add(new PrimitiveIntToDecimalCg());
         getCompiler().setConversionCodeGenerator(ccg);
 
@@ -90,7 +90,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testUnaryOperationCasting() throws Exception {
         // Make only implicit conversions int to Integer.
-        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
+        ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<>();
         ccg.add(new PrimitiveIntToIntegerCg());
         getCompiler().setConversionCodeGenerator(ccg);
 

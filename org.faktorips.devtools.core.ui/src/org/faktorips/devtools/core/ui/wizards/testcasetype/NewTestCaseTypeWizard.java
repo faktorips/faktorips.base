@@ -30,7 +30,6 @@ public class NewTestCaseTypeWizard extends NewIpsObjectWizard {
                 "wizards/NewTestCaseTypeWizard.png")); //$NON-NLS-1$
     }
 
-
     @Override
     protected IpsObjectPage createFirstPage(IStructuredSelection selection) throws JavaModelException {
         typePage = new TestCaseTypePage(selection);

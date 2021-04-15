@@ -20,7 +20,7 @@ public class UniqueResultStructureTest {
 
     @Test
     public void testCopy() {
-        UniqueResultStructure<Integer> structure = new UniqueResultStructure<Integer>(resultValue);
+        UniqueResultStructure<Integer> structure = new UniqueResultStructure<>(resultValue);
         UniqueResultStructure<Integer> copyStructure = structure.copy();
 
         assertEquals(copyStructure, structure);

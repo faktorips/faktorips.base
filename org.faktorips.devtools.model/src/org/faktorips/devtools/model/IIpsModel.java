@@ -173,8 +173,8 @@ public interface IIpsModel extends IIpsElement {
      * &rarr; Returns <code>null</code> as "root" is not a source folder representing an
      * IpsPackageFragmentRoot in the project HomeInsurance!
      * <p>
-     * Resource: HomeInsurance/root &rarr; Returns <code>null</code> as "root" is not a source folder
-     * representing an IpsPackageFragmentRoot in the project HomeInsurance!
+     * Resource: HomeInsurance/root &rarr; Returns <code>null</code> as "root" is not a source
+     * folder representing an IpsPackageFragmentRoot in the project HomeInsurance!
      */
     IIpsElement getIpsElement(IResource resource);
 

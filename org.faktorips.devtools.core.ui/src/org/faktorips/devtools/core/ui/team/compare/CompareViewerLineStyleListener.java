@@ -52,19 +52,20 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     /**
      * List of patterns to be applied to lines in getStylesForRestOfLine().
      */
-    private List<Pattern> linePatternList = new ArrayList<Pattern>();
+    private List<Pattern> linePatternList = new ArrayList<>();
     /**
      * Maps patterns to specific highlight colors and thus defines a colour for specific tokens
      * should in which the should be displayed.
      */
-    private Map<Pattern, Color> highlightColorMap = new HashMap<Pattern, Color>();
+    private Map<Pattern, Color> highlightColorMap = new HashMap<>();
 
     public CompareViewerLineStyleListener() {
         initColors();
 
         // init patterns and map highlight colors for productCmpts
         Pattern productPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
+                .compile(
+                        org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductCmptEditor_productComponent);
         linePatternList.add(productPattern);
         highlightColorMap.put(productPattern, ipsObjectHighlight);
         Pattern attributesPattern = Pattern
@@ -90,8 +91,9 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                         + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(typePattern);
         Pattern runtimeIDPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId
-                        + AbstractCompareItem.COLON_BLANK);
+                .compile(
+                        org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_labelRuntimeId
+                                + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(runtimeIDPattern);
         Pattern tableUsagesPattern = Pattern.compile(Messages.ProductCmptCompareItem_TableUsagesHeader
                 + AbstractCompareItem.COLON_BLANK);
@@ -99,11 +101,13 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
 
         // Patterns for TableContents Messages.TableContentsCompareItem_TableContents
         Pattern tablePattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableContents);
+                .compile(
+                        org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableContents);
         linePatternList.add(tablePattern);
         highlightColorMap.put(tablePattern, ipsObjectHighlight);
         Pattern tableStructurePattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableStructure);
+                .compile(
+                        org.faktorips.devtools.core.ui.team.compare.tablecontents.Messages.TableContentsCompareItem_TableStructure);
         linePatternList.add(tableStructurePattern);
 
         // patterns for all ipsObjects
@@ -113,7 +117,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
         linePatternList.add(generationPattern);
         highlightColorMap.put(generationPattern, generationHighlight);
         Pattern validFromPattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom);
+                .compile(
+                        org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationEditDialog_labelValidFrom);
         linePatternList.add(validFromPattern);
     }
 
@@ -136,7 +141,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     public void lineGetStyle(LineStyleEvent event) {
         String lineText = event.lineText;
         int lineOffset = event.lineOffset;
-        List<StyleRange> styleList = new ArrayList<StyleRange>();
+        List<StyleRange> styleList = new ArrayList<>();
 
         styleList.addAll(getStylesForLineStart(lineText, lineOffset));
         styleList.addAll(getStylesForRestOfLine(lineText, lineOffset));
@@ -154,7 +159,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * linestart to avoid faulty highlighting.
      */
     protected List<StyleRange> getStylesForLineStart(String lineText, int lineOffset) {
-        List<StyleRange> styleList = new ArrayList<StyleRange>();
+        List<StyleRange> styleList = new ArrayList<>();
         ParsePosition pos = new ParsePosition(0);
         IpsPlugin.getDefault().getIpsPreferences().getDateFormat().parse(lineText, pos);
         int endIndex = pos.getIndex();
@@ -184,7 +189,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
      * bold font and an optional color.
      */
     protected List<StyleRange> getStylesForRestOfLine(String lineText, int lineOffset) {
-        List<StyleRange> styleList = new ArrayList<StyleRange>();
+        List<StyleRange> styleList = new ArrayList<>();
         for (Pattern pattern : linePatternList) {
             Matcher matcher = pattern.matcher(lineText);
             if (matcher.find()) {

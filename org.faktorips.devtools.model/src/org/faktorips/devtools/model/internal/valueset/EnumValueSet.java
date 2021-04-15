@@ -40,9 +40,9 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.collections.ListComparator;
-import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -73,13 +73,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private static final String XML_VALUE = ValueToXmlHelper.XML_TAG_VALUE;
 
     /** The values in the set as list */
-    private List<String> values = new ArrayList<String>();
+    private List<String> values = new ArrayList<>();
 
     /**
      * A map with the values as keys and the index positions of the occurrences of a value as "map
      * value". The "map value" is a list containing the indexes of the occurrences.
      */
-    private Map<String, List<Integer>> valuesToIndexMap = new HashMap<String, List<Integer>>();
+    private Map<String, List<Integer>> valuesToIndexMap = new HashMap<>();
 
     public EnumValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.ENUM, parent, partId);
@@ -98,12 +98,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public List<String> getValuesAsList() {
-        return new ArrayList<String>(values);
+        return new ArrayList<>(values);
     }
 
     @Override
     public void move(List<Integer> indices, boolean up) {
-        ListElementMover<String> mover = new ListElementMover<String>(values);
+        ListElementMover<String> mover = new ListElementMover<>(values);
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
             indicesArray[i] = indices.get(i);
@@ -115,7 +115,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public void move(List<Integer> indices, int targetIndex, boolean insertBelow) {
-        ListElementMover<String> mover = new ListElementMover<String>(values);
+        ListElementMover<String> mover = new ListElementMover<>(values);
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
             indicesArray[i] = indices.get(i);
@@ -127,7 +127,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public List<Integer> getPositions(String value) {
-        List<Integer> positions = new ArrayList<Integer>();
+        List<Integer> positions = new ArrayList<>();
         List<Integer> indexes = valuesToIndexMap.get(value);
         if (indexes != null) {
             positions.addAll(indexes);
@@ -236,7 +236,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     private void setValueWithoutTriggeringChangeEvent(String newValue, Integer newIndex) {
-        List<Integer> indexList = valuesToIndexMap.computeIfAbsent(newValue, $ -> new ArrayList<Integer>(1));
+        List<Integer> indexList = valuesToIndexMap.computeIfAbsent(newValue, $ -> new ArrayList<>(1));
         indexList.add(newIndex);
     }
 
@@ -309,7 +309,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public String[] getValuesNotContained(IEnumValueSet otherSet) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if (otherSet == null) {
             return result.toArray(new String[result.size()]);
         }
@@ -413,7 +413,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
-        copy.values = new ArrayList<String>(values);
+        copy.values = new ArrayList<>(values);
         copy.refillValuesToIndexMap();
         return copy;
     }

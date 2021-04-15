@@ -29,8 +29,8 @@ import org.junit.Test;
  * <p>
  * The problem arises when a base attribute knows only its enum type, but the overriding attribute
  * knows both the enum type as well as an enum content. The content is introduced in the same
- * project. {@link ValueSet#containsValueSet(org.faktorips.devtools.model.valueset.IValueSet)}
- * must return <code>true</code> in this case.
+ * project. {@link ValueSet#containsValueSet(org.faktorips.devtools.model.valueset.IValueSet)} must
+ * return <code>true</code> in this case.
  */
 public class ContainsValueSetEnumDatatpeTest extends AbstractIpsPluginTest {
 

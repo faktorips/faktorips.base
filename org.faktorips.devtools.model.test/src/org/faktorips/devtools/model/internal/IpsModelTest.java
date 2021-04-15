@@ -11,12 +11,12 @@
 package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -47,7 +47,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
@@ -77,11 +76,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.plugin.IpsLog;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
@@ -416,13 +414,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     private Answer<InputStream> withNewXmlInputStream() {
-        return new Answer<InputStream>() {
-
-            @Override
-            public InputStream answer(InvocationOnMock invocation) throws Throwable {
-                return new ByteArrayInputStream("<Foo/>".getBytes());
-            }
-        };
+        return $ -> new ByteArrayInputStream("<Foo/>".getBytes());
     }
 
     @Test
@@ -457,14 +449,11 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetNonIpsResources() throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProject project = newPlatformProject("TestJavaProject");
-                javaProject = addJavaCapabilities(project);
-                IProject project2 = newPlatformProject("TestJavaProject2");
-                javaProject2 = addJavaCapabilities(project2);
-            }
+        IWorkspaceRunnable runnable = $ -> {
+            IProject project = newPlatformProject("TestJavaProject");
+            javaProject = addJavaCapabilities(project);
+            IProject project2 = newPlatformProject("TestJavaProject2");
+            javaProject2 = addJavaCapabilities(project2);
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
@@ -504,19 +493,14 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         final IDescription typeBDescription = typeB.newDescription();
         typeBDescription.setLocale(Locale.US);
 
-        IWorkspaceRunnable action = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                typeADescription.setText("blabla");
-                typeA.setSupertype(typeB.getQualifiedName());
-                typeA.getIpsSrcFile().save(true, monitor);
-                typeBDescription.setText("blabla");
-                typeB.getIpsSrcFile().save(true, monitor);
-                typeADescription.setText("New blabla");
-                typeA.getIpsSrcFile().save(true, monitor);
-            }
-
+        IWorkspaceRunnable action = monitor -> {
+            typeADescription.setText("blabla");
+            typeA.setSupertype(typeB.getQualifiedName());
+            typeA.getIpsSrcFile().save(true, monitor);
+            typeBDescription.setText("blabla");
+            typeB.getIpsSrcFile().save(true, monitor);
+            typeADescription.setText("New blabla");
+            typeA.getIpsSrcFile().save(true, monitor);
         };
 
         TestContentsChangeListener listener = new TestContentsChangeListener();
@@ -562,19 +546,14 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         typeADescription.setLocale(Locale.US);
         typeADescription.setText("foo");
         typeA.getIpsSrcFile().save(true, null);
-        final List<IStatus> logs = new LinkedList<IStatus>();
+        final List<IStatus> logs = new LinkedList<>();
         ILog log = IpsLog.get();
         ILogListener logListener = (status, plugin) -> logs.add(status);
         log.addLogListener(logListener);
         try {
-            IWorkspaceRunnable action = new IWorkspaceRunnable() {
-
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    typeADescription.setText("blabla");
-                    throw new CoreException(new Status(Status.ERROR, "MyPlugin", "MyMessage"));
-                }
-
+            IWorkspaceRunnable action = $ -> {
+                typeADescription.setText("blabla");
+                throw new CoreException(new Status(Status.ERROR, "MyPlugin", "MyMessage"));
             };
 
             model.runSafe(action, ResourcesPlugin.getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, null,
@@ -600,7 +579,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     private static class TestContentsChangeListener implements ContentsChangeListener {
 
-        List<IIpsSrcFile> changedFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> changedFiles = new ArrayList<>();
         ContentChangeEvent lastEvent;
 
         @Override
@@ -613,7 +592,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     private static class TestModStatusListener implements IModificationStatusChangeListener {
 
-        List<IIpsSrcFile> modifiedFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> modifiedFiles = new ArrayList<>();
         ModificationStatusChangedEvent lastEvent;
 
         @Override

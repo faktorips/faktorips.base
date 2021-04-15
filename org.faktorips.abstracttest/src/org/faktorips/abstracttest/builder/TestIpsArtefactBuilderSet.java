@@ -56,7 +56,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
      * parameter into this map and the method would return the corresponding value.
      * 
      */
-    public Map<Object, Object> testObjectsMap = new HashMap<Object, Object>();
+    public Map<Object, Object> testObjectsMap = new HashMap<>();
 
     public TestIpsArtefactBuilderSet() throws CoreException {
         this(new IIpsArtefactBuilder[0]);
@@ -64,11 +64,11 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
         super();
-        ipsArtefactBuilders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        ipsArtefactBuilders = new LinkedHashMap<>();
         for (IIpsArtefactBuilder ipsArtefactBuilder : builders) {
             ipsArtefactBuilders.put(new GenericBuilderKindId(), ipsArtefactBuilder);
         }
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
         TestBuilderSetConfig config = new TestBuilderSetConfig(properties);
         initialize(config);
@@ -203,7 +203,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
         @Override
         protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-            return new IdentifierNodeGeneratorFactory<JavaCodeFragment>() {
+            return new IdentifierNodeGeneratorFactory<>() {
 
                 @Override
                 public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {

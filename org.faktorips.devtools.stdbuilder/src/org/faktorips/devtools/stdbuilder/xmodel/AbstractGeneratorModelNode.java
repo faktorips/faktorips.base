@@ -230,7 +230,7 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     protected <T extends AbstractGeneratorModelNode> Set<T> getCachedObjects(Class<T> type) {
-        return new LinkedHashSet<T>(modelContext.getGeneratorModelCache().getCachedNodes(this, type));
+        return new LinkedHashSet<>(modelContext.getGeneratorModelCache().getCachedNodes(this, type));
     }
 
     protected <T extends AbstractGeneratorModelNode> void putToCache(T objectToCache) {
@@ -509,7 +509,7 @@ public abstract class AbstractGeneratorModelNode {
     protected final <T extends AbstractGeneratorModelNode> Set<T> initNodesForParts(
             Collection<? extends IIpsObjectPart> parts,
             Class<T> nodeClass) {
-        Set<T> nodes = new LinkedHashSet<T>();
+        Set<T> nodes = new LinkedHashSet<>();
         for (IIpsObjectPart part : parts) {
             nodes.add(getModelNode(part, nodeClass));
         }
@@ -559,7 +559,7 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     public List<IJavaElement> getGeneratedJavaElements(IType javaType) {
-        List<IJavaElement> result = new ArrayList<IJavaElement>();
+        List<IJavaElement> result = new ArrayList<>();
         List<IGeneratedJavaElement> generatedJavaElements = modelContext.getGeneratedJavaElements(this);
         for (IGeneratedJavaElement generatedJavaElement : generatedJavaElements) {
             result.add(generatedJavaElement.getJavaElement(javaType));
@@ -602,7 +602,7 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String method(String methodName, String... parameterTypesAndNames) {
         if (parameterTypesAndNames.length % 2 == 0) {
-            List<MethodParameter> methodParameters = new ArrayList<MethodParameter>();
+            List<MethodParameter> methodParameters = new ArrayList<>();
             for (int i = 0; i < parameterTypesAndNames.length; i = i + 2) {
                 methodParameters.add(new MethodParameter(parameterTypesAndNames[i], parameterTypesAndNames[i + 1]));
             }

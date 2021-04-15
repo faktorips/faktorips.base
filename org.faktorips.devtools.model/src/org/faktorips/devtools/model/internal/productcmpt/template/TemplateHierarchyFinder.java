@@ -52,7 +52,7 @@ public class TemplateHierarchyFinder {
             templateMap.putAll(createTemplateMap(p));
         }
 
-        Tree<IIpsSrcFile> tree = new Tree<IIpsSrcFile>(template.getIpsSrcFile());
+        Tree<IIpsSrcFile> tree = new Tree<>(template.getIpsSrcFile());
         addTemplateReferences(tree.getRoot(), template.getQualifiedName(), templateMap);
         return tree;
     }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -27,15 +26,15 @@ import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.XmlParseException;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObject {
 
-    private final List<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
+    private final List<IIpsObjectGeneration> generations = new ArrayList<>();
 
     private GregorianCalendar validTo;
 
@@ -72,24 +71,19 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     public List<IIpsObjectGeneration> getGenerations() {
-        return new ArrayList<IIpsObjectGeneration>(generations);
+        return new ArrayList<>(generations);
     }
 
     @Override
     public IIpsObjectGeneration[] getGenerationsOrderedByValidDate() {
         IIpsObjectGeneration[] gens = generations.toArray(new IIpsObjectGeneration[generations.size()]);
-        Arrays.sort(gens, new Comparator<IIpsObjectGeneration>() {
-
-            @Override
-            public int compare(IIpsObjectGeneration gen1, IIpsObjectGeneration gen2) {
-                if (gen1.getValidFrom() == null) {
-                    return gen2.getValidFrom() == null ? 0 : -1;
-                } else if (gen2.getValidFrom() == null) {
-                    return 1;
-                }
-                return gen1.getValidFrom().after(gen2.getValidFrom()) ? 1 : -1;
+        Arrays.sort(gens, (gen1, gen2) -> {
+            if (gen1.getValidFrom() == null) {
+                return gen2.getValidFrom() == null ? 0 : -1;
+            } else if (gen2.getValidFrom() == null) {
+                return 1;
             }
-
+            return gen1.getValidFrom().after(gen2.getValidFrom()) ? 1 : -1;
         });
         return gens;
     }
@@ -196,7 +190,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        List<IIpsElement> result = new ArrayList<IIpsElement>(Arrays.asList(getGenerationsOrderedByValidDate()));
+        List<IIpsElement> result = new ArrayList<>(Arrays.asList(getGenerationsOrderedByValidDate()));
         return result.toArray(new IIpsElement[result.size()]);
     }
 
@@ -322,11 +316,13 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         for (IIpsObjectGeneration generation : generationsByValidDate) {
             if (generation.getValidFrom() != null && generation.getValidFrom().after(getValidTo())) {
                 String[] params = new String[4];
-                params[0] = IIpsModelExtensions.get().getModelPreferences().getDateFormat().format(getValidTo().getTime());
+                params[0] = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
+                        .format(getValidTo().getTime());
                 params[1] = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                         .getGenerationConceptNameSingular();
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
-                params[3] = IIpsModelExtensions.get().getModelPreferences().getDateFormat().format(generation.getValidFrom().getTime());
+                params[3] = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
+                        .format(generation.getValidFrom().getTime());
                 String msg = NLS.bind(Messages.TimedIpsObject_msgIvalidValidToDate, params);
                 list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }

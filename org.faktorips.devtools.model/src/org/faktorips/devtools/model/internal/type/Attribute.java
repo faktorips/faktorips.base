@@ -27,9 +27,9 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -193,7 +193,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
             if (superAttr == null) {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
-                        new String[] { PROPERTY_OVERWRITES, PROPERTY_NAME }));
+                        PROPERTY_OVERWRITES, PROPERTY_NAME));
             } else {
                 validateAgainstOverwrittenAttribute(result, superAttr);
             }

@@ -52,12 +52,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
-import org.faktorips.runtime.Message;
-import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -96,10 +96,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected static final String XML_ATTRIBUTE_VERSION = "since"; //$NON-NLS-1$
 
     /** List containing all labels attached to the object part container. */
-    private final List<ILabel> labels = new ArrayList<ILabel>(2);
+    private final List<ILabel> labels = new ArrayList<>(2);
 
     /** List containing all descriptions attached to the object part container. */
-    private final List<IDescription> descriptions = new ArrayList<IDescription>(2);
+    private final List<IDescription> descriptions = new ArrayList<>(2);
 
     private final ExtensionPropertyHandler extensionProperties = new ExtensionPropertyHandler(this);
 
@@ -168,7 +168,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     @Override
     public final IIpsElement[] getChildren() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>(labels.size() + descriptions.size());
+        List<IIpsElement> children = new ArrayList<>(labels.size() + descriptions.size());
         children.addAll(labels);
         children.addAll(descriptions);
         IIpsElement[] subclassChildren = getChildrenThis();
@@ -451,7 +451,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     protected void initPartContainersFromXml(Element element, Map<String, IIpsObjectPart> idPartMap) {
-        Set<String> idSet = new HashSet<String>();
+        Set<String> idSet = new HashSet<>();
 
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -485,7 +485,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private HashMap<String, IIpsObjectPart> createIdPartMap() {
-        HashMap<String, IIpsObjectPart> map = new HashMap<String, IIpsObjectPart>();
+        HashMap<String, IIpsObjectPart> map = new HashMap<>();
         IIpsElement[] parts = getChildren();
         for (IIpsElement part2 : parts) {
             IIpsObjectPart part = (IIpsObjectPart)part2;
@@ -840,7 +840,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @throws NullPointerException if list is <code>null</code>.
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        return;
+        // empty default method
     }
 
     @Override
@@ -899,7 +899,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             return;
         }
         List<IDependencyDetail> detailList = details.computeIfAbsent(dependency,
-                $ -> new ArrayList<IDependencyDetail>());
+                $ -> new ArrayList<>());
         detailList.add(newDependencyDetail);
     }
 
@@ -937,7 +937,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see ILabeledElement#getLabels()
      */
     public List<ILabel> getLabels() {
-        List<ILabel> orderedLabels = new ArrayList<ILabel>(labels.size());
+        List<ILabel> orderedLabels = new ArrayList<>(labels.size());
         for (ISupportedLanguage language : getIpsProject().getReadOnlyProperties().getSupportedLanguages()) {
             Locale locale = language.getLocale();
             if (locale == null) {
@@ -1038,7 +1038,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IDescribedElement#getDescriptions()
      */
     public List<IDescription> getDescriptions() {
-        List<IDescription> orderedDescriptions = new ArrayList<IDescription>(descriptions.size());
+        List<IDescription> orderedDescriptions = new ArrayList<>(descriptions.size());
         for (ISupportedLanguage language : getIpsProject().getReadOnlyProperties().getSupportedLanguages()) {
             Locale locale = language.getLocale();
             if (locale == null) {

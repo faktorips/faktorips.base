@@ -46,7 +46,7 @@ public abstract class AbstractDateHelperFactory<T extends ValueDatatype> impleme
         try {
             @SuppressWarnings("unchecked")
             T castedDatatype = (T)datatype;
-            return datatypeHelperCache.get(new CacheKey<T>(castedDatatype, builderSet.getLocalDateHelperVariant()));
+            return datatypeHelperCache.get(new CacheKey<>(castedDatatype, builderSet.getLocalDateHelperVariant()));
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }

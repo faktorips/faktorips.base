@@ -90,7 +90,8 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
 
     @Override
     public String getGenerationConceptNameAbbreviation() {
-        return getGenerationConceptNameAbbreviation(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale());
+        return getGenerationConceptNameAbbreviation(
+                IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale());
     }
 
     @Override
@@ -105,22 +106,26 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
 
     @Override
     public String getGenerationConceptNamePlural() {
-        return getGenerationConceptNamePlural(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(), false);
+        return getGenerationConceptNamePlural(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(),
+                false);
     }
 
     @Override
     public String getGenerationConceptNameSingular() {
-        return getGenerationConceptNameSingular(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(), false);
+        return getGenerationConceptNameSingular(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(),
+                false);
     }
 
     @Override
     public String getGenerationConceptNamePlural(boolean usageInsideSentence) {
-        return getGenerationConceptNamePlural(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(), usageInsideSentence);
+        return getGenerationConceptNamePlural(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(),
+                usageInsideSentence);
     }
 
     @Override
     public String getGenerationConceptNameSingular(boolean usageInsideSentence) {
-        return getGenerationConceptNameSingular(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(), usageInsideSentence);
+        return getGenerationConceptNameSingular(IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale(),
+                usageInsideSentence);
     }
 
     @Override

@@ -16,10 +16,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -195,7 +195,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IFile file = srcFile.getCorrespondingFile();
         file.setContents(new ByteArrayInputStream("<ProductCmpt/>".getBytes()), true, false, null);
 
-        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>();
+        ArrayList<IIpsObject> result = new ArrayList<>();
         pack.findIpsObjects(IpsObjectType.PRODUCT_CMPT, result);
         assertEquals(1, result.size());
         assertEquals(srcFile.getIpsObject(), result.get(0));
@@ -213,7 +213,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
 
         IpsPackageFragment fragment = (IpsPackageFragment)obj1.getIpsPackageFragment();
 
-        ArrayList<IIpsObject> result = new ArrayList<IIpsObject>();
+        ArrayList<IIpsObject> result = new ArrayList<>();
         fragment.findIpsObjects(result);
 
         assertTrue(result.contains(obj1));
@@ -241,7 +241,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         IIpsObject obj1 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "motorCoverage");
 
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> result = new ArrayList<>();
 
         // case sensitive
         pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result);

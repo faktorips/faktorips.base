@@ -21,8 +21,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -45,18 +43,13 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IWorkspaceRunnable action = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IIpsProject project = newIpsProject("TestProject");
-                IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
-                folder.getFile("A.ipspct");
-                type = newPolicyCmptType(project, "A");
-                type.newPolicyCmptTypeAssociation();
-                type.getIpsSrcFile().save(true, null);
-            }
-
+        IWorkspaceRunnable action = $ -> {
+            IIpsProject project = newIpsProject("TestProject");
+            IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
+            folder.getFile("A.ipspct");
+            type = newPolicyCmptType(project, "A");
+            type.newPolicyCmptTypeAssociation();
+            type.getIpsSrcFile().save(true, null);
         };
         ResourcesPlugin.getWorkspace().run(action, null);
     }

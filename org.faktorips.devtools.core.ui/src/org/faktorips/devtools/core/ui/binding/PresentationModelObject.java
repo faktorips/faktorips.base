@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  */
 public class PresentationModelObject {
 
-    private final Set<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArraySet<PropertyChangeListener>();
+    private final Set<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArraySet<>();
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (listener == null) {

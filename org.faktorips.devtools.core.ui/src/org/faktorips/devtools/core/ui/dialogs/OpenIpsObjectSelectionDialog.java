@@ -116,7 +116,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     }
 
     public ArrayList<IIpsElement> getSelectedObjects() {
-        ArrayList<IIpsElement> selectedElements = new ArrayList<IIpsElement>();
+        ArrayList<IIpsElement> selectedElements = new ArrayList<>();
 
         for (Object selectedElement : getResult()) {
             selectedElements.add((IIpsElement)selectedElement);
@@ -192,13 +192,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     @Override
     protected Comparator<IIpsElement> getItemsComparator() {
-
-        return new Comparator<IIpsElement>() {
-            @Override
-            public int compare(IIpsElement o1, IIpsElement o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        };
+        return Comparator.comparing(IIpsElement::getName);
 
     }
 
@@ -356,8 +350,8 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             if (fBoldFont == null) {
                 Font font = getDialogArea().getFont();
                 FontData[] data = font.getFontData();
-                for (int i = 0; i < data.length; i++) {
-                    data[i].setStyle(SWT.BOLD);
+                for (FontData element : data) {
+                    element.setStyle(SWT.BOLD);
                 }
                 fBoldFont = new Font(font.getDevice(), data);
             }

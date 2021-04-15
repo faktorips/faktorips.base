@@ -39,7 +39,7 @@ public class DefaultCollectorTest {
 
     @Test
     public void testGetContextProductCmpts() throws Exception {
-        Set<IProductCmpt> result = new HashSet<IProductCmpt>();
+        Set<IProductCmpt> result = new HashSet<>();
         when(finder.createCollector()).thenReturn(prevCollector);
         when(prevCollector.getContextProductCmpts()).thenReturn(result);
 
@@ -49,7 +49,7 @@ public class DefaultCollectorTest {
     @Test
     public void testGetContextProductCmpts_nullNode() throws Exception {
         defaultCollector = new DefaultCollector(null, finder);
-        Set<IProductCmpt> result = new HashSet<IProductCmpt>();
+        Set<IProductCmpt> result = new HashSet<>();
         when(finder.createCollector()).thenReturn(prevCollector);
         when(prevCollector.getContextProductCmpts()).thenReturn(result);
 

@@ -106,26 +106,11 @@ public class ExtendableVersionManagerTest {
         ipsProjectMigrationOperation2 = mock(AbstractIpsProjectMigrationOperation.class);
         when(ipsProjectMigrationOperation2.getTargetVersion()).thenReturn(currentVersion + "zzz");
 
-        Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<Version, IIpsProjectMigrationOperationFactory>();
+        Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
         registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
-                new IIpsProjectMigrationOperationFactory() {
-                    @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
-                            IIpsProject ipsProject,
-                            String featureId) {
-                        return ipsProjectMigrationOperation1;
-                    }
-                });
+                (ipsProject, featureId) -> ipsProjectMigrationOperation1);
         registeredMigrations.put(new Version(ipsProjectMigrationOperation2.getTargetVersion()),
-                new IIpsProjectMigrationOperationFactory() {
-
-                    @Override
-                    public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(
-                            IIpsProject ipsProject,
-                            String featureId) {
-                        return ipsProjectMigrationOperation2;
-                    }
-                });
+                (ipsProject, featureId) -> ipsProjectMigrationOperation2);
         extendableVersionManager.setRegisteredMigrations(registeredMigrations);
     }
 

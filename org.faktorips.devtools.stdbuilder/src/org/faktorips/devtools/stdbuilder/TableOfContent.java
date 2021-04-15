@@ -71,7 +71,7 @@ public class TableOfContent {
      */
     private boolean modified;
 
-    private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<QualifiedNameType, TocEntryObject>(100);
+    private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<>(100);
 
     public TableOfContent() {
         super();
@@ -81,7 +81,7 @@ public class TableOfContent {
         if (tocEntryFactoriesByXmlTag == null) {
             synchronized (TableOfContent.class) {
                 if (tocEntryFactoriesByXmlTag == null) {
-                    tocEntryFactoriesByXmlTag = new HashMap<String, ITocEntryFactory<?>>();
+                    tocEntryFactoriesByXmlTag = new HashMap<>();
                     for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
@@ -155,15 +155,8 @@ public class TableOfContent {
     }
 
     public Set<TocEntryObject> getEntries() {
-        Comparator<TocEntryObject> c = new Comparator<TocEntryObject>() {
-
-            @Override
-            public int compare(TocEntryObject o1, TocEntryObject o2) {
-                return getQualifiedNameType(o1).compareTo(getQualifiedNameType(o2));
-            }
-
-        };
-        SortedSet<TocEntryObject> sortedEntries = new TreeSet<TocEntryObject>(c);
+        Comparator<TocEntryObject> c = Comparator.comparing(TableOfContent::getQualifiedNameType);
+        SortedSet<TocEntryObject> sortedEntries = new TreeSet<>(c);
         sortedEntries.addAll(entriesMap.values());
         return sortedEntries;
     }

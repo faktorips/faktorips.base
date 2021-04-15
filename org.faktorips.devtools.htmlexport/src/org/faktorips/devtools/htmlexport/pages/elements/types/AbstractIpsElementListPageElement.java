@@ -45,20 +45,17 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * {@link Comparator}, which is used for sorting the {@link IIpsObject}s according to their
      * {@link IpsObjectType} and then their unqualified name.
      */
-    protected static final Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
-        @Override
-        public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
-            IpsObjectTypeComparator ipsObjectTypeComparator = new IpsObjectTypeComparator();
+    protected static final Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = (o1, o2) -> {
+        IpsObjectTypeComparator ipsObjectTypeComparator = new IpsObjectTypeComparator();
 
-            int comparationIpsObjectType = ipsObjectTypeComparator
-                    .compare(o1.getIpsObjectType(), o2.getIpsObjectType());
+        int comparationIpsObjectType = ipsObjectTypeComparator
+                .compare(o1.getIpsObjectType(), o2.getIpsObjectType());
 
-            if (comparationIpsObjectType == 0) {
-                return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
-            }
-
-            return comparationIpsObjectType;
+        if (comparationIpsObjectType == 0) {
+            return o1.getIpsObjectName().compareTo(o2.getIpsObjectName());
         }
+
+        return comparationIpsObjectType;
     };
 
     private IIpsElement baseIpsElement;
@@ -98,7 +95,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * @return the {@link IIpsPackageFragment}s of all filtered objects
      */
     protected Set<IIpsPackageFragment> getRelatedPackageFragments() {
-        Set<IIpsPackageFragment> packageFragments = new LinkedHashSet<IIpsPackageFragment>();
+        Set<IIpsPackageFragment> packageFragments = new LinkedHashSet<>();
         for (IIpsSrcFile object : srcFiles) {
             if (!filter.accept(object)) {
                 continue;
@@ -112,7 +109,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * @return the {@link IpsObjectType}s of all filtered objects
      */
     protected Set<IpsObjectType> getRelatedObjectTypes() {
-        Set<IpsObjectType> packageFragments = new LinkedHashSet<IpsObjectType>();
+        Set<IpsObjectType> packageFragments = new LinkedHashSet<>();
         for (IIpsSrcFile object : getSrcFiles()) {
             if (!getFilter().accept(object)) {
                 continue;

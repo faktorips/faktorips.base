@@ -18,15 +18,15 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of <code>IEnumLiteralNameAttribute</code>, see the corresponding interface for more
- * details.
+ * Implementation of <code>IEnumLiteralNameAttribute</code>, see the corresponding interface for
+ * more details.
  * 
  * @see org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute
  * 
@@ -45,7 +45,8 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     /**
      * Creates a new <code>IEnumLiteralNameAttribute</code>.
      * 
-     * @param parent The <code>IEnumType</code> this <code>IEnumLiteralNameAttribute</code> belongs to.
+     * @param parent The <code>IEnumType</code> this <code>IEnumLiteralNameAttribute</code> belongs
+     *            to.
      * @param id A unique ID for this <code>IEnumLiteralNameAttribute</code>.
      */
     public EnumLiteralNameAttribute(IEnumType parent, String id) {
@@ -90,8 +91,8 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /**
-     * Validates whether this <code>IEnumLiteralNameAttribute</code> is needed by the <code>IEnumType</code>
-     * it belongs to.
+     * Validates whether this <code>IEnumLiteralNameAttribute</code> is needed by the
+     * <code>IEnumType</code> it belongs to.
      */
     private void validateIsNeeded(MessageList list) {
         IEnumType enumType = getEnumType();

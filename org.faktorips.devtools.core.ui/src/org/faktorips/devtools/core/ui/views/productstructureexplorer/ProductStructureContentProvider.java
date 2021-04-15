@@ -69,7 +69,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        List<IProductCmptStructureReference> children = new ArrayList<IProductCmptStructureReference>();
+        List<IProductCmptStructureReference> children = new ArrayList<>();
 
         // TODO Entwicklungsstand SMART-MODE
         // // add product cmpt associations and product cmpts

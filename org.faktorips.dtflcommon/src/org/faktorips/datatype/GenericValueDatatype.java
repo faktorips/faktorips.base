@@ -15,10 +15,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.faktorips.util.DatatypeComparator;
-import org.faktorips.util.StringUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.DatatypeComparator;
+import org.faktorips.util.StringUtil;
 import org.faktorips.values.NullObjectSupport;
 
 /**
@@ -225,7 +225,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         getIsParsableMethod();
         if (isParsableMethod != null) {
             try {
-                Object o = isParsableMethod.invoke(null, new Object[] { value });
+                Object o = isParsableMethod.invoke(null, value);
                 return ((Boolean)o).booleanValue();
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Error executing method " + isParsableMethod); //$NON-NLS-1$
@@ -236,7 +236,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             }
         }
         try {
-            getValueOfMethod().invoke(null, new Object[] { value });
+            getValueOfMethod().invoke(null, value);
             // getValue() has executed without exception, the value can be parsed.
             return true;
         } catch (IllegalArgumentException e) {
@@ -266,7 +266,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             return null;
         }
         try {
-            return getValueOfMethod().invoke(null, new Object[] { value });
+            return getValueOfMethod().invoke(null, value);
             // CSOFF: Illegal Catch
         } catch (Exception e) {
             // CSON: Illegal Catch
@@ -300,7 +300,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             return value.toString();
         }
         try {
-            return (String)toStringMethod.invoke(value, new Object[0]);
+            return (String)toStringMethod.invoke(value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error executing method " + toStringMethod); //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
@@ -313,7 +313,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     protected Method getToStringMethod() {
         if (toStringMethod == null && toStringMethodName != null) {
             try {
-                toStringMethod = getAdaptedClass().getMethod(toStringMethodName, new Class[0]);
+                toStringMethod = getAdaptedClass().getMethod(toStringMethodName);
                 if (toStringMethod == null) {
                     throw new NullPointerException();
                 }

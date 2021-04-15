@@ -50,7 +50,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -83,7 +82,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.Saveable;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -304,7 +302,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private List<IProductCmptPropertyFilter> loadPropertyFilters() {
-        List<IProductCmptPropertyFilter> filters = new ArrayList<IProductCmptPropertyFilter>();
+        List<IProductCmptPropertyFilter> filters = new ArrayList<>();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER);
         for (IExtension extension : extensions) {
@@ -317,7 +315,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {
-        List<IIpsDropAdapterProvider> dndHandler = new ArrayList<IIpsDropAdapterProvider>();
+        List<IIpsDropAdapterProvider> dndHandler = new ArrayList<>();
 
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
@@ -363,7 +361,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreException {
-        List<ValueDatatypeControlFactory> factories = new ArrayList<ValueDatatypeControlFactory>();
+        List<ValueDatatypeControlFactory> factories = new ArrayList<>();
 
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, PLUGIN_ID);
@@ -394,7 +392,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints
                 .getExtension(IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD);
-        Map<IDeepCopySmartModeBehavior, String> behaviors = new HashMap<IDeepCopySmartModeBehavior, String>();
+        Map<IDeepCopySmartModeBehavior, String> behaviors = new HashMap<>();
         for (IExtension extension : extensions) {
             List<IDeepCopySmartModeBehavior> executableExtensions = ExtensionPoints.createExecutableExtensions(
                     extension, IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR,
@@ -514,7 +512,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private Transfer[] getSupportedTransferTypes() {
-        Set<Transfer> result = new HashSet<Transfer>();
+        Set<Transfer> result = new HashSet<>();
 
         for (IIpsDropAdapterProvider handler : productCmptDnDHandler) {
             result.addAll(handler.getSupportedTransferTypes());
@@ -523,7 +521,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     private void addDropListener(DropTarget dropTarget, StructuredViewer viewer) {
-        Set<IpsViewerDropAdapter> adapters = new HashSet<IpsViewerDropAdapter>();
+        Set<IpsViewerDropAdapter> adapters = new HashSet<>();
         for (IIpsDropAdapterProvider handler : productCmptDnDHandler) {
             IpsViewerDropAdapter adapter = handler.getDropAdapter(viewer);
             dropTarget.addDropListener(adapter);
@@ -558,7 +556,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         ArgumentCheck.notNull(tableFormat);
 
         Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
-        tableFormatToPropertiesCompositeMap = new HashMap<ITableFormat, TableFormatConfigurationCompositeFactory>();
+        tableFormatToPropertiesCompositeMap = new HashMap<>();
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
@@ -670,7 +668,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         if (fileToEdit == null) {
             return null;
         }
-        RunnableFuture<IEditorPart> runnable = new FutureTask<IEditorPart>(new CallableImplementation(fileToEdit));
+        RunnableFuture<IEditorPart> runnable = new FutureTask<>(new CallableImplementation(fileToEdit));
         BusyIndicator.showWhile(Display.getDefault(), runnable);
         try {
             return runnable.get();
@@ -794,7 +792,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             throws CoreException {
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (extensionPropertyEditFieldFactoryMap == null) {
-            extensionPropertyEditFieldFactoryMap = new HashMap<String, IExtensionPropertyEditFieldFactory>();
+            extensionPropertyEditFieldFactoryMap = new HashMap<>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
                     .getExtension(EXTENSION_POINT_ID_EXTENSION_PROPERTY_EDIT_FIELD_FACTORY);
@@ -833,7 +831,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         if (extensionPropertySectionFactoriesMap == null) {
             // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
-            extensionPropertySectionFactoriesMap = new HashMap<String, IExtensionPropertySectionFactory>();
+            extensionPropertySectionFactoriesMap = new HashMap<>();
             ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsUIPlugin.PLUGIN_ID);
             IExtension[] extensions = extensionPoints
                     .getExtension(EXTENSION_POINT_ID_EXTENSION_PROPERTY_SECTION_FACTORY);
@@ -868,7 +866,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return The list of registered {@link IWorkbenchAdapterProvider}
      */
     public static List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
-        List<IWorkbenchAdapterProvider> result = new ArrayList<IWorkbenchAdapterProvider>();
+        List<IWorkbenchAdapterProvider> result = new ArrayList<>();
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (workbenchAdapterProviders == null) {
             try {
@@ -1035,7 +1033,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         // Filter dirty editor parts according to the provided source files
-        List<IEditorPart> filteredEditorParts = new ArrayList<IEditorPart>(dirtyEditorParts.size());
+        List<IEditorPart> filteredEditorParts = new ArrayList<>(dirtyEditorParts.size());
         if (ipsSrcFiles == null) {
             filteredEditorParts.addAll(dirtyEditorParts);
         } else {
@@ -1082,16 +1080,13 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return false;
         }
 
-        ISaveableFilter fileFilter = new ISaveableFilter() {
-            @Override
-            public boolean select(Saveable saveable, IWorkbenchPart[] containingParts) {
-                for (IWorkbenchPart part : containingParts) {
-                    if (editorParts.contains(part)) {
-                        return true;
-                    }
+        ISaveableFilter fileFilter = (saveable, containingParts) -> {
+            for (IWorkbenchPart part : containingParts) {
+                if (editorParts.contains(part)) {
+                    return true;
                 }
-                return false;
             }
+            return false;
         };
 
         // No need to confirm because we already ask the user
@@ -1132,7 +1127,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         dialog.setInitialSelections(editorParts.toArray());
         dialog.setTitle(Messages.IpsUIPlugin_dialogSaveDirtyEditorTitle);
         dialog.setMessage(Messages.IpsUIPlugin_dialogSaveDirtyEditorMessageMany);
-        dialog.setInitialSelections(new Object[0]);
+        dialog.setInitialSelections();
         return dialog.open() == IDialogConstants.OK_ID;
     }
 
@@ -1142,18 +1137,18 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * instead.
      */
     private List<IEditorPart> collectDirtyEditorParts() {
-        ArrayList<IEditorPart> dirtyParts = new ArrayList<IEditorPart>();
-        ArrayList<IEditorInput> dirtyEditorsInput = new ArrayList<IEditorInput>();
+        ArrayList<IEditorPart> dirtyParts = new ArrayList<>();
+        ArrayList<IEditorInput> dirtyEditorsInput = new ArrayList<>();
         IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
         for (IWorkbenchWindow window : windows) {
             IWorkbenchPage[] pages = window.getPages();
             for (IWorkbenchPage page : pages) {
                 IEditorPart[] dirtyEditors = page.getDirtyEditors();
-                for (int k = 0; k < dirtyEditors.length; k++) {
-                    if (dirtyEditors[k].isSaveOnCloseNeeded()) {
-                        if (!dirtyEditorsInput.contains(dirtyEditors[k].getEditorInput())) {
-                            dirtyParts.add(dirtyEditors[k]);
-                            dirtyEditorsInput.add(dirtyEditors[k].getEditorInput());
+                for (IEditorPart dirtyEditor : dirtyEditors) {
+                    if (dirtyEditor.isSaveOnCloseNeeded()) {
+                        if (!dirtyEditorsInput.contains(dirtyEditor.getEditorInput())) {
+                            dirtyParts.add(dirtyEditor);
+                            dirtyEditorsInput.add(dirtyEditor.getEditorInput());
                         }
                     }
                 }
@@ -1206,14 +1201,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     public void runWorkspaceModification(final IWorkspaceRunnable action) {
         IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
-            ps.busyCursorWhile(new IRunnableWithProgress() {
-
-                @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IIpsModel.get().runAndQueueChangeEvents(action, monitor);
-                }
-
-            });
+            ps.busyCursorWhile(monitor -> IIpsModel.get().runAndQueueChangeEvents(action, monitor));
         } catch (InvocationTargetException e) {
             logAndShowErrorDialog(e);
         } catch (InterruptedException e) {

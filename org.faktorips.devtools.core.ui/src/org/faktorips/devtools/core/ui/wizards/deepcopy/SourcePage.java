@@ -21,14 +21,11 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TableLayout;
@@ -336,21 +333,18 @@ public class SourcePage extends WizardPage {
         tree.expandAll();
         createBindings();
 
-        getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                newWorkingDateControl.setFocus();
-                // run async to ensure that the buttons state (enabled/disabled)
-                // can be updated
-                refreshPageAfterValueChange();
-                updateCheckedAndGrayedStatus(getStructure());
-                updateColumnWidth();
+        getShell().getDisplay().asyncExec(() -> {
+            newWorkingDateControl.setFocus();
+            // run async to ensure that the buttons state (enabled/disabled)
+            // can be updated
+            refreshPageAfterValueChange();
+            updateCheckedAndGrayedStatus(getStructure());
+            updateColumnWidth();
 
-                getWizard().getDeepCopyPreview().getErrorElements().clear();
-                setErrorMessage(null);
-                tree.refresh(true);
-                setMessagePleaseEnterWorkingDate();
-            }
+            getWizard().getDeepCopyPreview().getErrorElements().clear();
+            setErrorMessage(null);
+            tree.refresh(true);
+            setMessagePleaseEnterWorkingDate();
         });
     }
 
@@ -364,7 +358,7 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(generationDateField, getPresentationModel(),
                 DeepCopyPresentationModel.OLD_VALID_FROM);
 
-        DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<GregorianCalendar>(
+        DateControlField<GregorianCalendar> newWorkingDateField = new DateControlField<>(
                 newWorkingDateControl, GregorianCalendarFormat.newInstance(), false);
         bindingContext.bindContent(newWorkingDateField, getPresentationModel(),
                 DeepCopyPresentationModel.NEW_VALID_FROM);
@@ -393,14 +387,10 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(copyExistingGenerationsBtn, getPresentationModel(),
                 DeepCopyPresentationModel.COPY_EXISTING_GENERATIONS);
 
-        tree.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(CheckStateChangedEvent event) {
-                if (event.getElement() instanceof IProductCmptStructureReference) {
-                    IProductCmptStructureReference reference = (IProductCmptStructureReference)event.getElement();
-                    getTreeStatus().setChecked(reference, event.getChecked());
-                }
+        tree.addCheckStateListener(event -> {
+            if (event.getElement() instanceof IProductCmptStructureReference) {
+                IProductCmptStructureReference reference = (IProductCmptStructureReference)event.getElement();
+                getTreeStatus().setChecked(reference, event.getChecked());
             }
         });
 
@@ -750,7 +740,6 @@ public class SourcePage extends WizardPage {
 
         if (replacePattern.length() == 0) {
             setErrorMessage(Messages.SourcePage_msgReplaceTextNotFound);
-            return;
         }
 
     }
@@ -775,22 +764,19 @@ public class SourcePage extends WizardPage {
         }
         try {
             isRefreshing = true;
-            getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
-                @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IProgressMonitor progressMonitor = monitor;
-                    if (progressMonitor == null) {
-                        progressMonitor = new NullProgressMonitor();
-                    }
-                    progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
-                    @SuppressWarnings("deprecation")
-                    org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
-                            progressMonitor, 6);
-                    getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
-                    progressMonitor.worked(1);
-                    tree.refresh();
-                    progressMonitor.worked(1);
+            getWizard().getContainer().run(false, false, monitor -> {
+                IProgressMonitor progressMonitor = monitor;
+                if (progressMonitor == null) {
+                    progressMonitor = new NullProgressMonitor();
                 }
+                progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
+                @SuppressWarnings("deprecation")
+                org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
+                        progressMonitor, 6);
+                getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
+                progressMonitor.worked(1);
+                tree.refresh();
+                progressMonitor.worked(1);
             });
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);

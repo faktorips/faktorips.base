@@ -39,7 +39,7 @@ import org.faktorips.devtools.model.util.TextRegion;
  */
 public class ExpressionDependencyDetail extends DependencyDetail implements IExpressionDependencyDetail {
 
-    private final SortedSet<TextRegion> textRegions = new TreeSet<TextRegion>();
+    private final SortedSet<TextRegion> textRegions = new TreeSet<>();
 
     /**
      * Creates a new dependency detail for the given expression. The property provided to the super

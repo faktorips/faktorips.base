@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.ui.IWorkbenchPage;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.runtime.Message;
@@ -47,10 +45,6 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
         setShellStyle(getShellStyle() | SWT.MAX | SWT.RESIZE);
         this.windowTitle = windowTitle;
         tabFolderUsed = useTabFolder;
-        IWorkbenchPage page = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (page == null) {
-            return;
-        }
     }
 
     @Override

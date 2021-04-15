@@ -31,11 +31,11 @@ import java.util.Set;
  * @param <V> The type of values in the map. Values are nested {@link SearchStructure structures}
  *            which must:
  *            <ul>
- *            <li> have the same result type <code>R</code> as this {@link AbstractMapStructure}
- *            </li> <li> implement the {@link MergeAndCopyStructure} interface. The class definition
+ *            <li>have the same result type <code>R</code> as this {@link AbstractMapStructure}</li>
+ *            <li>implement the {@link MergeAndCopyStructure} interface. The class definition
  *            enforces the implementation of {@link MergeAndCopyStructure} without restricting the
  *            type V to a specific {@link SearchStructure}. Therefore the mergable type is bound to
- *            <code>? super V </code>. </li>
+ *            <code>? super V </code>.</li>
  *            </ul>
  * @param <R> The type of the result values. The result type must be the same in every nested
  *            structure.
@@ -44,7 +44,7 @@ import java.util.Set;
 public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> extends
         SearchStructure<R> {
 
-    private static final SearchStructure<?> EMPTY = new EmptySearchStructure<Object>();
+    private static final SearchStructure<?> EMPTY = new EmptySearchStructure<>();
 
     private final Map<K, V> map;
 
@@ -92,7 +92,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
 
     @Override
     public Set<R> get() {
-        HashSet<R> resultSet = new HashSet<R>();
+        HashSet<R> resultSet = new HashSet<>();
         for (V value : getMap().values()) {
             Set<R> set = value.get();
             resultSet.addAll(set);

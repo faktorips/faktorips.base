@@ -26,7 +26,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 2, 3);
         int[] indices = new int[] { 2, 1 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 0 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(2), list.get(0));
         assertEquals(Integer.valueOf(3), list.get(1));
@@ -39,7 +39,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 2, 3);
         int[] indices = new int[] { 0, 1 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(1), list.get(1));
@@ -52,7 +52,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 2, 3);
         int[] indices = new int[0];
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[0], mover.move(indices, true));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
@@ -65,7 +65,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(2, 3, 4);
         int[] indices = new int[] { 0, 1 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 0, 1 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
@@ -79,7 +79,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 2, 3);
         int[] indices = new int[] { 1, 2 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
@@ -102,7 +102,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 3);
         int[] indices = new int[] { 1 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 0 }, mover.move(indices, true));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
@@ -124,7 +124,7 @@ public class SubListElementMoverTest {
         List<Integer> subList = Arrays.asList(1, 3);
         int[] indices = new int[] { 0 };
 
-        SubListElementMover<Integer> mover = new SubListElementMover<Integer>(list, subList);
+        SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1 }, mover.move(indices, false));
         assertEquals(Integer.valueOf(3), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));

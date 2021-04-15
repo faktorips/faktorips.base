@@ -22,7 +22,7 @@ public class TestEnumType {
     private static final List<TestEnumType> allValues;
 
     static {
-        allValues = new ArrayList<TestEnumType>();
+        allValues = new ArrayList<>();
         allValues.add(FIRSTVALUE);
         allValues.add(SECONDVALUE);
         allValues.add(THIRDVALUE);

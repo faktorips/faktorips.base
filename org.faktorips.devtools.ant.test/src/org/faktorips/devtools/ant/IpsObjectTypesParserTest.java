@@ -48,7 +48,7 @@ public class IpsObjectTypesParserTest {
 
     @Test
     public void testGetIpsObjectTypes_NotAll() {
-        assertThat(getIpsObjectTypes("!all", ALL_STANDARD_TYPES), containsAll(new IpsObjectType[0]));
+        assertThat(getIpsObjectTypes("!all", ALL_STANDARD_TYPES), containsAll());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class IpsObjectTypesParserTest {
     }
 
     private IpsObjectType[] modelTypes() {
-        Set<IpsObjectType> modelTypes = new HashSet<IpsObjectType>();
+        Set<IpsObjectType> modelTypes = new HashSet<>();
         for (IpsObjectType ipsObjectType : ALL_STANDARD_TYPES) {
             if (!ipsObjectType.isProductDefinitionType()) {
                 modelTypes.add(ipsObjectType);
@@ -86,7 +86,7 @@ public class IpsObjectTypesParserTest {
     }
 
     private TypeSafeMatcher<? super IpsObjectType[]> containsAll(final IpsObjectType... ipsObjectTypes) {
-        return new TypeSafeMatcher<IpsObjectType[]>() {
+        return new TypeSafeMatcher<>() {
             @Override
             protected boolean matchesSafely(IpsObjectType[] ipsObjectTypes2) {
                 if (ipsObjectTypes2.length != ipsObjectTypes.length) {

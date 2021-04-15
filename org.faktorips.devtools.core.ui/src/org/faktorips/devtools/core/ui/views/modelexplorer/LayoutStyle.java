@@ -41,9 +41,9 @@ public enum LayoutStyle {
      * Example:
      * <p>
      * "org"<br>
-     * "   life"<br>
-     * "       coverages"<br>
-     * "   motor"<br>
+     * " life"<br>
+     * " coverages"<br>
+     * " motor"<br>
      */
     HIERACHICAL(0);
 

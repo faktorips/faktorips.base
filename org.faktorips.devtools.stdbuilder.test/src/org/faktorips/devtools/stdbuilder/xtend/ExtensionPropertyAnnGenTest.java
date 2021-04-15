@@ -109,13 +109,9 @@ public class ExtensionPropertyAnnGenTest {
 
     @Test
     public void testCreateAnnotation_cdataWithBreaks() {
-        AbstractGeneratorModelNode modelNode = modelNode(withExtension("foo", new MockExtensionPropertyValue() {
-
-            @Override
-            public void valueToXml(Element valueElement) {
-                valueElement.appendChild(valueElement.getOwnerDocument().createCDATASection("bar\n\tba    z"));
-            }
-        }));
+        AbstractGeneratorModelNode modelNode = modelNode(
+                withExtension("foo", (MockExtensionPropertyValue)valueElement -> valueElement
+                        .appendChild(valueElement.getOwnerDocument().createCDATASection("bar\n\tba    z"))));
 
         JavaCodeFragment annotation = extensionPropertyAnnotationGenerator.createAnnotation(modelNode);
 
@@ -147,18 +143,15 @@ public class ExtensionPropertyAnnGenTest {
     @Ignore("Complex XML is not supported at the moment")
     @Test
     public void testCreateAnnotation_xml() {
-        AbstractGeneratorModelNode modelNode = modelNode(withExtension("foo", new MockExtensionPropertyValue() {
-
-            @Override
-            public void valueToXml(Element valueElement) {
-                Document doc = valueElement.getOwnerDocument();
-                Element foo = doc.createElement("foo");
-                Element bar = doc.createElement("bar");
-                bar.setAttribute("baz", "!ü ");
-                foo.appendChild(bar);
-                valueElement.appendChild(foo);
-            }
-        }));
+        AbstractGeneratorModelNode modelNode = modelNode(
+                withExtension("foo", (MockExtensionPropertyValue)valueElement -> {
+                    Document doc = valueElement.getOwnerDocument();
+                    Element foo = doc.createElement("foo");
+                    Element bar = doc.createElement("bar");
+                    bar.setAttribute("baz", "!ü ");
+                    foo.appendChild(bar);
+                    valueElement.appendChild(foo);
+                }));
 
         JavaCodeFragment annotation = extensionPropertyAnnotationGenerator.createAnnotation(modelNode);
 
@@ -205,7 +198,7 @@ public class ExtensionPropertyAnnGenTest {
         when(ipsProject.getXmlFileCharset()).thenReturn("UTF-8");
         IIpsObjectPartContainer ipsObjectPartContainer = mock(IIpsObjectPartContainer.class);
         when(ipsObjectPartContainer.getIpsProject()).thenReturn(ipsProject);
-        ArrayList<IExtensionPropertyDefinition> extensions = new ArrayList<IExtensionPropertyDefinition>(
+        ArrayList<IExtensionPropertyDefinition> extensions = new ArrayList<>(
                 withExtensions.length);
         for (WithExtension withExtension : withExtensions) {
             IExtensionPropertyDefinition extension = mock(MockExtensionPropertyDefinition.class);

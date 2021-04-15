@@ -26,7 +26,8 @@ public interface IDatatypeInputFormatFactory {
      * responsibility of the factory provider if the data type is considered.
      * 
      * @param datatype the data type for which you want retrieve an input format
-     * @param ipsProject the project provided to the input format for example to get the default currency in money values   
+     * @param ipsProject the project provided to the input format for example to get the default
+     *            currency in money values
      */
     public IInputFormat<String> newInputFormat(ValueDatatype datatype, IIpsProject ipsProject);
 

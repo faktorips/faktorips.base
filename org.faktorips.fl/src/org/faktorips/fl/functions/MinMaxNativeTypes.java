@@ -17,8 +17,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  *
@@ -99,7 +99,7 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
 
     private CompilationResult<JavaCodeFragment> createErrorCompilationResult(Datatype datatype) {
         String code = ExprCompiler.PREFIX + errorCodeSuffix;
-        String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
+        String text = Messages.INSTANCE.getString(code, datatype);
         Message msg = Message.newError(code, text);
         return new CompilationResultImpl(msg);
 

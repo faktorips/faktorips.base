@@ -135,7 +135,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         Message msg = result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
         assertNotNull(msg);
         List<ObjectProperty> op = msg.getInvalidObjectProperties();
-        List<Object> invalidObjects = new ArrayList<Object>();
+        List<Object> invalidObjects = new ArrayList<>();
         for (ObjectProperty element : op) {
             invalidObjects.add(element.getObject());
         }
@@ -248,7 +248,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // "implement" the method in pcType => error should no be reported anymore
-        type.overrideMethods(Arrays.asList(new IMethod[] { superMethod }));
+        type.overrideMethods(Arrays.asList(superMethod));
         list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
@@ -265,7 +265,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
 
         // "implement" the method in the supertype => error should no be reported anymore
-        superType.overrideMethods(Arrays.asList(new IMethod[] { supersuperMethod }));
+        superType.overrideMethods(Arrays.asList(supersuperMethod));
         list = type.validate(ipsProject);
         assertNull(list.getMessageByCode(IType.MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD));
     }
@@ -896,7 +896,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         // override the supersupertype method m5 in the supertype
         // => now also m5 is not a candidate any more, if only not implemented abstract methods are
         // requested.
-        supertype.overrideMethods(Arrays.asList(new IMethod[] { m5 }));
+        supertype.overrideMethods(Arrays.asList(m5));
         candidates = type.findOverrideMethodCandidates(true, ipsProject);
         assertEquals(0, candidates.size());
     }
@@ -1025,7 +1025,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IMethod m2 = supertype.newMethod();
         m1.setName("m2");
 
-        type.overrideMethods(Arrays.asList(new IMethod[] { m1, m2 }));
+        type.overrideMethods(Arrays.asList(m1, m2));
         assertEquals(2, type.getNumOfMethods());
         List<IMethod> methods = type.getMethods();
         assertTrue(methods.get(0).overrides(m1));
@@ -1035,7 +1035,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(methods.get(1).overrides(m2));
 
         IType otherType = newProductCmptType(ipsProject, "OtherType");
-        otherType.overrideMethods(Arrays.asList(new IMethod[] { m1, m2 }));
+        otherType.overrideMethods(Arrays.asList(m1, m2));
         assertEquals(2, otherType.getNumOfMethods());
         methods = otherType.getMethods();
         assertFalse(methods.get(0).overrides(m1));

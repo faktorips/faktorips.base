@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -68,31 +66,26 @@ public class ElementSelectionPage extends WizardPage {
         treeViewer.setExpandedElements(contentProvider.getElements(null));
         treeViewer.setCheckedElements(contentProvider.getAllElements());
 
-        treeViewer.addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(CheckStateChangedEvent event) {
-                Object element = event.getElement();
-                if (element instanceof IIpsPackageFragment) {
-                    treeViewer.setSubtreeChecked(element, treeViewer.getChecked(element));
-                    treeViewer.setGrayed(element, false);
-                } else {
-                    Object parent = contentProvider.getParent(element);
-                    boolean checked = treeViewer.getChecked(element);
-                    Object[] children = contentProvider.getChildren(parent);
-                    treeViewer.setGrayed(parent, false);
-                    for (Object element2 : children) {
-                        boolean checked2 = treeViewer.getChecked(element2);
-                        if (checked2 != checked) {
-                            treeViewer.setGrayed(parent, true);
-                        }
-                        checked = checked | checked2;
+        treeViewer.addCheckStateListener(event -> {
+            Object element = event.getElement();
+            if (element instanceof IIpsPackageFragment) {
+                treeViewer.setSubtreeChecked(element, treeViewer.getChecked(element));
+                treeViewer.setGrayed(element, false);
+            } else {
+                Object parent1 = contentProvider.getParent(element);
+                boolean checked = treeViewer.getChecked(element);
+                Object[] children = contentProvider.getChildren(parent1);
+                treeViewer.setGrayed(parent1, false);
+                for (Object element2 : children) {
+                    boolean checked2 = treeViewer.getChecked(element2);
+                    if (checked2 != checked) {
+                        treeViewer.setGrayed(parent1, true);
                     }
-                    treeViewer.setChecked(parent, checked);
+                    checked = checked | checked2;
                 }
-                setPageComplete(getElementsToFix().size() > 0);
+                treeViewer.setChecked(parent1, checked);
             }
-
+            setPageComplete(getElementsToFix().size() > 0);
         });
         setPageComplete(getElementsToFix().size() > 0);
         super.setControl(root);
@@ -103,7 +96,7 @@ public class ElementSelectionPage extends WizardPage {
      */
     protected Set<IFixDifferencesToModelSupport> getElementsToFix() {
         Object[] checked = treeViewer.getCheckedElements();
-        Set<IFixDifferencesToModelSupport> elements = new HashSet<IFixDifferencesToModelSupport>();
+        Set<IFixDifferencesToModelSupport> elements = new HashSet<>();
         for (Object element : checked) {
             if (element instanceof IFixDifferencesToModelSupport) {
                 elements.add((IFixDifferencesToModelSupport)element);
@@ -138,7 +131,7 @@ public class ElementSelectionPage extends WizardPage {
         }
 
         public Object[] getAllElements() {
-            ArrayList<Object> result = new ArrayList<Object>(packages.keySet());
+            ArrayList<Object> result = new ArrayList<>(packages.keySet());
             result.addAll(packages.values());
             return result.toArray();
         }

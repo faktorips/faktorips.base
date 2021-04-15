@@ -63,7 +63,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         RadioButtonGroup<String> radioButtonGroup = createControls(toolkit, parent, valueSet, datatype);
-        return new RadioButtonGroupField<String>(radioButtonGroup);
+        return new RadioButtonGroupField<>(radioButtonGroup);
     }
 
     private RadioButtonGroup<String> createControls(UIToolkit toolkit,
@@ -94,7 +94,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     }
 
     protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, ValueDatatype datatype) {
-        LinkedHashMap<String, String> optionsMap = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> optionsMap = new LinkedHashMap<>();
         optionsMap.put(Boolean.TRUE.toString(), getTrueValue());
         optionsMap.put(Boolean.FALSE.toString(), getFalseValue());
         if (!isPrimitiveBoolean(datatype)) {

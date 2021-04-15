@@ -34,7 +34,8 @@ public class EnumValueSource implements IValueSource {
      * returned.</li>
      * <li>If the value set cannot provide values the datatype is checked. If it is an enum datatype
      * its values are returned.</li>
-     * <li>If neither value set nor datatype can provide enum values, an empty list is returned.</li>
+     * <li>If neither value set nor datatype can provide enum values, an empty list is
+     * returned.</li>
      * </ul>
      */
     @Override

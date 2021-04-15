@@ -15,8 +15,6 @@ import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
@@ -59,8 +57,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.type.IType;
-import org.faktorips.util.memento.Memento;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.memento.Memento;
 
 /**
  * A composite that shows parts in a table viewer and provides an area containing a new, edit and
@@ -76,7 +74,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     private final UIToolkit uiToolkit;
 
-    private ArrayList<IDeleteListener> deleteListeners = new ArrayList<IDeleteListener>();
+    private ArrayList<IDeleteListener> deleteListeners = new ArrayList<>();
 
     /** The table view of this composite */
     private TableViewer tableViewer;
@@ -144,7 +142,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             UIToolkit uiToolkit) {
 
         super(parent);
-        List<Option> optionList = new ArrayList<Option>();
+        List<Option> optionList = new ArrayList<>();
         addOptionToList(optionList, canCreate, Option.CAN_CREATE);
         addOptionToList(optionList, canEdit, Option.CAN_EDIT);
         addOptionToList(optionList, canDelete, Option.CAN_DELETE);
@@ -205,12 +203,9 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
             MenuCleaner.addDefaultCleaner(contextMenuManager);
             // Hide the context menu if nothing is selected
-            contextMenuManager.addMenuListener(new IMenuListener() {
-                @Override
-                public void menuAboutToShow(IMenuManager manager) {
-                    if (getSelection().isEmpty()) {
-                        contextMenu.setVisible(false);
-                    }
+            contextMenuManager.addMenuListener($ -> {
+                if (getSelection().isEmpty()) {
+                    contextMenu.setVisible(false);
                 }
             });
         }

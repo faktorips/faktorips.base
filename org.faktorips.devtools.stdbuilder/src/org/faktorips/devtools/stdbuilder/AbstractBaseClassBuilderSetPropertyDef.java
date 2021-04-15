@@ -13,8 +13,8 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public abstract class AbstractBaseClassBuilderSetPropertyDef extends IpsBuilderSetPropertyDef {
 

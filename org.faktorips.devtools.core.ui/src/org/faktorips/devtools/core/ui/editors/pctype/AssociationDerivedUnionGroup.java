@@ -16,8 +16,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -183,12 +181,7 @@ public class AssociationDerivedUnionGroup extends Composite {
             super(association);
             this.association = association;
             subset = association.isSubsetOfADerivedUnion();
-            AssociationDerivedUnionGroup.this.addDisposeListener(new DisposeListener() {
-                @Override
-                public void widgetDisposed(DisposeEvent e) {
-                    dispose();
-                }
-            });
+            AssociationDerivedUnionGroup.this.addDisposeListener($ -> dispose());
             initDerivedUnionCandidates();
         }
 
@@ -227,7 +220,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
 
         private void initDerivedUnionCandidates() {
-            Set<String> derivedUnions = new LinkedHashSet<String>(1);
+            Set<String> derivedUnions = new LinkedHashSet<>(1);
             if (association.isSubsetOfADerivedUnion()) {
                 derivedUnions.add(association.getSubsettedDerivedUnion());
             }
@@ -246,8 +239,8 @@ public class AssociationDerivedUnionGroup extends Composite {
                 try {
                     // init drop down with available candidates
                     IAssociation[] associations = association.findDerivedUnionCandidates(association.getIpsProject());
-                    for (int i = 0; i < associations.length; i++) {
-                        derivedUnions.add(associations[i].getName());
+                    for (IAssociation association2 : associations) {
+                        derivedUnions.add(association2.getName());
                     }
                     setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
 

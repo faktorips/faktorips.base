@@ -49,7 +49,7 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
  */
 public class ProductCmptLinkCollection {
 
-    private final List<IProductCmptLink> links = new ArrayList<IProductCmptLink>();
+    private final List<IProductCmptLink> links = new ArrayList<>();
 
     /**
      * Returns all links in this collection for a given association. Returns an empty list if there
@@ -75,7 +75,7 @@ public class ProductCmptLinkCollection {
      * association are returned when calling <code>getLinksAsMap().get(null)</code>.
      */
     public Map<String, List<IProductCmptLink>> getLinksAsMap() {
-        Map<String, List<IProductCmptLink>> associationNameToLinksMap = new LinkedHashMap<String, List<IProductCmptLink>>();
+        Map<String, List<IProductCmptLink>> associationNameToLinksMap = new LinkedHashMap<>();
         for (IProductCmptLink link : links) {
             associationNameToLinksMap.computeIfAbsent(link.getAssociation(), $ -> new ArrayList<>()).add(link);
         }
@@ -99,7 +99,7 @@ public class ProductCmptLinkCollection {
      */
     public List<IProductCmptLink> getLinks() {
         // a stream with flatMap would be nice code, but not as efficient
-        List<IProductCmptLink> allLinks = new ArrayList<IProductCmptLink>();
+        List<IProductCmptLink> allLinks = new ArrayList<>();
         for (List<IProductCmptLink> linkList : getLinksAsMap().values()) {
             allLinks.addAll(linkList);
         }
@@ -297,7 +297,7 @@ public class ProductCmptLinkCollection {
 
             if (details != null) {
                 List<IDependencyDetail> detailList = details.computeIfAbsent(dependency,
-                        $ -> new ArrayList<IDependencyDetail>());
+                        $ -> new ArrayList<>());
                 detailList.add(new DependencyDetail(link, IProductCmptLink.PROPERTY_TARGET));
             }
         }

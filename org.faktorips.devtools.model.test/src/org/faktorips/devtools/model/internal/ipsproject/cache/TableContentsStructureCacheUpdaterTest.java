@@ -318,7 +318,7 @@ public class TableContentsStructureCacheUpdaterTest {
     }
 
     private IpsSrcFilesChangedEvent newChangeEvent(IIpsSrcFile ipsSrcFile, int kind) {
-        Map<IIpsSrcFile, IResourceDelta> changedSrcFiles = new HashMap<IIpsSrcFile, IResourceDelta>();
+        Map<IIpsSrcFile, IResourceDelta> changedSrcFiles = new HashMap<>();
         IResourceDelta delta = mock(IResourceDelta.class);
         when(delta.getKind()).thenReturn(kind);
         changedSrcFiles.put(ipsSrcFile, delta);
@@ -340,7 +340,7 @@ public class TableContentsStructureCacheUpdaterTest {
 
     void setUpSingleProjectFindIpsSrcFiles(IIpsProject project, IpsObjectType ipsObjectType, IIpsSrcFile... files) {
         List<IIpsSrcFile> oldIpsSrcFiles = project.findAllIpsSrcFiles(ipsObjectType);
-        ArrayList<IIpsSrcFile> newResultingFiles = new ArrayList<IIpsSrcFile>(oldIpsSrcFiles);
+        ArrayList<IIpsSrcFile> newResultingFiles = new ArrayList<>(oldIpsSrcFiles);
         newResultingFiles.addAll(Arrays.asList(files));
         when(project.findAllIpsSrcFiles(ipsObjectType)).thenReturn(newResultingFiles);
         setUpFindQNameType(project, files);

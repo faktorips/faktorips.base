@@ -38,7 +38,7 @@ public class ProductPartCollection {
         } else if (IProductCmptLink.class.isAssignableFrom(type)) {
             return (List<T>)productCmptLinkCollection.getLinks();
         }
-        return new ArrayList<T>();
+        return new ArrayList<>();
     }
 
 }

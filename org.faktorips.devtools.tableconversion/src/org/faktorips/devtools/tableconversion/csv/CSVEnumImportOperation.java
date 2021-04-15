@@ -98,14 +98,8 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             }
 
             File importFile = new File(sourceFile);
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(importFile);
+            try (FileInputStream fis = new FileInputStream(importFile)) {
                 fillEnum(valueContainer, fis);
-            } finally {
-                if (fis != null) {
-                    fis.close();
-                }
             }
 
             monitor.worked(1);

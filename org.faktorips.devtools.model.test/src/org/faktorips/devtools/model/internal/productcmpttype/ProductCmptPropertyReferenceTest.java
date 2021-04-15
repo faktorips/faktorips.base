@@ -67,7 +67,8 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
         IProductCmptTypeAttribute productAttribute = productType.newProductCmptTypeAttribute("productAttribute");
         attributeReference.setReferencedProperty(productAttribute);
 
-        assertEquals(productAttribute.getId(), ((ProductCmptPropertyReference)attributeReference).getReferencedPartId());
+        assertEquals(productAttribute.getId(),
+                ((ProductCmptPropertyReference)attributeReference).getReferencedPartId());
         assertEquals(productType.getIpsObjectType(), attributeReference.getReferencedIpsObjectType());
         assertWholeContentChangedEvent(attributeReference.getIpsSrcFile());
     }

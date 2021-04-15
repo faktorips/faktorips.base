@@ -30,9 +30,9 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
 public abstract class ConfigElement extends AbstractSimplePropertyValue implements IConfigElement {
@@ -123,7 +123,8 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             } else {
-                String policyCmptTypeLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(policyCmptType);
+                String policyCmptTypeLabel = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(policyCmptType);
                 String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, getPolicyCmptTypeAttribute(),
                         policyCmptTypeLabel);
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,

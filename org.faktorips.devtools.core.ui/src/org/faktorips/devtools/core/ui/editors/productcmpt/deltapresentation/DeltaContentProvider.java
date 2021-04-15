@@ -69,7 +69,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         deltaComposite = (IFixDifferencesComposite)newInput;
-        objectToDifferencesMap = new HashMap<IIpsElement, IFixDifferencesComposite>();
+        objectToDifferencesMap = new HashMap<>();
         if (deltaComposite != null) {
             objectToDifferencesMap.put(deltaComposite.getCorrespondingIpsElement(), deltaComposite);
             mapIIpsElementToDifferenceComposite(deltaComposite.getChildren());
@@ -97,7 +97,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * @return the children of the node.
      */
     private Object[] getPropertyChildren(IPropertyValueContainerToTypeDelta delta) {
-        List<Object> elements = new ArrayList<Object>();
+        List<Object> elements = new ArrayList<>();
         for (DeltaType element : DeltaType.values()) {
             if (delta.getEntries(element).length > 0) {
                 elements.add(new DeltaTypeWrapper(element, delta));
@@ -155,7 +155,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * @return all children of the product component.
      */
     private Object[] getChildrenOfIProductCmpt(IProductCmpt parent) {
-        List<Object> kids = new ArrayList<Object>();
+        List<Object> kids = new ArrayList<>();
         IFixDifferencesComposite fixDifferenceComposite = objectToDifferencesMap.get(parent);
         if (fixDifferenceComposite != null) {
             for (IFixDifferencesComposite composite : objectToDifferencesMap.get(parent).getChildren()) {

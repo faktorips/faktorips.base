@@ -18,8 +18,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 public abstract class AbstractListFunction extends AbstractFlFunction {
 
@@ -42,7 +42,8 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         }
     }
 
-    protected AbstractCompilationResult<JavaCodeFragment> getListArgument(CompilationResult<JavaCodeFragment>[] argResults) {
+    protected AbstractCompilationResult<JavaCodeFragment> getListArgument(
+            CompilationResult<JavaCodeFragment>[] argResults) {
         return (AbstractCompilationResult<JavaCodeFragment>)argResults[0];
     }
 
@@ -61,7 +62,8 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         return null;
     }
 
-    protected CompilationResult<JavaCodeFragment> generateFunctionCode(CompilationResult<JavaCodeFragment> listArgument) {
+    protected CompilationResult<JavaCodeFragment> generateFunctionCode(
+            CompilationResult<JavaCodeFragment> listArgument) {
         JavaCodeFragment fragment = new JavaCodeFragment();
 
         Datatype datatype = getBasicType(listArgument);
@@ -83,8 +85,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         fragment.append(" nextValue){return ");
         CompilationResult<JavaCodeFragment> functionCall = generateFunctionCall(arg1Result, arg2Result);
         if (functionCall.failed()) {
-            String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, new Object[] { getName(),
-                    datatype.getName() });
+            String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, getName(), datatype.getName());
             return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, messageText));
         } else {
             fragment.append(functionCall.getCodeFragment());

@@ -62,7 +62,7 @@ public class FolderExplorer {
     }
 
     private List<IPath> createPaths(IPath path, boolean mustBeDirectory) {
-        List<IPath> paths = new ArrayList<IPath>();
+        List<IPath> paths = new ArrayList<>();
         File[] listFiles = path.toFile().listFiles();
         for (File file : listFiles) {
             if (isRelevant(file, mustBeDirectory)) {

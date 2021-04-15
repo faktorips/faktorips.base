@@ -31,7 +31,7 @@ public class FieldPropertyMappingByPropertyDescriptor<T> extends AbstractFieldPr
                 throw new RuntimeException(
                         "Error setting property value " + property.getName() + ": Found no setter method"); //$NON-NLS-1$ //$NON-NLS-2$
             }
-            setter.invoke(getObject(), new Object[] { getField().getValue() });
+            setter.invoke(getObject(), getField().getValue());
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error setting property value " + property.getName() + ": Illegal Access", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (IllegalArgumentException e) {
@@ -47,7 +47,7 @@ public class FieldPropertyMappingByPropertyDescriptor<T> extends AbstractFieldPr
         try {
             Method getter = property.getReadMethod();
             @SuppressWarnings("unchecked")
-            T result = (T)getter.invoke(getObject(), new Object[0]);
+            T result = (T)getter.invoke(getObject());
             return result;
 
             // CSOFF: IllegalCatch

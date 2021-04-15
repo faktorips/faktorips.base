@@ -28,8 +28,8 @@ public class CollectionUtil {
     }
 
     /**
-     * Creates a new <code>ArrayList</code> that contains the object references in the given array in
-     * the same order. The list's capacity is equal to the array's length.
+     * Creates a new <code>ArrayList</code> that contains the object references in the given array
+     * in the same order. The list's capacity is equal to the array's length.
      * <p>
      * Note that the list returned by this method can be modified (without modifying the array) -
      * which is not possible if one uses <code>java.util.Arrays.asList()</code>.
@@ -37,7 +37,7 @@ public class CollectionUtil {
      * @throws NullPointerException if array is <code>null</code>.
      */
     public static final <T> ArrayList<T> toArrayList(T[] array) {
-        ArrayList<T> list = new ArrayList<T>(array.length);
+        ArrayList<T> list = new ArrayList<>(array.length);
         add(list, array);
         return list;
     }

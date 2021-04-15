@@ -38,7 +38,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
 
     /** Set containing all sub enum types of the target enum type. */
-    private final Set<IEnumType> subEnumTypes = new HashSet<IEnumType>();
+    private final Set<IEnumType> subEnumTypes = new HashSet<>();
 
     public PullUpEnumAttributeProcessor(IEnumAttribute enumAttribute) {
         super(enumAttribute);
@@ -46,7 +46,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         try {
             result.add(getIpsSrcFile());
 
@@ -125,7 +125,6 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
         if (getEnumType().findSuperEnumType(getIpsProject()) == null) {
             status.addFatalError(NLS.bind(Messages.PullUpEnumAttributeProcessor_msgSuperEnumTypeCannotBeFound,
                     getEnumType().getSuperEnumType()));
-            return;
         }
     }
 
@@ -161,7 +160,6 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
             if (!visitor.baseOfOverriddenAttributeFound) {
                 status.addFatalError(
                         Messages.PullUpEnumAttributeProcessor_msgEnumAttributeBaseOfInheritedAttributeNotFound);
-                return;
             }
         }
     }

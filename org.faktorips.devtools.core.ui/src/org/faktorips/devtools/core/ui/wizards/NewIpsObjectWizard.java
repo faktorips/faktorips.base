@@ -79,12 +79,12 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     public boolean canFinish() {
         // Default implementation is to check if all pages are complete.
         IWizardPage[] pages = getPages();
-        for (int i = 0; i < pages.length; i++) {
-            if (!pages[i].isPageComplete()) {
+        for (IWizardPage page : pages) {
+            if (!page.isPageComplete()) {
                 return false;
             }
-            if (pages[i] instanceof AbstractIpsObjectNewWizardPage) {
-                if (((AbstractIpsObjectNewWizardPage)pages[i]).finishWhenThisPageIsComplete()) {
+            if (page instanceof AbstractIpsObjectNewWizardPage) {
+                if (((AbstractIpsObjectNewWizardPage)page).finishWhenThisPageIsComplete()) {
                     return true;
                 }
             }
@@ -135,7 +135,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                                 IpsPlugin.logAndShowErrorDialog(new IpsStatus(
                                         Messages.NewIpsObjectWizard_error_unableToCreateIpsSrcFile));
                             } else {
-                                Set<IIpsObject> modifiedIpsObjects = new HashSet<IIpsObject>(0);
+                                Set<IIpsObject> modifiedIpsObjects = new HashSet<>(0);
                                 page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
                                 srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
                                 org.eclipse.core.runtime.SubProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(

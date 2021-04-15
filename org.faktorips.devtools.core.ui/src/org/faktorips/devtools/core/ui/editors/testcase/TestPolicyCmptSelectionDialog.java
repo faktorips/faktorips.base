@@ -222,7 +222,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 
     @Override
     protected void computeResult() {
-        ArrayList<Object> result = new ArrayList<Object>(1);
+        ArrayList<Object> result = new ArrayList<>(1);
         if (treeViewer.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
             result.add(selection.getFirstElement());
@@ -238,7 +238,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         @Override
         public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
             int size = elements.length;
-            ArrayList<Object> out = new ArrayList<Object>(size);
+            ArrayList<Object> out = new ArrayList<>(size);
             for (int i = 0; i < size; ++i) {
                 Object element = elements[i];
                 if (select(viewer, parent, element)) {

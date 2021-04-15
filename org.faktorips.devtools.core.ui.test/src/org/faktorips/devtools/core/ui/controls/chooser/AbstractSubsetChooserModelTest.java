@@ -41,16 +41,16 @@ public class AbstractSubsetChooserModelTest {
 
     @Test
     public void calculatePredefinedValuesBothEmpty() {
-        List<ListChooserValue> allValues = new ArrayList<ListChooserValue>();
-        List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> allValues = new ArrayList<>();
+        List<ListChooserValue> resultingValues = new ArrayList<>();
         List<ListChooserValue> preDefinedValues = letModelCalculatePredefinedValues(allValues, resultingValues);
         assertTrue(preDefinedValues.isEmpty());
     }
 
     @Test
     public void calculatePredefinedValuesEmptyAllValues() {
-        List<ListChooserValue> allValues = new ArrayList<ListChooserValue>();
-        List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> allValues = new ArrayList<>();
+        List<ListChooserValue> resultingValues = new ArrayList<>();
         resultingValues.add(new ListChooserValue("A"));
         resultingValues.add(new ListChooserValue("B"));
         resultingValues.add(new ListChooserValue("1"));
@@ -62,12 +62,12 @@ public class AbstractSubsetChooserModelTest {
 
     @Test
     public void calculatePredefinedValuesEmptyResultingValues() {
-        List<ListChooserValue> allValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> allValues = new ArrayList<>();
         allValues.add(new ListChooserValue("A"));
         allValues.add(new ListChooserValue("B"));
         allValues.add(new ListChooserValue("1"));
         allValues.add(new ListChooserValue("2"));
-        List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> resultingValues = new ArrayList<>();
 
         List<ListChooserValue> preDefinedValues = letModelCalculatePredefinedValues(allValues, resultingValues);
         assertFalse(preDefinedValues.isEmpty());
@@ -76,12 +76,12 @@ public class AbstractSubsetChooserModelTest {
 
     @Test
     public void calculatePredefinedValuesAndTestOrder() {
-        List<ListChooserValue> allValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> allValues = new ArrayList<>();
         allValues.add(new ListChooserValue("A"));
         allValues.add(new ListChooserValue("B"));
         allValues.add(new ListChooserValue("1"));
         allValues.add(new ListChooserValue("2"));
-        List<ListChooserValue> resultingValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> resultingValues = new ArrayList<>();
         resultingValues.add(new ListChooserValue("1"));
         resultingValues.add(new ListChooserValue("B"));
 

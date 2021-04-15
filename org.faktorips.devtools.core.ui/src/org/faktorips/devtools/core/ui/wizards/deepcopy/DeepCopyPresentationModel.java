@@ -74,7 +74,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
                     productCmptGeneration.getProductCmpt(), null);
         } catch (CoreException e) {
             IpsPlugin.log(e);
-            generationDatesInternal = new ArrayList<GenerationDate>();
+            generationDatesInternal = new ArrayList<>();
         }
         generationDates = generationDatesInternal;
         setOldValidFromDate(productCmptGeneration.getValidFrom());

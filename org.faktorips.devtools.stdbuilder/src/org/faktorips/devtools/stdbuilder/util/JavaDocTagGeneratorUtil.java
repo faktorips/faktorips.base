@@ -34,7 +34,7 @@ public class JavaDocTagGeneratorUtil {
     }
 
     public static List<String> getJavaDocTags(IIpsObjectPartContainer element, StandardBuilderSet builderSet) {
-        ArrayList<String> javaDocTags = new ArrayList<String>();
+        ArrayList<String> javaDocTags = new ArrayList<>();
         if (element != null) {
             GenericGeneratorModelNode modelNode = builderSet.getModelNode(element, GenericGeneratorModelNode.class);
             String annotation = modelNode.getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC);

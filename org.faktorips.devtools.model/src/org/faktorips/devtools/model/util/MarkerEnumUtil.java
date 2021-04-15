@@ -41,7 +41,7 @@ public class MarkerEnumUtil {
     }
 
     private IEnumType getMarkerEnumFromProject() {
-        List<IIpsSrcFile> enumSrcFiles = new ArrayList<IIpsSrcFile>(ipsProject.getMarkerEnums());
+        List<IIpsSrcFile> enumSrcFiles = new ArrayList<>(ipsProject.getMarkerEnums());
         if (!enumSrcFiles.isEmpty()) {
             IEnumType enumType = (IEnumType)enumSrcFiles.get(0).getIpsObject();
             return enumType;
@@ -55,7 +55,7 @@ public class MarkerEnumUtil {
      */
     public Set<String> getDefinedMarkerIds() {
         List<IEnumValue> allDefinedMarkerIds = getAllMarkers();
-        Set<String> definedMarkerIds = new LinkedHashSet<String>();
+        Set<String> definedMarkerIds = new LinkedHashSet<>();
         for (IEnumValue marker : allDefinedMarkerIds) {
             definedMarkerIds.add(getIdFor(marker));
         }

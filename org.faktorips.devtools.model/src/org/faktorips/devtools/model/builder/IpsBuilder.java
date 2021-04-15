@@ -93,7 +93,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
      * The key is the name of the IpsProject, the value the last modification time stamp of the
      * IpsProjectProperties from the last build.
      */
-    private Map<String, Long> lastModificationTimestampForBuilderSets = new HashMap<String, Long>();
+    private Map<String, Long> lastModificationTimestampForBuilderSets = new HashMap<>();
 
     public IpsBuilder() {
         super();
@@ -401,11 +401,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
     private void collectIpsSrcFilesForFullBuild(List<IIpsSrcFile> allIpsSrcFiles) throws CoreException {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
-            if (!roots[i].isBasedOnSourceFolder()) {
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (!root.isBasedOnSourceFolder()) {
                 continue;
             }
-            IIpsPackageFragment[] packs = roots[i].getIpsPackageFragments();
+            IIpsPackageFragment[] packs = root.getIpsPackageFragments();
             for (IIpsPackageFragment pack : packs) {
                 IIpsElement[] elements = pack.getChildren();
                 for (IIpsElement element : elements) {
@@ -438,7 +438,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         long begin = System.currentTimeMillis();
 
         try {
-            List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<IIpsSrcFile>();
+            List<IIpsSrcFile> allIpsSrcFiles = new ArrayList<>();
             collectIpsSrcFilesForFullBuild(allIpsSrcFiles);
             monitor.beginTask("full build", 2 * allIpsSrcFiles.size()); //$NON-NLS-1$
             getDependencyGraph(getIpsProject()).reInit();
@@ -473,14 +473,14 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     protected void clean(IProgressMonitor monitor) throws CoreException {
         getIpsProject().clearCaches();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
-        for (int i = 0; i < roots.length; i++) {
+        for (IIpsPackageFragmentRoot root : roots) {
             if (monitor.isCanceled()) {
                 return;
             }
-            if (!roots[i].isBasedOnSourceFolder()) {
+            if (!root.isBasedOnSourceFolder()) {
                 continue;
             }
-            IPackageFragmentRoot destination = roots[i].getArtefactDestination(true);
+            IPackageFragmentRoot destination = root.getArtefactDestination(true);
             if (destination == null) {
                 continue;
             }
@@ -596,7 +596,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                  * for each project at this point.
                  */
                 ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(ipsProject);
-                Set<QualifiedNameType> alreadyBuild = new HashSet<QualifiedNameType>(dependencySet.size());
+                Set<QualifiedNameType> alreadyBuild = new HashSet<>(dependencySet.size());
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {
                     if (!ipsProject.equals(getIpsProject())) {
@@ -668,7 +668,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     }
 
     void createMarkersFromMessageList(IResource resource, MessageList list, String markerType) throws CoreException {
-        List<IMarker> markers = new ArrayList<IMarker>(
+        List<IMarker> markers = new ArrayList<>(
                 Arrays.asList(resource.findMarkers(markerType, true, IResource.DEPTH_ZERO)));
         for (int i = 0; i < list.size(); i++) {
             Message msg = list.getMessage(i);
@@ -754,8 +754,8 @@ public class IpsBuilder extends IncrementalProjectBuilder {
 
         private final IIpsSrcFolderEntry[] sourceFolderEntries;
 
-        private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
-        private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
+        private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<>(100);
+        private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<>(100);
 
         private IncBuildVisitor(IIpsProject ipsProject) {
             sourceFolderEntries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getSourceFolderEntries();

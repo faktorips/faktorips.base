@@ -75,7 +75,7 @@ public abstract class AbstractAddTableContentsHandler extends AbstractHandler {
             return;
         }
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
+        TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<>(
                 IProductCmptReference.class, selection);
         if (typedSelection.isValid()) {
             IProductCmptReference cmptReference = typedSelection.getFirstElement();

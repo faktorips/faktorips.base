@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-
 import org.eclipse.core.runtime.IPath;
 
 /**

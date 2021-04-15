@@ -187,27 +187,23 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     @Override
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        IWorkspaceRunnable run = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProgressMonitor pm = monitor;
-                if (monitor == null) {
-                    pm = new NullProgressMonitor();
-                }
-
-                pm.beginTask("Move", sourceObjects.length); //$NON-NLS-1$
-                for (int i = 0; i < sourceObjects.length; i++) {
-                    pm.internalWorked(1);
-                    Object toMove = sourceObjects[i];
-                    if (toMove instanceof IFile) {
-                        moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i], pm);
-                    } else if (toMove instanceof File) {
-                        moveNoneIpsElement((File)sourceObjects[i], targetNames[i], pm);
-                    }
-                }
-                pm.done();
+        IWorkspaceRunnable run = monitor1 -> {
+            IProgressMonitor pm = monitor1;
+            if (monitor1 == null) {
+                pm = new NullProgressMonitor();
             }
+
+            pm.beginTask("Move", sourceObjects.length); //$NON-NLS-1$
+            for (int i = 0; i < sourceObjects.length; i++) {
+                pm.internalWorked(1);
+                Object toMove = sourceObjects[i];
+                if (toMove instanceof IFile) {
+                    moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i], pm);
+                } else if (toMove instanceof File) {
+                    moveNoneIpsElement((File)sourceObjects[i], targetNames[i], pm);
+                }
+            }
+            pm.done();
         };
 
         try {
@@ -235,26 +231,18 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
     }
 
     private void copyNoneIpsElement(final String fileName, final String targetName, final IProgressMonitor pm) {
-        Display.getDefault().syncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                IContainer targetFolder = getTargetContainer(targetName);
-                CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
-                operation.copyFilesInCurrentThread(new String[] { fileName }, targetFolder, pm);
-            }
+        Display.getDefault().syncExec(() -> {
+            IContainer targetFolder = getTargetContainer(targetName);
+            CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
+            operation.copyFilesInCurrentThread(new String[] { fileName }, targetFolder, pm);
         });
     }
 
     private void moveNoneIpsElement(final IFile sourceFile, final String targetName, final IProgressMonitor pm) {
-        Display.getDefault().syncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                final IContainer targetFolder = getTargetContainer(targetName);
-                MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getShell());
-                operation.copyResourcesInCurrentThread(new IResource[] { sourceFile }, targetFolder, pm);
-            }
+        Display.getDefault().syncExec(() -> {
+            final IContainer targetFolder = getTargetContainer(targetName);
+            MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getShell());
+            operation.copyResourcesInCurrentThread(new IResource[] { sourceFile }, targetFolder, pm);
         });
     }
 

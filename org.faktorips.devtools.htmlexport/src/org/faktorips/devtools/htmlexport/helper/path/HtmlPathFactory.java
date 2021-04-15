@@ -45,7 +45,8 @@ public class HtmlPathFactory {
             return new IpsSrcFileHtmlPath(((IIpsObject)ipsElement).getIpsSrcFile());
         }
         throw new NotImplementedException(
-                "There is no IIpsElementHtmlPath for the IIpsElement of the type " + ipsElement.getClass().getCanonicalName()); //$NON-NLS-1$
+                "There is no IIpsElementHtmlPath for the IIpsElement of the type " //$NON-NLS-1$
+                        + ipsElement.getClass().getCanonicalName());
     }
 
     public static IHtmlPath createPathUtil(IpsObjectType ipsObjectType) {

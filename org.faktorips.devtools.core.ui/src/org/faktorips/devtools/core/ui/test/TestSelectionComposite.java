@@ -17,9 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
@@ -58,7 +56,7 @@ import org.faktorips.util.ArgumentCheck;
 public class TestSelectionComposite extends Composite {
     private UIToolkit toolkit;
 
-    private List<ITestConfigurationChangeListener> listeners = new ArrayList<ITestConfigurationChangeListener>(1);
+    private List<ITestConfigurationChangeListener> listeners = new ArrayList<>(1);
 
     // buttons
     private Button newButton;
@@ -70,7 +68,7 @@ public class TestSelectionComposite extends Composite {
 
     private TableViewer viewer;
 
-    private List<Object> content = new ArrayList<Object>();
+    private List<Object> content = new ArrayList<>();
 
     private IIpsProject project;
 
@@ -87,12 +85,7 @@ public class TestSelectionComposite extends Composite {
         tableWithBtns.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         viewer = createViewer(tableWithBtns);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledStates();
-            }
-        });
+        viewer.addSelectionChangedListener($ -> updateButtonEnabledStates());
 
         Composite buttons = toolkit.createComposite(tableWithBtns);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -247,7 +240,7 @@ public class TestSelectionComposite extends Composite {
     }
 
     private void moveParts(boolean up) {
-        ListElementMover<Object> mover = new ListElementMover<Object>(content);
+        ListElementMover<Object> mover = new ListElementMover<>(content);
         mover.move(viewer.getTable().getSelectionIndices(), up);
         viewer.refresh();
         notifyListener();
@@ -264,11 +257,11 @@ public class TestSelectionComposite extends Composite {
             if (dialog.open() == Window.OK) {
                 Object[] result = dialog.getResult();
                 Object lastAdded = null;
-                for (int i = 0; i < result.length; i++) {
-                    if (!content.contains(result[i])) {
-                        content.add(result[i]);
+                for (Object element : result) {
+                    if (!content.contains(element)) {
+                        content.add(element);
                     }
-                    lastAdded = result[i];
+                    lastAdded = element;
                 }
                 viewer.refresh();
                 if (lastAdded != null) {
@@ -303,14 +296,14 @@ public class TestSelectionComposite extends Composite {
      * Returns all ips package fragments of all projects in the current workspace.
      */
     private IIpsPackageFragment[] getPackageFragments() {
-        ArrayList<IIpsPackageFragment> packageFragmentList = new ArrayList<IIpsPackageFragment>();
+        ArrayList<IIpsPackageFragment> packageFragmentList = new ArrayList<>();
         try {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
-            for (int j = 0; j < roots.length; j++) {
-                if (!roots[j].isBasedOnSourceFolder()) {
+            for (IIpsPackageFragmentRoot root : roots) {
+                if (!root.isBasedOnSourceFolder()) {
                     continue;
                 }
-                IIpsPackageFragment[] childs = roots[j].getIpsPackageFragments();
+                IIpsPackageFragment[] childs = root.getIpsPackageFragments();
                 for (IIpsPackageFragment child : childs) {
                     packageFragmentList.add(child);
                 }
@@ -331,7 +324,7 @@ public class TestSelectionComposite extends Composite {
     public IIpsObject[] getAllIpsTestObjects() throws CoreException {
         List<IIpsSrcFile> allIpsSrcFiles = project.findAllIpsSrcFiles(IpsObjectType.TEST_CASE,
                 IpsObjectType.PRODUCT_CMPT);
-        List<IIpsObject> list = new ArrayList<IIpsObject>();
+        List<IIpsObject> list = new ArrayList<>();
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiles) {
             list.add(ipsSrcFile.getIpsObject());
         }
@@ -381,7 +374,7 @@ public class TestSelectionComposite extends Composite {
     }
 
     public String getPackageFragmentRootText() {
-        List<String> roots = new ArrayList<String>();
+        List<String> roots = new ArrayList<>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {
@@ -401,7 +394,7 @@ public class TestSelectionComposite extends Composite {
     }
 
     public String getTestCasesText() {
-        List<String> testSuites = new ArrayList<String>();
+        List<String> testSuites = new ArrayList<>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {

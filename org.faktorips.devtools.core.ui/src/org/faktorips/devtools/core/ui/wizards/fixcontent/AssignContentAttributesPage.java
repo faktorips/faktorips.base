@@ -16,8 +16,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -63,7 +61,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         this.contentType = contentType;
         this.uiToolkit = uiToolkit;
         this.contentStrategy = contentStrategy;
-        availableColumns = new ArrayList<String>();
+        availableColumns = new ArrayList<>();
         availableColumns.add(Messages.FixContentWizard_assignColumnsCreateNewColumn);
         List<IPartReference> contentAttributeReferences = contentStrategy.getContentAttributeReferences();
         for (int i = 0; i < contentStrategy.getContentAttributeReferencesCount(); i++) {
@@ -109,7 +107,8 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         List<E> contentAttributes = contentStrategy.getContentAttributesIncludeSupertypeCopies(contentType, false);
         for (int i = 0; i < numberContentAttributes; i++) {
             E currentContentAttribute = contentAttributes.get(i);
-            String localizedLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentContentAttribute);
+            String localizedLabel = IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedLabel(currentContentAttribute);
             labels[i] = uiToolkit.createFormLabel(contents, localizedLabel + ':');
             combos[i] = uiToolkit.createCombo(contents);
             for (int j = 0; j < availableColumns.size(); j++) {
@@ -118,12 +117,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
                 }
                 String listItem = (j == 0) ? "" : AVAIABLECOLUMN_PREFIX; //$NON-NLS-1$
                 combos[i].add(listItem + availableColumns.get(j));
-                combos[i].addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent event) {
-                        combosModified();
-                    }
-                });
+                combos[i].addModifyListener($ -> combosModified());
             }
         }
         // Initialize combo selections (column name to attribute name)
@@ -161,7 +155,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         setMessage(Messages.FixContentWizard_msgAssignColumns);
 
         boolean pageComplete = true;
-        List<String> chosenColumns = new ArrayList<String>();
+        List<String> chosenColumns = new ArrayList<>();
         for (int i = 0; i < combos.length; i++) {
             String currentComboText = combos[i].getText();
             if (currentComboText.length() == 0) {
@@ -219,8 +213,8 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
      * are assigned, {@code null} is never returned.
      */
     public List<Integer> getCurrentlyNotAssignedColumns() {
-        List<Integer> currentlyNotAssignedColumns = new ArrayList<Integer>();
-        List<String> assignedColumnNames = new ArrayList<String>(availableColumns.size());
+        List<Integer> currentlyNotAssignedColumns = new ArrayList<>();
+        List<String> assignedColumnNames = new ArrayList<>(availableColumns.size());
         for (Combo currentCombo : combos) {
             String comboText = currentCombo.getText();
             if (comboText.length() == 0) {

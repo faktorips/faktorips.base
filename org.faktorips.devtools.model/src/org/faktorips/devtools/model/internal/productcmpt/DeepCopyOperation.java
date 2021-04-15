@@ -131,11 +131,11 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         final Set<Object> objectsToRefer = collectObjectsToRefer();
 
         // maps used to fix the targets (table usages or links) on the new productCmpt
-        final Map<TblContentUsageData, String> tblContentData2newTableContentQName = new HashMap<TblContentUsageData, String>();
-        final Map<LinkData, String> linkData2newProductCmptQName = new HashMap<LinkData, String>();
+        final Map<TblContentUsageData, String> tblContentData2newTableContentQName = new HashMap<>();
+        final Map<LinkData, String> linkData2newProductCmptQName = new HashMap<>();
 
-        Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<IProductCmpt, IProductCmpt>();
-        List<IIpsObject> newIpsObjects = new ArrayList<IIpsObject>();
+        Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld = new Hashtable<>();
+        List<IIpsObject> newIpsObjects = new ArrayList<>();
         for (IProductCmptStructureReference element : copyElements) {
             IIpsObject newIpsObject = createNewIpsObjectIfNecessary(element, productNew2ProductOld, oldValidFrom,
                     newValidFrom, monitor);
@@ -208,7 +208,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     /* private */ void copySortOrder(Map<IProductCmpt, IProductCmpt> productNew2ProductOld, IProgressMonitor monitor) {
-        Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile = new HashMap<IIpsSrcFile, IIpsSrcFile>(
+        Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile = new HashMap<>(
                 productNew2ProductOld.size());
         for (Entry<IProductCmpt, IProductCmpt> entry : productNew2ProductOld.entrySet()) {
             old2NewSrcFile.put(entry.getValue().getIpsSrcFile(), entry.getKey().getIpsSrcFile());
@@ -242,7 +242,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     protected void copySortOrder(IIpsElement[] elements,
             Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile,
             IIpsPackageFragment targetParent) {
-        List<IIpsElement> copiedElements = new ArrayList<IIpsElement>(elements.length);
+        List<IIpsElement> copiedElements = new ArrayList<>(elements.length);
         for (IIpsElement element : elements) {
             if (element instanceof IIpsSrcFile) {
                 IIpsElement newElement = old2NewSrcFile.get(element);
@@ -351,7 +351,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     private Set<Object> collectObjectsToRefer() {
-        Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<Object>();
+        Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<>();
         for (IProductCmptStructureReference productCmptStructureReference : linkElements) {
             if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference) {
                 final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReference;

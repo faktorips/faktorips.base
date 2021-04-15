@@ -20,9 +20,9 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.productcmpt.AbstractProductCmptNamingStrategy;
 import org.faktorips.devtools.model.internal.productcmpt.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

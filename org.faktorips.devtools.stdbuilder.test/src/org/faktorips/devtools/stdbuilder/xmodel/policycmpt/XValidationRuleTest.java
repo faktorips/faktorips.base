@@ -64,7 +64,7 @@ public class XValidationRuleTest {
 
     @Test
     public void testConvertToJavaParameters() throws Exception {
-        LinkedHashSet<String> parameters = new LinkedHashSet<String>();
+        LinkedHashSet<String> parameters = new LinkedHashSet<>();
         LinkedHashSet<String> javaParameters = xValidationRule.convertToJavaParameters(parameters);
         assertTrue(javaParameters.isEmpty());
 
@@ -95,8 +95,8 @@ public class XValidationRuleTest {
         DatatypeHelper datahelper = mock(DatatypeHelper.class);
         IEnumType enumType = mock(IEnumType.class);
         IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
-        List<String> values = new ArrayList<String>();
-        LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<IIpsSrcFile>();
+        List<String> values = new ArrayList<>();
+        LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
         values.add("id");
         srcFiles.add(enumTypeSrcFile);
 

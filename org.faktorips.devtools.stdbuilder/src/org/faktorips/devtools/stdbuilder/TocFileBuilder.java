@@ -87,7 +87,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
 
     // a map that contains the table of contents objects (value) for each table of contents file.
-    private Map<IFile, TableOfContent> tocFileMap = new HashMap<IFile, TableOfContent>();
+    private Map<IFile, TableOfContent> tocFileMap = new HashMap<>();
 
     private Map<IpsObjectType, List<ITocEntryBuilder>> ipsObjectTypeToTocEntryBuilderMap;
 
@@ -99,11 +99,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     protected void initExtensionBuilders() {
         List<ITocEntryBuilderFactory> tocEntryBuilderFactories = StdBuilderPlugin.getDefault()
                 .getTocEntryBuilderFactories();
-        ipsObjectTypeToTocEntryBuilderMap = new HashMap<IpsObjectType, List<ITocEntryBuilder>>();
+        ipsObjectTypeToTocEntryBuilderMap = new HashMap<>();
         for (ITocEntryBuilderFactory tocEntryBuilderFactory : tocEntryBuilderFactories) {
             ITocEntryBuilder builder = tocEntryBuilderFactory.createTocEntryBuilder(this);
             IpsObjectType ipsObjectType = builder.getIpsObjectType();
-            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.computeIfAbsent(ipsObjectType, $ -> new ArrayList<ITocEntryBuilder>());
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.computeIfAbsent(ipsObjectType,
+                    $ -> new ArrayList<>());
             builderList.add(builder);
         }
     }
@@ -185,7 +186,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         String xml = null;
         try {
-                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+            Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
             IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
@@ -253,7 +254,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 InputStream is = tocFile.getContents(true);
                 Document doc;
                 try {
-                                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                    DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
                     doc = builder.parse(is);
                 } catch (IOException ioe) {
                     // can happen if the file is deleted in the filesystem, but the workspace has
@@ -282,7 +283,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IIpsObject object = null;
         try {
-            List<TocEntryObject> entries = new ArrayList<TocEntryObject>();
+            List<TocEntryObject> entries = new ArrayList<>();
             object = ipsSrcFile.getIpsObject();
             if (!object.isValid(getIpsProject())) {
                 return;
@@ -364,7 +365,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             ProductCmptTocEntry entry) {
 
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
+        List<GenerationTocEntry> genEntries = new ArrayList<>(generations.length);
         for (IIpsObjectGeneration generation : generations) {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
             if (validFrom == null) {

@@ -95,11 +95,11 @@ public class AbstractRuntimeRepositoryMockTest {
     @Test
     public void testGetEnumValuesReferencedContent() throws Exception {
         ExtensibleEnum myEnum = mock(ExtensibleEnum.class);
-        List<ExtensibleEnum> list = new ArrayList<ExtensibleEnum>();
+        List<ExtensibleEnum> list = new ArrayList<>();
         list.add(myEnum);
         initRepositoryReferences(repositoryA, repositoryB, repositoryC, repositoryD);
         doReturn(list).when(repositoryD).getEnumValuesInternal(ExtensibleEnum.class);
-        List<ExtensibleEnum> expected = new ArrayList<ExtensibleEnum>(ExtensibleEnum.VALUES);
+        List<ExtensibleEnum> expected = new ArrayList<>(ExtensibleEnum.VALUES);
         expected.addAll(list);
 
         List<ExtensibleEnum> enumValues = repositoryA.getEnumValues(ExtensibleEnum.class);
@@ -110,7 +110,7 @@ public class AbstractRuntimeRepositoryMockTest {
     @Test
     public void testGetEnumValuesNoContent() throws Exception {
         initRepositoryReferences(repositoryA, repositoryB, repositoryC, repositoryD);
-        List<ExtensibleEnum> expected = new ArrayList<ExtensibleEnum>(ExtensibleEnum.VALUES);
+        List<ExtensibleEnum> expected = new ArrayList<>(ExtensibleEnum.VALUES);
 
         List<ExtensibleEnum> enumValues = repositoryA.getEnumValues(ExtensibleEnum.class);
 

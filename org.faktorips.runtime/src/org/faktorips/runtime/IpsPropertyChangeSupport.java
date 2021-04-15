@@ -28,7 +28,7 @@ public class IpsPropertyChangeSupport extends PropertyChangeSupport {
 
     private final Object sourceBean;
 
-    private final List<PropertyChangeListener> childChangeListeners = new CopyOnWriteArrayList<PropertyChangeListener>();
+    private final List<PropertyChangeListener> childChangeListeners = new CopyOnWriteArrayList<>();
 
     public IpsPropertyChangeSupport(Object sourceBean) {
         super(sourceBean);

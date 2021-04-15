@@ -276,12 +276,12 @@ public class Message implements Serializable {
             this.markers = Collections.emptySet();
         }
         if (invalidObjectProperties != null) {
-            invalidOp = Collections.unmodifiableList(new ArrayList<ObjectProperty>(invalidObjectProperties));
+            invalidOp = Collections.unmodifiableList(new ArrayList<>(invalidObjectProperties));
         } else {
             invalidOp = Collections.emptyList();
         }
         if (parameters != null) {
-            replacementParameters = Collections.unmodifiableList(new ArrayList<MsgReplacementParameter>(parameters));
+            replacementParameters = Collections.unmodifiableList(new ArrayList<>(parameters));
         } else {
             replacementParameters = Collections.emptyList();
         }
@@ -338,7 +338,7 @@ public class Message implements Serializable {
      */
     public static final Message createCopy(Message msg, Object oldObject, Object newObject) {
         List<ObjectProperty> op = msg.getInvalidObjectProperties();
-        List<ObjectProperty> newOp = new ArrayList<ObjectProperty>(op.size());
+        List<ObjectProperty> newOp = new ArrayList<>(op.size());
         for (ObjectProperty objectProperty : op) {
             if (objectProperty.getObject() == oldObject) {
                 newOp.add(new ObjectProperty(newObject, objectProperty.getProperty()));
@@ -359,7 +359,7 @@ public class Message implements Serializable {
      */
     public static final Message createCopy(Message msg, Map<ObjectProperty, ObjectProperty> objectPropertyMap) {
         List<ObjectProperty> op = msg.getInvalidObjectProperties();
-        List<ObjectProperty> newOp = new ArrayList<ObjectProperty>(op.size());
+        List<ObjectProperty> newOp = new ArrayList<>(op.size());
         for (ObjectProperty objectProperty : op) {
             ObjectProperty newObjectProperty = objectPropertyMap.get(objectProperty);
             if (newObjectProperty != null) {
@@ -499,7 +499,7 @@ public class Message implements Serializable {
      */
     public List<ObjectProperty> getInvalidObjectProperties() {
         if (invalidOp == null) {
-            return new ArrayList<ObjectProperty>(0);
+            return new ArrayList<>(0);
         }
         return Collections.unmodifiableList(invalidOp);
     }
@@ -520,7 +520,7 @@ public class Message implements Serializable {
      */
     public List<MsgReplacementParameter> getReplacementParameters() {
         if (replacementParameters == null) {
-            return new ArrayList<MsgReplacementParameter>(0);
+            return new ArrayList<>(0);
         }
         return replacementParameters;
     }
@@ -760,7 +760,7 @@ public class Message implements Serializable {
          * 
          */
         public Builder invalidObject(ObjectProperty invalidObjectProperty) {
-            return invalidObjects(new ObjectProperty[] { invalidObjectProperty });
+            return invalidObjects(invalidObjectProperty);
         }
 
         /**
@@ -783,7 +783,7 @@ public class Message implements Serializable {
          * 
          */
         public Builder invalidObjectWithProperties(Object object, String... properties) {
-            invalidObjectProperties = new ArrayList<ObjectProperty>();
+            invalidObjectProperties = new ArrayList<>();
             if (properties.length == 0) {
                 invalidObjectProperties.add(new ObjectProperty(object));
             } else {
@@ -846,7 +846,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder markers(IMarker... markers) {
-            this.markers = new HashSet<IMarker>(Arrays.asList(markers));
+            this.markers = new HashSet<>(Arrays.asList(markers));
             return this;
         }
 

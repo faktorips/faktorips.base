@@ -24,7 +24,7 @@ public class TreeViewerRefreshAction extends RefreshAction {
 
     public TreeViewerRefreshAction(IWorkbenchPartSite site) {
         super(site);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")); //$NON-NLS-1$)
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")); //$NON-NLS-1$ )
     }
 
     /**

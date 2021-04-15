@@ -51,7 +51,7 @@ public class BusinessFunctionRefControl extends IpsObjectRefControl {
         if (currentBusinessFunction == null) {
             return bfSrcFiles;
         }
-        ArrayList<IIpsSrcFile> remaining = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> remaining = new ArrayList<>();
         IIpsSrcFile currentBfSrcFile = currentBusinessFunction.getIpsSrcFile();
         for (IIpsSrcFile ipsSrcFile : bfSrcFiles) {
             if (!currentBfSrcFile.equals(ipsSrcFile)) {

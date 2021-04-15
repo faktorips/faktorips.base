@@ -100,7 +100,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
     @Override
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-        return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        return new LinkedHashMap<>();
     }
 
     @Override

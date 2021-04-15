@@ -36,7 +36,7 @@ public class SubtypeComponentNode extends ComponentNode {
     static List<SubtypeComponentNode> encapsulateSubtypeComponentTypes(Collection<IType> components,
             ComponentNode parent,
             IIpsProject sourceProject) {
-        List<SubtypeComponentNode> componentNodes = new ArrayList<SubtypeComponentNode>();
+        List<SubtypeComponentNode> componentNodes = new ArrayList<>();
         for (IType component : components) {
             SubtypeComponentNode componentNode = new SubtypeComponentNode(component, parent, sourceProject);
             componentNode.setParent(parent);

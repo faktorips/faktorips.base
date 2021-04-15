@@ -19,9 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -116,16 +114,12 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditorSite());
 
         TableViewer tab = enumValuesSection.getEnumValueTableViewer();
-        tab.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
-            }
-        });
+        tab.addSelectionChangedListener(
+                event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
-        List<Integer> rowNumbers = new ArrayList<Integer>();
+        List<Integer> rowNumbers = new ArrayList<>();
         if (!selection.isEmpty()) {
             Collection<IEnumValue> rows = TypedSelection.createAnyCount(IEnumValue.class, selection).getElements();
             for (IEnumValue row : rows) {

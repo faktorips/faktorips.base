@@ -126,7 +126,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
         // test with primitive datatype
         Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> list = new ArrayList<Datatype>();
+        ArrayList<Datatype> list = new ArrayList<>();
         list.addAll(Arrays.asList(vds));
         list.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();

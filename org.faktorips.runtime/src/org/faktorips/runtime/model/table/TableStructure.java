@@ -64,7 +64,7 @@ public class TableStructure extends ModelElement {
      * @return columns of the table as {@link TableColumn}
      */
     public List<TableColumn> getColumns() {
-        return new ArrayList<TableColumn>(columnModels.values());
+        return new ArrayList<>(columnModels.values());
     }
 
     /**
@@ -106,7 +106,7 @@ public class TableStructure extends ModelElement {
      * @see #getValue(Object, TableColumn)
      */
     public List<Object> getValues(Object tableRow) {
-        List<Object> values = new ArrayList<Object>();
+        List<Object> values = new ArrayList<>();
 
         for (TableColumn column : columnModels.values()) {
             values.add(getValue(tableRow, column));

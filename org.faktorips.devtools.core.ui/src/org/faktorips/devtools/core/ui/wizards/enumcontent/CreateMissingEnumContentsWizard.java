@@ -20,8 +20,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -35,8 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -190,12 +186,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             viewer.setInput(this);
             // input element can be anything (but an existing package name including the default
             // package name ""
-            viewer.addCheckStateListener(new ICheckStateListener() {
-                @Override
-                public void checkStateChanged(CheckStateChangedEvent event) {
-                    setPageComplete(checkPageCompleteCondition());
-                }
-            });
+            viewer.addCheckStateListener($ -> setPageComplete(checkPageCompleteCondition()));
             viewer.setComparator(new ViewerComparator());
             viewer.expandAll();
             setAllChecked(true);
@@ -213,20 +204,10 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             selectionButtonsComposite.setLayout(buttonLayout);
             Button selectAllButton = new Button(selectionButtonsComposite, SWT.NONE);
             selectAllButton.setText(Messages.SelectEnumContentsPage_buttonSelectAll);
-            selectAllButton.addListener(SWT.Selection, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    setAllChecked(true);
-                }
-            });
+            selectAllButton.addListener(SWT.Selection, $ -> setAllChecked(true));
             Button deselectAllButton = new Button(selectionButtonsComposite, SWT.NONE);
             deselectAllButton.setText(Messages.SelectEnumContentsPage_buttonDeselectAll);
-            deselectAllButton.addListener(SWT.Selection, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    setAllChecked(false);
-                }
-            });
+            deselectAllButton.addListener(SWT.Selection, $ -> setAllChecked(false));
         }
 
         /**
@@ -402,13 +383,13 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             /** Creates the <code>EnumContentsContentProvider</code>. */
             public EnumContentsContentProvider() {
-                treeStructure = new HashMap<IIpsPackageFragment, List<IEnumType>>();
+                treeStructure = new HashMap<>();
             }
 
             @Override
             public Object[] getElements(Object inputElement) {
                 treeStructure.clear();
-                List<IIpsPackageFragment> elements = new ArrayList<IIpsPackageFragment>();
+                List<IIpsPackageFragment> elements = new ArrayList<>();
                 IIpsProject targetProject = getTargetIpsProject();
                 IIpsPackageFragmentRoot targetRoot = getTargetPackageFragmentRoot();
                 if (targetProject != null) {
@@ -416,7 +397,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                         String enumContentName = currentEnumType.getEnumContentName();
                         String currentPackName = StringUtil.getPackageName(enumContentName);
                         IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(currentPackName);
-                        List<IEnumType> list = treeStructure.computeIfAbsent(pack, $ -> new ArrayList<IEnumType>());
+                        List<IEnumType> list = treeStructure.computeIfAbsent(pack, $ -> new ArrayList<>());
                         if (!list.contains(currentEnumType)) {
                             list.add(currentEnumType);
                         }
@@ -440,7 +421,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             @Override
             public Object[] getChildren(Object parentElement) {
-                List<Object> children = new LinkedList<Object>();
+                List<Object> children = new LinkedList<>();
                 if (parentElement instanceof IIpsPackageFragment) {
                     children.addAll(treeStructure.get(parentElement));
                 }
@@ -459,7 +440,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
              */
             private List<IEnumType> findEnumTypesNeedingEnumContent(IIpsProject ipsProject) {
                 List<IEnumType> enumTypesInProject = ipsProject.findEnumTypes(false, true);
-                List<IEnumType> retEnumTypes = new ArrayList<IEnumType>(enumTypesInProject.size() / 2);
+                List<IEnumType> retEnumTypes = new ArrayList<>(enumTypesInProject.size() / 2);
                 for (IEnumType currentEnumType : enumTypesInProject) {
                     String enumContentName = currentEnumType.getEnumContentName();
                     if (currentEnumType.isInextensibleEnum() || enumContentName.length() == 0) {

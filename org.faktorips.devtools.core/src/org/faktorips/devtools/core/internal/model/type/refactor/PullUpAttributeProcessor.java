@@ -42,7 +42,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         result.add(getIpsSrcFile());
         result.add(getTarget().getIpsSrcFile());
         return result;
@@ -88,7 +88,6 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
         if (getType().findSupertype(getIpsProject()) == null) {
             status.addFatalError(NLS.bind(Messages.PullUpAttributeProcessor_msgSupertypeCouldNotBeFound, getType()
                     .getSupertype()));
-            return;
         }
     }
 
@@ -123,7 +122,6 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
             visitor.start(getTargetType());
             if (!visitor.baseOfOverriddenAttributeFound) {
                 status.addFatalError(Messages.PullUpAttributeProcessor_msgBaseOfOverwrittenAttributeNotFound);
-                return;
             }
         }
     }

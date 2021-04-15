@@ -74,7 +74,7 @@ public class ImportHandler {
      * @return The set of import statements collected by this import handler
      */
     public Set<ImportStatement> getImports() {
-        return new LinkedHashSet<ImportStatement>(classNameToImportStatementMap.values());
+        return new LinkedHashSet<>(classNameToImportStatementMap.values());
     }
 
     /**
@@ -83,7 +83,7 @@ public class ImportHandler {
      * @return The set of static import statements collected by this import handler
      */
     public Set<StaticImportStatement> getStaticImports() {
-        return new LinkedHashSet<StaticImportStatement>(qualifiedPropertyNameToStaticImportStatementMap.values());
+        return new LinkedHashSet<>(qualifiedPropertyNameToStaticImportStatementMap.values());
     }
 
     /**
@@ -116,7 +116,7 @@ public class ImportHandler {
     }
 
     private List<TypeDeclaration> getTypeWithGenericDeclarations(String[] generics) {
-        List<TypeDeclaration> genericTypeDeclarations = new ArrayList<TypeDeclaration>();
+        List<TypeDeclaration> genericTypeDeclarations = new ArrayList<>();
         for (String genericImportDeclaration : generics) {
             TypeDeclaration typeDeclaration = addImportStatements(genericImportDeclaration);
             genericTypeDeclarations.add(typeDeclaration);

@@ -74,11 +74,11 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * @param structure the structure containing all references a status should be initialized for
      */
     public void initialize(IProductCmptTreeStructure structure) {
-        treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
-        associationLinks = new HashMap<IProductCmptLink, IProductCmpt>();
+        treeStatus = new HashMap<>();
+        associationLinks = new HashMap<>();
         IProductCmpt rootProductCmpt = structure.getRoot().getProductCmpt();
         root = rootProductCmpt.getIpsPackageFragment().getRoot();
-        HashMap<IProductCmptLink, IProductCmpt> associationLinksCopy = new HashMap<IProductCmptLink, IProductCmpt>();
+        HashMap<IProductCmptLink, IProductCmpt> associationLinksCopy = new HashMap<>();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
                 // no status for associations is needed
@@ -165,7 +165,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     private Map<IIpsObjectPart, LinkStatus> getStatusMap(IProductCmpt parent) {
-        return treeStatus.computeIfAbsent(parent, $ -> new HashMap<IIpsObjectPart, LinkStatus>());
+        return treeStatus.computeIfAbsent(parent, $ -> new HashMap<>());
     }
 
     /**
@@ -389,7 +389,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public Set<IProductCmptStructureReference> getAllEnabledElements(CopyOrLink copyOrLink,
             IProductCmptTreeStructure structure,
             boolean includeAssociations) {
-        HashSet<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
+        HashSet<IProductCmptStructureReference> result = new HashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
@@ -410,7 +410,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public Set<IProductCmptStructureReference> getAllElements(CopyOrLink copyOrLink,
             IProductCmptTreeStructure structure,
             boolean includeAssociations) {
-        HashSet<IProductCmptStructureReference> result = new HashSet<IProductCmptStructureReference>();
+        HashSet<IProductCmptStructureReference> result = new HashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
             if (reference instanceof IProductCmptTypeAssociationReference) {

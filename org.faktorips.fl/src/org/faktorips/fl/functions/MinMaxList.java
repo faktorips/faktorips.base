@@ -36,8 +36,7 @@ public class MinMaxList extends AbstractListFunction {
     }
 
     private CompilationResultImpl createInvalidDatatypeResult(Datatype basicDatatype) {
-        String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, new Object[] { getName(),
-                basicDatatype.getName() });
+        String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, getName(), basicDatatype.getName());
         return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, messageText));
     }
 

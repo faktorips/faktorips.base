@@ -130,7 +130,7 @@ public class MessagesProperties {
     }
 
     public Set<String> keySet() {
-        HashSet<String> result = new HashSet<String>();
+        HashSet<String> result = new HashSet<>();
         Set<Object> keySet = properties.keySet();
         for (Object object : keySet) {
             result.add(object.toString());
@@ -154,13 +154,13 @@ public class MessagesProperties {
 
         @Override
         public synchronized Enumeration<Object> keys() {
-            return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+            return Collections.enumeration(new TreeSet<>(super.keySet()));
         }
 
         @Override
         public Set<java.util.Map.Entry<Object, Object>> entrySet() {
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            TreeSet<java.util.Map.Entry<Object, Object>> treeSet = new TreeSet<java.util.Map.Entry<Object, Object>>(
+            @SuppressWarnings({ "rawtypes" })
+            TreeSet<java.util.Map.Entry<Object, Object>> treeSet = new TreeSet<>(
                     Comparator.comparing(e -> (Comparable)e.getKey()));
             treeSet.addAll(super.entrySet());
             return treeSet;

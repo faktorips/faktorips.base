@@ -42,7 +42,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
     public SimpleTypePartsReader(Class<P> parentAnnotation, NamesAccessor<P> namesAccessor,
             Class<C> childAnnotation, NameAccessor<C> nameAccessor, ModelElementCreator<E> modelElementCreator) {
         this.parentAnnotation = parentAnnotation;
-        collector = new SimpleGetterMethodCollector<E, P, C>(parentAnnotation, namesAccessor, childAnnotation,
+        collector = new SimpleGetterMethodCollector<>(parentAnnotation, namesAccessor, childAnnotation,
                 nameAccessor, modelElementCreator);
         typePartsReader = new TypePartsReader(collector);
     }
@@ -77,7 +77,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
 
     private void readMethodsFromAnnotatedParentInterfaces(Class<?> classWithGetterMethods) {
         if (classWithGetterMethods.isInterface()) {
-            Deque<Class<?>> superInterfaces = new LinkedList<Class<?>>();
+            Deque<Class<?>> superInterfaces = new LinkedList<>();
             Class<?> superInterfaceWithParentAnnotation = findSuperInterfaceWithParentAnnotation(
                     classWithGetterMethods);
             while (superInterfaceWithParentAnnotation != null) {

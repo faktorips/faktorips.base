@@ -66,7 +66,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertNotNull(builderSetInfo);
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
 
-        ArrayList<String> propertyDefNames = new ArrayList<String>();
+        ArrayList<String> propertyDefNames = new ArrayList<>();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
             propertyDefNames.add(propertyDef.getName());
         }

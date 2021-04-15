@@ -104,7 +104,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public List<MethodParameter> getMethodParameters() {
-        List<MethodParameter> result = new ArrayList<MethodParameter>();
+        List<MethodParameter> result = new ArrayList<>();
         for (XParameter param : getParameters()) {
             result.add(new MethodParameter(param.getJavaClassName(), param.getName()));
         }

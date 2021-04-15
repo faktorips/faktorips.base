@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -43,9 +42,9 @@ import org.faktorips.devtools.model.type.IMethod;
  */
 public class ModelExplorerConfiguration {
 
-    private HashSet<Class<? extends IIpsElement>> allowedIpsElementTypes = new HashSet<Class<? extends IIpsElement>>();
+    private HashSet<Class<? extends IIpsElement>> allowedIpsElementTypes = new HashSet<>();
 
-    private HashSet<Class<? extends IResource>> allowedResourceTypes = new HashSet<Class<? extends IResource>>();
+    private HashSet<Class<? extends IResource>> allowedResourceTypes = new HashSet<>();
 
     private final IpsObjectType[] allowedIpsObjectTypes;
 
@@ -141,8 +140,8 @@ public class ModelExplorerConfiguration {
      * contained in the given set.
      */
     private <T> boolean isAllowedType(Class<? extends T> type, HashSet<Class<? extends T>> allowedTypes) {
-        for (Iterator<Class<? extends T>> iter = allowedTypes.iterator(); iter.hasNext();) {
-            Class<?> allowedClass = iter.next();
+        for (Class<? extends T> allowedType : allowedTypes) {
+            Class<?> allowedClass = allowedType;
             if (allowedClass.isAssignableFrom(type)) {
                 return true;
             }

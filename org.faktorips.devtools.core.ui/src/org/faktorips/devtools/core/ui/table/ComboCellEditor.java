@@ -41,7 +41,8 @@ public class ComboCellEditor extends IpsCellEditor {
         if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
             if (comboControl.getText().equals(BooleanControlFactory.getTrueValue())) {
                 return Boolean.TRUE.toString();
-            } else if (comboControl.getText().equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
+            } else if (comboControl.getText()
+                    .equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
                 return null;
             } else {
                 return Boolean.FALSE.toString();

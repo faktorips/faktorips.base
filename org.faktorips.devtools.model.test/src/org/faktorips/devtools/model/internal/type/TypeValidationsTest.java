@@ -132,7 +132,7 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
     }
 
     private Matcher<IIpsObject> conflictsWith(IIpsObject... conflictingIpsObjects) {
-        return new TypeSafeMatcher<IIpsObject>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

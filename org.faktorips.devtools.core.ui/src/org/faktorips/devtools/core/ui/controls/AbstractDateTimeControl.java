@@ -16,8 +16,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -47,13 +45,9 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
         super(parent, toolkit, "", true, 24, SWT.RIGHT); //$NON-NLS-1$
         setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
         dateFormat = createDateFormat();
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (dateTimeDialog != null) {
-                    dateTimeDialog.dispose();
-                }
+        addDisposeListener($ -> {
+            if (dateTimeDialog != null) {
+                dateTimeDialog.dispose();
             }
         });
     }

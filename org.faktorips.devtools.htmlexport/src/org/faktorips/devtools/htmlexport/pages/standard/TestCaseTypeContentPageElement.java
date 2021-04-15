@@ -253,7 +253,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         }
 
         protected IPageElement[] getAttributeData(ITestAttribute attribute) {
-            List<IPageElement> attributeData = new ArrayList<IPageElement>();
+            List<IPageElement> attributeData = new ArrayList<>();
 
             attributeData.add(new TextPageElement(getContext().getLabel(attribute), getContext()));
             attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName(), getContext()));
@@ -287,7 +287,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name));
             headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType));

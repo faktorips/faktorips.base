@@ -58,7 +58,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<String, ITable<?>> tableCacheByQName;
     private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
     private List<XmlAdapter<?, ?>> enumXmlAdapters;
-    private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<Class<?>, IComputable<String, Object>>();
+    private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<>();
 
     public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
         super(name);
@@ -85,9 +85,10 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             Class<ITable<?>> tableClass = (Class<ITable<?>>)cl.loadClass(ITable.class.getName());
             tableCacheByQName = cacheFactory.createTableCache(IComputable.of(tableClass, this::getNotCachedTable));
 
-            enumValuesCacheByClass = cacheFactory.createEnumCache(IComputable.of(List.class, this::getNotCachedEnumValues));
+            enumValuesCacheByClass = cacheFactory
+                    .createEnumCache(IComputable.of(List.class, this::getNotCachedEnumValues));
 
-            enumXmlAdapters = new ArrayList<XmlAdapter<?, ?>>();
+            enumXmlAdapters = new ArrayList<>();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

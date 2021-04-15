@@ -30,15 +30,16 @@ public class KeyStructure<K, V extends SearchStructure<R> & MergeAndCopyStructur
      * Creates a new empty {@link KeyStructure}.
      */
     public static <K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> KeyStructure<K, V, R> create() {
-        return new KeyStructure<K, V, R>();
+        return new KeyStructure<>();
     }
 
     /**
      * Creates a new {@link KeyStructure} and put the given key value pair.
      */
-    public static <K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> KeyStructure<K, V, R> createWith(K key,
+    public static <K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> KeyStructure<K, V, R> createWith(
+            K key,
             V value) {
-        KeyStructure<K, V, R> structure = new KeyStructure<K, V, R>();
+        KeyStructure<K, V, R> structure = new KeyStructure<>();
         structure.put(key, value);
         return structure;
     }

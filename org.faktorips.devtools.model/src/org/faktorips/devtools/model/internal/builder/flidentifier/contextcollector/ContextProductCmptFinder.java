@@ -55,15 +55,8 @@ public class ContextProductCmptFinder {
         if (contextProductCmpts == null) {
             return Collections.emptyList();
         }
-        List<IProductCmpt> result = new ArrayList<IProductCmpt>(contextProductCmpts);
-        Collections.sort(result, new Comparator<IProductCmpt>() {
-
-            @Override
-            public int compare(IProductCmpt o1, IProductCmpt o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-
-        });
+        List<IProductCmpt> result = new ArrayList<>(contextProductCmpts);
+        Collections.sort(result, Comparator.comparing(IProductCmpt::getName));
 
         return result;
     }

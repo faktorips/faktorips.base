@@ -16,21 +16,15 @@ import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -132,20 +126,12 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         tableViewer.setContentProvider(createContentProvider());
         tableViewer.setUseHashlookup(true);
 
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonsEnabledState();
-            }
-        });
+        tableViewer.addSelectionChangedListener($ -> updateButtonsEnabledState());
 
-        table.addTraverseListener(new TraverseListener() {
-            @Override
-            public void keyTraversed(TraverseEvent e) {
-                if (e.detail == SWT.TRAVERSE_RETURN && e.stateMask == SWT.NONE) {
-                    editColumnOrNextPossible(0);
-                    e.detail = SWT.TRAVERSE_NONE;
-                }
+        table.addTraverseListener(e -> {
+            if (e.detail == SWT.TRAVERSE_RETURN && e.stateMask == SWT.NONE) {
+                editColumnOrNextPossible(0);
+                e.detail = SWT.TRAVERSE_NONE;
             }
         });
         table.addKeyListener(new KeyAdapter() {
@@ -193,33 +179,30 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private void addListenersToEditor(final CellEditor editor, final int editorColumn) {
         Control control = editor.getControl();
-        control.addTraverseListener(new TraverseListener() {
-            @Override
-            public void keyTraversed(TraverseEvent e) {
-                switch (e.detail) {
-                    case SWT.TRAVERSE_TAB_NEXT:
-                        editColumnOrNextPossible(nextColumn(editorColumn));
-                        e.detail = SWT.TRAVERSE_NONE;
-                        break;
+        control.addTraverseListener(e -> {
+            switch (e.detail) {
+                case SWT.TRAVERSE_TAB_NEXT:
+                    editColumnOrNextPossible(nextColumn(editorColumn));
+                    e.detail = SWT.TRAVERSE_NONE;
+                    break;
 
-                    case SWT.TRAVERSE_TAB_PREVIOUS:
-                        editColumnOrPrevPossible(prevColumn(editorColumn));
-                        e.detail = SWT.TRAVERSE_NONE;
-                        break;
+                case SWT.TRAVERSE_TAB_PREVIOUS:
+                    editColumnOrPrevPossible(prevColumn(editorColumn));
+                    e.detail = SWT.TRAVERSE_NONE;
+                    break;
 
-                    case SWT.TRAVERSE_ESCAPE:
-                        tableViewer.cancelEditing();
-                        e.detail = SWT.TRAVERSE_NONE;
-                        break;
+                case SWT.TRAVERSE_ESCAPE:
+                    tableViewer.cancelEditing();
+                    e.detail = SWT.TRAVERSE_NONE;
+                    break;
 
-                    case SWT.TRAVERSE_RETURN:
-                        editor.deactivate();
-                        e.detail = SWT.TRAVERSE_NONE;
-                        break;
+                case SWT.TRAVERSE_RETURN:
+                    editor.deactivate();
+                    e.detail = SWT.TRAVERSE_NONE;
+                    break;
 
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
         });
         // support switching rows while editing:
@@ -575,17 +558,14 @@ public abstract class EditTableControl extends Composite implements IDataChangea
              * 
              * "workaround for bugs 53629, 58777:"
              */
-            text.addModifyListener(new ModifyListener() {
-                @Override
-                public void modifyText(ModifyEvent e) {
-                    if (fSaveNextModification) {
-                        fSaveNextModification = false;
-                        final String newValue = text.getText();
-                        tableViewer.getCellModifier().modify(
-                                ((IStructuredSelection)tableViewer.getSelection()).getFirstElement(),
-                                getProperty(property), newValue);
-                        editColumnOrNextPossible(property);
-                    }
+            text.addModifyListener($ -> {
+                if (fSaveNextModification) {
+                    fSaveNextModification = false;
+                    final String newValue = text.getText();
+                    tableViewer.getCellModifier().modify(
+                            ((IStructuredSelection)tableViewer.getSelection()).getFirstElement(),
+                            getProperty(property), newValue);
+                    editColumnOrNextPossible(property);
                 }
             });
         }

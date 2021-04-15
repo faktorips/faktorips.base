@@ -50,7 +50,7 @@ public abstract class ModelElement {
         Map<String, Object> result = Collections.emptyMap();
         if (extensionPropertiesAnnotation != null) {
             IpsExtensionProperty[] extensionProperties = extensionPropertiesAnnotation.value();
-            result = new LinkedHashMap<String, Object>(extensionProperties.length, 1f);
+            result = new LinkedHashMap<>(extensionProperties.length, 1f);
             for (IpsExtensionProperty ipsExtensionProperty : extensionProperties) {
                 result.put(ipsExtensionProperty.id(), initValue(ipsExtensionProperty));
             }
@@ -143,7 +143,7 @@ public abstract class ModelElement {
      */
     public Set<String> getExtensionPropertyIds() {
         if (extPropertyValues == null) {
-            return new HashSet<String>(0);
+            return new HashSet<>(0);
         }
         return extPropertyValues.keySet();
     }

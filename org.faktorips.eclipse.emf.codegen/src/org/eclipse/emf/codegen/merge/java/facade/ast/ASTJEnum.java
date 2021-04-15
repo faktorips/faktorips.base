@@ -59,7 +59,7 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     @Override
     public void addSuperInterface(String superInterface) {
         if (addedSuperInterfaces == null) {
-            addedSuperInterfaces = new ArrayList<String>();
+            addedSuperInterfaces = new ArrayList<>();
         }
         addedSuperInterfaces.add(superInterface);
         addValueToListProperty(getASTNode(), superInterface, EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY,
@@ -127,9 +127,8 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.emf.codegen.merge.java.facade.ast.ASTJAbstractType#addChild(org.eclipse.emf.codegen
-     * .merge.java.facade.ast.ASTJNode)
+     * @see org.eclipse.emf.codegen.merge.java.facade.ast.ASTJAbstractType#addChild(org.eclipse.emf.
+     * codegen .merge.java.facade.ast.ASTJNode)
      */
     @Override
     public boolean addChild(ASTJNode<?> child) {
@@ -174,7 +173,7 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     @Override
     public List<JNode> getChildren() {
         if (!isDisposed()) {
-            List<JNode> children = new ArrayList<JNode>();
+            List<JNode> children = new ArrayList<>();
             children.addAll(getAnnotationList());
             children.addAll(getEnumConstants());
             children.addAll(getMembers());
@@ -186,7 +185,7 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     }
 
     protected List<JNode> getEnumConstants() {
-        List<JNode> constants = new ArrayList<JNode>();
+        List<JNode> constants = new ArrayList<>();
         ListRewrite listRewrite = rewriter.getListRewrite(getASTNode(), EnumDeclaration.ENUM_CONSTANTS_PROPERTY);
         for (Object enumConstant : listRewrite.getRewrittenList()) {
             JNode node = getFacadeHelper().convertToNode(enumConstant);

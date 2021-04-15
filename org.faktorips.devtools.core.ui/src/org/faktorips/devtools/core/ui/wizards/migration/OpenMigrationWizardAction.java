@@ -39,7 +39,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
     private IWorkbenchWindow window;
-    private List<IIpsProject> preSelected = new ArrayList<IIpsProject>();
+    private List<IIpsProject> preSelected = new ArrayList<>();
 
     @Override
     public void dispose() {
@@ -72,7 +72,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
         }
 
         if (selection instanceof IStructuredSelection) {
-            preSelected = new ArrayList<IIpsProject>();
+            preSelected = new ArrayList<>();
             IStructuredSelection sel = (IStructuredSelection)selection;
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();

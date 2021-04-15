@@ -59,7 +59,7 @@ public enum MultiValueXmlHelper {
         Element multiValueElement = XmlUtil.getFirstElement(value, XML_TAG_MULTIVALUE);
         assertElementExists(multiValueElement, XML_TAG_MULTIVALUE);
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         NodeList valueNodeList = multiValueElement.getElementsByTagName(XML_TAG_VALUE);
         for (int i = 0; i < valueNodeList.getLength(); i++) {
             Element valueElement = (Element)valueNodeList.item(i);
@@ -81,7 +81,7 @@ public enum MultiValueXmlHelper {
         Element multiValueElement = XmlUtil.getFirstElement(value, XML_TAG_MULTIVALUE);
         assertElementExists(multiValueElement, XML_TAG_MULTIVALUE);
 
-        ArrayList<DefaultInternationalString> list = new ArrayList<DefaultInternationalString>();
+        ArrayList<DefaultInternationalString> list = new ArrayList<>();
         NodeList valueNodeList = multiValueElement.getElementsByTagName(XML_TAG_VALUE);
         for (int i = 0; i < valueNodeList.getLength(); i++) {
             Element valueElement = (Element)valueNodeList.item(i);

@@ -98,7 +98,7 @@ public class BuilderSetContainer {
         this.ipsProjectProperties = ipsProject.getProperties();
         this.builderSetId = ipsProjectProperties.getBuilderSetId();
         this.builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
-        this.builderSetModels = new HashMap<String, IIpsArtefactBuilderSetConfigModel>();
+        this.builderSetModels = new HashMap<>();
         initializeTimeStamps();
     }
 
@@ -340,7 +340,7 @@ public class BuilderSetContainer {
     }
 
     private List<IIpsArtefactBuilderSetInfo> getBuilderSetInfos() {
-        List<IIpsArtefactBuilderSetInfo> builderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>();
+        List<IIpsArtefactBuilderSetInfo> builderSetInfos = new ArrayList<>();
 
         IIpsModel ipsModel = ipsProject.getIpsModel();
         IpsArtefactBuilderSetInfo.loadExtensions(Platform.getExtensionRegistry(), IpsPlugin.getDefault().getLog(),

@@ -23,7 +23,7 @@ public class IpsObjectPathContainerChildrenProvider implements IChildrenProvider
 
     @Override
     public Object[] getChildren(IIpsObjectPathContainer element) throws CoreException {
-        List<Object> children = new ArrayList<Object>();
+        List<Object> children = new ArrayList<>();
         List<IIpsObjectPathEntry> resolveEntries = element.resolveEntries();
         for (IIpsObjectPathEntry entry : resolveEntries) {
             if (entry instanceof IIpsProjectRefEntry) {

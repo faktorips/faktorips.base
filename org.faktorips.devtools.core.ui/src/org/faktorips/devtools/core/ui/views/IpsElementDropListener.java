@@ -84,8 +84,8 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
      * 
      * <p>
      * Note for Linux: If this method is called during drag action (e.g. called by dropAccept
-     * method) the <code>transferData</code> is not set correctly and this method returns <code>null</code>.
-     * If you want to check files during drag action you have to use the method
+     * method) the <code>transferData</code> is not set correctly and this method returns
+     * <code>null</code>. If you want to check files during drag action you have to use the method
      * {@link ByteArrayTransfer#isSupportedType(TransferData)}
      * 
      */
@@ -94,7 +94,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         if (filenames == null) {
             return null;
         }
-        ArrayList<Object> elements = new ArrayList<Object>();
+        ArrayList<Object> elements = new ArrayList<>();
         for (String filename : filenames) {
             addElementFromResource(elements, NestedProjectFileUtil.getFile(filename));
 
@@ -133,7 +133,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
 
     @Override
     public Transfer[] getSupportedTransfers() {
-        ArrayList<Transfer> result = new ArrayList<Transfer>();
+        ArrayList<Transfer> result = new ArrayList<>();
         result.add(FileTransfer.getInstance());
         return result.toArray(new Transfer[result.size()]);
     }
@@ -146,7 +146,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
     public List<IIpsElement> getDraggedElements(TransferData transferData) {
         Object[] found = getTransferedElements(transferData);
 
-        ArrayList<IIpsElement> result = new ArrayList<IIpsElement>();
+        ArrayList<IIpsElement> result = new ArrayList<>();
 
         for (Object object : found) {
             if (object instanceof IIpsElement) {

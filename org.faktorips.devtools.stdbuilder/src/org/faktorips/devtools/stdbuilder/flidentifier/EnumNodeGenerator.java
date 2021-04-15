@@ -49,7 +49,8 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         EnumDatatype enumDatatype = valueNode.getDatatype();
         JavaCodeFragment codeFragment = new JavaCodeFragment();
         if (isEnumTypeDatatypeAdapter(enumDatatype)) {
-            addNewInstanceForEnumType(codeFragment, (EnumTypeDatatypeAdapter)enumDatatype, valueNode.getEnumValueName());
+            addNewInstanceForEnumType(codeFragment, (EnumTypeDatatypeAdapter)enumDatatype,
+                    valueNode.getEnumValueName());
         } else {
             DatatypeHelper helper = getIpsProject().getDatatypeHelper(enumDatatype);
             codeFragment.append(helper.newInstance(valueNode.getEnumValueName()));
@@ -61,7 +62,9 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         return enumDatatype instanceof EnumTypeDatatypeAdapter;
     }
 
-    protected void addNewInstanceForEnumType(JavaCodeFragment fragment, EnumTypeDatatypeAdapter datatype, String value) {
+    protected void addNewInstanceForEnumType(JavaCodeFragment fragment,
+            EnumTypeDatatypeAdapter datatype,
+            String value) {
         XEnumType enumType = getBuilderSet().getModelNode(datatype.getEnumType(), XEnumType.class);
         try {
             fragment.append(enumType.getNewInstanceCodeFragement(datatype, value, exprCompiler));

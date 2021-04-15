@@ -17,8 +17,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,17 +47,12 @@ public class IpsTestCounterPanel extends Composite {
         gridLayout.marginWidth = 0;
         setLayout(gridLayout);
 
-        fNumberOfRuns = createLabel(Messages.IpsTestCounterPanel_Runs_Label, null, " 0/0  "); //$NON-NLS-1$ 
-        fNumberOfErrors = createLabel(Messages.IpsTestCounterPanel_Errors_Label, OverlayIcons.ERROR_OVR_DESC, " 0 "); //$NON-NLS-1$ 
+        fNumberOfRuns = createLabel(Messages.IpsTestCounterPanel_Runs_Label, null, " 0/0  "); //$NON-NLS-1$
+        fNumberOfErrors = createLabel(Messages.IpsTestCounterPanel_Errors_Label, OverlayIcons.ERROR_OVR_DESC, " 0 "); //$NON-NLS-1$
         fNumberOfFailures = createLabel(Messages.IpsTestCounterPanel_Failures_Label, OverlayIcons.FAILURE_OVR_DESC,
-                " 0 "); //$NON-NLS-1$ 
+                " 0 "); //$NON-NLS-1$
 
-        addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                disposeResources();
-            }
-        });
+        addDisposeListener($ -> disposeResources());
     }
 
     private void disposeResources() {

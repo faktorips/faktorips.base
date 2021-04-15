@@ -15,9 +15,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Encapsulates a Faktor-IPS validation.
@@ -37,7 +37,7 @@ import org.faktorips.runtime.MessageList;
  */
 public final class IpsValidation {
 
-    private final List<IpsValidationTask> tasks = new ArrayList<IpsValidationTask>(1);
+    private final List<IpsValidationTask> tasks = new ArrayList<>(1);
 
     /**
      * Executes this Faktor-IPS validation by executing all validation tasks that have been added

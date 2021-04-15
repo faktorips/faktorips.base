@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
 public class SelectionStatusBarPublisher {
     private static final int MAX_ROWS_MARKED_NO_AREA = 5;
 
-    private final List<Integer> selectedRows = new ArrayList<Integer>();
+    private final List<Integer> selectedRows = new ArrayList<>();
 
     private final IStatusLineManager statusLineManager;
 
@@ -73,7 +73,8 @@ public class SelectionStatusBarPublisher {
             } else if (selectedRows.size() <= MAX_ROWS_MARKED_NO_AREA) {
                 labelContent = NLS.bind(Messages.SelectionStatusBarPublisher_multipleMarkedRows, selectedRows);
             } else {
-                Object[] selArg = { selectedRows.size(), selectedRows.get(0), selectedRows.get(selectedRows.size() - 1) };
+                Object[] selArg = { selectedRows.size(), selectedRows.get(0),
+                        selectedRows.get(selectedRows.size() - 1) };
                 labelContent = NLS.bind(Messages.SelectionStatusBarPublisher_manyMarkedRows, selArg);
             }
         }

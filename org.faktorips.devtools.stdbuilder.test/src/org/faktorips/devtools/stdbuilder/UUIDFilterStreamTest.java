@@ -105,7 +105,8 @@ public class UUIDFilterStreamTest {
 
         assertThat(
                 bos.toString("UTF-8"),
-                is(equalTo("<ProductCmpt productCmptType=\"ElementarProdukt\" runtimeId=\"c92ad3f4-f4ec-4425-bf45-f6bca0728fec\" template=\"\" validFrom=\"2012-03-29\" xml:space=\"preserve\">\n")));
+                is(equalTo(
+                        "<ProductCmpt productCmptType=\"ElementarProdukt\" runtimeId=\"c92ad3f4-f4ec-4425-bf45-f6bca0728fec\" template=\"\" validFrom=\"2012-03-29\" xml:space=\"preserve\">\n")));
         uuidFilterStream.close();
     }
 
@@ -141,7 +142,8 @@ public class UUIDFilterStreamTest {
         }
 
         assertThat(bos.toString("UTF-8"),
-                is(equalTo("<Description id=\"12345678901234567890123456789012345678901234567890\" locale=\"en\"/>\n")));
+                is(equalTo(
+                        "<Description id=\"12345678901234567890123456789012345678901234567890\" locale=\"en\"/>\n")));
         uuidFilterStream.close();
     }
 

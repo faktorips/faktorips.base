@@ -90,7 +90,7 @@ public class CustomValidationsMapTest {
 
     @Test(expected = RuntimeException.class)
     public void testPutAll_wrongType() {
-        Collection<ICustomValidation<?>> validationsToPut = new ArrayList<ICustomValidation<?>>();
+        Collection<ICustomValidation<?>> validationsToPut = new ArrayList<>();
         validationsToPut.add(attributeValidation);
         validationsToPut.add(pcTypeAttributeValidation);
 
@@ -99,7 +99,7 @@ public class CustomValidationsMapTest {
 
     @Test
     public void testPutAll_storedUnderDifferentKey() {
-        Collection<ICustomValidation<?>> validationsToPut = new ArrayList<ICustomValidation<?>>();
+        Collection<ICustomValidation<?>> validationsToPut = new ArrayList<>();
         validationsToPut.add(attributeValidation);
         validationsToPut.add(pcTypeAttributeValidation);
 

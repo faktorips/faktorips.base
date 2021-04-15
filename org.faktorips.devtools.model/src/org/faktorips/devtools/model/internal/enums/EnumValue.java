@@ -28,9 +28,9 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -57,7 +57,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
      */
     public EnumValue(EnumValueContainer parent, String id) {
         super(parent, id);
-        enumAttributeValues = new IpsObjectPartCollection<IEnumAttributeValue>(this, EnumAttributeValue.class,
+        enumAttributeValues = new IpsObjectPartCollection<>(this, EnumAttributeValue.class,
                 IEnumAttributeValue.class, IEnumAttributeValue.XML_TAG);
     }
 
@@ -69,7 +69,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     @Override
     public List<IEnumAttributeValue> getEnumAttributeValues() {
         // I'm not returning the backing list due to mutability concerns.
-        List<IEnumAttributeValue> attributeValuesList = new ArrayList<IEnumAttributeValue>();
+        List<IEnumAttributeValue> attributeValuesList = new ArrayList<>();
         IIpsObjectPart[] parts = enumAttributeValues.getParts();
         for (IIpsObjectPart currentObjectPart : parts) {
             attributeValuesList.add((IEnumAttributeValue)currentObjectPart);
@@ -251,7 +251,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             IIpsProject ipsProject) throws CoreException {
 
         ArgumentCheck.notNull(new Object[] { uniqueEnumAttributes, ipsProject });
-        List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<IEnumAttributeValue>(
+        List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<>(
                 uniqueEnumAttributes.size());
         for (IEnumAttribute currentUniqueAttribute : uniqueEnumAttributes) {
             uniqueAttributeValues.add(getEnumAttributeValue(currentUniqueAttribute));

@@ -18,8 +18,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -163,13 +161,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         bindingContext.bindEnabled(defaultCard, pmo, MultiLinkPmo.PROPERTY_DEFAULT_ENABLED);
         bindingContext.bindEnabled(defaultCardLabel, pmo, MultiLinkPmo.PROPERTY_DEFAULT_ENABLED);
 
-        parent.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                bindingContext.dispose();
-            }
-        });
+        parent.addDisposeListener($ -> bindingContext.dispose());
     }
 
     private void createToolbar(Composite kardinalityPane) {
@@ -505,7 +497,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             if (templateLink != null) {
                 String text = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate,
                         templateLink.getProductCmptLinkContainer().getProductCmpt().getName());
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmptLink>(templateLink, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<>(templateLink, text);
                 manager.add(openTemplateAction);
             }
         }

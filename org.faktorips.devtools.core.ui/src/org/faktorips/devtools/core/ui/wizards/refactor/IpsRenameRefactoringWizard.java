@@ -14,8 +14,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -94,23 +92,13 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
             getUiToolkit().createLabel(fieldsComposite, Messages.RenameUserInputPage_labelNewName);
             newNameTextField = getUiToolkit().createText(fieldsComposite);
             newNameTextField.setText(getIpsRenameProcessor().getOriginalName());
-            newNameTextField.addModifyListener(new ModifyListener() {
-                @Override
-                public void modifyText(ModifyEvent event) {
-                    userInputChanged();
-                }
-            });
+            newNameTextField.addModifyListener($ -> userInputChanged());
 
             if (getIpsRenameProcessor().isPluralNameRefactoringRequired()) {
                 getUiToolkit().createLabel(fieldsComposite, Messages.RenameUserInputPage_labelNewPluralName);
                 newPluralNameTextField = getUiToolkit().createText(fieldsComposite);
                 newPluralNameTextField.setText(getIpsRenameProcessor().getOriginalPluralName());
-                newPluralNameTextField.addModifyListener(new ModifyListener() {
-                    @Override
-                    public void modifyText(ModifyEvent event) {
-                        userInputChanged();
-                    }
-                });
+                newPluralNameTextField.addModifyListener($ -> userInputChanged());
             }
 
             if (getIpsElement() instanceof IProductCmpt) {

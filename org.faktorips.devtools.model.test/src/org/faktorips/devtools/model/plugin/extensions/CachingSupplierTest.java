@@ -20,7 +20,7 @@ public class CachingSupplierTest {
     @Test
     public void testInitializesOnlyOnce() {
         AtomicInteger initializations = new AtomicInteger(0);
-        CachingSupplier<Integer> cachingSupplier = new CachingSupplier<Integer>() {
+        CachingSupplier<Integer> cachingSupplier = new CachingSupplier<>() {
 
             @Override
             protected Integer initializeValue() {

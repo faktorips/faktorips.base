@@ -16,7 +16,6 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectChangedListener;
@@ -41,13 +40,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
     public MavenVersionProvider(IIpsProject ipsProject) {
         project = ipsProject.getProject();
         mavenProject = findMavenProject();
-        mavenUpdateListener = new IMavenProjectChangedListener() {
-
-            @Override
-            public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
-                MavenVersionProvider.this.mavenProjectChanged(events);
-            }
-        };
+        mavenUpdateListener = (events, $) -> mavenProjectChanged(events);
         MavenPlugin.getMavenProjectRegistry().addMavenProjectChangedListener(mavenUpdateListener);
     }
 
@@ -79,7 +72,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
     }
 
     private List<MavenProjectChangedEvent> getEventsForThisProject(MavenProjectChangedEvent[] events) {
-        ArrayList<MavenProjectChangedEvent> updateEventsForThisProject = new ArrayList<MavenProjectChangedEvent>();
+        ArrayList<MavenProjectChangedEvent> updateEventsForThisProject = new ArrayList<>();
         for (MavenProjectChangedEvent event : events) {
             IMavenProjectFacade changedMavenProject = event.getMavenProject();
             if (changedMavenProject != null && project.equals(changedMavenProject.getProject())) {

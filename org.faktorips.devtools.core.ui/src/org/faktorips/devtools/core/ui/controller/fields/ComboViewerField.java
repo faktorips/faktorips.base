@@ -52,7 +52,7 @@ public class ComboViewerField<T> extends ComboField<T> {
         if (isAllowEmptySelection() && selection.isEmpty()) {
             return null;
         }
-        TypedSelection<T> typedSelection = new TypedSelection<T>(type, selection);
+        TypedSelection<T> typedSelection = new TypedSelection<>(type, selection);
         return typedSelection.getFirstElement();
     }
 

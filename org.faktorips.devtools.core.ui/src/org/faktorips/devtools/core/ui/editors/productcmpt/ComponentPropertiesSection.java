@@ -49,8 +49,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Section to display and edit the product attributes
@@ -70,7 +70,7 @@ public class ComponentPropertiesSection extends IpsSection {
     private Composite rootPane;
 
     /** List of controls displaying data (needed to enable / disable). */
-    private final List<Text> editControls = new ArrayList<Text>();
+    private final List<Text> editControls = new ArrayList<>();
 
     private ProductCmptType2RefControl productCmptTypeControl;
 
@@ -153,7 +153,7 @@ public class ComponentPropertiesSection extends IpsSection {
         toolkit.createLabel(rootPane, Messages.ComponentPropertiesSection_labelValidFrom);
         DateControl dateControl = new DateControl(rootPane, toolkit);
         dateControl.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        validFromField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
+        validFromField = new DateControlField<>(dateControl, GregorianCalendarFormat.newInstance());
         editControls.add(dateControl.getTextControl());
     }
 
@@ -164,7 +164,7 @@ public class ComponentPropertiesSection extends IpsSection {
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelValidTo);
         DateControl dateControl = new DateControl(rootPane, toolkit);
         dateControl.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-        validToField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
+        validToField = new DateControlField<>(dateControl, GregorianCalendarFormat.newInstance());
         editControls.add(dateControl.getTextControl());
     }
 
@@ -207,18 +207,13 @@ public class ComponentPropertiesSection extends IpsSection {
      * {@link IProductCmpt} is based on.
      */
     private void initProductCmptTypeRow(UIToolkit toolkit) {
-        createLabelOrHyperlink(toolkit, Messages.ProductAttributesSection_type, new IpsObjectFinder() {
-
-            @Override
-            public IIpsObject findIpsObject() {
-                return product.findProductCmptType(product.getIpsProject());
-            }
-        });
+        createLabelOrHyperlink(toolkit, Messages.ProductAttributesSection_type,
+                () -> product.findProductCmptType(product.getIpsProject()));
 
         productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit,
                 !product.isProductTemplate());
         toolkit.setEnabled(productCmptTypeControl.getTextControl(), false);
-        getBindingContext().add(new PropertyChangeBinding<String>(productCmptTypeControl, product,
+        getBindingContext().add(new PropertyChangeBinding<>(productCmptTypeControl, product,
                 IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE, String.class) {
 
             @Override
@@ -229,20 +224,15 @@ public class ComponentPropertiesSection extends IpsSection {
     }
 
     private void initTemplateRow(UIToolkit toolkit) {
-        createLabelOrHyperlink(toolkit, Messages.ComponentPropertiesSection_TemplateName, new IpsObjectFinder() {
-
-            @Override
-            public IIpsObject findIpsObject() {
-                return product.findTemplate(product.getIpsProject());
-            }
-        });
+        createLabelOrHyperlink(toolkit, Messages.ComponentPropertiesSection_TemplateName,
+                () -> product.findTemplate(product.getIpsProject()));
 
         templateControl = new ProductCmptRefControl(product.getIpsProject(), rootPane, toolkit, true);
         templateControl.setProductCmptType(product.findProductCmptType(product.getIpsProject()), true);
         templateControl.setSearchTemplates(true);
         templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
         toolkit.setEnabled(templateControl.getTextControl(), false);
-        getBindingContext().add(new PropertyChangeBinding<String>(templateControl, product,
+        getBindingContext().add(new PropertyChangeBinding<>(templateControl, product,
                 IProductCmpt.PROPERTY_TEMPLATE, String.class) {
 
             @Override

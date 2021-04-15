@@ -102,7 +102,7 @@ public class BindingContext {
     private final Listener listener;
 
     /** list of mappings between edit fields and properties of model objects. */
-    private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
+    private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<>();
 
     /**
      * A list of the IPS objects containing at least one bound IPS part container each container is
@@ -110,11 +110,11 @@ public class BindingContext {
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
      */
-    private final Set<Validatable> validatables = new CopyOnWriteArraySet<Validatable>();
+    private final Set<Validatable> validatables = new CopyOnWriteArraySet<>();
 
-    private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
+    private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<>();
 
-    private final Set<String> ignoredMessageCodes = new HashSet<String>(2);
+    private final Set<String> ignoredMessageCodes = new HashSet<>(2);
 
     public BindingContext() {
         this.listener = new Listener();
@@ -134,7 +134,7 @@ public class BindingContext {
      */
     public void updateUI() {
         // defensive copy to avoid concurrent modification exceptions
-        List<FieldPropertyMapping<?>> copy = new ArrayList<FieldPropertyMapping<?>>(mappings);
+        List<FieldPropertyMapping<?>> copy = new ArrayList<>(mappings);
         for (FieldPropertyMapping<?> mapping : copy) {
             removeMappingIfControlIsDisposed(mapping);
             try {
@@ -287,7 +287,7 @@ public class BindingContext {
             String property,
             Class<E> enumType) {
         checkPropertyType(object, property, Enum.class);
-        EnumField<E> field = new EnumField<E>(combo, enumType);
+        EnumField<E> field = new EnumField<>(combo, enumType);
         bindContent(field, object, property);
         return field;
     }
@@ -302,7 +302,7 @@ public class BindingContext {
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public <E extends Enum<E>> EnumField<E> bindContent(Combo combo, Object object, String property, E[] values) {
-        EnumField<E> field = new EnumField<E>(combo, values);
+        EnumField<E> field = new EnumField<>(combo, values);
         bindContent(field, object, property);
         return field;
     }
@@ -333,7 +333,7 @@ public class BindingContext {
      */
     public <T> void bindProblemMarker(EditField<T> field, Object object, String propertyName) {
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
-        ProblemMarkerPropertyMapping<T> problemMarkerPropertyMapping = new ProblemMarkerPropertyMapping<T>(field,
+        ProblemMarkerPropertyMapping<T> problemMarkerPropertyMapping = new ProblemMarkerPropertyMapping<>(field,
                 object, property);
         add(problemMarkerPropertyMapping);
     }
@@ -343,12 +343,12 @@ public class BindingContext {
             IExtensionPropertyDefinition extProperty = ((IExtensionPropertyAccess)object)
                     .getExtensionPropertyDefinition(propertyName);
             if (extProperty != null) {
-                return new FieldExtensionPropertyMapping<T>(editField, (IExtensionPropertyAccess)object, propertyName);
+                return new FieldExtensionPropertyMapping<>(editField, (IExtensionPropertyAccess)object, propertyName);
             }
         }
 
         PropertyDescriptor property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
-        return new FieldPropertyMappingByPropertyDescriptor<T>(editField, object, property);
+        return new FieldPropertyMappingByPropertyDescriptor<>(editField, object, property);
     }
 
     private void checkPropertyType(Object object, String propertyName, Class<?> expectedType) {
@@ -517,7 +517,7 @@ public class BindingContext {
      * content binding etc.
      */
     public void removeBindings(Control control) {
-        List<Object> listenerRemoveCandidates = new ArrayList<Object>();
+        List<Object> listenerRemoveCandidates = new ArrayList<>();
         for (ControlPropertyBinding binding : controlBindings) {
             if (binding.getControl() == control) {
                 controlBindings.remove(binding);
@@ -609,7 +609,7 @@ public class BindingContext {
      */
     public void dispose() {
         IIpsModel.get().removeChangeListener(listener);
-        Set<Object> disposedPmos = new HashSet<Object>();
+        Set<Object> disposedPmos = new HashSet<>();
         for (FieldPropertyMapping<?> mapping : mappings) {
             mapping.getField().removeChangeListener(listener);
             if (!mapping.getField().getControl().isDisposed()) {
@@ -641,7 +641,7 @@ public class BindingContext {
      * field) will not overwrite each other.
      */
     protected void showValidationStatus(List<FieldPropertyMapping<?>> propertyMappings) {
-        Map<ObjectProperty, MessageList> validationMap = new HashMap<ObjectProperty, MessageList>();
+        Map<ObjectProperty, MessageList> validationMap = new HashMap<>();
 
         for (Validatable validatable : validatables) {
             try {
@@ -663,7 +663,7 @@ public class BindingContext {
 
     private void showValidationStatus(Map<ObjectProperty, MessageList> validationMap,
             List<FieldPropertyMapping<?>> propertyMappings) {
-        HashMap<EditField<?>, MessageList> fieldMessages = new HashMap<EditField<?>, MessageList>();
+        HashMap<EditField<?>, MessageList> fieldMessages = new HashMap<>();
         for (FieldPropertyMapping<?> mapping : propertyMappings) {
             if (mapping.getField().getControl() == null || mapping.getField().getControl().isDisposed()) {
                 continue;

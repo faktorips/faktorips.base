@@ -49,7 +49,7 @@ public class CategoryPmo extends IpsObjectPartPmo {
     }
 
     private List<IProductCmptCategory> findCategories() {
-        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
+        List<IProductCmptCategory> categories = new ArrayList<>();
 
         IProductCmptType productCmptType = null;
         try {
@@ -106,7 +106,7 @@ public class CategoryPmo extends IpsObjectPartPmo {
      * determined at the construction of the PMO and cached.
      */
     public List<IProductCmptCategory> getCategories() {
-        return new ArrayList<IProductCmptCategory>(categories);
+        return new ArrayList<>(categories);
     }
 
     /**

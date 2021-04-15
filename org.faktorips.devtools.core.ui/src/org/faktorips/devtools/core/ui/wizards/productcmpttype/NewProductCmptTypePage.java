@@ -135,8 +135,9 @@ public class NewProductCmptTypePage extends NewTypePage {
             return;
         }
 
-        setErrorMessage(TypeValidations.validateUniqueQualifiedName(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(),
-                getIpsProject()).getMessageWithHighestSeverity());
+        setErrorMessage(
+                TypeValidations.validateUniqueQualifiedName(IpsObjectType.POLICY_CMPT_TYPE, getQualifiedIpsObjectName(),
+                        getIpsProject()).getMessageWithHighestSeverity());
     }
 
     @Override

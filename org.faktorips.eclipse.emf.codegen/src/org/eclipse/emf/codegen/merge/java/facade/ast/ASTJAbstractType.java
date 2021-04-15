@@ -32,7 +32,7 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
  * @param <T> wrapped AST AbstractType
  */
 public abstract class ASTJAbstractType<T extends AbstractTypeDeclaration> extends ASTJMember<T> implements
-JAbstractType {
+        JAbstractType {
     protected ASTJAbstractType(T abstractTypeDeclaration) {
         super(abstractTypeDeclaration);
     }
@@ -70,7 +70,7 @@ JAbstractType {
     @Override
     public List<JNode> getChildren() {
         if (!isDisposed()) {
-            List<JNode> children = new ArrayList<JNode>();
+            List<JNode> children = new ArrayList<>();
             children.addAll(getAnnotationList());
             children.addAll(getMembers());
             if (!children.isEmpty()) {
@@ -152,7 +152,7 @@ JAbstractType {
     }
 
     protected List<JNode> getMembers() {
-        List<JNode> members = new ArrayList<JNode>();
+        List<JNode> members = new ArrayList<>();
         ListRewrite listRewrite = rewriter.getListRewrite(getASTNode(), getASTNode().getBodyDeclarationsProperty());
 
         @SuppressWarnings("unchecked")

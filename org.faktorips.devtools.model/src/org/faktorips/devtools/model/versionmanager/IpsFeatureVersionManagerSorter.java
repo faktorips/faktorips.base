@@ -30,12 +30,12 @@ public class IpsFeatureVersionManagerSorter {
      * @param managers The array of managers to sort.
      */
     public IIpsFeatureVersionManager[] sortForMigartionOrder(IIpsFeatureVersionManager[] managers) {
-        HashMap<String, IIpsFeatureVersionManager> managersById = new HashMap<String, IIpsFeatureVersionManager>();
+        HashMap<String, IIpsFeatureVersionManager> managersById = new HashMap<>();
         for (IIpsFeatureVersionManager manager : managers) {
             managersById.put(manager.getId(), manager);
         }
 
-        ArrayList<IIpsFeatureVersionManager> result = new ArrayList<IIpsFeatureVersionManager>();
+        ArrayList<IIpsFeatureVersionManager> result = new ArrayList<>();
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
         for (IIpsFeatureVersionManager manager : managers) {
             sorter.buildPredecessorList(managersById, result, manager.getId());

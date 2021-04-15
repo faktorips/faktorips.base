@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class IoUtilTest {
 
-	@Test
+    @Test
     public void close() throws IOException {
         Closeable closeable = mock(Closeable.class);
         IoUtil.close(closeable);
@@ -30,5 +30,5 @@ public class IoUtilTest {
     public void closeNullPointer() {
         IoUtil.close(null);
     }
-    
+
 }

@@ -62,7 +62,7 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      */
     protected static final Set<Integer> NODE_TYPES_WITH_SPECIAL_RANGE;
     static {
-        NODE_TYPES_WITH_SPECIAL_RANGE = new HashSet<Integer>();
+        NODE_TYPES_WITH_SPECIAL_RANGE = new HashSet<>();
 
         NODE_TYPES_WITH_SPECIAL_RANGE.add(ASTNode.ANNOTATION_TYPE_DECLARATION);
         NODE_TYPES_WITH_SPECIAL_RANGE.add(ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION);
@@ -108,12 +108,12 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      * Map of nodes to the trailing <code>Comment</code> nodes that must be included in the range
      * for the node
      */
-    protected Map<ASTNode, Comment> includeTrailingCommentMapper = new HashMap<ASTNode, Comment>();
+    protected Map<ASTNode, Comment> includeTrailingCommentMapper = new HashMap<>();
 
     /**
      * Set of nodes that must have default range returned for them
      */
-    protected Set<ASTNode> nodesWithDefaultRange = new HashSet<ASTNode>();
+    protected Set<ASTNode> nodesWithDefaultRange = new HashSet<>();
 
     /**
      * Original source used to create compilation unit

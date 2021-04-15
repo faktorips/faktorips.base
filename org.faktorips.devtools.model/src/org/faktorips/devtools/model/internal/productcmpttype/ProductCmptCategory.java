@@ -137,7 +137,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
-            private final List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+            private final List<IProductCmptProperty> properties = new ArrayList<>();
 
             /**
              * {@link Set} that is used to store all property names of properties that overwrite
@@ -150,7 +150,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
              * which means that the supertype {@link IProductCmptProperty} is not to be added to the
              * {@link IProductCmptCategory}.
              */
-            private final Set<String> overwritingProperties = new HashSet<String>();
+            private final Set<String> overwritingProperties = new HashSet<>();
 
             private CategoryPropertyCollector(IIpsProject ipsProject) {
                 super(ipsProject);

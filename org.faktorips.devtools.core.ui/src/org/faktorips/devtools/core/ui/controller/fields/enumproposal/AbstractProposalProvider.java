@@ -37,7 +37,8 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
     private final SearchPattern searchPattern = new SearchPattern(SearchPattern.RULE_BLANK_MATCH
             | SearchPattern.RULE_CAMELCASE_MATCH | SearchPattern.RULE_PATTERN_MATCH | SearchPattern.RULE_PREFIX_MATCH);
 
-    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype, IInputFormat<String> inputFormat) {
+    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
+            IInputFormat<String> inputFormat) {
         this.valueSetOwner = owner;
         this.valueDatatype = valueDatatype;
         this.inputFormat = inputFormat;
@@ -94,7 +95,7 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      */
     private List<IContentProposal> createContentProposals(String prefix) {
         searchPattern.setPattern(prefix.trim());
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
+        List<IContentProposal> result = new ArrayList<>();
         for (String valueInModel : getAllowedValuesAsList()) {
             String formattedValue = format(valueInModel);
             if (isApplicable(valueInModel, formattedValue)) {

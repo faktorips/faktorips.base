@@ -20,9 +20,9 @@ import java.util.List;
  * the attribute <code>loggingFrameworkConnectorId</code> within the
  * <code>IpsArtefactBuilderSet</code> tag. The id that is to specify has to be one of the ids of the
  * registered extension of the loggingFrameworkConnector extension-point. Some of the parameters of
- * the methods of this interface have the ending <em>Exp</em> meaning expression. For those parameters
- * a string representing an expression not a constant is expected. Especially an expression for a
- * constant in java is a string including the quotation marks.
+ * the methods of this interface have the ending <em>Exp</em> meaning expression. For those
+ * parameters a string representing an expression not a constant is expected. Especially an
+ * expression for a constant in java is a string including the quotation marks.
  * 
  * @author Peter Erzberger
  */

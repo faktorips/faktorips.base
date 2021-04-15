@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -83,7 +82,7 @@ public class ProductExplorer extends ModelExplorer {
     protected ModelExplorerConfiguration createConfig() {
         IIpsModel ipsModel = IIpsModel.get();
         IpsObjectType[] objectTypes = ipsModel.getIpsObjectTypes();
-        List<IpsObjectType> allowedObjectTypes = new ArrayList<IpsObjectType>();
+        List<IpsObjectType> allowedObjectTypes = new ArrayList<>();
         for (IpsObjectType objectType : objectTypes) {
             if (objectType.isProductDefinitionType()) {
                 allowedObjectTypes.add(objectType);
@@ -183,12 +182,7 @@ public class ProductExplorer extends ModelExplorer {
          * We need to register the team cleaner via another menu listener because the team menu
          * manager is re-added on each menuAboutToShow.
          */
-        manager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                menuBuilder.registerTeamCleaner(manager);
-            }
-        });
+        manager.addMenuListener(manager1 -> menuBuilder.registerTeamCleaner(manager1));
     }
 
     protected class ProductMenuBuilder extends ModelExplorerContextMenuBuilder {

@@ -25,9 +25,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -422,18 +420,8 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
     protected void configureShell(final Shell shell) {
         super.configureShell(shell);
         if (dialogSizePersistence) {
-            shell.addListener(SWT.Move, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    storePosition(shell);
-                }
-            });
-            shell.addListener(SWT.Resize, new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    storePosition(shell);
-                }
-            });
+            shell.addListener(SWT.Move, $ -> storePosition(shell));
+            shell.addListener(SWT.Resize, $ -> storePosition(shell));
             IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(dialogSizeSettingsKey);
             configurePosition(settings, shell);
         }

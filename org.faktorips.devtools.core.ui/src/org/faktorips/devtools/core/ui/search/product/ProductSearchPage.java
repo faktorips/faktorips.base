@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
@@ -189,25 +188,17 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     }
 
     private PropertyChangeListener createPropertyChangeListenerForValidity() {
-        return new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                boolean valid = getPresentationModel().isValid();
-                getSearchPageContainer().setPerformActionEnabled(valid);
-            }
+        return $ -> {
+            boolean valid = getPresentationModel().isValid();
+            getSearchPageContainer().setPerformActionEnabled(valid);
         };
     }
 
     private PropertyChangeListener createPropertyChangeListenerForTable() {
-        return new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE.equals(evt.getPropertyName())) {
-                    if (conditionTableViewer != null) {
-                        conditionTableViewer.refresh();
-                    }
+        return evt -> {
+            if (ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE.equals(evt.getPropertyName())) {
+                if (conditionTableViewer != null) {
+                    conditionTableViewer.refresh();
                 }
             }
         };

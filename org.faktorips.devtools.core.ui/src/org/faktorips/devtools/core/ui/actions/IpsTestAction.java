@@ -134,7 +134,7 @@ public class IpsTestAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         try {
-            List<String> selectedPathElements = new ArrayList<String>(1);
+            List<String> selectedPathElements = new ArrayList<>(1);
 
             /*
              * Contains the root of the selected element, only one root is necessary to obtain the
@@ -224,7 +224,7 @@ public class IpsTestAction extends IpsAction {
      * entry 1)
      */
     private List<String> removeDuplicatEntries(List<String> selectedPathElements) {
-        List<String> uniqueList = new ArrayList<String>(selectedPathElements.size());
+        List<String> uniqueList = new ArrayList<>(selectedPathElements.size());
         Collections.sort(selectedPathElements);
 
         String previousElement = "#none#"; //$NON-NLS-1$
@@ -285,7 +285,8 @@ public class IpsTestAction extends IpsAction {
                 String withoutProject = selectedPathElement.substring(selectedPathElement.indexOf(SEPARATOR)
                         + SEPARATOR.length());
                 testRootsString += "{" + withoutProject.substring(0, withoutProject.indexOf(SEPARATOR)) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
-                testPackagesString += "{" + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+                testPackagesString += "{" //$NON-NLS-1$
+                        + withoutProject.substring(withoutProject.indexOf(SEPARATOR) + SEPARATOR.length()) + "}"; //$NON-NLS-1$
             }
 
             // show view

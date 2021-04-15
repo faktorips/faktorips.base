@@ -70,14 +70,14 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
 
     @Override
     protected IStatus loadContent() {
-        ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<CsvTableBean>();
+        ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<>();
         String[] columns = new String[Math.max(keyColumnIndex, valueColumnIndex) + 1];
         try {
             columns[keyColumnIndex] = CsvTableBean.PROPERTY_KEY;
             columns[valueColumnIndex] = CsvTableBean.PROPERTY_VALUE;
             strat.setColumnMapping(columns);
 
-            CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
+            CsvToBean<CsvTableBean> csvToBean = new CsvToBean<>();
             InputStreamReader reader = new InputStreamReader(getContents());
             List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter));
             MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
@@ -94,7 +94,7 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
     }
 
     Map<String, String> indexTableEntries(List<CsvTableBean> tableBeans, MultiStatus multipleMessages) {
-        HashMap<String, String> indexMap = new HashMap<String, String>();
+        HashMap<String, String> indexMap = new HashMap<>();
         for (CsvTableBean csvTableBean : tableBeans) {
             String previousValue = indexMap.put(csvTableBean.getKey(), csvTableBean.getValue());
             if (previousValue != null) {

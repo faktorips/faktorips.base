@@ -192,7 +192,7 @@ public abstract class SelectSupertypeHierarchyPartsDialog<T extends IIpsObjectPa
      */
     @SuppressWarnings("unchecked")
     public List<T> getSelectedParts() {
-        List<T> parts = new ArrayList<T>();
+        List<T> parts = new ArrayList<>();
         Object[] checked = getResult();
         for (Object element : checked) {
             if (element instanceof IIpsObjectPart) {

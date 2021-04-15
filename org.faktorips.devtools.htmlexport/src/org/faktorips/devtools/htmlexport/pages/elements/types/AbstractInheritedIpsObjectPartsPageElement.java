@@ -18,7 +18,6 @@ import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -27,7 +26,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsElement, T extends IIpsObjectPartContainer>
-extends AbstractCompositePageElement {
+        extends AbstractCompositePageElement {
 
     private static final TextPageElement INHERITED_PARTS_SEPARATOR = new TextPageElement(", ", null); //$NON-NLS-1$
 
@@ -95,7 +94,7 @@ extends AbstractCompositePageElement {
     protected abstract List<? extends T> getIpsObjectParts(S ipsElement);
 
     protected IPageElement createRepresentation(T objectPart) {
-        return new PageElementUtils(getContext()).createLinkPageElement(getContext(), objectPart, TargetType.CONTENT, new Style[0]);
+        return new PageElementUtils(getContext()).createLinkPageElement(getContext(), objectPart, TargetType.CONTENT);
     }
 
     protected S getParentIpsElement() {

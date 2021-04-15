@@ -74,7 +74,7 @@ public class SearchStructureTest {
     }
 
     private void setUpResultSet(Object... expectedObject) {
-        Set<Object> resultSet = new HashSet<Object>();
+        Set<Object> resultSet = new HashSet<>();
         resultSet.addAll(Arrays.asList(expectedObject));
         doReturn(resultSet).when(structure).get();
     }

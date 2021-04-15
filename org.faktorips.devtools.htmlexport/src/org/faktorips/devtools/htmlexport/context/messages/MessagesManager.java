@@ -36,7 +36,7 @@ public final class MessagesManager {
 
     public MessagesManager(DocumentationContext context) {
         this.context = context;
-        this.notFoundMessages = new ArrayList<String>();
+        this.notFoundMessages = new ArrayList<>();
         localizedStringsSet = new LocalizedStringsSet(this.getClass());
     }
 

@@ -16,10 +16,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -58,13 +56,7 @@ public class ProjectSelectionPage extends WizardPage {
 
         treeViewer.setCheckedElements(preSelected.toArray());
 
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                setPageComplete(getProjects().length > 0);
-            }
-        });
+        treeViewer.addSelectionChangedListener($ -> setPageComplete(getProjects().length > 0));
         setPageComplete(false);
         super.setControl(root);
     }
@@ -113,13 +105,13 @@ public class ProjectSelectionPage extends WizardPage {
 
         @Override
         public Object[] getElements(Object inputElement) {
-            List<IIpsProject> result = new ArrayList<IIpsProject>();
+            List<IIpsProject> result = new ArrayList<>();
             IIpsProject[] projects;
             projects = IIpsModel.get().getIpsProjects();
-            for (int i = 0; i < projects.length; i++) {
+            for (IIpsProject project : projects) {
                 try {
-                    if (!IpsPlugin.getDefault().getMigrationOperation(projects[i]).isEmpty()) {
-                        result.add(projects[i]);
+                    if (!IpsPlugin.getDefault().getMigrationOperation(project).isEmpty()) {
+                        result.add(project);
                     }
                 } catch (CoreException e) {
                     IpsPlugin.log(e);

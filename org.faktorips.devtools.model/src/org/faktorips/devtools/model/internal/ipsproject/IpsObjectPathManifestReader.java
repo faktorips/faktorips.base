@@ -65,7 +65,7 @@ public class IpsObjectPathManifestReader {
         ipsObjectPath = new IpsObjectPath(ipsProject);
         ipsObjectPath.setUsingManifest(true);
         ipsObjectPath.setOutputDefinedPerSrcFolder(true);
-        ArrayList<IIpsObjectPathEntry> entries = new ArrayList<IIpsObjectPathEntry>();
+        ArrayList<IIpsObjectPathEntry> entries = new ArrayList<>();
         ManifestElement[] objectDirElements = bundleManifest.getObjectDirElements();
         for (ManifestElement manifestElement : objectDirElements) {
             entries.add(readEntry(manifestElement, bundleManifest));

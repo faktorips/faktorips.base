@@ -23,7 +23,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testGet() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         classToMultiInstanceMap.put(String.class, "123");
         List<String> result = classToMultiInstanceMap.get(String.class);
         assertArrayEquals(new String[] { "123" }, result.toArray());
@@ -40,7 +40,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testPut() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         List<String> result = classToMultiInstanceMap.put(String.class, "123");
         assertArrayEquals(new String[] { "123" }, result.toArray());
 
@@ -55,7 +55,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testSize() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         assertEquals(0, classToMultiInstanceMap.size());
         classToMultiInstanceMap.put(String.class, "123");
         assertEquals(1, classToMultiInstanceMap.size());
@@ -71,7 +71,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testSizeClassOfK() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         assertEquals(0, classToMultiInstanceMap.size(String.class));
         assertEquals(0, classToMultiInstanceMap.size(Integer.class));
         classToMultiInstanceMap.put(String.class, "123");
@@ -93,7 +93,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testIsEmpty() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         assertTrue(classToMultiInstanceMap.isEmpty());
         classToMultiInstanceMap.put(String.class, "123");
         assertFalse(classToMultiInstanceMap.isEmpty());
@@ -109,7 +109,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testRemoveAndContainsValue() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         assertFalse(classToMultiInstanceMap.containsValue("123"));
         assertFalse(classToMultiInstanceMap.containsValue("321"));
         assertFalse(classToMultiInstanceMap.containsValue(123));
@@ -142,7 +142,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testClear() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         classToMultiInstanceMap.put(String.class, "123");
         classToMultiInstanceMap.put(String.class, "321");
         classToMultiInstanceMap.put(Integer.class, 123);
@@ -153,7 +153,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testValues() {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
 
         List<Object> values = classToMultiInstanceMap.values();
         assertEquals(0, values.size());
@@ -180,7 +180,7 @@ public class ClassToInstancesMapTest {
 
     @Test
     public void testContainsValuesOf() throws Exception {
-        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<Object>();
+        ClassToInstancesMap<Object> classToMultiInstanceMap = new ClassToInstancesMap<>();
         assertFalse(classToMultiInstanceMap.containsValuesOf(String.class));
 
         classToMultiInstanceMap.put("asd");

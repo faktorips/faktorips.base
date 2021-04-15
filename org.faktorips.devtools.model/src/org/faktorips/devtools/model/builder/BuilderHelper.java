@@ -34,7 +34,7 @@ public class BuilderHelper {
     }
 
     public static final String[] extractMessageParameters(String message) {
-        ArrayList<String> al = new ArrayList<String>();
+        ArrayList<String> al = new ArrayList<>();
         while (true) {
             int start = message.indexOf('{');
             if (start > -1) {

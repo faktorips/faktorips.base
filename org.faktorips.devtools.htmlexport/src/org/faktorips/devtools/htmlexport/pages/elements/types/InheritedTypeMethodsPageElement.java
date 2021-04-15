@@ -42,7 +42,7 @@ public class InheritedTypeMethodsPageElement extends AbstractInheritedIpsObjectP
     }
 
     private void initializeOverriddenMethodList() {
-        overriddenMethods = new ArrayList<IMethod>();
+        overriddenMethods = new ArrayList<>();
         for (IMethod iMethod : getIpsObjectParts(getParentIpsElement())) {
             registerOverriddenMethod(iMethod);
         }

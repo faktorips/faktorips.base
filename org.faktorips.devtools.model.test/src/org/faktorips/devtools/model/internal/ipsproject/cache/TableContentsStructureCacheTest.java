@@ -11,8 +11,8 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -271,7 +271,7 @@ public class TableContentsStructureCacheTest {
 
     void setUpSingleProjectFindIpsSrcFiles(IIpsProject project, IpsObjectType ipsObjectType, IIpsSrcFile... files) {
         List<IIpsSrcFile> oldIpsSrcFiles = project.findAllIpsSrcFiles(ipsObjectType);
-        ArrayList<IIpsSrcFile> newResultingFiles = new ArrayList<IIpsSrcFile>(oldIpsSrcFiles);
+        ArrayList<IIpsSrcFile> newResultingFiles = new ArrayList<>(oldIpsSrcFiles);
         newResultingFiles.addAll(Arrays.asList(files));
         when(project.findAllIpsSrcFiles(ipsObjectType)).thenReturn(newResultingFiles);
         setUpFindQNameType(project, files);

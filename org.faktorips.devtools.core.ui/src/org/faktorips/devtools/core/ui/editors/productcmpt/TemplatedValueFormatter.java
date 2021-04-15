@@ -25,7 +25,8 @@ import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 public class TemplatedValueFormatter {
 
     public static final Function<IProductCmptLink, String> PRODUCT_CMPT_LINK = link -> link != null
-            ? link.getCardinality().format() : StringUtils.EMPTY;
+            ? link.getCardinality().format()
+            : StringUtils.EMPTY;
 
     // Utility class that should not be instantiated
     private TemplatedValueFormatter() {

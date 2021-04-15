@@ -44,7 +44,7 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         this.targetClass = targetClass;
         this.targetId = targetId;
         try {
-            establishMethod = sourceObj.getClass().getMethod(establishMethodName, new Class[] { targetClass });
+            establishMethod = sourceObj.getClass().getMethod(establishMethodName, targetClass);
         } catch (NoSuchMethodException ne) {
             throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
         } catch (SecurityException e) {
@@ -61,7 +61,7 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
     @Override
     public void resolve(IObjectReferenceStore store) throws Exception {
         Object target = store.getObject(targetClass, targetId);
-        establishMethod.invoke(sourceObj, new Object[] { target });
+        establishMethod.invoke(sourceObj, target);
     }
 
     public Method getEstablishMethod() {

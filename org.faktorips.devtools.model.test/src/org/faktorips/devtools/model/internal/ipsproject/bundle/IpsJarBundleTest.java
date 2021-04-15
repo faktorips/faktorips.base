@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -108,7 +108,7 @@ public class IpsJarBundleTest {
     private void mockObjectDirs() {
         IpsBundleManifest bundleManifest = spy(new IpsBundleManifest(mock(Manifest.class)));
         ipsJarBundle.setBundleManifest(bundleManifest);
-        List<IPath> pathList = new ArrayList<IPath>();
+        List<IPath> pathList = new ArrayList<>();
         pathList.add(new Path(ANY_PATH));
         doReturn(pathList).when(bundleManifest).getObjectDirs();
     }
@@ -206,7 +206,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetNonEmptyPackages_notEmpty() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         packagePaths.add("org.test.any.two");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
@@ -220,7 +220,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_false() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -231,7 +231,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_true() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -242,7 +242,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_defaultPackage() throws Exception {
-        Set<String> packagePaths = new HashSet<String>();
+        Set<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -253,7 +253,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_subPackage() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -264,7 +264,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_invalidSubPackage() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -275,7 +275,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetNonEmptySubpackages_fountNone() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
@@ -286,7 +286,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetNonEmptySubpackages_defaultPackage() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org");
         packagePaths.add("de");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
@@ -300,7 +300,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetNonEmptySubpackages() throws Exception {
-        HashSet<String> packagePaths = new HashSet<String>();
+        HashSet<String> packagePaths = new HashSet<>();
         packagePaths.add("org.test.one");
         packagePaths.add("org.one");
         when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
@@ -313,7 +313,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetQNameTypes() throws Exception {
-        HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
+        HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         when(bundleContentIndex.getQualifiedNameTypes()).thenReturn(qnameTypes);
 
         Set<QualifiedNameType> result = ipsJarBundle.getQNameTypes();
@@ -323,7 +323,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetQNameTypes_forPackageName() throws Exception {
-        HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
+        HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         when(bundleContentIndex.getQualifiedNameTypes("anyPackageName")).thenReturn(qnameTypes);
 
         Set<QualifiedNameType> result = ipsJarBundle.getQNameTypes("anyPackageName");
@@ -333,7 +333,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContains_notFound() throws Exception {
-        HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
+        HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         when(bundleContentIndex.getQualifiedNameTypes("anyPackageName")).thenReturn(qnameTypes);
 
         boolean contained = ipsJarBundle.contains(qualifiedNameType.toPath());
@@ -352,7 +352,7 @@ public class IpsJarBundleTest {
 
     private void mockQualifiedNameTypes() {
         when(qualifiedNameType.toPath()).thenReturn(new Path(ANY_PATH));
-        HashSet<QualifiedNameType> qnameTypes = new HashSet<QualifiedNameType>();
+        HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         qnameTypes.add(qualifiedNameType);
         when(bundleContentIndex.getQualifiedNameTypes()).thenReturn(qnameTypes);
         when(bundleContentIndex.getModelPath(qualifiedNameType.toPath())).thenReturn(new Path("modelPath"));

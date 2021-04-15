@@ -119,7 +119,7 @@ public class IpsProcessorBasedRefactoringTest {
 
         @Override
         protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-            return new HashSet<IIpsSrcFile>();
+            return new HashSet<>();
 
         }
 

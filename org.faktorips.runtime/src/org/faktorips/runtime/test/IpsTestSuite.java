@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class IpsTestSuite extends IpsTest2 {
 
-    private List<IpsTest2> tests = new ArrayList<IpsTest2>();
+    private List<IpsTest2> tests = new ArrayList<>();
 
     public IpsTestSuite(String qName) {
         super(qName);
@@ -44,7 +44,7 @@ public class IpsTestSuite extends IpsTest2 {
      * Returns all tests in the suite.
      */
     public List<IpsTest2> getTests() {
-        return new ArrayList<IpsTest2>(tests);
+        return new ArrayList<>(tests);
     }
 
     /**

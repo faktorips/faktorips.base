@@ -29,9 +29,9 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.DatatypeUtil;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -48,7 +48,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     /** The data type of this <code>IEnumAttribute</code>. */
     private String datatype;
 
-    /** Flag indicating whether this <code>IEnumAttribute</code> is inherited from the super type. */
+    /**
+     * Flag indicating whether this <code>IEnumAttribute</code> is inherited from the super type.
+     */
     private boolean inherited;
 
     /** Flag indicating whether this <code>IEnumAttribute</code> is unique. */
@@ -319,7 +321,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
                 Message validationMessage = new Message(
                         MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text, Message.ERROR, this,
-                        new String[] { PROPERTY_NAME, PROPERTY_INHERITED });
+                        PROPERTY_NAME, PROPERTY_INHERITED);
                 list.add(validationMessage);
             }
         }
@@ -413,7 +415,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     @Override
     public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreException {
         Set<IEnumType> subclassingEnumTypes = getEnumType().searchSubclassingEnumTypes();
-        List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<IEnumAttribute>(subclassingEnumTypes.size());
+        List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<>(subclassingEnumTypes.size());
         for (IEnumType subclassingEnumType : subclassingEnumTypes) {
             IEnumAttribute inheritedAttribute = subclassingEnumType.getEnumAttributeIncludeSupertypeCopies(name);
             if (inheritedAttribute != null) {
@@ -504,8 +506,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     @Override
     public boolean isLiteralNameDefaultValueProvider() {
         IEnumLiteralNameAttribute literalNameAttribute = getEnumType().getEnumLiteralNameAttribute();
-        return (literalNameAttribute == null) ? false : literalNameAttribute.getDefaultValueProviderAttribute().equals(
-                name);
+        return (literalNameAttribute == null) ? false
+                : literalNameAttribute.getDefaultValueProviderAttribute().equals(
+                        name);
     }
 
     private void validateDuplicateIndicator(MessageList list, IndicationProvider indicationProvider) {

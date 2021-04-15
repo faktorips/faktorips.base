@@ -110,7 +110,7 @@ public abstract class XType extends XClass {
     }
 
     public <T extends XType> Set<T> getClassHierarchy(Class<T> concreteClass) {
-        SuperclassCollector<T> superclassCollector = new SuperclassCollector<T>(this, concreteClass);
+        SuperclassCollector<T> superclassCollector = new SuperclassCollector<>(this, concreteClass);
         superclassCollector.start(getType());
         return superclassCollector.getSuperclasses();
     }
@@ -119,7 +119,7 @@ public abstract class XType extends XClass {
 
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
-        LinkedHashSet<String> list = new LinkedHashSet<String>();
+        LinkedHashSet<String> list = new LinkedHashSet<>();
         if (hasSupertype()) {
             String superInterfaceName = getSupertype().getQualifiedName(BuilderAspect.INTERFACE);
             list.add(addImport(superInterfaceName));
@@ -130,13 +130,13 @@ public abstract class XType extends XClass {
 
     @Override
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
-        LinkedHashSet<String> list = new LinkedHashSet<String>();
+        LinkedHashSet<String> list = new LinkedHashSet<>();
         return list;
     }
 
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
-        LinkedHashSet<String> list = new LinkedHashSet<String>();
+        LinkedHashSet<String> list = new LinkedHashSet<>();
         if (getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
             list.add(getInterfaceName());
         } else {
@@ -193,7 +193,7 @@ public abstract class XType extends XClass {
      */
     protected <X extends XAssociation> Set<XDerivedUnionAssociation> findSubsettedDerivedUnions(
             Collection<X> associations) {
-        Set<XDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDerivedUnionAssociation>();
+        Set<XDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<>();
         for (X association : associations) {
             if (association.isSubsetOfADerivedUnion()) {
                 XAssociation subsettedDerivedUnionNode = association.getSubsettedDerivedUnion();
@@ -213,7 +213,7 @@ public abstract class XType extends XClass {
     protected <T extends IAssociation> Set<T> getAssociations(IType type,
             Class<T> associationClass,
             AbstractAssociationFilter filter) {
-        Set<T> result = new LinkedHashSet<T>();
+        Set<T> result = new LinkedHashSet<>();
         List<IAssociation> associations = type.getAssociations();
         for (IAssociation association : associations) {
             if (associationClass.isAssignableFrom(association.getClass()) && filter.isValidAssociation(association)) {
@@ -229,7 +229,7 @@ public abstract class XType extends XClass {
 
         private final Class<T> nodeClass;
 
-        private final Set<T> superclasses = new LinkedHashSet<T>();
+        private final Set<T> superclasses = new LinkedHashSet<>();
 
         private final XType currentNode;
 

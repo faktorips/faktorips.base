@@ -19,10 +19,8 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -146,12 +144,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
         });
         candidatesViewer = new TableViewer(table);
-        candidatesViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledState();
-            }
-        });
+        candidatesViewer.addSelectionChangedListener($ -> updateButtonEnabledState());
         candidatesViewer.setLabelProvider(new DefaultLabelProvider());
         candidatesViewer.setContentProvider(new IStructuredContentProvider() {
 
@@ -201,14 +194,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     }
 
     private void setListenerForItemsViewer() {
-        itemsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledState();
-            }
-
-        });
+        itemsViewer.addSelectionChangedListener($ -> updateButtonEnabledState());
     }
 
     private void setContentProviderForItemsViewer() {

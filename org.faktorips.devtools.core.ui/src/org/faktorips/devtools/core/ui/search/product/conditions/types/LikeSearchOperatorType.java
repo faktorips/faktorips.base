@@ -47,7 +47,8 @@ public enum LikeSearchOperatorType implements ISearchOperatorType {
         // if argument is null, then just null as an allowed hit, which is checked by the
         // EqualitySearchOperator.
         if (argument == null) {
-            return new EqualitySearchOperator(valueDatatype, EqualitySearchOperatorType.EQUALITY, operandProvider, null);
+            return new EqualitySearchOperator(valueDatatype, EqualitySearchOperatorType.EQUALITY, operandProvider,
+                    null);
         }
 
         return new LikeSearchOperator(valueDatatype, this, operandProvider, argument);

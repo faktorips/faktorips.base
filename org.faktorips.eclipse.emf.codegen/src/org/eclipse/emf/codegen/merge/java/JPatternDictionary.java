@@ -165,63 +165,63 @@ public class JPatternDictionary extends FacadeVisitor {
 
     public Map<String, JImport> getImportMap() {
         if (importMap == null) {
-            importMap = new HashMap<String, JImport>();
+            importMap = new HashMap<>();
         }
         return importMap;
     }
 
     public Map<String, JAbstractType> getAbstractTypeMap() {
         if (abstractTypeMap == null) {
-            abstractTypeMap = new HashMap<String, JAbstractType>();
+            abstractTypeMap = new HashMap<>();
         }
         return abstractTypeMap;
     }
 
     public Map<String, JInitializer> getInitializerMap() {
         if (initializerMap == null) {
-            initializerMap = new HashMap<String, JInitializer>();
+            initializerMap = new HashMap<>();
         }
         return initializerMap;
     }
 
     public Map<String, JField> getFieldMap() {
         if (fieldMap == null) {
-            fieldMap = new HashMap<String, JField>();
+            fieldMap = new HashMap<>();
         }
         return fieldMap;
     }
 
     public Map<String, JMethod> getMethodMap() {
         if (methodMap == null) {
-            methodMap = new HashMap<String, JMethod>();
+            methodMap = new HashMap<>();
         }
         return methodMap;
     }
 
     public Map<String, JAnnotation> getAnnotationMap() {
         if (annotationMap == null) {
-            annotationMap = new HashMap<String, JAnnotation>();
+            annotationMap = new HashMap<>();
         }
         return annotationMap;
     }
 
     public Map<String, JAnnotationTypeMember> getAnnotationTypeMemberMap() {
         if (annotationTypeMemberMap == null) {
-            annotationTypeMemberMap = new HashMap<String, JAnnotationTypeMember>();
+            annotationTypeMemberMap = new HashMap<>();
         }
         return annotationTypeMemberMap;
     }
 
     public Map<String, JEnumConstant> getEnumConstantMap() {
         if (enumConstantMap == null) {
-            enumConstantMap = new HashMap<String, JEnumConstant>();
+            enumConstantMap = new HashMap<>();
         }
         return enumConstantMap;
     }
 
     public Map<String, Collection<JNode>> getMarkupMap() {
         if (markupMap == null) {
-            markupMap = new HashMap<String, Collection<JNode>>();
+            markupMap = new HashMap<>();
         }
         return markupMap;
     }
@@ -268,7 +268,7 @@ public class JPatternDictionary extends FacadeVisitor {
 
     protected Set<String> getNoImporterSet() {
         if (noImportSet == null) {
-            noImportSet = new HashSet<String>();
+            noImportSet = new HashSet<>();
         }
         return noImportSet;
     }
@@ -491,7 +491,7 @@ public class JPatternDictionary extends FacadeVisitor {
     protected void markupNode(String markup, JNode node) {
         Collection<JNode> collection = getMarkupMap().get(markup);
         if (collection == null) {
-            collection = new HashSet<JNode>();
+            collection = new HashSet<>();
             getMarkupMap().put(markup, collection);
         }
         collection.add(node);
@@ -602,7 +602,7 @@ public class JPatternDictionary extends FacadeVisitor {
 
             identifier = sb.length() > 0 ? sb.toString() : getDefaultNodeIdentifier(node);
             if (nodeIdentifierMap == null) {
-                nodeIdentifierMap = new HashMap<JNode, String>();
+                nodeIdentifierMap = new HashMap<>();
             }
             nodeIdentifierMap.put(node, identifier);
         }

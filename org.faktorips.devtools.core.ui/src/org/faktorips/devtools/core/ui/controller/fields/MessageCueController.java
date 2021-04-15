@@ -27,16 +27,15 @@ import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The internal controller for cues and error messages on {@link Text} and {@link Combo} widgets.
@@ -86,15 +85,11 @@ public class MessageCueController {
 
     private MessageCueController(Shell initShell) {
         shell = initShell;
-        shell.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                Object data = shell.getData(MESSAGE_CUE_CONTROLLER);
-                if (data == MessageCueController.this) {
-                    shell.setData(MESSAGE_CUE_CONTROLLER, null);
-                    shell = null;
-                }
+        shell.addDisposeListener($ -> {
+            Object data = shell.getData(MESSAGE_CUE_CONTROLLER);
+            if (data == MessageCueController.this) {
+                shell.setData(MESSAGE_CUE_CONTROLLER, null);
+                shell = null;
             }
         });
     }
@@ -179,22 +174,19 @@ public class MessageCueController {
             fControl.addDisposeListener(this);
 
             // listener that moves the hover, when the control is moved or resized
-            // and hides the hover on deactication.
-            shellListener = new Listener() {
-                @Override
-                public void handleEvent(Event event) {
-                    switch (event.type) {
-                        case SWT.Resize:
-                        case SWT.Move:
-                            if (fHover != null) {
-                                fHover.setLocation();
-                            }
-                            break;
-                        case SWT.Deactivate:
-                        case SWT.Iconify:
-                            hideHover();
-                            break;
-                    }
+            // and hides the hover on deactivation.
+            shellListener = event -> {
+                switch (event.type) {
+                    case SWT.Resize:
+                    case SWT.Move:
+                        if (fHover != null) {
+                            fHover.setLocation();
+                        }
+                        break;
+                    case SWT.Deactivate:
+                    case SWT.Iconify:
+                        hideHover();
+                        break;
                 }
             };
             shell.addListener(SWT.Resize, shellListener);
@@ -483,13 +475,10 @@ public class MessageCueController {
             fHoverShell = new Shell(control.getShell(), SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_FOCUS);
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-            fHoverShell.addPaintListener(new PaintListener() {
-                @Override
-                public void paintControl(PaintEvent pe) {
-                    pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
-                    if (!fgCarbon) {
-                        pe.gc.drawPolygon(getPolygon(true));
-                    }
+            fHoverShell.addPaintListener(pe -> {
+                pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
+                if (!fgCarbon) {
+                    pe.gc.drawPolygon(getPolygon(true));
                 }
             });
         }

@@ -15,9 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -31,15 +29,11 @@ public class ReferenceDeleteAction extends Action {
 
     public ReferenceDeleteAction(TreeViewer viewer) {
         this.viewer = viewer;
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection) {
-                    IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-                    IProductCmptLink[] selectedLinks = getSelectedLinks(selection, new ArrayList<IIpsSrcFile>());
-                    setEnabled(selectedLinks != null);
-                }
+        viewer.addSelectionChangedListener(event -> {
+            if (event.getSelection() instanceof IStructuredSelection) {
+                IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+                IProductCmptLink[] selectedLinks = getSelectedLinks(selection, new ArrayList<IIpsSrcFile>());
+                setEnabled(selectedLinks != null);
             }
         });
     }
@@ -48,7 +42,7 @@ public class ReferenceDeleteAction extends Action {
     public void run() {
         if (viewer.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-            List<IIpsSrcFile> srcFilesToSave = new ArrayList<IIpsSrcFile>();
+            List<IIpsSrcFile> srcFilesToSave = new ArrayList<>();
             IProductCmptLink[] links = getSelectedLinks(selection, srcFilesToSave);
             if (links == null) {
                 return;

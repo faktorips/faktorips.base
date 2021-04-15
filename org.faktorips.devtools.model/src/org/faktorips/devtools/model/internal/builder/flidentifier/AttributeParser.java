@@ -134,7 +134,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     private List<IAttribute> getPolicyAndProductAttributesFromIType() {
-        List<IAttribute> attributes = new ArrayList<IAttribute>();
+        List<IAttribute> attributes = new ArrayList<>();
         IType contextType = getContextType();
         attributes.addAll(findAllAttributesFor(contextType));
         attributes.addAll(findProductAttributesIfAvailable(contextType));

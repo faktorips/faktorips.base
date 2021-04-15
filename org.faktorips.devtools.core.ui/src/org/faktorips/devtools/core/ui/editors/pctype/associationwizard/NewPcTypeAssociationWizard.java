@@ -41,9 +41,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.faktorips.util.memento.Memento;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.memento.Memento;
 
 public class NewPcTypeAssociationWizard extends Wizard implements ContentsChangeListener {
 
@@ -72,7 +72,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private boolean productCmptTypeIsDirty;
 
     // wizard pages
-    private List<IWizardPage> pages = new ArrayList<IWizardPage>();
+    private List<IWizardPage> pages = new ArrayList<>();
     private AssociationTargetPage associationTargetPage;
     private PropertyPage propertyPage;
     private InverseAssociationPage inverseAssociationPage;
@@ -90,12 +90,12 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     private AssociationType previousTargetAssociationType;
 
     // pages which will be hidden if the type of the association is detail to master
-    private List<WizardPage> detailToMasterHiddenPages = new ArrayList<WizardPage>(10);
+    private List<WizardPage> detailToMasterHiddenPages = new ArrayList<>(10);
 
     // helper fields to suppress error messages
-    private Set<IWizardPage> displayErrorMessageForPages = new HashSet<IWizardPage>();
-    private Set<IWizardPage> visiblePages = new HashSet<IWizardPage>();
-    private HashMap<IWizardPage, Integer> suppressedEventForPages = new HashMap<IWizardPage, Integer>();
+    private Set<IWizardPage> displayErrorMessageForPages = new HashSet<>();
+    private Set<IWizardPage> visiblePages = new HashSet<>();
+    private HashMap<IWizardPage, Integer> suppressedEventForPages = new HashMap<>();
 
     // stores the last inverse association, to indicate changes of this property
     private String prevInverseAssociationRoleName = ""; //$NON-NLS-1$
@@ -408,12 +408,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         // set default focus
         if (page instanceof IDefaultFocusPage) {
             if (isSuppressedEventFor(page, false)) {
-                getShell().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        ((IDefaultFocusPage)page).setDefaultFocus();
-                    }
-                });
+                getShell().getDisplay().asyncExec(((IDefaultFocusPage)page)::setDefaultFocus);
             }
         }
     }

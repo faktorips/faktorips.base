@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -90,13 +88,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         setLayoutAndLayoutData();
 
         createControls();
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                resourceManager.dispose();
-            }
-        });
+        addDisposeListener($ -> resourceManager.dispose());
     }
     // CSON: ParameterNumberCheck
 
@@ -130,7 +122,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         listLayoutData.heightHint = 200;
         listLayoutData.widthHint = 300;
         listViewer.getControl().setLayoutData(listLayoutData);
-        listViewerField = new StructuredViewerField<E>(listViewer, elementClass);
+        listViewerField = new StructuredViewerField<>(listViewer, elementClass);
 
         description = toolkit.createStyledMultilineText(this);
         description.setEditable(false);
@@ -143,7 +135,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
 
         listViewer.setInput(inputList);
 
-        bindingContext.add(new PropertyChangeBinding<E>(description, pmo, property, elementClass) {
+        bindingContext.add(new PropertyChangeBinding<>(description, pmo, property, elementClass) {
 
             @Override
             protected void propertyChanged(E oldValue, E newValue) {

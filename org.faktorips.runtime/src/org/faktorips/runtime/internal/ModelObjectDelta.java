@@ -54,7 +54,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private AssociationKind associationKind;
     private Set<String> changedProperties = null;
 
-    private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
+    private final List<IModelObjectDelta> children = new ArrayList<>(0);
 
     /**
      * @throws NullPointerException if modelObject and referenceModelObject are both
@@ -384,7 +384,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
      */
     public void markPropertyChanged(String property) {
         if (changedProperties == null) {
-            changedProperties = new TreeSet<String>(new AttributePositionComparator(original));
+            changedProperties = new TreeSet<>(new AttributePositionComparator(original));
         }
         changedProperties.add(property);
         kind |= CHANGED;
@@ -404,9 +404,9 @@ public class ModelObjectDelta implements IModelObjectDelta {
     @Override
     public List<String> getChangedProperties() {
         if (changedProperties == null) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
-        return new ArrayList<String>(changedProperties);
+        return new ArrayList<>(changedProperties);
     }
 
     @Override
@@ -471,7 +471,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     @Override
     public List<IModelObjectDelta> getChildDeltas(int kind) {
-        final List<IModelObjectDelta> childrenOfKind = new ArrayList<IModelObjectDelta>();
+        final List<IModelObjectDelta> childrenOfKind = new ArrayList<>();
         for (IModelObjectDelta child : children) {
             if ((child.getKind() & kind) > 0) {
                 childrenOfKind.add(child);
@@ -483,8 +483,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
     @Override
     public void accept(IModelObjectDeltaVisitor visitor) {
         if (visitor.visit(this)) {
-            for (int i = 0; i < children.size(); i++) {
-                (children.get(i)).accept(visitor);
+            for (IModelObjectDelta child : children) {
+                (child).accept(visitor);
             }
         }
     }
@@ -529,7 +529,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private static class AttributePositionComparator implements Comparator<String>, Serializable {
 
         private static final long serialVersionUID = 1L;
-        private final Map<String, Integer> propertyPositions = new HashMap<String, Integer>();
+        private final Map<String, Integer> propertyPositions = new HashMap<>();
 
         private AttributePositionComparator(IModelObject object) {
             if (IpsModel.isPolicyCmptType(object.getClass())) {

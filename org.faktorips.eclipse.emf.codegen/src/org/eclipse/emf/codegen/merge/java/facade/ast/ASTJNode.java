@@ -129,7 +129,7 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * 
      * @see ASTJCompilationUnit#getAllTrackedContentsMap()
      */
-    private Map<ASTNode, String> trackedContentsMap = new HashMap<ASTNode, String>(4);
+    private Map<ASTNode, String> trackedContentsMap = new HashMap<>(4);
 
     /**
      * @see AbstractJNode#AbstractJNode()
@@ -290,7 +290,10 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * @param property
      * @param nodeType of the place-holder
      */
-    protected void addValueToListProperty(ASTNode node, String value, ChildListPropertyDescriptor property, int nodeType) {
+    protected void addValueToListProperty(ASTNode node,
+            String value,
+            ChildListPropertyDescriptor property,
+            int nodeType) {
         if (value == null) {
             return;
         }
@@ -661,7 +664,10 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * @param property
      * @param nodeType of the string place holders to create
      */
-    protected void setListNodeProperty(ASTNode node, String[] values, ChildListPropertyDescriptor property, int nodeType) {
+    protected void setListNodeProperty(ASTNode node,
+            String[] values,
+            ChildListPropertyDescriptor property,
+            int nodeType) {
         ListRewrite listRewrite = rewriter.getListRewrite(node, property);
 
         @SuppressWarnings("unchecked")
@@ -708,7 +714,10 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * @param property
      * @param nodeType
      */
-    protected void setNodeProperty(ASTNode node, String stringValue, StructuralPropertyDescriptor property, int nodeType) {
+    protected void setNodeProperty(ASTNode node,
+            String stringValue,
+            StructuralPropertyDescriptor property,
+            int nodeType) {
         if (ASTFacadeHelper.DEBUG) {
             facadeHelper.logInfo("Setting node property to <" + stringValue + ">");
         }
@@ -777,7 +786,7 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
         } else if (nodeValue != null) {
             trackAndReplace(nodeValue, stringValue);
         } else
-            // stringValue not null, nodeValue is null
+        // stringValue not null, nodeValue is null
         {
             nodeValue = rewriter.createStringPlaceholder(stringValue, nodeType);
             rewriter.set(node, property, nodeValue, null);

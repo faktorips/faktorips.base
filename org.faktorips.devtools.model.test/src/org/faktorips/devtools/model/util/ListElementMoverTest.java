@@ -24,14 +24,14 @@ public class ListElementMoverTest {
 
     @Before
     public void setUp() {
-        content = new ArrayList<String>();
+        content = new ArrayList<>();
         content.add("a");
         content.add("b");
         content.add("c");
         content.add("d");
         content.add("e");
         content.add("f");
-        mover = new ListElementMover<String>(content);
+        mover = new ListElementMover<>(content);
     }
 
     @Test

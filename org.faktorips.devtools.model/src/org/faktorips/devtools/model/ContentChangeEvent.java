@@ -51,7 +51,7 @@ public class ContentChangeEvent {
     private ContentChangeEvent(IIpsSrcFile ipsSrcFile, PropertyChangeEvent... propertyChangeEvents) {
         this.ipsSrcFile = ipsSrcFile;
         type = TYPE_WHOLE_CONTENT_CHANGED;
-        this.propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(Arrays.asList(propertyChangeEvents));
+        this.propertyChangeEvents = new LinkedHashSet<>(Arrays.asList(propertyChangeEvents));
         part = null;
         movedParts = null;
     }
@@ -94,7 +94,7 @@ public class ContentChangeEvent {
         this.part = part;
         ipsSrcFile = part.getIpsSrcFile();
         this.type = TYPE_PROPERTY_CHANGED;
-        this.propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(Arrays.asList(propertyChangeEvents));
+        this.propertyChangeEvents = new LinkedHashSet<>(Arrays.asList(propertyChangeEvents));
         movedParts = null;
     }
 
@@ -144,7 +144,7 @@ public class ContentChangeEvent {
             throw new IllegalArgumentException("Can only merge change events from same source file. Was " //$NON-NLS-1$
                     + ce1.getIpsSrcFile() + " and " + ce2.getIpsSrcFile()); //$NON-NLS-1$
         }
-        Set<PropertyChangeEvent> propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(
+        Set<PropertyChangeEvent> propertyChangeEvents = new LinkedHashSet<>(
                 ce1.getPropertyChangeEvents());
         propertyChangeEvents.addAll(ce2.getPropertyChangeEvents());
         if (ce1.getEventType() == ce2.getEventType() && Objects.equals(ce1.getPart(), ce2.getPart())) {

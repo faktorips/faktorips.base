@@ -10,9 +10,6 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.custom.ExtendedModifyListener;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.StyledTextAndSecondControlComposite;
@@ -65,27 +62,17 @@ public abstract class AbstractStyledTextButtonField<T> extends DefaultEditField<
     @Override
     protected void addListenerToControl() {
         final ExtendedModifyListener styledTextModifyListener = new StyledTextModifyListener();
-        final ModifyListener ml = new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                boolean immediatelyNotify = immediatelyNotifyListener | control.isImmediatelyNotifyListener();
-                notifyChangeListeners(new FieldValueChangedEvent(AbstractStyledTextButtonField.this),
-                        immediatelyNotify);
-            }
-
+        final ModifyListener ml = $ -> {
+            boolean immediatelyNotify = immediatelyNotifyListener | control.isImmediatelyNotifyListener();
+            notifyChangeListeners(new FieldValueChangedEvent(AbstractStyledTextButtonField.this),
+                    immediatelyNotify);
         };
 
         control.getTextControl().addModifyListener(ml);
         control.getTextControl().addExtendedModifyListener(styledTextModifyListener);
-        control.getTextControl().addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                control.getTextControl().removeModifyListener(ml);
-                control.getTextControl().removeExtendedModifyListener(styledTextModifyListener);
-            }
-
+        control.getTextControl().addDisposeListener($ -> {
+            control.getTextControl().removeModifyListener(ml);
+            control.getTextControl().removeExtendedModifyListener(styledTextModifyListener);
         });
     }
 

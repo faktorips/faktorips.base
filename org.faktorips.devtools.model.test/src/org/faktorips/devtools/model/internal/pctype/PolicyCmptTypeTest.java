@@ -223,7 +223,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         // override the supersupertype method m5 in the supertype
         // => now also m5 is not a candidate any more, if only not implemented abstract methods are
         // requested.
-        supertype.overrideMethods(Arrays.asList(new IMethod[] { m5 }));
+        supertype.overrideMethods(Arrays.asList(m5));
         candidates = policyCmptType.findOverrideMethodCandidates(true, ipsProject);
         assertEquals(0, candidates.size());
     }
@@ -864,7 +864,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
-        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
+        ArrayList<IIpsObjectPathEntry> newbPathEntries = new ArrayList<>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
         for (IIpsObjectPathEntry bPathEntrie : bPathEntries) {
             newbPathEntries.add(bPathEntrie);

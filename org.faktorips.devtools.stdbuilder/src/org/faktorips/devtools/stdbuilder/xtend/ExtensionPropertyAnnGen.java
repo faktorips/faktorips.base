@@ -55,7 +55,8 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
         IExtensionPropertyAccess partContainer = modelNode.getIpsObjectPartContainer();
-        for (IExtensionPropertyDefinition extensionPropertyDefinition : partContainer.getExtensionPropertyDefinitions()) {
+        for (IExtensionPropertyDefinition extensionPropertyDefinition : partContainer
+                .getExtensionPropertyDefinitions()) {
             /*
              * If an extension property is not available in the current installation, obtaining it's
              * value may fail, see
@@ -81,7 +82,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         IIpsObjectPartContainer ipsObjectPartContainer = modelNode.getIpsObjectPartContainer();
-        List<JavaCodeFragment> annotations = new ArrayList<JavaCodeFragment>();
+        List<JavaCodeFragment> annotations = new ArrayList<>();
         for (IExtensionPropertyDefinition extensionPropertyDefinition : ipsObjectPartContainer
                 .getExtensionPropertyDefinitions()) {
             if (isRelevant(extensionPropertyDefinition, ipsObjectPartContainer)) {
@@ -116,7 +117,7 @@ public class ExtensionPropertyAnnGen implements IAnnotationGenerator {
             annotationArg.append(", isNull = true");
         } else {
             annotationArg.append(", value = \"");
-                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+            Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
             Element valueElement = doc.createElement("value");
             extensionPropertyDefinition.valueToXml(valueElement, value);
             String valueString = valueElement.getTextContent();

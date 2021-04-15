@@ -23,8 +23,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
  * <p>
  * This {@linkplain PresentationModelObject Presentation Model Object} stores
  * <ul>
- * <li>
- * the date from which new generations are valid
+ * <li>the date from which new generations are valid
  * <li>a boolean flag controlling whether a new generation shall be created if a matching generation
  * already exists in the target object
  * </ul>
@@ -44,7 +43,8 @@ public class NewGenerationPMO extends PresentationModelObject {
     private boolean skipExistingGenerations;
 
     public NewGenerationPMO() {
-        if (IpsUIPlugin.getDefault() != null) { // may be null in test cases :(
+        if (IpsUIPlugin.getDefault() != null) {
+            // may be null in test cases :(
             validFrom = IpsUIPlugin.getDefault().getDefaultValidityDate();
         }
     }

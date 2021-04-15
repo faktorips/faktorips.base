@@ -96,13 +96,9 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     private void createImportResultDialog(final IStatus importStatus) {
         IpsPlugin.getDefault().getLog().log(importStatus);
         Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.MessagesImportWizard_windowTitle,
-                        null, importStatus);
-            }
-        });
+        display.asyncExec(() -> ErrorDialog.openError(Display.getDefault().getActiveShell(),
+                Messages.MessagesImportWizard_windowTitle,
+                null, importStatus));
     }
 
     private ValidationRuleMessagesImportOperation getImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {

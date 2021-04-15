@@ -40,8 +40,7 @@ public class RecursiveCopy {
         }
         String[] fileList = dirFile.list();
         if (fileList != null) {
-            for (int i = 0; i < fileList.length; i++) {
-                String name = fileList[i];
+            for (String name : fileList) {
                 String from = fromDir + File.separator + name;
                 String to = toDir + File.separatorChar + name;
                 File file = new File(from);

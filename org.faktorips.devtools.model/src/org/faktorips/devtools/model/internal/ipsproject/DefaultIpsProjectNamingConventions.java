@@ -38,8 +38,8 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
 
     private IIpsProject ipsProject;
 
-    private Map<IpsObjectType, String> errorMsgTxtNameIsEmpty = new HashMap<IpsObjectType, String>(1);
-    private Map<IpsObjectType, String> errorMsgTxtNameIsQualified = new HashMap<IpsObjectType, String>(1);
+    private Map<IpsObjectType, String> errorMsgTxtNameIsEmpty = new HashMap<>(1);
+    private Map<IpsObjectType, String> errorMsgTxtNameIsQualified = new HashMap<>(1);
 
     /*
      * setup the invalid names; @see OS valid names and characters taken from http://msdn.microsoft

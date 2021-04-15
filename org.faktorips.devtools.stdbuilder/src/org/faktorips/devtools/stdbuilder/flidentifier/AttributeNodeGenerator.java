@@ -130,8 +130,10 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     protected String getAttributeGetterName(final AttributeNode node, Datatype contextDatatype) {
-        String parameterAttributGetterName = node.isDefaultValueAccess() ? getParameterAttributDefaultValueGetterName(node
-                .getAttribute()) : getParameterAttributGetterName(node, contextDatatype);
+        String parameterAttributGetterName = node.isDefaultValueAccess()
+                ? getParameterAttributDefaultValueGetterName(node
+                        .getAttribute())
+                : getParameterAttributGetterName(node, contextDatatype);
         return parameterAttributGetterName;
     }
 
@@ -171,7 +173,8 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
      * generation if the requested attribute is changing over time or the product component if the
      * attribute is static.
      */
-    private String getProductCmptOrGenerationGetterCode(IProductCmptTypeAttribute attribute, IPolicyCmptType policyType) {
+    private String getProductCmptOrGenerationGetterCode(IProductCmptTypeAttribute attribute,
+            IPolicyCmptType policyType) {
         XPolicyCmptClass xPolicyCmptClass = getModelNode(policyType, XPolicyCmptClass.class);
         if (attribute.isChangingOverTime()) {
             return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "().";

@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,7 +90,7 @@ public class ExpressionDependencyCollectorTest {
 
     @Before
     public void setUpIdentifierVisitor() {
-        identifiers = new HashMap<IdentifierNode, Integer>();
+        identifiers = new HashMap<>();
         when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
     }
 

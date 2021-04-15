@@ -133,12 +133,13 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
     public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
-     * Finding all {@link IPolicyCmptTypeAssociation IPolicyCmptTypeAssociations} that could be configured by this
-     * {@link IProductCmptTypeAssociation}. In normal scenario these are all Associations (never
-     * Detail-To-Master) from the {@link IPolicyCmptType} that is configured by the source of this
-     * association to the {@link IPolicyCmptType} that is configured by the target of this
-     * association. But there could also be associations in {@link PolicyCmptType PolicyCmptTypes} that are not
-     * configured by any {@link IProductCmptType}. This scenario is described in FIPS-563.
+     * Finding all {@link IPolicyCmptTypeAssociation IPolicyCmptTypeAssociations} that could be
+     * configured by this {@link IProductCmptTypeAssociation}. In normal scenario these are all
+     * Associations (never Detail-To-Master) from the {@link IPolicyCmptType} that is configured by
+     * the source of this association to the {@link IPolicyCmptType} that is configured by the
+     * target of this association. But there could also be associations in {@link PolicyCmptType
+     * PolicyCmptTypes} that are not configured by any {@link IProductCmptType}. This scenario is
+     * described in FIPS-563.
      * 
      * @param ipsProject The {@link IIpsProject} used as search base project
      * @return the list of all {@link IPolicyCmptTypeAssociation} that could potentially be

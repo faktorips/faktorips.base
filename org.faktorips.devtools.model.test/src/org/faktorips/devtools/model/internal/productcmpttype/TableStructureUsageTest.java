@@ -225,25 +225,29 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setChangingOverTime(false);
 
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(true);
         tableStructureUsage.setChangingOverTime(true);
 
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         tableStructureUsage.setChangingOverTime(false);
 
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         tableStructureUsage.setChangingOverTime(true);
 
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

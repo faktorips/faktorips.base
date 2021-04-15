@@ -16,10 +16,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -98,13 +96,10 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
             destinationTreeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
             destinationTreeViewer.setInput(getIpsElement());
 
-            destinationTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-                @Override
-                public void selectionChanged(SelectionChangedEvent event) {
-                    IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-                    if (selection.getFirstElement() != null) {
-                        userInputChanged();
-                    }
+            destinationTreeViewer.addSelectionChangedListener(event -> {
+                IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+                if (selection.getFirstElement() != null) {
+                    userInputChanged();
                 }
             });
         }
@@ -140,9 +135,9 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
 
     private static class DestinationTreeContentProvider implements ITreeContentProvider {
 
-        private Map<IIpsObject, IIpsObject> parentToChildInHierarchy = new HashMap<IIpsObject, IIpsObject>();
+        private Map<IIpsObject, IIpsObject> parentToChildInHierarchy = new HashMap<>();
 
-        private Map<IIpsObject, IIpsObject> childToParentInHierarchy = new HashMap<IIpsObject, IIpsObject>();
+        private Map<IIpsObject, IIpsObject> childToParentInHierarchy = new HashMap<>();
 
         private IIpsObject leafObject;
 

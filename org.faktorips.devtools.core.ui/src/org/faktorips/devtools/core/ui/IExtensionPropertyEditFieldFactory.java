@@ -46,6 +46,8 @@ public interface IExtensionPropertyEditFieldFactory {
      * @param toolkit The {@link UIToolkit} that should be used to create the control to ensure a
      *            consistent user interface
      */
-    public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPartContainer, Composite parent, UIToolkit toolkit);
+    public EditField<?> newEditField(IIpsObjectPartContainer ipsObjectPartContainer,
+            Composite parent,
+            UIToolkit toolkit);
 
 }

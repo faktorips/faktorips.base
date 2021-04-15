@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -196,14 +195,11 @@ class DropToMoveHelper {
             int steps = posSource - posTarget;
             final boolean up = (steps >= 0);
             final int stepsToMove = Math.abs(steps);
-            IWorkspaceRunnable moveRunnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    int currPos = posSource;
-                    for (int i = 0; i < stepsToMove; i++) {
-                        parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
-                        currPos += (up ? -1 : 1);
-                    }
+            IWorkspaceRunnable moveRunnable = $ -> {
+                int currPos = posSource;
+                for (int i = 0; i < stepsToMove; i++) {
+                    parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
+                    currPos += (up ? -1 : 1);
                 }
             };
             IIpsModel.get().runAndQueueChangeEvents(moveRunnable, null);

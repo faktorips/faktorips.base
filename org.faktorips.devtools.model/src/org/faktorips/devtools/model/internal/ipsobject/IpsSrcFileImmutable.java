@@ -120,7 +120,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
 
         try {
             ipsObject = (IpsObject)getIpsObjectType().newObject(this);
-                Document doc = XmlUtil.getDefaultDocumentBuilder().parse(getContentFromEnclosingResource());
+            Document doc = XmlUtil.getDefaultDocumentBuilder().parse(getContentFromEnclosingResource());
             ipsObject.initFromXml(doc.getDocumentElement());
         } catch (Exception e) {
             IpsLog.log(new IpsStatus(e));

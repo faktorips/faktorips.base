@@ -138,7 +138,6 @@ public class UIToolkit {
         }
         if (isEnabledRelevant(c)) {
             setControlEnabled(c, changeable);
-            return;
         }
     }
 
@@ -882,7 +881,7 @@ public class UIToolkit {
         Combo newCombo = createCombo(parent);
         if (datatype.isSupportingNames()) {
             String[] ids = datatype.getAllValueIds(true);
-            ArrayList<String> nameList = new ArrayList<String>(ids.length);
+            ArrayList<String> nameList = new ArrayList<>(ids.length);
             for (String id : ids) {
                 String formatedText = IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, id);
                 nameList.add(formatedText);
@@ -992,7 +991,7 @@ public class UIToolkit {
      */
     @Deprecated
     public RadioButtonGroup<?> createRadiobuttonGroup(Composite parent, int style, String text) {
-        return new RadioButtonGroup<Object>(parent, style, text, this);
+        return new RadioButtonGroup<>(parent, style, text, this);
     }
 
     /**
@@ -1010,7 +1009,7 @@ public class UIToolkit {
             int numberColumns,
             LinkedHashMap<T, String> options) {
 
-        return new RadioButtonGroup<T>(parent, groupText, numberColumns, options, this);
+        return new RadioButtonGroup<>(parent, groupText, numberColumns, options, this);
     }
 
     /**
@@ -1027,7 +1026,7 @@ public class UIToolkit {
         Composite newComposite = createGridComposite(parent, options.size(), false, false,
                 new GridData(SWT.LEAD, SWT.TOP, false, false));
         ((GridLayout)newComposite.getLayout()).horizontalSpacing = 20;
-        return new RadioButtonGroup<T>(newComposite, options, this);
+        return new RadioButtonGroup<>(newComposite, options, this);
     }
 
     public Group createGridGroup(Composite parent, String text, int numOfColumns, boolean equalSize) {

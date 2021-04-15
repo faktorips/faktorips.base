@@ -245,7 +245,7 @@ public class TemplatePropertyUsageView {
             Optional<IIpsObjectPartContainer> selectedElement = TypedSelection
                     .singleElement(IIpsObjectPartContainer.class, event.getSelection());
             if (selectedElement.isPresent()) {
-                new SimpleOpenIpsObjectPartAction<IIpsObjectPartContainer>(selectedElement.get(), "").run(); //$NON-NLS-1$
+                new SimpleOpenIpsObjectPartAction<>(selectedElement.get(), "").run(); //$NON-NLS-1$
             }
 
         }

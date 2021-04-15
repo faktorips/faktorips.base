@@ -72,9 +72,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     public static final String PAGE_ID = "Properties"; //$NON-NLS-1$
 
-    private final List<IpsSection> leftSections = new ArrayList<IpsSection>(4);
+    private final List<IpsSection> leftSections = new ArrayList<>(4);
 
-    private final List<IpsSection> rightSections = new ArrayList<IpsSection>(4);
+    private final List<IpsSection> rightSections = new ArrayList<>(4);
 
     /**
      * Layout for this page (see pageRoot) - if the content-structure for this page changes, the
@@ -204,7 +204,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         }
 
         // Determine categories
-        List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>(4);
+        List<IProductCmptCategory> categories = new ArrayList<>(4);
         try {
             categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
         } catch (CoreException e) {
@@ -596,12 +596,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         @Override
         public void run() {
-            BusyIndicator.showWhile(getGenerationPropertiesPage().pageRoot.getDisplay(), new Runnable() {
-                @Override
-                public void run() {
-                    (getGenerationPropertiesPage().getEditor()).setActiveGeneration(getGeneration());
-                }
-            });
+            BusyIndicator.showWhile(getGenerationPropertiesPage().pageRoot.getDisplay(),
+                    () -> (getGenerationPropertiesPage().getEditor()).setActiveGeneration(getGeneration()));
         }
 
         public GenerationPropertiesPage getGenerationPropertiesPage() {

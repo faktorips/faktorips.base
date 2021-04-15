@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,13 +36,7 @@ public class ComparableSearchOperatorTest {
         String fuenf = "5";
         String vier = "4";
 
-        IOperandProvider operandProvider = new IOperandProvider() {
-
-            @Override
-            public String getSearchOperand(IProductPartsContainer productPartsContainer) {
-                return null;
-            }
-        };
+        IOperandProvider operandProvider = productPartsContainer -> null;
 
         ComparableSearchOperator searchOperator = new ComparableSearchOperator(new IntegerDatatype(),
                 searchOperatorType, operandProvider, fuenf);

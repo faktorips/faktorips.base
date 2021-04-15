@@ -229,7 +229,7 @@ public final class MoveRenamePackageHelper {
      * Recursively descend the path down the folders and collect all files found in the given list.
      */
     private ArrayList<FileInfo> getRelativeFileNames(String path, IFolder folder) throws CoreException {
-        ArrayList<FileInfo> files = new ArrayList<FileInfo>();
+        ArrayList<FileInfo> files = new ArrayList<>();
         IResource[] members = folder.members();
 
         if (members.length == 0) {
@@ -304,7 +304,7 @@ public final class MoveRenamePackageHelper {
      * Returns the affected {@link IIpsSrcFile IIpsSrcFiles}.
      */
     public Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        Set<IIpsSrcFile> affectedFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> affectedFiles = new HashSet<>();
         try {
             ArrayList<FileInfo> files = getRelativeFileNames(StringUtils.EMPTY,
                     (IFolder)originalPackageFragment.getEnclosingResource());

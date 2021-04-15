@@ -80,11 +80,11 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
         if (getIpsStorage() == null) {
-            return new ArrayList<IIpsPackageFragment>(0);
+            return new ArrayList<>(0);
         }
 
         String[] packNames = storage.getNonEmptyPackages();
-        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
+        List<IIpsPackageFragment> list = new ArrayList<>(packNames.length);
         for (String packName : packNames) {
             list.add(new LibraryIpsPackageFragment(this, packName));
         }

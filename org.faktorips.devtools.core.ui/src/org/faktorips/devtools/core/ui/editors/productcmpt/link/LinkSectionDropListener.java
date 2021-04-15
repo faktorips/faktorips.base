@@ -139,7 +139,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         // allow moving within the same association
         String associationName = getAssociationName(target);
         boolean result = false;
-        List<IProductCmpt> draggedCmpts = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> draggedCmpts = new ArrayList<>();
         try {
             for (IProductCmptLink movedCmptLink : movedCmptLinks) {
                 // move is valid if cmpt is moved within the same association or if a link in the
@@ -275,7 +275,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
         private boolean moveLinks() {
             Object target = getCurrentTarget();
-            List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
+            List<IProductCmptLink> listCopy = new ArrayList<>(movedCmptLinks);
             /*
              * If you drop a set of components you expect them in the same order as they were
              * selected. To achieve this, we need to inverse the list, if insertion is after a
@@ -362,7 +362,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 return Collections.emptyList();
             }
 
-            ArrayList<IProductCmptLink> createdCmptLinks = new ArrayList<IProductCmptLink>();
+            ArrayList<IProductCmptLink> createdCmptLinks = new ArrayList<>();
             for (IProductCmpt draggedCmpt : draggedCmpts) {
                 createdCmptLinks.add(createLink(draggedCmpt.getQualifiedName(), generation, target));
             }
@@ -419,7 +419,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         private List<IProductCmptLink> getSelectedLinks() {
             if (selectionProvider.getSelection() instanceof IStructuredSelection) {
                 IStructuredSelection structuredSelection = (IStructuredSelection)selectionProvider.getSelection();
-                List<IProductCmptLink> result = new ArrayList<IProductCmptLink>();
+                List<IProductCmptLink> result = new ArrayList<>();
                 for (Object obj : structuredSelection.toArray()) {
                     if (obj instanceof LinkViewItem) {
                         IProductCmptLink link = ((LinkViewItem)obj).getLink();

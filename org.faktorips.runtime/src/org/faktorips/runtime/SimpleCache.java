@@ -34,7 +34,7 @@ public class SimpleCache implements IComputable<Object, Object> {
      */
     public SimpleCache(IComputable<Object, Object> computable, int initialCapacity) {
         this.computable = computable;
-        objects = new ConcurrentHashMap<Object, Object>(initialCapacity);
+        objects = new ConcurrentHashMap<>(initialCapacity);
     }
 
     @Override

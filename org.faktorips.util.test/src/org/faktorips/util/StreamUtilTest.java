@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -23,9 +24,7 @@ public class StreamUtilTest {
     @Test
     public void testCopy() throws Exception {
         byte[] bytes = new byte[8];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = 1;
-        }
+        Arrays.fill(bytes, (byte)1);
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ByteArrayInputStream copiedStream = StreamUtil.copy(bis);
         int value = copiedStream.read();
@@ -38,9 +37,7 @@ public class StreamUtilTest {
         assertEquals(8, counter);
 
         bytes = new byte[100];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = 1;
-        }
+        Arrays.fill(bytes, (byte)1);
         bis = new ByteArrayInputStream(bytes);
         copiedStream = StreamUtil.copy(bis);
         value = copiedStream.read();

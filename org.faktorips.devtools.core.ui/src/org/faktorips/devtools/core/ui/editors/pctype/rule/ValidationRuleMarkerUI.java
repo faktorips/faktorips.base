@@ -10,9 +10,7 @@
 package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -62,8 +60,9 @@ public class ValidationRuleMarkerUI {
         markerTable = CheckboxTableViewer.newCheckList(markerGroup, SWT.BORDER);
         Table table = getMarkerTable().getTable();
         GridData tableGD = new GridData(GridData.FILL, GridData.FILL, true, true);
-        tableGD.heightHint = visibleTableLines == SWT.DEFAULT ? visibleTableLines : TABLE_LINE_HEIGHT
-                * visibleTableLines - 7;
+        tableGD.heightHint = visibleTableLines == SWT.DEFAULT ? visibleTableLines
+                : TABLE_LINE_HEIGHT
+                        * visibleTableLines - 7;
         table.setLayoutData(tableGD);
 
         getMarkerTable().setContentProvider(new ArrayContentProvider());
@@ -86,13 +85,9 @@ public class ValidationRuleMarkerUI {
                 return viewItem.isChecked();
             }
         });
-        getMarkerTable().addCheckStateListener(new ICheckStateListener() {
-
-            @Override
-            public void checkStateChanged(CheckStateChangedEvent event) {
-                MarkerViewItem viewItem = (MarkerViewItem)event.getElement();
-                viewItem.updateCheckedState();
-            }
+        getMarkerTable().addCheckStateListener(event -> {
+            MarkerViewItem viewItem = (MarkerViewItem)event.getElement();
+            viewItem.updateCheckedState();
         });
         getMarkerTable().setInput(ruleMarkerPMO.getItems());
         return getMarkerTable();

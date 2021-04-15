@@ -29,7 +29,7 @@ public class ListUtil {
      * type.
      */
     public static final <T> List<T> newList(T value) {
-        List<T> newList = new ArrayList<T>();
+        List<T> newList = new ArrayList<>();
         newList.add(value);
         return newList;
     }
@@ -40,7 +40,7 @@ public class ListUtil {
      */
     @SafeVarargs
     public static final <T> List<T> newList(T firstValue, T... moreValues) {
-        List<T> newList = new ArrayList<T>();
+        List<T> newList = new ArrayList<>();
         newList.add(firstValue);
         for (T value : moreValues) {
             newList.add(value);

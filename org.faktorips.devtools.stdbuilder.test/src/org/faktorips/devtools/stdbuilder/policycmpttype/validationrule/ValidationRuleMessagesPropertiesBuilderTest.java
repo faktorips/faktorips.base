@@ -73,7 +73,8 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
-        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
+        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(
+                new ValidationRuleMessagesPropertiesBuilder(builderSet));
         doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
                 any(ISupportedLanguage.class));
 
@@ -127,7 +128,8 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
-        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
+        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(
+                new ValidationRuleMessagesPropertiesBuilder(builderSet));
         doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
                 any(ISupportedLanguage.class));
 
@@ -154,7 +156,8 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
-        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
+        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(
+                new ValidationRuleMessagesPropertiesBuilder(builderSet));
         doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
                 any(ISupportedLanguage.class));
 
@@ -248,7 +251,8 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         // we use a spy object to insert the generatorMock
         ValidationRuleMessagesGenerator generatorMock = mock(ValidationRuleMessagesGenerator.class);
-        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(new ValidationRuleMessagesPropertiesBuilder(builderSet));
+        ValidationRuleMessagesPropertiesBuilder builderSpy = spy(
+                new ValidationRuleMessagesPropertiesBuilder(builderSet));
         doReturn(generatorMock).when(builderSpy).getMessagesGenerator(any(IIpsPackageFragmentRoot.class),
                 any(ISupportedLanguage.class));
 
@@ -298,7 +302,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
         when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
-        HashSet<ISupportedLanguage> supportedLanguages = new HashSet<ISupportedLanguage>();
+        HashSet<ISupportedLanguage> supportedLanguages = new HashSet<>();
         supportedLanguages.add(supportedLanguage);
         when(properties.getSupportedLanguages()).thenReturn(supportedLanguages);
         return ipsProject;

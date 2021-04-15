@@ -51,22 +51,22 @@ public class IpsClasspathContainerInitializerTest {
     }
 
     @Test
-        public void testNewDefaultEntryPath() {
-            IPath expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID);
-            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false));
-    
-            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                    + IpsClasspathContainerInitializer.JODA_BUNDLE);
-            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false));
-    
-            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                    + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true));
-    
-            expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
-                    + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-            assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
-        }
+    public void testNewDefaultEntryPath() {
+        IPath expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID);
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false));
+
+        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                + IpsClasspathContainerInitializer.JODA_BUNDLE);
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false));
+
+        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true));
+
+        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
+    }
 
     @Test
     public void testGetSourceBundlePath() throws Exception {

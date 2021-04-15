@@ -126,8 +126,8 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * Constructs the section's controls.
      * <p>
-     * This has to to be called explicitly by subclasses <strong>after</strong> they have initialized any
-     * subclass specific instance variables.
+     * This has to to be called explicitly by subclasses <strong>after</strong> they have
+     * initialized any subclass specific instance variables.
      * <p>
      * The <code>IpsSection</code> does not call this method in it's constructor, because in
      * subclasses in might be necessary to initialize instance variable first, but the call to the
@@ -390,7 +390,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
 
         if (dataChangeableStateChangeListeners == null) {
-            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<IDataChangeableStateChangeListener>();
+            dataChangeableStateChangeListeners = new CopyOnWriteArrayList<>();
         }
 
         dataChangeableStateChangeListeners.add(listener);

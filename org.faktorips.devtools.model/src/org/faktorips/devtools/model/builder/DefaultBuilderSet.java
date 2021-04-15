@@ -52,11 +52,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
-    private List<String> additionalAnnotations = new ArrayList<String>();
+    private List<String> additionalAnnotations = new ArrayList<>();
 
-    private List<String> additionalImports = new ArrayList<String>();
+    private List<String> additionalImports = new ArrayList<>();
 
-    private List<String> retainedAnnotations = new ArrayList<String>();
+    private List<String> retainedAnnotations = new ArrayList<>();
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
@@ -162,7 +162,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     private List<String> splitString(String input) {
-        List<String> splitInput = new ArrayList<String>();
+        List<String> splitInput = new ArrayList<>();
         String[] split = input.split(SEMI_COLON_CHARACTER);
         for (String string : split) {
             splitInput.add(string.trim());
@@ -171,9 +171,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     private void initAdditionalAnnotationsAndImports() {
-        additionalAnnotations = new LinkedList<String>();
-        additionalImports = new LinkedList<String>();
-        Set<String> unqualifiedNames = new HashSet<String>();
+        additionalAnnotations = new LinkedList<>();
+        additionalImports = new LinkedList<>();
+        Set<String> unqualifiedNames = new HashSet<>();
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             int i = splitString.indexOf(PARENTHESIS_CHARACTER);

@@ -91,7 +91,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
          */
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumClassNode() {
-            return new IdentifierNodeGenerator<JavaCodeFragment>(this) {
+            return new IdentifierNodeGenerator<>(this) {
 
                 @Override
                 protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(

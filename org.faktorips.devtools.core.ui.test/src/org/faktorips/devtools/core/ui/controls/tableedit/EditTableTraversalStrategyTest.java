@@ -40,10 +40,10 @@ public class EditTableTraversalStrategyTest {
 
     @Before
     public void setUp() {
-        list = new ArrayList<SingleValueViewItem>();
+        list = new ArrayList<>();
         MultiValueTableModel model = mock(MultiValueTableModel.class);
         doReturn(list).when(model).getElements();
-        strat = new EditTableTraversalStrategy<SingleValueViewItem>(null, 0, model);
+        strat = new EditTableTraversalStrategy<>(null, 0, model);
     }
 
     @Test

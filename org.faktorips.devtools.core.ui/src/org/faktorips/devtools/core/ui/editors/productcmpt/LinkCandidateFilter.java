@@ -87,7 +87,8 @@ public class LinkCandidateFilter {
         canAnyLinkBeAdded = !(associations.isEmpty() || workingModeBrowse || generation.getIpsSrcFile().isReadOnly());
     }
 
-    private List<IProductCmptTypeAssociation> getUncheckedAssociations(IProductCmptStructureReference structureReference) {
+    private List<IProductCmptTypeAssociation> getUncheckedAssociations(
+            IProductCmptStructureReference structureReference) {
         if (structureReference instanceof IProductCmptReference) {
             IProductCmptReference productCmptReference = (IProductCmptReference)structureReference;
             return getUncheckedAssociations(productCmptReference);
@@ -102,7 +103,7 @@ public class LinkCandidateFilter {
         List<IProductCmptTypeAssociation> uncheckedAssociations;
         IProductCmptTypeAssociationReference[] childProductCmptTypeAssociationReferences = productCmptReference
                 .getStructure().getChildProductCmptTypeAssociationReferences(productCmptReference);
-        uncheckedAssociations = new ArrayList<IProductCmptTypeAssociation>();
+        uncheckedAssociations = new ArrayList<>();
         for (IProductCmptTypeAssociationReference associationReference : childProductCmptTypeAssociationReferences) {
             uncheckedAssociations.add(associationReference.getAssociation());
         }
@@ -121,7 +122,7 @@ public class LinkCandidateFilter {
     }
 
     private void initAssociations(IProductCmptStructureReference structureReference) {
-        List<IProductCmptTypeAssociation> checkedAssociations = new ArrayList<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> checkedAssociations = new ArrayList<>();
 
         List<IProductCmptTypeAssociation> uncheckedAssociations = getUncheckedAssociations(structureReference);
 

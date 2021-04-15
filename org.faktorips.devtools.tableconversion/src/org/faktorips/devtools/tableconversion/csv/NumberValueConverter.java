@@ -19,8 +19,8 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
 public abstract class NumberValueConverter extends AbstractValueConverter {
 
     /**
-     * Uses the properties of the given table format to retrieve a custom DecimalNumberFormat. One can
-     * configure the table format by setting the properties
+     * Uses the properties of the given table format to retrieve a custom DecimalNumberFormat. One
+     * can configure the table format by setting the properties
      * <code>CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR</code> and
      * <code>CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR</code> on the given ITableFormat
      * instance.
@@ -37,7 +37,8 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
             String decimalGrouping = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR);
 
             DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();
-            if (decimalSeparator != null && decimalSeparator.length() == 1 && !decimalSeparator.equals(decimalGrouping)) {
+            if (decimalSeparator != null && decimalSeparator.length() == 1
+                    && !decimalSeparator.equals(decimalGrouping)) {
                 decimalFormatSymbols.setDecimalSeparator(decimalSeparator.charAt(0));
             }
             if (decimalGrouping != null && !decimalGrouping.equals(decimalSeparator)) {

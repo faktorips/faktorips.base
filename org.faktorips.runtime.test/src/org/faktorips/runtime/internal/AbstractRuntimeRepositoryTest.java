@@ -527,7 +527,7 @@ public class AbstractRuntimeRepositoryTest {
         private final TestEnumValue value1 = new TestEnumValue("value1");
         private final TestEnumValue value2 = new TestEnumValue("value2");
 
-        private final List<TestEnumValue> values = new ArrayList<TestEnumValue>();
+        private final List<TestEnumValue> values = new ArrayList<>();
 
         public Lookup() {
             values.add(value1);

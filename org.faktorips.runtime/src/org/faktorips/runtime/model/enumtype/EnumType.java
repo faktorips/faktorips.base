@@ -75,7 +75,7 @@ public class EnumType extends ModelElement {
      * Returns models for all this enum's attributes
      */
     public List<EnumAttribute> getAttributes() {
-        return new ArrayList<EnumAttribute>(attributeModels.values());
+        return new ArrayList<>(attributeModels.values());
     }
 
     /**

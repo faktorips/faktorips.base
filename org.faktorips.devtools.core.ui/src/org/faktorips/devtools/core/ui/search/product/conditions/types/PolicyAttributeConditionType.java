@@ -40,7 +40,7 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
 
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {
-        List<IIpsElement> policyCmptTypeAttributes = new ArrayList<IIpsElement>();
+        List<IIpsElement> policyCmptTypeAttributes = new ArrayList<>();
 
         IPolicyCmptType policyCmptType;
         policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
@@ -60,7 +60,8 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
                 continue;
             }
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
-            if (policyCmptTypeAttribute.getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
+            if (policyCmptTypeAttribute
+                    .getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
                     && policyCmptTypeAttribute.isProductRelevant()) {
                 policyCmptTypeAttributes.add(policyCmptTypeAttribute);
             }

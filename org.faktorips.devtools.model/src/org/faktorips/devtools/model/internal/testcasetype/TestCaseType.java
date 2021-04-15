@@ -54,7 +54,7 @@ import org.w3c.dom.Element;
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
 
-    private List<ITestParameter> testParameters = new ArrayList<ITestParameter>();
+    private List<ITestParameter> testParameters = new ArrayList<>();
 
     public TestCaseType(IIpsSrcFile file) {
         super(file);
@@ -113,7 +113,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        Set<IDependency> dependencies = new HashSet<IDependency>();
+        Set<IDependency> dependencies = new HashSet<>();
         addDependenciesForTestPolicyCmptTypeParams(dependencies, details, getTestPolicyCmptTypeParameters());
         return dependencies.toArray(new IDependency[dependencies.size()]);
 
@@ -397,7 +397,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      * parameters are returned.
      */
     private List<TestParameter> getTestParameters(TestParameterType type, Class<?> parameterClass, String name) {
-        List<TestParameter> result = new ArrayList<TestParameter>(testParameters.size());
+        List<TestParameter> result = new ArrayList<>(testParameters.size());
         for (ITestParameter iTestParameter : testParameters) {
             TestParameter parameter = (TestParameter)iTestParameter;
             boolean addParameter = true;
@@ -455,8 +455,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
         int idx = 1;
         ITestAttribute[] testAttribues = testPolicyCmptTypeParam.getTestAttributes();
-        for (int i = 0; i < testAttribues.length; i++) {
-            if (!(testAttribues[i] == testAttribute) && testAttribues[i].getName().equals(uniqueName)) {
+        for (ITestAttribute testAttribue : testAttribues) {
+            if (!(testAttribue == testAttribute) && testAttribue.getName().equals(uniqueName)) {
                 uniqueName = name + " (" + idx++ + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
@@ -465,7 +465,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public int[] moveTestParameters(int[] indexes, boolean up) {
-        ListElementMover<ITestParameter> mover = new ListElementMover<ITestParameter>(testParameters);
+        ListElementMover<ITestParameter> mover = new ListElementMover<>(testParameters);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;
@@ -473,7 +473,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
-        List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
+        List<IValidationRule> validationRules = new ArrayList<>();
         getValidationRules(getTestPolicyCmptTypeParameters(), validationRules, ipsProject);
         return validationRules.toArray(new IValidationRule[0]);
     }
@@ -510,7 +510,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      * Returns all test parameters inside the test case type.
      */
     public ITestParameter[] getAllTestParameter() throws CoreException {
-        List<ITestParameter> allParameters = new ArrayList<ITestParameter>();
+        List<ITestParameter> allParameters = new ArrayList<>();
         ITestParameter[] parameters = getTestParameters();
         for (ITestParameter parameter : parameters) {
             getAllChildTestParameter(parameter, allParameters);

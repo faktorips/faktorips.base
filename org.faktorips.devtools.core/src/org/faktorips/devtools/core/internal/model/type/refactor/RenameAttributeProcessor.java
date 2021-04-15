@@ -61,7 +61,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         try {
             result.add(getIpsSrcFile());
             productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT,
@@ -163,7 +163,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     private List<IAttribute> getAllOverwrittenAttributes() throws CoreException {
-        List<IAttribute> attributesToRename = new ArrayList<IAttribute>(1);
+        List<IAttribute> attributesToRename = new ArrayList<>(1);
 
         // Collect overwritten attributes
         IAttribute overwrittenAttribute = null;
@@ -209,7 +209,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     private List<IPropertyValueContainer> getPropertyValueContainers(IProductCmpt productCmpt) {
-        ArrayList<IPropertyValueContainer> result = new ArrayList<IPropertyValueContainer>(
+        ArrayList<IPropertyValueContainer> result = new ArrayList<>(
                 productCmpt.getProductCmptGenerations());
         result.add(productCmpt);
         return result;

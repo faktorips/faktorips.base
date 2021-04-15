@@ -50,7 +50,8 @@ public class IpsProjectRefControl extends TextButtonControl {
     @Override
     protected void buttonClicked() {
         try {
-            ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new WorkbenchLabelProvider());
+            ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(),
+                    new WorkbenchLabelProvider());
             dialog.setElements(collectIpsProjects());
             dialog.setMultipleSelection(false);
             dialog.setMessage(getDialogMessage());

@@ -72,7 +72,7 @@ public abstract class JavaExprCompilerAbstractTest {
             Object[] parameterValues,
             Datatype expectedDatatype) throws Exception {
 
-        final Map<String, Datatype> parameterMap = new HashMap<String, Datatype>();
+        final Map<String, Datatype> parameterMap = new HashMap<>();
         for (int i = 0; i < parameterNames.length; i++) {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }

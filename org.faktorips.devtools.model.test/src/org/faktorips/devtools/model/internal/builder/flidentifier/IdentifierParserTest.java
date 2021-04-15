@@ -200,7 +200,7 @@ public class IdentifierParserTest {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
-        .thenReturn(true);
+                .thenReturn(true);
         when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
         when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
@@ -238,7 +238,7 @@ public class IdentifierParserTest {
     }
 
     private void initProdCmptAndType() {
-        ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> list = new ArrayList<>();
         list.add(productCmptIpsSrcFile);
 
         when(ipsProject.findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);

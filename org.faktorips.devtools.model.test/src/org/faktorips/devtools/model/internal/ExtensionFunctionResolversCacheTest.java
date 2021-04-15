@@ -61,7 +61,7 @@ public class ExtensionFunctionResolversCacheTest {
         resolverFactory = mock(IFunctionResolverFactory.class);
         projectRelatedResolverFactory = mock(AbstractProjectRelatedFunctionResolverFactory.class);
 
-        resolverFactories = new SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>();
+        resolverFactories = new SortorderSet<>();
         resolverFactories.add(resolverFactory, 0);
         resolverFactories.add(projectRelatedResolverFactory, 1);
     }

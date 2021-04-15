@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
@@ -94,12 +92,8 @@ public abstract class ComboField<T> extends DefaultEditField<T> {
             }
         });
         // add modify listener to get changes when using combo#setText method
-        combo.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener);
-            }
-        });
+        combo.addModifyListener(
+                $ -> notifyChangeListeners(new FieldValueChangedEvent(ComboField.this), immediatelyNotifyListener));
     }
 
 }

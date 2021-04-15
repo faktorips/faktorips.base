@@ -59,7 +59,7 @@ public class EnumerationProposalProviderTest {
         when(enumValueSet.getValueSetOwner()).thenReturn(owner);
         when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(enumValueSet.getValuesAsList())
-                .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
+                .thenReturn(Arrays.asList("aaaaa", "bbbbb", "ccccc", null));
 
         when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("bbbbb");
@@ -199,7 +199,7 @@ public class EnumerationProposalProviderTest {
     @Test
     public void testGetProposals_NullProposalNotContained() {
         initEnumerationPPWithConfigElement();
-        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList("aaaaa", "bbbbb", "ccccc"));
 
         IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
 
@@ -222,7 +222,7 @@ public class EnumerationProposalProviderTest {
     @Test
     public void testGetProposals_NullProposalNotContained_TextfieldContentIsNullrepresentation() {
         initEnumerationPPWithConfigElement();
-        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList("aaaaa", "bbbbb", "ccccc"));
 
         IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
 
@@ -235,7 +235,7 @@ public class EnumerationProposalProviderTest {
         initEnumerationPPWithConfigElement();
         when(inputFormat.format("foobar")).thenReturn("foobar");
         when(inputFormat.format("fooBares")).thenReturn("fooBares");
-        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "foobar", "fooBares" }));
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList("foobar", "fooBares"));
 
         IContentProposal[] proposals = enumProposalProvider.getProposals("foob", 4);
 

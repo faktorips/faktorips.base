@@ -71,7 +71,9 @@ public class OutputFolderEditDialog extends StatusDialog {
         Group group = new Group(parent, SWT.NONE);
 
         buttonDefaultFolderSelected = new Button(group, SWT.RADIO);
-        String defaultOutputFolder = (getDefaultOutputFolder() != null) ? " (" + getDefaultOutputFolder().getName() + ")" : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String defaultOutputFolder = (getDefaultOutputFolder() != null)
+                ? " (" + getDefaultOutputFolder().getName() + ")" //$NON-NLS-1$ //$NON-NLS-2$
+                : ""; //$NON-NLS-1$
         buttonDefaultFolderSelected.setText(Messages.OutputFolderEditDialog_use_default_label + defaultOutputFolder);
         buttonCustomFolderSelected = new Button(group, SWT.RADIO);
         buttonCustomFolderSelected.setText(Messages.OutputFolderEditDialog_use_sepcific_label);

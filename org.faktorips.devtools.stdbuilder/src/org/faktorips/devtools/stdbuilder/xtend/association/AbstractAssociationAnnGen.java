@@ -103,7 +103,8 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
                     .append("source = ")
                     .appendClassName(
                             matchingAssociation.getSourceModelNodeNotConsiderChangingOverTime()
-                                    .getPublishedInterfaceName()).append(".class, ")
+                                    .getPublishedInterfaceName())
+                    .append(".class, ")
                     .append("name = \"" + matchingAssociation.getName(false) + "\"");
 
             return new JavaCodeFragmentBuilder().annotationLn(IpsMatchingAssociation.class,

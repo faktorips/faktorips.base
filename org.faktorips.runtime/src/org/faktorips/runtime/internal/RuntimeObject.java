@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
  */
 public class RuntimeObject implements IRuntimeObject {
 
-    private Map<String, String> extPropertyValues = new HashMap<String, String>();
+    private Map<String, String> extPropertyValues = new HashMap<>();
 
     public RuntimeObject() {
         super();

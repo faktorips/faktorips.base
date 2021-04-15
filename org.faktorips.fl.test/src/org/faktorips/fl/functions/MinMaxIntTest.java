@@ -20,17 +20,21 @@ public class MinMaxIntTest extends FunctionAbstractTest {
 
         execAndTestSuccessfull("MAX(3; 4)", Integer.valueOf(4), Datatype.INTEGER);
         execAndTestSuccessfull("MAX(4; 3)", Integer.valueOf(4), Datatype.INTEGER);
-        execAndTestSuccessfull("MAX(a; 3)", Integer.valueOf(4), new String[] { "a" }, new Datatype[] { Datatype.INTEGER },
+        execAndTestSuccessfull("MAX(a; 3)", Integer.valueOf(4), new String[] { "a" },
+                new Datatype[] { Datatype.INTEGER },
                 new Object[] { Integer.valueOf(4) }, Datatype.INTEGER);
-        execAndTestSuccessfull("MAX(4; a)", Integer.valueOf(4), new String[] { "a" }, new Datatype[] { Datatype.INTEGER },
+        execAndTestSuccessfull("MAX(4; a)", Integer.valueOf(4), new String[] { "a" },
+                new Datatype[] { Datatype.INTEGER },
                 new Object[] { Integer.valueOf(3) }, Datatype.INTEGER);
 
         registerFunction(new MinMaxInt("MIN", "", false));
         execAndTestSuccessfull("MIN(3; 4)", Integer.valueOf(3), Datatype.INTEGER);
         execAndTestSuccessfull("MIN(4; 3)", Integer.valueOf(3), Datatype.INTEGER);
-        execAndTestSuccessfull("MIN(a; 3)", Integer.valueOf(3), new String[] { "a" }, new Datatype[] { Datatype.INTEGER },
+        execAndTestSuccessfull("MIN(a; 3)", Integer.valueOf(3), new String[] { "a" },
+                new Datatype[] { Datatype.INTEGER },
                 new Object[] { Integer.valueOf(4) }, Datatype.INTEGER);
-        execAndTestSuccessfull("MIN(4; a)", Integer.valueOf(3), new String[] { "a" }, new Datatype[] { Datatype.INTEGER },
+        execAndTestSuccessfull("MIN(4; a)", Integer.valueOf(3), new String[] { "a" },
+                new Datatype[] { Datatype.INTEGER },
                 new Object[] { Integer.valueOf(3) }, Datatype.INTEGER);
 
     }

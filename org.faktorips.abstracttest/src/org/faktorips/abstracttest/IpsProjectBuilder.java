@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
@@ -35,9 +34,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
  */
 public class IpsProjectBuilder {
 
-    private final List<String> predefinedDatatypes = new ArrayList<String>();
+    private final List<String> predefinedDatatypes = new ArrayList<>();
 
-    private final List<Locale> supportedLocales = new ArrayList<Locale>();
+    private final List<Locale> supportedLocales = new ArrayList<>();
 
     private String name;
 
@@ -110,13 +109,10 @@ public class IpsProjectBuilder {
     }
 
     private IIpsProject newIpsProject() throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProject project = new PlatformProjectBuilder().name(name).description(description).build();
-                ipsPluginTest.addJavaCapabilities(project);
-                ipsPluginTest.addIpsCapabilities(project);
-            }
+        IWorkspaceRunnable runnable = $ -> {
+            IProject project = new PlatformProjectBuilder().name(name).description(description).build();
+            ipsPluginTest.addJavaCapabilities(project);
+            ipsPluginTest.addIpsCapabilities(project);
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);

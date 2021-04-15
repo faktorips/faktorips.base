@@ -58,7 +58,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_SetProductCmptProperties() throws CoreException, InvocationTargetException,
-    InterruptedException {
+            InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmpt template = newProductTemplate(ipsProject, "template");
@@ -83,7 +83,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_SetGenerationPropertiesIfNotInCopyMode() throws CoreException, InvocationTargetException,
-    InterruptedException {
+            InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         createProductCmptTypeAttribute(productCmptType, "testAttribute", Datatype.STRING, "");
@@ -106,7 +106,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_CreatePropertyValuesWithDefaultsFromModelIfNotInCopyMode() throws CoreException,
-    InvocationTargetException, InterruptedException {
+            InvocationTargetException, InterruptedException {
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicyCmptType",
                 "TestProductCmptType");
@@ -135,7 +135,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_SaveIfNotDirtyBefore() throws CoreException,
-    InvocationTargetException, InterruptedException {
+            InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
@@ -161,7 +161,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_DoNotSaveIfDirtyBefore() throws CoreException,
-    InvocationTargetException, InterruptedException {
+            InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");
@@ -188,7 +188,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_DoNotAddLinkToProductCmptGenerationIfValidatorFails() throws CoreException,
-    InvocationTargetException, InterruptedException {
+            InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");

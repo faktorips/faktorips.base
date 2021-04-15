@@ -34,8 +34,8 @@ class IpsObjectTypesParser {
             return allIpsObjectTypes;
         }
 
-        Set<IpsObjectType> modelTypes = new HashSet<IpsObjectType>();
-        Set<IpsObjectType> productTypes = new HashSet<IpsObjectType>();
+        Set<IpsObjectType> modelTypes = new HashSet<>();
+        Set<IpsObjectType> productTypes = new HashSet<>();
         for (IpsObjectType ipsObjectType : allIpsObjectTypes) {
             if (ipsObjectType.isProductDefinitionType()) {
                 productTypes.add(ipsObjectType);
@@ -44,7 +44,7 @@ class IpsObjectTypesParser {
             }
         }
         Map<Parameter, ExportType> exportTypes = parseIpsObjectTypes(ipsObjectTypes);
-        Set<IpsObjectType> selectedIpsObjectTypes = new HashSet<IpsObjectType>();
+        Set<IpsObjectType> selectedIpsObjectTypes = new HashSet<>();
 
         if (ExportType.INCLUDE == exportTypes.remove(Parameter.ALL)) {
             selectedIpsObjectTypes.addAll(Arrays.asList(allIpsObjectTypes));
@@ -103,7 +103,7 @@ class IpsObjectTypesParser {
     }
 
     private static Map<Parameter, ExportType> parseIpsObjectTypes(String ipsObjectTypes) {
-        Map<Parameter, ExportType> exportTypes = new HashMap<Parameter, ExportType>();
+        Map<Parameter, ExportType> exportTypes = new HashMap<>();
         String[] split = ipsObjectTypes.split(",");
         for (String substring : split) {
             Parameter parameter = new Parameter(substring);

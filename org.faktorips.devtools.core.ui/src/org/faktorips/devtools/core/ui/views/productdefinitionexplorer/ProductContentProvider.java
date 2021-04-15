@@ -39,7 +39,7 @@ public class ProductContentProvider extends ModelContentProvider {
             // filter out empty packagefragments if their IFolders do not contain files and at the
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
-            List<Object> filteredElements = new ArrayList<Object>();
+            List<Object> filteredElements = new ArrayList<>();
             for (IIpsPackageFragment fragment : fragments) {
                 if (fragment.isDefaultPackage()) {
                     filteredElements.addAll(Arrays.asList(getFileContent(fragment)));

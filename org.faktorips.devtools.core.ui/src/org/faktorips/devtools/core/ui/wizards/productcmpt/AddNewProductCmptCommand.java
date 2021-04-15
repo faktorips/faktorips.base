@@ -57,7 +57,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
     private void addNewLinkInEditor(ExecutionEvent event) {
         // association node in LinkSection
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<AbstractAssociationViewItem>(
+        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<>(
                 AbstractAssociationViewItem.class, selection);
         if (!typedSelection.isValid()) {
             return;
@@ -80,7 +80,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
 
     private void addNewLinkOnReference(ExecutionEvent event) {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<>(
                 IProductCmptStructureReference.class, selection);
         if (!typedSelection.isValid()) {
             return;

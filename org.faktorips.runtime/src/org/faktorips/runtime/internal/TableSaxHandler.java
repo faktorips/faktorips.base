@@ -42,7 +42,7 @@ public class TableSaxHandler extends DefaultHandler {
     private Table<?> table;
 
     // contains all column values,
-    private List<String> columns = new ArrayList<String>(20);
+    private List<String> columns = new ArrayList<>(20);
 
     // buffer to store the characters inside the value node
     private StringBuilder textBuilder = null;

@@ -337,7 +337,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private void initDescriptions(Element cmptElement) {
         List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
-        List<LocalizedString> descriptions = new ArrayList<LocalizedString>(descriptionElements.size());
+        List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
         for (Element descriptionElement : descriptionElements) {
             String localeCode = descriptionElement.getAttribute(ATTRIBUTE_LOCALE);
             Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
@@ -473,7 +473,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     @Override
     public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
-        return new ArrayList<IProductComponentLink<? extends IProductComponent>>();
+        return new ArrayList<>();
     }
 
     /**

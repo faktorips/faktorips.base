@@ -122,7 +122,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
 
     @Override
     protected List<String> getHeadline() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineProperties));
         headline.add(getContext().getMessage(HtmlExportMessages.MessageListTablePageElement_headlineMessage));

@@ -39,7 +39,7 @@ public class ParameterCollector extends AbstractProductCmptCollector {
             IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
             IProductCmptGeneration productCmptGeneration = getOriginGeneration();
             if (isMatchingPolicyCmptType(productCmptGeneration, policyCmptType)) {
-                return new LinkedHashSet<IProductCmpt>(Arrays.asList(productCmptGeneration.getProductCmpt()));
+                return new LinkedHashSet<>(Arrays.asList(productCmptGeneration.getProductCmpt()));
             }
         }
         // Do not return an empty list, see java doc of getContextProductCmpts()

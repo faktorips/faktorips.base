@@ -47,7 +47,8 @@ public class MethodParameter {
      * Create the parameter with the type and the parameter name. It does not matter if the type is
      * qualified or not as far the import statement is already present.
      * <p>
-     * If isFinalFlag is <strong>true</strong> then the parameter gets the preceding keyword 'final'.
+     * If isFinalFlag is <strong>true</strong> then the parameter gets the preceding keyword
+     * 'final'.
      * 
      * @param type The parameter type, e.g. <em>String</em> or <em>ProductComponent</em>
      * @param paramName The name of the parameter
@@ -90,8 +91,8 @@ public class MethodParameter {
 
     /**
      * Returns the parameter definition as it is used in a method definition. For example for the
-     * parameter type <em>Foo</em> and the name <em>bar</em> this method would return
-     * <em>Foo bar</em>
+     * parameter type <em>Foo</em> and the name <em>bar</em> this method would return <em>Foo
+     * bar</em>
      * 
      * @return The definition of the parameter for use in method definitions.
      */

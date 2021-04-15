@@ -58,7 +58,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
 
         @Override
         public Object getSearchOperand(IProductPartsContainer linkContainer) {
-            List<String> targetNames = new ArrayList<String>();
+            List<String> targetNames = new ArrayList<>();
 
             List<IProductCmptLink> links = linkContainer.getProductParts(IProductCmptLink.class);
             for (IProductCmptLink link : links) {
@@ -81,7 +81,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {
         try {
-            return new ArrayList<IIpsElement>(productCmptType.findAllAssociations(productCmptType.getIpsProject()));
+            return new ArrayList<>(productCmptType.findAllAssociations(productCmptType.getIpsProject()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -104,7 +104,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
 
     @Override
     public Collection<?> getAllowedValues(IIpsElement elementPart) {
-        Set<String> allowedValues = new HashSet<String>();
+        Set<String> allowedValues = new HashSet<>();
         IProductCmptTypeAssociation productCmptTypeAssociation = (IProductCmptTypeAssociation)elementPart;
 
         try {

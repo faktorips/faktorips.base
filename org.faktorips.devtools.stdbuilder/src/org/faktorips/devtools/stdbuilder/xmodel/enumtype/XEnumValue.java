@@ -42,7 +42,7 @@ public class XEnumValue extends AbstractGeneratorModelNode {
      * a corresponding field.
      */
     public List<XEnumAttributeValue> getEnumAttributeValuesWithField() {
-        ArrayList<XEnumAttributeValue> attributeValues = new ArrayList<XEnumAttributeValue>();
+        ArrayList<XEnumAttributeValue> attributeValues = new ArrayList<>();
         for (IEnumAttributeValue attributeValue : getEnumValue().getEnumAttributeValues()) {
             if (!attributeValue.isEnumLiteralNameAttributeValue()) {
                 XEnumAttributeValue modelNode = getModelNode(attributeValue, XEnumAttributeValue.class);

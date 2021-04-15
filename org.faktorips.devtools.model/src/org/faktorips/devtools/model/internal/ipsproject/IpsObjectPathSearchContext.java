@@ -30,12 +30,12 @@ public class IpsObjectPathSearchContext {
         if (initialProject == null || initialProject.getName() == null) {
             throw new IllegalArgumentException("The name of initial project must not be null."); //$NON-NLS-1$
         }
-        visitedEntries = new HashSet<IIpsObjectPathEntry>();
+        visitedEntries = new HashSet<>();
         nameOfInitialProject = initialProject.getName();
     }
 
     private IpsObjectPathSearchContext(String nameOfInitialProject2, HashSet<IIpsObjectPathEntry> visitedEntries2) {
-        visitedEntries = new HashSet<IIpsObjectPathEntry>(visitedEntries2);
+        visitedEntries = new HashSet<>(visitedEntries2);
         nameOfInitialProject = nameOfInitialProject2;
     }
 

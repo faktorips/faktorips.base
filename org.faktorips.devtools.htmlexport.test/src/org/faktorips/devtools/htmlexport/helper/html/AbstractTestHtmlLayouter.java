@@ -47,7 +47,7 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
     }
 
     protected List<IPageElement> createPageElementListe(String[] texte) {
-        List<IPageElement> elemente = new ArrayList<IPageElement>();
+        List<IPageElement> elemente = new ArrayList<>();
         for (String text : texte) {
             elemente.add(new TextPageElement(text, getContext()));
         }

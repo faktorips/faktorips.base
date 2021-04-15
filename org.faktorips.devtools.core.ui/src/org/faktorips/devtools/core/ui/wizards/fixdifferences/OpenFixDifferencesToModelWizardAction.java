@@ -66,21 +66,17 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
 
     @Override
     public void run(IAction action) {
-        BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
-
-            @Override
-            public void run() {
-                // save dirty editors
-                if (!IpsUIPlugin.getDefault().saveAllEditors()) {
-                    return;
-                }
-
-                Set<IFixDifferencesToModelSupport> ipsElementsToFix = findObjectsToFix();
-                FixDifferencesToModelWizard wizard = new FixDifferencesToModelWizard(ipsElementsToFix);
-                wizard.init(window.getWorkbench(), getCurrentSelection());
-                WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-                dialog.open();
+        BusyIndicator.showWhile(Display.getCurrent(), () -> {
+            // save dirty editors
+            if (!IpsUIPlugin.getDefault().saveAllEditors()) {
+                return;
             }
+
+            Set<IFixDifferencesToModelSupport> ipsElementsToFix = findObjectsToFix();
+            FixDifferencesToModelWizard wizard = new FixDifferencesToModelWizard(ipsElementsToFix);
+            wizard.init(window.getWorkbench(), getCurrentSelection());
+            WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+            dialog.open();
         });
     }
 
@@ -111,7 +107,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private Set<IFixDifferencesToModelSupport> findObjectsToFix() {
-        Set<IFixDifferencesToModelSupport> ipsElementsToFix = new HashSet<IFixDifferencesToModelSupport>();
+        Set<IFixDifferencesToModelSupport> ipsElementsToFix = new HashSet<>();
         if (selection instanceof IStructuredSelection) {
             try {
                 IStructuredSelection sel = (IStructuredSelection)selection;

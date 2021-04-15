@@ -25,9 +25,9 @@ import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * The message cue label provider takes a given label provider and decorates the image with a

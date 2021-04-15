@@ -38,8 +38,6 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.valueset.IValueSet;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
-
 public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private final List<String> oldValues;
@@ -177,16 +175,13 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         @Override
         public List<String> getValues() {
             List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
-            return Lists.transform(valueList, (@NonNull IValue<?> input) -> {
-                // no usecase for converting international strings
-                return input.getContentAsString();
-            });
+            return Lists.transform(valueList, IValue::getContentAsString);
         }
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
             return t -> {
-                List<IValue<?>> newValueList = Lists.transform(t, input -> new StringValue(input));
+                List<IValue<?>> newValueList = Lists.transform(t, StringValue::new);
                 getPropertyValue().getValueHolder().setValueList(newValueList);
             };
         }

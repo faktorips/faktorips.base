@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -178,7 +178,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
 
         // tests
         assertEquals(2, elements.length);
-        List<IType> foundRootITypes = new ArrayList<IType>();
+        List<IType> foundRootITypes = new ArrayList<>();
         for (Object element : elements) {
             foundRootITypes.add(((ComponentNode)element).getValue());
         }
@@ -315,7 +315,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
 
         // tests
         assertEquals(2, elements.length);
-        List<IType> list = new ArrayList<IType>();
+        List<IType> list = new ArrayList<>();
         list.add(((ComponentNode)elements[0]).getValue());
         list.add(((ComponentNode)elements[1]).getValue());
         assertTrue(list.contains(bA));
@@ -448,7 +448,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
         assertTrue(associationChildren[1] instanceof AssociationComponentNode);
         assertTrue(((AssociationComponentNode)associationChildren[1]).isInherited());
 
-        List<IType> associationChildrenList = new ArrayList<IType>();
+        List<IType> associationChildrenList = new ArrayList<>();
         associationChildrenList.add(((ComponentNode)associationChildren[0]).getValue());
         associationChildrenList.add(((ComponentNode)associationChildren[1]).getValue());
         assertTrue(associationChildrenList.contains(stdClauseType));
@@ -495,7 +495,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     @Test
     public void testRemoveImplementedDerivedUnions_nothingToRemove() throws Exception {
         ModelStructureInheritAssociationsContentProvider contentProvider = new ModelStructureInheritAssociationsContentProvider();
-        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
+        List<AssociationComponentNode> associationNodes = new ArrayList<>();
         AssociationComponentNode node1 = mock(AssociationComponentNode.class);
         associationNodes.add(node1);
         AssociationComponentNode node2 = mock(AssociationComponentNode.class);
@@ -518,7 +518,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     @Test
     public void testRemoveImplementedDerivedUnions() throws Exception {
         ModelStructureInheritAssociationsContentProvider contentProvider = new ModelStructureInheritAssociationsContentProvider();
-        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
+        List<AssociationComponentNode> associationNodes = new ArrayList<>();
         AssociationComponentNode node1 = mock(AssociationComponentNode.class);
         associationNodes.add(node1);
         AssociationComponentNode node2 = mock(AssociationComponentNode.class);

@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -48,29 +46,20 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
         treeView.setLabelProvider(new WorkbenchLabelProvider());
         treeView.setInput(ipsSrcFile);
         treeView.expandAll();
-        treeView.addDoubleClickListener(new IDoubleClickListener() {
-
-            @Override
-            public void doubleClick(DoubleClickEvent event) {
-                ISelection selection = event.getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    new OpenEditorAction(treeView).run((IStructuredSelection)selection);
-                    return;
-                }
+        treeView.addDoubleClickListener(event -> {
+            ISelection selection = event.getSelection();
+            if (selection instanceof IStructuredSelection) {
+                new OpenEditorAction(treeView).run((IStructuredSelection)selection);
             }
         });
     }
 
     @Override
     public void ipsSrcFilesChanged(final IpsSrcFilesChangedEvent event) {
-        Display.getDefault().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                if (getTreeViewer() != null && !getTreeViewer().getTree().isDisposed()
-                        && event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
-                    getTreeViewer().refresh();
-                }
+        Display.getDefault().asyncExec(() -> {
+            if (getTreeViewer() != null && !getTreeViewer().getTree().isDisposed()
+                    && event.getChangedIpsSrcFiles().contains(ipsSrcFile)) {
+                getTreeViewer().refresh();
             }
         });
     }
@@ -79,7 +68,7 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
 
         @Override
         public Object[] getChildren(Object element) {
-            ArrayList<Object> result = new ArrayList<Object>(Arrays.asList(super.getChildren(element)));
+            ArrayList<Object> result = new ArrayList<>(Arrays.asList(super.getChildren(element)));
             for (Iterator<Object> iter = result.iterator(); iter.hasNext();) {
                 Object o = iter.next();
                 if (o instanceof IIpsElement) {

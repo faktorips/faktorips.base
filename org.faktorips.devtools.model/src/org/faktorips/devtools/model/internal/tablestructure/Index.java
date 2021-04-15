@@ -22,10 +22,10 @@ import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKey;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -98,7 +98,6 @@ public class Index extends Key implements IIndex {
         String text = NLS.bind(Messages.Index_msgKeyItemMismatch, item);
         list.add(new Message(IIndex.MSGCODE_KEY_ITEM_MISMATCH, text, Message.ERROR, new ObjectProperty(this,
                 IKey.PROPERTY_KEY_ITEMS, itemmIndex)));
-        return;
     }
 
     @Override
@@ -156,7 +155,7 @@ public class Index extends Key implements IIndex {
 
     @Override
     public List<String> getDatatypes() {
-        List<String> keyDatatype = new ArrayList<String>();
+        List<String> keyDatatype = new ArrayList<>();
         for (IKeyItem keyItem : getKeyItems()) {
             keyDatatype.add(keyItem.getDatatype());
         }

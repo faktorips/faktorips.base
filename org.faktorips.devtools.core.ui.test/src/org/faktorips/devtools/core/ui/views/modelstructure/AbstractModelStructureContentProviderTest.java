@@ -541,15 +541,15 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
 
         descendant.setSupertype(root.getQualifiedName());
 
-        List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
         rootComponents.add(root);
 
-        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        List<IType> rootCandidateComponents = new ArrayList<>();
         rootCandidateComponents.add(root);
         rootCandidateComponents.add(root2);
         rootCandidateComponents.add(descendant);
 
-        List<IType> allComponents = new ArrayList<IType>();
+        List<IType> allComponents = new ArrayList<>();
         allComponents.add(root);
         allComponents.add(root2);
         allComponents.add(descendant);
@@ -571,14 +571,14 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
 
         descendant.setSupertype(root.getQualifiedName());
 
-        List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
         rootComponents.add(root);
 
-        List<IType> rootCandidatesComponents = new ArrayList<IType>();
+        List<IType> rootCandidatesComponents = new ArrayList<>();
         rootCandidatesComponents.add(root);
         rootCandidatesComponents.add(descendant);
 
-        List<IType> allComponents = new ArrayList<IType>();
+        List<IType> allComponents = new ArrayList<>();
         allComponents.add(root);
         allComponents.add(descendant);
 
@@ -601,15 +601,15 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
         association.setTarget(descendant.getQualifiedName());
         association.setAssociationType(AssociationType.AGGREGATION);
 
-        List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
         rootComponents.add(root);
 
-        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        List<IType> rootCandidateComponents = new ArrayList<>();
         rootCandidateComponents.add(root);
         rootCandidateComponents.add(root2);
         rootCandidateComponents.add(descendant);
 
-        List<IType> allComponents = new ArrayList<IType>();
+        List<IType> allComponents = new ArrayList<>();
         allComponents.add(root);
         allComponents.add(root2);
         allComponents.add(descendant);
@@ -633,14 +633,14 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
         association.setTarget(descendant.getQualifiedName());
         association.setAssociationType(AssociationType.AGGREGATION);
 
-        List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
         rootComponents.add(root);
 
-        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        List<IType> rootCandidateComponents = new ArrayList<>();
         rootCandidateComponents.add(root);
         rootCandidateComponents.add(descendant);
 
-        List<IType> allComponents = new ArrayList<IType>();
+        List<IType> allComponents = new ArrayList<>();
         allComponents.add(root);
         allComponents.add(descendant);
 
@@ -672,17 +672,17 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
         association2.setTarget(descendant4.getQualifiedName());
         association2.setAssociationType(AssociationType.AGGREGATION);
 
-        List<IType> rootComponents = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
         rootComponents.add(root);
 
-        List<IType> rootCandidateComponents = new ArrayList<IType>();
+        List<IType> rootCandidateComponents = new ArrayList<>();
         rootCandidateComponents.add(root);
         rootCandidateComponents.add(descendant1);
         rootCandidateComponents.add(descendant2);
         rootCandidateComponents.add(descendant3);
         rootCandidateComponents.add(descendant4);
 
-        List<IType> allComponents = new ArrayList<IType>();
+        List<IType> allComponents = new ArrayList<>();
         allComponents.add(root);
         allComponents.add(descendant1);
         allComponents.add(descendant2);
@@ -741,7 +741,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
         List<IType> allTypes = AbstractModelStructureContentProvider.getProjectITypes(projectB,
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        List<IType> projectBTypes = new ArrayList<IType>();
+        List<IType> projectBTypes = new ArrayList<>();
         projectBTypes.add(bA);
         projectBTypes.add(bB);
 
@@ -789,7 +789,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
         List<IType> allTypes = AbstractModelStructureContentProvider.getProjectITypes(projectC,
                 IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        List<IType> projectCTypes = new ArrayList<IType>();
+        List<IType> projectCTypes = new ArrayList<>();
         projectCTypes.add(cA);
         projectCTypes.add(cB);
 

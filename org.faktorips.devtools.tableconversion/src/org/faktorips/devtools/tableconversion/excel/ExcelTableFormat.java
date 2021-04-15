@@ -196,7 +196,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             return Collections.emptyList();
         }
 
-        List<String[]> result = new ArrayList<String[]>();
+        List<String[]> result = new ArrayList<>();
         MessageList ml = new MessageList();
 
         // row 0 is the header if ignoreColumnHeaderRow is true,

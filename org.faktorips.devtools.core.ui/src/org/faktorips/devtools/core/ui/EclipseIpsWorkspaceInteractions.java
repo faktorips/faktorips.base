@@ -40,15 +40,9 @@ public class EclipseIpsWorkspaceInteractions implements IIpsWorkspaceInteraction
 
     @Override
     public void showErrorDialog(IStatus status) {
-        runInDisplayThreadAsync(new Runnable() {
-
-            @Override
-            public void run() {
-                ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.IpsUIPlugin_titleErrorDialog, Messages.IpsUIPlugin_msgUnexpectedError,
-                        status);
-            }
-        });
+        runInDisplayThreadAsync(() -> ErrorDialog.openError(Display.getDefault().getActiveShell(),
+                Messages.IpsUIPlugin_titleErrorDialog, Messages.IpsUIPlugin_msgUnexpectedError,
+                status));
     }
 
 }

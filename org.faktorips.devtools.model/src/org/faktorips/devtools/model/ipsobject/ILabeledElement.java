@@ -17,9 +17,9 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 
 /**
- * A labeled element is an element that supports attaching {@link ILabel ILabels} in different languages to
- * it. Labels can be attached for all languages that are supported by the IPS project the labeled
- * element belongs to.
+ * A labeled element is an element that supports attaching {@link ILabel ILabels} in different
+ * languages to it. Labels can be attached for all languages that are supported by the IPS project
+ * the labeled element belongs to.
  * 
  * @since 3.1
  * 

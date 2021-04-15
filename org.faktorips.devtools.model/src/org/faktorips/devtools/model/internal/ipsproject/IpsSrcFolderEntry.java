@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -372,7 +372,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private MessageList validateUniqueBasePackage() {
         MessageList ml = new MessageList();
         ml.add(validateUniqueBasePackage(getIpsObjectPath().getSourceFolderEntries()));
-        Set<IIpsProject> allReferencedIpsProjects = new HashSet<IIpsProject>(getIpsObjectPath()
+        Set<IIpsProject> allReferencedIpsProjects = new HashSet<>(getIpsObjectPath()
                 .getAllReferencedIpsProjects());
         /*
          * Avoid testing source folder entries against themselves. A project can be referenced

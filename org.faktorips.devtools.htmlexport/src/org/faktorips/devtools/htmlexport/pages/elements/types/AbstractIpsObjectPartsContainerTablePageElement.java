@@ -30,11 +30,12 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends IIpsObjectPartContainer> extends
-AbstractStandardTablePageElement {
+        AbstractStandardTablePageElement {
 
     private final List<? extends T> objectParts;
 
-    public AbstractIpsObjectPartsContainerTablePageElement(List<? extends T> objectParts, DocumentationContext context) {
+    public AbstractIpsObjectPartsContainerTablePageElement(List<? extends T> objectParts,
+            DocumentationContext context) {
         super(context);
         this.objectParts = objectParts;
     }
@@ -49,7 +50,7 @@ AbstractStandardTablePageElement {
 
     @Override
     protected final List<String> getHeadline() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.addAll(getHeadlineWithIpsObjectPart());
         headline.addAll(getVersionHeadline());
@@ -61,7 +62,7 @@ AbstractStandardTablePageElement {
     protected abstract List<String> getHeadlineWithIpsObjectPart();
 
     private List<String> getVersionHeadline() {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         if (getObjectParts().get(0) instanceof IVersionControlledElement) {
             result.add(getContext().getMessage(HtmlExportMessages.TablePageElement_headlineSince));
         }
@@ -76,7 +77,7 @@ AbstractStandardTablePageElement {
             return Collections.emptyList();
         }
 
-        List<String> extensionPropertyNames = new ArrayList<String>();
+        List<String> extensionPropertyNames = new ArrayList<>();
         for (IExtensionPropertyDefinition property : propertyDefinitions) {
             extensionPropertyNames.add(property.getName());
         }
@@ -89,7 +90,7 @@ AbstractStandardTablePageElement {
     }
 
     protected List<IPageElement> getRow(T rowData) {
-        List<IPageElement> values = new ArrayList<IPageElement>();
+        List<IPageElement> values = new ArrayList<>();
 
         values.addAll(createRowWithIpsObjectPart(rowData));
         values.addAll(createRowWithVersion(rowData));
@@ -100,7 +101,7 @@ AbstractStandardTablePageElement {
     protected abstract List<IPageElement> createRowWithIpsObjectPart(T rowData);
 
     private List<IPageElement> createRowWithVersion(T rowData) {
-        List<IPageElement> values = new ArrayList<IPageElement>();
+        List<IPageElement> values = new ArrayList<>();
         if (rowData instanceof IVersionControlledElement) {
             IVersionControlledElement versionControlledElement = (IVersionControlledElement)rowData;
             IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
@@ -114,7 +115,7 @@ AbstractStandardTablePageElement {
     }
 
     private List<IPageElement> createRowWithExtentionPropertiesData(T rowData) {
-        List<IPageElement> extensionPropertyValues = new ArrayList<IPageElement>();
+        List<IPageElement> extensionPropertyValues = new ArrayList<>();
         for (IExtensionPropertyDefinition property : getPropertyDefinitions()) {
             Object value = rowData.getExtPropertyValue(property.getPropertyId());
             extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString(), getContext()));
@@ -132,7 +133,7 @@ AbstractStandardTablePageElement {
             Collection<IExtensionPropertyDefinition> extensionPropertyDefinitions = ((IExtensionPropertyAccess)rowData)
                     .getExtensionPropertyDefinitions();
             return extensionPropertyDefinitions.toArray(new IExtensionPropertyDefinition[extensionPropertyDefinitions
-                                                                                         .size()]);
+                    .size()]);
         }
         return new IExtensionPropertyDefinition[0];
     }

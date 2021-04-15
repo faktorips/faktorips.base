@@ -148,13 +148,10 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
         @Override
         public void done(IJobChangeEvent event) {
             if (viewerToRefresh != null && !viewerToRefresh.getControl().isDisposed()) {
-                viewerToRefresh.getControl().getDisplay().asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewerToRefresh.refresh();
-                        setChanged();
-                        notifyObservers();
-                    }
+                viewerToRefresh.getControl().getDisplay().asyncExec(() -> {
+                    viewerToRefresh.refresh();
+                    setChanged();
+                    notifyObservers();
                 });
             }
         }

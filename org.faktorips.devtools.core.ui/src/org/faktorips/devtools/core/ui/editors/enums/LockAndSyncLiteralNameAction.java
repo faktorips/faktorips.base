@@ -16,8 +16,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <code>EnumValuesSection</code>. It enables the user to lock the values of
- * the literal name column and synchronize it's values with the default provider column.
+ * This action is used by the <code>EnumValuesSection</code>. It enables the user to lock the values
+ * of the literal name column and synchronize it's values with the default provider column.
  * 
  * @see EnumValuesSection
  * 

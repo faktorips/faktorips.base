@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
@@ -152,25 +151,21 @@ public class ReferenceAndPreviewPage extends WizardPage {
             }
 
             try {
-                getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        updateWorkingDateLabel();
-                        IProgressMonitor theMonitor = monitor;
-                        if (theMonitor == null) {
-                            theMonitor = new NullProgressMonitor();
-                        }
-                        theMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
-                        theMonitor.worked(1);
-                        tree.setInput(getStructure());
-                        theMonitor.worked(1);
-                        tree.expandAll();
-                        theMonitor.worked(1);
-                        theMonitor.worked(1);
-                        theMonitor.worked(1);
-                        theMonitor.worked(1);
+                getWizard().getContainer().run(false, false, monitor -> {
+                    updateWorkingDateLabel();
+                    IProgressMonitor theMonitor = monitor;
+                    if (theMonitor == null) {
+                        theMonitor = new NullProgressMonitor();
                     }
-
+                    theMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 6);
+                    theMonitor.worked(1);
+                    tree.setInput(getStructure());
+                    theMonitor.worked(1);
+                    tree.expandAll();
+                    theMonitor.worked(1);
+                    theMonitor.worked(1);
+                    theMonitor.worked(1);
+                    theMonitor.worked(1);
                 });
             } catch (InvocationTargetException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -218,7 +213,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
             if (treeStatus.isEnabled((IProductCmptStructureReference)parentElement)) {
                 IProductCmptStructureReference[] children = (IProductCmptStructureReference[])super.getChildren(
                         parentElement);
-                List<IProductCmptStructureReference> result = new ArrayList<IProductCmptStructureReference>();
+                List<IProductCmptStructureReference> result = new ArrayList<>();
                 for (IProductCmptStructureReference child : children) {
                     if (treeStatus.isEnabled(child)) {
                         result.add(child);

@@ -64,7 +64,8 @@ public class AssociationRefControl extends TextButtonControl {
             selectDialog.setFilter(StringUtil.unqualifiedName(super.getText()));
             if (selectDialog.open() == Window.OK) {
                 if (selectDialog.getResult().length > 0) {
-                    IPolicyCmptTypeAssociation associationResult = (IPolicyCmptTypeAssociation)selectDialog.getResult()[0];
+                    IPolicyCmptTypeAssociation associationResult = (IPolicyCmptTypeAssociation)selectDialog
+                            .getResult()[0];
                     setText(associationResult.getName());
                 } else {
                     setText(""); //$NON-NLS-1$
@@ -82,7 +83,7 @@ public class AssociationRefControl extends TextButtonControl {
      * @throws CoreException in case of an error
      */
     protected IPolicyCmptTypeAssociation[] getAssociations() throws CoreException {
-        List<IPolicyCmptTypeAssociation> associationsToSelect = new ArrayList<IPolicyCmptTypeAssociation>();
+        List<IPolicyCmptTypeAssociation> associationsToSelect = new ArrayList<>();
         IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
         while (currPolicyCmptType != null) {
             List<IPolicyCmptTypeAssociation> associations = currPolicyCmptType.getPolicyCmptTypeAssociations();

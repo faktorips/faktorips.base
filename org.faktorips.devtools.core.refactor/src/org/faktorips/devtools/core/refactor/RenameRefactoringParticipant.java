@@ -142,7 +142,7 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
          */
         private List<IJavaElement> initializeJavaElements(IAttribute attribute, IJavaBuilderSet builderSet)
                 throws CoreException {
-            ArrayList<IJavaElement> result = new ArrayList<IJavaElement>();
+            ArrayList<IJavaElement> result = new ArrayList<>();
 
             while (attribute.isOverwrite()) {
                 attribute = attribute.findOverwrittenAttribute(attribute.getIpsProject());
@@ -163,7 +163,7 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
          */
         private List<IJavaElement> initializeJavaElements(IEnumAttribute enumAttribute, IJavaBuilderSet builderSet)
                 throws CoreException {
-            ArrayList<IJavaElement> result = new ArrayList<IJavaElement>();
+            ArrayList<IJavaElement> result = new ArrayList<>();
             List<IEnumAttribute> inheritedCopies = enumAttribute.searchInheritedCopies(enumAttribute.getIpsProject());
             for (IEnumAttribute inheritedCopy : inheritedCopies) {
                 result.addAll(builderSet.getGeneratedJavaElements(inheritedCopy));

@@ -56,7 +56,7 @@ public class EnableBinding extends ControlPropertyBinding {
     @Override
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
-            Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+            Object value = getProperty().getReadMethod().invoke(getObject());
             boolean enabled = value != null && enabledFunction.test(value);
             if (isDataChangeable() || !enabled) {
                 uiToolkit.setEnabled(getControl(), enabled);

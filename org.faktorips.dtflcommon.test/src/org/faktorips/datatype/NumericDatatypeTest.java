@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public class NumericDatatypeTest {
 
-    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype>  {
+    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> {
 
         private T datatype;
 
@@ -93,9 +93,9 @@ public class NumericDatatypeTest {
 
     @Test
     public void testDivisibleWithoutRemainderDecimal() {
-        TestDatatypeWithDecinalPlaces<NumericDatatype> bigDecimalDatatypeTest = new TestDatatypeWithDecinalPlaces<NumericDatatype>(
+        TestDatatypeWithDecinalPlaces<NumericDatatype> bigDecimalDatatypeTest = new TestDatatypeWithDecinalPlaces<>(
                 new BigDecimalDatatype());
-        TestDatatypeWithDecinalPlaces<NumericDatatype> decimalDatatypeTest = new TestDatatypeWithDecinalPlaces<NumericDatatype>(
+        TestDatatypeWithDecinalPlaces<NumericDatatype> decimalDatatypeTest = new TestDatatypeWithDecinalPlaces<>(
                 new DecimalDatatype());
 
         decimalDatatypeTest.testDivisibleWithoutRemainderDecimal();

@@ -44,7 +44,8 @@ public class IpsProjectRefEntryJunitTest {
 
         // different track and instance
         assertEquals("CZ2_OMCWTG101_D~11~mc(2fbonus(2fkern(2fjava~as.de", IpsProjectRefEntry.createNWDIProjectName(
-                "CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de", "CZ2_OMCWTG101_D~11~mc(2bonus(2fdomain(2fjava~as.de"));
+                "CZ2_OMCWTG1_D~0~mc(2fbonus(2fkern(2fjava~as.de",
+                "CZ2_OMCWTG101_D~11~mc(2bonus(2fdomain(2fjava~as.de"));
     }
 
     @Test

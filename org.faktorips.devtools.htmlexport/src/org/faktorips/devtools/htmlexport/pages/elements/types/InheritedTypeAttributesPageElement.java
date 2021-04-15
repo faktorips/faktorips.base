@@ -38,7 +38,7 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
     }
 
     private void initializeOverwritingAttributesList() {
-        overwritingAttributes = new ArrayList<String>();
+        overwritingAttributes = new ArrayList<>();
         List<? extends IAttribute> ipsObjectParts = getIpsObjectParts(getParentIpsElement());
         for (IAttribute attribute : ipsObjectParts) {
             if (attribute.isOverwrite()) {

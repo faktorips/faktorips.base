@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.util;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -166,26 +166,26 @@ public class TypedSelectionTest {
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
         selection = new StructuredSelection(new String[] { TEST_STRING });
-        validator = new TypedSelection<String>(String.class, selection, 2, 2);
+        validator = new TypedSelection<>(String.class, selection, 2, 2);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
         selection = new StructuredSelection(new Object[] { TEST_STRING, TEST_STRING, INTEGER_VALUE });
-        validator = new TypedSelection<String>(String.class, selection, 2, 2);
+        validator = new TypedSelection<>(String.class, selection, 2, 2);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
         selection = new StructuredSelection(new Object[] { TEST_STRING, INTEGER_VALUE });
-        validator = new TypedSelection<String>(String.class, selection, 2, 2);
+        validator = new TypedSelection<>(String.class, selection, 2, 2);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
         selection = new StructuredSelection(new Object[] { INTEGER_VALUE, INTEGER_VALUE });
-        validator = new TypedSelection<String>(String.class, selection, 2, 2);
+        validator = new TypedSelection<>(String.class, selection, 2, 2);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
         selection = new StructuredSelection(new String[] { TEST_STRING, TEST_STRING, TEST_STRING });
-        validator = new TypedSelection<String>(String.class, selection, 2, 2);
+        validator = new TypedSelection<>(String.class, selection, 2, 2);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
 
-        validator = new TypedSelection<String>(String.class, new TextSelection(0, 0), 1);
+        validator = new TypedSelection<>(String.class, new TextSelection(0, 0), 1);
         assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
     }
 
@@ -230,7 +230,7 @@ public class TypedSelectionTest {
     public void testEqual() {
         StructuredSelection selection = new StructuredSelection();
 
-        List<String> model = new ArrayList<String>();
+        List<String> model = new ArrayList<>();
 
         model.add(TEST_STRING);
 
@@ -245,7 +245,7 @@ public class TypedSelectionTest {
         model.add(TEST_STRING);
         model.add(NO_EXCEPTION_IS_THROWN);
 
-        List<String> selectionModel = new ArrayList<String>();
+        List<String> selectionModel = new ArrayList<>();
         selectionModel.add(NO_EXCEPTION_IS_THROWN);
         selectionModel.add(TEST_STRING);
 
@@ -258,7 +258,7 @@ public class TypedSelectionTest {
      */
     @Test
     public void testConversion() {
-        List<String> selectionModel = new ArrayList<String>();
+        List<String> selectionModel = new ArrayList<>();
         selectionModel.add(TEST_STRING);
         StructuredSelection selection = new StructuredSelection(selectionModel);
 
@@ -280,7 +280,7 @@ public class TypedSelectionTest {
      */
     @Test
     public void testSingleElementConversion() {
-        List<String> selectionModel = new ArrayList<String>();
+        List<String> selectionModel = new ArrayList<>();
         selectionModel.add(TEST_STRING);
         StructuredSelection selection = new StructuredSelection(selectionModel);
 
@@ -347,7 +347,7 @@ public class TypedSelectionTest {
     public void testWrongNumberOfElementsForConvertSingle() {
         boolean isThrown = false;
         try {
-            List<String> selectionModel = new ArrayList<String>();
+            List<String> selectionModel = new ArrayList<>();
             selectionModel.add(TEST_STRING);
             selectionModel.add(TEST_STRING);
             StructuredSelection selection = new StructuredSelection(selectionModel);
@@ -365,7 +365,7 @@ public class TypedSelectionTest {
     public void testWrongElementForConvert() {
         boolean isThrown = false;
         try {
-            List<String> selectionModel = new ArrayList<String>();
+            List<String> selectionModel = new ArrayList<>();
             selectionModel.add(TEST_STRING);
             StructuredSelection selection = new StructuredSelection(selectionModel);
             TypedSelection.convert(Boolean.class, selection);
@@ -383,7 +383,7 @@ public class TypedSelectionTest {
     public void testWrongElementForConvertSingle() {
         boolean isThrown = false;
         try {
-            List<String> selectionModel = new ArrayList<String>();
+            List<String> selectionModel = new ArrayList<>();
             selectionModel.add(TEST_STRING);
             StructuredSelection selection = new StructuredSelection(selectionModel);
             TypedSelection.convertSingleElement(Boolean.class, selection);

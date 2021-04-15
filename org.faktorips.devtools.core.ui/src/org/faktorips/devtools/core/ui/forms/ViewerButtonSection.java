@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.ui.forms;
 
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,12 +37,7 @@ public abstract class ViewerButtonSection extends IpsSection {
         client.setLayout(clientLayout);
         viewer = createViewer(client, toolkit);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledStates();
-            }
-        });
+        viewer.addSelectionChangedListener($ -> updateButtonEnabledStates());
         Composite buttons = toolkit.getFormToolkit().createComposite(client);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);

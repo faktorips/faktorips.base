@@ -23,8 +23,8 @@ import java.util.Map;
  */
 public class DefaultObjectReferenceStore implements IObjectReferenceStore {
 
-    private Map<Object, List<Object>> objects = new HashMap<Object, List<Object>>(100);
-    private List<IUnresolvedReference> references = new ArrayList<IUnresolvedReference>();
+    private Map<Object, List<Object>> objects = new HashMap<>(100);
+    private List<IUnresolvedReference> references = new ArrayList<>();
 
     @Override
     public void resolveReferences() throws Exception {
@@ -35,7 +35,7 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
 
     @Override
     public void putObject(Object id, Object object) {
-        List<Object> list = objects.computeIfAbsent(id, $ -> new ArrayList<Object>(1));
+        List<Object> list = objects.computeIfAbsent(id, $ -> new ArrayList<>(1));
         if (!list.contains(object)) {
             /*
              * Assumption here is that there won't be too many objects with same id of different

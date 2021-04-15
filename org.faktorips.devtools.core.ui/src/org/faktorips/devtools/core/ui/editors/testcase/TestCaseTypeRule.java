@@ -87,7 +87,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
      */
     private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
         // delegate the validation to the test rules
-        HashMap<String, Message> messages = new HashMap<String, Message>();
+        HashMap<String, Message> messages = new HashMap<>();
         ITestRule[] testRules = testCase.getTestRule(testRuleParameter.getName());
         for (ITestRule testRule : testRules) {
             MessageList msgList = testRule.validate(ipsProject);

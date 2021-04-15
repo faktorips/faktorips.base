@@ -77,7 +77,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      * @return the list of associations that subsets this derived union
      */
     public Set<XAssociation> getSubsetAssociations(XType xType) {
-        Set<XAssociation> result = new LinkedHashSet<XAssociation>();
+        Set<XAssociation> result = new LinkedHashSet<>();
         Set<? extends XAssociation> associations = xType.getAssociations();
         for (XAssociation xAssociation : associations) {
             if (xAssociation.isSubsetOf(this)) {

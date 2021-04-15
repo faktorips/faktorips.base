@@ -46,7 +46,7 @@ public class ConditionPMOPersistence {
     public static final String PRODUCT_ATTRIBUTE_CONDITION_TYPE = "org.faktorips.devtools.core.ui.search.product.conditions.types.ProductAttributeConditionType"; //$NON-NLS-1$
     public static final String POLICY_ATTRIBUTE_CONDITION_TYPE = "org.faktorips.devtools.core.ui.search.product.conditions.types.PolicyAttributeConditionType"; //$NON-NLS-1$
 
-    private static final Map<String, ISearchOperatorType> OPERATOR_TYPE_MAP = new HashMap<String, ISearchOperatorType>();
+    private static final Map<String, ISearchOperatorType> OPERATOR_TYPE_MAP = new HashMap<>();
 
     private final ProductSearchPresentationModel searchPMO;
     private final IDialogSettings settings;
@@ -101,7 +101,7 @@ public class ConditionPMOPersistence {
         String[] searchedElements = section.getArray(SEARCHED_ELEMENT_KEY);
         String[] arguments = section.getArray(ARGUMENTS_KEY);
 
-        List<ProductSearchConditionPresentationModel> pmoList = new ArrayList<ProductSearchConditionPresentationModel>();
+        List<ProductSearchConditionPresentationModel> pmoList = new ArrayList<>();
         try {
             for (int i = 0; i < arguments.length; i++) {
                 ProductSearchConditionPresentationModel conditionPMO = new ProductSearchConditionPresentationModel(
@@ -150,7 +150,7 @@ public class ConditionPMOPersistence {
     }
 
     private String[] getConditionTypes() {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         List<ProductSearchConditionPresentationModel> conditionPMOs = searchPMO
                 .getProductSearchConditionPresentationModels();
         for (ProductSearchConditionPresentationModel condition : conditionPMOs) {
@@ -160,7 +160,7 @@ public class ConditionPMOPersistence {
     }
 
     private String[] getArguments() {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         List<ProductSearchConditionPresentationModel> conditionPMOs = searchPMO
                 .getProductSearchConditionPresentationModels();
         for (ProductSearchConditionPresentationModel condition : conditionPMOs) {
@@ -170,7 +170,7 @@ public class ConditionPMOPersistence {
     }
 
     private String[] getOperandTypes() {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         List<ProductSearchConditionPresentationModel> conditionPMOs = searchPMO
                 .getProductSearchConditionPresentationModels();
         for (ProductSearchConditionPresentationModel condition : conditionPMOs) {
@@ -180,7 +180,7 @@ public class ConditionPMOPersistence {
     }
 
     private String[] getSearchedElements() {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         List<ProductSearchConditionPresentationModel> conditionPMOs = searchPMO
                 .getProductSearchConditionPresentationModels();
         for (ProductSearchConditionPresentationModel condition : conditionPMOs) {

@@ -38,7 +38,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
-import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
@@ -389,14 +388,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         model.addIpsObjectExtensionProperty(extProp0);
 
         final StringBuilder sb = new StringBuilder();
-        ILogListener listener = new ILogListener() {
-
-            @Override
-            public void logging(IStatus status, String plugin) {
-                sb.append(status.getMessage());
-            }
-
-        };
+        ILogListener listener = (status, $) -> sb.append(status.getMessage());
         IpsLog.get().addLogListener(listener);
         try {
             Element docEl = getTestDocument().getDocumentElement();

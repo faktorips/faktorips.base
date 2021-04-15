@@ -18,14 +18,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osgi.util.NLS;
@@ -136,7 +132,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new InstanceDropListener());
-        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+        dropTarget.setTransfer(FileTransfer.getInstance());
 
         labelProvider = new InstanceLabelProvider();
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
@@ -171,12 +167,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         tableViewer.setContentProvider(contentProvider);
         tableViewer.setLabelProvider(decoratedLabelProvider);
         tableViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(DoubleClickEvent event) {
-                OpenEditorAction action = new OpenEditorAction(tableViewer);
-                action.openEditor();
-            }
+        tableViewer.addDoubleClickListener($ -> {
+            OpenEditorAction action = new OpenEditorAction(tableViewer);
+            action.openEditor();
         });
         tableViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new IpsElementDragListener(tableViewer));
@@ -241,16 +234,12 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     private void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                IpsMenuId.GROUP_NEW_PRODUCTC.addGroupMarker(manager);
-                IpsMenuId.GROUP_COPY_PRODUCTC.addSeparator(manager);
-                manager.add(new Separator("open")); //$NON-NLS-1$
-                manager.add(new OpenEditorAction(tableViewer));
-                IpsMenuId.addDefaultGroups(manager);
-            }
-
+        manager.addMenuListener(manager1 -> {
+            IpsMenuId.GROUP_NEW_PRODUCTC.addGroupMarker(manager1);
+            IpsMenuId.GROUP_COPY_PRODUCTC.addSeparator(manager1);
+            manager1.add(new Separator("open")); //$NON-NLS-1$
+            manager1.add(new OpenEditorAction(tableViewer));
+            IpsMenuId.addDefaultGroups(manager1);
         });
         Menu contextMenu = manager.createContextMenu(tableViewer.getControl());
         tableViewer.getControl().setMenu(contextMenu);
@@ -280,12 +269,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     }
 
     protected void setInputData(final IIpsMetaClass element) {
-        display.asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                tableViewer.setInput(element);
-                updateView();
-            }
+        display.asyncExec(() -> {
+            tableViewer.setInput(element);
+            updateView();
         });
     }
 
@@ -663,7 +649,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
         @Override
         public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
-            ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+            ArrayList<IIpsSrcFile> result = new ArrayList<>();
             result.add(metaObject.getIpsSrcFile());
             return result;
         }

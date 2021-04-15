@@ -36,7 +36,7 @@ import org.faktorips.devtools.model.builder.IpsBuilder;
  */
 public class IpsProblemMarkerManager implements IResourceChangeListener {
 
-    private final List<IIpsProblemChangedListener> listeners = new CopyOnWriteArrayList<IIpsProblemChangedListener>();
+    private final List<IIpsProblemChangedListener> listeners = new CopyOnWriteArrayList<>();
 
     public IpsProblemMarkerManager() {
         super();
@@ -59,7 +59,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
 
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
-        HashSet<IResource> changedElements = new HashSet<IResource>();
+        HashSet<IResource> changedElements = new HashSet<>();
 
         try {
             IResourceDelta delta = event.getDelta();

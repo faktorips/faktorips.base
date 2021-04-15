@@ -66,10 +66,10 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-            new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-            new PageElementUtils(getContext()).createLinkPageElement(getContext(), tableStructure,
-                        TargetType.CONTENT, getContext().getLabel(tableStructure), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(),
+                new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+                new PageElementUtils(getContext()).createLinkPageElement(getContext(), tableStructure,
+                        TargetType.CONTENT, getContext().getLabel(tableStructure), true)));
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         }
 
         private List<String> getRowData(IRow row) {
-            List<String> rowData = new ArrayList<String>();
+            List<String> rowData = new ArrayList<>();
 
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 String value = row.getValue(i);
@@ -158,7 +158,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         protected List<String> getHeadlineWithIpsObjectPart() {
             IColumn[] columns = tableStructure.getColumns();
 
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
             for (IColumn column : columns) {
                 headline.add(getContext().getLabel(column));
             }

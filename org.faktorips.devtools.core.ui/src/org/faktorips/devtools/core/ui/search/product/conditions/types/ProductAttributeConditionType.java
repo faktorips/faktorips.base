@@ -50,7 +50,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType element) {
         try {
-            return new ArrayList<IIpsElement>(element.findAllAttributes(element.getIpsProject()));
+            return new ArrayList<>(element.findAllAttributes(element.getIpsProject()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -58,7 +58,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
 
     @Override
     public List<ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement) {
-        List<ISearchOperatorType> searchOperatorTypes = new ArrayList<ISearchOperatorType>();
+        List<ISearchOperatorType> searchOperatorTypes = new ArrayList<>();
 
         ValueDatatype valueDatatype = getValueDatatype(searchableElement);
 

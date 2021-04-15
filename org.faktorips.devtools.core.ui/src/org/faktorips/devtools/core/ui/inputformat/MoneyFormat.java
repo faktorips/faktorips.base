@@ -39,7 +39,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     private static final String VALID_AMOUNT_CHARS = "[-,.\\d]"; //$NON-NLS-1$
 
-    private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<String, Currency>(4, 0.9f, 1);
+    private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<>(4, 0.9f, 1);
 
     private DecimalNumberFormat amountFormat;
 

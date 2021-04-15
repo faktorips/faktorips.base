@@ -76,7 +76,7 @@ public class FixValueTypePage extends WizardPage {
         Map<String, ValueTypeMismatch> mismatchMap = contentStrategy.checkAllContentAttributeValueTypeMismatch();
         String defaultlanguage = contentStrategy.getIpsProject().getReadOnlyProperties().getDefaultLanguage()
                 .getLocale().getLanguage();
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (Entry<String, ValueTypeMismatch> columnEntry : mismatchMap.entrySet()) {
             ValueTypeMismatch valueTypeMismatch = columnEntry.getValue();
             if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(valueTypeMismatch)) {

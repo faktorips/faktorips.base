@@ -186,7 +186,8 @@ public class ProductConfigurationTest {
         byte[] serialize = serializeProductConfiguration(productConfiguration);
         ProductConfiguration deserializedProductConfiguration = deserializeProductConfiguration(serialize);
 
-        assertEquals(productConfiguration.getProductComponent(), deserializedProductConfiguration.getProductComponent());
+        assertEquals(productConfiguration.getProductComponent(),
+                deserializedProductConfiguration.getProductComponent());
         assertEquals(productConfiguration.getProductCmptGeneration(null),
                 deserializedProductConfiguration.getProductCmptGeneration(null));
     }
@@ -200,7 +201,8 @@ public class ProductConfigurationTest {
         byte[] serialize = serializeProductConfiguration(productConfiguration);
         ProductConfiguration deserializedProductConfiguration = deserializeProductConfiguration(serialize);
 
-        assertEquals(productConfiguration.getProductComponent(), deserializedProductConfiguration.getProductComponent());
+        assertEquals(productConfiguration.getProductComponent(),
+                deserializedProductConfiguration.getProductComponent());
         assertNull(deserializedProductConfiguration.getProductCmptGeneration(null));
     }
 
@@ -233,13 +235,10 @@ public class ProductConfigurationTest {
 
     private ProductConfiguration deserializeProductConfiguration(byte[] byteArray) throws IOException,
             ClassNotFoundException {
-        ObjectInputStream osgiCompatibleInputStream = new ObjectInputStream(new ByteArrayInputStream(byteArray));
-        try {
+        try (ObjectInputStream osgiCompatibleInputStream = new ObjectInputStream(new ByteArrayInputStream(byteArray))) {
             ProductConfiguration deserializedProductConfiguration = (ProductConfiguration)osgiCompatibleInputStream
                     .readObject();
             return deserializedProductConfiguration;
-        } finally {
-            osgiCompatibleInputStream.close();
         }
 
     }

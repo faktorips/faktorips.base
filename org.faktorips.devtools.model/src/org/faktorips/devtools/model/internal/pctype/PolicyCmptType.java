@@ -58,10 +58,10 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
@@ -89,13 +89,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     public PolicyCmptType(IIpsSrcFile file) {
         super(file);
-        methods = new IpsObjectPartCollection<IPolicyCmptTypeMethod>(this, PolicyCmptTypeMethod.class,
+        methods = new IpsObjectPartCollection<>(this, PolicyCmptTypeMethod.class,
                 IPolicyCmptTypeMethod.class, BaseMethod.XML_ELEMENT_NAME);
-        associations = new IpsObjectPartCollection<IPolicyCmptTypeAssociation>(this, PolicyCmptTypeAssociation.class,
+        associations = new IpsObjectPartCollection<>(this, PolicyCmptTypeAssociation.class,
                 IPolicyCmptTypeAssociation.class, PolicyCmptTypeAssociation.TAG_NAME);
-        attributes = new IpsObjectPartCollection<IPolicyCmptTypeAttribute>(this, PolicyCmptTypeAttribute.class,
+        attributes = new IpsObjectPartCollection<>(this, PolicyCmptTypeAttribute.class,
                 IPolicyCmptTypeAttribute.class, PolicyCmptTypeAttribute.TAG_NAME);
-        rules = new IpsObjectPartCollection<IValidationRule>(this, ValidationRule.class, IValidationRule.class,
+        rules = new IpsObjectPartCollection<>(this, ValidationRule.class, IValidationRule.class,
                 ValidationRule.TAG_NAME);
         internalInitPersistenceTypeInfo();
     }
@@ -215,7 +215,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public List<IProductCmptProperty> getProductCmptProperties(ProductCmptPropertyType propertyType) {
-        List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+        List<IProductCmptProperty> properties = new ArrayList<>();
         if (propertyType == null || propertyType.equals(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE)) {
             collectAttributeProductCmptProperties(properties);
         }
@@ -422,7 +422,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        Set<IDependency> dependencies = new HashSet<IDependency>();
+        Set<IDependency> dependencies = new HashSet<>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
             IDependency dependency = IpsObjectDependency.createConfiguredByDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE));
@@ -529,7 +529,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected IIpsElement[] getChildrenThis() {
         IIpsElement[] superChildren = super.getChildrenThis();
         if (persistenceTypeInfo != null) {
-            List<IIpsElement> children = new ArrayList<IIpsElement>(Arrays.asList(superChildren));
+            List<IIpsElement> children = new ArrayList<>(Arrays.asList(superChildren));
             children.add(persistenceTypeInfo);
             return children.toArray(new IIpsElement[children.size()]);
         }
@@ -742,7 +742,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         public AllValidationRulesFinder(IIpsProject ipsProject, boolean superTypeFirst) {
             super(ipsProject);
             this.superTypeFirst = superTypeFirst;
-            rules = new ArrayList<IValidationRule>();
+            rules = new ArrayList<>();
         }
 
         public List<IValidationRule> getValidationRules() {

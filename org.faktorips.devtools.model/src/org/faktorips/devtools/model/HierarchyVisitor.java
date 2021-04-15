@@ -61,7 +61,7 @@ public abstract class HierarchyVisitor<T> {
      * Returns the types visited by the visitor in the order they were visited.
      */
     public List<T> getVisited() {
-        return Collections.unmodifiableList(new ArrayList<T>(visitedTypes));
+        return Collections.unmodifiableList(new ArrayList<>(visitedTypes));
     }
 
     public boolean isAlreadyVisited(T object) {
@@ -75,7 +75,7 @@ public abstract class HierarchyVisitor<T> {
      */
     public void start(T basetype) {
         cycleDetected = false;
-        visitedTypes = new LinkedHashSet<T>();
+        visitedTypes = new LinkedHashSet<>();
         if (basetype == null) {
             return;
         }

@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder.xmodel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
@@ -55,13 +54,7 @@ public class XTypeTest {
     @Before
     public void mockContext() {
         // addImport should always return the input parameter
-        Answer<String> inputAnswer = new Answer<String>() {
-
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArguments()[0].toString();
-            }
-        };
+        Answer<String> inputAnswer = invocation -> invocation.getArguments()[0].toString();
         when(context.addImport(anyString())).thenAnswer(inputAnswer);
         doReturn(generatorConfig).when(xType).getGeneratorConfig();
         doReturn(generatorConfig).when(xSuperType).getGeneratorConfig();

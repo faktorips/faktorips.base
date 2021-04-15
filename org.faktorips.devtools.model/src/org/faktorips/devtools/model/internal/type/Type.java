@@ -42,11 +42,11 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.DatatypeComparator;
-import org.faktorips.runtime.Message;
-import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
 
 /**
@@ -136,7 +136,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAttribute> getAttributes() {
-        return new ArrayList<IAttribute>(getAttributesPartCollection().getBackingList());
+        return new ArrayList<>(getAttributesPartCollection().getBackingList());
     }
 
     @Override
@@ -210,7 +210,7 @@ public abstract class Type extends BaseIpsObject implements IType {
             boolean includeSupertypes) throws CoreException {
 
         if (target == null || associationType == null) {
-            return new ArrayList<IAssociation>();
+            return new ArrayList<>();
         }
 
         if (includeSupertypes) {
@@ -230,7 +230,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     protected List<IAssociation> findAssociationsForTargetAndAssociationTypeInternal(String target,
             AssociationType associationType,
             IIpsProject project) throws CoreException {
-        List<IAssociation> result = new ArrayList<IAssociation>();
+        List<IAssociation> result = new ArrayList<>();
         List<IAssociation> associations = getAssociationsForTarget(target);
         for (IAssociation association : associations) {
             if (association.getAssociationType() == associationType) {
@@ -260,7 +260,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAssociation> getAssociationsForTarget(String target) {
-        List<IAssociation> result = new ArrayList<IAssociation>();
+        List<IAssociation> result = new ArrayList<>();
         for (IAssociation association : getAssociationPartCollection()) {
             if (association.getTarget().equals(target)) {
                 result.add(association);
@@ -271,12 +271,12 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAssociation> getAssociations() {
-        return new ArrayList<IAssociation>(getAssociationPartCollection().getBackingList());
+        return new ArrayList<>(getAssociationPartCollection().getBackingList());
     }
 
     @Override
     public List<IAssociation> getAssociations(AssociationType... types) {
-        List<IAssociation> associations = new ArrayList<IAssociation>();
+        List<IAssociation> associations = new ArrayList<>();
         List<IAssociation> findAssociations = this.getAssociations();
         for (IAssociation association : findAssociations) {
             if (Arrays.asList(types).contains(association.getAssociationType())) {
@@ -308,7 +308,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IMethod> getMethods() {
-        return new ArrayList<IMethod>(getMethodPartCollection().getBackingList());
+        return new ArrayList<>(getMethodPartCollection().getBackingList());
     }
 
     @Override
@@ -385,7 +385,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IMethod> overrideMethods(List<IMethod> methods) {
-        List<IMethod> newMethods = new ArrayList<IMethod>(methods.size());
+        List<IMethod> newMethods = new ArrayList<>(methods.size());
         for (IMethod method : methods) {
             IMethod override = newMethod();
             override.setModifier(method.getModifier());
@@ -409,11 +409,11 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         if (foundSupertype == null) {
             // no supertype, no candidates :-)
-            return new ArrayList<IAttribute>();
+            return new ArrayList<>();
         }
 
         // for easy finding attributes by name put them in a map with the name as key
-        Map<String, IAttribute> toExclude = new HashMap<String, IAttribute>();
+        Map<String, IAttribute> toExclude = new HashMap<>();
         for (IAttribute attribute : getAttributesPartCollection()) {
             if (attribute.isOverwrite()) {
                 toExclude.put(attribute.getName(), attribute);
@@ -422,7 +422,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         // find all overwrite-candidates
         List<IAttribute> candidates = getSupertypeHierarchy().getAllAttributes(foundSupertype);
-        List<IAttribute> result = new ArrayList<IAttribute>();
+        List<IAttribute> result = new ArrayList<>();
         for (IAttribute candidate : candidates) {
             if (!toExclude.containsKey(candidate.getName())) {
                 result.add(candidate);
@@ -441,7 +441,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes) {
-        List<IAttribute> newAttributes = new ArrayList<IAttribute>(attributes.size());
+        List<IAttribute> newAttributes = new ArrayList<>(attributes.size());
         for (IAttribute attribute : attributes) {
             IAttribute override = createAttributeIfNeccessary(attribute);
             override.setOverwrite(true);
@@ -731,7 +731,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     private class MethodOverrideCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
-        private List<IMethod> candidates = new ArrayList<IMethod>();
+        private List<IMethod> candidates = new ArrayList<>();
 
         private boolean onlyNotImplementedAbstractMethods;
 
@@ -818,7 +818,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     protected abstract static class AbstractAssociationFinder<T extends IAssociation>
             extends TypeHierarchyVisitor<IType> {
 
-        private List<T> associationsFound = new ArrayList<T>();
+        private List<T> associationsFound = new ArrayList<>();
         private final boolean superTypeFirst;
 
         public AbstractAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
@@ -1002,8 +1002,8 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         public AllMethodsFinder(IIpsProject ipsProject) {
             super(ipsProject);
-            methods = new ArrayList<IMethod>();
-            methodSignatures = new HashSet<String>();
+            methods = new ArrayList<>();
+            methodSignatures = new HashSet<>();
         }
 
         @Override
@@ -1032,14 +1032,14 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         public AllAttributeFinder(IIpsProject ipsProject) {
             super(ipsProject);
-            attributes = new ArrayList<IAttribute>();
-            attributeNames = new HashSet<String>();
+            attributes = new ArrayList<>();
+            attributeNames = new HashSet<>();
         }
 
         @Override
         protected boolean visit(IType currentType) {
             List<? extends IAttribute> lattributes = currentType.getAttributes();
-            List<IAttribute> attributesToAdd = new ArrayList<IAttribute>();
+            List<IAttribute> attributesToAdd = new ArrayList<>();
             // Considers overridden attributes.
             for (IAttribute attribute : lattributes) {
                 if (!attributeNames.contains(attribute.getName())) {
@@ -1058,7 +1058,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
         private MessageList msgList;
 
-        private List<IAssociation> candidateSubsets = new ArrayList<IAssociation>(0);
+        private List<IAssociation> candidateSubsets = new ArrayList<>(0);
 
         public DerivedUnionsSpecifiedValidator(MessageList msgList, IIpsProject ipsProject) {
             super(ipsProject);
@@ -1112,7 +1112,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      */
     private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
 
-        private Set<String> alreadyConstrained = new HashSet<String>();
+        private Set<String> alreadyConstrained = new HashSet<>();
 
         public ConstrainableAssociationFinder(boolean superTypeFirst, IIpsProject ipsProject) {
             super(superTypeFirst, ipsProject);

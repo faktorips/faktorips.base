@@ -59,7 +59,7 @@ public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
                 CompilationResultImpl newResult = new CompilationResultImpl(converted, datatype1, rhs.getMessages());
                 right = newResult;
             } else {
-                String text = Messages.INSTANCE.getString(getErrorMessageCode(), new Object[] { datatype1, datatype2 });
+                String text = Messages.INSTANCE.getString(getErrorMessageCode(), datatype1, datatype2);
                 Message msg = Message.newError(getErrorMessageCode(), text);
                 return new CompilationResultImpl(msg);
             }

@@ -18,8 +18,9 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingComboField;
 
 /**
  * Supports the navigation in a <code>Table</code> / <code>TableViewer</code> using the
- * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>, <code>SWT.TRAVERSE_TAB_NEXT</code>,
- * <code>SWT.TRAVERSE_TAB_PREVIOUS</code>, <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
+ * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>,
+ * <code>SWT.TRAVERSE_TAB_NEXT</code>, <code>SWT.TRAVERSE_TAB_PREVIOUS</code>,
+ * <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
  * 
  * @author Stefan Widmaier, Alexander Weickmann
  */
@@ -80,7 +81,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     /**
      * Edits the previous row relative to the current selection of the <code>TableViewer</code> this
-     * <code>TableCellEditor</code> is used in. Does nothing if the first row of the table is selected.
+     * <code>TableCellEditor</code> is used in. Does nothing if the first row of the table is
+     * selected.
      */
     private void editPreviousRow() {
         fireApplyEditorValue();
@@ -88,10 +90,10 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the previous column relative to the column this <code>TableCellEditor</code> is used for.
-     * If there is no previous column, the last cell of the previous row is edited. If in turn the
-     * previous row does not exist the first cell of the topmost row of the table is edited (first
-     * cell of the table).
+     * Edits the previous column relative to the column this <code>TableCellEditor</code> is used
+     * for. If there is no previous column, the last cell of the previous row is edited. If in turn
+     * the previous row does not exist the first cell of the topmost row of the table is edited
+     * (first cell of the table).
      */
     private void editPreviousColumn() {
         if (getPreviousColumn() >= columnIndex) {
@@ -108,7 +110,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     /**
      * Edits the next row relative to the current selection of the <code>TableViewer</code> this
-     * <code>TableCellEditor</code> is used in. If no following row exists, this method does nothing.
+     * <code>TableCellEditor</code> is used in. If no following row exists, this method does
+     * nothing.
      */
     protected void editNextRow() {
         if (!isAtNewRow()) {
@@ -118,8 +121,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
     }
 
     /**
-     * Edits the next column relative to the column this <code>TableCellEditor</code> is used for. If
-     * there is no next column, the first cell of the next row is edited. If in turn no following
+     * Edits the next column relative to the column this <code>TableCellEditor</code> is used for.
+     * If there is no next column, the first cell of the next row is edited. If in turn no following
      * row exists this method does nothing.
      */
     protected void editNextColumn() {
@@ -193,8 +196,8 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     /**
      * Edits the table cell in the given column of the given row. Expects valid values for
-     * <code>rowIndex</code> and <code>columnIndex</code>. Out-of-bound values will cause the table viewer
-     * to loose focus.
+     * <code>rowIndex</code> and <code>columnIndex</code>. Out-of-bound values will cause the table
+     * viewer to loose focus.
      * <p>
      * For optimization reasons this method only informs the table viewer of a cell edit if the cell
      * has changed.

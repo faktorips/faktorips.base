@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -142,19 +141,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private ResourceDeltaVisitor resourceDeltaVisitor;
 
     /** set of model change listeners that are notified about model changes */
-    private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<ContentsChangeListener>();
+    private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
 
-    private final Set<IIpsSrcFilesChangeListener> ipsSrcFilesChangeListeners = new CopyOnWriteArraySet<IIpsSrcFilesChangeListener>();
+    private final Set<IIpsSrcFilesChangeListener> ipsSrcFilesChangeListeners = new CopyOnWriteArraySet<>();
 
     /** set of modification status change listeners */
-    private Set<IModificationStatusChangeListener> modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(
+    private Set<IModificationStatusChangeListener> modificationStatusChangeListeners = new HashSet<>(
             100);
 
     /**
      * a map that contains per thread if changes should be broadcasted to the registered listeners
      * or squeezed.
      */
-    private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<Thread, Integer>();
+    private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<>();
 
     /**
      * A map containing the datatypes (value) by id (key). The map is initialized with null to point
@@ -165,7 +164,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * A map containing the project for every name.
      */
-    private Map<String, IpsProject> projectMap = new ConcurrentHashMap<String, IpsProject>();
+    private Map<String, IpsProject> projectMap = new ConcurrentHashMap<>();
 
     private Supplier<List<IIpsArtefactBuilderSetInfo>> builderSetInfoList = CachingSupplier
             .caching(this::createIpsArtefactBuilderSetInfosIfNecessary);
@@ -174,7 +173,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
     /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
-    private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<IIpsSrcFile, IpsSrcFileContent>(1000);
+    private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<>(1000);
 
     /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();
@@ -186,7 +185,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * A map containing project data per project.
      */
-    private final Map<IIpsProject, IpsProjectData> ipsProjectDatas = new ConcurrentHashMap<IIpsProject, IpsProjectData>(
+    private final Map<IIpsProject, IpsProjectData> ipsProjectDatas = new ConcurrentHashMap<>(
             3, 0.9f, 2);
 
     private IpsObjectPathContainerFactory ipsObjectPathContainerFactory = IpsObjectPathContainerFactory
@@ -248,7 +247,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$
         }
-        List<IpsObjectType> types = new ArrayList<IpsObjectType>();
+        List<IpsObjectType> types = new ArrayList<>();
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
         types.add(IpsObjectType.PRODUCT_CMPT_TYPE);
         types.add(IpsObjectType.PRODUCT_CMPT);
@@ -289,17 +288,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private List<IpsObjectType> createIpsObjectTypes(IExtension extension) {
         IpsObjectType type = null;
-        List<IpsObjectType> validTypes = new ArrayList<IpsObjectType>();
+        List<IpsObjectType> validTypes = new ArrayList<>();
         IConfigurationElement[] configElements = extension.getConfigurationElements();
-        for (int i = 0; i < configElements.length; i++) {
-            if (!"ipsobjecttype".equalsIgnoreCase(configElements[i].getName())) { //$NON-NLS-1$
+        for (IConfigurationElement configElement : configElements) {
+            if (!"ipsobjecttype".equalsIgnoreCase(configElement.getName())) { //$NON-NLS-1$
                 String text = "Illegal IPS object type definition" + extension.getUniqueIdentifier() //$NON-NLS-1$
                         + ". Expected Config Element <ipsobjectytpe> was " //$NON-NLS-1$
-                        + configElements[i].getName();
+                        + configElement.getName();
                 IpsLog.log(new IpsStatus(text));
                 continue;
             }
-            type = ExtensionPoints.createExecutableExtension(extension, configElements[i], "class", //$NON-NLS-1$
+            type = ExtensionPoints.createExecutableExtension(extension, configElement, "class", //$NON-NLS-1$
                     IpsObjectType.class);
 
             if (type == null) {
@@ -349,15 +348,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
             return;
         }
-        List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
-        final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<IIpsSrcFile, ContentChangeEvent>();
+        List<ContentsChangeListener> listeners = new ArrayList<>(changeListeners);
+        final Map<IIpsSrcFile, ContentChangeEvent> changedSrcFileEvents = new HashMap<>();
         ContentsChangeListener batchListener = event -> collect(changedSrcFileEvents, event);
         changeListeners.clear();
         addChangeListener(batchListener);
 
-        HashSet<IModificationStatusChangeListener> copyOfCurrentModifyListeners = new HashSet<IModificationStatusChangeListener>(
+        HashSet<IModificationStatusChangeListener> copyOfCurrentModifyListeners = new HashSet<>(
                 modificationStatusChangeListeners);
-        final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<IIpsSrcFile>(0);
+        final Set<IIpsSrcFile> modifiedSrcFiles = new LinkedHashSet<>(0);
         IModificationStatusChangeListener batchModifiyListener = event -> modifiedSrcFiles.add(event.getIpsSrcFile());
         modificationStatusChangeListeners.clear();
         addModifcationStatusChangeListener(batchModifiyListener);
@@ -367,7 +366,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
-            changeListeners = new CopyOnWriteArraySet<ContentsChangeListener>(listeners);
+            changeListeners = new CopyOnWriteArraySet<>(listeners);
 
             // notify about changes
             for (IIpsSrcFile file : changedSrcFileEvents.keySet()) {
@@ -468,7 +467,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public IIpsProject[] getIpsModelProjects() throws CoreException {
         IIpsProject[] allIpsProjects = getIpsProjects();
-        List<IIpsProject> modelProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
+        List<IIpsProject> modelProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
             if (ipsProject.isModelProject()) {
                 modelProjects.add(ipsProject);
@@ -480,7 +479,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     @Override
     public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException {
         IIpsProject[] allIpsProjects = getIpsProjects();
-        List<IIpsProject> productDefinitionProjects = new ArrayList<IIpsProject>(allIpsProjects.length);
+        List<IIpsProject> productDefinitionProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
             if (ipsProject.isProductDefinitionProject()) {
                 productDefinitionProjects.add(ipsProject);
@@ -494,9 +493,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IProject[] nonIpsProjects = new IProject[projects.length];
         int counter = 0;
-        for (int i = 0; i < projects.length; i++) {
-            if (!projects[i].isOpen() || !projects[i].hasNature(IIpsProject.NATURE_ID)) {
-                nonIpsProjects[counter] = projects[i];
+        for (IProject project : projects) {
+            if (!project.isOpen() || !project.hasNature(IIpsProject.NATURE_ID)) {
+                nonIpsProjects[counter] = project;
                 counter++;
             }
         }
@@ -675,7 +674,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             System.out.println("IpsModel.addModificationStatusChangeListener(): " + listener); //$NON-NLS-1$
         }
         if (modificationStatusChangeListeners == null) {
-            modificationStatusChangeListeners = new HashSet<IModificationStatusChangeListener>(1);
+            modificationStatusChangeListeners = new HashSet<>(1);
         }
         modificationStatusChangeListeners.add(listener);
     }
@@ -763,7 +762,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException {
-        List<IIpsPackageFragmentRoot> result = new ArrayList<IIpsPackageFragmentRoot>();
+        List<IIpsPackageFragmentRoot> result = new ArrayList<>();
         IIpsProject[] projects = getIpsProjects();
         for (IIpsProject project : projects) {
             ((IpsProject)project).getSourceIpsFragmentRoots(result);
@@ -809,7 +808,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 }
             }
         }
-        return;
     }
 
     public Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject) {
@@ -1048,7 +1046,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (event.getResource() == null || event.getResource() instanceof IProject) {
                 forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
             }
-            return;
         } else {
             IResourceDelta delta = event.getDelta();
             if (delta != null) {
@@ -1078,7 +1075,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *            should be considered.
      */
     private synchronized void forceReloadOfCachedIpsSrcFileContents(IProject project) {
-        HashSet<IIpsSrcFile> copyKeys = new HashSet<IIpsSrcFile>(ipsObjectsMap.keySet());
+        HashSet<IIpsSrcFile> copyKeys = new HashSet<>(ipsObjectsMap.keySet());
         for (IIpsSrcFile srcFile : copyKeys) {
             if (!srcFile.isDirty() && (project == null || srcFile.getIpsProject().getProject().equals(project))) {
                 releaseInCache(srcFile);
@@ -1127,7 +1124,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * according extension point.
      */
     public void setIpsArtefactBuilderSetInfos(IIpsArtefactBuilderSetInfo[] builderSetInfos) {
-        builderSetInfoList = () -> new ArrayList<IIpsArtefactBuilderSetInfo>(Arrays.asList(builderSetInfos));
+        builderSetInfoList = () -> new ArrayList<>(Arrays.asList(builderSetInfos));
     }
 
     @Override
@@ -1164,9 +1161,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         // and second, get the rest.
-        for (int i = 0; i < extensions.length; i++) {
-            if (!extensions[i].getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                createDatatypeDefinition(datatypesMap, extensions[i]);
+        for (IExtension extension : extensions) {
+            if (!extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
+                createDatatypeDefinition(datatypesMap, extension);
             }
         }
         return datatypesMap;
@@ -1227,16 +1224,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
                 .size()];
         int i = 0;
-        for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
-                .hasNext();) {
-            conventions[i++] = it.next();
+        for (IChangesOverTimeNamingConvention iChangesOverTimeNamingConvention : changesOverTimeNamingConventionMap
+                .values()) {
+            conventions[i++] = iChangesOverTimeNamingConvention;
         }
         return conventions;
     }
 
     private void initChangesOverTimeNamingConventionIfNecessary() {
         if (changesOverTimeNamingConventionMap == null) {
-            changesOverTimeNamingConventionMap = new HashMap<String, IChangesOverTimeNamingConvention>();
+            changesOverTimeNamingConventionMap = new HashMap<>();
             IChangesOverTimeNamingConvention fips = new ChangesOverTimeNamingConvention(
                     IChangesOverTimeNamingConvention.FAKTOR_IPS);
             changesOverTimeNamingConventionMap.put(fips.getId(), fips);
@@ -1604,7 +1601,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
         @Override
         public void run() {
-            List<IModificationStatusChangeListener> copy = new CopyOnWriteArrayList<IModificationStatusChangeListener>(
+            List<IModificationStatusChangeListener> copy = new CopyOnWriteArrayList<>(
                     modificationStatusChangeListeners);
             for (IModificationStatusChangeListener listener : copy) {
                 try {
@@ -1630,7 +1627,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
 
-        private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<IIpsSrcFile, IResourceDelta>(5);
+        private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
         private Set<String> fileExtensionsOfInterest;
 
         public IpsSrcFileChangeVisitor() {

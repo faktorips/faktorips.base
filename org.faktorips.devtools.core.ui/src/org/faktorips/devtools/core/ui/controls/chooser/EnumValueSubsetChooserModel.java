@@ -71,7 +71,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     private List<ListChooserValue> convertToListChooserValues(List<String> allValueIds) {
-        List<ListChooserValue> values = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> values = new ArrayList<>();
         for (String string : allValueIds) {
             values.add(new ListChooserValue(string));
         }
@@ -113,7 +113,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     protected List<String> toStringList(List<ListChooserValue> values) {
-        List<String> stringValues = new ArrayList<String>();
+        List<String> stringValues = new ArrayList<>();
         for (ListChooserValue listChooserValue : values) {
             stringValues.add(listChooserValue.getValue());
         }
@@ -142,7 +142,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     protected void moveInternal(List<ListChooserValue> selectedValues, boolean up) {
-        List<Integer> indices = new ArrayList<Integer>();
+        List<Integer> indices = new ArrayList<>();
         for (ListChooserValue value : selectedValues) {
             List<Integer> positions = resultingEnumValueSet.getPositions(value.getValue());
             indices.addAll(positions);
@@ -152,7 +152,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     protected void moveToPositionInternal(List<ListChooserValue> selectedValues, int targetIndex, boolean insertBelow) {
-        List<Integer> indices = new ArrayList<Integer>();
+        List<Integer> indices = new ArrayList<>();
         for (ListChooserValue value : selectedValues) {
             List<Integer> positions = resultingEnumValueSet.getPositions(value.getValue());
             indices.addAll(positions);
@@ -161,7 +161,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     }
 
     private List<ListChooserValue> convertToValueList(List<String> stringList) {
-        List<ListChooserValue> result = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> result = new ArrayList<>();
         for (String stringValue : stringList) {
             result.add(new ListChooserValue(stringValue));
         }

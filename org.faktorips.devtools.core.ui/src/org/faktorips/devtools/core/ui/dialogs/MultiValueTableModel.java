@@ -57,7 +57,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      */
     @Override
     public List<SingleValueViewItem> getElements() {
-        List<SingleValueViewItem> list = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        List<SingleValueViewItem> list = new ArrayList<>();
         int index = 0;
         for (ISingleValueHolder holder : getMultiValueHolder(attributeValue).getValue()) {
             list.add(new SingleValueViewItem(holder, index++));

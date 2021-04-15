@@ -147,8 +147,8 @@ public class FunctionSignatureImpl implements FunctionSignature {
             return false;
         }
         if (hasVarArgs()) {
-            for (int i = 0; i < otherArgTypes.length; i++) {
-                if (!matrix.canConvert(otherArgTypes[i], argTypes[0])) {
+            for (Datatype otherArgType : otherArgTypes) {
+                if (!matrix.canConvert(otherArgType, argTypes[0])) {
                     return false;
                 }
             }

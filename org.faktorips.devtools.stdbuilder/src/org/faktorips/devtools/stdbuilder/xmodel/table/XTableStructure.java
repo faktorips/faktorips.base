@@ -36,7 +36,7 @@ public abstract class XTableStructure extends XClass {
     public List<XColumn> getValidColumns() {
         try {
             IColumn[] columns = ((ITableStructure)getIpsObjectPartContainer()).getColumns();
-            List<XColumn> result = new ArrayList<XColumn>();
+            List<XColumn> result = new ArrayList<>();
             for (int i = 0; i < columns.length; i++) {
                 if (columns[i].isValid(getIpsProject())) {
                     XColumn xColumn = getModelNode(columns[i], XColumn.class);
@@ -65,7 +65,7 @@ public abstract class XTableStructure extends XClass {
 
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
-        return new LinkedHashSet<String>();
+        return new LinkedHashSet<>();
     }
 
     @Override
@@ -73,7 +73,7 @@ public abstract class XTableStructure extends XClass {
 
     @Override
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
-        return new LinkedHashSet<String>();
+        return new LinkedHashSet<>();
     }
 
     public String getFieldNameForNullRow() {

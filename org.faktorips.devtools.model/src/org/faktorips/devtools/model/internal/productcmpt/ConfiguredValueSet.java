@@ -36,10 +36,10 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -127,7 +127,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             throw new RuntimeException();
         }
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
-        List<ObjectProperty> invalidObjectProperties = new ArrayList<ObjectProperty>();
+        List<ObjectProperty> invalidObjectProperties = new ArrayList<>();
         invalidObjectProperties.add(new ObjectProperty(this, PROPERTY_VALUE_SET));
         if (valueSetToValidate.isRange()) {
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_LOWERBOUND));
@@ -184,7 +184,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
-        List<ValueSetType> types = new ArrayList<ValueSetType>();
+        List<ValueSetType> types = new ArrayList<>();
         if (attribute == null) {
             types.add(valueSet.getValueSetType());
         } else if (attribute.getValueSet().isUnrestricted()) {

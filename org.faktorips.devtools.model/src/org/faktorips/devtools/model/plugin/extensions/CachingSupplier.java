@@ -34,7 +34,7 @@ public abstract class CachingSupplier<T> implements Supplier<T> {
      * Creates a new {@link CachingSupplier} wrapping the given {@link Supplier}.
      */
     public static <T> CachingSupplier<T> caching(Supplier<T> originalSupplier) {
-        return new CachingSupplier<T>() {
+        return new CachingSupplier<>() {
 
             @Override
             protected T initializeValue() {

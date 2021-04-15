@@ -74,7 +74,7 @@ public class IpsElementInDocumentedSourceFileFilterTest {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment filteredPackageFragment = mock(IIpsPackageFragment.class);
 
-        List<IIpsPackageFragment> linkedPackageFragments = new ArrayList<IIpsPackageFragment>(1);
+        List<IIpsPackageFragment> linkedPackageFragments = new ArrayList<>(1);
         linkedPackageFragments.add(packageFragment);
 
         DocumentationContext context = mock(DocumentationContext.class);

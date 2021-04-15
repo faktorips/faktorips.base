@@ -76,7 +76,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     private boolean isDefaultPackageMovedToSameProject() {
         return getOriginalIpsPackageFragment().isDefaultPackage()
                 && getTargetIpsPackageFragment().getIpsProject()
-                .equals(getOriginalIpsPackageFragment().getIpsProject());
+                        .equals(getOriginalIpsPackageFragment().getIpsProject());
     }
 
     @Override

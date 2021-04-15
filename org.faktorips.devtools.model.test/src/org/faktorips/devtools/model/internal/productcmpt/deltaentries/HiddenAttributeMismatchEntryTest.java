@@ -134,7 +134,7 @@ public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
         IValueHolder<?> valueHolder = AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue,
                 ValueFactory.createStringValue("default"));
         @SuppressWarnings("unchecked")
-        DelegatingValueHolder<String> delegatingValueHolder = new DelegatingValueHolder<String>(attributeValue,
+        DelegatingValueHolder<String> delegatingValueHolder = new DelegatingValueHolder<>(attributeValue,
                 (AbstractValueHolder<String>)valueHolder);
         doReturn(delegatingValueHolder).when(attributeValue).getValueHolder();
         when(attribute.getDefaultValue()).thenReturn("default");

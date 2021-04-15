@@ -289,7 +289,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
 
         // test the identity of the root elements
         // project1
-        List<IType> elementList = new ArrayList<IType>();
+        List<IType> elementList = new ArrayList<>();
         elementList.add(((ComponentNode)elements[0]).getValue());
         assertTrue(elementList.contains(prodCmptType));
     }
@@ -312,7 +312,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
         assertEquals(1, elements.length);
 
         // test the identity of the root elements
-        List<IType> elementList = new ArrayList<IType>();
+        List<IType> elementList = new ArrayList<>();
         elementList.add(((ComponentNode)elements[0]).getValue());
         assertTrue(elementList.contains(cmptType));
     }

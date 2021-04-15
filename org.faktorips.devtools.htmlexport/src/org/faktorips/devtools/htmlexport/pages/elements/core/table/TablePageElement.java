@@ -32,7 +32,7 @@ public class TablePageElement extends AbstractCompositePageElement {
     /**
      * a {@link Set} of {@link ITablePageElementLayout}s
      */
-    private Set<ITablePageElementLayout> tableLayouts = new HashSet<ITablePageElementLayout>();
+    private Set<ITablePageElementLayout> tableLayouts = new HashSet<>();
 
     /**
      * creates an empty {@link TablePageElement}

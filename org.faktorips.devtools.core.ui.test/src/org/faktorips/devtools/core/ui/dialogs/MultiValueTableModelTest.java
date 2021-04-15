@@ -118,7 +118,7 @@ public class MultiValueTableModelTest extends AbstractIpsPluginTest {
         SingleValueHolder holder = new SingleValueHolder(attributeValue, "value");
         SingleValueViewItem item1 = new SingleValueViewItem(holder, 0);
         SingleValueViewItem item2 = new SingleValueViewItem(holder, 1);
-        List<SingleValueViewItem> items = new ArrayList<MultiValueTableModel.SingleValueViewItem>();
+        List<SingleValueViewItem> items = new ArrayList<>();
         items.add(item1);
         items.add(item2);
 

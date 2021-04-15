@@ -59,7 +59,7 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
      * 
      */
     protected List<String> getAttributeData(IAttribute attribute) {
-        List<String> attributeData = new ArrayList<String>();
+        List<String> attributeData = new ArrayList<>();
 
         attributeData.add(attribute.getName());
         attributeData.add(getContext().getLabel(attribute));
@@ -76,7 +76,7 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
 
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineName));
         headline.add(getContext().getMessage(HtmlExportMessages.AttributesTablePageElement_headlineLabel));

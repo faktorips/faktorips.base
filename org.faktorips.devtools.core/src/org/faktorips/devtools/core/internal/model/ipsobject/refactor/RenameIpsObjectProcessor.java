@@ -47,7 +47,7 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor implement
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         result.addAll(renameMoveHelper.getAffectedIpsSrcFiles());
         return result;
     }

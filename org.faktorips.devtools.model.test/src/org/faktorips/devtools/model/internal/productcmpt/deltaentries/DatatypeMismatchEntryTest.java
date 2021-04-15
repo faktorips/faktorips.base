@@ -52,7 +52,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     private IConfiguredDefault configuredDefault;
     private IIpsProject ipsProject;
     private ProductCmpt productCmpt;
-    private final List<String> result = new LinkedList<String>();
+    private final List<String> result = new LinkedList<>();
     private List<DatatypeMismatchEntry> entries;
     private IConfiguredValueSet configuredValueSet;
     private Consumer<List<String>> valueConsumer = result::addAll;

@@ -95,7 +95,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
     private void createCategoryCombo(Composite workArea) {
         Combo categoryCombo = getToolkit().createCombo(workArea);
-        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<>(
                 categoryCombo, IProductCmptCategory.class);
 
         CategoryPmo pmo = new CategoryPmo(getProductCmptTypeMethod());

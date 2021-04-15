@@ -23,7 +23,8 @@ public class MultiValueSubsetDialog extends IpsPartEditDialog2 {
 
     private final MultiValueSubsetChooserModel model;
 
-    public MultiValueSubsetDialog(Shell parentShell, IAttributeValue attributeValue, MultiValueSubsetChooserModel model) {
+    public MultiValueSubsetDialog(Shell parentShell, IAttributeValue attributeValue,
+            MultiValueSubsetChooserModel model) {
         super(attributeValue, parentShell, Messages.MultiValueDialog_TitleText);
         this.model = model;
         setShellStyle(getShellStyle() | SWT.RESIZE);

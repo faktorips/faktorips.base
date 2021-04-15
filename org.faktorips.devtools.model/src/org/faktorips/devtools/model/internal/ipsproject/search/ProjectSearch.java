@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class ProjectSearch extends AbstractSearch {
 
-    private List<IIpsProject> projects = new ArrayList<IIpsProject>();
+    private List<IIpsProject> projects = new ArrayList<>();
 
     @Override
     public void processEntry(IIpsObjectPathEntry entry) {

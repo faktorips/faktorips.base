@@ -49,7 +49,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     private Map<String, EnumDatatype> createEnumMap() {
         EnumDatatype[] enumtypes = getExpression().getEnumDatatypesAllowedInFormula();
-        Map<String, EnumDatatype> newEnumDatatypes = new HashMap<String, EnumDatatype>(enumtypes.length);
+        Map<String, EnumDatatype> newEnumDatatypes = new HashMap<>(enumtypes.length);
         for (EnumDatatype enumtype : enumtypes) {
             newEnumDatatypes.put(enumtype.getName(), enumtype);
         }

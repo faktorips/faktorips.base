@@ -28,8 +28,8 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractModelObject implements IModelObject {
 
     /**
-     * Removes the given child object from this object. If the given object is not a child of this model
-     * object or the given object is <code>null</code>, the method does nothing.
+     * Removes the given child object from this object. If the given object is not a child of this
+     * model object or the given object is <code>null</code>, the method does nothing.
      * 
      * @param child The child you want to remove
      */
@@ -51,14 +51,14 @@ public abstract class AbstractModelObject implements IModelObject {
      * Validates the policy component and adds any messages generated to the given list. Calls
      * validateSelf() and validateDependences().
      * 
-     * @param context provides additional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific message
-     *            texts, user information
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
+     *            message texts, user information
      * 
      * @throws NullPointerException if the list is <code>null</code> and a message is generated.
      * 
-     *             This method is model internal, it is not part of the published interface and should
-     *             not be used by clients
+     *             This method is model internal, it is not part of the published interface and
+     *             should not be used by clients
      */
     public void validate(MessageList list, IValidationContext context) {
         if (!validateSelf(list, context)) {
@@ -68,16 +68,16 @@ public abstract class AbstractModelObject implements IModelObject {
     }
 
     /**
-     * Validates the policy component's dependant components and adds any message generated to the given
-     * list.
+     * Validates the policy component's dependant components and adds any message generated to the
+     * given list.
      * <p>
      * The default implementation does nothing. Should be overridden in subclasses.
      * 
      * @param list The message list
      * 
-     * @param context provides additional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific message
-     *            texts, user information
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
+     *            message texts, user information
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
      */
     protected void validateDependants(MessageList list, IValidationContext context) {
@@ -91,9 +91,9 @@ public abstract class AbstractModelObject implements IModelObject {
      * The default implementation does nothing. Should be overridden in subclasses.
      * 
      * @param list the message list
-     * @param context provides additional external information that might be necessary to execute the
-     *            validation. E.g. the business context, the locale to provide locale specific message
-     *            texts, user information
+     * @param context provides additional external information that might be necessary to execute
+     *            the validation. E.g. the business context, the locale to provide locale specific
+     *            message texts, user information
      * @return <code>true</code> if this model object should continue validating, <code>false</code>
      *         else.
      * @throws NullPointerException if list is <code>null</code> and a message is generated.
@@ -109,8 +109,8 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
-     * @param store The store where unresolved references are stored in (so that they can be resolved
-     *            after all objects have been initialized from xml).
+     * @param store The store where unresolved references are stored in (so that they can be
+     *            resolved after all objects have been initialized from xml).
      */
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -126,10 +126,10 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
-     * @param store The store where unresolved references are stored in (so that they can be resolved
-     *            after all objects have been initialized from xml).
-     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of the
-     *            current element.
+     * @param store The store where unresolved references are stored in (so that they can be
+     *            resolved after all objects have been initialized from xml).
+     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of
+     *            the current element.
      */
     public void initFromXml(Element objectEl,
             boolean initWithProductDefaultsBeforeReadingXmlData,
@@ -146,10 +146,10 @@ public abstract class AbstractModelObject implements IModelObject {
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
      * @param productRepository The repository that contains the product components.
-     * @param store The store where unresolved references are stored in (so that they can be resolved
-     *            after all objects have been initialized from xml).
-     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of the
-     *            current element.
+     * @param store The store where unresolved references are stored in (so that they can be
+     *            resolved after all objects have been initialized from xml).
+     * @param xmlCallback An XML callback class which could handle enhanced xml initialization of
+     *            the current element.
      * @param currPath The path inside the XML tree structure. Starting from the root element.
      */
     protected void initFromXml(Element objectEl,
@@ -206,7 +206,7 @@ public abstract class AbstractModelObject implements IModelObject {
     }
 
     private HashMap<String, String> createPropertiesMap(NodeList nl) {
-        HashMap<String, String> propMap = new HashMap<String, String>();
+        HashMap<String, String> propMap = new HashMap<>();
         for (int i = 0, max = nl.getLength(); i < max; i++) {
             if (!(nl.item(i) instanceof Element)) {
                 continue;

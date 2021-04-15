@@ -115,7 +115,8 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setExtensible(false);
         validationMessageList = genderEnumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
-        assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE));
+        assertNotNull(
+                validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE));
         genderEnumType.setExtensible(true);
 
         // Test EnumType is abstract.
@@ -170,8 +171,9 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         List<IDependency> depencendiesList = Arrays.asList(dependencies);
         IDependency enumTypeDependency = IpsObjectDependency.createInstanceOfDependency(genderEnumContent
-                .getQualifiedNameType(), new QualifiedNameType(genderEnumType.getQualifiedName(),
-                IpsObjectType.ENUM_TYPE));
+                .getQualifiedNameType(),
+                new QualifiedNameType(genderEnumType.getQualifiedName(),
+                        IpsObjectType.ENUM_TYPE));
         assertTrue(depencendiesList.contains(enumTypeDependency));
 
         List<IDependencyDetail> details = genderEnumContent.getDependencyDetails(dependencies[0]);

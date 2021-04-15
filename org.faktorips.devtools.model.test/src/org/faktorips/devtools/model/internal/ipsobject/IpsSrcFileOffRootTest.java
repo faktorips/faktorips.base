@@ -75,7 +75,7 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
         byte[] buf2 = new byte[64 * 1024];
         try {
             DataInputStream d2 = new DataInputStream(i2);
-            try {
+            try (d2) {
                 int len;
                 while ((len = i1.read(buf1)) > 0) {
                     d2.readFully(buf2, 0, len);
@@ -86,8 +86,6 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
                     }
                 }
                 return d2.read() < 0; // is the end of the second file also.
-            } finally {
-                d2.close();
             }
         } catch (EOFException ioe) {
             return false;

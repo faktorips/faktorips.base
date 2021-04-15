@@ -37,7 +37,7 @@ public class GroovyFormulaEvaluatorTest {
 
     @Before
     public void setUp() {
-        expressions = new LinkedHashMap<String, String>();
+        expressions = new LinkedHashMap<>();
         String formulaMethod = "public int add() {" + "return this.var1 + this.var2" + "}";
         expressions.put("add", formulaMethod);
         formulaMethod = "public String getString(String param) {" + "return param" + "}";

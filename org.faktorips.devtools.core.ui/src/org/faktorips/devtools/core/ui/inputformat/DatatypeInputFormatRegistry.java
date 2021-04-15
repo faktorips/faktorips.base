@@ -29,7 +29,7 @@ import org.osgi.framework.Bundle;
 
 public class DatatypeInputFormatRegistry {
 
-    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory>(
+    private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> inputFormatMap = new ConcurrentHashMap<>(
             16, 0.75f, 1);
 
     /**

@@ -25,12 +25,12 @@ public class GenericTypeStringWrapper {
 
     public GenericTypeStringWrapper(String genericClass) {
         this.genericClass = genericClass;
-        this.genericParams = new ArrayList<GenericTypeStringWrapper>();
+        this.genericParams = new ArrayList<>();
     }
 
     public GenericTypeStringWrapper(String genericClass, String genericParam) {
         this.genericClass = genericClass;
-        this.genericParams = new ArrayList<GenericTypeStringWrapper>();
+        this.genericParams = new ArrayList<>();
         this.genericParams.add(new GenericTypeStringWrapper(genericParam));
     }
 

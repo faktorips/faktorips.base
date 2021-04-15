@@ -121,18 +121,18 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
             Collection<IType> rootCandidates,
             List<PathElement> callHierarchy) {
 
-        List<PathElement> callHierarchyTemp = new LinkedList<PathElement>(callHierarchy);
+        List<PathElement> callHierarchyTemp = new LinkedList<>(callHierarchy);
 
         PathElement pathElement = new PathElement(element, association);
         // If the element is already contained in the callHierarchy we have detected a cycle
         if (callHierarchy.contains(pathElement)) {
-            return new HashSet<IType>();
+            return new HashSet<>();
         } else {
             callHierarchyTemp.add(0, pathElement);
         }
 
         IType supertype = getExistingSupertypeFromList(element, componentList);
-        Set<IType> rootElements = new HashSet<IType>();
+        Set<IType> rootElements = new HashSet<>();
         List<IType> associatingTypes = getAssociatingTypes(element, componentList, ASSOCIATION_TYPES);
         // Breaking condition
         if (associatingTypes.isEmpty() && supertype == null
@@ -176,7 +176,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     protected List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {
         IIpsProject project = parent.getSourceIpsProject();
         List<IType> subtypes = parent.getValue().findSubtypes(false, false, project);
-        List<SubtypeComponentNode> subtypeNodeChildren = new ArrayList<SubtypeComponentNode>();
+        List<SubtypeComponentNode> subtypeNodeChildren = new ArrayList<>();
 
         List<IType> projectITypes = getProjectITypes(project, parent.getValue().getIpsObjectType());
         List<IType> projectSpecificTypes = getProjectSpecificTypes(projectITypes, project);
@@ -199,7 +199,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     protected List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
         List<IAssociation> associations = parent.getValue().getAssociations(ASSOCIATION_TYPES);
         if (!associations.isEmpty()) {
-            List<AssociationComponentNode> compositeNodeChildren = new ArrayList<AssociationComponentNode>();
+            List<AssociationComponentNode> compositeNodeChildren = new ArrayList<>();
 
             for (IAssociation association : associations) {
                 compositeNodeChildren.add(AssociationComponentNode.newAssociationComponentNode(association, parent,
@@ -211,7 +211,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
     }
 
     private List<IType> getProjectSpecificTypes(List<IType> projectITypes, IIpsProject project) {
-        List<IType> types = new ArrayList<IType>();
+        List<IType> types = new ArrayList<>();
         for (IType projectType : projectITypes) {
             if (projectType.getIpsProject().equals(project)) {
                 types.add(projectType);

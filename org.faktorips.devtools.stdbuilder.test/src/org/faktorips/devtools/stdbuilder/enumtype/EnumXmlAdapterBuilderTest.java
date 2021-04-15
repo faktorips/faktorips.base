@@ -11,8 +11,8 @@
 package org.faktorips.devtools.stdbuilder.enumtype;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;

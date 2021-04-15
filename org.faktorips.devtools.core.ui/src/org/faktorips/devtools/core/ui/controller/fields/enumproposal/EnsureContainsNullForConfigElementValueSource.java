@@ -64,7 +64,7 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
     }
 
     private List<String> valuesAndNull(List<String> values) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         result.addAll(values);
         result.add(null);
         return result;

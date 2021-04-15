@@ -34,12 +34,12 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -89,7 +89,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private final IpsSection parentSection;
 
-    private final List<EditField<?>> editFields = new ArrayList<EditField<?>>();
+    private final List<EditField<?>> editFields = new ArrayList<>();
 
     private final ExtensionPropertyControlFactory extPropControlFactory;
 
@@ -310,7 +310,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     protected void createTemplateStatusButton(final EditField<?> editField) {
         if (showTemplateButton()) {
-            final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
+            final TemplateValuePmo<V> pmo = new TemplateValuePmo<>(getPropertyValue(), getToolTipFormatter());
             final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
             ToolItem toolItem = TemplateValueUiUtil.setUpStatusToolItem(toolBar, bindingContext, pmo);
 
@@ -394,7 +394,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
             if (templateValue != null) {
                 String text = getOpenTemplateText(templateValue);
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IPropertyValue>(templateValue, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<>(templateValue, text);
                 manager.add(openTemplateAction);
             }
 

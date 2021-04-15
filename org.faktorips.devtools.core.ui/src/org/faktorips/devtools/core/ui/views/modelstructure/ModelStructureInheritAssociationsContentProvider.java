@@ -116,17 +116,17 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             Collection<IType> rootCandidates,
             List<PathElement> callHierarchy) {
 
-        List<PathElement> callHierarchyTemp = new LinkedList<PathElement>(callHierarchy);
+        List<PathElement> callHierarchyTemp = new LinkedList<>(callHierarchy);
 
         PathElement pathElement = new PathElement(element, association);
         // If the element is already contained in the callHierarchy we have detected a cycle
         if (callHierarchy.contains(pathElement)) {
-            return new HashSet<IType>();
+            return new HashSet<>();
         } else {
             callHierarchyTemp.add(0, pathElement);
         }
 
-        Set<IType> rootElements = new HashSet<IType>();
+        Set<IType> rootElements = new HashSet<>();
         List<IType> associatingTypes = getAssociatingTypes(element, componentList, ASSOCIATION_TYPES);
         // Breaking condition
         if (associatingTypes.isEmpty()
@@ -166,7 +166,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
     private List<IType> computeDerivedRootElements(List<IType> projectSpecificITypes,
             List<IType> allComponentITypes,
             IIpsProject project) {
-        List<IType> rootCandidates = new ArrayList<IType>();
+        List<IType> rootCandidates = new ArrayList<>();
 
         for (IType projectType : projectSpecificITypes) {
             IType supertype = projectType.findSupertype(project);
@@ -179,7 +179,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         }
 
         // remove superfluous root elements
-        List<IType> notRootElements = new ArrayList<IType>();
+        List<IType> notRootElements = new ArrayList<>();
         for (IType rootCandidate : rootCandidates) {
             // remove element if it is associated by another project specific element
             if (isAssociated(rootCandidate, projectSpecificITypes, allComponentITypes, project)) {
@@ -191,7 +191,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
     }
 
     private List<IType> findProjectSpecificSubtypes(IType parent, IIpsProject project) {
-        List<IType> rootElements = new ArrayList<IType>();
+        List<IType> rootElements = new ArrayList<>();
         List<IType> subtypes = parent.findSubtypes(false, false, project);
         boolean foundNothing = true;
         for (IType subtype : subtypes) {
@@ -202,9 +202,9 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         }
 
         // perform a breadth-first-search on the subtype-hierarchy
-        List<IType> sameLevelSubtypes = new ArrayList<IType>(subtypes);
+        List<IType> sameLevelSubtypes = new ArrayList<>(subtypes);
         while (foundNothing) {
-            List<IType> newSameLevelSubtypes = new ArrayList<IType>();
+            List<IType> newSameLevelSubtypes = new ArrayList<>();
             for (IType subtype : sameLevelSubtypes) {
                 newSameLevelSubtypes.addAll(subtype.findSubtypes(false, false, project));
             }
@@ -233,7 +233,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
     @Override
     protected List<AssociationComponentNode> getComponentNodeAssociationChildren(ComponentNode parent) {
 
-        List<AssociationComponentNode> associationNodes = new ArrayList<AssociationComponentNode>();
+        List<AssociationComponentNode> associationNodes = new ArrayList<>();
 
         IType parentType = parent.getValue();
         IIpsProject project = parent.getSourceIpsProject();
@@ -249,14 +249,14 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             if (parentType.findSupertype(project) != null) {
                 // compute the derived associations -> go up in the inheritance hierarchy
                 IType supertype = parentType.findSupertype(project);
-                List<IAssociation> supertypeAssociations = new ArrayList<IAssociation>();
+                List<IAssociation> supertypeAssociations = new ArrayList<>();
                 // collect all relevant supertype-associations
                 while (supertype != null) {
                     supertypeAssociations.addAll(0, supertype.getAssociations(ASSOCIATION_TYPES));
                     supertype = supertype.findSupertype(project);
                 }
 
-                ArrayList<AssociationComponentNode> superAssociationNodes = new ArrayList<AssociationComponentNode>();
+                ArrayList<AssociationComponentNode> superAssociationNodes = new ArrayList<>();
                 for (IAssociation supertypeAssociation : supertypeAssociations) {
                     if (!supertypeAssociation.isDerivedUnion()) {
                         IType target = supertypeAssociation.findTarget(project);
@@ -308,7 +308,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
     private List<AssociationComponentNode> getDirectAssociationComponentNodes(ComponentNode parent,
             IIpsProject project) {
         IType parentValue = parent.getValue();
-        List<IAssociation> directAssociations = new ArrayList<IAssociation>();
+        List<IAssociation> directAssociations = new ArrayList<>();
         for (IAssociation directAssociation : parentValue.getAssociations(ASSOCIATION_TYPES)) {
             try {
                 if (directAssociation.findTarget(project).getIpsProject().equals(project)) {
@@ -319,7 +319,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             }
         }
 
-        List<AssociationComponentNode> componentNodes = new ArrayList<AssociationComponentNode>();
+        List<AssociationComponentNode> componentNodes = new ArrayList<>();
         for (IAssociation association : directAssociations) {
             componentNodes.add(AssociationComponentNode.newAssociationComponentNode(association, parent, project));
         }

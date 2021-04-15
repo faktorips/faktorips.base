@@ -42,7 +42,7 @@ public class AssociationsLabelProvider extends DefaultLabelProvider {
             maxC = "" + association.getMaxCardinality(); //$NON-NLS-1$
         }
         String role = association.is1ToMany() ? association.getTargetRolePlural() : association.getTargetRoleSingular();
-        return prefix + role + " : " + targetName + //$NON-NLS-1$ 
+        return prefix + role + " : " + targetName + //$NON-NLS-1$
                 " [" + association.getMinCardinality() + ".." + maxC + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

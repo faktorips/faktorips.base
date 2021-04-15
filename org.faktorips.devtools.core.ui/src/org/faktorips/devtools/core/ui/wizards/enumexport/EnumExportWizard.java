@@ -91,7 +91,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             addPage(exportPage);
 
             // Add page for each table format having custom properties.
-            customPages = new HashMap<ITableFormat, TableFormatPropertiesPage>();
+            customPages = new HashMap<>();
             ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
             for (ITableFormat format : externalTableFormats) {
                 if (IpsUIPlugin.getDefault().hasTableFormatCustomProperties(format)) {

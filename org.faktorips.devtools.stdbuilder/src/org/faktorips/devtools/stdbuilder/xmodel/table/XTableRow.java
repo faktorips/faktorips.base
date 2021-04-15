@@ -38,7 +38,7 @@ public class XTableRow extends XTableStructure {
 
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
-        return new LinkedHashSet<String>();
+        return new LinkedHashSet<>();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class XTableRow extends XTableStructure {
      * @return joined string list of the null expressions of the columns, separated with ","
      */
     public String getNullExpressions() {
-        List<String> nulls = new ArrayList<String>();
+        List<String> nulls = new ArrayList<>();
         for (XColumn column : getValidColumns()) {
             if (column.getNullExpression() != null) {
                 nulls.add(column.getNullExpression());
@@ -65,7 +65,7 @@ public class XTableRow extends XTableStructure {
     }
 
     public List<MethodParameter> getConstructorParameters() {
-        List<MethodParameter> params = new ArrayList<MethodParameter>();
+        List<MethodParameter> params = new ArrayList<>();
         for (XColumn column : getValidColumns()) {
             params.add(new MethodParameter(column.getDatatypeName(), column.getAttributeName()));
         }
@@ -76,7 +76,7 @@ public class XTableRow extends XTableStructure {
      * @return attribute names separated with "|"
      */
     public String getAttributeNames() {
-        List<String> atts = new ArrayList<String>();
+        List<String> atts = new ArrayList<>();
         for (XColumn column : getValidColumns()) {
             atts.add(column.getAttributeName());
         }

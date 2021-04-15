@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.ListElementMover;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,7 +51,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     private boolean mandatoryTableContent = false;
 
     /** Contains the related table structures identified by the full qualified name */
-    private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
+    private List<TableStructureReference> tableStructures = new ArrayList<>();
 
     /** Flag indicating if this {@link TableStructureUsage} is static */
     private boolean changingOverTime = getProductCmptType().isChangingOverTime();
@@ -236,7 +236,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     @Override
     public int[] moveTableStructure(int[] indexes, boolean up) {
-        ListElementMover<TableStructureReference> mover = new ListElementMover<TableStructureReference>(
+        ListElementMover<TableStructureReference> mover = new ListElementMover<>(
                 tableStructures);
         return mover.move(indexes, up);
     }

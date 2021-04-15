@@ -80,7 +80,7 @@ public class ProductSearchQueryConditionMatcherTest {
     @Before
     public void setUp() {
         searchOperators = Arrays.asList(searchOperatorHit);
-        matchingFiles = new HashSet<IIpsSrcFile>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
+        matchingFiles = new HashSet<>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
 
         when(srcFileHit.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
         when(srcFileMiss.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);

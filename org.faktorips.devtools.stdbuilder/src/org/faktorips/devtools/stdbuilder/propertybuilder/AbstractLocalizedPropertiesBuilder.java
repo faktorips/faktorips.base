@@ -35,7 +35,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
 
     public static final String MESSAGES_EXTENSION = "properties";
 
-    private final Map<IFile, AbstractPropertiesGenerator> propertiesGeneratorMap = new HashMap<IFile, AbstractPropertiesGenerator>();
+    private final Map<IFile, AbstractPropertiesGenerator> propertiesGeneratorMap = new HashMap<>();
 
     public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);

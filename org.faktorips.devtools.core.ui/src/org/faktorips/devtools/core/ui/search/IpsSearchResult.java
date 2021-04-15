@@ -45,11 +45,11 @@ public class IpsSearchResult extends AbstractTextSearchResult {
 
         Object[] elements = super.getElements();
 
-        Set<IIpsProject> projects = new HashSet<IIpsProject>();
+        Set<IIpsProject> projects = new HashSet<>();
 
-        for (int i = 0; i < elements.length; i++) {
+        for (Object element : elements) {
 
-            IIpsElement part = (IIpsElement)elements[i];
+            IIpsElement part = (IIpsElement)element;
 
             projects.add(part.getIpsProject());
         }

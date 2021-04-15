@@ -73,10 +73,10 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
     protected List<IProductCmpt> getProductCmpts(String[] filenames) {
         // Under some platforms (linux), the data is not available during dragOver.
         if (filenames == null) {
-            return new ArrayList<IProductCmpt>();
+            return new ArrayList<>();
         }
 
-        List<IProductCmpt> result = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> result = new ArrayList<>();
 
         for (String filename : filenames) {
             IFile file = NestedProjectFileUtil.getFile(filename);

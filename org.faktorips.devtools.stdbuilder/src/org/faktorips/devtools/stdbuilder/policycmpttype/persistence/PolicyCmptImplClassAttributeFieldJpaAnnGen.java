@@ -62,7 +62,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             fragment.addImport(IMPORT_COLUMN);
             fragment.append(ANNOTATION_COLUMN);
 
-            List<String> attributesToAppend = new ArrayList<String>();
+            List<String> attributesToAppend = new ArrayList<>();
             attributesToAppend.add("name=\"" + tableColumnName + "\"");
 
             if (StringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {

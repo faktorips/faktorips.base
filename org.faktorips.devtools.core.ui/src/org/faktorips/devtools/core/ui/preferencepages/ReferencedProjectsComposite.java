@@ -128,12 +128,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
+            Display.getDefault().asyncExec(tableViewer::refresh);
         }
     }
 
@@ -193,9 +188,9 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
      * current project.
      */
     private IIpsProject[] getSelectableIpsProjects() {
-        ArrayList<IIpsProject> resultList = new ArrayList<IIpsProject>();
+        ArrayList<IIpsProject> resultList = new ArrayList<>();
         IIpsProjectRefEntry[] projectRefEntries = ipsObjectPath.getProjectRefEntries();
-        ArrayList<IIpsProject> references = new ArrayList<IIpsProject>();
+        ArrayList<IIpsProject> references = new ArrayList<>();
         for (IIpsProjectRefEntry projectRefEntrie : projectRefEntries) {
             references.add(projectRefEntrie.getReferencedIpsProject());
         }
@@ -221,12 +216,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
+            Display.getDefault().asyncExec(() -> tableViewer.refresh());
         }
     }
 

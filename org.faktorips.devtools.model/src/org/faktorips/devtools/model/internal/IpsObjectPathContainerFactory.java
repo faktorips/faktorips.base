@@ -31,7 +31,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsObjectPathContainerFactory {
 
-    private Map<String, IIpsObjectPathContainerType> typesById = new HashMap<String, IIpsObjectPathContainerType>();
+    private Map<String, IIpsObjectPathContainerType> typesById = new HashMap<>();
 
     /**
      * Creates a new factory with all container types defined as extensions for the extension point

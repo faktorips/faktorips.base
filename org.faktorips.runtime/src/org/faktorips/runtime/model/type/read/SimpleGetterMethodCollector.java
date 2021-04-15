@@ -49,7 +49,7 @@ class SimpleGetterMethodCollector<E extends ModelElement, P extends Annotation, 
 
     @Override
     protected SimpleGetterMethodModelDescriptor<E> createDescriptor() {
-        return new SimpleGetterMethodModelDescriptor<E>(modelElementCreator);
+        return new SimpleGetterMethodModelDescriptor<>(modelElementCreator);
     }
 
     @Override
@@ -59,7 +59,7 @@ class SimpleGetterMethodCollector<E extends ModelElement, P extends Annotation, 
     }
 
     private void checkIfAllDeclaredNamesHaveCorrespondingMethod() {
-        LinkedList<String> declaredButNoGetterFound = new LinkedList<String>();
+        LinkedList<String> declaredButNoGetterFound = new LinkedList<>();
         for (Entry<String, SimpleGetterMethodModelDescriptor<E>> entry : getDescriptors().entrySet()) {
             if (entry.getValue().getGetterMethod() == null) {
                 declaredButNoGetterFound.add(entry.getKey());

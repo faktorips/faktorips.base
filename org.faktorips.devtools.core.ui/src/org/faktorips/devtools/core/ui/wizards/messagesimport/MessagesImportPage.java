@@ -143,17 +143,18 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 .setFilterExtensions(
                         new String[] {
                                 ImportFormat.CSV.getFilenamePattern()
-                                        + ";" + ImportFormat.PROPERTIES.getFilenamePattern(), ImportFormat.CSV.getFilenamePattern(), ImportFormat.PROPERTIES.getFilenamePattern() }); //$NON-NLS-1$
+                                        + ";" + ImportFormat.PROPERTIES.getFilenamePattern(), //$NON-NLS-1$
+                                ImportFormat.CSV.getFilenamePattern(), ImportFormat.PROPERTIES.getFilenamePattern() });
     }
 
     private void createFormatControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
 
-        LinkedHashMap<ImportFormat, String> radioButtons = new LinkedHashMap<ImportFormat, String>();
+        LinkedHashMap<ImportFormat, String> radioButtons = new LinkedHashMap<>();
         radioButtons.put(ImportFormat.PROPERTIES, Messages.MessagesImportWizard_labelFormatProperties);
         radioButtons.put(ImportFormat.CSV, Messages.MessagesImportWizard_labelFormatCSV);
         RadioButtonGroup<ImportFormat> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        formatRadioButtons = new RadioButtonGroupField<ImportFormat>(radioGroup);
+        formatRadioButtons = new RadioButtonGroupField<>(radioGroup);
 
         createFormatSettingsControl(labelEditComposite);
     }
@@ -181,23 +182,23 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         Label formatLabel = uiToolkit.createFormLabel(formatSettingsComposite,
                 Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
-        formatDelimiter = new FormattingTextField<Character>(uiToolkit.createText(formatSettingsComposite),
+        formatDelimiter = new FormattingTextField<>(uiToolkit.createText(formatSettingsComposite),
                 new DelimiterInputFormat());
         setWidthHint(formatLabel, 170);
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
-        identifierColumnIndex = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+        identifierColumnIndex = new FormattingTextField<>(uiToolkit.createText(formatSettingsComposite),
                 IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
-        textColumnIndex = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+        textColumnIndex = new FormattingTextField<>(uiToolkit.createText(formatSettingsComposite),
                 IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
     }
 
     protected void createLocaleControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelLocale);
         localeCombo = uiToolkit.createCombo(labelEditComposite);
-        localeComboField = new ComboViewerField<ISupportedLanguage>(localeCombo, ISupportedLanguage.class);
+        localeComboField = new ComboViewerField<>(localeCombo, ISupportedLanguage.class);
         localeComboField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
@@ -212,14 +213,14 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     private void createIdentificationControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelIdentification);
-        LinkedHashMap<ValidationRuleIdentification, String> radioButtons = new LinkedHashMap<ValidationRuleIdentification, String>();
+        LinkedHashMap<ValidationRuleIdentification, String> radioButtons = new LinkedHashMap<>();
         radioButtons.put(ValidationRuleIdentification.QUALIFIED_RULE_NAME,
                 Messages.MessagesImportWizard_labelIdentificationName);
         radioButtons.put(ValidationRuleIdentification.MESSAGE_CODE,
                 Messages.MessagesImportWizard_labelIdentificationCode);
         RadioButtonGroup<ValidationRuleIdentification> radioGroup = uiToolkit.createRadioButtonGroup(
                 labelEditComposite, radioButtons);
-        ruleIdentifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
+        ruleIdentifierRadioButtons = new RadioButtonGroupField<>(radioGroup);
     }
 
     private void bindContent() {

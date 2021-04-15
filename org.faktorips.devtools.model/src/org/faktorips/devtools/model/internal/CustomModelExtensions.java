@@ -51,9 +51,9 @@ public class CustomModelExtensions implements ICustomModelExtensions {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         customValidationsResolver = CustomValidationsResolver.createFromExtensions();
-        typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>(8, 0.75f, 1);
+        typeExtensionPropertiesMap = new ConcurrentHashMap<>(8, 0.75f, 1);
         initExtensionPropertiesFromConfiguration();
-        productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>(4, 0.9f, 1);
+        productCmptNamingStrategies = new ConcurrentHashMap<>(4, 0.9f, 1);
         initProductCmptNamingStrategies();
     }
 
@@ -70,7 +70,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     @Override
     public Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-        Set<IExtensionPropertyDefinition> result = new LinkedHashSet<IExtensionPropertyDefinition>();
+        Set<IExtensionPropertyDefinition> result = new LinkedHashSet<>();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, result);
         return result;
     }
@@ -80,7 +80,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
             String propertyId,
             boolean includeSupertypesAndInterfaces) {
 
-        Set<IExtensionPropertyDefinition> props = new HashSet<IExtensionPropertyDefinition>();
+        Set<IExtensionPropertyDefinition> props = new HashSet<>();
         getIpsObjectExtensionProperties(type, includeSupertypesAndInterfaces, props);
         for (Object name2 : props) {
             IExtensionPropertyDefinition prop = (IExtensionPropertyDefinition)name2;
@@ -93,7 +93,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
 
     @Override
     public Map<String, IExtensionPropertyDefinition> getExtensionPropertyDefinitions(IIpsObjectPartContainer object) {
-        HashMap<String, IExtensionPropertyDefinition> result = new HashMap<String, IExtensionPropertyDefinition>();
+        HashMap<String, IExtensionPropertyDefinition> result = new HashMap<>();
 
         for (Class<?> key : typeExtensionPropertiesMap.keySet()) {
             if (key.isAssignableFrom(object.getClass())) {
@@ -116,7 +116,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     public void addIpsObjectExtensionProperty(IExtensionPropertyDefinition property) {
         List<IExtensionPropertyDefinition> props = typeExtensionPropertiesMap.get(property.getExtendedType());
         if (props == null) {
-            props = new ArrayList<IExtensionPropertyDefinition>();
+            props = new ArrayList<>();
             typeExtensionPropertiesMap.put(property.getExtendedType(), props);
         }
         props.add(property);

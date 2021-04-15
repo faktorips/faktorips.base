@@ -48,7 +48,7 @@ public class UniqueKeysProposalProvider implements IContentProposalProvider {
     }
 
     private List<IContentProposal> getProposals(String content) {
-        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+        List<IContentProposal> proposals = new ArrayList<>();
         IIndex[] availableUniqueKeys = pmo.getAvailableUniqueKeys();
         for (IIndex uniqueKey : availableUniqueKeys) {
             if (isMatchingContent(uniqueKey, content)) {

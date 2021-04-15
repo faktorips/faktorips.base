@@ -46,7 +46,7 @@ public class XPBuilderUtil<B extends XPBuilder<B, AS, AT>, AS extends XAssociati
     }
 
     public Map<String, AS> getSuperBuilderAssociationsAsMap() {
-        HashMap<String, AS> superAssociations = new HashMap<String, AS>();
+        HashMap<String, AS> superAssociations = new HashMap<>();
 
         if (builder.hasSupertype()) {
             B supertype = builder.getSupertype();
@@ -66,11 +66,11 @@ public class XPBuilderUtil<B extends XPBuilder<B, AS, AT>, AS extends XAssociati
     }
 
     public Set<AT> getSuperAttributes() {
-        Set<AT> superAttributes = new HashSet<AT>();
+        Set<AT> superAttributes = new HashSet<>();
         if (!builder.hasSupertype()) {
             return superAttributes;
         }
-        Set<AT> overwrittenAttributes = new HashSet<AT>();
+        Set<AT> overwrittenAttributes = new HashSet<>();
         for (AT attribute : builder.getAttributes()) {
             if (attribute.isOverwrite()) {
                 @SuppressWarnings("unchecked")

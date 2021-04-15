@@ -21,8 +21,8 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.PropertyDatatype;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.Decimal;
 
 /**
@@ -53,7 +53,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         BeanDatatype bean = (BeanDatatype)array.getBasicDatatype();
         PropertyDatatype property = (PropertyDatatype)argResults[1].getDatatype();
         if (bean.getProperty(property.getName()) == null) {
-            String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { bean, property });
+            String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, bean, property);
             Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
             return new CompilationResultImpl(msg);
         }
@@ -80,7 +80,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         }
         try {
             Decimal sum = Decimal.ZERO;
-            Method method = beans[0].getClass().getMethod(getterMethod, new Class[0]);
+            Method method = beans[0].getClass().getMethod(getterMethod);
             Object[] params = new Object[0];
             for (Object bean : beans) {
                 Decimal value = (Decimal)method.invoke(bean, params);

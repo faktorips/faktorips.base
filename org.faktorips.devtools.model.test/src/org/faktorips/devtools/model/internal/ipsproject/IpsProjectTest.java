@@ -14,13 +14,13 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -916,7 +916,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindDatatypes4Parameters() {
-        List<Datatype> disallowedTypesTest = new ArrayList<Datatype>(1);
+        List<Datatype> disallowedTypesTest = new ArrayList<>(1);
         disallowedTypesTest.add(Datatype.STRING);
         Datatype[] types = ipsProject.findDatatypes(false, false, false, disallowedTypesTest);
         assertFalse(Arrays.asList(types).contains(Datatype.STRING));
@@ -1649,7 +1649,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
             @Override
             protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+                return new LinkedHashMap<>();
             }
 
             @Override
@@ -1707,7 +1707,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
             @Override
             protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
-                return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+                return new LinkedHashMap<>();
             }
 
             @Override
@@ -1741,7 +1741,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // establish the dependency so that projectB is dependent from projectA
         IpsObjectPath projectBIpsObjectPath = ipsProjectB.getIpsObjectPathInternal();
-        ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<IIpsObjectPathEntry>(
+        ArrayList<IIpsObjectPathEntry> projectBIpsObjectPathEntries = new ArrayList<>(
                 Arrays.asList(projectBIpsObjectPath.getEntries()));
         projectBIpsObjectPathEntries.add(new IpsProjectRefEntry(projectBIpsObjectPath, ipsProject));
 
@@ -1799,7 +1799,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
@@ -1840,7 +1840,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
         ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
         // there is an cycle in the ref projects,
@@ -1878,7 +1878,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject13);
         ipsProject12.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
 
         MessageList ml = ipsProject10.validate();
@@ -1912,7 +1912,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject2).setReexported(false);
         ipsProject.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
         // there is an cycle in the ref projects,
         // if we get no stack overflow exception, then the test was successfully executed
@@ -1934,7 +1934,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject).setReexported(false);
         ipsProject.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
         ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
         // there is an cycle in the ref projects,
@@ -1969,7 +1969,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(ipsProject11).setReexported(false);
         ipsProject12.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(result);
 
         MessageList ml = ipsProject10.validate();
@@ -2038,11 +2038,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(ml.toString(), 6, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
-        ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt3.getIpsSrcFile() });
+        ml = prj.checkForDuplicateRuntimeIds(cmpt3.getIpsSrcFile());
         assertEquals(2, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
-        ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile() });
+        ml = prj.checkForDuplicateRuntimeIds(cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile());
         assertEquals(4, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }
@@ -2126,7 +2126,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.length);
         assertTrue(containsIpsSrcFile(result, productCmptType0));
 
-        List<IIpsSrcFile> resultList = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> resultList = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(resultList);
         assertEquals(9, resultList.size());
 
@@ -2452,7 +2452,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProviderFactory versionProviderFactory = $ -> versionProvider;
         IIpsProjectProperties properties = ipsProject.getProperties();
         try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
-            Map<String, IVersionProviderFactory> versionProviderFactories = new HashMap<String, IVersionProviderFactory>();
+            Map<String, IVersionProviderFactory> versionProviderFactories = new HashMap<>();
             versionProviderFactories.put("foobar", versionProviderFactory);
             testIpsModelExtensions.setVersionProviderFactories(versionProviderFactories);
             properties.setVersionProviderId("foobar");

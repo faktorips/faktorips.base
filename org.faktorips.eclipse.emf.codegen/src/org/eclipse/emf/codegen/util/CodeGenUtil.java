@@ -62,7 +62,7 @@ public class CodeGenUtil {
      */
     public static Set<String> getJavaReservedWords() {
         if (javaReservedWords == null) {
-            Set<String> result = new HashSet<String>(100);
+            Set<String> result = new HashSet<>(100);
             result.add("abstract");
             result.add("assert");
             result.add("boolean");
@@ -129,7 +129,7 @@ public class CodeGenUtil {
      */
     public static Set<String> getJavaDefaultTypes() {
         if (javaDefaultTypes == null) {
-            Set<String> result = new HashSet<String>(100);
+            Set<String> result = new HashSet<>(100);
             result.add("AbstractMethodError");
             result.add("ArithmeticException");
             result.add("ArrayIndexOutOfBoundsException");
@@ -470,7 +470,7 @@ public class CodeGenUtil {
             name = name.substring(leadingSeparators.length());
         }
 
-        List<String> parsedName = new ArrayList<String>();
+        List<String> parsedName = new ArrayList<>();
         if (prefix != null && name.startsWith(prefix) && name.length() > prefix.length()
                 && Character.isUpperCase(name.charAt(prefix.length()))) {
             name = name.substring(prefix.length());
@@ -512,7 +512,7 @@ public class CodeGenUtil {
      * This method breaks sourceName into words delimited by separator and/or mixed-case naming.
      */
     public static List<String> parseName(String sourceName, char separator) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if (sourceName != null) {
             StringBuilder currentWord = new StringBuilder();
             boolean lastIsLower = false;

@@ -45,7 +45,7 @@ public class TableAccessFunction implements ITableAccessFunction {
 
         StringBuilder params = new StringBuilder();
         IKeyItem[] items = key.getKeyItems();
-        List<String> tmpArgTypes = new ArrayList<String>();
+        List<String> tmpArgTypes = new ArrayList<>();
         for (IKeyItem item : items) {
             if (!tmpArgTypes.isEmpty()) {
                 params.append(", "); //$NON-NLS-1$

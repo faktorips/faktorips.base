@@ -40,8 +40,9 @@ public abstract class RefactoringTestUtil {
 
         String newPackageName = packageName;
         IIpsSrcFolderEntry srcFolderEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
-        IFolder javaSrcFolder = derivedSource ? srcFolderEntry.getOutputFolderForDerivedJavaFiles() : srcFolderEntry
-                .getOutputFolderForMergableJavaFiles();
+        IFolder javaSrcFolder = derivedSource ? srcFolderEntry.getOutputFolderForDerivedJavaFiles()
+                : srcFolderEntry
+                        .getOutputFolderForMergableJavaFiles();
         IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(javaSrcFolder);
 
         String basePackageName = derivedSource ? srcFolderEntry.getBasePackageNameForDerivedJavaClasses()

@@ -71,7 +71,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
 
         IIpsObjectPath bPath = b.getIpsObjectPath();
         IIpsObjectPathEntry[] bPathEntries = bPath.getEntries();
-        List<IIpsObjectPathEntry> newbPathEntries = new ArrayList<IIpsObjectPathEntry>();
+        List<IIpsObjectPathEntry> newbPathEntries = new ArrayList<>();
         newbPathEntries.add(new IpsProjectRefEntry((IpsObjectPath)bPath, a));
         for (IIpsObjectPathEntry bPathEntrie : bPathEntries) {
             newbPathEntries.add(bPathEntrie);

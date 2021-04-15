@@ -35,9 +35,9 @@ public class PropertyVisibleController implements IPropertyVisibleController {
      * The outer map is necessary as otherwise, the property mappings would be overwritten as soon
      * as multiple editors are opened.
      */
-    private final Map<Control, Map<IProductCmptProperty, Set<Control>>> propertyControlMappings = new HashMap<Control, Map<IProductCmptProperty, Set<Control>>>();
+    private final Map<Control, Map<IProductCmptProperty, Set<Control>>> propertyControlMappings = new HashMap<>();
 
-    private final Set<IProductCmptPropertyFilter> filters = new HashSet<IProductCmptPropertyFilter>();
+    private final Set<IProductCmptPropertyFilter> filters = new HashSet<>();
 
     private Runnable refreshCallback;
 
@@ -95,10 +95,10 @@ public class PropertyVisibleController implements IPropertyVisibleController {
 
         // Get the mappings for the outer control
         Map<IProductCmptProperty, Set<Control>> propertyMappings = propertyControlMappings
-                .computeIfAbsent(containerControl, $ -> new HashMap<IProductCmptProperty, Set<Control>>());
+                .computeIfAbsent(containerControl, $ -> new HashMap<>());
 
         // Build a set from the provided controls
-        Set<Control> controlSet = new HashSet<Control>();
+        Set<Control> controlSet = new HashSet<>();
         controlSet.addAll(Arrays.asList(controls));
 
         // Check whether there is an equal existing mapping

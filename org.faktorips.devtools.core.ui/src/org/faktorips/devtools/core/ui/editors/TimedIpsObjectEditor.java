@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
  */
 public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
 
-    private final List<IActiveGenerationChangedListener> activeGenerationChangedListeners = new CopyOnWriteArrayList<IActiveGenerationChangedListener>();
+    private final List<IActiveGenerationChangedListener> activeGenerationChangedListeners = new CopyOnWriteArrayList<>();
 
     private IIpsObjectGeneration generation;
 

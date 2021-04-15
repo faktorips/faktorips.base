@@ -46,7 +46,8 @@ public class StringValueComboField extends ComboField<String> {
      * unmodified value otherwise.
      */
     public String prepareObjectForGet(String value) {
-        if (supportsNullStringRepresentation() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
+        if (supportsNullStringRepresentation()
+                && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(value)) {
             return null;
         }
         return value;

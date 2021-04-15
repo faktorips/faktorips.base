@@ -107,7 +107,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
                 true);
         when(releaseAndDeploymentOperation.getTagName("abc", ipsProject)).thenReturn(CUSTOM_TAG_NAME);
 
-        ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
+        ArrayList<ITargetSystem> targetSystems = new ArrayList<>();
         targetSystems.add(new DefaultTargetSystem("test123"));
 
         productReleaseProcessor.startReleaseBuilder("abc", targetSystems, new NullProgressMonitor());
@@ -133,7 +133,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
             releaseAndDeploymentOperation = mock(IReleaseAndDeploymentOperation.class);
             when(releaseAndDeploymentOperation.preCommit(any(IIpsProject.class), any(IProgressMonitor.class)))
                     .thenReturn(true);
-            ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
+            ArrayList<ITargetSystem> targetSystems = new ArrayList<>();
             targetSystems.add(new DefaultTargetSystem("test123"));
 
             productReleaseProcessor = spy(new ProductReleaseProcessor(ipsProject, observableMessages));

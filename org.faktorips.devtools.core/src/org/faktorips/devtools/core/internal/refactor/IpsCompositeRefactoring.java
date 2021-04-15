@@ -52,15 +52,15 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
      */
     protected IpsCompositeRefactoring(Set<IIpsElement> elements) {
         checkElements(elements);
-        this.elements = new HashSet<IIpsElement>(elements.size());
+        this.elements = new HashSet<>(elements.size());
         this.elements.addAll(elements);
-        this.skippedElements = new HashSet<IIpsElement>(elements.size());
+        this.skippedElements = new HashSet<>(elements.size());
     }
 
     // TODO AW 22-04-2011: Only IPS elements from the same IPS project allowed?
     private void checkElements(Set<IIpsElement> elements) {
         ArgumentCheck.isTrue(elements.size() > 0);
-        Set<Class<?>> classes = new HashSet<Class<?>>(2);
+        Set<Class<?>> classes = new HashSet<>(2);
         for (IIpsElement element : elements) {
             if (element instanceof IIpsObject) {
                 classes.add(IIpsObject.class);
@@ -284,7 +284,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
 
     @Override
     public final Set<IIpsElement> getIpsElements() {
-        return new HashSet<IIpsElement>(elements);
+        return new HashSet<>(elements);
     }
 
 }

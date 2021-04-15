@@ -107,7 +107,7 @@ class ComponentNode extends IpsSrcFileViewItem {
     static List<ComponentNode> encapsulateComponentTypes(Collection<IType> components,
             ComponentNode parent,
             IIpsProject sourceProject) {
-        List<ComponentNode> componentNodes = new ArrayList<ComponentNode>();
+        List<ComponentNode> componentNodes = new ArrayList<>();
         for (IType component : components) {
             ComponentNode componentNode = new ComponentNode(component, sourceProject);
             componentNode.setParent(parent);

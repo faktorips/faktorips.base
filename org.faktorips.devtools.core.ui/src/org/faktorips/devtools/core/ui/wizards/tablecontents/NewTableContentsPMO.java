@@ -39,7 +39,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     private String name = StringUtils.EMPTY;
 
-    private final List<ITableStructure> structuresList = new ArrayList<ITableStructure>();
+    private final List<ITableStructure> structuresList = new ArrayList<>();
 
     private ITableContentUsage addToTableUsage;
 

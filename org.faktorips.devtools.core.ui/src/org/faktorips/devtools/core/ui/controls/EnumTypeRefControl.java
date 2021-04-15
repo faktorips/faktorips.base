@@ -81,7 +81,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        List<IIpsSrcFile> resultSrcFiles = new ArrayList<IIpsSrcFile>(0);
+        List<IIpsSrcFile> resultSrcFiles = new ArrayList<>(0);
         if (getIpsProjects().isEmpty() || getIpsProjects().get(0) == null) {
             return new IIpsSrcFile[0];
         }

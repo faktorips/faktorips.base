@@ -76,11 +76,11 @@ public class LinksContentProviderTest {
         when(link3.getAssociation()).thenReturn("dummyAssociation");
         when(staticLink1.getAssociation()).thenReturn("staticDummyAssociation");
         when(staticLink2.getAssociation()).thenReturn("staticDummyAssociation");
-        links = new ArrayList<ProductCmptLink>();
+        links = new ArrayList<>();
         links.add(link1);
         links.add(link2);
         links.add(link3);
-        staticLinks = new ArrayList<ProductCmptLink>();
+        staticLinks = new ArrayList<>();
         staticLinks.add(staticLink1);
         staticLinks.add(staticLink2);
 
@@ -102,7 +102,7 @@ public class LinksContentProviderTest {
 
     @Test
     public void testGetAssociationItems() {
-        List<IProductCmptTypeAssociation> listAssociations = new ArrayList<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> listAssociations = new ArrayList<>();
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation asso2 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(false);

@@ -46,6 +46,7 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
      * Returns {@code true} if the given value is not {@code null}. The return value for
      * {@code null} is dependent on the constructor.
      */
+    @Override
     public boolean contains(T value) {
         if (value == null) {
             return containsNull;
@@ -54,26 +55,32 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
         }
     }
 
+    @Override
     public boolean containsNull() {
         return containsNull;
     }
 
+    @Override
     public Set<T> getValues(boolean excludeNull) {
         throw new IllegalStateException();
     }
 
+    @Override
     public boolean isDiscrete() {
         return false;
     }
 
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
+    @Override
     public boolean isRange() {
         return false;
     }
 
+    @Override
     public int size() {
         return Integer.MAX_VALUE;
     }

@@ -15,8 +15,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -57,20 +55,17 @@ public class SetTestCaseTypeDialog extends EditDialog {
         getToolkit().createFormLabel(workArea, Messages.SetTemplateDialog_DialogTemplate_LabelTemplate);
         testCaseType = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, getToolkit());
         testCaseType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        testCaseType.getTextControl().addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (StringUtils.isEmpty(getTestCaseType())
-                        || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
-                                getTestCaseType())) {
-                    getButton(OK).setEnabled(false);
-                    String msg = NLS.bind(Messages.SetTemplateDialog_DialogTemplate_Error_TemplateNotExists,
-                            testCaseType.getText());
-                    setMessage(msg, IMessageProvider.ERROR);
-                } else {
-                    getButton(OK).setEnabled(true);
-                    setMessage(message);
-                }
+        testCaseType.getTextControl().addModifyListener($ -> {
+            if (StringUtils.isEmpty(getTestCaseType())
+                    || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
+                            getTestCaseType())) {
+                getButton(OK).setEnabled(false);
+                String msg = NLS.bind(Messages.SetTemplateDialog_DialogTemplate_Error_TemplateNotExists,
+                        testCaseType.getText());
+                setMessage(msg, IMessageProvider.ERROR);
+            } else {
+                getButton(OK).setEnabled(true);
+                setMessage(message);
             }
         });
         super.setMessage(message);

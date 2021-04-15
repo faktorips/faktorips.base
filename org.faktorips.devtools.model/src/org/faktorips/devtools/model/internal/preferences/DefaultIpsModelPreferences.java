@@ -21,7 +21,7 @@ public class DefaultIpsModelPreferences implements IIpsModelPreferences {
 
     private static final String NULL_PRESENTATION = "<null>"; //$NON-NLS-1$
     private static final String CHANGES_OVER_TIME_NAMING_CONVENTION = IChangesOverTimeNamingConvention.VAA;
-    
+
     private boolean autoValidateTables = true;
 
     @Override

@@ -35,7 +35,7 @@ public abstract class AbstractAssociationViewItem implements ILinkSectionViewIte
      * Returns the link items for this association item.
      */
     public List<ILinkSectionViewItem> getChildren() {
-        List<ILinkSectionViewItem> items = new ArrayList<ILinkSectionViewItem>();
+        List<ILinkSectionViewItem> items = new ArrayList<>();
         List<IProductCmptLink> links = getLinkContainer().getLinksAsList(getAssociationName());
         for (IProductCmptLink link : links) {
             items.add(new LinkViewItem(link));

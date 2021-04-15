@@ -33,9 +33,9 @@ import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.util.ListElementMover;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -62,9 +62,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
      */
     private boolean requiresProductCmpt = false;
 
-    private List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>(0);
+    private List<ITestAttribute> testAttributes = new ArrayList<>(0);
 
-    private List<ITestPolicyCmptTypeParameter> testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>(
+    private List<ITestPolicyCmptTypeParameter> testPolicyCmptTypeChilds = new ArrayList<>(
             0);
 
     private int minInstances = 0;
@@ -78,7 +78,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     @Override
     protected IIpsElement[] getChildrenThis() {
         int size = testAttributes.size() + testPolicyCmptTypeChilds.size();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        List<IIpsElement> children = new ArrayList<>(size);
         children.addAll(testAttributes);
         children.addAll(testPolicyCmptTypeChilds);
         return children.toArray(new IIpsElement[children.size()]);
@@ -86,8 +86,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     protected void reinitPartCollectionsThis() {
-        testAttributes = new ArrayList<ITestAttribute>();
-        testPolicyCmptTypeChilds = new ArrayList<ITestPolicyCmptTypeParameter>();
+        testAttributes = new ArrayList<>();
+        testPolicyCmptTypeChilds = new ArrayList<>();
     }
 
     @Override
@@ -300,7 +300,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public ITestAttribute[] getTestAttributes(String attributeName) {
-        List<ITestAttribute> testAttributes = new ArrayList<ITestAttribute>();
+        List<ITestAttribute> testAttributes = new ArrayList<>();
 
         for (ITestAttribute testAttribute : this.testAttributes) {
             if (testAttribute.getAttribute().equals(attributeName)) {
@@ -412,7 +412,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public int[] moveTestAttributes(int[] indexes, boolean up) {
-        ListElementMover<ITestAttribute> mover = new ListElementMover<ITestAttribute>(testAttributes);
+        ListElementMover<ITestAttribute> mover = new ListElementMover<>(testAttributes);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
         return newIdxs;
@@ -420,7 +420,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public int[] moveTestPolicyCmptTypeChild(int[] indexes, boolean up) {
-        ListElementMover<ITestPolicyCmptTypeParameter> mover = new ListElementMover<ITestPolicyCmptTypeParameter>(
+        ListElementMover<ITestPolicyCmptTypeParameter> mover = new ListElementMover<>(
                 testPolicyCmptTypeChilds);
         int[] newIdxs = mover.move(indexes, up);
         valueChanged(indexes, newIdxs);
@@ -461,7 +461,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             // no matching association found
             return new IIpsSrcFile[0];
         }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(100);
+        List<IIpsSrcFile> result = new ArrayList<>(100);
         List<IProductCmptLink> links = productCmpt.getLinksIncludingGenerations();
         for (IProductCmptLink link : links) {
             IIpsSrcFile productCmptFoundSrc = ipsProjectToSearch.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,

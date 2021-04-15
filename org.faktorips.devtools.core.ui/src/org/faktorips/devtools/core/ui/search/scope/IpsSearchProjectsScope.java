@@ -34,7 +34,7 @@ public class IpsSearchProjectsScope extends AbstractIpsSearchScope {
 
     @Override
     protected List<?> getSelectedObjects() {
-        List<IProject> selectedProjects = new ArrayList<IProject>();
+        List<IProject> selectedProjects = new ArrayList<>();
 
         if (selection instanceof IStructuredSelection) {
             List<?> list = ((IStructuredSelection)selection).toList();

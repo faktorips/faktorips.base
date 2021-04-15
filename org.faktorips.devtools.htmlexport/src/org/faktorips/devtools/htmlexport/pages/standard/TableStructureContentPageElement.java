@@ -95,8 +95,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
                 TextType.HEADING_2, getContext()));
 
         wrapper.addPageElements(getTableOrAlternativeText(new IndexTablePageElement(getDocumentedIpsObject(),
-                getContext()), getContext()
-                .getMessage(HtmlExportMessages.TableStructureContentPageElement_noUniqueKeys)));
+                getContext()),
+                getContext()
+                        .getMessage(HtmlExportMessages.TableStructureContentPageElement_noUniqueKeys)));
         addPageElements(wrapper);
     }
 
@@ -158,7 +159,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         List<IPageElement> linkPageElements = new PageElementUtils(getContext()).createLinkPageElements(
-                new ArrayList<IIpsSrcFile>(tableContentsSrcFiles), TargetType.CONTENT, new LinkedHashSet<Style>(),
+                new ArrayList<>(tableContentsSrcFiles), TargetType.CONTENT, new LinkedHashSet<Style>(),
                 getContext());
         ListPageElement liste = new ListPageElement(linkPageElements, getContext());
 
@@ -174,7 +175,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * 
      */
     private static class ForeignKeysTablePageElement extends
-    AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
+            AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
 
         public ForeignKeysTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
             super(Arrays.asList(tableStructure.getForeignKeys()), context);
@@ -182,7 +183,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         @Override
         protected List<IPageElement> createRowWithIpsObjectPart(IForeignKey foreignKey) {
-            List<IPageElement> cells = new ArrayList<IPageElement>();
+            List<IPageElement> cells = new ArrayList<>();
 
             IPageElement link = getLinkToReferencedTableStructure(foreignKey);
 
@@ -213,7 +214,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_keyItems));
@@ -234,14 +235,14 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
      * 
      */
     private static class ColumnsRangesTablePageElement extends
-    AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
+            AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
 
         public ColumnsRangesTablePageElement(ITableStructure tableStructure, DocumentationContext context) {
             super(Arrays.asList(tableStructure.getRanges()), context);
         }
 
         protected List<String> getColumnRangeData(IColumnRange columnRange) {
-            List<String> columnData = new ArrayList<String>();
+            List<String> columnData = new ArrayList<>();
 
             columnData.add(getContext().getLabel(columnRange));
             columnData.add(columnRange.getParameterName());
@@ -262,7 +263,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_parameterName));
@@ -293,7 +294,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         protected List<String> getColumnData(IColumn column) {
-            List<String> columnData = new ArrayList<String>();
+            List<String> columnData = new ArrayList<>();
 
             columnData.add(getContext().getLabel(column));
             columnData.add(column.getDatatype());
@@ -304,7 +305,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_datatype));
@@ -332,7 +333,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         protected List<String> getIndexData(IIndex uniqueKey) {
-            List<String> columnData = new ArrayList<String>();
+            List<String> columnData = new ArrayList<>();
 
             columnData.add(getContext().getLabel(uniqueKey));
             columnData.add(getContext().getDescription(uniqueKey));
@@ -342,7 +343,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_name));
             headline.add(getContext().getMessage(HtmlExportMessages.TableStructureContentPageElement_description));

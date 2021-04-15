@@ -28,7 +28,7 @@ public abstract class AbstractHtmlExportXmlUnitLayouterTest extends XMLTestCase 
             throw new RuntimeException("Fehler in XPath: " + xPath, e); //$NON-NLS-1$
 
         } catch (AssertionError e) {
-            throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$ 
+            throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$
         }
     }
 

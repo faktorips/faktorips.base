@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
 public class JControlModel extends PrefixHandler {
     protected static final Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
 
-    static Map<String, Class<?>> classNameToClassMap = new HashMap<String, Class<?>>();
+    static Map<String, Class<?>> classNameToClassMap = new HashMap<>();
 
     public static Class<?> classForClassName(String classPrefix, String className) {
         if (classPrefix != null) {
@@ -151,42 +151,42 @@ public class JControlModel extends PrefixHandler {
 
     public List<DictionaryPattern> getDictionaryPatterns() {
         if (dictionaryPatterns == null) {
-            dictionaryPatterns = new ArrayList<DictionaryPattern>();
+            dictionaryPatterns = new ArrayList<>();
         }
         return dictionaryPatterns;
     }
 
     public List<PullRule> getPullRules() {
         if (pullRules == null) {
-            pullRules = new ArrayList<PullRule>();
+            pullRules = new ArrayList<>();
         }
         return pullRules;
     }
 
     public List<PushRule> getPushRules() {
         if (pushRules == null) {
-            pushRules = new ArrayList<PushRule>();
+            pushRules = new ArrayList<>();
         }
         return pushRules;
     }
 
     public List<SweepRule> getSweepRules() {
         if (sweepRules == null) {
-            sweepRules = new ArrayList<SweepRule>();
+            sweepRules = new ArrayList<>();
         }
         return sweepRules;
     }
 
     public List<SortRule> getSortRules() {
         if (sortRules == null) {
-            sortRules = new ArrayList<SortRule>();
+            sortRules = new ArrayList<>();
         }
         return sortRules;
     }
 
     public List<MatchRule> getMatchRules() {
         if (matchRules == null) {
-            matchRules = new ArrayList<MatchRule>();
+            matchRules = new ArrayList<>();
         }
         return matchRules;
     }
@@ -602,9 +602,9 @@ public class JControlModel extends PrefixHandler {
 
     /**
      * <p>
-     * A sweep rule removes elements from the target if they are <strong>NOT</strong> available in the source.
-     * It can work on available Dictionary Patterns or be used to filter out import statements as
-     * follows:
+     * A sweep rule removes elements from the target if they are <strong>NOT</strong> available in
+     * the source. It can work on available Dictionary Patterns or be used to filter out import
+     * statements as follows:
      * </p>
      * 
      * <pre>
@@ -801,8 +801,8 @@ public class JControlModel extends PrefixHandler {
      * 
      * <p>
      * An important remark is that if there is a type conversion during the merge process, the match
-     * rules should <strong>not</strong> be used to pair different &quot;kinds&quot; of elements like fields
-     * and enumerator constants for example. See
+     * rules should <strong>not</strong> be used to pair different &quot;kinds&quot; of elements
+     * like fields and enumerator constants for example. See
      * {@link JMerger#convertTarget(org.eclipse.emf.codegen.merge.java.facade.JAbstractType, Class)
      * Jmerger.convert} and {@link NodeConverter} for further details on conversions.
      * </p>

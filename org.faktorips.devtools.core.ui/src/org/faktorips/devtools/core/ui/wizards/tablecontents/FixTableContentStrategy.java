@@ -141,7 +141,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
 
     @Override
     public Map<String, ValueTypeMismatch> checkAllContentAttributeValueTypeMismatch() {
-        return new ConcurrentHashMap<String, ValueTypeMismatch>();
+        return new ConcurrentHashMap<>();
     }
 
     @Override

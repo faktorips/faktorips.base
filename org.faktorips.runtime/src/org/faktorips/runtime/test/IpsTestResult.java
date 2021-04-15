@@ -19,8 +19,8 @@ import java.util.List;
  */
 public class IpsTestResult {
 
-    private List<IpsTestListener> listeners = new ArrayList<IpsTestListener>();
-    private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>(100);
+    private List<IpsTestListener> listeners = new ArrayList<>();
+    private List<IpsTestFailure> failures = new ArrayList<>(100);
 
     public IpsTestResult() {
         super();

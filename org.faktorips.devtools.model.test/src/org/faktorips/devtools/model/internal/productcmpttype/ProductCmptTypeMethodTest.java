@@ -133,26 +133,31 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method.setFormulaSignatureDefinition(false);
         MessageList result = method.validate(method.getIpsProject());
         assertNull(result
-                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+                .getMessageByCode(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
         result = method.validate(method.getIpsProject());
         assertNotNull(result
-                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+                .getMessageByCode(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
 
         method.setFormulaSignatureDefinition(false);
         method.setDatatype(productCmptType.getQualifiedName());
         result = method.validate(method.getIpsProject());
         assertNull(result
-                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+                .getMessageByCode(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
         method.setFormulaSignatureDefinition(true);
         result = method.validate(method.getIpsProject());
         assertNotNull(result
-                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+                .getMessageByCode(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
 
         method.setDatatype("Integer");
         result = method.validate(method.getIpsProject());
         assertNull(result
-                .getMessageByCode(IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
+                .getMessageByCode(
+                        IProductCmptTypeMethod.MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES));
     }
 
     @Test
@@ -444,7 +449,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         ((ProductCmptTypeMethod)method).validateChangingOverTime(list, ipsProject);
 
         assertEquals(1, list.size());
-        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME,
+                list.getMessage(0).getCode());
     }
 
     @Test
@@ -514,7 +520,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         ((ProductCmptTypeMethod)method).validateChangingOverTime(list, ipsProject);
 
         assertEquals(1, list.size());
-        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME,
+                list.getMessage(0).getCode());
     }
 
     @Test

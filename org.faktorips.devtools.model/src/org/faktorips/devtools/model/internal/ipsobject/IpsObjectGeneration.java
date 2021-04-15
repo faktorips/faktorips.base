@@ -71,7 +71,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+        return IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNameSingular();
     }
 
     @Override
@@ -221,7 +222,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
         if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
             String[] params = new String[3];
-            params[0] = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+            params[0] = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular();
             DateFormat format = IIpsModelExtensions.get().getModelPreferences().getDateFormat();
             params[1] = format.format(getValidFrom().getTime());
             params[2] = format.format(parentValidTo.getTime());
@@ -232,7 +234,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
         IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(getValidFrom());
         if (duplicateGeneration != this) {
-            String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IIpsModelExtensions.get()
+                    .getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this, PROPERTY_VALID_FROM));
         }
     }

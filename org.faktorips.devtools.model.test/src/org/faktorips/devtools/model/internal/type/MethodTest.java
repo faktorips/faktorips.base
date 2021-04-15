@@ -129,7 +129,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     private String checkForDuplicateID(Element element) {
-        Set<String> ids = new HashSet<String>();
+        Set<String> ids = new HashSet<>();
         NodeList children = element.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);

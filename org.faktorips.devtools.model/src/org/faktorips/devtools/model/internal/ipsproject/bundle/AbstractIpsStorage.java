@@ -77,7 +77,7 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
         if (packageName == null) {
             return new String[0];
         }
-        Set<String> result = new LinkedHashSet<String>();
+        Set<String> result = new LinkedHashSet<>();
         String parentPrefix = getPackagePrefix(packageName);
 
         for (String nonEmptyPackageName : getNonEmptyPackages()) {

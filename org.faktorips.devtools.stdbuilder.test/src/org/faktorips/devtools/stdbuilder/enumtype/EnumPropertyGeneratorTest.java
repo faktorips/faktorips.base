@@ -11,9 +11,9 @@
 package org.faktorips.devtools.stdbuilder.enumtype;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -61,14 +61,14 @@ public class EnumPropertyGeneratorTest {
 
     @Before
     public void initEnumType() {
-        List<IEnumAttribute> attributes = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> attributes = new ArrayList<>();
         attributes.add(enumAttribute);
         attributes.add(enumAttribute2);
         when(enumType.getEnumAttributesIncludeSupertypeCopies(false)).thenReturn(attributes);
 
         when(enumAttribute.getName()).thenReturn("column");
 
-        List<IEnumValue> enumValues = new ArrayList<IEnumValue>();
+        List<IEnumValue> enumValues = new ArrayList<>();
         enumValues.add(enumValue);
         when(enumType.getEnumValues()).thenReturn(enumValues);
 

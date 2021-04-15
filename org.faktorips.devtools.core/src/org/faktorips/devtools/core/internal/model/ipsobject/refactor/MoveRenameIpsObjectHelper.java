@@ -42,9 +42,9 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.RefactorUtil;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Bundles common functionality of the {@link RenameIpsObjectProcessor} and
@@ -74,7 +74,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
      * Returns a list containing the {@link IIpsSrcFile}s that are affected by the refactoring.
      */
     public List<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>(getDependencies().length);
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>(getDependencies().length);
         ipsSrcFiles.add(toBeRefactored.getIpsSrcFile());
         for (IDependency dependency : getDependencies()) {
             IIpsSrcFile ipsSrcFile = getDependencyToProject().get(dependency).findIpsSrcFile(dependency.getSource());
@@ -292,8 +292,8 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     }
 
     private void collectDependcies() {
-        dependencyToProject = new HashMap<IDependency, IIpsProject>();
-        List<IDependency> collectedDependencies = new ArrayList<IDependency>();
+        dependencyToProject = new HashMap<>();
+        List<IDependency> collectedDependencies = new ArrayList<>();
 
         addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
         IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);

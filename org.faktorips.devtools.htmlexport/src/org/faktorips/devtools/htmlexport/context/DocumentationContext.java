@@ -60,7 +60,7 @@ public class DocumentationContext {
      */
     protected IpsObjectType[] documentedIpsObjectTypes;
 
-    private List<IStatus> exportStatus = new ArrayList<IStatus>();
+    private List<IStatus> exportStatus = new ArrayList<>();
 
     private final IPluginResourceFacade pluginResources;
 
@@ -81,7 +81,7 @@ public class DocumentationContext {
     /**
      * All scripts within this documentation
      */
-    private List<IDocumentorScript> scripts = new ArrayList<IDocumentorScript>();
+    private List<IDocumentorScript> scripts = new ArrayList<>();
 
     /**
      * {@link IIpsProject}, which will be documented
@@ -169,13 +169,13 @@ public class DocumentationContext {
         } catch (CoreRuntimeException e) {
             addStatus(new IpsStatus(IStatus.ERROR,
                     "Error finding IpsSrcFiles of types " + StringUtils.join(ipsObjectTypes, ';'), e.getCause())); //$NON-NLS-1$
-            return new ArrayList<IIpsSrcFile>();
+            return new ArrayList<>();
         }
     }
 
     public Collection<IIpsPackageFragment> getLinkedPackageFragments() {
 
-        Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
+        Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<>();
         List<IIpsSrcFile> linkedObjects = getDocumentedSourceFiles(getDocumentedIpsObjectTypes());
         for (IIpsSrcFile ipsObject : linkedObjects) {
             relatedPackageFragments.add(ipsObject.getIpsPackageFragment());

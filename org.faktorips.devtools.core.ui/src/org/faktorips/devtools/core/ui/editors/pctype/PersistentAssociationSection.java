@@ -54,7 +54,7 @@ import org.faktorips.runtime.MessageList;
  */
 public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
-    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<Integer, AttrPropertyAndLabel>();
+    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<>();
 
     static {
         COLUMN_PROPERTIES.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET,
@@ -144,7 +144,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
             @Override
             public Object[] getElements(Object inputElement) {
-                List<IPolicyCmptTypeAssociation> content = new ArrayList<IPolicyCmptTypeAssociation>();
+                List<IPolicyCmptTypeAssociation> content = new ArrayList<>();
                 List<IPolicyCmptTypeAssociation> policyCmptTypeAssociations = ((IPolicyCmptType)getIpsObject())
                         .getPolicyCmptTypeAssociations();
                 for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyCmptTypeAssociations) {
@@ -255,7 +255,8 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 }
             }
 
-            private String getColumnTextForeignKeyColReq(IPersistentAssociationInfo jpaAssociationInfo, String property) {
+            private String getColumnTextForeignKeyColReq(IPersistentAssociationInfo jpaAssociationInfo,
+                    String property) {
                 if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
                     return jpaAssociationInfo.getJoinColumnName();
                 } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {

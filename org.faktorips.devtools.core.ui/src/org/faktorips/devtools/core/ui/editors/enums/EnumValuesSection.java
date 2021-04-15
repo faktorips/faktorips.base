@@ -31,8 +31,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
@@ -231,14 +229,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         enumValuesTableViewer = new TableViewer(enumValuesTable);
 
         final SelectionStatusBarPublisher selectionStatusBarPublisher = new SelectionStatusBarPublisher(editorSite);
-        enumValuesTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
-            }
-
-        });
+        enumValuesTableViewer.addSelectionChangedListener(
+                event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
         searchBar.setFilterTo(enumValuesTableViewer);
 
         createTableColumns();
@@ -282,7 +274,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
-        List<Integer> rowNumbers = new ArrayList<Integer>();
+        List<Integer> rowNumbers = new ArrayList<>();
         if (!selection.isEmpty()) {
             Collection<IEnumValue> rows = TypedSelection.createAnyCount(IEnumValue.class, selection).getElements();
             for (IEnumValue row : rows) {
@@ -403,13 +395,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             int columnIndex) {
         EnumInternationalStringCellModifier cellModifier = new EnumInternationalStringCellModifier(columnIndex,
                 IIpsModel.get().getMultiLanguageSupport().getLocalizationLocaleOrDefault(ipsProject));
-        EditCondition editCondition = new EditCondition() {
-
-            @Override
-            public boolean isEditable() {
-                return isDataChangeable();
-            }
-        };
+        EditCondition editCondition = this::isDataChangeable;
 
         EnumInternationalStringEditingSupport editingSupport = new EnumInternationalStringEditingSupport(
                 enumValuesTableViewer, getToolkit(), cellModifier, editCondition);
@@ -421,17 +407,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             final boolean literalNameColumn,
             TableViewerColumn newColumn,
             final int columnIndex) {
-        EditCondition canEditCondition = new EditCondition() {
-
-            @Override
-            public boolean isEditable() {
-                return (!literalNameColumn || !lockAndSynchronizeLiteralNames) && isDataChangeable();
-            }
-
-        };
+        EditCondition canEditCondition = () -> (!literalNameColumn || !lockAndSynchronizeLiteralNames)
+                && isDataChangeable();
 
         EnumStringCellModifier elementModifier = new EnumStringCellModifier(getShell(), columnIndex);
-        DatatypeEditingSupport<IEnumValue> editingSupport = new DatatypeEditingSupport<IEnumValue>(getToolkit(),
+        DatatypeEditingSupport<IEnumValue> editingSupport = new DatatypeEditingSupport<>(getToolkit(),
                 enumValuesTableViewer, ipsProject, datatype, elementModifier, canEditCondition);
         newColumn.setEditingSupport(editingSupport);
         return editingSupport;
@@ -503,12 +483,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     private void registerAsChangeListenerToEnumValueContainer() {
         enumValueContainer.getIpsModel().addChangeListener(this);
-        addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this);
-            }
-        });
+        addDisposeListener($ -> enumValueContainer.getIpsModel().removeChangeListener(EnumValuesSection.this));
     }
 
     /**

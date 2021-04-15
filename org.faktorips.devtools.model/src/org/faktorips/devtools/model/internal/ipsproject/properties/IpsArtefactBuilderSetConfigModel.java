@@ -20,8 +20,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,8 +48,8 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      * Creates an empty IPS artifact builder set configuration instances.
      */
     public IpsArtefactBuilderSetConfigModel() {
-        properties = new LinkedHashMap<String, String>();
-        propertiesDescription = new LinkedHashMap<String, String>();
+        properties = new LinkedHashMap<>();
+        propertiesDescription = new LinkedHashMap<>();
     }
 
     /**
@@ -58,7 +58,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     public IpsArtefactBuilderSetConfigModel(Map<String, String> properties) {
         ArgumentCheck.notNull(properties);
         this.properties = properties;
-        propertiesDescription = new LinkedHashMap<String, String>();
+        propertiesDescription = new LinkedHashMap<>();
     }
 
     /**
@@ -67,15 +67,14 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
      */
     @Override
     public final void initFromXml(Element el) {
-        properties = new LinkedHashMap<String, String>();
-        propertiesDescription = new LinkedHashMap<String, String>();
+        properties = new LinkedHashMap<>();
+        propertiesDescription = new LinkedHashMap<>();
         NodeList nl = el.getChildNodes();
         String commentBeforeElement = StringUtils.EMPTY;
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node instanceof Comment) {
                 commentBeforeElement = ((Comment)node).getData();
-                continue;
             } else if (node.getNodeName().equals(PROPERTY_XML_TAG)) {
                 Element propertyEl = (Element)node;
                 String key = propertyEl.getAttribute(NAME_XML_ATTR);
@@ -162,7 +161,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
 
     @Override
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
-        Map<String, Object> parsedValueMap = new LinkedHashMap<String, Object>();
+        Map<String, Object> parsedValueMap = new LinkedHashMap<>();
         for (String name : this.properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {

@@ -91,8 +91,10 @@ public class NewResourceNameValidator implements IInputValidator {
             if (count == 0) {
                 validResourceName = Messages.NewResourceNameValidator_suggestedNamePrefixSimple + resourceName;
             } else {
-                validResourceName = NLS.bind(Messages.NewResourceNameValidator_suggestedNamePrefixComplex, Integer.valueOf(
-                        count), resourceName);
+                validResourceName = NLS.bind(Messages.NewResourceNameValidator_suggestedNamePrefixComplex,
+                        Integer.valueOf(
+                                count),
+                        resourceName);
             }
         }
         return validResourceName;

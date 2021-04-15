@@ -104,7 +104,7 @@ public final class ImageDescriptorMatchers {
     private static PropertyMatcher<ImageDescriptor, ImageData> descriptorOf(ImageData referenceImageData,
             Function<ImageDescriptor, ImageData> imageDataGetter,
             String description) {
-        return new PropertyMatcher<ImageDescriptor, ImageData>(imageDataGetter,
+        return new PropertyMatcher<>(imageDataGetter,
                 description,
                 allOf(
                         hasSame("alpha", i -> i.alpha, referenceImageData),

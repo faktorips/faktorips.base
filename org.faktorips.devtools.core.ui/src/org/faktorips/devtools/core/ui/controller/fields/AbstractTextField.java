@@ -10,9 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -89,20 +86,10 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
 
     @Override
     protected void addListenerToControl() {
-        final ModifyListener modifyListener = new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(AbstractTextField.this), immediatelyNotifyListener);
-            }
-        };
+        final ModifyListener modifyListener = $ -> notifyChangeListeners(
+                new FieldValueChangedEvent(AbstractTextField.this), immediatelyNotifyListener);
         text.addModifyListener(modifyListener);
-        text.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                text.removeModifyListener(modifyListener);
-            }
-        });
+        text.addDisposeListener($ -> text.removeModifyListener(modifyListener));
     }
 
 }

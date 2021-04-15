@@ -124,7 +124,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
     protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
-        Set<IIpsElement> ipsElemets = new LinkedHashSet<IIpsElement>();
+        Set<IIpsElement> ipsElemets = new LinkedHashSet<>();
         for (IIpsObject ipsObject : ipsObjects) {
             printValidationResult(ipsObject);
             ipsObject.getIpsSrcFile().save(true, null);

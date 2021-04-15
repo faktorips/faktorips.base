@@ -47,7 +47,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
+        HashSet<IIpsSrcFile> result = new HashSet<>();
         try {
             result.add(getIpsSrcFile());
             enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);

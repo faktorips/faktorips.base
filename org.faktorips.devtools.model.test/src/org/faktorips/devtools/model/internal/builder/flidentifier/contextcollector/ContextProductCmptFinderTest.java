@@ -39,7 +39,7 @@ public class ContextProductCmptFinderTest {
     @Mock
     private IIpsProject ipsProject;
 
-    private LinkedList<IdentifierNode> nodes = new LinkedList<IdentifierNode>();
+    private LinkedList<IdentifierNode> nodes = new LinkedList<>();
 
     @InjectMocks
     private ContextProductCmptFinder contextProductCmptFinder;
@@ -56,7 +56,7 @@ public class ContextProductCmptFinderTest {
 
     @Before
     public void setUpContextCmpts() {
-        myContextCmpts = new HashSet<IProductCmpt>();
+        myContextCmpts = new HashSet<>();
         for (int i = 5; i > 0; i--) {
             IProductCmpt productCmpt = mock(IProductCmpt.class);
             when(productCmpt.getName()).thenReturn("MyCmpt" + i);

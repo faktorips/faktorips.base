@@ -29,7 +29,8 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     private final IdentifierNodeType nodeType;
 
-    public IdentifierProposal(String text, String label, String description, String prefix, IdentifierNodeType nodeType) {
+    public IdentifierProposal(String text, String label, String description, String prefix,
+            IdentifierNodeType nodeType) {
         ArgumentCheck.notNull(new Object[] { text, label, description, prefix, nodeType });
         this.text = text;
         this.label = label;

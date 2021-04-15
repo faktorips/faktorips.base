@@ -226,7 +226,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
         int size = 10000;
 
         IIpsProject ipsProject = newIpsProject();
-        ArrayList<IIpsObject> input = new ArrayList<IIpsObject>();
+        ArrayList<IIpsObject> input = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < size; i++) {
             ProductCmpt newProductTemplate = newProductTemplate(ipsProject, "a.A" + i);
@@ -249,7 +249,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
     }
 
     private Collection<IIpsObject> mapToIpsObject(Collection<IIpsSrcFile> ipsSrcFiles) {
-        LinkedHashSet<IIpsObject> result = new LinkedHashSet<IIpsObject>();
+        LinkedHashSet<IIpsObject> result = new LinkedHashSet<>();
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             result.add(ipsSrcFile.getIpsObject());
         }

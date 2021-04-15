@@ -406,7 +406,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             getToolkit().createLabel(workArea, Messages.AssociationEditDialog_label_matchingAssociation);
             Combo matchingAssociation = getToolkit().createCombo(workArea);
-            final ComboViewerField<String> configuringAssociationField = new ComboViewerField<String>(
+            final ComboViewerField<String> configuringAssociationField = new ComboViewerField<>(
                     matchingAssociation, String.class);
             configuringAssociationField.setAllowEmptySelection(true);
 
@@ -657,7 +657,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 return;
             }
             List<IAssociation> associations = configuredAssociationSource.getAssociations();
-            ArrayList<String> associationsNames = new ArrayList<String>();
+            ArrayList<String> associationsNames = new ArrayList<>();
             for (IAssociation aAsso : associations) {
                 if (!aAsso.getAssociationType().isCompositionDetailToMaster()) {
                     associationsNames.add(aAsso.getName());

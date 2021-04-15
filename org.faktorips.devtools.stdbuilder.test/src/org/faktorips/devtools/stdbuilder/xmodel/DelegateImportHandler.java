@@ -40,7 +40,7 @@ public class DelegateImportHandler extends ImportHandler {
 
     @Override
     public Set<ImportStatement> getImports() {
-        Set<ImportStatement> result = new LinkedHashSet<ImportStatement>();
+        Set<ImportStatement> result = new LinkedHashSet<>();
         Set<String> impDecl = fragment.getImportDeclaration().getImports();
         for (String importString : impDecl) {
             result.add(new ImportStatement(importString));

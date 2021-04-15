@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
@@ -49,12 +48,7 @@ public class StyledCellMessageCueLabelProvider extends StyledCellLabelProvider {
 
         internalBaseLabelProvider = new InternalBaseLabelProvider(baseProvider);
         messageLabelProvider = new MessageCueLabelProvider(internalBaseLabelProvider, ipsProject);
-        baseProvider.addListener(new ILabelProviderListener() {
-            @Override
-            public void labelProviderChanged(LabelProviderChangedEvent event) {
-                propagateEvent();
-            }
-        });
+        baseProvider.addListener($ -> propagateEvent());
     }
 
     /**

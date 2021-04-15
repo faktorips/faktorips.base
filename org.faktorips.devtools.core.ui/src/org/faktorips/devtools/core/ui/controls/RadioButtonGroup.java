@@ -52,7 +52,7 @@ public class RadioButtonGroup<T> {
      *             the deprecated method {@link #addRadiobutton(String)}
      */
     @Deprecated
-    private final List<CheckboxField> oldCheckboxFields = new ArrayList<CheckboxField>();
+    private final List<CheckboxField> oldCheckboxFields = new ArrayList<>();
 
     /**
      * This constructor was used prior to version 3.6. It does not automatically create radio
@@ -71,8 +71,8 @@ public class RadioButtonGroup<T> {
     @Deprecated
     public RadioButtonGroup(Composite parent, int style, String text, UIToolkit toolkit) {
         this.toolkit = toolkit;
-        radioButtons = new LinkedHashMap<T, Button>();
-        buttonsToOptions = new LinkedHashMap<Button, T>();
+        radioButtons = new LinkedHashMap<>();
+        buttonsToOptions = new LinkedHashMap<>();
         options = null;
         composite = createGroupControl(parent, style, text, 1, toolkit);
     }
@@ -89,9 +89,9 @@ public class RadioButtonGroup<T> {
      */
     public RadioButtonGroup(Composite parent, String text, int numberColumns, LinkedHashMap<T, String> options,
             UIToolkit uiToolkit) {
-        this.options = new LinkedHashMap<T, String>(options);
-        radioButtons = new LinkedHashMap<T, Button>(options.size());
-        buttonsToOptions = new LinkedHashMap<Button, T>(options.size());
+        this.options = new LinkedHashMap<>(options);
+        radioButtons = new LinkedHashMap<>(options.size());
+        buttonsToOptions = new LinkedHashMap<>(options.size());
         toolkit = uiToolkit;
         composite = createGroupControl(parent, SWT.NONE, text, numberColumns, uiToolkit);
         createRadioButtons(uiToolkit);
@@ -108,9 +108,9 @@ public class RadioButtonGroup<T> {
      *            label. For each option, a radio button is created
      */
     public RadioButtonGroup(Composite parent, LinkedHashMap<T, String> options, UIToolkit uiToolkit) {
-        this.options = new LinkedHashMap<T, String>(options);
-        radioButtons = new LinkedHashMap<T, Button>(options.size());
-        buttonsToOptions = new LinkedHashMap<Button, T>(options.size());
+        this.options = new LinkedHashMap<>(options);
+        radioButtons = new LinkedHashMap<>(options.size());
+        buttonsToOptions = new LinkedHashMap<>(options.size());
         toolkit = uiToolkit;
         composite = parent;
         createRadioButtons(uiToolkit);
@@ -178,7 +178,7 @@ public class RadioButtonGroup<T> {
      * Returns the radio buttons belonging to this {@link RadioButtonGroup}.
      */
     public final List<Button> getRadioButtons() {
-        return new ArrayList<Button>(radioButtons.values());
+        return new ArrayList<>(radioButtons.values());
     }
 
     /**

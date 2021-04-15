@@ -17,7 +17,7 @@ public class AnnotatedDeclarationTest {
     public void testGetPublishedInterface_FromImplementation() {
         @SuppressWarnings("unchecked")
         Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedDeclaration
-        .getPublishedInterface(Implementation.class);
+                .getPublishedInterface(Implementation.class);
 
         assertThat(ifce, equalTo(PublishedInterface.class));
     }
@@ -26,7 +26,7 @@ public class AnnotatedDeclarationTest {
     public void testGetPublishedInterface_FromInterface() {
         @SuppressWarnings("unchecked")
         Class<PublishedInterface> ifce = (Class<PublishedInterface>)AnnotatedDeclaration
-        .getPublishedInterface(PublishedInterface.class);
+                .getPublishedInterface(PublishedInterface.class);
 
         assertThat(ifce, equalTo(PublishedInterface.class));
     }
@@ -35,7 +35,7 @@ public class AnnotatedDeclarationTest {
     public void testGetImplementationClass_FromImplementation() {
         @SuppressWarnings("unchecked")
         Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedDeclaration
-        .getImplementationClass(Implementation.class);
+                .getImplementationClass(Implementation.class);
 
         assertThat(implementationClass, equalTo(Implementation.class));
     }
@@ -44,7 +44,7 @@ public class AnnotatedDeclarationTest {
     public void testGetImplementationClass_FromInterface() {
         @SuppressWarnings("unchecked")
         Class<Implementation> implementationClass = (Class<Implementation>)AnnotatedDeclaration
-        .getImplementationClass(PublishedInterface.class);
+                .getImplementationClass(PublishedInterface.class);
 
         assertThat(implementationClass, equalTo(Implementation.class));
     }

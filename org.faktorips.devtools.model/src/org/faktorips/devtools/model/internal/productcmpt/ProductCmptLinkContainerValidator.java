@@ -175,7 +175,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     protected void addMessageIfDuplicateTargetPresent(IAssociation association,
             List<IProductCmptLink> relations,
             MessageList messageList) {
-        Set<String> targets = new HashSet<String>();
+        Set<String> targets = new HashSet<>();
         String msg = null;
         for (IProductCmptLink relation : relations) {
             String target = relation.getTarget();
@@ -201,7 +201,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             ObjectProperty prop1 = new ObjectProperty(this, null);
             ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
             messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
-                    new ObjectProperty[] { prop1, prop2 }));
+                    prop1, prop2));
         }
     }
 
@@ -224,7 +224,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         ObjectProperty prop1 = new ObjectProperty(this, null);
         ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
         messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
-                new ObjectProperty[] { prop1, prop2 }));
+                prop1, prop2));
     }
 
     protected void addMessageIfAssociationHasValidationMessages(IAssociation association, MessageList messageList) {

@@ -36,7 +36,7 @@ import org.faktorips.values.Decimal;
  */
 public class ProductCmptLinkHistograms {
 
-    private final Map<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>> linkHistograms = new LinkedHashMap<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>>();
+    private final Map<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>> linkHistograms = new LinkedHashMap<>();
 
     private ProductCmptLinkHistograms(Collection<LinkIdentifier> links,
             Collection<? extends IProductCmptLinkContainer> container) {

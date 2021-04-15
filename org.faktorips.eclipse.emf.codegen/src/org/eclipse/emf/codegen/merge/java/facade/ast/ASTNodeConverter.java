@@ -63,9 +63,10 @@ public class ASTNodeConverter implements NodeConverter {
         } catch (Exception e) {
             if (ASTFacadeHelper.DEBUG) {
                 getFacadeHelper()
-                .logError(
-                        "Error converting " + abstractType.getClass().getSimpleName() + " to "
-                                + cls.getSimpleName(), e);
+                        .logError(
+                                "Error converting " + abstractType.getClass().getSimpleName() + " to "
+                                        + cls.getSimpleName(),
+                                e);
             }
         }
         return null;
@@ -131,7 +132,7 @@ public class ASTNodeConverter implements NodeConverter {
         /**
          * Map of field names to fields
          */
-        protected Map<String, ASTJField> fieldNamesMap = new HashMap<String, ASTJField>();
+        protected Map<String, ASTJField> fieldNamesMap = new HashMap<>();
 
         /**
          * @param type to convert to enum
@@ -308,12 +309,12 @@ public class ASTNodeConverter implements NodeConverter {
         /**
          * Map of initializer values of the fields to fields
          */
-        protected Map<String, ASTJField> fieldInitializersMap = new HashMap<String, ASTJField>();
+        protected Map<String, ASTJField> fieldInitializersMap = new HashMap<>();
 
         /**
          * Map of fields to their index in the children list
          */
-        protected Map<ASTJField, Integer> fieldIndexesMap = new HashMap<ASTJField, Integer>();
+        protected Map<ASTJField, Integer> fieldIndexesMap = new HashMap<>();
 
         /**
          * Last field used in the initializer string of the fields converted from enum constants.
@@ -371,7 +372,7 @@ public class ASTNodeConverter implements NodeConverter {
             //
             // fields that are created by conversion from enum constants must be inserted after
             // the last final field that is used in constructors for initializers
-            List<ASTJNode<?>> convertedEnumConstants = new ArrayList<ASTJNode<?>>(enumChildren.size());
+            List<ASTJNode<?>> convertedEnumConstants = new ArrayList<>(enumChildren.size());
 
             for (JNode child : enumChildren) {
                 ASTJNode<?> originalNode = (ASTJNode<?>)child;
@@ -503,7 +504,8 @@ public class ASTNodeConverter implements NodeConverter {
             // set the body
             if (body != null && body.length() > 0) {
                 field.setTrackedNodeProperty(classInstanceCreation, body,
-                        ClassInstanceCreation.ANONYMOUS_CLASS_DECLARATION_PROPERTY, ASTNode.ANONYMOUS_CLASS_DECLARATION);
+                        ClassInstanceCreation.ANONYMOUS_CLASS_DECLARATION_PROPERTY,
+                        ASTNode.ANONYMOUS_CLASS_DECLARATION);
             }
 
             // set the whole initializer

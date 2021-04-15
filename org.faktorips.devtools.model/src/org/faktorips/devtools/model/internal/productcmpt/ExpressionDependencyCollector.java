@@ -92,7 +92,7 @@ public class ExpressionDependencyCollector {
         if (node != null) {
             return collectDependencies(node);
         } else {
-            return new HashMap<IDependency, IExpressionDependencyDetail>();
+            return new HashMap<>();
         }
     }
 
@@ -158,7 +158,7 @@ public class ExpressionDependencyCollector {
     }
 
     private IExpressionDependencyDetail getDependencyDetail(IpsObjectDependency dependency) {
-    	return getResult().computeIfAbsent(dependency,
+        return getResult().computeIfAbsent(dependency,
                 $ -> new ExpressionDependencyDetail(expression));
     }
 

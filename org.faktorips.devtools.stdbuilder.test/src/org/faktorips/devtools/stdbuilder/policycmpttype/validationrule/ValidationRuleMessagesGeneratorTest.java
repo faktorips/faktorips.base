@@ -137,7 +137,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
 
-        List<IValidationRule> vRulesList = new ArrayList<IValidationRule>();
+        List<IValidationRule> vRulesList = new ArrayList<>();
         IValidationRule validationRule1 = pcType.newRule();
         validationRule1.setName(RULE_NAME_1);
         validationRule1.getMessageText().add(new LocalizedString(Locale.GERMAN, "anyMessage"));

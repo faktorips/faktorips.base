@@ -179,7 +179,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
          * all associations with the same name, because this associations are grouped to one element
          */
         ITestPolicyCmptLink[] associations = parentTestPolicyCmpt.getTestPolicyCmptLinks();
-        HashMap<String, Message> messages = new HashMap<String, Message>();
+        HashMap<String, Message> messages = new HashMap<>();
         for (ITestPolicyCmptLink association : associations) {
             ITestPolicyCmptLink testPolicyCmptAssociation = null;
             if (association.getTestPolicyCmptTypeParameter().equals(getName())) {

@@ -69,7 +69,7 @@ public class IpsRemoveImportsOperation {
 
     private Set<String> getRelevantWords(String input) {
         Matcher matcher = relevantWordPattern.matcher(input);
-        Set<String> words = new HashSet<String>();
+        Set<String> words = new HashSet<>();
         while (matcher.find()) {
             words.add(matcher.group());
         }

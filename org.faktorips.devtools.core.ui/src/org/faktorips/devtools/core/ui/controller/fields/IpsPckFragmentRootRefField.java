@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -27,12 +25,8 @@ public class IpsPckFragmentRootRefField extends DefaultEditField<IIpsPackageFrag
 
     @Override
     protected void addListenerToControl() {
-        fragmentRootRefControl.getTextControl().addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(IpsPckFragmentRootRefField.this));
-            }
-        });
+        fragmentRootRefControl.getTextControl().addModifyListener(
+                $ -> notifyChangeListeners(new FieldValueChangedEvent(IpsPckFragmentRootRefField.this)));
     }
 
     @Override

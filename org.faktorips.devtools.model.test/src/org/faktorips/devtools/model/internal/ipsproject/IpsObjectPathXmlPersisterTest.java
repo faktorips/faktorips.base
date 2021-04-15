@@ -144,7 +144,8 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
     public void testReadXmlUseManifest() {
         Element docElement = getTestDocument().getDocumentElement();
 
-        IIpsObjectPath path = persistor.read(ipsProject, XmlUtil.getElement(docElement, IpsObjectPathXmlPersister.XML_TAG_NAME, 2));
+        IIpsObjectPath path = persistor.read(ipsProject,
+                XmlUtil.getElement(docElement, IpsObjectPathXmlPersister.XML_TAG_NAME, 2));
         assertTrue(path.isUsingManifest());
     }
 

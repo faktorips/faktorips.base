@@ -214,12 +214,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
          * current file in the default text editor.
          */
         if (!ipsSrcFile.exists()) {
-            Runnable closeRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    IpsObjectEditor.this.close(false);
-                    IpsUIPlugin.getDefault().openEditor(ipsSrcFile.getCorrespondingFile());
-                }
+            Runnable closeRunnable = () -> {
+                IpsObjectEditor.this.close(false);
+                IpsUIPlugin.getDefault().openEditor(ipsSrcFile.getCorrespondingFile());
             };
             getSite().getShell().getDisplay().syncExec(closeRunnable);
         } else {
@@ -499,20 +496,16 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
         if (isVisible()) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
-            display.asyncExec(new Runnable() {
+            display.asyncExec(() -> {
+                logMethodStarted("contentsChanged(): Received content changed event for the file being edited." //$NON-NLS-1$
+                        + event.getEventType());
 
-                @Override
-                public void run() {
-                    logMethodStarted("contentsChanged(): Received content changed event for the file being edited." //$NON-NLS-1$
-                            + event.getEventType());
-
-                    updateHeaderMessage();
-                    if (event.isAffected(getIpsObject())) {
-                        updatePageStructure(false);
-                    }
-
-                    logMethodFinished("contentChanged()"); //$NON-NLS-1$
+                updateHeaderMessage();
+                if (event.isAffected(getIpsObject())) {
+                    updatePageStructure(false);
                 }
+
+                logMethodFinished("contentChanged()"); //$NON-NLS-1$
             });
         }
     }
@@ -702,12 +695,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Window.OK) {
                 log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
-                IWorkspaceRunnable fix = new IWorkspaceRunnable() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
-                    }
-                };
+                IWorkspaceRunnable fix = $ -> toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                 IpsUIPlugin.getDefault().runWorkspaceModification(fix);
                 refreshIncludingStructuralChanges();
             } else {
@@ -935,7 +923,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     private List<IMessage> getUiMessages(MessageList msgList) {
-        List<IMessage> newList = new ArrayList<IMessage>();
+        List<IMessage> newList = new ArrayList<>();
         for (Message message : msgList) {
             newList.add(new UiMessage(message));
         }
@@ -1102,14 +1090,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             }
             Shell shell = ipsObjectEditor.getEditorSite().getShell();
             if (shell != null && !shell.isDisposed()) {
-                shell.getDisplay().syncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isVisible()) {
-                            refresh();
-                        }
-                        setTitleImage(newImage);
+                shell.getDisplay().syncExec(() -> {
+                    if (isVisible()) {
+                        refresh();
                     }
+                    setTitleImage(newImage);
                 });
             }
         }

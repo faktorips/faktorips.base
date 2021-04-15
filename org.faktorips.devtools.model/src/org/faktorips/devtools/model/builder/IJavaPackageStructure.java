@@ -15,8 +15,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * This interface provides the package name of every kind of generated class within this package
- * structure. Since it is possible to generate multiple Java classes for an <code>IIpsObject</code> it
- * is not enough to just provide the {@link IIpsSrcFile} instance to the methods of the package
+ * structure. Since it is possible to generate multiple Java classes for an <code>IIpsObject</code>
+ * it is not enough to just provide the {@link IIpsSrcFile} instance to the methods of the package
  * structure. The additional parameters specify the kind of artifact that is generated.
  * 
  * @author Peter Erzberger

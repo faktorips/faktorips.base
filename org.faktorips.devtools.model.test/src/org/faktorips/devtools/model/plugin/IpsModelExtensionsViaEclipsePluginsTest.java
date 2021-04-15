@@ -107,7 +107,7 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
 
     private IConfigurationElement mockVersionManager(IIpsFeatureVersionManager ipsFeatureVersionManager) {
         when(TestConfigurationElement.CONTRIBUTOR.getName()).thenReturn(MY_CONTRIBUTOR_NAME);
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         attributes.put(ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS, IExtendableVersionManager.class.getName());
         attributes.put(FeatureVersionManagerExtensions.ATTRIBUTE_FEATURE_ID, MY_FEATURE_ID);
         attributes.put(FeatureVersionManagerExtensions.ATTRIBUTE_ID, MY_ID);
@@ -116,7 +116,7 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
         attributes.put(FeatureVersionManagerExtensions.ATTRIBUTE_REQUIRED_FOR_ALL_PROJECTS, Boolean.toString(true));
         String value = "";
         IConfigurationElement[] children = new IConfigurationElement[0];
-        Map<String, Object> executabled = new HashMap<String, Object>();
+        Map<String, Object> executabled = new HashMap<>();
         executabled.put("class", ipsFeatureVersionManager);
         TestConfigurationElement testConfigurationElement = new TestConfigurationElement(
                 FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER, attributes, value, children,

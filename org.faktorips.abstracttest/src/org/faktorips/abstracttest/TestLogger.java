@@ -27,7 +27,7 @@ import org.osgi.framework.Bundle;
  */
 public class TestLogger implements ILog {
 
-    private List<IStatus> logEntries = new ArrayList<IStatus>();
+    private List<IStatus> logEntries = new ArrayList<>();
 
     /**
      * Returns the log entries added to this logger.

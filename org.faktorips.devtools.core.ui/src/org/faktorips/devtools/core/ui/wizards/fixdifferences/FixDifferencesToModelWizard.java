@@ -15,8 +15,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -47,33 +45,25 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     @Override
     public boolean performFinish() {
         final Set<IFixDifferencesToModelSupport> elementsToFix = elementSelectionPage.getElementsToFix();
-        final IWorkspaceRunnable op = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) {
-                monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.size() + 1);
-                Set<IFixDifferencesToModelSupport> sortedElements = SortedByDependency.sortByInstanceOf(elementsToFix);
-                monitor.worked(1);
-                try {
-                    for (IFixDifferencesToModelSupport element : sortedElements) {
-                        element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
-                        element.getIpsSrcFile().save(true, null);
-                        monitor.worked(1);
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                } finally {
-                    monitor.done();
+        final IWorkspaceRunnable op = monitor -> {
+            monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.size() + 1);
+            Set<IFixDifferencesToModelSupport> sortedElements = SortedByDependency.sortByInstanceOf(elementsToFix);
+            monitor.worked(1);
+            try {
+                for (IFixDifferencesToModelSupport element : sortedElements) {
+                    element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
+                    element.getIpsSrcFile().save(true, null);
+                    monitor.worked(1);
                 }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            } finally {
+                monitor.done();
             }
         };
 
         try {
-            getContainer().run(true, true, new IRunnableWithProgress() {
-                @Override
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IIpsModel.get().runAndQueueChangeEvents(op, monitor);
-                }
-            });
+            getContainer().run(true, true, monitor -> IIpsModel.get().runAndQueueChangeEvents(op, monitor));
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;

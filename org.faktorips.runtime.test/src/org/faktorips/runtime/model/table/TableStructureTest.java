@@ -40,8 +40,8 @@ public class TableStructureTest {
         assertNotNull(columns);
         assertEquals(3, columns.size());
 
-        List<String> names = Arrays.asList(new String[] { "company", "gender", "rate" });
-        List<Class<?>> datatypes = Arrays.asList(new Class<?>[] { String.class, Integer.class, Decimal.class });
+        List<String> names = Arrays.asList("company", "gender", "rate");
+        List<Class<?>> datatypes = Arrays.asList(String.class, Integer.class, Decimal.class);
 
         for (int i = 0; i <= 2; i++) {
             assertEquals(names.get(i), columns.get(i).getName());
@@ -61,7 +61,7 @@ public class TableStructureTest {
 
     @Test
     public void testGetColumnnames() {
-        List<String> names = Arrays.asList(new String[] { "company", "gender", "rate" });
+        List<String> names = Arrays.asList("company", "gender", "rate");
         assertEquals(names, tableStructure.getColumnNames());
     }
 
@@ -70,7 +70,7 @@ public class TableStructureTest {
         TestTableRow row = new TestTableRow("F10", 3, Decimal.valueOf(28.2));
         List<Object> values = tableStructure.getValues(row);
 
-        List<Object> should = new ArrayList<Object>();
+        List<Object> should = new ArrayList<>();
         should.add("F10");
         should.add(3);
         should.add(Decimal.valueOf(28.2));

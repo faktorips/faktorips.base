@@ -44,9 +44,9 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
     }
 
     public void copyToClipboard(IStructuredSelection selection, Clipboard clipboard) {
-        List<IpsObjectPartState> copiedObjects = new ArrayList<IpsObjectPartState>();
-        List<IResource> copiedResources = new ArrayList<IResource>();
-        List<String> copiedResourceLinks = new ArrayList<String>();
+        List<IpsObjectPartState> copiedObjects = new ArrayList<>();
+        List<IResource> copiedResources = new ArrayList<>();
+        List<String> copiedResourceLinks = new ArrayList<>();
 
         IIpsObjectPart part;
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {

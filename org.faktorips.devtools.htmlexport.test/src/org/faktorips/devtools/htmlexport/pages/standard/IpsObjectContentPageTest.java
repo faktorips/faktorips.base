@@ -24,7 +24,8 @@ public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 
         String xPath = "//h1[. = '" + expectedHeadline + "']";
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(),
+                context);
         assertXPathExists(objectContentPage, xPath);
     }
 }

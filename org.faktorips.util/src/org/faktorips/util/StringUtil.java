@@ -59,10 +59,8 @@ public class StringUtil {
      */
     public static final String readFromInputStream(InputStream is, String charsetName) throws IOException {
         ByteArrayOutputStream buffer = StreamUtil.toByteArrayOutputStream(is);
-        try {
+        try (buffer) {
             return buffer.toString(charsetName);
-        } finally {
-            buffer.close();
         }
     }
 

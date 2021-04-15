@@ -72,7 +72,7 @@ public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>
      */
     @Override
     public default String getStringValue() {
-        List<String> stringList = new ArrayList<String>();
+        List<String> stringList = new ArrayList<>();
         for (ISingleValueHolder holder : getValue()) {
             stringList.add(holder.getStringValue());
         }

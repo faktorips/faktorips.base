@@ -14,8 +14,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -156,12 +154,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                 createLabelAndEditComposite(propertyValue);
             }
             // Remove all visible bindings as soon as the section is disposed
-            addDisposeListener(new DisposeListener() {
-                @Override
-                public void widgetDisposed(DisposeEvent e) {
-                    visibilityController.removePropertyControlMapping(ProductCmptPropertySection.this);
-                }
-            });
+            addDisposeListener($ -> visibilityController.removePropertyControlMapping(ProductCmptPropertySection.this));
         } else {
             createLabelForEmptySection();
         }

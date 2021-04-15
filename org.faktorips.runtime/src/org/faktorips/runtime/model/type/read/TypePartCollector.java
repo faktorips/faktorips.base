@@ -22,7 +22,7 @@ public abstract class TypePartCollector<T extends ModelElement, D extends PartDe
 
     protected static final String[] NO_NAMES = new String[0];
 
-    private final LinkedHashMap<String, D> descriptors = new LinkedHashMap<String, D>();
+    private final LinkedHashMap<String, D> descriptors = new LinkedHashMap<>();
 
     private List<AnnotationProcessor<?, D>> annotationProcessors;
 
@@ -39,7 +39,7 @@ public abstract class TypePartCollector<T extends ModelElement, D extends PartDe
     }
 
     public LinkedHashMap<String, T> createParts(ModelElement parentModel) {
-        LinkedHashMap<String, T> result = new LinkedHashMap<String, T>();
+        LinkedHashMap<String, T> result = new LinkedHashMap<>();
         for (Entry<String, D> descriptorEntry : descriptors.entrySet()) {
             D descriptor = descriptorEntry.getValue();
             T part = descriptor.create(parentModel);

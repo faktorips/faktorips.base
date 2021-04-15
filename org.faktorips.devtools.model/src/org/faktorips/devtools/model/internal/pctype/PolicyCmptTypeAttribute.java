@@ -44,9 +44,9 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -347,7 +347,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                             && attributeType == AttributeType.CHANGEABLE)) {
                         String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
                         result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE, text, Message.ERROR,
-                                this, new String[] { PROPERTY_ATTRIBUTE_TYPE }));
+                                this, PROPERTY_ATTRIBUTE_TYPE));
                     }
                 }
             }
@@ -403,7 +403,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     private String[] productRelevantProperties(String... otherProperties) {
-        ArrayList<String> properties = new ArrayList<String>();
+        ArrayList<String> properties = new ArrayList<>();
         for (String property : otherProperties) {
             properties.add(property);
         }
@@ -517,7 +517,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>(2);
+        List<IIpsElement> children = new ArrayList<>(2);
         if (valueSet != null) {
             children.add(valueSet);
         }

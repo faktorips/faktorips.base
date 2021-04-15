@@ -62,7 +62,7 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
     public void testIsChanged() {
         InstanceExplorer test = new InstanceExplorer();
 
-        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<>();
         ipsSrcFiles.add(pcType.getIpsSrcFile());
         assertTrue(test.isDependendObjectChanged(pcType, ipsSrcFiles));
         assertFalse(test.isDependendObjectChanged(pcType2, ipsSrcFiles));

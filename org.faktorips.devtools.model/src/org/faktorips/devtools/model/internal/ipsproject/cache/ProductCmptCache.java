@@ -36,7 +36,7 @@ public abstract class ProductCmptCache {
     }
 
     private final IIpsProject ipsProject;
-    private final MultiMap<String, IIpsSrcFile> prodCmptIpsSrcFilesMap = new MultiMap<String, IIpsSrcFile>();
+    private final MultiMap<String, IIpsSrcFile> prodCmptIpsSrcFilesMap = new MultiMap<>();
 
     private final AddRemoveUpdater addRemovelistener;
 

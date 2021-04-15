@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseIpsObject extends IpsObject {
 
-    private final List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
+    private final List<IpsObjectPartCollection<?>> partCollections = new ArrayList<>(1);
 
     protected BaseIpsObject(IIpsSrcFile file) {
         super(file);
@@ -42,7 +42,7 @@ public abstract class BaseIpsObject extends IpsObject {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>();
+        List<IIpsElement> children = new ArrayList<>();
         for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {

@@ -15,10 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -92,7 +90,6 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
                 } else {
                     initFallback(adaptableObject);
                 }
-                return;
             }
         }
     }
@@ -134,17 +131,11 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     @Override
     public boolean performFinish() {
         setNeedsProgressMonitor(true);
-        IIpsModel.get().runAndQueueChangeEvents(new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                try {
-                    getContainer().run(false, true, getOperation());
-                } catch (InvocationTargetException e) {
-                    throw new CoreException(new IpsStatus(e));
-                } catch (InterruptedException e) {
-                    throw new CoreException(new IpsStatus(e));
-                }
+        IIpsModel.get().runAndQueueChangeEvents($ -> {
+            try {
+                getContainer().run(false, true, getOperation());
+            } catch (InvocationTargetException | InterruptedException e) {
+                throw new CoreException(new IpsStatus(e));
             }
         }, new NullProgressMonitor());
         afterFinishPerformed();

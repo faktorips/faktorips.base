@@ -41,7 +41,7 @@ public abstract class IpsViewerDropAdapter extends ViewerDropAdapter {
      * added to the set during the execution of this method.
      */
     public void setPartnerDropAdapters(Set<IpsViewerDropAdapter> adapters) {
-        this.adapters = new HashSet<IpsViewerDropAdapter>(adapters);
+        this.adapters = new HashSet<>(adapters);
         this.adapters.add(this);
     }
 

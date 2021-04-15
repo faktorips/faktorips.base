@@ -38,6 +38,7 @@ public interface IoHandler {
 
     /**
      * Reads the content of a file from the given bundle
+     * 
      * @param fileName name of the file
      * 
      * @return content of the file

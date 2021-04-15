@@ -131,12 +131,9 @@ public class IpsApplication implements IApplication, IExecutableExtension {
             return;
         }
         final Display display = workbench.getDisplay();
-        display.syncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (!display.isDisposed()) {
-                    workbench.close();
-                }
+        display.syncExec(() -> {
+            if (!display.isDisposed()) {
+                workbench.close();
             }
         });
     }

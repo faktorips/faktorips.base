@@ -52,7 +52,7 @@ public class IdentifierParser {
      * {@link QualifierAndIndexParser} maps to the separator character "[", as all qualifiers and
      * indices start with that separator.
      */
-    private final Map<AbstractIdentifierNodeParser, Character> parsers = new LinkedHashMap<AbstractIdentifierNodeParser, Character>();
+    private final Map<AbstractIdentifierNodeParser, Character> parsers = new LinkedHashMap<>();
 
     private IdentifierMatcher matcher;
 
@@ -161,7 +161,7 @@ public class IdentifierParser {
      */
     public List<IdentifierProposal> getProposals(String existingContent) {
         parse(existingContent);
-        ArrayList<IdentifierProposal> result = new ArrayList<IdentifierProposal>();
+        ArrayList<IdentifierProposal> result = new ArrayList<>();
         if (isLegalSyntaxUpToNow()) {
             for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
                 if (isResponsibleForCurrentTextRegion(parserEntry)) {

@@ -73,7 +73,7 @@ public abstract class ValueUtil {
 
         @Override
         public Set<LocalizedString> getLocalizedIdentifiers() {
-            HashSet<LocalizedString> result = new HashSet<LocalizedString>();
+            HashSet<LocalizedString> result = new HashSet<>();
             for (LocalizedString localizedString : value.getContent().values()) {
                 result.add(localizedString);
             }
@@ -104,7 +104,7 @@ public abstract class ValueUtil {
 
         @Override
         public Set<LocalizedString> getLocalizedIdentifiers() {
-            HashSet<LocalizedString> result = new HashSet<LocalizedString>();
+            HashSet<LocalizedString> result = new HashSet<>();
             result.add(new LocalizedString(null, value.getContent()));
             return result;
         }

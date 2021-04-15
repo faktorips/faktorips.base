@@ -41,7 +41,7 @@ public class TableClassAnnGen implements IAnnotationGenerator {
             tableStructureType += TableStructureKind.MULTIPLE_CONTENTS.toString();
         }
 
-        List<String> columnNames = new ArrayList<String>();
+        List<String> columnNames = new ArrayList<>();
         for (XColumn column : table.getValidColumns()) {
             columnNames.add("\"" + column.getName() + "\"");
         }

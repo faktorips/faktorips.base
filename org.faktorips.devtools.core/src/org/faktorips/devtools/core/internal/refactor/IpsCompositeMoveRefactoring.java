@@ -32,7 +32,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
     private IIpsPackageFragment targetIpsPackageFragment;
 
     public IpsCompositeMoveRefactoring(Set<IIpsElement> ipsObjects) {
-        super(new LinkedHashSet<IIpsElement>(ipsObjects));
+        super(new LinkedHashSet<>(ipsObjects));
     }
 
     @Override
@@ -51,18 +51,18 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
                 IIpsObject ipsObject = (IIpsObject)ipsElement;
                 if (ipsObject.getIpsPackageFragment().equals(targetIpsPackageFragment)) {
                     refactoringStatus
-                    .addWarning(NLS
-                            .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
-                                    ipsObject.getName()));
+                            .addWarning(NLS
+                                    .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
+                                            ipsObject.getName()));
                     skipElement(ipsObject);
                 }
             } else if (ipsElement instanceof IIpsPackageFragment) {
                 IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
                 if (targetIpsPackageFragment.equals(packageFragment.getParentIpsPackageFragment())) {
                     refactoringStatus
-                    .addError(NLS
-                            .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
-                                    packageFragment.getName()));
+                            .addError(NLS
+                                    .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
+                                            packageFragment.getName()));
                     skipElement(packageFragment);
                 }
                 if (packageFragment.isDefaultPackage()

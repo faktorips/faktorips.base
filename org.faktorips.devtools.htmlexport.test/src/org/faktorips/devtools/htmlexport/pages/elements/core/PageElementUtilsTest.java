@@ -32,11 +32,12 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
 
         context.setDocumentedIpsObjectTypes(ipsProject.getIpsModel().getIpsObjectTypes());
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> srcFiles = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            IPageElement pageElement = new PageElementUtils(getContext()).createLinkPageElement(context, srcFile, TARGET,
+            IPageElement pageElement = new PageElementUtils(getContext()).createLinkPageElement(context, srcFile,
+                    TARGET,
                     srcFile.getName(), false);
             assertIsLink(pageElement);
         }
@@ -60,11 +61,12 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
 
         context.setDocumentedIpsObjectTypes(testedIpsObjectType);
 
-        List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> srcFiles = new ArrayList<>();
         ipsProject.findAllIpsSrcFiles(srcFiles);
 
         for (IIpsSrcFile srcFile : srcFiles) {
-            IPageElement pageElement = new PageElementUtils(getContext()).createLinkPageElement(context, srcFile, TARGET,
+            IPageElement pageElement = new PageElementUtils(getContext()).createLinkPageElement(context, srcFile,
+                    TARGET,
                     srcFile.getName(), false);
 
             if (srcFile.getIpsObjectType() == testedIpsObjectType) {
@@ -77,7 +79,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
 
     @Test
     public void testCreateTextPageElements() {
-        List<String> texts = new ArrayList<String>();
+        List<String> texts = new ArrayList<>();
         texts.add("text 1");
         texts.add("text 2");
         texts.add("text 3");

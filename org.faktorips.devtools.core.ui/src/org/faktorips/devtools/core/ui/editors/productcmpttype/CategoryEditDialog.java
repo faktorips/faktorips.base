@@ -95,13 +95,13 @@ public class CategoryEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPositionGroup(Composite page) {
-        LinkedHashMap<Position, String> options = new LinkedHashMap<Position, String>();
+        LinkedHashMap<Position, String> options = new LinkedHashMap<>();
         options.put(Position.LEFT, Messages.CategoryEditDialog_positionLeft);
         options.put(Position.RIGHT, Messages.CategoryEditDialog_positionRight);
         RadioButtonGroup<Position> positionRadioGroup = getToolkit().createRadioButtonGroup(page,
                 Messages.CategoryEditDialog_positionGroup, 2, options);
 
-        getBindingContext().bindContent(new RadioButtonGroupField<Position>(positionRadioGroup), getCategory(),
+        getBindingContext().bindContent(new RadioButtonGroupField<>(positionRadioGroup), getCategory(),
                 IProductCmptCategory.PROPERTY_POSITION);
     }
 

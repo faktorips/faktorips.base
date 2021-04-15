@@ -35,6 +35,7 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * Returns <code>true</code> if the indicated value is contained in the range, otherwise
      * <code>false</code>. Returns <code>false</code> if the value is null.
      */
+    @Override
     public boolean contains(T value);
 
     /**
@@ -43,14 +44,15 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * By convention a range is empty if the upper bound is less than the lower bound, but since
      * Faktor-IPS 20.6 it can also be marked explicitly as empty while having no bounds or step.
      */
+    @Override
     public boolean isEmpty();
 
     /**
      * The unit that defines the discrete values that are allowed to be within this range. The
-     * values that are allowed to be within this range have to meet the condition: <em>bound + x*step
-     * = value</em>, while <em>x</em> must be an integer value. The variable bound is either the upper
-     * or the lower bound while one of these needs to be different from null. The returned value can
-     * be null indicating that this is a continuous range.
+     * values that are allowed to be within this range have to meet the condition: <em>bound +
+     * x*step = value</em>, while <em>x</em> must be an integer value. The variable bound is either
+     * the upper or the lower bound while one of these needs to be different from null. The returned
+     * value can be null indicating that this is a continuous range.
      */
     public T getStep();
 

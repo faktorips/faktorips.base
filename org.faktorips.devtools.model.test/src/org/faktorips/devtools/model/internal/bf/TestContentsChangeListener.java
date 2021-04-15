@@ -19,8 +19,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 
 class TestContentsChangeListener implements ContentsChangeListener {
 
-    private List<IIpsObjectPartContainer> ipsParts = new ArrayList<IIpsObjectPartContainer>();
-    private List<Integer> eventTypes = new ArrayList<Integer>();
+    private List<IIpsObjectPartContainer> ipsParts = new ArrayList<>();
+    private List<Integer> eventTypes = new ArrayList<>();
 
     public List<IIpsObjectPartContainer> getIpsObjectParts() {
         return ipsParts;

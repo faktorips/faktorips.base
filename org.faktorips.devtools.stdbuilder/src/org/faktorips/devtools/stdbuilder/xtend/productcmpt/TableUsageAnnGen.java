@@ -24,7 +24,7 @@ public class TableUsageAnnGen implements IAnnotationGenerator {
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         return new JavaCodeFragmentBuilder()
-        .annotationLn(IpsTableUsage.class, "name = \"" + modelNode.getName() + "\"").getFragment();
+                .annotationLn(IpsTableUsage.class, "name = \"" + modelNode.getName() + "\"").getFragment();
     }
 
     @Override

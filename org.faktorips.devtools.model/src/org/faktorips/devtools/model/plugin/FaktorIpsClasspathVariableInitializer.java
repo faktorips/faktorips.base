@@ -41,7 +41,7 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     public static final String[] IPS_VARIABLES_JAVA5_SRC = new String[] { VARNAME_VALUETYPES_JAVA5_SRC,
             VARNAME_RUNTIME_JAVA5_SRC };
 
-    private final HashMap<String, Mapping> varMapping = new HashMap<String, Mapping>();
+    private final HashMap<String, Mapping> varMapping = new HashMap<>();
 
     public FaktorIpsClasspathVariableInitializer() {
         add(new Mapping(VARNAME_VALUETYPES_JAVA5_BIN, "org.faktorips.valuetypes", "/")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -67,7 +67,7 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
         Bundle bundle = Platform.getBundle(m.getPluginId());
         if (bundle == null) {
             IpsLog.log(new IpsStatus("Error initializing classpath variable " + variable //$NON-NLS-1$
-            + ". Bundle " + m.pluginId + "not found.")); //$NON-NLS-1$ //$NON-NLS-2$
+                    + ". Bundle " + m.pluginId + "not found.")); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
 
@@ -94,7 +94,7 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
             local = FileLocator.toFileURL(installLocation);
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error initializing classpath variable " + variable //$NON-NLS-1$
-            + ". Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
+                    + ". Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
             return;
         }
         try {

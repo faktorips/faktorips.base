@@ -54,7 +54,7 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
      */
     public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> RangeStructure<K, V, R> create(
             RangeType keyType) {
-        return new RangeStructure<K, V, R>(keyType);
+        return new RangeStructure<>(keyType);
     }
 
     /**
@@ -64,7 +64,7 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
             RangeType keyType,
             K key,
             V value) {
-        RangeStructure<K, V, R> structure = new RangeStructure<K, V, R>(keyType);
+        RangeStructure<K, V, R> structure = new RangeStructure<>(keyType);
         structure.put(key, value);
         return structure;
     }

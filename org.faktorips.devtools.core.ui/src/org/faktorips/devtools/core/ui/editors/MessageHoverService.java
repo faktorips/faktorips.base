@@ -12,12 +12,8 @@ package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -39,12 +35,7 @@ public abstract class MessageHoverService {
         this.viewerControl = viewerControl;
         mouseTrackListener = new HoverServiceMouseTrackListener();
         viewerControl.addMouseTrackListener(mouseTrackListener);
-        viewerControl.addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                dispose();
-            }
-        });
+        viewerControl.addDisposeListener($ -> dispose());
     }
 
     /**
@@ -213,14 +204,11 @@ public abstract class MessageHoverService {
             fHoverShell = new Shell(shell, SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_FOCUS);
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-            fHoverShell.addPaintListener(new PaintListener() {
-                @Override
-                public void paintControl(PaintEvent pe) {
-                    pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
+            fHoverShell.addPaintListener(pe -> {
+                pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
 
-                    // if (!fgCarbon)
-                    pe.gc.drawPolygon(getPolygon(true));
-                }
+                // if (!fgCarbon)
+                pe.gc.drawPolygon(getPolygon(true));
             });
         }
 

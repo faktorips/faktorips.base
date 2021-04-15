@@ -273,7 +273,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
             // this would reload the content or simply returns the existing one
             return ipsObject.getIpsSrcFile().getIpsObject();
         }
-        ArrayList<String> ids = new ArrayList<String>();
+        ArrayList<String> ids = new ArrayList<>();
         IIpsElement element = ipsElement;
         if (element instanceof IIpsObjectPartContainer) {
             IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
@@ -319,7 +319,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType) throws CoreException {
         ArgumentCheck.notNull(ipsObjectType);
 
-        Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
+        Set<IIpsSrcFile> collectedSrcFiles = new HashSet<>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
             List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(ipsObjectType);

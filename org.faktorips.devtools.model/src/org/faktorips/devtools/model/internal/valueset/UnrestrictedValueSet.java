@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.Messages;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

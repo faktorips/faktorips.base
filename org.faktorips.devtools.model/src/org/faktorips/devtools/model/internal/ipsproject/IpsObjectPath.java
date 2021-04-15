@@ -80,7 +80,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IIpsProject ipsProject;
 
     /** map with QualifiedNameTypes as keys and cached IpsSrcFiles as values. */
-    private Map<QualifiedNameType, IIpsSrcFile> lookupCache = new HashMap<QualifiedNameType, IIpsSrcFile>(1000);
+    private Map<QualifiedNameType, IIpsSrcFile> lookupCache = new HashMap<>(1000);
 
     /**
      * if set to true, the {@link IIpsObjectPathEntry entries} are read from the manifest.mf and if
@@ -132,7 +132,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     private List<IIpsProjectRefEntry> collectProjectRefEntries(IIpsObjectPathEntry[] objectPathEntries) {
-        List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
+        List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<>();
         for (IIpsObjectPathEntry entry : objectPathEntries) {
             if (isProjectRefEntry(entry)) {
                 projectRefEntries.add((IIpsProjectRefEntry)entry);
@@ -147,7 +147,7 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
-        List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
+        List<IIpsSrcFolderEntry> srcEntries = new ArrayList<>();
         for (IIpsObjectPathEntry entry : entries) {
             if (isSrcFolderEntry(entry)) {
                 srcEntries.add((IIpsSrcFolderEntry)entry);
@@ -158,7 +158,7 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsArchiveEntry[] getArchiveEntries() {
-        List<IIpsArchiveEntry> archiveEntries = new ArrayList<IIpsArchiveEntry>();
+        List<IIpsArchiveEntry> archiveEntries = new ArrayList<>();
         for (IIpsObjectPathEntry entrie : entries) {
             if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_ARCHIVE)) {
                 archiveEntries.add((IIpsArchiveEntry)entrie);
@@ -377,7 +377,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
 
-        List<IFolder> result = new ArrayList<IFolder>(entries.length);
+        List<IFolder> result = new ArrayList<>(entries.length);
         for (IIpsObjectPathEntry entrie : entries) {
             if (entrie.getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER) {
                 IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entrie;

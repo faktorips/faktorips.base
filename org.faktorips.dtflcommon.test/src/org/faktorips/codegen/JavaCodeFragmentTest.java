@@ -11,9 +11,9 @@
 package org.faktorips.codegen;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
@@ -108,7 +108,8 @@ public class JavaCodeFragmentTest {
     @Test
     public void testAppendClassName_nestedGeneric() {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName("any.package.Type<any.other.GenType, another.GenType2<xy.A, xy.B<any.other.GenType>>>");
+        fragment.appendClassName(
+                "any.package.Type<any.other.GenType, another.GenType2<xy.A, xy.B<any.other.GenType>>>");
         assertEquals("Type<GenType, GenType2<A, B<GenType>>>", fragment.getSourcecode()); //$NON-NLS-1$
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));
@@ -120,7 +121,8 @@ public class JavaCodeFragmentTest {
     @Test
     public void testAppendClassName_nestedGeneric2() {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName("any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>");
+        fragment.appendClassName(
+                "any.package.Type<any.other.GenType<ab.X,ab.Y>, another.GenType2<xy.A, xy.B<any.other.GenType>, F>, H>");
         assertEquals("Type<GenType<X, Y>, GenType2<A, B<GenType>, F>, H>", fragment.getSourcecode()); //$NON-NLS-1$
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.package.Type"));
         assertThat(fragment.getImportDeclaration().getImports(), hasItem("any.other.GenType"));

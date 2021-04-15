@@ -26,7 +26,7 @@ import org.faktorips.util.StringUtil;
 public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
 
     private String name;
-    private HashMap<String, PropertyDatatype> properties = new HashMap<String, PropertyDatatype>();
+    private HashMap<String, PropertyDatatype> properties = new HashMap<>();
 
     public TestBeanDatatype(String javaClassName) {
         ArgumentCheck.notNull(javaClassName);

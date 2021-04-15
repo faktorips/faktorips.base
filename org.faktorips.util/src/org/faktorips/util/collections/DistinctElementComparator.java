@@ -35,14 +35,14 @@ public class DistinctElementComparator<T> implements Comparator<Collection<T>>, 
     }
 
     public static <T> DistinctElementComparator<T> createComparator(Comparator<T> elementComparator) {
-        return new DistinctElementComparator<T>(elementComparator);
+        return new DistinctElementComparator<>(elementComparator);
     }
 
     @Override
     public int compare(Collection<T> o1, Collection<T> o2) {
-        TreeSet<T> sorted1 = new TreeSet<T>(elementComparator);
+        TreeSet<T> sorted1 = new TreeSet<>(elementComparator);
         sorted1.addAll(o1);
-        TreeSet<T> sorted2 = new TreeSet<T>(elementComparator);
+        TreeSet<T> sorted2 = new TreeSet<>(elementComparator);
         sorted2.addAll(o2);
         Iterator<T> iterator2 = sorted2.iterator();
         for (Iterator<T> iterator1 = sorted1.iterator(); iterator1.hasNext() && iterator2.hasNext();) {

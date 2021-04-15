@@ -48,8 +48,9 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
         IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         newProductCmpt.setProductCmptType(getPmo().getSelectedType().getQualifiedName());
         newProductCmpt.setRuntimeId(getPmo().getRuntimeId());
-        newProductCmpt.setTemplate(getPmo().getSelectedTemplate() == null ? null : getPmo().getSelectedTemplate()
-                .getName());
+        newProductCmpt.setTemplate(getPmo().getSelectedTemplate() == null ? null
+                : getPmo().getSelectedTemplate()
+                        .getName());
         return newProductCmpt;
     }
 

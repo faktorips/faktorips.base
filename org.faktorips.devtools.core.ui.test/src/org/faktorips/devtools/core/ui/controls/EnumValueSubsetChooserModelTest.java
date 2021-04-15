@@ -45,7 +45,7 @@ public class EnumValueSubsetChooserModelTest {
 
     @Test
     public void testSelectAll() {
-        List<String> initialValues = new ArrayList<String>();
+        List<String> initialValues = new ArrayList<>();
         initialValues.add("1");
         initialValues.add("two");
         initialValues.add("three");
@@ -76,7 +76,7 @@ public class EnumValueSubsetChooserModelTest {
 
     @Test
     public void testRemoveAll() {
-        List<String> initialValues = new ArrayList<String>();
+        List<String> initialValues = new ArrayList<>();
         initialValues.add("1");
         initialValues.add("two");
         initialValues.add("three");
@@ -99,7 +99,7 @@ public class EnumValueSubsetChooserModelTest {
 
     @Test
     public void testMove() {
-        List<String> initialValues = new ArrayList<String>();
+        List<String> initialValues = new ArrayList<>();
         initialValues.add("1");
         initialValues.add("two");
         initialValues.add("three");
@@ -111,7 +111,7 @@ public class EnumValueSubsetChooserModelTest {
         assertEquals(4, model.getPreDefinedValues().size());
         assertEquals(0, model.getResultingValues().size());
 
-        List<ListChooserValue> valuesToBeMoved = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valuesToBeMoved = new ArrayList<>();
         valuesToBeMoved.add(new ListChooserValue("two"));
         model.moveValuesFromPreDefinedToResulting(valuesToBeMoved);
 
@@ -122,7 +122,7 @@ public class EnumValueSubsetChooserModelTest {
         assertEquals(1, model.getResultingValues().size());
         assertEquals("two", model.getResultingValues().get(0).getValue());
 
-        valuesToBeMoved = new ArrayList<ListChooserValue>();
+        valuesToBeMoved = new ArrayList<>();
         valuesToBeMoved.add(new ListChooserValue(null));
         model.moveValuesFromPreDefinedToResulting(valuesToBeMoved);
 
@@ -136,7 +136,7 @@ public class EnumValueSubsetChooserModelTest {
 
     @Test
     public void testMoveUp() {
-        List<String> initialValues = new ArrayList<String>();
+        List<String> initialValues = new ArrayList<>();
         initialValues.add("1");
         initialValues.add("two");
         initialValues.add("three");
@@ -146,7 +146,7 @@ public class EnumValueSubsetChooserModelTest {
 
         model.moveAllValuesFromPreDefinedToResulting();
 
-        List<ListChooserValue> movedElements = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> movedElements = new ArrayList<>();
         movedElements.add(new ListChooserValue("two"));
 
         model.moveUp(movedElements);
@@ -164,7 +164,7 @@ public class EnumValueSubsetChooserModelTest {
 
     @Test
     public void testMoveDown() {
-        List<String> initialValues = new ArrayList<String>();
+        List<String> initialValues = new ArrayList<>();
         initialValues.add("1");
         initialValues.add("two");
         initialValues.add("three");
@@ -174,7 +174,7 @@ public class EnumValueSubsetChooserModelTest {
 
         model.moveAllValuesFromPreDefinedToResulting();
 
-        List<ListChooserValue> movedElements = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> movedElements = new ArrayList<>();
         movedElements.add(new ListChooserValue("two"));
 
         model.moveDown(movedElements);
@@ -268,7 +268,7 @@ public class EnumValueSubsetChooserModelTest {
     private IEnumValueSet mockEmptyValueSet() {
         IEnumValueSet valueSet = mock(IEnumValueSet.class);
 
-        List<String> valueList = new ArrayList<String>();
+        List<String> valueList = new ArrayList<>();
         when(valueSet.getValuesAsList()).thenReturn(valueList);
         when(valueSet.isEnum()).thenReturn(true);
         when(valueSet.isAbstract()).thenReturn(false);
@@ -276,7 +276,7 @@ public class EnumValueSubsetChooserModelTest {
     }
 
     protected IEnumValueSet mockValueSet(boolean enumValueSet, boolean abstractValueSet) {
-        List<String> valueList = new ArrayList<String>();
+        List<String> valueList = new ArrayList<>();
         valueList.add("1");
         valueList.add("two");
         valueList.add("THREE");

@@ -103,7 +103,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
 
     @Override
     public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws CoreException {
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> result = new ArrayList<>();
         findIpsSourceFiles(type, null, result);
         return result;
     }

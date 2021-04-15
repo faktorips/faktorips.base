@@ -30,10 +30,10 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.PersistenceUtil;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -660,7 +660,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private static final class DiscriminatorValidator extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private final InheritanceStrategy inheritanceStrategy;
-        private final List<String> discriminatorValues = new ArrayList<String>();
+        private final List<String> discriminatorValues = new ArrayList<>();
 
         // If these fields are not null errors exist in the naming of the tables
         private IPersistentTypeInfo conflictingTypeInfo;
@@ -702,7 +702,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     private static class ColumnNameCollector extends TypeHierarchyVisitor<IPolicyCmptType> {
 
-        private Map<String, Object> persistentObjectesBySameColumnName = new HashMap<String, Object>();
+        private Map<String, Object> persistentObjectesBySameColumnName = new HashMap<>();
 
         public ColumnNameCollector(IIpsProject ipsProject) {
             super(ipsProject);
@@ -756,7 +756,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             } else {
                 List<ObjectProperty> objectsUseSameColumnName = null;
                 if (objectOrObjectsSameColumnName instanceof ObjectProperty) {
-                    objectsUseSameColumnName = new ArrayList<ObjectProperty>();
+                    objectsUseSameColumnName = new ArrayList<>();
                     persistentObjectesBySameColumnName.put(columnName, objectsUseSameColumnName);
                     objectsUseSameColumnName.add((ObjectProperty)objectOrObjectsSameColumnName);
                 } else {

@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
  */
 public abstract class AbstractIpsBundleContentIndex {
 
-    private final Map<IPath, IPath> fileToModelPath = new HashMap<IPath, IPath>();
-    private final Set<QualifiedNameType> qualifiedNameTypes = new HashSet<QualifiedNameType>();
+    private final Map<IPath, IPath> fileToModelPath = new HashMap<>();
+    private final Set<QualifiedNameType> qualifiedNameTypes = new HashSet<>();
 
     /**
      * registers the given relativePath of the modelPath and stores it.
@@ -86,7 +86,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * @see #getQualifiedNameTypes(String)
      */
     public Set<QualifiedNameType> getQualifiedNameTypes() {
-        return new CopyOnWriteArraySet<QualifiedNameType>(qualifiedNameTypes);
+        return new CopyOnWriteArraySet<>(qualifiedNameTypes);
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * @see #getQualifiedNameTypes()
      */
     public Set<QualifiedNameType> getQualifiedNameTypes(String packageName) {
-        Set<QualifiedNameType> qualifiedNameTypesByPackageName = new HashSet<QualifiedNameType>();
+        Set<QualifiedNameType> qualifiedNameTypesByPackageName = new HashSet<>();
         for (QualifiedNameType qualifiedNameType : qualifiedNameTypes) {
             if (qualifiedNameType.getPackageName().equals(packageName)) {
                 qualifiedNameTypesByPackageName.add(qualifiedNameType);
@@ -119,7 +119,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * @return All non-empty packages found in this JAR file
      */
     public Set<String> getNonEmptyPackagePaths() {
-        Set<String> packageNames = new HashSet<String>();
+        Set<String> packageNames = new HashSet<>();
         for (QualifiedNameType qualifiedNameType : getQualifiedNameTypes()) {
             packageNames.add(qualifiedNameType.getPackageName());
         }

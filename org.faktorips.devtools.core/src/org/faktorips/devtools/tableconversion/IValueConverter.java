@@ -16,13 +16,13 @@ import org.faktorips.runtime.MessageList;
 /**
  * Interface for converters able to transform a string representation of a value to an instance of a
  * specific type. For example the string "29.06.2006" which represents a date in German format can
- * be transformed to <code>java.util.Date</code>, but it can also be transformed to another type which
- * is defined by any other vendor.
+ * be transformed to <code>java.util.Date</code>, but it can also be transformed to another type
+ * which is defined by any other vendor.
  * <p>
  * A converter should always return the same type in
  * <code>getExternalDataValue(String, MessageList)</code>, but has to be able to deal with different
- * types in <code>getIpsValue(Object, MessageList)</code>. So no simple cast to a specific type should
- * be done in this method.
+ * types in <code>getIpsValue(Object, MessageList)</code>. So no simple cast to a specific type
+ * should be done in this method.
  * 
  * @author Thorsten Guenther
  */

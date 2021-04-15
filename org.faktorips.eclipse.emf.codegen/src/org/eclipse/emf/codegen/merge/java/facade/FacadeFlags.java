@@ -334,8 +334,7 @@ public final class FacadeFlags {
      * </pre>
      * 
      * This is a compromise between the orders specified in sections 8.1.1, 8.3.1, 8.4.3, 8.8.3,
-     * 9.1.1, and 9.3 of <em>The Java Language 
-     * Specification, Second Edition</em> (JLS2).
+     * 9.1.1, and 9.3 of <em>The Java Language Specification, Second Edition</em> (JLS2).
      * </p>
      * <p>
      * Note that the flags of a method can include the AccVarargs flag that has no standard

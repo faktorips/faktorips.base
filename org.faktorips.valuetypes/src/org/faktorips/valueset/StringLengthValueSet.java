@@ -43,6 +43,7 @@ public class StringLengthValueSet implements ValueSet<String> {
         return maximumLength;
     }
 
+    @Override
     public boolean contains(String value) {
         if (value == null) {
             return containsNull();
@@ -50,26 +51,32 @@ public class StringLengthValueSet implements ValueSet<String> {
         return getMaximumLength() == null ? true : value.length() <= getMaximumLength();
     }
 
+    @Override
     public boolean containsNull() {
         return containsNull;
     }
 
+    @Override
     public Set<String> getValues(boolean excludeNull) {
         throw new IllegalStateException();
     }
 
+    @Override
     public boolean isDiscrete() {
         return false;
     }
 
+    @Override
     public boolean isEmpty() {
         return maximumLength == 0 && !containsNull;
     }
 
+    @Override
     public boolean isRange() {
         return false;
     }
 
+    @Override
     public int size() {
         return Integer.MAX_VALUE;
     }

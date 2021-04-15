@@ -51,7 +51,8 @@ public interface IFixDifferencesComposite extends IAdaptable {
      * An {@link IFixDifferencesComposite} would have children that also contains fixes. This method
      * getting the containing fix differences elements
      * 
-     * @return a list of {@link IFixDifferencesComposite IFixDifferencesComposites} that are children of this element
+     * @return a list of {@link IFixDifferencesComposite IFixDifferencesComposites} that are
+     *         children of this element
      */
     public List<IFixDifferencesComposite> getChildren();
 

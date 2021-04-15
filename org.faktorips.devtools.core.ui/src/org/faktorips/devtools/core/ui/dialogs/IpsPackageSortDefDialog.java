@@ -25,10 +25,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -169,12 +167,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         createTableViewer(sortComposite);
         createUpDownButtons(sortComposite);
         udpateButtonEnablement();
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                udpateButtonEnablement();
-            }
-        });
+        tableViewer.addSelectionChangedListener($ -> udpateButtonEnablement());
         tableViewer.addDragSupport(DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
                 new DragSourceAdapter() {
 
@@ -496,13 +489,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                 IpsPackageFragment packageFragment) {
             try {
                 // sort because IFolder#members makes no guarantee for order
-                SortedSet<IIpsElement> subPackages = new TreeSet<IIpsElement>(
+                SortedSet<IIpsElement> subPackages = new TreeSet<>(
                         AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
                 for (IIpsPackageFragment subPackage : packageFragment.getChildIpsPackageFragments()) {
                     subPackages.add(subPackage);
                 }
 
-                SortedSet<IIpsElement> relevantSrcFiles = new TreeSet<IIpsElement>(
+                SortedSet<IIpsElement> relevantSrcFiles = new TreeSet<>(
                         AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
                 for (IIpsSrcFile ipsSrcFile : packageFragment.getIpsSrcFiles()) {
                     if (isRelevantForSortOrder(ipsSrcFile.getIpsObjectType())) {
@@ -548,7 +541,8 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             } else {
                 Comparator<IIpsElement> childOrderComparator = packageFragment.getChildOrderComparator();
                 IIpsElement[] orderedElements = childOrderComparator instanceof DefinedOrderComparator
-                        ? ((DefinedOrderComparator)childOrderComparator).getElements() : new IIpsElement[0];
+                        ? ((DefinedOrderComparator)childOrderComparator).getElements()
+                        : new IIpsElement[0];
                 elements = addUnorderedChildren(orderedElements, packageFragment);
             }
             dirty = false;

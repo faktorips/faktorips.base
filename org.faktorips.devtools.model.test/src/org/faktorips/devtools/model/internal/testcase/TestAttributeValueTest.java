@@ -206,7 +206,8 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         ml = testAttributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNotNull(ml
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
+                .getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
         assertEquals(
                 Message.ERROR,
                 ml.getMessageByCode(
@@ -217,6 +218,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         assertFalse(testAttribute.isBasedOnModelAttribute());
         ml = testAttributeValue.validate(ipsProject);
         assertNull(ml
-                .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
+                .getMessageByCode(
+                        IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));
     }
 }

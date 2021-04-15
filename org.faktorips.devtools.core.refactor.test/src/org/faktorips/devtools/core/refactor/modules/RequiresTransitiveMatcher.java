@@ -99,9 +99,7 @@ final class RequiresTransitiveMatcher extends TypeSafeMatcher<IJavaProject> {
         Optional<RequiresDirective> requiresDirective = moduleStatements.stream()
                 .filter(RequiresDirective.class::isInstance)
                 .map(RequiresDirective.class::cast)
-                .filter(r -> {
-                    return r.getName().getFullyQualifiedName().equals(requiredModuleName);
-                })
+                .filter(r -> r.getName().getFullyQualifiedName().equals(requiredModuleName))
                 .findFirst();
         return requiresDirective;
     }

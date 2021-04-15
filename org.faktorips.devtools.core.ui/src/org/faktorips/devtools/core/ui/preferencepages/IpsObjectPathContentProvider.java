@@ -47,7 +47,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
 
         // handling attributes of IIpsSrcFolderEntries
         if (parentElement instanceof IIpsSrcFolderEntry) {
-            ArrayList<IIpsObjectPathEntryAttribute> attributes = new ArrayList<IIpsObjectPathEntryAttribute>();
+            ArrayList<IIpsObjectPathEntryAttribute> attributes = new ArrayList<>();
 
             // tocPath is always configurable
             IIpsObjectPathEntryAttribute attribute = newTocPath(entry);
@@ -109,7 +109,7 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
                 returnedElements = entries;
             } else {
                 // do filtering
-                List<IIpsObjectPathEntry> passedEntries = new ArrayList<IIpsObjectPathEntry>();
+                List<IIpsObjectPathEntry> passedEntries = new ArrayList<>();
                 for (IIpsObjectPathEntry entrie : entries) {
                     if (passesFilter(entrie)) {
                         passedEntries.add(entrie);

@@ -119,7 +119,7 @@ public abstract class AbstractCompletionProcessor implements ISubjectControlCont
         String input = contentAssistSubjectControl.getDocument().get();
         String prefix = input.substring(0, documentOffset);
 
-        List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(100);
+        List<ICompletionProposal> result = new ArrayList<>(100);
         try {
             doComputeCompletionProposals(prefix, documentOffset, result);
         } catch (Exception e) {

@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public abstract class TypeHierarchyVisitor {
 
-    private Set<Type> visitedTypes = new HashSet<Type>();
+    private Set<Type> visitedTypes = new HashSet<>();
 
     public TypeHierarchyVisitor() {
         super();

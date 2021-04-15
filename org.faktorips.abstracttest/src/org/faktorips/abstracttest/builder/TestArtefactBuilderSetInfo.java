@@ -15,9 +15,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A test implementation of the {@link IIpsArtefactBuilderSetInfo} interface. Returns the
@@ -96,7 +96,9 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     }
 
     @Override
-    public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject, String propertyName, String propertyValue) {
+    public Message validateIpsBuilderSetPropertyValue(IIpsProject ipsProject,
+            String propertyName,
+            String propertyValue) {
         return null;
     }
 

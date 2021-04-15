@@ -35,7 +35,7 @@ public class ValidationRuleMessageText extends InternationalString implements IV
 
     @Override
     public LinkedHashSet<String> getReplacementParameters() {
-        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        LinkedHashSet<String> result = new LinkedHashSet<>();
         for (LocalizedString localizedString : values()) {
             String text = localizedString.getValue();
             result.addAll(extractParameters(text));
@@ -64,7 +64,7 @@ public class ValidationRuleMessageText extends InternationalString implements IV
     }
 
     private LinkedHashSet<String> extractParameters(String text) {
-        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        LinkedHashSet<String> result = new LinkedHashSet<>();
         Matcher matcher = REPLACEMENT_PARAMETER_REGEXT.matcher(text);
         while (matcher.find()) {
             String parameterName = matcher.group();

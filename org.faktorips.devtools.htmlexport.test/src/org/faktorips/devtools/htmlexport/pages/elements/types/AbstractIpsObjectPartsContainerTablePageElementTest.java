@@ -11,8 +11,8 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +60,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
 
     @Before
     public void setUp() {
-        objectParts = new ArrayList<IIpsObjectPartContainer>();
+        objectParts = new ArrayList<>();
         doReturn(objectParts).when(pageElement).getObjectParts();
         doReturn(context).when(pageElement).getContext();
         when(context.getMessage(HtmlExportMessages.TablePageElement_headlineSince)).thenReturn(SINCE_VERSION);

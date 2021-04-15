@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
     private final IpsModel ipsModel;
-    private Set<String> fileExtensionsOfInterest = new HashSet<String>(20);
+    private Set<String> fileExtensionsOfInterest = new HashSet<>(20);
 
     public ResourceDeltaVisitor(IpsModel ipsModel) {
         this.ipsModel = ipsModel;

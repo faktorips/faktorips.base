@@ -185,8 +185,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }
 
-        for (int i = 0; i < values.size(); i++) {
-            IEnumValue value = values.get(i);
+        for (IEnumValue value : values) {
             int numberOfAttributes = value.getEnumAttributeValuesCount();
             String[] fieldsToExport = new String[numberOfAttributes];
             for (int j = 0; j < numberOfAttributes; j++) {

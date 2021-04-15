@@ -159,24 +159,23 @@ public class ConfigureJdkTask extends AbstractIpsTask {
             return;
         }
         List<File> subDirs = new ArrayList<>();
-        for (int i = 0; i < names.length; i++) {
+        for (String name : names) {
             if (monitor.isCanceled()) {
                 return;
             }
-            File file = new File(directory, names[i]);
+            File file = new File(directory, name);
             IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
             if (file.isDirectory()) {
-                if (!ignore.contains(file) && !"jre".equalsIgnoreCase(names[i])) {
+                if (!ignore.contains(file) && !"jre".equalsIgnoreCase(name)) {
                     boolean validLocation = false;
 
                     // Take the first VM install type that claims the location as a
                     // valid VM install. VM install types should be smart enough to not
                     // claim another type's VM, but just in case...
-                    for (int j = 0; j < vmTypes.length; j++) {
+                    for (IVMInstallType type : vmTypes) {
                         if (monitor.isCanceled()) {
                             return;
                         }
-                        IVMInstallType type = vmTypes[j];
                         IStatus status = type.validateInstallLocation(file);
                         if (status.isOK()) {
                             String filePath = file.getPath();

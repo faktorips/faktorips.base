@@ -57,12 +57,14 @@ public class IpsObjectPathXmlPersister {
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER,
                 Boolean.toString(path.isOutputDefinedPerSrcFolder()));
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES,
-                path.getOutputFolderForMergableSources() == null ? StringUtils.EMPTY : path
-                        .getOutputFolderForMergableSources().getProjectRelativePath().toString());
+                path.getOutputFolderForMergableSources() == null ? StringUtils.EMPTY
+                        : path
+                                .getOutputFolderForMergableSources().getProjectRelativePath().toString());
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE, path.getBasePackageNameForMergableJavaClasses());
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES,
-                path.getOutputFolderForDerivedSources() == null ? StringUtils.EMPTY : path
-                        .getOutputFolderForDerivedSources().getProjectRelativePath().toString());
+                path.getOutputFolderForDerivedSources() == null ? StringUtils.EMPTY
+                        : path
+                                .getOutputFolderForDerivedSources().getProjectRelativePath().toString());
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED, path.getBasePackageNameForDerivedJavaClasses());
 
         // entries
@@ -139,19 +141,25 @@ public class IpsObjectPathXmlPersister {
                 + System.lineSeparator()
                 + "<" + XML_TAG_NAME + " " //$NON-NLS-1$ //$NON-NLS-2$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_USE_MANIFEST + "                             Boolean flag that indicates whether the IpsObjectPath is managed within the manifest.mf. If this optional attribute is set to \"true\", then no other Attribute oder Child is allowed." //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + ATTRIBUTE_NAME_USE_MANIFEST //$NON-NLS-1$
+                + "                             Boolean flag that indicates whether the IpsObjectPath is managed within the manifest.mf. If this optional attribute is set to \"true\", then no other Attribute oder Child is allowed." //$NON-NLS-1$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER + "               Boolean flag that indicates if there are separate output folders for each source folder" //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER //$NON-NLS-1$
+                + "               Boolean flag that indicates if there are separate output folders for each source folder" //$NON-NLS-1$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES + "             The output folder for the generated artefacts that will not be deleted during a " + //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES //$NON-NLS-1$
+                + "             The output folder for the generated artefacts that will not be deleted during a " + //$NON-NLS-1$
                 "clean build cycle but may be merged with the generated content during a build cycle" //$NON-NLS-1$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE + "                     The base package for generated and merable java files" //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE //$NON-NLS-1$
+                + "                     The base package for generated and merable java files" //$NON-NLS-1$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES + "              The output folder for the generated artefacts that will be deleted during a clean build " + //$NON-NLS-1$ //$NON-NLS-2$
-                "cycle and newly generated during each build cycle" //$NON-NLS-1$
+                + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES //$NON-NLS-1$
+                + "              The output folder for the generated artefacts that will be deleted during a clean build " //$NON-NLS-1$
+                + "cycle and newly generated during each build cycle" //$NON-NLS-1$
                 + System.lineSeparator()
-                + " " + ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED + "                      The base package for generated derived java files" //$NON-NLS-1$ //$NON-NLS-2$
+                + " " + ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED //$NON-NLS-1$
+                + "                      The base package for generated derived java files" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "The IpsObjectPath is defined through one or more entries." //$NON-NLS-1$
                 + System.lineSeparator()

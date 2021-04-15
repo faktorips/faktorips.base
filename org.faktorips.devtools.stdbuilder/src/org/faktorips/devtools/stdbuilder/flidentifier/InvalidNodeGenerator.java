@@ -28,7 +28,8 @@ import org.faktorips.fl.CompilationResultImpl;
  */
 public class InvalidNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
-    public InvalidNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory, StandardBuilderSet builderSet) {
+    public InvalidNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory,
+            StandardBuilderSet builderSet) {
         super(factory, builderSet);
     }
 

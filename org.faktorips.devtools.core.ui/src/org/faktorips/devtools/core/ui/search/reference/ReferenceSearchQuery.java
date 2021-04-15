@@ -26,8 +26,8 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 /**
  * Abstract class for ReferenceSearches in the FaktorIPS object model. Subclasses are used with the
  * eclipse search ui: <code> NewSearchUI.activateSearchResultView();
-			NewSearchUI.runQueryInBackground(ISearchQuery query); </code> Subclasses must
- * implement the abstract methods <code>findReferences()</code> and
+			NewSearchUI.runQueryInBackground(ISearchQuery query); </code> Subclasses must implement
+ * the abstract methods <code>findReferences()</code> and
  * <code>getDataForResult(IIpsElement object)</code>.
  * 
  * @author Stefan Widmaier

@@ -441,7 +441,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     private List<IProductCmpt> addProductsAndLinks(IProductCmptType type, int t) throws CoreException {
-        List<IProductCmpt> products = new ArrayList<IProductCmpt>(10);
+        List<IProductCmpt> products = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
             ProductCmpt prod = newProductCmpt(type, "Product" + t + '_' + i);
             products.add(prod);

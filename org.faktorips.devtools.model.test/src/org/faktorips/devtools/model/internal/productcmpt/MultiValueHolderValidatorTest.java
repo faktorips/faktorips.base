@@ -87,7 +87,7 @@ public class MultiValueHolderValidatorTest {
         assertTrue(validator.validate().isEmpty());
 
         // single value reports an error
-        valueMessages.newError("code", "text", new ObjectProperty[0]);
+        valueMessages.newError("code", "text");
         MessageList messageList = validator.validate();
 
         assertThat(messageList.size(), is(2));
@@ -123,7 +123,7 @@ public class MultiValueHolderValidatorTest {
         assertThat(validator.validate().size(), is(0));
 
         // One single value reports an error
-        value1Messages.newError("code1", "text", new ObjectProperty[0]);
+        value1Messages.newError("code1", "text");
 
         MessageList messageList = validator.validate();
 
@@ -132,7 +132,7 @@ public class MultiValueHolderValidatorTest {
         assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
 
         // Both single values report errors
-        value2Messages.newError("code2", "text", new ObjectProperty[0]);
+        value2Messages.newError("code2", "text");
 
         messageList = validator.validate();
 

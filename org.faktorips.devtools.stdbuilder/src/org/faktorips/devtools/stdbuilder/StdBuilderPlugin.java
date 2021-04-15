@@ -72,7 +72,7 @@ public class StdBuilderPlugin extends Plugin {
     }
 
     private void loadTocEntryBuilders() {
-        tocEntryBuilderFactories = new ArrayList<ITocEntryBuilderFactory>();
+        tocEntryBuilderFactories = new ArrayList<>();
         ExtensionPoints extensionPoints = new ExtensionPoints(PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("tocEntryBuilderFactory");
         for (IExtension extension : extensions) {
@@ -90,7 +90,7 @@ public class StdBuilderPlugin extends Plugin {
     }
 
     private void loadTocEntryFactories() {
-        tocEntryFactories = new ArrayList<ITocEntryFactory<?>>();
+        tocEntryFactories = new ArrayList<>();
         ExtensionPoints extensionPoints = new ExtensionPoints(PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("tocEntryFactory");
         for (IExtension extension : extensions) {
@@ -136,7 +136,7 @@ public class StdBuilderPlugin extends Plugin {
      *         this plugin.
      */
     public List<ITocEntryBuilderFactory> getTocEntryBuilderFactories() {
-        return new ArrayList<ITocEntryBuilderFactory>(tocEntryBuilderFactories);
+        return new ArrayList<>(tocEntryBuilderFactories);
     }
 
     /**
@@ -144,6 +144,6 @@ public class StdBuilderPlugin extends Plugin {
      *         plugin.
      */
     public List<ITocEntryFactory<?>> getTocEntryFactories() {
-        return new ArrayList<ITocEntryFactory<?>>(tocEntryFactories);
+        return new ArrayList<>(tocEntryFactories);
     }
 }

@@ -10,10 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -114,13 +111,11 @@ public class NewGenerationWizard extends Wizard {
         }
 
         private void addValidationListener() {
-            pmo.addPropertyChangeListener(new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent evt) {
-                    setErrorMessage(null); // Reset error message
-                    if (pmo.getValidFrom() == null) {
-                        setErrorMessage(Messages.ChooseValidityDatePage_msgValidFromInvalid);
-                    }
+            pmo.addPropertyChangeListener($ -> {
+                // Reset error message
+                setErrorMessage(null);
+                if (pmo.getValidFrom() == null) {
+                    setErrorMessage(Messages.ChooseValidityDatePage_msgValidFromInvalid);
                 }
             });
         }
@@ -135,7 +130,7 @@ public class NewGenerationWizard extends Wizard {
             toolkit.createLabel(pageControl, Messages.ChooseValidityDatePage_labelValidFrom);
             DateControl validFromDateControl = new DateControl(pageControl, toolkit);
             Text validFromTextControl = validFromDateControl.getTextControl();
-            bindingContext.bindContent(new FormattingTextField<GregorianCalendar>(validFromTextControl,
+            bindingContext.bindContent(new FormattingTextField<>(validFromTextControl,
                     GregorianCalendarFormat.newInstance()), pmo, NewGenerationPMO.PROPERTY_VALID_FROM);
 
             // Skip existing generations

@@ -11,10 +11,8 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -48,12 +46,7 @@ public abstract class ViewerButtonComposite extends Composite implements ICompos
         }
         viewer = createViewer(this, toolkit);
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonEnabledStates();
-            }
-        });
+        viewer.addSelectionChangedListener($ -> updateButtonEnabledStates());
         Composite buttons = toolkit.createComposite(this);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);

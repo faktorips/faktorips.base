@@ -2,9 +2,9 @@ package org.faktorips.util;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class MultiMapTest {
 
-    private MultiMap<Integer, String> multiMap = new MultiMap<Integer, String>();
+    private MultiMap<Integer, String> multiMap = new MultiMap<>();
 
     @Test
     public void testPut() {
@@ -173,7 +173,7 @@ public class MultiMapTest {
 
         Collection<String> result = multiMap.get(1);
 
-        assertEquals(list, new ArrayList<String>(result));
+        assertEquals(list, new ArrayList<>(result));
     }
 
     @Test
@@ -184,7 +184,7 @@ public class MultiMapTest {
 
         Collection<String> result = multiMap.get(1);
 
-        assertEquals(list, new ArrayList<String>(result));
+        assertEquals(list, new ArrayList<>(result));
     }
 
     @Test
@@ -205,7 +205,7 @@ public class MultiMapTest {
     @Test
     public void testMerge_differentKeys() throws Exception {
         multiMap.put(1, "a");
-        MultiMap<Integer, String> otherMultiMap = new MultiMap<Integer, String>();
+        MultiMap<Integer, String> otherMultiMap = new MultiMap<>();
         otherMultiMap.put(2, "b");
 
         multiMap.merge(otherMultiMap);
@@ -223,7 +223,7 @@ public class MultiMapTest {
     @Test
     public void testMerge_sameKeys() throws Exception {
         multiMap.put(1, "a");
-        MultiMap<Integer, String> otherMultiMap = new MultiMap<Integer, String>();
+        MultiMap<Integer, String> otherMultiMap = new MultiMap<>();
         otherMultiMap.put(1, "b");
 
         multiMap.merge(otherMultiMap);
@@ -240,7 +240,7 @@ public class MultiMapTest {
     @Test
     public void testMerge_sameKeysSameValue_inList() throws Exception {
         multiMap.put(1, "a");
-        MultiMap<Integer, String> otherMultiMap = new MultiMap<Integer, String>();
+        MultiMap<Integer, String> otherMultiMap = new MultiMap<>();
         otherMultiMap.put(1, "a");
 
         multiMap.merge(otherMultiMap);
@@ -257,7 +257,7 @@ public class MultiMapTest {
     public void testMerge_sameKeysSameValue_inSet() throws Exception {
         multiMap = MultiMap.createWithSetsAsValues();
         multiMap.put(1, "a");
-        MultiMap<Integer, String> otherMultiMap = new MultiMap<Integer, String>();
+        MultiMap<Integer, String> otherMultiMap = new MultiMap<>();
         otherMultiMap.put(1, "a");
 
         multiMap.merge(otherMultiMap);
@@ -276,7 +276,7 @@ public class MultiMapTest {
         multiMap.put(1, "a", "b");
         multiMap.put(2, "m", "n");
         multiMap.put(3, "x", "y");
-        MultiMap<Integer, String> otherMultiMap = new MultiMap<Integer, String>();
+        MultiMap<Integer, String> otherMultiMap = new MultiMap<>();
         otherMultiMap.put(2, "n", "o");
         otherMultiMap.put(3, "y", "z");
         otherMultiMap.put(4, "0", "1");

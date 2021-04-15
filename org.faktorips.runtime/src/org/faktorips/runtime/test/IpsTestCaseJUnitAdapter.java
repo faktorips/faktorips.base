@@ -38,7 +38,7 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
     private IpsTestCaseBase ipsTestCase;
 
     // Contains all failures occurred during the test run for this test case
-    private List<IpsTestFailure> failures = new ArrayList<IpsTestFailure>();
+    private List<IpsTestFailure> failures = new ArrayList<>();
 
     public IpsTestCaseJUnitAdapter(IpsTestCaseBase ipsTestCase) {
         super(ipsTestCase.getName());

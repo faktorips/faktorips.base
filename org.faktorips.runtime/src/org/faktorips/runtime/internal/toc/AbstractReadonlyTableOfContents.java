@@ -59,7 +59,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         if (tocEntryFactoriesByXmlTag == null) {
             synchronized (TocEntryObject.class) {
                 if (tocEntryFactoriesByXmlTag == null) {
-                    tocEntryFactoriesByXmlTag = new HashMap<String, ITocEntryFactory<?>>();
+                    tocEntryFactoriesByXmlTag = new HashMap<>();
                     for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }

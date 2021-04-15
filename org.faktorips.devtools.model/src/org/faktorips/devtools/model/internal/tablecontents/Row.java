@@ -32,11 +32,11 @@ import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.util.ListElementMover;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -72,7 +72,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     private void initValues() {
-        values = new ArrayList<String>(Arrays.asList(new String[getNumOfColumnsViaTableContents()]));
+        values = new ArrayList<>(Arrays.asList(new String[getNumOfColumnsViaTableContents()]));
     }
 
     @Override
@@ -161,7 +161,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     private int[] moveParts(int[] indeces, boolean up) {
-        ListElementMover<String> mover = new ListElementMover<String>(values);
+        ListElementMover<String> mover = new ListElementMover<>(values);
         int[] newIndeces = mover.move(indeces, up);
         return newIndeces;
     }

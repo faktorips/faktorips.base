@@ -40,7 +40,7 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
      * Set containing all validation message codes that are monitored by this section meaning that
      * they will be indicated at the section level with an appropriate marker.
      */
-    private final Set<String> monitoredValidationMessageCodes = new HashSet<String>();
+    private final Set<String> monitoredValidationMessageCodes = new HashSet<>();
 
     private final IIpsObjectPartContainer ipsObjectPartContainer;
 

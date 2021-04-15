@@ -190,7 +190,7 @@ public class IpsBundleManifest {
      * @return A list of all configured objectDirs
      */
     public List<IPath> getObjectDirs() {
-        ArrayList<IPath> result = new ArrayList<IPath>();
+        ArrayList<IPath> result = new ArrayList<>();
         ManifestElement[] objectDirElements = getObjectDirElements();
         for (ManifestElement manifestElement : objectDirElements) {
             result.add(new Path(manifestElement.getValue()));
@@ -243,7 +243,7 @@ public class IpsBundleManifest {
     }
 
     public Map<String, String> getGeneratorConfig(String builderSetId) {
-        Map<String, String> generatorConfig = new HashMap<String, String>();
+        Map<String, String> generatorConfig = new HashMap<>();
         Attributes attributes = manifest.getMainAttributes();
         if (attributes != null) {
             String generatorConfigString = getValue(attributes, HEADER_GENERATOR_CONFIG);

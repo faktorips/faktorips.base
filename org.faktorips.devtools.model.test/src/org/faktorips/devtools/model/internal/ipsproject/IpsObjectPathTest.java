@@ -11,12 +11,12 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -729,7 +729,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ProductCmptType cmptType1 = newProductCmptType(ipsProject, "test1");
         newProductCmptType(refProject, "test2");
 
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         path.collectAllIpsSrcFilesOfSrcFolderEntries(result);
 
         assertEquals(1, result.size());

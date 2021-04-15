@@ -155,9 +155,9 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      * Returns parameter names.
      * <p>
      * Note that if parameters have been changed by {@link #setParameters(String[])} method, this
-     * method will <strong>not</strong> parse parameters, and will <strong>not</strong> return the new parameter names.
-     * This method will return either parameter names set by {@link #setParameterNames(String[])}
-     * method or original parameter names.
+     * method will <strong>not</strong> parse parameters, and will <strong>not</strong> return the
+     * new parameter names. This method will return either parameter names set by
+     * {@link #setParameterNames(String[])} method or original parameter names.
      * 
      * @see org.eclipse.emf.codegen.merge.java.facade.JMethod#getParameterNames()
      */
@@ -299,7 +299,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     @Override
     public void addException(String exceptionType) {
         if (addedExceptions == null) {
-            addedExceptions = new ArrayList<String>();
+            addedExceptions = new ArrayList<>();
         }
         addedExceptions.add(exceptionType);
         addValueToListProperty(getASTNode(), exceptionType, MethodDeclaration.THROWN_EXCEPTION_TYPES_PROPERTY,

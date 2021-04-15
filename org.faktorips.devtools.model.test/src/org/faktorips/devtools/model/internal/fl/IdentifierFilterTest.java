@@ -39,7 +39,7 @@ public class IdentifierFilterTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        List<IFlIdentifierFilterExtension> flIdentifierExtensions = new ArrayList<IFlIdentifierFilterExtension>();
+        List<IFlIdentifierFilterExtension> flIdentifierExtensions = new ArrayList<>();
         flIdentifierExtensions.add(flIdentifierExtension);
         filter = new IdentifierFilter(flIdentifierExtensions);
     }

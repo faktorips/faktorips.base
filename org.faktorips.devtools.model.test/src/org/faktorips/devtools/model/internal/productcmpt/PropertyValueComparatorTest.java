@@ -68,7 +68,7 @@ public class PropertyValueComparatorTest {
     }
 
     public static Matcher<Integer> lt(final int i) {
-        return new TypeSafeMatcher<Integer>(Integer.class) {
+        return new TypeSafeMatcher<>(Integer.class) {
 
             @Override
             public void describeTo(Description arg0) {
@@ -83,7 +83,7 @@ public class PropertyValueComparatorTest {
     }
 
     public static Matcher<Integer> gt(final int i) {
-        return new TypeSafeMatcher<Integer>(Integer.class) {
+        return new TypeSafeMatcher<>(Integer.class) {
 
             @Override
             public void describeTo(Description arg0) {

@@ -73,17 +73,13 @@ public class TypeChooserPageElement extends AbstractPageElement {
 
     private void addDisabledImage(final IpsObjectType ipsObjectType, final ICompositePageElement wrapper) {
         Display display = (Display)IIpsDecorators.getImageHandling().getResourceManager().getDevice();
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                IImageHandling imageHandling = IIpsDecorators.getImageHandling();
-                ImageDescriptor defaultImageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType);
-                ImageDescriptor disabledSharedImage = imageHandling.getDisabledImageDescriptor(defaultImageDescriptor);
-                ImageData imageData = disabledSharedImage.getImageData(100);
-                wrapper.addPageElements(new ImagePageElement(imageData, ipsObjectType.getDisplayName(), ipsObjectType
-                        .getFileExtension(), getContext()));
-            }
+        Runnable runnable = () -> {
+            IImageHandling imageHandling = IIpsDecorators.getImageHandling();
+            ImageDescriptor defaultImageDescriptor = IIpsDecorators.getDefaultImageDescriptor(ipsObjectType);
+            ImageDescriptor disabledSharedImage = imageHandling.getDisabledImageDescriptor(defaultImageDescriptor);
+            ImageData imageData = disabledSharedImage.getImageData(100);
+            wrapper.addPageElements(new ImagePageElement(imageData, ipsObjectType.getDisplayName(), ipsObjectType
+                    .getFileExtension(), getContext()));
         };
         display.syncExec(runnable);
     }

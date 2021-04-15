@@ -316,7 +316,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
     }
 
     private void editSelection() {
-        TypedSelection<IIpsObjectPathEntryAttribute> typedSelection = new TypedSelection<IIpsObjectPathEntryAttribute>(
+        TypedSelection<IIpsObjectPathEntryAttribute> typedSelection = new TypedSelection<>(
                 IIpsObjectPathEntryAttribute.class, treeViewer.getSelection());
 
         if (!typedSelection.isValid()) {
@@ -375,14 +375,11 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
     private void editSelectionTocPath(IIpsSrcFolderEntry srcFolderEntry) {
         String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
-        IInputValidator inputValidator = new IInputValidator() {
-            @Override
-            public String isValid(String newText) {
-                if (newText == null || newText.length() < 1) {
-                    return Messages.SrcFolderComposite_filename_invalid_validator;
-                }
-                return null;
+        IInputValidator inputValidator = newText -> {
+            if (newText == null || newText.length() < 1) {
+                return Messages.SrcFolderComposite_filename_invalid_validator;
             }
+            return null;
         };
         InputDialog newTocPathDialog = new InputDialog(getShell(), Messages.SrcFolderComposite_tocpath_title,
                 Messages.SrcFolderComposite_tocpath_message, tocPath, inputValidator);
@@ -451,12 +448,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             treeViewer.setInput(ipsObjectPath);
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    treeViewer.setInput(ipsObjectPath);
-                }
-            });
+            Display.getDefault().asyncExec(() -> treeViewer.setInput(ipsObjectPath));
         }
     }
 
@@ -534,17 +526,14 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
         @Override
         public void widgetSelected(SelectionEvent event) {
-            IInputValidator validator = new IInputValidator() {
-                @Override
-                public String isValid(String folderName) {
-                    if (folderName == null || folderName.length() == 0) {
-                        return Messages.SrcFolderComposite_enterFolderName_validator;
-                    }
-                    if (ipsObjectPath.getIpsProject().getProject().getFolder(folderName).exists()) {
-                        return Messages.SrcFolderComposite_folder_already_exists_validator;
-                    }
-                    return null;
+            IInputValidator validator = folderName -> {
+                if (folderName == null || folderName.length() == 0) {
+                    return Messages.SrcFolderComposite_enterFolderName_validator;
                 }
+                if (ipsObjectPath.getIpsProject().getProject().getFolder(folderName).exists()) {
+                    return Messages.SrcFolderComposite_folder_already_exists_validator;
+                }
+                return null;
             };
 
             InputDialog dialog = new InputDialog(shell, Messages.SrcFolderComposite_create_new_folder_title,

@@ -204,7 +204,7 @@ public class ProductReleaseProcessor {
     @SuppressWarnings("deprecation")
     private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
             InterruptedException {
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
         resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
             IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);

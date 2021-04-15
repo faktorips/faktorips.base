@@ -11,8 +11,8 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,9 +29,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractMapStructureTest {
 
-    private final Map<String, ResultStructure<Integer>> map = new HashMap<String, ResultStructure<Integer>>();
+    private final Map<String, ResultStructure<Integer>> map = new HashMap<>();
 
-    private final Map<String, ResultStructure<Integer>> map2 = new HashMap<String, ResultStructure<Integer>>();
+    private final Map<String, ResultStructure<Integer>> map2 = new HashMap<>();
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractMapStructure<String, ResultStructure<Integer>, Integer> abstractMapStructure;
@@ -47,35 +47,35 @@ public class AbstractMapStructureTest {
 
     @Test
     public void testPut() throws Exception {
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
+        abstractMapStructure.put("abc", new ResultStructure<>(123));
 
         assertEquals(123, abstractMapStructure.getUnique().intValue());
-        assertEquals(1, abstractMapStructure.getMap().keySet().size());
+        assertEquals(1, abstractMapStructure.getMap().size());
         assertThat(abstractMapStructure.getMap().keySet(), hasItem("abc"));
-        assertThat(abstractMapStructure.getMap().values(), hasItem(new ResultStructure<Integer>(123)));
+        assertThat(abstractMapStructure.getMap().values(), hasItem(new ResultStructure<>(123)));
     }
 
     @Test
     public void testPut_multipleSameKey() throws Exception {
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(321));
+        abstractMapStructure.put("abc", new ResultStructure<>(123));
+        abstractMapStructure.put("abc", new ResultStructure<>(321));
         ResultStructure<Integer> resultSet = createResultSet(123, 321);
 
         assertThat(abstractMapStructure.get(), hasItem(123));
         assertThat(abstractMapStructure.get(), hasItem(321));
-        assertEquals(1, abstractMapStructure.getMap().keySet().size());
+        assertEquals(1, abstractMapStructure.getMap().size());
         assertThat(abstractMapStructure.getMap().keySet(), hasItem("abc"));
         assertThat(abstractMapStructure.getMap().values(), hasItem(resultSet));
     }
 
     @Test
     public void testPut_multipleDifferentKeys() throws Exception {
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
-        abstractMapStructure.put("xyz", new ResultStructure<Integer>(321));
+        abstractMapStructure.put("abc", new ResultStructure<>(123));
+        abstractMapStructure.put("xyz", new ResultStructure<>(321));
 
         assertThat(abstractMapStructure.get(), hasItem(123));
         assertThat(abstractMapStructure.get(), hasItem(321));
-        assertEquals(2, abstractMapStructure.getMap().keySet().size());
+        assertEquals(2, abstractMapStructure.getMap().size());
         assertThat(abstractMapStructure.getMap().keySet(), hasItem("abc"));
         assertThat(abstractMapStructure.getMap().keySet(), hasItem("xyz"));
         assertEquals(123, abstractMapStructure.getMap().get("abc").getUnique().intValue());
@@ -84,8 +84,8 @@ public class AbstractMapStructureTest {
 
     @Test
     public void testMerge_sameKey() throws Exception {
-        map.put("abc", new ResultStructure<Integer>(123));
-        map2.put("abc", new ResultStructure<Integer>(321));
+        map.put("abc", new ResultStructure<>(123));
+        map2.put("abc", new ResultStructure<>(321));
 
         abstractMapStructure.merge(abstractMapStructure2);
 
@@ -99,8 +99,8 @@ public class AbstractMapStructureTest {
 
     @Test
     public void testMerge_differentKeys() throws Exception {
-        map.put("abc", new ResultStructure<Integer>(123));
-        map2.put("xyz", new ResultStructure<Integer>(321));
+        map.put("abc", new ResultStructure<>(123));
+        map2.put("xyz", new ResultStructure<>(321));
 
         abstractMapStructure.merge(abstractMapStructure2);
 
@@ -119,8 +119,8 @@ public class AbstractMapStructureTest {
      */
     @Test
     public void testMerge_callsPut() throws Exception {
-        map.put("abc", new ResultStructure<Integer>(123));
-        ResultStructure<Integer> value2 = new ResultStructure<Integer>(321);
+        map.put("abc", new ResultStructure<>(123));
+        ResultStructure<Integer> value2 = new ResultStructure<>(321);
         map2.put("xyz", value2);
 
         abstractMapStructure.merge(abstractMapStructure2);
@@ -129,9 +129,9 @@ public class AbstractMapStructureTest {
     }
 
     private ResultStructure<Integer> createResultSet(Integer... values) {
-        ResultStructure<Integer> resultSet = new ResultStructure<Integer>();
+        ResultStructure<Integer> resultSet = new ResultStructure<>();
         for (Integer value : values) {
-            ResultStructure<Integer> otherResult = new ResultStructure<Integer>(value);
+            ResultStructure<Integer> otherResult = new ResultStructure<>(value);
             resultSet.merge(otherResult);
         }
         return resultSet;
@@ -139,8 +139,8 @@ public class AbstractMapStructureTest {
 
     @Test
     public void testGet_multipleSameKey() throws Exception {
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(321));
+        abstractMapStructure.put("abc", new ResultStructure<>(123));
+        abstractMapStructure.put("abc", new ResultStructure<>(321));
 
         assertThat(abstractMapStructure.get(), hasItem(123));
         assertThat(abstractMapStructure.get(), hasItem(321));
@@ -148,8 +148,8 @@ public class AbstractMapStructureTest {
 
     @Test
     public void testGet_multipleDifferentKeys() throws Exception {
-        abstractMapStructure.put("abc", new ResultStructure<Integer>(123));
-        abstractMapStructure.put("xyz", new ResultStructure<Integer>(321));
+        abstractMapStructure.put("abc", new ResultStructure<>(123));
+        abstractMapStructure.put("xyz", new ResultStructure<>(321));
 
         assertThat(abstractMapStructure.get(), hasItem(123));
         assertThat(abstractMapStructure.get(), hasItem(321));

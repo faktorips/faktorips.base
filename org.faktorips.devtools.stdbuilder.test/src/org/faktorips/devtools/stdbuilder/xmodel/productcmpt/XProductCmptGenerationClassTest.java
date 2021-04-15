@@ -13,8 +13,8 @@ package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -109,7 +109,7 @@ public class XProductCmptGenerationClassTest {
                 modelService) {
             @Override
             public Set<XMethod> getMethods() {
-                Set<XMethod> methods = new HashSet<XMethod>(
+                Set<XMethod> methods = new HashSet<>(
                         Arrays.asList(new XMethod(superOptionalMethod, modelContext, modelService),
                                 new XMethod(superMandatoryMethod, modelContext, modelService),
                                 new XMethod(optionalOverloadedMethod, modelContext, modelService)));
@@ -139,7 +139,7 @@ public class XProductCmptGenerationClassTest {
         XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
         when(xPolicyCmptClass.isConfiguredBy(productCmptType.getQualifiedName())).thenReturn(true);
         when(xPolicyCmptClass.getAttributes())
-                .thenReturn(new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
+                .thenReturn(new HashSet<>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
 
         XProductCmptGenerationClass xGenerationClassSpy = spy(xProductCmptGenerationClass);
         doReturn(xPolicyCmptClass).when(xGenerationClassSpy).getPolicyCmptClass();

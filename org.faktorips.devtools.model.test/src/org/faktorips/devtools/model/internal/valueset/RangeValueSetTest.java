@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.internal.valueset;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -626,7 +626,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertTrue(list.isEmpty());
 
         Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<Datatype>();
+        ArrayList<Datatype> vdlist = new ArrayList<>();
         vdlist.addAll(Arrays.asList(vds));
         vdlist.add(new PrimitiveIntegerDatatype());
         IIpsProjectProperties properties = ipsProject.getProperties();

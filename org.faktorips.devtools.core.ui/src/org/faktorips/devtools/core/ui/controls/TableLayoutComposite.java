@@ -44,7 +44,7 @@ public class TableLayoutComposite extends Composite {
      */
     private static int COLUMN_TRIM = "carbon".equals(SWT.getPlatform()) ? 24 : 3; //$NON-NLS-1$
 
-    private List<ColumnLayoutData> columns = new ArrayList<ColumnLayoutData>();
+    private List<ColumnLayoutData> columns = new ArrayList<>();
 
     /**
      * Creates a new <code>TableLayoutComposite</code>.

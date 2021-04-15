@@ -38,13 +38,13 @@ public class MenuCleanerTest {
     }
 
     @Test
-        public void testAddDefaultCleanerNoAdditionsGroup() {
-            IMenuManager menuManager = new MenuManager();
-    
-            MenuCleaner.addDefaultCleaner(menuManager);
-    
-            assertEquals(IWorkbenchActionConstants.MB_ADDITIONS, menuManager.getItems()[0].getId());
-        }
+    public void testAddDefaultCleanerNoAdditionsGroup() {
+        IMenuManager menuManager = new MenuManager();
+
+        MenuCleaner.addDefaultCleaner(menuManager);
+
+        assertEquals(IWorkbenchActionConstants.MB_ADDITIONS, menuManager.getItems()[0].getId());
+    }
 
     @Test
     public void testDefaultConstructor() {
@@ -55,9 +55,9 @@ public class MenuCleanerTest {
 
     @Test
     public void testConstructor() {
-        Set<String> filteredPrefixes = new HashSet<String>();
+        Set<String> filteredPrefixes = new HashSet<>();
         filteredPrefixes.add("foo");
-        Set<String> filteredMenuGroups = new HashSet<String>();
+        Set<String> filteredMenuGroups = new HashSet<>();
         filteredMenuGroups.add("bar");
         MenuCleaner menuCleaner = new MenuCleaner(filteredPrefixes, filteredMenuGroups);
 

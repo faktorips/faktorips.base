@@ -36,7 +36,8 @@ public class DecimalValueConverter extends AbstractValueConverter {
             } catch (RuntimeException e) {
                 messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                         "" + externalDataValue, externalDataValue //$NON-NLS-1$
-                                .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                                .getClass().getName(),
+                        getSupportedDatatype().getQualifiedName()));
                 return externalDataValue.toString();
             }
         } else if (externalDataValue instanceof Number) {
@@ -44,7 +45,8 @@ public class DecimalValueConverter extends AbstractValueConverter {
         }
         messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                 "" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
-                        .getName(), getSupportedDatatype().getQualifiedName()));
+                        .getName(),
+                getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

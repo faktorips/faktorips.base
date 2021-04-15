@@ -32,7 +32,7 @@ class ValidationRules {
 
     private static final String XML_ELEMENT_VALIDATION_RULE_CONFIG = "ValidationRuleConfig";
 
-    private final Map<String, ValidationRuleConfiguration> validationRulesConfigsByName = new LinkedHashMap<String, ValidationRuleConfiguration>();
+    private final Map<String, ValidationRuleConfiguration> validationRulesConfigsByName = new LinkedHashMap<>();
     private final IProductObject productObject;
 
     public ValidationRules(IProductObject productObject) {

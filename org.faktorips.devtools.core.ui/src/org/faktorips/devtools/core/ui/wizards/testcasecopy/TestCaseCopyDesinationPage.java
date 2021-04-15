@@ -21,11 +21,9 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -107,8 +105,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     private CheckboxField checkboxFieldCopyExpectedTestValues;
 
     // Cache of available product cmpt to replace with
-    private Map<ITestPolicyCmpt, IIpsSrcFile> rootParameterProductCmpt = new HashMap<ITestPolicyCmpt, IIpsSrcFile>(10);
-    private Map<ITestPolicyCmpt, IIpsSrcFile[]> rootParameterProductCmptCandidates = new HashMap<ITestPolicyCmpt, IIpsSrcFile[]>(
+    private Map<ITestPolicyCmpt, IIpsSrcFile> rootParameterProductCmpt = new HashMap<>(10);
+    private Map<ITestPolicyCmpt, IIpsSrcFile[]> rootParameterProductCmptCandidates = new HashMap<>(
             10);
 
     public TestCaseCopyDesinationPage(UIToolkit toolkit) {
@@ -391,21 +389,18 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         tableViewer.refresh();
 
         // add selection listener to inform about replaced version
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (event.getSelection() instanceof IStructuredSelection) {
-                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)((IStructuredSelection)event.getSelection())
-                            .getFirstElement();
-                    setInfoMessageVersionIdChange(testPolicyCmpt);
-                }
+        tableViewer.addSelectionChangedListener(event -> {
+            if (event.getSelection() instanceof IStructuredSelection) {
+                ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)((IStructuredSelection)event.getSelection())
+                        .getFirstElement();
+                setInfoMessageVersionIdChange(testPolicyCmpt);
             }
         });
     }
 
     private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreException {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
-        List<ITestPolicyCmpt> result = new ArrayList<ITestPolicyCmpt>(testPolicyCmpts.length);
+        List<ITestPolicyCmpt> result = new ArrayList<>(testPolicyCmpts.length);
         for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
             IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
             if (productCmpt != null && testPolicyCmpt.hasProductCmpt()) {
@@ -436,7 +431,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             throws CoreException {
 
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
-        List<ComboCellEditor> cellEditors = new ArrayList<ComboCellEditor>(10);
+        List<ComboCellEditor> cellEditors = new ArrayList<>(10);
         DelegateCellEditor delegateCellEditor = new DelegateCellEditor(tableViewer, 1);
         ITestCase sourceTestCase = getTestCaseCopyWizard().getSourceTestCase();
         IProductCmptNamingStrategy productCmptNamingStrategy = sourceTestCase.getIpsProject()
@@ -456,8 +451,8 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
                 IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(sourceTestCase.getIpsProject(),
                         null);
 
-                List<String> content = new ArrayList<String>(allowedProductCmpt.length);
-                List<IIpsSrcFile> allowedProductCmptList = new ArrayList<IIpsSrcFile>(allowedProductCmpt.length);
+                List<String> content = new ArrayList<>(allowedProductCmpt.length);
+                List<IIpsSrcFile> allowedProductCmptList = new ArrayList<>(allowedProductCmpt.length);
                 for (IIpsSrcFile element : allowedProductCmpt) {
                     IProductCmpt productCmptCandidate = (IProductCmpt)element.getIpsObject();
                     String kindIdCandidate = productCmptNamingStrategy.getKindId(productCmptCandidate.getName());

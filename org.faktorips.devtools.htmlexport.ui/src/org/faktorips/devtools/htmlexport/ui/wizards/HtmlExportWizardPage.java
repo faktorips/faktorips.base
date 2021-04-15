@@ -323,7 +323,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
     }
 
     public IpsObjectType[] getSelectedIpsObjectTypes() {
-        List<IpsObjectType> checkedElements = new ArrayList<IpsObjectType>();
+        List<IpsObjectType> checkedElements = new ArrayList<>();
         for (Object checkedObject : objectTypesTreeViewer.getCheckedElements()) {
             if (checkedObject instanceof IpsObjectType) {
                 checkedElements.add((IpsObjectType)checkedObject);
@@ -516,8 +516,8 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
 
         private void createIpsObjectTypesArrays() {
             IpsObjectType[] ipsObjectTypes = IIpsModel.get().getIpsObjectTypes();
-            List<IpsObjectType> ipsObjectTypesPolicyList = new ArrayList<IpsObjectType>();
-            List<IpsObjectType> ipsObjectTypesProductList = new ArrayList<IpsObjectType>();
+            List<IpsObjectType> ipsObjectTypesPolicyList = new ArrayList<>();
+            List<IpsObjectType> ipsObjectTypesProductList = new ArrayList<>();
 
             for (IpsObjectType ipsObjectType : ipsObjectTypes) {
                 if (ipsObjectType.isProductDefinitionType()) {

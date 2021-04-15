@@ -31,7 +31,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
 
     public IpsElementWorkbenchAdapterAdapterFactory() {
         super();
-        workbenchAdapterMap = new HashMap<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter>();
+        workbenchAdapterMap = new HashMap<>();
         registerAdapters();
     }
 

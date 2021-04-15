@@ -114,7 +114,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
-                new TextPageElement(testObject.getTestParameterName(), getContext())), getContext());
+                        new TextPageElement(testObject.getTestParameterName(), getContext())),
+                getContext());
 
         IPageElement testAttributesTable = createTestPolicyCmptTestAttributesTable(testObject);
 
@@ -157,7 +158,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 testObject.getValidationRule());
         keyValueTable.addKeyValueRow(
                 getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_violationType), testObject
-                .getViolationType().getName());
+                        .getViolationType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 
@@ -167,7 +168,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
-                new TextPageElement(testObject.getTestParameterName(), getContext())), getContext());
+                        new TextPageElement(testObject.getTestParameterName(), getContext())),
+                getContext());
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
         keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name),

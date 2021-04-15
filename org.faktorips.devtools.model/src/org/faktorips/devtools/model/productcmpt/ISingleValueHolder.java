@@ -30,7 +30,7 @@ public interface ISingleValueHolder extends IValueHolder<IValue<?>> {
 
     @Override
     public default List<IValue<?>> getValueList() {
-        ArrayList<IValue<?>> result = new ArrayList<IValue<?>>(1);
+        ArrayList<IValue<?>> result = new ArrayList<>(1);
         result.add(getValue());
         return result;
     }

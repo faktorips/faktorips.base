@@ -27,9 +27,7 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -41,8 +39,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -200,13 +196,8 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         table.getVerticalBar().addSelectionListener(cellEditorDeactivator);
         table.getHorizontalBar().addSelectionListener(cellEditorDeactivator);
 
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
-            }
-        });
+        tableViewer.addSelectionChangedListener(
+                event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
 
     }
 
@@ -286,7 +277,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     private List<Integer> rowsFromSelection(ISelection selection) {
-        List<Integer> rowNumbers = new ArrayList<Integer>();
+        List<Integer> rowNumbers = new ArrayList<>();
         if (!selection.isEmpty()) {
             Collection<IRow> rows = TypedSelection.createAnyCount(IRow.class, selection).getElements();
 
@@ -354,7 +345,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     private List<Integer> readColumnWidths() {
         String tableSettingsKey = TABLE_SETTINGS_PREFIX + getTableContents().getQualifiedName();
         IDialogSettings settings = IpsPlugin.getDefault().getDialogSettings().getSection(tableSettingsKey);
-        List<Integer> sizes = new ArrayList<Integer>();
+        List<Integer> sizes = new ArrayList<>();
         for (int i = 0; i < getTableContents().getColumnReferencesCount(); i++) {
             String val = settings == null ? null : settings.get(COLUMN_PREFIX + i);
             try {
@@ -476,12 +467,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         final TableColumn column = new TableColumn(table, factory.getDefaultAlignment(), i);
         column.setWidth(i < numReadSizes ? columnSizes.get(i) : DEFAULT_COLUMN_WIDTH);
         final int columnIndex = i;
-        column.addListener(SWT.Resize, new Listener() {
-            @Override
-            public void handleEvent(Event arg0) {
-                storeColumnWidth(columnIndex, column);
-            }
-        });
+        column.addListener(SWT.Resize, $ -> storeColumnWidth(columnIndex, column));
         column.setText(columnName);
     }
 
@@ -540,13 +526,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
             if (button != Window.OK) {
                 msg = NLS.bind(Messages.ContentPage_msgNoStructureFound, getTableContents().getTableStructure());
                 toolkit.createLabel(formBody, msg);
-                return;
-            } else {
-                structure = getTableStructure();
             }
-        }
-        if (structure == null) {
-            return;
         }
     }
 
@@ -681,7 +661,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
             StringTokenizer tokenizer = getTokenizer(newText);
             int tokenizerItemCount = tokenizer.countTokens();
 
-            ArrayList<Integer> values = new ArrayList<Integer>(tokenizerItemCount);
+            ArrayList<Integer> values = new ArrayList<>(tokenizerItemCount);
             while (tokenizer.hasMoreTokens()) {
                 String token = tokenizer.nextToken();
                 try {

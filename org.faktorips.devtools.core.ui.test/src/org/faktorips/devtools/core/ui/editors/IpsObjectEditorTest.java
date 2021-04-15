@@ -55,7 +55,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testGetHighestSeverity_empty() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
 
         int highestSeverity = ipsObjectEditor.getHighestSeverity(messages);
 
@@ -64,7 +64,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testGetHighestSeverity_oneMessage() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
         messages.add(new UiMessage(new Message("asd", "test", Message.WARNING)));
 
         int highestSeverity = ipsObjectEditor.getHighestSeverity(messages);
@@ -74,7 +74,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testGetHighestSeverity_multipleMessages() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
         messages.add(new UiMessage(new Message("asd", "test", Message.WARNING)));
         messages.add(new UiMessage(new Message("asd", "test", Message.INFO)));
         messages.add(new UiMessage(new Message("asd", "test", Message.NONE)));
@@ -117,7 +117,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testCreateHeaderMessage_noMessage() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
 
         String headerMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
 
@@ -126,7 +126,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testCreateHeaderMessage_oneMessage() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
         messages.add(new UiMessage(new Message("asd", "test", Message.NONE)));
 
         String errorMessage = ipsObjectEditor.createHeaderMessage(messages, IMessageProvider.ERROR);
@@ -140,7 +140,7 @@ public class IpsObjectEditorTest {
 
     @Test
     public void testCreateHeaderMessage_multipleMessage() throws Exception {
-        List<IMessage> messages = new ArrayList<IMessage>();
+        List<IMessage> messages = new ArrayList<>();
         messages.add(new UiMessage(new Message("asd", "test", Message.WARNING)));
         messages.add(new UiMessage(new Message("asd", "test", Message.INFO)));
         messages.add(new UiMessage(new Message("asd", "test", Message.NONE)));

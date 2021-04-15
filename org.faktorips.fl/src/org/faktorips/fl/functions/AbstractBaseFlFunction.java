@@ -26,7 +26,7 @@ import org.faktorips.util.ArgumentCheck;
 // Should be renamed to AbstractFlFunction, but that might break the API because old code relies
 // on that class handling JavaCodeFragments
 public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends FunctionSignatureImpl implements
-FlFunction<T> {
+        FlFunction<T> {
 
     private ExprCompiler<T> compiler;
     private String description;

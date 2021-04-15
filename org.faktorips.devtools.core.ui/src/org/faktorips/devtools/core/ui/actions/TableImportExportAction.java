@@ -147,14 +147,11 @@ public class TableImportExportAction extends IpsAction {
         if (!confirmation) {
             return false;
         }
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    tableContents.getIpsSrcFile().save(true, null);
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+        Runnable run = () -> {
+            try {
+                tableContents.getIpsSrcFile().save(true, null);
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
         };
         BusyIndicator.showWhile(shell.getDisplay(), run);

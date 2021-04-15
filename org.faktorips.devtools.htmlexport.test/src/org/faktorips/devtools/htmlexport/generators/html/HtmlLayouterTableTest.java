@@ -57,7 +57,8 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         assertXpathExists(layout, "/table/tr[1][@class='" + Style.TABLE_HEADLINE.name() + "']");
         for (int row = 1; row < rows; row++) {
-            assertXpathExists(layout, "/table/tr[" + (row + 1) + "][not(@class='" + Style.TABLE_HEADLINE.name() + "')]");
+            assertXpathExists(layout,
+                    "/table/tr[" + (row + 1) + "][not(@class='" + Style.TABLE_HEADLINE.name() + "')]");
         }
     }
 

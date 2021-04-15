@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
@@ -82,7 +81,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        List<IpsObjectType> allowedTypes = new ArrayList<IpsObjectType>(Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
+        List<IpsObjectType> allowedTypes = new ArrayList<>(
+                Arrays.asList(IIpsModel.get().getIpsObjectTypes()));
         // The tests seems to expect that product component type is not a allowed type
         allowedTypes.remove(IpsObjectType.PRODUCT_CMPT_TYPE);
         config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
@@ -369,14 +369,11 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetElements() throws CoreException {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IProject project = newPlatformProject("TestJavaProject");
-                addJavaCapabilities(project);
-                IProject project2 = newPlatformProject("TestJavaProject2");
-                addJavaCapabilities(project2);
-            }
+        IWorkspaceRunnable runnable = $ -> {
+            IProject project = newPlatformProject("TestJavaProject");
+            addJavaCapabilities(project);
+            IProject project2 = newPlatformProject("TestJavaProject2");
+            addJavaCapabilities(project2);
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);

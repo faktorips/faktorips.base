@@ -117,7 +117,7 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
 
     private boolean executeArchiveOperation() {
         Object[] checkedObjects = ipsArPackageWizardPage.getCheckedElements();
-        List<IIpsPackageFragmentRoot> checkedRoots = new ArrayList<IIpsPackageFragmentRoot>(checkedObjects.length);
+        List<IIpsPackageFragmentRoot> checkedRoots = new ArrayList<>(checkedObjects.length);
         for (Object checkedObject : checkedObjects) {
             if (checkedObject instanceof IIpsPackageFragmentRoot) {
                 checkedRoots.add((IIpsPackageFragmentRoot)checkedObject);

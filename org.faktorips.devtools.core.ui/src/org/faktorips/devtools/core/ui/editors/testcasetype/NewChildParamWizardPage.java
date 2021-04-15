@@ -84,7 +84,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
         editFieldName.addChangeListener(this);
 
         uiToolkit.createLabel(c, Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        editFieldParamType = new EnumField<TestParameterType>(uiToolkit.createCombo(c), TestParameterType.class);
+        editFieldParamType = new EnumField<>(uiToolkit.createCombo(c), TestParameterType.class);
         editFieldParamType.addChangeListener(this);
 
         setControl(c);
@@ -106,14 +106,11 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
             associationChanged(editFieldAssociation.getText());
         }
 
-        wizard.postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (wizard.getShell().isDisposed()) {
-                    return;
-                }
-                updateSetPageComplete();
+        wizard.postAsyncRunnable(() -> {
+            if (wizard.getShell().isDisposed()) {
+                return;
             }
+            updateSetPageComplete();
         });
     }
 
@@ -145,15 +142,12 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      * Creates a new test parameter in an asynchronous manner.
      */
     private void postNewTestParameter() {
-        wizard.postAsyncRunnable(new Runnable() {
-            @Override
-            public void run() {
-                if (wizard.getShell().isDisposed()) {
-                    return;
-                }
-                if (association != null) {
-                    wizard.newTestParameter(association.getName());
-                }
+        wizard.postAsyncRunnable(() -> {
+            if (wizard.getShell().isDisposed()) {
+                return;
+            }
+            if (association != null) {
+                wizard.newTestParameter(association.getName());
             }
         });
     }

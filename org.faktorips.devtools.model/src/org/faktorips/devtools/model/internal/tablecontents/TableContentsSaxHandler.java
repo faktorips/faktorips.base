@@ -63,7 +63,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private final boolean readRowsContent;
 
     /** contains all column values */
-    private List<String> columns = new ArrayList<String>(20);
+    private List<String> columns = new ArrayList<>(20);
 
     /** buffer to store the characters inside the value node */
     private StringBuilder textBuilder = null;

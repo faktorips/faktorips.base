@@ -15,7 +15,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -112,7 +111,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
         configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
-        configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$        
+        configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
     }
 
     @Override
@@ -123,10 +122,5 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     /**
      * Modify listener that simply updates the owning launch configuration dialog.
      */
-    private ModifyListener basicModifyListener = new ModifyListener() {
-        @Override
-        public void modifyText(ModifyEvent evt) {
-            updateLaunchConfigurationDialog();
-        }
-    };
+    private ModifyListener basicModifyListener = $ -> updateLaunchConfigurationDialog();
 }

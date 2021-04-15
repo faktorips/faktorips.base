@@ -58,12 +58,13 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
 
     public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor)
             throws CoreException {
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
+        IProgressMonitor theMonitor = monitor;
+        if (theMonitor == null) {
+            theMonitor = new NullProgressMonitor();
         }
         TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
-                new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), monitor);
-        List<GenerationDate> result = new ArrayList<GenerationDate>();
+                new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), theMonitor);
+        List<GenerationDate> result = new ArrayList<>();
         GregorianCalendar lastDate = null;
         GenerationDate lastAdjDate = null;
         for (GregorianCalendar nextDate : validFromDates) {
@@ -87,13 +88,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             IIpsProject ipsProject,
             IProgressMonitor monitor) throws CoreException {
 
-        TreeSet<GregorianCalendar> result = new TreeSet<GregorianCalendar>(new Comparator<GregorianCalendar>() {
-            @Override
-            public int compare(GregorianCalendar o1, GregorianCalendar o2) {
-                // descending order
-                return o2.getTime().compareTo(o1.getTime());
-            }
-        });
+        TreeSet<GregorianCalendar> result = new TreeSet<>(Comparator.comparing(GregorianCalendar::getTime).reversed());
         if (productCmpt == null) {
             return result;
         }
@@ -116,14 +111,14 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
             IProgressMonitor monitor) throws CoreException {
-
-        Set<GregorianCalendar> result = new HashSet<GregorianCalendar>();
+        GregorianCalendar theSmallestValidFrom = smallestValidFrom;
+        Set<GregorianCalendar> result = new HashSet<>();
         if (monitor.isCanceled()) {
             return result;
         }
-        if (!generation.getValidFrom().before(smallestValidFrom)) {
+        if (!generation.getValidFrom().before(theSmallestValidFrom)) {
             result.add(generation.getValidFrom());
-            smallestValidFrom = generation.getValidFrom();
+            theSmallestValidFrom = generation.getValidFrom();
         }
         List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
         @SuppressWarnings("deprecation")
@@ -143,7 +138,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
                         List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
                         for (IProductCmptGeneration aGeneration : relevantGenerations) {
                             if (alreadyPassed.add(aGeneration)) {
-                                result.addAll(collectValidFromDates(aGeneration, smallestValidFrom, alreadyPassed,
+                                result.addAll(collectValidFromDates(aGeneration, theSmallestValidFrom, alreadyPassed,
                                         ipsProject, recMonitor));
                             }
                         }
@@ -157,7 +152,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     }
 
     private List<IProductCmptGeneration> getRelevantGenerations(IProductCmpt target, IIpsObjectGeneration reference) {
-        List<IProductCmptGeneration> result = new ArrayList<IProductCmptGeneration>();
+        List<IProductCmptGeneration> result = new ArrayList<>();
         for (IIpsObjectGeneration aGeneration : target.getGenerations()) {
             if (aGeneration instanceof IProductCmptGeneration) {
                 IProductCmptGeneration prodGeneration = (IProductCmptGeneration)aGeneration;

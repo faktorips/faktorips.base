@@ -27,7 +27,7 @@ public class ListTableModelContentProviderTest {
     @Test
     public void testGetElements() {
         ListTableModelContentProvider multiValueContentProvider = new ListTableModelContentProvider();
-        List<SingleValueViewItem> list = new ArrayList<SingleValueViewItem>();
+        List<SingleValueViewItem> list = new ArrayList<>();
         MultiValueTableModel model = mock(MultiValueTableModel.class);
 
         when(model.getElements()).thenReturn(list);

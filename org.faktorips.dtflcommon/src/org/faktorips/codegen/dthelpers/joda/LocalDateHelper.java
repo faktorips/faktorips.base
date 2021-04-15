@@ -84,7 +84,7 @@ public class LocalDateHelper extends BaseJodaDatatypeHelper implements ILocalDat
     public JavaCodeFragment getDateInitialization(JavaCodeFragment year, JavaCodeFragment month, JavaCodeFragment day) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new ").appendClassName(getJavaClassName()).append("(")//$NON-NLS-1$ //$NON-NLS-2$
-        .append(year).append(", ").append(month).append(", ").append(day).append(")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .append(year).append(", ").append(month).append(", ").append(day).append(")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return fragment;
     }
 

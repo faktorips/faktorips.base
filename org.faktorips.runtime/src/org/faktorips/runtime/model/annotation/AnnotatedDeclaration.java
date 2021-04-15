@@ -31,7 +31,7 @@ public class AnnotatedDeclaration {
     private static final Memoizer<Class<?>, AnnotatedDeclaration> ANNOTATED_TYPE_CACHE = Memoizer
             .of(AnnotatedDeclaration.class, AnnotatedDeclaration::new);
 
-    private final List<Class<?>> annotatedClasses = new ArrayList<Class<?>>();
+    private final List<Class<?>> annotatedClasses = new ArrayList<>();
 
     private AnnotatedDeclaration(Class<?> modelClass) {
         add(getPublishedInterface(modelClass));
@@ -102,7 +102,7 @@ public class AnnotatedDeclaration {
      * @return A list of fields that are declared in this type
      */
     public List<Field> getDeclaredFields() {
-        ArrayList<Field> result = new ArrayList<Field>();
+        ArrayList<Field> result = new ArrayList<>();
         for (Class<?> annotatedClass : annotatedClasses) {
             result.addAll(Arrays.asList(annotatedClass.getDeclaredFields()));
         }
@@ -117,7 +117,7 @@ public class AnnotatedDeclaration {
      * @return A list of fields that are declared in this type
      */
     public List<Method> getDeclaredMethods() {
-        ArrayList<Method> result = new ArrayList<Method>();
+        ArrayList<Method> result = new ArrayList<>();
         for (Class<?> annotatedClass : annotatedClasses) {
             for (Method declaredMethod : annotatedClass.getDeclaredMethods()) {
                 // filter out overridden methods generated when overriding methods use covariant
@@ -131,7 +131,7 @@ public class AnnotatedDeclaration {
     }
 
     public List<AnnotatedElement> getDeclaredElements() {
-        ArrayList<AnnotatedElement> result = new ArrayList<AnnotatedElement>();
+        ArrayList<AnnotatedElement> result = new ArrayList<>();
         result.addAll(getDeclaredFields());
         result.addAll(getDeclaredMethods());
         return result;

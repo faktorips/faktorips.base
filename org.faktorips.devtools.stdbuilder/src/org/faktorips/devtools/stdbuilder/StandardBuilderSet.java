@@ -354,7 +354,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
         // create policy component type builders
-        LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,
                 new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService));
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION,
@@ -424,7 +424,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      * @return a list containing all builders that extend this builder set.
      */
     private List<IIpsArtefactBuilder> getExtendingArtefactBuilders() {
-        List<IIpsArtefactBuilder> builders = new ArrayList<IIpsArtefactBuilder>();
+        List<IIpsArtefactBuilder> builders = new ArrayList<>();
 
         ExtensionPoints extensionPoints = new ExtensionPoints(StdBuilderPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY);
@@ -467,7 +467,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     private void initSupportedPersistenceProviderMap() {
-        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(3);
+        allSupportedPersistenceProvider = new HashMap<>(3);
         allSupportedPersistenceProvider.put(EclipseLink1PersistenceProvider.ID_ECLIPSE_LINK_1_1,
                 new EclipseLink1PersistenceProvider());
         allSupportedPersistenceProvider.put(EclipseLink25PersistenceProvider.ID_ECLIPSE_LINK_2_5,
@@ -530,7 +530,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
-        List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
+        List<IJavaElement> javaElements = new ArrayList<>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             IIpsArtefactBuilder builderTemp = builder;
             if (builderTemp instanceof ProductCmptBuilder) {
@@ -676,7 +676,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         /** Name of the extension point used to register data types and helpers. */
         private static final String DATATYPE_DEFINITION_EXTENSION_POINT = "datatypeDefinition";
 
-        private Map<Datatype, DatatypeHelper> helperMap = new HashMap<Datatype, DatatypeHelper>();
+        private Map<Datatype, DatatypeHelper> helperMap = new HashMap<>();
 
         public DatatypeHelperRegistry(IIpsProject ipsProject) {
             super();
@@ -734,7 +734,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         /** Name of the extension point used to register data types and helpers. */
         private static final String DATATYPE_HELPER_FACTORY_EXTENSION_POINT = "datatypeHelperFactory";
 
-        private Map<Datatype, DatatypeHelperFactory> factoryMap = new HashMap<Datatype, DatatypeHelperFactory>();
+        private Map<Datatype, DatatypeHelperFactory> factoryMap = new HashMap<>();
 
         public DatatypeHelperFactoryRegistry() {
             super();

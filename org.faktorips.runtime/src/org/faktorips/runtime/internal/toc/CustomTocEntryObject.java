@@ -20,7 +20,8 @@ import org.faktorips.runtime.IRuntimeRepository;
  */
 public abstract class CustomTocEntryObject<T> extends TocEntryObject {
 
-    protected CustomTocEntryObject(String ipsObjectQualifiedName, String xmlResourceName, String implementationClassName) {
+    protected CustomTocEntryObject(String ipsObjectQualifiedName, String xmlResourceName,
+            String implementationClassName) {
         super("", ipsObjectQualifiedName, xmlResourceName, implementationClassName);
     }
 

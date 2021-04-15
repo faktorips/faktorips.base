@@ -167,7 +167,8 @@ public class CardinalityTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testUndefinedCardinalityWithCreatesNewCardinality() {
-        assertThat((Class<Cardinality>)Cardinality.UNDEFINED.withMin(1).getClass(), is(sameInstance(Cardinality.class)));
+        assertThat((Class<Cardinality>)Cardinality.UNDEFINED.withMin(1).getClass(),
+                is(sameInstance(Cardinality.class)));
     }
 
 }

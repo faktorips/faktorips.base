@@ -161,7 +161,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     @Override
     public void addListener(ILabelProviderListener listener) {
         if (listeners == null) {
-            listeners = new ArrayList<ILabelProviderListener>();
+            listeners = new ArrayList<>();
         }
         listeners.add(listener);
 

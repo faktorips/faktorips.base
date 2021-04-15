@@ -49,6 +49,7 @@ public class IpsPropertyChangeSupportTest {
             this.propertyChangeSupport = propertyChangeSupport;
         }
 
+        @Override
         public void propertyChange(PropertyChangeEvent evt) {
             PropertyChangeListener listener = mock(PropertyChangeListener.class);
             propertyChangeSupport.addPropertyChangeListener(listener, true);

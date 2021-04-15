@@ -69,17 +69,17 @@ public class GeneratorModelContext {
      * could reuse a {@link ThreadLocal} variable in this model context. Every new file have to
      * clear its {@link ImportHandler} before starting generation.
      */
-    private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<ImportHandler>();
+    private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<>();
 
-    private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<GeneratorModelCaches>();
+    private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<>();
 
-    private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>>();
+    private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<>();
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 
     private final IJavaPackageStructure javaPackageStructure;
 
-    private final Map<IIpsPackageFragmentRoot, GeneratorConfig> generatorConfigs = new HashMap<IIpsPackageFragmentRoot, GeneratorConfig>();
+    private final Map<IIpsPackageFragmentRoot, GeneratorConfig> generatorConfigs = new HashMap<>();
 
     private final GeneratorConfig baseGeneratorConfig;
 
@@ -322,7 +322,7 @@ public class GeneratorModelContext {
     public List<IGeneratedJavaElement> getGeneratedJavaElements(AbstractGeneratorModelNode node) {
         List<IGeneratedJavaElement> list = getGeneratedJavaElementsMap().get(node);
         if (list == null) {
-            list = new ArrayList<IGeneratedJavaElement>();
+            list = new ArrayList<>();
             getGeneratedJavaElementsMap().put(node, list);
         }
         return list;
@@ -339,7 +339,7 @@ public class GeneratorModelContext {
     public List<IAnnotationGenerator> getAnnotationGenerator(AnnotatedJavaElementType type) {
         List<IAnnotationGenerator> result = annotationGeneratorMap.get(type);
         if (result == null) {
-            result = new ArrayList<IAnnotationGenerator>();
+            result = new ArrayList<>();
         }
         return result;
     }

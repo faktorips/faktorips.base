@@ -89,7 +89,7 @@ public class AttributeValueFormatter {
         IValueHolder<?> valueHolder = getActualValueHolder(attrValue.getValueHolder());
         if (valueHolder instanceof MultiValueHolder) {
             MultiValueHolder multiHolder = (MultiValueHolder)valueHolder;
-            List<String> stringValues = new ArrayList<String>();
+            List<String> stringValues = new ArrayList<>();
             for (ISingleValueHolder holder : multiHolder.getValue()) {
                 String formattedValue = getFormattedSingleValue(datatypeFormatter, holder);
                 stringValues.add(formattedValue);

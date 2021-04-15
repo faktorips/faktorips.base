@@ -24,8 +24,8 @@ class JJTFlParserState {
     private boolean node_created;
 
     JJTFlParserState() {
-        nodes = new java.util.Stack<Node>();
-        marks = new java.util.Stack<Integer>();
+        nodes = new java.util.Stack<>();
+        marks = new java.util.Stack<>();
         sp = 0;
         mk = 0;
     }

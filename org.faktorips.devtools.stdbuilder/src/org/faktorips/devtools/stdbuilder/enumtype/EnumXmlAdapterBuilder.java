@@ -216,7 +216,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
         String throwsJavadoc = "throws IllegalArgumentException "
                 + getLocalizedText("METHOD_UNMARSHAL_JAVADOC_ILLEGALARGUMENTEXCEPTION");
-        builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"), new String[] { throwsJavadoc });
+        builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"), throwsJavadoc);
         builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         builder.method(Modifier.PUBLIC, getEnumModelNode().getQualifiedClassName(), "unmarshal", //$NON-NLS-1$
                 new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$

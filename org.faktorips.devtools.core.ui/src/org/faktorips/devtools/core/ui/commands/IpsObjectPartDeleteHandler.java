@@ -39,7 +39,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-            final Set<IIpsSrcFile> srcFilesToSave = new HashSet<IIpsSrcFile>();
+            final Set<IIpsSrcFile> srcFilesToSave = new HashSet<>();
             try {
                 for (Object o : structuredSelection.toArray()) {
                     IIpsObjectPart objectPart = IpsObjectPartTester.castOrAdaptToPart(o, IIpsObjectPart.class);

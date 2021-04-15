@@ -52,8 +52,8 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
             IIpsProject sourceProject,
             IProgressMonitor monitor,
             AssociationType... types) {
-        List<IType> rootComponents = new ArrayList<IType>();
-        List<IType> rootCandidates = new ArrayList<IType>();
+        List<IType> rootComponents = new ArrayList<>();
+        List<IType> rootCandidates = new ArrayList<>();
 
         SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 
@@ -97,7 +97,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
     private static void removeSuperfluousRootElements(List<IType> rootCandidates,
             IIpsProject sourceProject,
             AssociationType... types) {
-        List<IType> elementsToRemove = new ArrayList<IType>();
+        List<IType> elementsToRemove = new ArrayList<>();
         for (IType rootCandidate : rootCandidates) {
             if (!isContainingSourceProjectElement(rootCandidate, sourceProject, new ArrayList<IType>(), types)) {
                 elementsToRemove.add(rootCandidate);
@@ -136,7 +136,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         }
 
         // check associations and subtypes
-        List<IType> descendants = new ArrayList<IType>();
+        List<IType> descendants = new ArrayList<>();
         descendants.addAll(getAssociationsForAssociationTypes(element, types));
         descendants.addAll(element.findSubtypes(false, false, sourceProject));
 
@@ -145,7 +145,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
                 return true;
             } else {
                 if (isContainingSourceProjectElement(descendingType, sourceProject,
-                        new ArrayList<IType>(callHierarchy), types)) {
+                        new ArrayList<>(callHierarchy), types)) {
                     return true;
                 }
             }
@@ -196,13 +196,13 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
             List<IType> components,
             AssociationType... types) {
 
-        List<IType> potentialDescendants = new ArrayList<IType>(components);
+        List<IType> potentialDescendants = new ArrayList<>(components);
         potentialDescendants.removeAll(rootComponents);
-        List<IType> descendants = new ArrayList<IType>(rootComponents);
+        List<IType> descendants = new ArrayList<>(rootComponents);
 
         // remove all descending elements from the candidates list
         while (!descendants.isEmpty()) {
-            List<IType> newDescendants = new ArrayList<IType>();
+            List<IType> newDescendants = new ArrayList<>();
             for (IType potentialDescendant : potentialDescendants) {
                 if (isAssociationTarget(potentialDescendant, descendants, types)) {
                     newDescendants.add(potentialDescendant);
@@ -240,7 +240,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      *            will be checked
      */
     protected static List<IType> getAssociatingTypes(IType target, List<IType> components, AssociationType... types) {
-        List<IType> associatingComponents = new ArrayList<IType>();
+        List<IType> associatingComponents = new ArrayList<>();
         for (IType component : components) {
             List<IType> targets = getAssociationsForAssociationTypes(component, types);
             if (targets.contains(target)) {
@@ -258,7 +258,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      */
     protected static List<IType> getAssociationsForAssociationTypes(IType sourceElement, AssociationType... types) {
         List<IAssociation> associations = sourceElement.getAssociations(types);
-        List<IType> associatingTypes = new ArrayList<IType>(associations.size());
+        List<IType> associatingTypes = new ArrayList<>(associations.size());
         for (IAssociation association : associations) {
             try {
                 associatingTypes.add(association.findTarget(sourceElement.getIpsProject()));
@@ -282,7 +282,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
     protected static List<IType> getProjectITypes(IIpsProject ipsProject, IpsObjectType... types) {
         List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(types);
 
-        List<IType> components = new ArrayList<IType>(srcFiles.size());
+        List<IType> components = new ArrayList<>(srcFiles.size());
         for (IIpsSrcFile file : srcFiles) {
             components.add((IType)file.getIpsObject());
         }
@@ -361,7 +361,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @return a list with the computed children, or an empty list if there are no children
      */
     final List<ComponentNode> getComponentNodeChildren(ComponentNode parent) {
-        List<ComponentNode> children = new ArrayList<ComponentNode>();
+        List<ComponentNode> children = new ArrayList<>();
 
         List<SubtypeComponentNode> subtypeChildren = getComponentNodeSubtypeChildren(parent);
         if (subtypeChildren != null) {
@@ -446,7 +446,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      *         contained in this project
      */
     protected static List<IType> getProjectSpecificITypes(List<IType> components, IIpsProject project) {
-        List<IType> projectComponents = new ArrayList<IType>();
+        List<IType> projectComponents = new ArrayList<>();
         for (IType iType : components) {
             if (iType.getIpsProject().getName().equals(project.getName())) {
                 projectComponents.add(iType);

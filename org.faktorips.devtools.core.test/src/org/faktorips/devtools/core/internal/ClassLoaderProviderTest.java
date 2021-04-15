@@ -22,8 +22,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -171,16 +169,11 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     }
 
     private void deleteClassFile() throws Exception {
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot()
-                        .findMember(javaProject.getOutputLocation());
-                IFile file = outFolder.getFile("SomeClass.class");
-                file.delete(true, false, null);
-            }
-
+        IWorkspaceRunnable runnable = $ -> {
+            IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot()
+                    .findMember(javaProject.getOutputLocation());
+            IFile file = outFolder.getFile("SomeClass.class");
+            file.delete(true, false, null);
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);
     }
@@ -195,17 +188,12 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
     private void createJarFileAndAppendToClasspath() throws Exception {
         final IFile jarFile = createJarFile();
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IClasspathEntry[] entries = javaProject.getRawClasspath();
-                IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
-                System.arraycopy(entries, 0, newEntries, 0, entries.length);
-                newEntries[entries.length] = JavaCore.newLibraryEntry(jarFile.getFullPath(), null, null);
-                javaProject.setRawClasspath(newEntries, javaProject.getOutputLocation(), false, null);
-            }
-
+        IWorkspaceRunnable runnable = $ -> {
+            IClasspathEntry[] entries = javaProject.getRawClasspath();
+            IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
+            System.arraycopy(entries, 0, newEntries, 0, entries.length);
+            newEntries[entries.length] = JavaCore.newLibraryEntry(jarFile.getFullPath(), null, null);
+            javaProject.setRawClasspath(newEntries, javaProject.getOutputLocation(), false, null);
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);
         waitForIndexer(); // Java indexer locks the Jar-File !!!
@@ -214,14 +202,9 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private void deleteJarFile() throws Exception {
         waitForIndexer();
 
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IFile jarFile = javaProject.getProject().getFile("Test.jar");
-                jarFile.delete(true, false, null);
-            }
-
+        IWorkspaceRunnable runnable = $ -> {
+            IFile jarFile = javaProject.getProject().getFile("Test.jar");
+            jarFile.delete(true, false, null);
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);
     }

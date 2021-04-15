@@ -40,7 +40,8 @@ public class InvalidGenerationsDeltaEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.InvalidGenerationsDeltaEntry_description, IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+        return NLS.bind(Messages.InvalidGenerationsDeltaEntry_description, IIpsModelExtensions.get()
+                .getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
     }
 
     @Override

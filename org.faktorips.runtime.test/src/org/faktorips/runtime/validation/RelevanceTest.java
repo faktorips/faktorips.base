@@ -258,13 +258,16 @@ public class RelevanceTest {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
 
         modelObject.setAllowedValuesForIntegerAttribute(null);
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.IRRELEVANT));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.IRRELEVANT));
 
         modelObject.setAllowedValuesForIntegerAttribute(OrderedValueSet.empty());
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.IRRELEVANT));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.IRRELEVANT));
 
         modelObject.setAllowedValuesForIntegerAttribute(OrderedValueSet.of(1, 2, 3));
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.MANDATORY));
 
         modelObject.setAllowedValuesForIntegerAttribute(OrderedValueSet.of(1, null, 3));
         assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.OPTIONAL));
@@ -273,16 +276,19 @@ public class RelevanceTest {
         assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.OPTIONAL));
 
         modelObject.setAllowedValuesForIntegerAttribute(new UnrestrictedValueSet<>(false));
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.MANDATORY));
 
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10));
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.MANDATORY));
 
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.OPTIONAL));
 
         modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
-        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.IRRELEVANT));
+        assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(Relevance.IRRELEVANT));
     }
 
     @Test

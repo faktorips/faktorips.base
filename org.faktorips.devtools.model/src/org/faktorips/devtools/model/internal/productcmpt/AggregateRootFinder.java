@@ -42,8 +42,8 @@ import org.faktorips.devtools.model.type.AssociationType;
  */
 public class AggregateRootFinder {
 
-    private final Set<String> nonRootCmpts = new HashSet<String>();
-    private final Map<String, IProductCmpt> potentialRootCmpts = new ConcurrentHashMap<String, IProductCmpt>(64, 0.75f,
+    private final Set<String> nonRootCmpts = new HashSet<>();
+    private final Map<String, IProductCmpt> potentialRootCmpts = new ConcurrentHashMap<>(64, 0.75f,
             1);
 
     private final IIpsProject ipsProject;
@@ -73,7 +73,7 @@ public class AggregateRootFinder {
     }
 
     protected List<IProductCmpt> getProductCmpts(List<IIpsSrcFile> prodCmptSrcFiles) {
-        List<IProductCmpt> prodCmpts = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> prodCmpts = new ArrayList<>();
         for (IIpsSrcFile srcFile : prodCmptSrcFiles) {
             IProductCmpt productCmpt;
             productCmpt = (IProductCmpt)srcFile.getIpsObject();
@@ -153,7 +153,7 @@ public class AggregateRootFinder {
     }
 
     private List<IProductCmpt> getIndexedRootCmpts() {
-        List<IProductCmpt> rootCmpts = new ArrayList<IProductCmpt>(potentialRootCmpts.values());
+        List<IProductCmpt> rootCmpts = new ArrayList<>(potentialRootCmpts.values());
         return rootCmpts;
     }
 

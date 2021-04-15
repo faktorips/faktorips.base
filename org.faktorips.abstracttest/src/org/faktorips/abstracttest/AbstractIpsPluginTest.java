@@ -49,7 +49,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -158,18 +157,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         testIpsModelExtensions.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
         setAutoBuild(false);
 
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
-                }
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
-                }
-                // also starts the listening process
-                IpsModel.reInit();
+        IWorkspaceRunnable runnable = monitor -> {
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("AbstractIpsPlugin.setUp(): Start deleting projects.");
             }
+            if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
+            }
+            // also starts the listening process
+            IpsModel.reInit();
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
@@ -266,7 +262,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new IpsProject with the given name.
      */
     protected IIpsProject newIpsProject(String name) throws CoreException {
-        List<Locale> supportedLocales = new ArrayList<Locale>();
+        List<Locale> supportedLocales = new ArrayList<>();
         supportedLocales.add(Locale.GERMAN);
         supportedLocales.add(Locale.US);
         return newIpsProject(name, supportedLocales);
@@ -379,7 +375,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         // Add the new builder set to the builder set infos of the IPS model
         IpsModel ipsModel = (IpsModel)IIpsModel.get();
         IIpsArtefactBuilderSetInfo[] builderSetInfos = ipsModel.getIpsArtefactBuilderSetInfos();
-        List<IIpsArtefactBuilderSetInfo> newBuilderSetInfos = new ArrayList<IIpsArtefactBuilderSetInfo>(
+        List<IIpsArtefactBuilderSetInfo> newBuilderSetInfos = new ArrayList<>(
                 builderSetInfos.length + 1);
         for (IIpsArtefactBuilderSetInfo info : builderSetInfos) {
             newBuilderSetInfos.add(info);
@@ -475,25 +471,21 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
-                if (!pack.exists()) {
-                    pack = root.createPackageFragment(packName, true, null);
-                }
-                IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
-                IIpsObject ipsObject = file.getIpsObject();
-                if (createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
-                    ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
-                    ((IPolicyCmptType)ipsObject).setProductCmptType(qualifiedName + "ProductCmpt");
-                    ProductCmptType productCmptType = newProductCmptType(root, qualifiedName + "ProductCmpt");
-                    productCmptType.setConfigurationForPolicyCmptType(true);
-                    productCmptType.setPolicyCmptType(qualifiedName);
-                } else if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
-                    ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
-                }
+        IWorkspaceRunnable runnable = $ -> {
+            IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
+            if (!pack.exists()) {
+                pack = root.createPackageFragment(packName, true, null);
+            }
+            IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
+            IIpsObject ipsObject = file.getIpsObject();
+            if (createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
+                ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(true);
+                ((IPolicyCmptType)ipsObject).setProductCmptType(qualifiedName + "ProductCmpt");
+                ProductCmptType productCmptType = newProductCmptType(root, qualifiedName + "ProductCmpt");
+                productCmptType.setConfigurationForPolicyCmptType(true);
+                productCmptType.setPolicyCmptType(qualifiedName);
+            } else if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
+                ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
             }
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);
@@ -1266,9 +1258,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         boolean writeOk = false;
         try {
-            prop.getWriteMethod().invoke(object, new Object[] { testValueToSet });
+            prop.getWriteMethod().invoke(object, testValueToSet);
             writeOk = true;
-            Object retValue = prop.getReadMethod().invoke(object, new Object[0]);
+            Object retValue = prop.getReadMethod().invoke(object);
             assertEquals("Getter method for property " + propertyName + " of class " + clazz.getName()
                     + " does not return the expected value", testValueToSet, retValue);
             assertNotNull("Setter method for property " + propertyName + " of class " + clazz.getName()

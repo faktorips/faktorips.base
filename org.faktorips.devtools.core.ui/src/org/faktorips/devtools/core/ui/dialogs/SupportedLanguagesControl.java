@@ -63,7 +63,7 @@ public final class SupportedLanguagesControl extends EditTableControl {
     protected Object addElement() {
         Locale addedLocale = null;
 
-        LocaleSelectionDialog dialog = new LocaleSelectionDialog(getShell(), new HashSet<Locale>(locales));
+        LocaleSelectionDialog dialog = new LocaleSelectionDialog(getShell(), new HashSet<>(locales));
         int returnCode = dialog.open();
         if (returnCode == LocaleSelectionDialog.OK) {
             addedLocale = dialog.getFirstResult();

@@ -12,9 +12,7 @@ package org.faktorips.devtools.core.ui.controls.tableedit;
 
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -82,12 +80,7 @@ public class EditTableControlViewer {
     private void createViewers() {
         tableViewer = new TableViewer(uiBuilder.getTable());
         tableViewer.setUseHashlookup(true);
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonsEnabledState();
-            }
-        });
+        tableViewer.addSelectionChangedListener($ -> updateButtonsEnabledState());
     }
 
     private void updateButtonsEnabledState() {

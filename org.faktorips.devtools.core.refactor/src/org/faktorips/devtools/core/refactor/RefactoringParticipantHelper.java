@@ -125,7 +125,7 @@ public abstract class RefactoringParticipantHelper {
 
         // Assure that every status message is only contained and thus shown once
         RefactoringStatus finalStatus = new RefactoringStatus();
-        List<String> messages = new ArrayList<String>(status.getEntries().length);
+        List<String> messages = new ArrayList<>(status.getEntries().length);
         for (RefactoringStatusEntry entry : status.getEntries()) {
             if (messages.contains(entry.getMessage())) {
                 continue;
@@ -202,8 +202,8 @@ public abstract class RefactoringParticipantHelper {
      * The elements will be sorted in such a way that types are located at the very end of the list.
      */
     private List<IJavaElement> sortJavaElements(List<IJavaElement> javaElements) {
-        List<IType> collectedTypes = new ArrayList<IType>(2);
-        List<IJavaElement> sortedJavaElements = new ArrayList<IJavaElement>(getNumberOfJavaElementsToRefactor());
+        List<IType> collectedTypes = new ArrayList<>(2);
+        List<IJavaElement> sortedJavaElements = new ArrayList<>(getNumberOfJavaElementsToRefactor());
         for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
             if (javaElements.get(i).getElementType() == IJavaElement.TYPE) {
                 collectedTypes.add((IType)javaElements.get(i));
@@ -247,11 +247,11 @@ public abstract class RefactoringParticipantHelper {
     }
 
     private void initializeOriginalJavaMembersByType() {
-        originalJavaMembersByType = new HashMap<IType, List<IMember>>();
+        originalJavaMembersByType = new HashMap<>();
         for (IJavaElement originalJavaElement : originalJavaElements) {
             if (originalJavaElement instanceof IField || originalJavaElement instanceof IMethod) {
                 IType type = (IType)originalJavaElement.getParent();
-                List<IMember> members = originalJavaMembersByType.computeIfAbsent(type, $ -> new ArrayList<IMember>());
+                List<IMember> members = originalJavaMembersByType.computeIfAbsent(type, $ -> new ArrayList<>());
                 members.add((IMember)originalJavaElement);
             }
         }

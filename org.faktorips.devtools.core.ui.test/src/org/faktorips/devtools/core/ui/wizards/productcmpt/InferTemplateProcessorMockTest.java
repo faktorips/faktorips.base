@@ -194,7 +194,7 @@ public class InferTemplateProcessorMockTest {
 
     private List<IPropertyValue> mockPropertyValues(IIpsSrcFile srcFile,
             Class<? extends IPropertyValue> propValueClass) {
-        List<IPropertyValue> propertyValues = new ArrayList<IPropertyValue>();
+        List<IPropertyValue> propertyValues = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             String name = propValueClass.getSimpleName() + i;
             IPropertyValue propertyValue = mock(IPropertyValue.class,
@@ -216,7 +216,7 @@ public class InferTemplateProcessorMockTest {
         mockPropertyValues.addAll(mockPropertyValues(productDirtySrcFile, propValueClass));
         for (IPropertyValue templateValue : templateValues) {
             Function<IPropertyValue, Object> elementToValueFunction = getValueFunction(propValueClass);
-            Histogram<Object, IPropertyValue> histogram = new Histogram<Object, IPropertyValue>(elementToValueFunction,
+            Histogram<Object, IPropertyValue> histogram = new Histogram<>(elementToValueFunction,
                     histrogramValues(mockPropertyValues, templateValue.getPropertyName()));
             when(histograms.get(templateValue.getIdentifier())).thenReturn(histogram);
         }
@@ -224,7 +224,7 @@ public class InferTemplateProcessorMockTest {
     }
 
     private List<IPropertyValue> histrogramValues(List<IPropertyValue> mockPropertyValues, String propertyName) {
-        ArrayList<IPropertyValue> result = new ArrayList<IPropertyValue>();
+        ArrayList<IPropertyValue> result = new ArrayList<>();
         for (IPropertyValue propertyValue : mockPropertyValues) {
             if (propertyValue.getPropertyName().equals(propertyName)) {
                 result.add(propertyValue);

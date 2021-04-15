@@ -41,7 +41,7 @@ class ProductCmptGenerationsDeltaViewItem {
     private static final GregorianCalendarFormat formatter = GregorianCalendarFormat.newInstance();
 
     ProductCmptGenerationsDeltaViewItem(ProductCmptGenerationToTypeDelta delta) {
-        validFromDates = new ArrayList<GregorianCalendar>();
+        validFromDates = new ArrayList<>();
         validFromDates.add(delta.getPropertyValueContainer().getValidFrom());
         this.delta = delta;
     }

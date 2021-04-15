@@ -37,7 +37,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
 
     private final IComputable<K, V> computable;
 
-    private final ReferenceQueue<V> queue = new ReferenceQueue<V>();
+    private final ReferenceQueue<V> queue = new ReferenceQueue<>();
 
     /**
      * The constructor to create a {@link Memoizer} with default values for the internal
@@ -49,7 +49,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
      */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;
-        cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>();
+        cache = new ConcurrentHashMap<>();
     }
 
     /**
@@ -64,7 +64,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
      */
     public Memoizer(IComputable<K, V> computable, int initSize, float loadFactor, int concurrencyLevel) {
         this.computable = computable;
-        cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>(initSize, loadFactor, concurrencyLevel);
+        cache = new ConcurrentHashMap<>(initSize, loadFactor, concurrencyLevel);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
      * @return a new {@link IComputable}
      */
     public static <K, V> Memoizer<K, V> of(Class<? super V> valueClass, Function<K, V> function) {
-        return new Memoizer<K, V>(IComputable.of(valueClass, function));
+        return new Memoizer<>(IComputable.of(valueClass, function));
     }
 
     @Override
@@ -88,19 +88,14 @@ public class Memoizer<K, V> implements IComputable<K, V> {
         while (true) {
             Future<SoftValue<V>> future = cache.get(key);
             if (future == null) {
-                Callable<SoftValue<V>> eval = new Callable<SoftValue<V>>() {
-
-                    @Override
-                    public SoftValue<V> call() throws Exception {
-                        V computed = computable.compute(key);
-                        if (computed == null) {
-                            return null;
-                        }
-                        return new SoftValue<V>(key, computed, queue);
+                Callable<SoftValue<V>> eval = () -> {
+                    V computed = computable.compute(key);
+                    if (computed == null) {
+                        return null;
                     }
-
+                    return new SoftValue<>(key, computed, queue);
                 };
-                FutureTask<SoftValue<V>> futureTask = new FutureTask<SoftValue<V>>(eval);
+                FutureTask<SoftValue<V>> futureTask = new FutureTask<>(eval);
                 processQueue();
                 future = cache.putIfAbsent(key, futureTask);
                 if (future == null) {

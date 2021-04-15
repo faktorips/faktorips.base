@@ -103,7 +103,7 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     public Set<XMethod> getOptionalFormulas() {
-        Set<XMethod> optionalMethods = new HashSet<XMethod>();
+        Set<XMethod> optionalMethods = new HashSet<>();
         Set<XMethod> methods = getMethods();
         for (XMethod xMethod : methods) {
             if (xMethod.isFormulaOptional() && !xMethod.isOverloadsFormula()) {
@@ -120,7 +120,7 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     public Set<XPolicyAttribute> getConfiguredAttributesIncludingAbstract() {
-        return getConfiguredAttributes(a -> a.isChangingOverTime());
+        return getConfiguredAttributes(XPolicyAttribute::isChangingOverTime);
     }
 
 }

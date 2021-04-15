@@ -97,13 +97,7 @@ public class ListComparatorTest {
         List<Integer> list1 = Arrays.asList(13, 2, 3);
         List<Integer> list2 = Arrays.asList(13, 12, 3);
 
-        Comparator<Integer> customComparator = new Comparator<Integer>() {
-
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        };
+        Comparator<Integer> customComparator = Comparator.comparing(i -> i.toString());
         assertThat(ListComparator.listComparator(customComparator).compare(list1, list2), is(1));
         assertThat(ListComparator.listComparator(customComparator).compare(list2, list1), is(-1));
     }
@@ -113,7 +107,7 @@ public class ListComparatorTest {
     }
 
     private static <T> Comparator<T> naturalComparator() {
-        return new NaturalComparator<T>();
+        return new NaturalComparator<>();
     }
 
     private static class NaturalComparator<T> implements Comparator<T> {

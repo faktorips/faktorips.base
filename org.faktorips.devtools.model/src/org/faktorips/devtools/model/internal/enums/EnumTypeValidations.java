@@ -20,10 +20,10 @@ import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A class that contains validations of the model class <code>IEnumType</code> that are also used in
@@ -174,7 +174,7 @@ public class EnumTypeValidations {
 
     private static class SupertypeCollector extends EnumTypeHierarchyVisitor {
 
-        private List<IEnumType> superTypes = new ArrayList<IEnumType>();
+        private List<IEnumType> superTypes = new ArrayList<>();
 
         public SupertypeCollector(IIpsProject ipsProject) {
             super(ipsProject);

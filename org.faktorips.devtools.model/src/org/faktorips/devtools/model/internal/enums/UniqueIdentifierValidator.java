@@ -40,7 +40,7 @@ class UniqueIdentifierValidator {
 
     private IEnumType enumType;
 
-    private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<Integer, UniqueIdentifierValidator.AttributeValues>(
+    private Map<Integer, AttributeValues> columnAttributeValues = new ConcurrentHashMap<>(
             16, 0.75f, 1);
 
     public UniqueIdentifierValidator(EnumValueContainer container) {
@@ -82,9 +82,9 @@ class UniqueIdentifierValidator {
     }
 
     public List<String> getUniqueIdentifierViolations(IEnumAttributeValue enumAttributeValue) {
-        ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy = new ConcurrentHashMap<Integer, AttributeValues>(
+        ConcurrentHashMap<Integer, AttributeValues> columnAttributeValuesCopy = new ConcurrentHashMap<>(
                 columnAttributeValues);
-        List<String> violatingString = new ArrayList<String>();
+        List<String> violatingString = new ArrayList<>();
         Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
         int index = getEnumAttributeIndex(enumAttributeValue);
         AttributeValues attributeValues = getAttributeValues(columnAttributeValuesCopy, index);
@@ -136,7 +136,7 @@ class UniqueIdentifierValidator {
 
     private static class AttributeValues {
 
-        private Map<LocalizedString, Integer> identifierCounts = new ConcurrentHashMap<LocalizedString, Integer>(16,
+        private Map<LocalizedString, Integer> identifierCounts = new ConcurrentHashMap<>(16,
                 0.75f, 1);
 
         public void addIdentifier(LocalizedString identifier) {

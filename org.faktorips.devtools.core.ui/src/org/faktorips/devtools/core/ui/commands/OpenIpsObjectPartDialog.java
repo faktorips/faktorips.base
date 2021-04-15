@@ -41,7 +41,7 @@ public class OpenIpsObjectPartDialog extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
 
-        TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class, currentSelection);
+        TypedSelection<IAdaptable> typedSelection = new TypedSelection<>(IAdaptable.class, currentSelection);
         if (typedSelection.isValid()) {
             IAdaptable firstElement = typedSelection.getFirstElement();
 

@@ -230,7 +230,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             return Collections.EMPTY_LIST;
         }
 
-        List<String[]> result = new ArrayList<String[]>();
+        List<String[]> result = new ArrayList<>();
         MessageList ml = new MessageList();
         CSVReader reader = null;
         try {

@@ -45,7 +45,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text text = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet, ipsProject);
-        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet, ipsProject));
+        return new FormattingTextField<>(text, getInputFormat(datatype, valueSet, ipsProject));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet, ipsProject));
+        return new FormattingTextField<>(text, getInputFormat(datatype, valueSet, ipsProject));
     }
 
 }

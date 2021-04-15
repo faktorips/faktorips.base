@@ -50,7 +50,7 @@ final class IpsObjectContentProposalProvider implements IContentProposalProvider
     public IContentProposal[] getProposals(String contents, int position) {
         String content = StringUtils.left(contents, position);
 
-        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+        List<IContentProposal> proposals = new ArrayList<>();
 
         for (String value : ipsObjects) {
             if (isFittingContent(value, content)) {

@@ -95,7 +95,7 @@ public class MultiValueSubsetChooserModelTest {
 
     @Test
     public void testGetValueIndices() {
-        List<ListChooserValue> stringValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> stringValues = new ArrayList<>();
         stringValues.add(new ListChooserValue("A"));
         stringValues.add(new ListChooserValue("C"));
         stringValues.add(new ListChooserValue("2"));
@@ -111,7 +111,7 @@ public class MultiValueSubsetChooserModelTest {
     public void moveValuesUp() {
         model = spy(model);
 
-        List<ListChooserValue> valuesToMove = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valuesToMove = new ArrayList<>();
         valuesToMove.add(new ListChooserValue("B"));
         valuesToMove.add(new ListChooserValue("1"));
         model.move(valuesToMove, true);
@@ -130,7 +130,7 @@ public class MultiValueSubsetChooserModelTest {
     public void moveValuesDown() {
         model = spy(model);
 
-        List<ListChooserValue> valuesToMove = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valuesToMove = new ArrayList<>();
         valuesToMove.add(new ListChooserValue("B"));
         valuesToMove.add(new ListChooserValue("1"));
         model.move(valuesToMove, false);
@@ -149,7 +149,7 @@ public class MultiValueSubsetChooserModelTest {
     public void removeFromResultingValues() {
         model = spy(model);
 
-        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valueList = new ArrayList<>();
         valueList.add(new ListChooserValue("B"));
         model.removeFromResultingValues(valueList);
         verify(model).updateMultiValueHolder();
@@ -165,7 +165,7 @@ public class MultiValueSubsetChooserModelTest {
     public void addToResultingValues() {
         model = spy(model);
 
-        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valueList = new ArrayList<>();
         valueList.add(new ListChooserValue("X"));
         model.addToResultingValues(valueList);
         verify(model).updateMultiValueHolder();
@@ -186,7 +186,7 @@ public class MultiValueSubsetChooserModelTest {
         model = spy(model);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-        List<ListChooserValue> valueList = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> valueList = new ArrayList<>();
         valueList.add(new ListChooserValue("X"));
         model.addToResultingValues(valueList);
 

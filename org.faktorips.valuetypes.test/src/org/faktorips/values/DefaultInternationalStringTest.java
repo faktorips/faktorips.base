@@ -48,7 +48,7 @@ public class DefaultInternationalStringTest {
         englishLocalizedString = new LocalizedString(Locale.ENGLISH, ENGLISH_TEXT);
         germanLocalizedString = new LocalizedString(Locale.GERMAN, GERMAN_TEXT);
         koreanLocalizedString = new LocalizedString(Locale.KOREAN, KOREAN_TEXT);
-        List<LocalizedString> list = new ArrayList<LocalizedString>();
+        List<LocalizedString> list = new ArrayList<>();
         list.add(englishLocalizedString);
         list.add(germanLocalizedString);
         internationalString = new DefaultInternationalString(list, DEFAULT_LOCALE);
@@ -95,7 +95,7 @@ public class DefaultInternationalStringTest {
 
         LocalizedString english2 = new LocalizedString(new Locale("en"), new String(ENGLISH_TEXT));
         LocalizedString german2 = new LocalizedString(new Locale("de"), new String(GERMAN_TEXT));
-        List<LocalizedString> list = new ArrayList<LocalizedString>();
+        List<LocalizedString> list = new ArrayList<>();
         list.add(english2);
         list.add(german2);
         InternationalString internationalString2 = new DefaultInternationalString(list, DEFAULT_LOCALE);

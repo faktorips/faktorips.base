@@ -31,7 +31,7 @@ public class IpsSearchWorkingSetScope extends AbstractIpsSearchScope {
 
     @Override
     protected List<?> getSelectedObjects() {
-        List<Object> selectedObjects = new ArrayList<Object>();
+        List<Object> selectedObjects = new ArrayList<>();
 
         for (IWorkingSet workingSet : workingSets) {
             selectedObjects.addAll(Arrays.asList(workingSet.getElements()));
@@ -48,7 +48,7 @@ public class IpsSearchWorkingSetScope extends AbstractIpsSearchScope {
 
     @Override
     protected List<String> getNamesOfSelectedObjects() {
-        List<String> namesOfSelectedObjects = new ArrayList<String>();
+        List<String> namesOfSelectedObjects = new ArrayList<>();
 
         for (IWorkingSet workingSet : workingSets) {
             namesOfSelectedObjects.add(workingSet.getName());

@@ -56,7 +56,7 @@ import org.faktorips.fl.parser.SimpleNode;
  */
 public class IdentifierVisitor implements FlParserVisitor {
 
-    private Map<IdentifierNode, Integer> identifiers = new HashMap<IdentifierNode, Integer>();
+    private Map<IdentifierNode, Integer> identifiers = new HashMap<>();
 
     private final String expressionText;
 

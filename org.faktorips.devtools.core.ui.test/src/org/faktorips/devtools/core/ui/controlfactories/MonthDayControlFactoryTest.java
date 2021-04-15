@@ -9,21 +9,21 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controlfactories;
 
- import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.MonthDayDatatype;
 import org.junit.Test;
 
- public class MonthDayControlFactoryTest {
+public class MonthDayControlFactoryTest {
 
-     @Test
-     public void testIsFactoryFor() {
-         MonthDayControlFactory f = new MonthDayControlFactory();
-         assertFalse(f.isFactoryFor(null));
-         assertFalse(f.isFactoryFor(Datatype.INTEGER));
-         assertTrue(f.isFactoryFor(new MonthDayDatatype()));
-     }
+    @Test
+    public void testIsFactoryFor() {
+        MonthDayControlFactory f = new MonthDayControlFactory();
+        assertFalse(f.isFactoryFor(null));
+        assertFalse(f.isFactoryFor(Datatype.INTEGER));
+        assertTrue(f.isFactoryFor(new MonthDayDatatype()));
+    }
 
- }
+}

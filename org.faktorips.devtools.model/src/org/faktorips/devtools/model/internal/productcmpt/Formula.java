@@ -143,7 +143,7 @@ public class Formula extends Expression implements IFormula {
     public List<IAttribute> findMatchingProductCmptTypeAttributes() {
         List<IAttribute> allAttributes = super.findMatchingProductCmptTypeAttributes();
         if (!getPropertyValueContainer().isChangingOverTimeContainer()) {
-            List<IAttribute> notChangingOverTimeAttributes = new ArrayList<IAttribute>();
+            List<IAttribute> notChangingOverTimeAttributes = new ArrayList<>();
             for (IAttribute attribute : allAttributes) {
                 if (!((ProductCmptTypeAttribute)attribute).isChangingOverTime()) {
                     notChangingOverTimeAttributes.add(attribute);

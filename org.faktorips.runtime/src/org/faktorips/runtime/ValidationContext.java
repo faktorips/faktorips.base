@@ -26,7 +26,7 @@ public class ValidationContext implements IValidationContext {
 
     private final Locale locale;
 
-    private final Map<String, Object> propertyValues = new HashMap<String, Object>();
+    private final Map<String, Object> propertyValues = new HashMap<>();
 
     private final ClassLoader resourceClassLoader;
 

@@ -359,7 +359,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
     public void testGetIpsTestCaseStartingWith() {
         assertIpsTestCasesStartingWith("test", new String[] { "test.CalculationTest1", "test.CalculationTest2" });
         assertIpsTestCasesStartingWith("test.CalculationTest", new String[] { "test.CalculationTest1",
-        "test.CalculationTest2" });
+                "test.CalculationTest2" });
         assertIpsTestCasesStartingWith("test.CalculationTest1", new String[] { "test.CalculationTest1" });
         assertIpsTestCasesStartingWith("test1", new String[] {});
     }

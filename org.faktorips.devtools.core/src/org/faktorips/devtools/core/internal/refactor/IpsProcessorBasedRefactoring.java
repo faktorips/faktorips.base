@@ -63,7 +63,7 @@ public final class IpsProcessorBasedRefactoring extends ProcessorBasedRefactorin
 
     @Override
     public Set<IIpsElement> getIpsElements() {
-        HashSet<IIpsElement> elements = new HashSet<IIpsElement>(1);
+        HashSet<IIpsElement> elements = new HashSet<>(1);
         elements.add(getIpsRefactoringProcessor().getIpsElement());
         return elements;
     }

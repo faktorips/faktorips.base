@@ -53,7 +53,7 @@ public abstract class IpsSrcFileSaxHelper {
     private static class AttributeReadHandler extends DefaultHandler {
 
         private String xmlRootElementName;
-        private Map<String, String> attributeValue = new HashMap<String, String>(10);
+        private Map<String, String> attributeValue = new HashMap<>(10);
 
         public AttributeReadHandler(String xmlRootElementName) {
             Assert.isNotNull(xmlRootElementName);
@@ -61,7 +61,8 @@ public abstract class IpsSrcFileSaxHelper {
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes)
+                throws SAXException {
             if (xmlRootElementName.equals(qName)) {
                 int numOfattributes = attributes.getLength();
                 for (int i = 0; i < numOfattributes; i++) {

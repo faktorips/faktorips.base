@@ -43,14 +43,14 @@ import org.osgi.framework.Bundle;
  */
 public class ImageHandling implements IImageHandling {
 
-    private static final Map<ImageDescriptor, ImageDescriptor> ENABLE_DISABLE_MAP = new HashMap<ImageDescriptor, ImageDescriptor>();
+    private static final Map<ImageDescriptor, ImageDescriptor> ENABLE_DISABLE_MAP = new HashMap<>();
 
     private ResourceManager resourceManager;
 
     /**
      * used to map image names (also composit names for overlays) to descriptors
      */
-    private Map<String, ImageDescriptor> descriptorMap = new HashMap<String, ImageDescriptor>();
+    private Map<String, ImageDescriptor> descriptorMap = new HashMap<>();
 
     private final Bundle bundle;
 
@@ -139,7 +139,9 @@ public class ImageHandling implements IImageHandling {
     }
 
     @Override
-    public ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName, String overlayImageName, int quadrant) {
+    public ImageDescriptor getSharedOverlayImageDescriptor(String baseImageName,
+            String overlayImageName,
+            int quadrant) {
         if (IpsStringUtils.isEmpty(overlayImageName)) {
             return getSharedImageDescriptor(baseImageName, true);
         }

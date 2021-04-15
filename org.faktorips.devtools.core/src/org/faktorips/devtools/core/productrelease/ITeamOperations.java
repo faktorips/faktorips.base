@@ -43,7 +43,8 @@ public interface ITeamOperations {
      * @param project TODO
      * @param monitor a progress monitor to indicate the progress
      */
-    public void tagProject(String tagName, IProject project, IProgressMonitor monitor) throws TeamException, InterruptedException;
+    public void tagProject(String tagName, IProject project, IProgressMonitor monitor)
+            throws TeamException, InterruptedException;
 
     /**
      * Returns the name of the version control system.

@@ -124,7 +124,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             Map<IDependency, IExpressionDependencyDetail> formulaDependencies) {
         for (Entry<IDependency, IExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
             List<IDependencyDetail> dependenciesDetailsList = details.computeIfAbsent(entry.getKey(),
-                    $ -> new ArrayList<IDependencyDetail>());
+                    $ -> new ArrayList<>());
             dependenciesDetailsList.add(entry.getValue());
         }
     }
@@ -381,7 +381,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected IIpsElement[] getChildrenThis() {
         int size = getNumOfAttributeValues() + getNumOfConfigElements() + getNumOfTableContentUsages()
                 + getNumOfFormulas() + getNumOfValidationRules() + getNumOfLinks();
-        List<IIpsElement> children = new ArrayList<IIpsElement>(size);
+        List<IIpsElement> children = new ArrayList<>(size);
         children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);

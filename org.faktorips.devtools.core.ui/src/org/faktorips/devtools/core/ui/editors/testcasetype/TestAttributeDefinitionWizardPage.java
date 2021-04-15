@@ -113,7 +113,8 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
             return false;
         }
         if (StringUtils.isEmpty(datatypeRefControl.getText())) {
-            setErrorMessage(Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
+            setErrorMessage(
+                    Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
             return false;
         }
         if (wizard.getIpsProjekt().findDatatype(datatypeRefControl.getText()) == null) {
@@ -138,42 +139,42 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
      * @author Joerg Ortmann
      */
     public class PmoTestAttribute {
-    
+
         public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
         public static final String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
         public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
-    
+
         private String name;
         private TestParameterType testParameterType;
         private String datatype;
-    
+
         public String getDatatype() {
             return datatype;
         }
-    
+
         public void setDatatype(String datatype) {
             this.datatype = datatype;
             valueChanged();
         }
-    
+
         public String getName() {
             return name;
         }
-    
+
         public void setName(String name) {
             this.name = name;
             valueChanged();
         }
-    
+
         public TestParameterType getTestParameterType() {
             return testParameterType;
         }
-    
+
         public void setTestParameterType(TestParameterType testParameterType) {
             this.testParameterType = testParameterType;
             valueChanged();
         }
-    
+
         private void valueChanged() {
             // if the value has changed then the button state must be updated
             // to enable or disable the finish button

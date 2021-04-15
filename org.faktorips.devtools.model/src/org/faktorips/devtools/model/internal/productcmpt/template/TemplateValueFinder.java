@@ -83,14 +83,14 @@ public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplated
     }
 
     public static <U extends ITemplatedValue> U findTemplateValue(U originalValue, Class<U> valueClass) {
-        TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<U, ITemplatedValueContainer>(
+        TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<>(
                 originalValue, valueClass, originalValue.getIdentifier(), originalValue.getIpsProject());
         finder.start(originalValue.getTemplatedValueContainer());
         return finder.getTemplateValue();
     }
 
     public static <U extends ITemplatedValue> boolean hasTemplateForValue(U originalValue, Class<U> valueClass) {
-        TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<U, ITemplatedValueContainer>(
+        TemplateValueFinder<U, ITemplatedValueContainer> finder = new TemplateValueFinder<>(
                 originalValue, valueClass, originalValue.getIdentifier(), originalValue.getIpsProject());
         finder.start(originalValue.getTemplatedValueContainer());
         return finder.isKnownInTemplate();

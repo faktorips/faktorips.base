@@ -28,7 +28,8 @@ public class GenericRelevanceValidationTest {
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
-        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
+        MessageList messageList = GenericRelevanceValidation.of(modelObject,
+                TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                 new ValidationContext(Locale.GERMANY, getClass().getClassLoader(), config));
         assertThat(messageList.size(), is(1));
 
@@ -48,7 +49,8 @@ public class GenericRelevanceValidationTest {
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
-        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
+        MessageList messageList = GenericRelevanceValidation.of(modelObject,
+                TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                 // ValidationContext has different Locale, which is ignored.
                 new ValidationContext(Locale.ENGLISH, getClass().getClassLoader(), config));
         assertThat(messageList.size(), is(1));

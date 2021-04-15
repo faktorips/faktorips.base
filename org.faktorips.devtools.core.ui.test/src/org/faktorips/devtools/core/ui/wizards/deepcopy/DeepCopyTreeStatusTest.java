@@ -116,11 +116,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         }
 
         when(types[0].findAllNotDerivedAssociations(any(IIpsProject.class)))
-                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[0], associations[1] }));
+                .thenReturn(Arrays.asList(associations[0], associations[1]));
         when(types[1].findAllNotDerivedAssociations(any(IIpsProject.class)))
-                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[2] }));
+                .thenReturn(Arrays.asList(associations[2]));
         when(types[2].findAllNotDerivedAssociations(any(IIpsProject.class)))
-                .thenReturn(Arrays.asList(new IProductCmptTypeAssociation[] { associations[3] }));
+                .thenReturn(Arrays.asList(associations[3]));
 
         IIpsPackageFragmentRoot[] packageRoots = mockPackageRoots(alternatePackageRoots);
         IIpsPackageFragmentRoot[] childPackageRoots = childIpsProject == rootIpsProject ? packageRoots
@@ -133,7 +133,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             when(productCmpts[i].getName()).thenReturn(Integer.toString(i));
             productCmptGenerations[i] = mock(IProductCmptGeneration.class);
             when(productCmptGenerations[i].getParent()).thenReturn(productCmpts[i]);
-            ArrayList<IIpsObjectGeneration> generations = new ArrayList<IIpsObjectGeneration>();
+            ArrayList<IIpsObjectGeneration> generations = new ArrayList<>();
             generations.add(productCmptGenerations[i]);
             when(productCmpts[i].getGenerations()).thenReturn(generations);
             when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class)))
@@ -179,7 +179,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         mockLinks(productCmptGenerations[4]);
         mockLinks(productCmptGenerations[5]);
 
-        List<IValidationRuleConfig> ruleConfigs = new ArrayList<IValidationRuleConfig>();
+        List<IValidationRuleConfig> ruleConfigs = new ArrayList<>();
         ruleConfigs.add(mock(IValidationRuleConfig.class));
         ruleConfigs.add(mock(IValidationRuleConfig.class));
         when(ruleConfigs.get(0).getName()).thenReturn("Rule1");

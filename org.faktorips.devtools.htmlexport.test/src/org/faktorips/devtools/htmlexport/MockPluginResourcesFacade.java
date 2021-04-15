@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class MockPluginResourcesFacade implements IPluginResourceFacade {
 
-    private Map<String, Properties> messagesMap = new HashMap<String, Properties>();
+    private Map<String, Properties> messagesMap = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     private static final IpsObjectType[] ALL_IPS_OBJECT_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,

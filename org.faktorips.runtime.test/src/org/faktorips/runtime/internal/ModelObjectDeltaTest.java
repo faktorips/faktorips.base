@@ -204,14 +204,14 @@ public class ModelObjectDeltaTest {
         assertEquals("property", props.iterator().next());
 
         delta.markPropertyChanged("property2");
-        props = new ArrayList<String>();
+        props = new ArrayList<>();
         props.addAll(delta.getChangedProperties());
         assertEquals(2, props.size());
         assertEquals("property2", props.get(0));
         assertEquals("property", props.get(1));
 
         delta.markPropertyChanged("property2");
-        props = new ArrayList<String>();
+        props = new ArrayList<>();
         props.addAll(delta.getChangedProperties());
         assertEquals(2, props.size());
         assertEquals("property2", props.get(0));
@@ -455,7 +455,7 @@ public class ModelObjectDeltaTest {
     static class Visitor implements IModelObjectDeltaVisitor {
 
         private final boolean rc;
-        private final Set<IModelObjectDelta> visitedDeltas = new HashSet<IModelObjectDelta>();
+        private final Set<IModelObjectDelta> visitedDeltas = new HashSet<>();
 
         public Visitor(boolean rc) {
             super();

@@ -132,7 +132,8 @@ public class ProductCmptTypeValidations {
             return;
         }
         if (productCmptType.isChangingOverTime() != superProductCmptType.isChangingOverTime()) {
-            String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
+            String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences()
+                    .getChangesOverTimeNamingConvention()
                     .getGenerationConceptNamePlural();
             String text = NLS.bind(Messages.ProductCmptType_error_settingChangingOverTimeDiffersFromSettingInSupertype,
                     changingOverTimePluralName, superProductCmptType.getQualifiedName());

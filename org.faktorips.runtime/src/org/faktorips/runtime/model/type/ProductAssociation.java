@@ -99,7 +99,7 @@ public class ProductAssociation extends Association {
      *             this model type association or that association is not accessible for any reason
      */
     public List<IProductComponent> getTargetObjects(IProductComponent productComponentSource, Calendar effectiveDate) {
-        List<IProductComponent> targets = new ArrayList<IProductComponent>();
+        List<IProductComponent> targets = new ArrayList<>();
         Object source = getRelevantProductObject(productComponentSource, effectiveDate, isChangingOverTime());
         Object returnValue = invokeMethod(getGetterMethod(), source);
         if (returnValue instanceof Iterable<?>) {

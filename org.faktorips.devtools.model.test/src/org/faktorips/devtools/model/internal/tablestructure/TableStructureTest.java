@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.internal.tablestructure;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ArrayList<Locale> supportedLanguages = new ArrayList<Locale>();
+        ArrayList<Locale> supportedLanguages = new ArrayList<>();
         supportedLanguages.add(Locale.GERMAN);
         supportedLanguages.add(Locale.ENGLISH);
         supportedLanguages.add(Locale.FRENCH);

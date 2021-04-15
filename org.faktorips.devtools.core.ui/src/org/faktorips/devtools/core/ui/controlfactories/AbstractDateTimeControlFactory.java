@@ -50,7 +50,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
         adaptEnumValueProposal(toolkit, dateControl.getTextControl(), valueSet, datatype, ipsProject);
-        DateControlField<String> formatField = new DateControlField<String>(dateControl, getInputFormat(datatype,
+        DateControlField<String> formatField = new DateControlField<>(dateControl, getInputFormat(datatype,
                 valueSet, ipsProject));
         return formatField;
     }
@@ -93,7 +93,8 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             int columnIndex,
             IIpsProject ipsProject) {
 
-        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
+        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
+                ipsProject);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);
@@ -113,7 +114,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
 
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        EditField<String> editField = new FormattingTextField<String>(text, getInputFormat(dataType, valueSet,
+        EditField<String> editField = new FormattingTextField<>(text, getInputFormat(dataType, valueSet,
                 ipsProject));
         IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;

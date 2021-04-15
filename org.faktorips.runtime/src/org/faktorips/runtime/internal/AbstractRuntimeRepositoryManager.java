@@ -27,7 +27,7 @@ import org.faktorips.runtime.IRuntimeRepositoryManager;
 public abstract class AbstractRuntimeRepositoryManager implements IRuntimeRepositoryManager {
 
     private volatile IRuntimeRepository currentRuntimeRepository;
-    private List<IRuntimeRepositoryManager> managers = new CopyOnWriteArrayList<IRuntimeRepositoryManager>();
+    private List<IRuntimeRepositoryManager> managers = new CopyOnWriteArrayList<>();
     private volatile List<IRuntimeRepositoryManager> allManagers;
 
     /**
@@ -94,7 +94,7 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
      * @return whether no directly referenced repository changed
      */
     private boolean areReferencedRepositoriesUpToDate() {
-        List<IRuntimeRepository> directReferencedRepos = new ArrayList<IRuntimeRepository>(
+        List<IRuntimeRepository> directReferencedRepos = new ArrayList<>(
                 currentRuntimeRepository.getDirectlyReferencedRepositories());
         for (IRuntimeRepositoryManager manager : managers) {
             IRuntimeRepository referencedRepository = manager.getCurrentRuntimeRepository();
@@ -134,9 +134,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
             synchronized (this) {
                 result = allManagers;
                 if (result == null) {
-                    result = new ArrayList<IRuntimeRepositoryManager>(managers.size());
+                    result = new ArrayList<>(managers.size());
                     // list is so small, linear search is ok.
-                    LinkedList<IRuntimeRepositoryManager> candidates = new LinkedList<IRuntimeRepositoryManager>();
+                    LinkedList<IRuntimeRepositoryManager> candidates = new LinkedList<>();
                     candidates.add(this);
                     while (!candidates.isEmpty()) {
                         IRuntimeRepositoryManager candidate = candidates.get(0);

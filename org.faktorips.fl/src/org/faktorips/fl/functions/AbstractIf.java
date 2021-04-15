@@ -17,8 +17,8 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This class implements the if statement.
@@ -54,7 +54,7 @@ public class AbstractIf extends AbstractFlFunction {
                 newResult.addMessages(argResults[2].getMessages());
                 argResults[2] = newResult;
             } else {
-                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, new Object[] { datatype1, datatype2 });
+                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, datatype1, datatype2);
                 Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
                 return new CompilationResultImpl(msg);
             }

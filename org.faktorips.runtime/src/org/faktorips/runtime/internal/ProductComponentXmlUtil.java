@@ -47,7 +47,7 @@ enum ProductComponentXmlUtil {
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     static final Map<String, List<Element>> getLinkElements(Element genElement) {
-        Map<String, List<Element>> elementMap = new HashMap<String, List<Element>>();
+        Map<String, List<Element>> elementMap = new HashMap<>();
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
@@ -55,7 +55,7 @@ enum ProductComponentXmlUtil {
                 Element childElement = (Element)nl.item(i);
                 String association = childElement.getAttribute("association");
                 List<Element> associationElements = elementMap.computeIfAbsent(association,
-                        $ -> new ArrayList<Element>(1));
+                        $ -> new ArrayList<>(1));
                 associationElements.add(childElement);
             }
 
@@ -74,7 +74,7 @@ enum ProductComponentXmlUtil {
      */
     // note: not private to allow access by test case
     static final Map<String, Element> getPropertyElements(Element element) {
-        Map<String, Element> elementMap = new HashMap<String, Element>();
+        Map<String, Element> elementMap = new HashMap<>();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
@@ -109,7 +109,7 @@ enum ProductComponentXmlUtil {
      * @throws NullPointerException if element is <code>null</code>.
      */
     static final Map<String, String> getAvailableFormulars(Element element) {
-        Map<String, String> availableFormulas = new LinkedHashMap<String, String>();
+        Map<String, String> availableFormulas = new LinkedHashMap<>();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);

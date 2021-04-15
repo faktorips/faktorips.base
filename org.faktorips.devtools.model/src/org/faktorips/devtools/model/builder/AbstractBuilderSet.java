@@ -112,7 +112,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
 
     @Override
     public IIpsArtefactBuilder[] getArtefactBuilders() {
-        return builders.values().toArray(new IIpsArtefactBuilder[builders.values().size()]);
+        return builders.values().toArray(new IIpsArtefactBuilder[builders.size()]);
     }
 
     @Override
@@ -173,7 +173,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         if (builders == null) {
             throw new IllegalStateException("No builders initialized yet"); //$NON-NLS-1$
         }
-        List<T> buildersByClass = new ArrayList<T>();
+        List<T> buildersByClass = new ArrayList<>();
         for (IIpsArtefactBuilder builder : builders.values()) {
             if (builderClass.isAssignableFrom(builder.getClass())) {
                 @SuppressWarnings("unchecked")

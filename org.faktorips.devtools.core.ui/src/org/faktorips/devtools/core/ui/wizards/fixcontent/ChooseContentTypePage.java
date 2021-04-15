@@ -11,8 +11,6 @@ package org.faktorips.devtools.core.ui.wizards.fixcontent;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -55,12 +53,7 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
                 NLS.bind(Messages.FixContentWizard_labelNewContentType, contentStrategy.getContentTypeString()));
         final IpsObjectRefControl contentTypeRefControl = contentStrategy.createContentTypeRefControl(uiToolkit,
                 workArea);
-        contentTypeRefControl.getTextControl().addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent event) {
-                contentTypeModified(contentTypeRefControl);
-            }
-        });
+        contentTypeRefControl.getTextControl().addModifyListener($ -> contentTypeModified(contentTypeRefControl));
 
         T newContentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
 

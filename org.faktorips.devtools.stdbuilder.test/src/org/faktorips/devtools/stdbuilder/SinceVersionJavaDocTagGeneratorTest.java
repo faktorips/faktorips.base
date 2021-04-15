@@ -44,8 +44,8 @@ public class SinceVersionJavaDocTagGeneratorTest {
      * This case should never happen because the caller needs to check
      * {@link SinceVersionJavaDocTagGenerator#isGenerateAnnotationFor(AbstractGeneratorModelNode)}
      * before calling
-     * {@link SinceVersionJavaDocTagGenerator#createAnnotation(AbstractGeneratorModelNode)}. But we want
-     * to ensure that there is no error if it happens in mistake.
+     * {@link SinceVersionJavaDocTagGenerator#createAnnotation(AbstractGeneratorModelNode)}. But we
+     * want to ensure that there is no error if it happens in mistake.
      */
     @Test
     public void testCreateAnnotation_noSinceVersion() throws Exception {

@@ -45,7 +45,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
 
     private void selectAbstractMethods(IType type) {
         try {
-            List<IMethod> selected = new ArrayList<IMethod>();
+            List<IMethod> selected = new ArrayList<>();
             List<IMethod> method = type.findOverrideMethodCandidates(false, type.getIpsProject());
             for (IMethod element : method) {
                 if (element.isAbstract()) {
@@ -84,7 +84,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
 
         private static class SupertypesCollector extends TypeHierarchyVisitor<IType> {
 
-            private List<IType> supertypes = new ArrayList<IType>();
+            private List<IType> supertypes = new ArrayList<>();
 
             public SupertypesCollector(IIpsProject ipsProject) {
                 super(ipsProject);

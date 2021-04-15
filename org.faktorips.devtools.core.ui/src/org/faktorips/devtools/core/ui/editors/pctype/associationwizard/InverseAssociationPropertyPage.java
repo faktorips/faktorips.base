@@ -21,10 +21,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -46,7 +44,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     private UIToolkit toolkit;
     private BindingContext bindingContext;
 
-    private ArrayList<String> visibleProperties = new ArrayList<String>(10);
+    private ArrayList<String> visibleProperties = new ArrayList<>(10);
 
     private IPolicyCmptTypeAssociation association;
 
@@ -73,7 +71,8 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     public InverseAssociationPropertyPage(NewPcTypeAssociationWizard wizard, UIToolkit toolkit,
             BindingContext bindingContext) {
 
-        super(Messages.InverseAssociationPropertyPage_pageName, Messages.InverseAssociationPropertyPage_pageTitle, null);
+        super(Messages.InverseAssociationPropertyPage_pageName, Messages.InverseAssociationPropertyPage_pageTitle,
+                null);
         setDescription(Messages.InverseAssociationPropertyPage_pageDescription);
         this.wizard = wizard;
         this.toolkit = toolkit;
@@ -102,12 +101,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         existingRelLabel = toolkit.createFormLabel(top,
                 Messages.InverseAssociationPropertyPage_labelExistingAssociation);
         existingRelCombo = toolkit.createCombo(top);
-        existingRelCombo.addListener(SWT.Modify, new Listener() {
-            @Override
-            public void handleEvent(Event ev) {
-                existingAssociationSelectionChanged();
-            }
-        });
+        existingRelCombo.addListener(SWT.Modify, $ -> existingAssociationSelectionChanged());
     }
 
     private void createTargetAndTypeControls(Composite top) {

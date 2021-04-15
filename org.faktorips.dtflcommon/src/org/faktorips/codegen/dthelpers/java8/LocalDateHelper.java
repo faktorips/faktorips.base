@@ -46,13 +46,14 @@ public class LocalDateHelper extends AbstractTimeHelper implements ILocalDateHel
             fragment.append("(int) "); //$NON-NLS-1$
         }
         fragment.appendClassName(PERIOD_CLASS).append(".between(").append(arg1).append(", ").append(arg2) //$NON-NLS-1$ //$NON-NLS-2$
-        .append(")"); //$NON-NLS-1$
+                .append(")"); //$NON-NLS-1$
         switch (period) {
             case DAYS:
                 fragment.append(".getDays()"); //$NON-NLS-1$
                 break;
             case WEEKS:
-                fragment.append(".get(").appendClassName(JAVA_TIME_TEMPORAL_CHRONO_UNIT).append('.').append(WEEKS).append(')'); //$NON-NLS-1$
+                fragment.append(".get(").appendClassName(JAVA_TIME_TEMPORAL_CHRONO_UNIT).append('.').append(WEEKS) //$NON-NLS-1$
+                        .append(')');
                 break;
             case MONTHS:
                 fragment.append(".getMonths()"); //$NON-NLS-1$

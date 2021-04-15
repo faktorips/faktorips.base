@@ -887,9 +887,12 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation rootPolicyToPolicy1 = createAssociation(rootPolicyType, policyType1, 1, 1);
         IPolicyCmptTypeAssociation rootPolicyToPolicy2 = createAssociation(rootPolicyType, policyType2, 0, 1);
         IPolicyCmptTypeAssociation rootPolicyToPolicy3 = createAssociation(rootPolicyType, policyType3, 2, 2);
-        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1, true);
-        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1, true);
-        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2, true);
+        IProductCmptTypeAssociation rootProductToProduct1 = createAssociation(rootProductType, productType1, 1, 1,
+                true);
+        IProductCmptTypeAssociation rootProductToProduct2 = createAssociation(rootProductType, productType2, 0, 1,
+                true);
+        IProductCmptTypeAssociation rootProductToProduct3 = createAssociation(rootProductType, productType3, 2, 2,
+                true);
 
         // Create test case type
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");

@@ -96,7 +96,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * generation entries.
      */
     public List<GenerationTocEntry> getGenerationEntries() {
-        return new ArrayList<GenerationTocEntry>(generationEntries.values());
+        return new ArrayList<>(generationEntries.values());
     }
 
     /**
@@ -264,7 +264,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
     }
 
     private static TreeMap<Long, GenerationTocEntry> createNewTreeMap() {
-        return new TreeMap<Long, GenerationTocEntry>(Comparator.reverseOrder());
+        return new TreeMap<>(Comparator.reverseOrder());
     }
 
     @Override

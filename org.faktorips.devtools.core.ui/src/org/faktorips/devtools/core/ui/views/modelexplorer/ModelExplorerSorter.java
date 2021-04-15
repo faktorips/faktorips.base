@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.type.IMethod;
 @SuppressWarnings("deprecation")
 public class ModelExplorerSorter extends ViewerComparator {
 
-    private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new HashMap<IpsObjectType, ModelExplorerCategory>();
+    private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new HashMap<>();
 
     static {
         TYPE_TO_CATEGORY.put(IpsObjectType.POLICY_CMPT_TYPE, ModelExplorerCategory.CAT_POLICY_CMPT_TYPE);

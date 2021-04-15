@@ -9,12 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.dthelper;
 
- import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
- public interface DatatypeHelperFactory {
+public interface DatatypeHelperFactory {
 
-     DatatypeHelper createDatatypeHelper(Datatype datatype, StandardBuilderSet builderSet);
+    DatatypeHelper createDatatypeHelper(Datatype datatype, StandardBuilderSet builderSet);
 
 }

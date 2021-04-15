@@ -69,7 +69,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
      * Map of nodes (<code>ASTNode</code>) to contents of the node (<code>String</code>). This map
      * is used during rewrite to track the nodes positions and set the exact contents of them.
      */
-    private Map<ASTNode, String> allTrackedContentsMap = new HashMap<ASTNode, String>();
+    private Map<ASTNode, String> allTrackedContentsMap = new HashMap<>();
 
     /**
      * Set of all nodes that have been commented out
@@ -178,7 +178,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
     public List<JNode> getChildren() {
         if (!isDisposed()) {
             CompilationUnit astCompilationUnit = getASTNode();
-            List<JNode> children = new ArrayList<JNode>();
+            List<JNode> children = new ArrayList<>();
             PackageDeclaration astPackage = astCompilationUnit.getPackage();
             if (astPackage != null) {
                 JNode child = getFacadeHelper().convertToNode(astPackage);
@@ -446,7 +446,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
      */
     protected Set<ASTNode> getCommentedOutNodes() {
         if (commentedOutNodes == null) {
-            commentedOutNodes = new HashSet<ASTNode>();
+            commentedOutNodes = new HashSet<>();
         }
         return commentedOutNodes;
     }
@@ -487,8 +487,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
          */
         public NodeContentsReplacer() {
             Map<ASTNode, String> allTrackedContentsMap = getAllTrackedContentsMap();
-            trackedNodePositionsMap = new HashMap<ITrackedNodePosition, String>(
-                    Math.max((int)(allTrackedContentsMap.keySet().size() / .75f) + 1, 16));
+            trackedNodePositionsMap = new HashMap<>(
+                    Math.max((int)(allTrackedContentsMap.size() / .75f) + 1, 16));
             for (ASTNode node : allTrackedContentsMap.keySet()) {
                 try {
                     ITrackedNodePosition trackedNodePosition = rewriter.track(node);
@@ -544,7 +544,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
         /**
          * Map of commented out nodes to their tracked positions
          */
-        protected Map<ASTNode, ITrackedNodePosition> commentedOutPositions = new HashMap<ASTNode, ITrackedNodePosition>();
+        protected Map<ASTNode, ITrackedNodePosition> commentedOutPositions = new HashMap<>();
 
         /**
          * Responsible for inserting line breaks at the beginning and the end of the commented out
@@ -556,13 +556,13 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
          * Map of insert offsets to InsertEdit objects created. Used to prevent adding different
          * InsertEdit objects at the same offset.
          */
-        protected Map<Integer, InsertEdit> addedInsertEdits = new HashMap<Integer, InsertEdit>();
+        protected Map<Integer, InsertEdit> addedInsertEdits = new HashMap<>();
 
         /**
          * List of currently added text edits that have to be reverted (removed) in case of an
          * exception.
          */
-        protected List<TextEdit> textEditsToRevert = new ArrayList<TextEdit>();
+        protected List<TextEdit> textEditsToRevert = new ArrayList<>();
 
         /**
          * Document after call to {@link ASTRewrite#rewriteAST()} or

@@ -180,14 +180,14 @@ public class ModelContentProvider implements ITreeContentProvider {
             IJavaProject javaProject = JavaCore.create(project);
             // javaProject.open(null);
 
-            List<IResource> childResources = new ArrayList<IResource>();
-            for (int i = 0; i < children.length; i++) {
-                if (isIpsArchiveFromIpsObjectPath(project, children[i])) {
+            List<IResource> childResources = new ArrayList<>();
+            for (IResource child : children) {
+                if (isIpsArchiveFromIpsObjectPath(project, child)) {
                     // filter out ips archive files which are specified in the ipsobjectpath
                     continue;
                 }
-                if (!isJavaResource(javaProject, children[i])) {
-                    childResources.add(children[i]);
+                if (!isJavaResource(javaProject, child)) {
+                    childResources.add(child);
                 }
             }
 
@@ -288,7 +288,7 @@ public class ModelContentProvider implements ITreeContentProvider {
             // filter out empty packagefragments if their IFolders do not contain files and at the
             // same time contain subfolders (subpackages) (this prevents empty or newly created
             // packagefragments from being hidden in the view)
-            List<IIpsPackageFragment> filteredFragments = new ArrayList<IIpsPackageFragment>();
+            List<IIpsPackageFragment> filteredFragments = new ArrayList<>();
             for (IIpsPackageFragment fragment : fragments) {
                 if (hasChildren(fragment) || fragment.getChildIpsPackageFragments().length == 0) {
                     filteredFragments.add(fragment);
@@ -346,7 +346,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
         IIpsElement[] files = fragment.getChildren();
 
-        List<IIpsElement> pcts = new ArrayList<IIpsElement>();
+        List<IIpsElement> pcts = new ArrayList<>();
         for (IIpsElement file2 : files) {
             if (file2 instanceof IIpsSrcFile) {
                 IFile file = ((IIpsSrcFile)file2).getCorrespondingFile();
@@ -372,7 +372,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * returned. An exception to this rule is the ".ipsproject"-file.
      */
     private Object[] filter(Object[] elements) {
-        List<Object> filtered = new ArrayList<Object>();
+        List<Object> filtered = new ArrayList<>();
 
         for (Object element : elements) {
 

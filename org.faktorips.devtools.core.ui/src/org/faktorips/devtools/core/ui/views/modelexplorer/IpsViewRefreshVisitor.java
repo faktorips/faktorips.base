@@ -34,8 +34,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
 
-    private Set<Object> objectsToRefresh = new HashSet<Object>();
-    private Set<Object> objectsToUpdate = new HashSet<Object>();
+    private Set<Object> objectsToRefresh = new HashSet<>();
+    private Set<Object> objectsToUpdate = new HashSet<>();
 
     private ModelContentProvider contentProvider;
 
@@ -81,8 +81,8 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     /**
      * Team private members are resources maintained by a TeamProvider like the CVS and Subversion
      * Plugins. If a team private member has changed, the status of a none-team resource might have
-     * changed and label decorations must be updated. So if a team private member is changed, we refresh
-     * the parent resource/ips-element it is contained in.
+     * changed and label decorations must be updated. So if a team private member is changed, we
+     * refresh the parent resource/ips-element it is contained in.
      */
     private boolean handlePrivateTeamMember(IResource privateTeamMember) {
         IResource parentResource = privateTeamMember.getParent();
@@ -105,14 +105,16 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     /**
-     * Returns the elements (IpsElements and Resources) that needs to be refreshed for the given delta.
+     * Returns the elements (IpsElements and Resources) that needs to be refreshed for the given
+     * delta.
      */
     public Set<Object> getElementsToRefresh() {
         return objectsToRefresh;
     }
 
     /**
-     * Returns the elements (IpsElements and Resources) that needs to be updates for the givne delta.
+     * Returns the elements (IpsElements and Resources) that needs to be updates for the givne
+     * delta.
      */
     public Set<Object> getElementsToUpdate() {
         return objectsToUpdate;

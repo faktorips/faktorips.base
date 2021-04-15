@@ -117,7 +117,8 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         TablePageElement table = new TablePageElement(getContext());
 
         for (String[] zeile : texte) {
-            table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0]), getContext()));
+            table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0]),
+                    getContext()));
 
         }
 

@@ -138,7 +138,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
 
     @Override
     public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
-        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
         findIpsSourceFiles(type, ipsSrcFiles);
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             result.add(ipsSrcFile.getIpsObject());
@@ -191,10 +191,9 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
         LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
         String[] packNames = root.getIpsStorage().getNonEmptySubpackages(getName());
 
-        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>(packNames.length);
+        List<IIpsPackageFragment> list = new ArrayList<>(packNames.length);
 
-        for (int i = 0; i < packNames.length; ++i) {
-            String element = packNames[i];
+        for (String element : packNames) {
             list.add(new LibraryIpsPackageFragment(root, element));
         }
 

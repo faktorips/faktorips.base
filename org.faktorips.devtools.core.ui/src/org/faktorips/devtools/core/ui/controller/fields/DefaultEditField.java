@@ -105,7 +105,7 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     @Override
     public boolean addChangeListener(ValueChangeListener listener) {
         if (changeListeners == null) {
-            changeListeners = new ArrayList<ValueChangeListener>(1);
+            changeListeners = new ArrayList<>(1);
         }
         boolean added = changeListeners.add(listener);
         if (added && changeListeners.size() == 1) {

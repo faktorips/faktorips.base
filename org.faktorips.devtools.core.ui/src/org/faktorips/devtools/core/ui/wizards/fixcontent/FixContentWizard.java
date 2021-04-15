@@ -13,8 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.fixcontent;
 import java.util.List;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
@@ -87,8 +85,8 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
     @Override
     public void addPages() {
         DeltaFixWizardStrategy<T, E> wizardStrategy = contentStrategy.createContentPageStrategy();
-        assignContentAttributesPage = new AssignContentAttributesPage<T, E>(contentType, uiToolkit, wizardStrategy);
-        chooseContentTypePage = new ChooseContentTypePage<T, E>(contentType, uiToolkit, wizardStrategy,
+        assignContentAttributesPage = new AssignContentAttributesPage<>(contentType, uiToolkit, wizardStrategy);
+        chooseContentTypePage = new ChooseContentTypePage<>(contentType, uiToolkit, wizardStrategy,
                 assignContentAttributesPage);
         convertContentTypePage = new FixValueTypePage(contentStrategy);
 
@@ -115,17 +113,14 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
         }
 
         if (confirmed) {
-            IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    deleteObsoleteContentAttributeValues();
-                    createNewContentAttributeValues();
-                    if (contentStrategy.getContentValuesCount() > 0) {
-                        moveAttributeValues();
-                    }
-                    contentStrategy.setContentType((contentType).getQualifiedName());
-                    contentStrategy.fixAllContentAttributeValues();
+            IWorkspaceRunnable workspaceRunnable = $ -> {
+                deleteObsoleteContentAttributeValues();
+                createNewContentAttributeValues();
+                if (contentStrategy.getContentValuesCount() > 0) {
+                    moveAttributeValues();
                 }
+                contentStrategy.setContentType((contentType).getQualifiedName());
+                contentStrategy.fixAllContentAttributeValues();
             };
             IIpsModel.get().runAndQueueChangeEvents(workspaceRunnable, null);
         }

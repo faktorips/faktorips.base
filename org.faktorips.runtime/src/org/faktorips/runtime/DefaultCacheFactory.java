@@ -24,7 +24,7 @@ import org.faktorips.runtime.internal.AbstractCacheFactory;
  */
 public class DefaultCacheFactory extends AbstractCacheFactory {
 
-    private Map<Class<?>, Integer> initialSizeMap = new HashMap<Class<?>, Integer>();
+    private Map<Class<?>, Integer> initialSizeMap = new HashMap<>();
 
     private int defaultInitialSize = 100;
 
@@ -79,7 +79,7 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
     @Override
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
         Integer initSize = initialSizeMap.getOrDefault(computable.getValueClass(), defaultInitialSize);
-        return new Memoizer<K, V>(computable, initSize, laodFactor, concurrencyLevel);
+        return new Memoizer<>(computable, initSize, laodFactor, concurrencyLevel);
     }
 
     public void setConcurrencyLevel(int concurrencyLevel) {

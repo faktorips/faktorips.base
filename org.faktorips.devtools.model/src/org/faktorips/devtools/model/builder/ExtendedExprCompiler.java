@@ -28,7 +28,8 @@ public class ExtendedExprCompiler extends JavaExprCompiler {
 
     /**
      * Returns the expression to access the {@link IRuntimeRepository} which can be used by
-     * {@link IdentifierResolver IdentifierResolvers} with which this {@link ExprCompiler} is configured.
+     * {@link IdentifierResolver IdentifierResolvers} with which this {@link ExprCompiler} is
+     * configured.
      */
     public JavaCodeFragment getRuntimeRepositoryExpression() {
         return runtimeRepositoryExpression;

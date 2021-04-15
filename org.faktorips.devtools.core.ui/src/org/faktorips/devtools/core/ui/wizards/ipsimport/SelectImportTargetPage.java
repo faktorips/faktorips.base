@@ -143,7 +143,6 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         }
         if (!project.exists()) {
             setErrorMessage(Messages.SelectTableContentsPage_msgNonExistingProject);
-            return;
         }
     }
 

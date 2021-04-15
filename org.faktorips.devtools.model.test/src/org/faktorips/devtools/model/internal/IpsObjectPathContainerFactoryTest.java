@@ -137,7 +137,7 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewFactory_CreateNewFactoryBasedOnGivenTypes() {
-        List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
+        List<IIpsObjectPathContainerType> types = new ArrayList<>();
         IIpsObjectPathContainerType type1 = newType("Type1");
         IIpsObjectPathContainerType type2 = newType("Type2");
         types.add(type1);
@@ -153,7 +153,7 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     @Test
     public void testNewFactory_LogDuplicateTypeIdsDuringFactoryCreation() {
         IpsLog.setSuppressLoggingDuringTest(true);
-        List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
+        List<IIpsObjectPathContainerType> types = new ArrayList<>();
         IIpsObjectPathContainerType type1 = newType("Type1");
         IIpsObjectPathContainerType type2 = newType("Type2");
         IIpsObjectPathContainerType type3 = newType("Type1");
@@ -172,7 +172,7 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
     @Test
     public void testNewFactory_LogTypeWithNullIdsDuringFactoryCreation() {
         IpsLog.setSuppressLoggingDuringTest(true);
-        List<IIpsObjectPathContainerType> types = new ArrayList<IIpsObjectPathContainerType>();
+        List<IIpsObjectPathContainerType> types = new ArrayList<>();
         IIpsObjectPathContainerType type = newType(null);
         types.add(type);
 

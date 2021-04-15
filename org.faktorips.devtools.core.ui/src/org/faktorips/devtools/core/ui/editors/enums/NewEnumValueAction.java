@@ -20,7 +20,8 @@ import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This action is used by the <code>EnumValuesSection</code> for creating new <code>IEnumValue</code>s.
+ * This action is used by the <code>EnumValuesSection</code> for creating new
+ * <code>IEnumValue</code>s.
  * 
  * @see EnumValuesSection
  * 

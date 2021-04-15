@@ -18,8 +18,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
 /**
- * An <code>IEnumValueSet</code> represents a value set of discrete values where each value has to be
- * explicitly defined.
+ * An <code>IEnumValueSet</code> represents a value set of discrete values where each value has to
+ * be explicitly defined.
  * 
  * @author Thorsten Guenther
  */

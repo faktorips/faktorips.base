@@ -40,7 +40,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
      * resultValue must not be null.
      */
     public static <R> UniqueResultStructure<R> createWith(R resultValue) {
-        return new UniqueResultStructure<R>(resultValue);
+        return new UniqueResultStructure<>(resultValue);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
 
     @Override
     public Set<R> get() {
-        HashSet<R> result = new HashSet<R>();
+        HashSet<R> result = new HashSet<>();
         result.add(uniqueResult);
         return result;
     }

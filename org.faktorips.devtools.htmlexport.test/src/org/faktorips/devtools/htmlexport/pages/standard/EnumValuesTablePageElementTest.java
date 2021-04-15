@@ -71,8 +71,8 @@ public class EnumValuesTablePageElementTest {
 
     @Before
     public void setup() {
-        List<IEnumValue> valuelist = new ArrayList<IEnumValue>();
-        List<IEnumAttribute> attributeList = new ArrayList<IEnumAttribute>();
+        List<IEnumValue> valuelist = new ArrayList<>();
+        List<IEnumAttribute> attributeList = new ArrayList<>();
         valuelist.add(enumValue1);
         attributeList.add(enumAttribute1);
 

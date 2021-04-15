@@ -151,7 +151,7 @@ public class PropertyVisibleControllerTest {
     @Test(expected = IllegalArgumentException.class)
     public void testAddPropertyControlMapping_NoControlProvided() {
         IProductCmptProperty property = mock(IProductCmptProperty.class);
-        controller.addPropertyControlMapping(outerControl, property, new Control[0]);
+        controller.addPropertyControlMapping(outerControl, property);
     }
 
     /**

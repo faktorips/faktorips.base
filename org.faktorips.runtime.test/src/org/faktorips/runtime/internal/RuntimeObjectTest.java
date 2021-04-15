@@ -53,7 +53,7 @@ public class RuntimeObjectTest {
 
     private Map<String, String> createExtPropertyMap() {
         // use a SortedMap to ensure order and thus predictable tests
-        Map<String, String> map = new TreeMap<String, String>();
+        Map<String, String> map = new TreeMap<>();
         map.put("id1", null);
         map.put("idTwo", "importantValue");
         return map;

@@ -23,9 +23,9 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
@@ -644,7 +644,6 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
             msgList.add(new Message(MSGCODE_TRANSIENT_MISMATCH,
                     Messages.PersistentAssociationInfo_msgTransientMismatch, Message.ERROR, this,
                     IPersistentAssociationInfo.PROPERTY_TRANSIENT));
-            return;
         }
     }
 

@@ -247,7 +247,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private void createCategoryCombo(Composite workArea) {
         Combo categoryCombo = getToolkit().createCombo(workArea);
-        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<IProductCmptCategory>(
+        ComboViewerField<IProductCmptCategory> comboViewerField = new ComboViewerField<>(
                 categoryCombo, IProductCmptCategory.class);
 
         CategoryPmo pmo = new CategoryPmo(attribute);
@@ -304,7 +304,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 if (overwrittenAttribute != null) {
                     ((IpsModel)IIpsModel.get())
                             .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                                    new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
                                         @Override
                                         protected boolean execute() throws CoreException {

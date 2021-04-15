@@ -43,7 +43,7 @@ public class TableUsageFunctionsResolver extends AbstractTableFunctionsResolver 
 
     @Override
     protected List<TableData> createTableDatas() {
-        List<TableData> tableData = new ArrayList<TableData>();
+        List<TableData> tableData = new ArrayList<>();
 
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             try {

@@ -36,7 +36,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
     @Override
     public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException {
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<>();
 
         for (IResource resource : getSelectedResources()) {
             addResource(srcFiles, resource);
@@ -47,7 +47,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
     private List<IResource> getSelectedResources() {
 
-        List<IResource> resources = new ArrayList<IResource>();
+        List<IResource> resources = new ArrayList<>();
 
         for (Object object : getSelectedObjects()) {
             IResource resource = getResource(object);
@@ -69,7 +69,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
      */
     protected List<String> getNamesOfSelectedObjects() {
 
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
 
         for (IResource resource : getSelectedResources()) {
             names.add(resource.getName());

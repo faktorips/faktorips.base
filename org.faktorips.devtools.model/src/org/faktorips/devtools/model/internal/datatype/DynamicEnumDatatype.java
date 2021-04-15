@@ -80,7 +80,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
     public String getValueName(String id) {
         if (!isSupportingNames) {
             IpsLog.log(new IpsStatus(
-            "The getName(String) method is not supported by this enumeration class: " + getAdaptedClass())); //$NON-NLS-1$ )
+                    "The getName(String) method is not supported by this enumeration class: " + getAdaptedClass())); //$NON-NLS-1$ )
             return id;
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());

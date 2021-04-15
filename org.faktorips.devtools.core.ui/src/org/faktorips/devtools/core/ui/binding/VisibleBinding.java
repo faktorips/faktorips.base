@@ -43,7 +43,7 @@ public class VisibleBinding extends ControlPropertyBinding {
     @Override
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
-            Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+            Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject());
             getControl().setVisible(value.booleanValue());
             Object layoutData = getControl().getLayoutData();
             if (excludeWhenInvisible && layoutData instanceof GridData) {

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -29,9 +28,7 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.ToolTip;
@@ -40,7 +37,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -392,7 +388,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         // dnd for label
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new ProductCmptDropListener(this));
-        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+        dropTarget.setTransfer(FileTransfer.getInstance());
 
         viewerPanel = new Composite(parent, SWT.NONE);
         viewerPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -408,14 +404,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         generationDateViewer.setContentProvider(adjustmentContentProvider);
         adjustmentContentProvider.addCollectorFinishedListener(($1, $2) -> generationDateViewer.setSelection(0));
 
-        generationDateViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                GenerationDate adjDate = generationDateViewer.getSelectedDate();
-                if (adjDate != null) {
-                    setAdjustmentDate(adjDate);
-                }
+        generationDateViewer.addSelectionChangedListener($ -> {
+            GenerationDate adjDate = generationDateViewer.getSelectedDate();
+            if (adjDate != null) {
+                setAdjustmentDate(adjDate);
             }
         });
 
@@ -461,13 +453,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     protected void initContextMenue() {
         MenuManager menumanager = new MenuManager();
         menumanager.setRemoveAllWhenShown(true);
-        menumanager.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                createContextMenu(manager, (IStructuredSelection)treeViewer.getSelection());
-            }
-
-        });
+        menumanager.addMenuListener(
+                manager -> createContextMenu(manager, (IStructuredSelection)treeViewer.getSelection()));
 
         Menu menu = menumanager.createContextMenu(treeViewer.getControl());
         treeViewer.getControl().setMenu(menu);
@@ -686,29 +673,25 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
      * @param product The product to show the structure from
      */
     public void showStructure(final IProductCmpt product) {
-        BusyIndicator.showWhile(getSite().getShell().getDisplay(), new Runnable() {
-
-            @Override
-            public void run() {
-                if (product == null) {
-                    return;
-                }
-
-                if (errormsg == null) {
-                    // return if called before the explorer is shown
-                    return;
-                }
-
-                productComponent = product;
-                file = product.getIpsSrcFile();
-                generationDateViewer.setInput(product);
-                generationDateViewer.setSelection(0);
-                // setting the adjustment date to null updates the treeViewer content with latest
-                // adjustment
-                // until the valid adjustment dates are collected
-                setAdjustmentDate(null);
-                generationDateViewer.updateButtons();
+        BusyIndicator.showWhile(getSite().getShell().getDisplay(), () -> {
+            if (product == null) {
+                return;
             }
+
+            if (errormsg == null) {
+                // return if called before the explorer is shown
+                return;
+            }
+
+            productComponent = product;
+            file = product.getIpsSrcFile();
+            generationDateViewer.setInput(product);
+            generationDateViewer.setSelection(0);
+            // setting the adjustment date to null updates the treeViewer content with latest
+            // adjustment
+            // until the valid adjustment dates are collected
+            setAdjustmentDate(null);
+            generationDateViewer.updateButtons();
         });
     }
 
@@ -736,23 +719,20 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         }
 
         try {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (!treeViewer.getControl().isDisposed()) {
-                        Object input = treeViewer.getInput();
-                        if (input instanceof IProductCmptTreeStructure) {
-                            IProductCmptTreeStructure structure = (IProductCmptTreeStructure)input;
-                            try {
-                                structure.refresh();
-                            } catch (CycleInProductStructureException e) {
-                                handleCircle(e);
-                                return;
-                            }
-                            treeViewer.refresh();
-                        } else {
-                            showEmptyMessage();
+            Runnable runnable = () -> {
+                if (!treeViewer.getControl().isDisposed()) {
+                    Object input = treeViewer.getInput();
+                    if (input instanceof IProductCmptTreeStructure) {
+                        IProductCmptTreeStructure structure = (IProductCmptTreeStructure)input;
+                        try {
+                            structure.refresh();
+                        } catch (CycleInProductStructureException e) {
+                            handleCircle(e);
+                            return;
                         }
+                        treeViewer.refresh();
+                    } else {
+                        showEmptyMessage();
                     }
                 }
             };
@@ -878,12 +858,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     }
 
     private void postRefresh() {
-        getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                refresh();
-            }
-        });
+        getViewSite().getShell().getDisplay().asyncExec(this::refresh);
     }
 
     @Override

@@ -56,6 +56,7 @@ public class PnCPolicy extends AbstractModelObject implements IConfigurableModel
     /**
      * Sets the new product component.
      */
+    @Override
     public void setProductComponent(IProductComponent productComponent) {
         productConfiguration.setProductComponent(productComponent);
     }

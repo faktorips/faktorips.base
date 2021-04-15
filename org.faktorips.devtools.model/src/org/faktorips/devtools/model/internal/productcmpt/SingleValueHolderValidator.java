@@ -90,7 +90,8 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
     }
 
     private String getFormattedValue(IValue<?> value, ValueDatatype datatype) {
-        return IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter().formatValue(datatype, value.getContentAsString());
+        return IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter().formatValue(datatype,
+                value.getContentAsString());
     }
 
 }

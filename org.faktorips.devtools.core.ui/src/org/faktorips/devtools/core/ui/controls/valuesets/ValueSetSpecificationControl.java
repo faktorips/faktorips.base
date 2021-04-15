@@ -61,7 +61,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private Label valueSetTypeLabel;
     private Combo valueSetTypesCombo;
     private StringValueComboField valueSetTypeField;
-    private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
+    private List<ValueSetType> allowedValueSetTypes = new ArrayList<>();
 
     private Checkbox concreteValueSetCheckbox = null;
     private Checkbox containsNullCheckbox;
@@ -334,7 +334,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * Returns the list of value set types the user can select in the Combo box.
      */
     public List<ValueSetType> getAllowedValueSetTypes() {
-        List<ValueSetType> types = new ArrayList<ValueSetType>();
+        List<ValueSetType> types = new ArrayList<>();
         types.addAll(allowedValueSetTypes);
         return types;
     }

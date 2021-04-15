@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 
 public class TableRows extends IpsObjectPart implements ITableRows {
 
-    private List<Row> rows = new ArrayList<Row>(100);
+    private List<Row> rows = new ArrayList<>(100);
 
     private UniqueKeyValidator uniqueKeyValidator;
 
@@ -79,7 +79,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     @Override
     public Row newRow(ITableStructure tableStructure, Optional<String> id, List<String> columns) {
-        Row newRow = newRowInternal(id.orElseGet(() -> getNextPartId()));
+        Row newRow = newRowInternal(id.orElseGet(this::getNextPartId));
         for (int i = 0; i < columns.size(); i++) {
             newRow.setValueInternal(i, columns.get(i));
         }

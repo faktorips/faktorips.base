@@ -130,7 +130,6 @@ public class ForeignKey extends Key implements IForeignKey {
         }
         String text = NLS.bind(Messages.ForeignKey_msgInvalidKeyItem, fkItem);
         list.add(new Message("", text, Message.ERROR, fkItem)); //$NON-NLS-1$
-        return;
     }
 
     private void validateRangeItem(IColumnRange item,
@@ -174,7 +173,6 @@ public class ForeignKey extends Key implements IForeignKey {
         } else if ((to == null && refTo != null) || (to != null && refTo == null)) {
             String text = Messages.ForeignKey_msgReferencedRangeInvalid;
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
-            return;
         }
     }
 
@@ -194,7 +192,6 @@ public class ForeignKey extends Key implements IForeignKey {
         if (!item.getDatatype().equals(refColumn.getDatatype())) {
             String text = NLS.bind(Messages.ForeignKey_msgKeyDatatypeMismatch, item.getName(), refItem);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
-            return;
         }
     }
 

@@ -14,10 +14,10 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -300,7 +300,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
 
-        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
 
         when(ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE))
                 .thenReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0]));
@@ -364,7 +364,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
 
-        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
 
         doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
                 .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -419,7 +419,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot packageFragmentRoot = mockPackageFragmentRoot();
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
 
-        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
 
         doReturn(ipsSrcFiles.toArray(new IIpsSrcFile[0])).when(ipsProject)
                 .findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
@@ -484,7 +484,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         IProductCmptType baseType = mock(IProductCmptType.class);
 
-        ArrayList<IType> subTypes = new ArrayList<IType>();
+        ArrayList<IType> subTypes = new ArrayList<>();
         when(baseType.findSubtypes(true, true, ipsProject)).thenReturn(subTypes);
 
         subTypes.add(baseType);

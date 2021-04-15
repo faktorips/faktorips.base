@@ -16,19 +16,15 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -121,12 +117,9 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.setUseHashlookup(true);
         treeViewer.expandAll();
 
-        treeViewer.addCheckStateListener(new ICheckStateListener() {
-            @Override
-            public void checkStateChanged(CheckStateChangedEvent event) {
-                pageChanged();
-                treeViewer.refresh();
-            }
+        treeViewer.addCheckStateListener($ -> {
+            pageChanged();
+            treeViewer.refresh();
         });
 
         new TreeMessageHoverService(treeViewer) {
@@ -280,21 +273,17 @@ public class TestCaseStructurePage extends WizardPage {
     }
 
     private void hookTreeListeners() {
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                try {
-                    ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(event.getSelection());
-                    if (testPolicyCmpt == null) {
-                        clearCandidatesInTable();
-                        return;
-                    }
-                    refreshCanditatesInTable(testPolicyCmpt);
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+        treeViewer.addSelectionChangedListener(event -> {
+            try {
+                ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmptFromSelection(event.getSelection());
+                if (testPolicyCmpt == null) {
+                    clearCandidatesInTable();
+                    return;
                 }
+                refreshCanditatesInTable(testPolicyCmpt);
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
-
         });
     }
 
@@ -339,7 +328,7 @@ public class TestCaseStructurePage extends WizardPage {
 
         IIpsSrcFile[] allowedProductCmpt = parameter.getAllowedProductCmpt(testCaseContentProvider.getTestCase()
                 .getIpsProject(), parentProductCmpt);
-        List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> list = new ArrayList<>();
         List<IIpsSrcFile> allowedProductCmptList = Arrays.asList(allowedProductCmpt);
         list.addAll(allowedProductCmptList);
         // add current product cmpt if not in candidate list
@@ -401,12 +390,7 @@ public class TestCaseStructurePage extends WizardPage {
     private void pageChanged() {
         boolean pageComplete = validatePage();
         setPageComplete(pageComplete);
-        getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                getContainer().updateButtons();
-            }
-        });
+        getShell().getDisplay().asyncExec(() -> getContainer().updateButtons());
     }
 
     @Override

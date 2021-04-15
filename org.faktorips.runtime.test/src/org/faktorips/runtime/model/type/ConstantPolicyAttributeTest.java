@@ -99,7 +99,7 @@ public class ConstantPolicyAttributeTest {
         PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
         PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setValueSet(policy, new OrderedValueSet<Integer>(false, null, 1, 2, 3));
+        policyAttribute.setValueSet(policy, new OrderedValueSet<>(false, null, 1, 2, 3));
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -109,7 +109,7 @@ public class ConstantPolicyAttributeTest {
         PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
         policyAttribute.setValueSet(policy.getProductComponent(), effectiveDate,
-                new OrderedValueSet<Integer>(false, null, 1, 2, 3));
+                new OrderedValueSet<>(false, null, 1, 2, 3));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ConstantPolicyAttributeTest {
         PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
         PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        assertEquals(new OrderedValueSet<Integer>(false, null, 1), policyAttribute.getValueSet(policy, null));
+        assertEquals(new OrderedValueSet<>(false, null, 1), policyAttribute.getValueSet(policy, null));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class ConstantPolicyAttributeTest {
         PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
         PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_NULL_OBJECT_ATTR);
 
-        assertEquals(new OrderedValueSet<Decimal>(true, Decimal.NULL), policyAttribute.getValueSet(policy, null));
+        assertEquals(new OrderedValueSet<>(true, Decimal.NULL), policyAttribute.getValueSet(policy, null));
     }
 
     @Test(expected = UnsupportedOperationException.class)

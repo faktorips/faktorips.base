@@ -263,7 +263,7 @@ public enum PropertyValueType {
          */
         @Override
         public <T> Comparator<T> getValueComparator() {
-            return new ValueSetComparator<T>();
+            return new ValueSetComparator<>();
         }
 
         @Override
@@ -437,7 +437,7 @@ public enum PropertyValueType {
     public abstract BiConsumer<IPropertyValue, Object> getValueSetter();
 
     public <T> Comparator<T> getValueComparator() {
-        return new NullSafeComparableComparator<T>();
+        return new NullSafeComparableComparator<>();
     }
 
     /**

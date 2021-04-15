@@ -27,7 +27,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ModelService {
 
-    private HashMap<IIpsObjectPartContainer, LinkedHashSet<AbstractGeneratorModelNode>> generatorModelNodes = new HashMap<IIpsObjectPartContainer, LinkedHashSet<AbstractGeneratorModelNode>>();
+    private HashMap<IIpsObjectPartContainer, LinkedHashSet<AbstractGeneratorModelNode>> generatorModelNodes = new HashMap<>();
 
     public ModelService() {
     }
@@ -55,7 +55,8 @@ public class ModelService {
             GeneratorModelContext modelContext) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         ArgumentCheck.notNull(nodeClass);
-        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.computeIfAbsent(ipsObjectPartContainer, $ -> new LinkedHashSet<AbstractGeneratorModelNode>());
+        LinkedHashSet<AbstractGeneratorModelNode> nodes = generatorModelNodes.computeIfAbsent(ipsObjectPartContainer,
+                $ -> new LinkedHashSet<>());
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
             if (nodeClass.equals(generatorModelNode.getClass())) {
                 @SuppressWarnings("unchecked")
@@ -106,7 +107,7 @@ public class ModelService {
     public Set<AbstractGeneratorModelNode> getAllModelNodes(IIpsObjectPartContainer ipsObjectPartContainer) {
         Set<AbstractGeneratorModelNode> nodes = generatorModelNodes.get(ipsObjectPartContainer);
         if (nodes == null) {
-            nodes = new LinkedHashSet<AbstractGeneratorModelNode>();
+            nodes = new LinkedHashSet<>();
         }
         return nodes;
     }

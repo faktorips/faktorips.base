@@ -91,7 +91,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
 
         String lowerCasePrefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
-        List<Datatype> foundTypes = new ArrayList<Datatype>();
+        List<Datatype> foundTypes = new ArrayList<>();
         Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes,
                 includeAbstract);
         for (Datatype type : types) {
@@ -100,16 +100,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
             }
         }
 
-        Collections.sort(foundTypes, new Comparator<Datatype>() {
-
-            @Override
-            public int compare(Datatype o1, Datatype o2) {
-                Datatype d1 = o1;
-                Datatype d2 = o2;
-                return d1.getName().toLowerCase().compareTo(d2.getName().toLowerCase());
-            }
-
-        });
+        Collections.sort(foundTypes, Comparator.comparing(d -> d.getName().toLowerCase()));
 
         for (Datatype datatype : foundTypes) {
             String qName = datatype.getQualifiedName();

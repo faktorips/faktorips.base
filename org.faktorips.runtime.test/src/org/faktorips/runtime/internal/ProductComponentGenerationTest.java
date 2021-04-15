@@ -52,7 +52,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         List<Element> list = map.get("relation3");
         assertEquals(1, list.size());
         Element relEl = list.get(0);
-        HashMap<String, IntegerRange> cardinalityMap = new HashMap<String, IntegerRange>();
+        HashMap<String, IntegerRange> cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation3", relEl);
         IntegerRange cardinality = cardinalityMap.get("relation3");
         assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
@@ -60,7 +60,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         list = map.get("relation4");
         assertEquals(1, list.size());
         relEl = list.get(0);
-        cardinalityMap = new HashMap<String, IntegerRange>();
+        cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation4", relEl);
         cardinality = cardinalityMap.get("relation4");
         assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
@@ -70,7 +70,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     public void testSetValidationRuleActivated() {
 
         assertEquals(false, gen.isValidationRuleActivated("MyRule"));
-        
+
         gen.setValidationRuleActivated("MyRule", true);
 
         assertEquals(true, gen.isValidationRuleActivated("MyRule"));

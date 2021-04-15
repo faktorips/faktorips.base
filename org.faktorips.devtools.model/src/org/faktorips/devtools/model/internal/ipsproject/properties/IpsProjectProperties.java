@@ -64,12 +64,12 @@ import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.IoUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.IoUtil;
 import org.faktorips.values.Decimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -183,7 +183,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String[] predefinedDatatypesUsed = new String[0];
 
     // all datatypes defined in the project including(!) the value datatypes.
-    private List<Datatype> definedDatatypes = new ArrayList<Datatype>(0);
+    private List<Datatype> definedDatatypes = new ArrayList<>(0);
     private String runtimeIdPrefix = ""; //$NON-NLS-1$
     private boolean derivedUnionIsImplementedRuleEnabled = true;
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
@@ -201,17 +201,17 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private DesignTimeSeverity persistenceColumnSizeChecksSeverity = DesignTimeSeverity.WARNING;
     private TableContentFormat tableContentFormat = TableContentFormat.XML;
 
-    private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
-    private Map<String, String> requiredFeatures = new HashMap<String, String>();
+    private LinkedHashSet<String> markerEnums = new LinkedHashSet<>();
+    private Map<String, String> requiredFeatures = new HashMap<>();
 
     // hidden resource names in the model and product explorer
-    private Set<String> resourcesPathExcludedFromTheProductDefiniton = new HashSet<String>(10);
+    private Set<String> resourcesPathExcludedFromTheProductDefiniton = new HashSet<>(10);
     private long lastPersistentModificationTimestamp;
 
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
     /** The set of natural languages supported by the IPS project. */
-    private LinkedHashSet<ISupportedLanguage> supportedLanguages = new LinkedHashSet<ISupportedLanguage>(2);
+    private LinkedHashSet<ISupportedLanguage> supportedLanguages = new LinkedHashSet<>(2);
 
     private IProductCmptNamingStrategy defaultCmptNamingStrategy;
 
@@ -324,9 +324,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void validateUsedPredefinedDatatype(IIpsProject ipsProject, MessageList list) {
         IIpsModel model = ipsProject.getIpsModel();
-        for (int i = 0; i < predefinedDatatypesUsed.length; i++) {
-            if (!model.isPredefinedValueDatatype(predefinedDatatypesUsed[i])) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownDatatype, predefinedDatatypesUsed[i]);
+        for (String element : predefinedDatatypesUsed) {
+            if (!model.isPredefinedValueDatatype(element)) {
+                String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownDatatype, element);
                 Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE, text,
                         Message.ERROR, this);
                 list.add(msg);
@@ -515,7 +515,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public DynamicValueDatatype[] getDefinedValueDatatypes() {
-        List<DynamicValueDatatype> valuetypes = new ArrayList<DynamicValueDatatype>(definedDatatypes.size());
+        List<DynamicValueDatatype> valuetypes = new ArrayList<>(definedDatatypes.size());
         for (Datatype datatype : definedDatatypes) {
             if (datatype.isValueDatatype()) {
                 valuetypes.add((DynamicValueDatatype)datatype);
@@ -526,7 +526,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public void setDefinedDatatypes(IDynamicValueDatatype[] datatypes) {
-        definedDatatypes = new ArrayList<Datatype>(datatypes.length);
+        definedDatatypes = new ArrayList<>(datatypes.length);
         for (IDynamicValueDatatype datatype : datatypes) {
             definedDatatypes.add(datatype);
         }
@@ -534,7 +534,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
-        definedDatatypes = new ArrayList<Datatype>(datatypes.length);
+        definedDatatypes = new ArrayList<>(datatypes.length);
         for (Datatype datatype : datatypes) {
             definedDatatypes.add(datatype);
         }
@@ -894,7 +894,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void initRequiredFeatures(Element el) {
-        requiredFeatures = new HashMap<String, String>();
+        requiredFeatures = new HashMap<>();
 
         if (el == null) {
             return;
@@ -942,7 +942,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             return;
         }
         NodeList nl = element.getElementsByTagName("Datatype"); //$NON-NLS-1$
-        definedDatatypes = new ArrayList<Datatype>(nl.getLength());
+        definedDatatypes = new ArrayList<>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
             Element el = (Element)nl.item(i);
             Datatype datatype = createDefinedDatatype(ipsProject, el);

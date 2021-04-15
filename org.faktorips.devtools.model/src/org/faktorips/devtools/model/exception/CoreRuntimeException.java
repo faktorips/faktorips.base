@@ -53,9 +53,9 @@ public class CoreRuntimeException extends RuntimeException {
     }
 
     /**
-     * Constructor that should be used when replacing the creation of {@link CoreException CoreExceptions}.
-     * Instead of the {@link CoreException} create a {@link CoreRuntimeException} with the same
-     * error message.
+     * Constructor that should be used when replacing the creation of {@link CoreException
+     * CoreExceptions}. Instead of the {@link CoreException} create a {@link CoreRuntimeException}
+     * with the same error message.
      * <p>
      * For example this constructor could be used when operations on the model cannot continue due
      * to inconsistencies. E.g. when a component or type not found by qualified name and find()

@@ -54,9 +54,9 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.util.IoUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.IoUtil;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -82,7 +82,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     public TableContents(IIpsSrcFile file) {
         super(file);
-        columnReferences = new IpsObjectPartCollection<IPartReference>(this, TableColumnReference.class,
+        columnReferences = new IpsObjectPartCollection<>(this, TableColumnReference.class,
                 IPartReference.class, TableColumnReference.XML_TAG);
     }
 
@@ -217,7 +217,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     private IDependency[] createDependencies(Map<IDependency, List<IDependencyDetail>> details) {
-        List<IDependency> dependencies = new ArrayList<IDependency>();
+        List<IDependency> dependencies = new ArrayList<>();
         dependencies.add(createStructureDependency(details));
         dependencies.addAll(createValidationDependencies());
         return dependencies.toArray(new IDependency[dependencies.size()]);
@@ -253,7 +253,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     private List<IDependency> createValidationDependencies(ITableStructure tableStructure) {
-        List<IDependency> dependencies = new ArrayList<IDependency>();
+        List<IDependency> dependencies = new ArrayList<>();
         List<IIpsSrcFile> siblingSrcFiles = getSiblingTableSrcFiles(tableStructure);
         for (IIpsSrcFile other : siblingSrcFiles) {
             IpsObjectDependency validationDependency = IpsObjectDependency.create(this.getQualifiedNameType(),
@@ -363,7 +363,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     @Override
     protected IIpsElement[] getChildrenThis() {
 
-        ArrayList<IIpsElement> children = new ArrayList<IIpsElement>();
+        ArrayList<IIpsElement> children = new ArrayList<>();
         for (IPartReference reference : getColumnReferences()) {
             children.add(reference);
         }

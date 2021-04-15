@@ -14,7 +14,6 @@ import java.util.HashSet;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -174,14 +173,10 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
 
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()),
-                            startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
-                            messageList, startingPage.isImportIntoExisting());
-                }
-            };
+            IWorkspaceRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
+                    new Path(startingPage.getFilename()),
+                    startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
+                    messageList, startingPage.isImportIntoExisting());
             IIpsModel.get().runAndQueueChangeEvents(runnable, null);
 
             if (!messageList.isEmpty()) {

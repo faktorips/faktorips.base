@@ -24,7 +24,8 @@ public class XTypeBuilderClassNameProvider {
 
     public XTypeBuilderClassNameProvider(XType type) {
         builderNameProvider = new BuilderJavaClassNameProvider();
-        defNameProvider = new DefaultJavaClassNameProvider(type.getGeneratorConfig().isGeneratePublishedInterfaces(type.getIpsProject()));
+        defNameProvider = new DefaultJavaClassNameProvider(
+                type.getGeneratorConfig().isGeneratePublishedInterfaces(type.getIpsProject()));
         this.type = type;
         this.ipsSrcFile = type.getIpsObjectPartContainer().getIpsSrcFile();
     }

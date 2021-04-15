@@ -57,8 +57,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
     private static final String ANNOTATION_MANY_TO_ONE = "@ManyToOne";
 
-    private static Map<RelationshipType, String> importForRelationshipType = new HashMap<RelationshipType, String>(4);
-    private static Map<RelationshipType, String> annotationForRelationshipType = new HashMap<RelationshipType, String>(
+    private static Map<RelationshipType, String> importForRelationshipType = new HashMap<>(4);
+    private static Map<RelationshipType, String> annotationForRelationshipType = new HashMap<>(
             4);
 
     static {
@@ -114,7 +114,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                 fragment.append(annotationForRelationshipType.get(relationShip));
 
                 // add attributes to relationship annotation
-                List<String> attributesToAppend = new ArrayList<String>();
+                List<String> attributesToAppend = new ArrayList<>();
                 if (xInverseAssociation != null) {
                     addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association, xInverseAssociation);
                 }
@@ -275,7 +275,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
     private List<String> getCascadeTypes(IPersistentAssociationInfo persistenceAssociatonInfo) {
         List<String> cascadeTypes;
-        cascadeTypes = new ArrayList<String>();
+        cascadeTypes = new ArrayList<>();
         if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
             cascadeTypes.add("CascadeType.MERGE");
         }

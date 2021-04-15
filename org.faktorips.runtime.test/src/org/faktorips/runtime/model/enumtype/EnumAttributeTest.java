@@ -61,7 +61,7 @@ public class EnumAttributeTest {
 
     @Test
     public void testGetValueObject() {
-        Map<Locale, String> bar = new HashMap<Locale, String>();
+        Map<Locale, String> bar = new HashMap<>();
         bar.put(Locale.GERMANY, "Hallo Welt");
         bar.put(Locale.US, "hello world");
         MyEnum myEnum = new MyEnum(42, bar);
@@ -79,7 +79,7 @@ public class EnumAttributeTest {
 
     @Test
     public void testGetValueObjectLocale() {
-        Map<Locale, String> bar = new HashMap<Locale, String>();
+        Map<Locale, String> bar = new HashMap<>();
         bar.put(Locale.GERMANY, "Hallo Welt");
         bar.put(Locale.US, "hello world");
         MyEnum myEnum = new MyEnum(42, bar);

@@ -171,7 +171,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsSrcFile file1 = ob1.getIpsSrcFile();
         IIpsSrcFile file2 = ob2.getIpsSrcFile();
 
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> result = new ArrayList<>();
         ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "MotorP", false, result);
         assertEquals(1, result.size());
         assertTrue(result.contains(file1));

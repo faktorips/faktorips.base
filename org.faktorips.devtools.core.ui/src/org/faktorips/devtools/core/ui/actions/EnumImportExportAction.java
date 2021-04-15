@@ -120,14 +120,11 @@ public class EnumImportExportAction extends IpsAction {
         if (!confirmation) {
             return false;
         }
-        Runnable run = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    enumIpsObject.getIpsSrcFile().save(true, null);
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+        Runnable run = () -> {
+            try {
+                enumIpsObject.getIpsSrcFile().save(true, null);
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
         };
         BusyIndicator.showWhile(shell.getDisplay(), run);

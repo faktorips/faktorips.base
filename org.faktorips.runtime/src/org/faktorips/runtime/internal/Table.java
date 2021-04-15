@@ -75,7 +75,7 @@ public abstract class Table<R> implements ITable<R> {
      */
     public void initFromXml(InputStream is, IRuntimeRepository productRepository, String qualifiedTableName)
             throws Exception {
-        rows = new ArrayList<R>(200);
+        rows = new ArrayList<>(200);
         name = qualifiedTableName;
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));

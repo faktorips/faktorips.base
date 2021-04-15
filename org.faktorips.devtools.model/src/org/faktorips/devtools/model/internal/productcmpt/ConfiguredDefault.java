@@ -26,9 +26,9 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

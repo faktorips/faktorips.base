@@ -40,7 +40,7 @@ public class IpsProjectData {
 
     private final IpsObjectPathContainerFactory containerFactory;
 
-    private final Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<ContainerTypeAndPath, IIpsObjectPathContainer>();
+    private final Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<>();
 
     private IIpsArtefactBuilderSet ipsArtefactBuilderSet;
 
@@ -57,7 +57,7 @@ public class IpsProjectData {
     /**
      * a map containing a set of datatypes.
      */
-    private final LinkedHashMap<String, Datatype> projectDatatypesMap = new LinkedHashMap<String, Datatype>();
+    private final LinkedHashMap<String, Datatype> projectDatatypesMap = new LinkedHashMap<>();
 
     private IVersionProvider<?> versionFormat;
 
@@ -158,7 +158,7 @@ public class IpsProjectData {
     }
 
     private LinkedHashSet<IIpsSrcFile> initMarkerEnums() {
-        LinkedHashSet<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
+        LinkedHashSet<IIpsSrcFile> result = new LinkedHashSet<>();
         IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         if (properties.isMarkerEnumsEnabled()) {
             LinkedHashSet<String> markerEnumsQNames = properties.getMarkerEnums();

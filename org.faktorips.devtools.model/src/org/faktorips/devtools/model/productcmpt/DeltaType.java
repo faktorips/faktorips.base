@@ -31,7 +31,10 @@ public enum DeltaType {
     LINK_CHANGING_OVER_TIME_MISMATCH(Messages.DeltaType_LinksWithWrongParent, Kind.MODIFY),
     MISSING_TEMPLATE_LINK(Messages.DeltaType_missingTemplateLink, Kind.ADD),
     REMOVED_TEMPLATE_LINK(Messages.DeltaType_removedTemplateLink, Kind.DELETE),
-    INVALID_GENERATIONS(NLS.bind(Messages.DeltaType_invalidGenerations, IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true)), Kind.DELETE),
+    INVALID_GENERATIONS(NLS.bind(Messages.DeltaType_invalidGenerations,
+            IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNamePlural(true)),
+            Kind.DELETE),
     DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY);
 
     private final String description;

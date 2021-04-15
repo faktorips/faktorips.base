@@ -77,9 +77,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      *            range. The value can be {@code null} indicating that it is a continuous range. It
      *            has to fulfill the condition: the value of the expression <em>abs(upperBound -
      *            lowerBound) / step</em> needs to be an integer
-     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) / step</em>
-     *             is not met. The condition is not applied if one or both of the bounds are
-     *             {@code null}
+     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) /
+     *             step</em> is not met. The condition is not applied if one or both of the bounds
+     *             are {@code null}
      */
     public DefaultRange(T lower, T upper, T step) {
         this(lower, upper, step, false);
@@ -94,9 +94,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      *            range. The value can be {@code null} indicating that it is a continuous range. It
      *            has to fulfill the condition: the value of the expression <em>abs(upperBound -
      *            lowerBound) / step</em> needs to be an integer
-     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) / step</em>
-     *             is not met. The condition is not applied if one is or both of the bounds are
-     *             {@code null}
+     * @throws IllegalArgumentException if the condition <em>abs(upperBound - lowerBound) /
+     *             step</em> is not met. The condition is not applied if one is or both of the
+     *             bounds are {@code null}
      */
     public DefaultRange(T lower, T upper, T step, boolean containsNull) {
         lowerBound = lower;
@@ -178,18 +178,22 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         }
     }
 
+    @Override
     public T getLowerBound() {
         return lowerBound;
     }
 
+    @Override
     public T getUpperBound() {
         return upperBound;
     }
 
+    @Override
     public T getStep() {
         return step;
     }
 
+    @Override
     public boolean isEmpty() {
         if (empty) {
             return true;
@@ -200,6 +204,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return (lowerBound.compareTo(upperBound) > 0);
     }
 
+    @Override
     public boolean isRange() {
         return true;
     }
@@ -215,6 +220,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * @throws RuntimeException if the number of values in this range is larger than
      *             {@link Integer#MAX_VALUE}
      */
+    @Override
     public int size() {
         if (isEmpty()) {
             return 0;
@@ -304,6 +310,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return isNullValue(step);
     }
 
+    @Override
     public boolean contains(T value) {
         if (isNullValue(value)) {
             return containsNull();
@@ -346,6 +353,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * {@link IntegerRange} is not discrete if the step is {@code null} even though a step of 1
      * could be assumed.
      */
+    @Override
     public boolean isDiscrete() {
         return isEmpty() || lowerBoundEqualsUpperBound() || !isStepNull();
     }
@@ -354,10 +362,12 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return !isLowerBoundNull() && getLowerBound().equals(getUpperBound());
     }
 
+    @Override
     public boolean containsNull() {
         return containsNull;
     }
 
+    @Override
     public Set<T> getValues(boolean excludeNull) {
         if (!isDiscrete()) {
             throw new IllegalStateException("This method cannot be called for ranges that are not discrete.");
@@ -376,10 +386,10 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         Set<T> values = null;
 
         if (containsNull() && !excludeNull) {
-            values = new HashSet<T>(numberOfEntries + 1);
+            values = new HashSet<>(numberOfEntries + 1);
             values.add(getNullValue());
         } else {
-            values = new HashSet<T>(numberOfEntries);
+            values = new HashSet<>(numberOfEntries);
         }
 
         T nextValue = getLowerBound();

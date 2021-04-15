@@ -260,7 +260,7 @@ public class UniqueKeyValidator {
     private void validateUniqueKeys(MessageList list, Map<IIndex, Map<AbstractKeyValue, Set<Row>>> uniqueKeyMap2) {
         // iterate all unique keys, specified in the table structure
         for (Map<AbstractKeyValue, Set<Row>> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
-            List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
+            List<AbstractKeyValue> invalidkeyValues = new ArrayList<>();
 
             // iterate all key values and check if there is a unique key violation
             for (Entry<AbstractKeyValue, Set<Row>> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
@@ -292,7 +292,7 @@ public class UniqueKeyValidator {
         AbstractKeyValue keyValue = keyValueEntry.getKey();
 
         Set<Row> rows = keyValueEntry.getValue();
-        Set<Row> rowsChecked = new HashSet<Row>(rows.size());
+        Set<Row> rowsChecked = new HashSet<>(rows.size());
 
         /*
          * auto-fix invalid rows check if the row value matches the key value, if not remove the row
@@ -398,7 +398,7 @@ public class UniqueKeyValidator {
     void createValidationErrorUniqueKeyViolation(MessageList list, IIndex uniqueKey, Row row) {
         String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber() + 1,
                 uniqueKey.getName());
-        List<ObjectProperty> objectProperties = new ArrayList<ObjectProperty>();
+        List<ObjectProperty> objectProperties = new ArrayList<>();
         createObjectProperties(uniqueKey, row, objectProperties);
         list.add(new Message(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION, text, Message.ERROR, objectProperties
                 .toArray(new ObjectProperty[objectProperties.size()])));

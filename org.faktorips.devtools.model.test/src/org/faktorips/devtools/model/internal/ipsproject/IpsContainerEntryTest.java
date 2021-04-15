@@ -77,7 +77,7 @@ public class IpsContainerEntryTest {
     @Test
     public void testResolveEntries() throws Exception {
         IIpsObjectPathContainer container = mockContainer();
-        List<IIpsObjectPathEntry> entries = new ArrayList<IIpsObjectPathEntry>();
+        List<IIpsObjectPathEntry> entries = new ArrayList<>();
         when(container.resolveEntries()).thenReturn(entries);
 
         List<IIpsObjectPathEntry> resolveEntries = ipsContainerEntry.resolveEntries();
@@ -174,7 +174,7 @@ public class IpsContainerEntryTest {
 
     private IpsObjectPathEntry mockEntry(IIpsObjectPathContainer container) {
         when(ipsModel.getIpsObjectPathContainer(ipsProject, MY_ID, MY_OPTIONAL_PATH)).thenReturn(container);
-        List<IIpsObjectPathEntry> entries = new ArrayList<IIpsObjectPathEntry>();
+        List<IIpsObjectPathEntry> entries = new ArrayList<>();
         when(container.resolveEntries()).thenReturn(entries);
         IpsObjectPathEntry ipsObjectEntry = mock(IpsObjectPathEntry.class);
         IpsObjectPathEntry ipsObjectEntry2 = mock(IpsObjectPathEntry.class);

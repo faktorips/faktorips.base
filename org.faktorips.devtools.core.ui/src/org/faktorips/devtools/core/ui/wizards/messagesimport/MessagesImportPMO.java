@@ -271,7 +271,7 @@ public class MessagesImportPMO extends PresentationModelObject {
      */
     public Set<ISupportedLanguage> getAvailableLocales() {
         if (getIpsPackageFragmentRoot() == null) {
-            return new HashSet<ISupportedLanguage>();
+            return new HashSet<>();
         } else {
             IIpsProject ipsProject = getIpsPackageFragmentRoot().getIpsProject();
             return ipsProject.getReadOnlyProperties().getSupportedLanguages();

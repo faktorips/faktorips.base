@@ -48,7 +48,7 @@ public abstract class AbstractKeyValue {
      */
     protected static List<IKeyItem> getNonTwoColumnRangeKeyItems(IIndex uniqueKey) {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
-        List<IKeyItem> result = new ArrayList<IKeyItem>(keyItems.length);
+        List<IKeyItem> result = new ArrayList<>(keyItems.length);
         for (IKeyItem keyItem : keyItems) {
             if (keyItem instanceof IColumnRange) {
                 if (ColumnRangeType.TWO_COLUMN_RANGE.equals(((IColumnRange)keyItem).getColumnRangeType())) {
@@ -65,13 +65,13 @@ public abstract class AbstractKeyValue {
      */
     protected static List<ColumnRange> getTwoColumnRanges(IIndex uniqueKey) {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
-        List<ColumnRange> columnRanges = new ArrayList<ColumnRange>();
-        for (int i = 0; i < keyItems.length; i++) {
-            if (keyItems[i] instanceof ColumnRange) {
-                if (!ColumnRangeType.TWO_COLUMN_RANGE.equals(((ColumnRange)keyItems[i]).getColumnRangeType())) {
+        List<ColumnRange> columnRanges = new ArrayList<>();
+        for (IKeyItem keyItem : keyItems) {
+            if (keyItem instanceof ColumnRange) {
+                if (!ColumnRangeType.TWO_COLUMN_RANGE.equals(((ColumnRange)keyItem).getColumnRangeType())) {
                     continue;
                 }
-                columnRanges.add((ColumnRange)keyItems[i]);
+                columnRanges.add((ColumnRange)keyItem);
             }
         }
         return columnRanges;

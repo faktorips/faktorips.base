@@ -23,7 +23,7 @@ public class LinkDropHandler implements IIpsDropAdapterProvider {
 
     @Override
     public List<Transfer> getSupportedTransferTypes() {
-        ArrayList<Transfer> result = new ArrayList<Transfer>();
+        ArrayList<Transfer> result = new ArrayList<>();
         result.add(FileTransfer.getInstance());
         result.add(TextTransfer.getInstance());
         return result;

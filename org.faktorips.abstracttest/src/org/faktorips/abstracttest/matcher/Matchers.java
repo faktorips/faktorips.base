@@ -41,7 +41,7 @@ public class Matchers {
     }
 
     public static Matcher<MessageList> containsMessages() {
-        return new IsNot<MessageList>(new EmptyMessageListMatcher());
+        return new IsNot<>(new EmptyMessageListMatcher());
     }
 
     public static Matcher<Message> hasInvalidObject(Object invalidObject) {

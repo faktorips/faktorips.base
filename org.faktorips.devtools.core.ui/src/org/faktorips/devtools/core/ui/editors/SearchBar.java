@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -69,20 +67,14 @@ public class SearchBar {
         DefaultEditField<?> editField = (DefaultEditField<?>)bindingContext.bindContent(searchField, searchPmo,
                 SearchPmo.PROPERTY_PATTERN);
         editField.setSupportsNullStringRepresentation(false);
-        formBody.addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                bindingContext.dispose();
-            }
-        });
+        formBody.addDisposeListener($ -> bindingContext.dispose());
     }
 
     /**
      * Sets the table viewer filtered by this search bar.
      */
     public void setFilterTo(final TableViewer tableViewer) {
-        bindingContext.add(new PropertyChangeBinding<String>(searchField, searchPmo, SearchPmo.PROPERTY_PATTERN,
+        bindingContext.add(new PropertyChangeBinding<>(searchField, searchPmo, SearchPmo.PROPERTY_PATTERN,
                 String.class) {
 
             @Override

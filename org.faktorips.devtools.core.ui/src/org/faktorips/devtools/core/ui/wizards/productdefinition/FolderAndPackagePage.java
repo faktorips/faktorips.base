@@ -67,7 +67,7 @@ public class FolderAndPackagePage extends WizardPage {
     }
 
     private void bindControls() {
-        rootFolderField = new ComboViewerField<IIpsPackageFragmentRoot>(rootFolder, IIpsPackageFragmentRoot.class);
+        rootFolderField = new ComboViewerField<>(rootFolder, IIpsPackageFragmentRoot.class);
         bindingContext.bindContent(rootFolderField, pmo, NewProductDefinitionPMO.PROPERTY_PACKAGE_ROOT);
 
         IpsPckFragmentRefField ipsPckFragmentRefField = new IpsPckFragmentRefField(packageRefControl);

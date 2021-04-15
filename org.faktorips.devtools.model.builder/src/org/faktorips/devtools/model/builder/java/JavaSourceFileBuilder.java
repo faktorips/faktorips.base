@@ -994,14 +994,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
-        List<IJavaElement> javaElements = new ArrayList<IJavaElement>();
+        List<IJavaElement> javaElements = new ArrayList<>();
         if (ipsObjectPartContainer instanceof IIpsObject) {
             try {
                 if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
                     javaElements.addAll(getGeneratedJavaTypes((IIpsObject)ipsObjectPartContainer));
                 }
             } catch (CoreException e) {
-                return new ArrayList<IJavaElement>();
+                return new ArrayList<>();
             }
         }
 
@@ -1024,7 +1024,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                     .getArtefactDestination(buildsDerivedArtefacts());
             String packageName = getPackage(ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
-            List<IType> javaTypes = new ArrayList<IType>(1);
+            List<IType> javaTypes = new ArrayList<>(1);
             getGeneratedJavaTypesThis(ipsObject, fragment, javaTypes);
             return javaTypes;
         } catch (CoreException e) {

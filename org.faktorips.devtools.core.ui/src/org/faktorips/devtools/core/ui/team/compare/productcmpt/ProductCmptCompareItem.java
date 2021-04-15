@@ -304,7 +304,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * contain an <code>IProductComponentRelation</code> with the given relationType.
      */
     private List<ProductCmptCompareItem> getRelations(List<ProductCmptCompareItem> items, String relationType) {
-        List<ProductCmptCompareItem> rels = new ArrayList<ProductCmptCompareItem>();
+        List<ProductCmptCompareItem> rels = new ArrayList<>();
         for (ProductCmptCompareItem item : items) {
             if (item.getIpsElement() instanceof IProductCmptLink) {
                 if (((IProductCmptLink)item.getIpsElement()).getAssociation().equals(relationType)) {
@@ -320,7 +320,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * contain an instance of the given class.
      */
     protected List<ProductCmptCompareItem> getCompareItemsOfClass(List<AbstractCompareItem> items, Class<?> clazz) {
-        List<ProductCmptCompareItem> rels = new ArrayList<ProductCmptCompareItem>();
+        List<ProductCmptCompareItem> rels = new ArrayList<>();
         for (AbstractCompareItem item : items) {
             if (clazz.isAssignableFrom(item.getIpsElement().getClass())) {
                 rels.add((ProductCmptCompareItem)item);
@@ -337,7 +337,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      */
     private String[] getAssociations(IProductPartsContainer gen) {
         // use TreeSet to avoid duplicate IDs and at the same time maintain their order.
-        Set<String> relationTypes = new TreeSet<String>();
+        Set<String> relationTypes = new TreeSet<>();
         List<IProductCmptLink> links = gen.getProductParts(IProductCmptLink.class);
         for (IProductCmptLink relation : links) {
             relationTypes.add(relation.getAssociation());

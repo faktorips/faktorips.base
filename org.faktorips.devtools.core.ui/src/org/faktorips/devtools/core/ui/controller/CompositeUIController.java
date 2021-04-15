@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 @Deprecated
 public class CompositeUIController implements UIController {
 
-    private List<UIController> controllers = new ArrayList<UIController>();
+    private List<UIController> controllers = new ArrayList<>();
 
     public CompositeUIController() {
         super();

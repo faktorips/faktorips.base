@@ -58,7 +58,7 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
     /**
      * Stores the order in which the different {@code write} methods were invoked.
      */
-    private final Queue<Class<?>> writeOrder = new ArrayBlockingQueue<Class<?>>(50);
+    private final Queue<Class<?>> writeOrder = new ArrayBlockingQueue<>(50);
 
     private final Class<T> transferClass;
 
@@ -124,9 +124,11 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      * 
      * @return {@code false} if any of the following conditions applies ({@code true} otherwise):
      *         <ol>
-     *         <li>the object is {@code null} <li>the object is not an array <li> the <em>transfer
-     *         class </em> is not assignable from an object within the array <li>
-     *         {@link #validateObject(Object)} returns {@code false} for any object within the array
+     *         <li>the object is {@code null}
+     *         <li>the object is not an array
+     *         <li>the <em>transfer class </em> is not assignable from an object within the array
+     *         <li>{@link #validateObject(Object)} returns {@code false} for any object within the
+     *         array
      *         </ol>
      * 
      * @see Class#isAssignableFrom(Class)
@@ -245,7 +247,7 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
 
         ByteArrayInputStream in = new ByteArrayInputStream(buffer);
         DataInputStream readInputStream = new DataInputStream(in);
-        List<T> objects = new ArrayList<T>();
+        List<T> objects = new ArrayList<>();
         try {
             while (readInputStream.available() > 0) {
                 T transferObject = readObject(readInputStream);

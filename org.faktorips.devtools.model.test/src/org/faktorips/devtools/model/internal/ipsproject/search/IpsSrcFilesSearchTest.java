@@ -53,7 +53,7 @@ public class IpsSrcFilesSearchTest extends AbstractIpsPluginTest {
         search = new IpsSrcFilesSearch(IpsObjectType.POLICY_CMPT_TYPE);
         IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
         when(entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(
-                new ArrayList<IIpsSrcFile>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
+                new ArrayList<>(Arrays.asList(mock(IIpsSrcFile.class), mock(IIpsSrcFile.class))));
 
         search.processEntry(entry);
         List<IIpsSrcFile> ipsSrcFiles = search.getIpsSrcFiles();

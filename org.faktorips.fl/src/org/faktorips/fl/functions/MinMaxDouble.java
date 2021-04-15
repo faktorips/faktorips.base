@@ -27,7 +27,8 @@ public class MinMaxDouble extends MinMaxNativeTypes {
     protected void writeBody(JavaCodeFragment fragment,
             CompilationResult<JavaCodeFragment> first,
             CompilationResult<JavaCodeFragment> second) {
-        // Double.valueOf(Math.max(Double.valueOf(1).doubleValue(), Double.valueOf(2).doubleValue()));
+        // Double.valueOf(Math.max(Double.valueOf(1).doubleValue(),
+        // Double.valueOf(2).doubleValue()));
         fragment.append("Double.valueOf(Math.");
         fragment.append(functionName);
         fragment.append('(');

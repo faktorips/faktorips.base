@@ -99,7 +99,7 @@ public class IpsFolderBundleContentIndexTest {
     }
 
     private List<IPath> makeAbsolutePaths(IPath base, IPath... files) {
-        List<IPath> srcFiles = new ArrayList<IPath>();
+        List<IPath> srcFiles = new ArrayList<>();
         for (IPath iPath : Arrays.asList(files)) {
             srcFiles.add(base.append(iPath));
         }

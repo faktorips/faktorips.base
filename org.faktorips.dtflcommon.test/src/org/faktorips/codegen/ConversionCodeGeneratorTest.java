@@ -73,7 +73,8 @@ public class ConversionCodeGeneratorTest {
         assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), createList(Datatype.INTEGER)));
         assertFalse(codeGenerator.canConvert(createList(Datatype.DECIMAL), Datatype.INTEGER));
         assertFalse(codeGenerator.canConvert(Datatype.DECIMAL, createList(Datatype.INTEGER)));
-        assertFalse(codeGenerator.canConvert(createList(Datatype.BIG_DECIMAL), createList(Datatype.GREGORIAN_CALENDAR)));
+        assertFalse(
+                codeGenerator.canConvert(createList(Datatype.BIG_DECIMAL), createList(Datatype.GREGORIAN_CALENDAR)));
     }
 
     private ListOfTypeDatatype createList(Datatype basicType) {

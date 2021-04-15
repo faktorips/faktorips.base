@@ -102,7 +102,7 @@ public class IpsPullUpProcessorTest {
 
         @Override
         protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-            return new HashSet<IIpsSrcFile>();
+            return new HashSet<>();
         }
 
         @Override

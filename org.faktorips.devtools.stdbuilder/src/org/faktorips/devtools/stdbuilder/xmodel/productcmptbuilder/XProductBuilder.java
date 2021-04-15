@@ -38,7 +38,7 @@ public class XProductBuilder extends XProductCmptClass
     public XProductBuilder(IProductCmptType type, GeneratorModelContext context, ModelService modelService) {
         super(type, context, modelService);
         nameProvider = new XTypeBuilderClassNameProvider(this);
-        xpBuilderUtil = new XPBuilderUtil<XProductBuilder, XProductBuilderAssociation, XProductAttribute>(this);
+        xpBuilderUtil = new XPBuilderUtil<>(this);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class XProductBuilder extends XProductCmptClass
 
     @Override
     public Set<XProductBuilderAssociation> getBuilderAssociations() {
-        Set<XProductBuilderAssociation> builderAssociations = new HashSet<XProductBuilderAssociation>();
+        Set<XProductBuilderAssociation> builderAssociations = new HashSet<>();
         for (XProductAssociation association : getAssociations()) {
             if (!association.isDerived()) {
                 builderAssociations.add(getModelNode(association.getAssociation(), XProductBuilderAssociation.class));
@@ -242,11 +242,11 @@ public class XProductBuilder extends XProductCmptClass
     }
 
     public Set<XPolicyAttribute> getConfiguredSuperAttributes() {
-        Set<XPolicyAttribute> superAttributes = new HashSet<XPolicyAttribute>();
+        Set<XPolicyAttribute> superAttributes = new HashSet<>();
         if (!hasSupertype()) {
-            return new HashSet<XPolicyAttribute>();
+            return new HashSet<>();
         }
-        Set<XAttribute> overwrittenAttributes = new HashSet<XAttribute>();
+        Set<XAttribute> overwrittenAttributes = new HashSet<>();
 
         // also check non-product-configured attributes for configuration in superclasses
         if (isConfigurationForPolicyCmptType()) {

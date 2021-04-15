@@ -33,7 +33,7 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
     @Override
     public Object[] getChildren(IIpsProject project) throws CoreException {
 
-        List<Object> result = new ArrayList<Object>();
+        List<Object> result = new ArrayList<>();
 
         List<IIpsObjectPathContainer> containerEntries = getContainerEntries(project);
         result.addAll(containerEntries);
@@ -49,7 +49,7 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
 
     private List<IIpsPackageFragmentRoot> getExistingRoots(IIpsProject project) {
         IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots(false);
-        List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<IIpsPackageFragmentRoot>();
+        List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<>();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.exists()) {
                 existingRoots.add(root);
@@ -62,7 +62,7 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
         IIpsObjectPath ipsObjectPath = project.getIpsObjectPath();
         IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
 
-        List<IIpsObjectPathContainer> containerEntries = new ArrayList<IIpsObjectPathContainer>();
+        List<IIpsObjectPathContainer> containerEntries = new ArrayList<>();
         for (IIpsObjectPathEntry entry : entries) {
             if (entry.isContainer()) {
                 IIpsContainerEntry containerEntry = (IIpsContainerEntry)entry;

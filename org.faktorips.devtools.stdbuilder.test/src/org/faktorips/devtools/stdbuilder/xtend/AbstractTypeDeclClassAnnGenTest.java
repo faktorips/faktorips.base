@@ -62,7 +62,7 @@ public class AbstractTypeDeclClassAnnGenTest {
         XType type = mock(XType.class);
         XAttribute attribute = mock(XAttribute.class);
         when(attribute.getName()).thenReturn(ATTRIBUTE1);
-        doReturn(new LinkedHashSet<XAttribute>(Arrays.asList(attribute))).when(type).getAllDeclaredAttributes();
+        doReturn(new LinkedHashSet<>(Arrays.asList(attribute))).when(type).getAllDeclaredAttributes();
 
         assertEquals(annAttribute_single, annGen.createAnnAttributes(type).getSourcecode());
     }
@@ -74,7 +74,7 @@ public class AbstractTypeDeclClassAnnGenTest {
         when(attribute1.getName()).thenReturn(ATTRIBUTE1);
         XAttribute attribute2 = mock(XAttribute.class);
         when(attribute2.getName()).thenReturn(ATTRIBUTE2);
-        doReturn(new LinkedHashSet<XAttribute>(Arrays.asList(attribute1, attribute2))).when(type)
+        doReturn(new LinkedHashSet<>(Arrays.asList(attribute1, attribute2))).when(type)
                 .getAllDeclaredAttributes();
 
         assertEquals(annAttribute_mult, annGen.createAnnAttributes(type).getSourcecode());
@@ -91,7 +91,7 @@ public class AbstractTypeDeclClassAnnGenTest {
         XType type = mock(XType.class);
         XAssociation association = mock(XAssociation.class);
         when(association.getName()).thenReturn(ASSOCIATION1);
-        doReturn(new LinkedHashSet<XAssociation>(Arrays.asList(association))).when(type).getAllDeclaredAssociations();
+        doReturn(new LinkedHashSet<>(Arrays.asList(association))).when(type).getAllDeclaredAssociations();
 
         assertEquals(annAssociation_single, annGen.createAnnAssociations(type).getSourcecode());
     }
@@ -103,7 +103,7 @@ public class AbstractTypeDeclClassAnnGenTest {
         when(association1.getName()).thenReturn(ASSOCIATION1);
         XAssociation association2 = mock(XAssociation.class);
         when(association2.getName()).thenReturn(ASSOCIATION2);
-        doReturn(new LinkedHashSet<XAssociation>(Arrays.asList(association1, association2))).when(type)
+        doReturn(new LinkedHashSet<>(Arrays.asList(association1, association2))).when(type)
                 .getAllDeclaredAssociations();
 
         assertEquals(annAssociation_mult, annGen.createAnnAssociations(type).getSourcecode());

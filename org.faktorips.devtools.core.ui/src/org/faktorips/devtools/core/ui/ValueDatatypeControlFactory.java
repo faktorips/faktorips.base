@@ -124,10 +124,8 @@ public abstract class ValueDatatypeControlFactory {
     /**
      * This method returns <code>true</code> if:
      * <ul>
-     * <li>
-     * the value set is not <code>null</code> and at the same time</li>
-     * <li>
-     * the value set is an enum</li>
+     * <li>the value set is not <code>null</code> and at the same time</li>
+     * <li>the value set is an enum</li>
      * </ul>
      * 
      * For enum datatypes, content proposal will be added by the implementation in
@@ -242,7 +240,8 @@ public abstract class ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
+        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
+                ipsProject);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);
@@ -276,7 +275,7 @@ public abstract class ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet, ipsProject));
+        return new FormattingTextField<>(text, getInputFormat(datatype, valueSet, ipsProject));
     }
 
     public abstract int getDefaultAlignment();

@@ -319,7 +319,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     @Override
     protected List<XmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository) {
-        List<XmlAdapter<?, ?>> enumXmlAdapters = new ArrayList<XmlAdapter<?, ?>>();
+        List<XmlAdapter<?, ?>> enumXmlAdapters = new ArrayList<>();
         for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
                 enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName(), repository));

@@ -94,7 +94,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
             // The new refactoring support goes from here
             if (target instanceof IIpsPackageFragment) {
-                Set<IIpsElement> ipsElements = new LinkedHashSet<IIpsElement>(sources.length);
+                Set<IIpsElement> ipsElements = new LinkedHashSet<>(sources.length);
                 for (Object source : sources) {
                     if ((source instanceof IIpsSrcFile)) {
                         IIpsSrcFile ipsSourceFile = (IIpsSrcFile)source;

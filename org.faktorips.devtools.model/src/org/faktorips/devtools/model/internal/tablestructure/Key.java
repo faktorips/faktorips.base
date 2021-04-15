@@ -27,10 +27,10 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
 
     static final String KEY_ITEM_TAG_NAME = "Item"; //$NON-NLS-1$
 
-    private List<String> items = new ArrayList<String>(0);
+    private List<String> items = new ArrayList<>(0);
 
     // caching the keyItems for better performance
-    private List<IKeyItem> keyItems = new ArrayList<IKeyItem>();
+    private List<IKeyItem> keyItems = new ArrayList<>();
 
     public Key(TableStructure tableStructure, String id) {
         super(tableStructure, id);
@@ -56,7 +56,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     }
 
     private void updateKeyItems() {
-        keyItems = new ArrayList<IKeyItem>();
+        keyItems = new ArrayList<>();
         for (String item : items) {
             IKeyItem keyItem = getKeyItem(item);
             if (keyItem != null) {
@@ -120,7 +120,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     }
 
     private IKeyItem[] getItemCandidates(ITableStructure tableStructure) {
-        List<IKeyItem> result = new ArrayList<IKeyItem>();
+        List<IKeyItem> result = new ArrayList<>();
         addCandidates(result, tableStructure.getColumns());
         addCandidates(result, tableStructure.getRanges());
         return result.toArray(new IKeyItem[result.size()]);
@@ -153,7 +153,7 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         NodeList nl = element.getElementsByTagName(KEY_ITEM_TAG_NAME);
-        items = new ArrayList<String>(nl.getLength());
+        items = new ArrayList<>(nl.getLength());
         for (int i = 0; i < nl.getLength(); i++) {
             Element itemElement = (Element)nl.item(i);
             String item = itemElement.getAttribute("name"); //$NON-NLS-1$

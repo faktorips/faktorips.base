@@ -39,7 +39,7 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
     public static final String SEARCH_VALIDATION_RULES = "searchValidationRules"; //$NON-NLS-1$
 
     private String searchTerm = StringUtils.EMPTY;
-    private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<Class<? extends IIpsObjectPart>>();
+    private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<>();
 
     public ModelSearchPresentationModel() {
         initDefaultSearchValues();

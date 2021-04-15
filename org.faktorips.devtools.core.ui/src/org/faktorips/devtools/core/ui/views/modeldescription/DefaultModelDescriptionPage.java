@@ -76,8 +76,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
     private LexicalSortingAction lexicalSortingAction;
 
     public DefaultModelDescriptionPage() {
-        defaultList = new ArrayList<DescriptionItem>();
-        activeList = new ArrayList<DescriptionItem>();
+        defaultList = new ArrayList<>();
+        activeList = new ArrayList<>();
         IIpsModel.get().addIpsSrcFilesChangedListener(this);
 
     }
@@ -121,7 +121,8 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
                 label = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedPluralLabel(((ILabeledElement)describedElement));
             } else {
-                label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
+                label = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(((ILabeledElement)describedElement));
             }
         } else if (describedElement instanceof ILabeledElement) {
             label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
@@ -139,13 +140,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
             return;
         }
         if (event.getChangedIpsSrcFiles().contains(ipsObject.getIpsSrcFile())) {
-            Display.getDefault().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    setDescriptionData();
-                }
-            });
+            Display.getDefault().asyncExec(this::setDescriptionData);
         }
     }
 
@@ -336,18 +331,15 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
     private void sortAndFilterDescriptionList() {
         final boolean filter = filterEmptyDescriptionsAction != null && filterEmptyDescriptionsAction.isChecked();
         final boolean sort = lexicalSortingAction != null && lexicalSortingAction.isChecked();
-        BusyIndicator.showWhile(form.getDisplay(), new Runnable() {
-            @Override
-            public void run() {
-                activeList = copyDescriptionItems(defaultList);
-                if (filter) {
-                    deleteEmptyDescriptions();
-                }
-                if (sort) {
-                    sortRecursive(activeList);
-                }
-                refresh();
+        BusyIndicator.showWhile(form.getDisplay(), () -> {
+            activeList = copyDescriptionItems(defaultList);
+            if (filter) {
+                deleteEmptyDescriptions();
             }
+            if (sort) {
+                sortRecursive(activeList);
+            }
+            refresh();
         });
     }
 
@@ -438,7 +430,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         for (DescriptionItem item : copyActiveList) {
             if (item.getChildren().size() > 0) {
                 List<DescriptionItem> items = item.getChildren();
-                List<DescriptionItem> newItems = new ArrayList<DescriptionItem>();
+                List<DescriptionItem> newItems = new ArrayList<>();
                 for (DescriptionItem item2 : items) {
                     if (!item2.getDescription().isEmpty()) {
                         newItems.add(item2);
@@ -489,7 +481,7 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
     }
 
     public List<DescriptionItem> copyDescriptionItems(List<DescriptionItem> original) {
-        List<DescriptionItem> copy = new ArrayList<DescriptionItem>();
+        List<DescriptionItem> copy = new ArrayList<>();
         for (DescriptionItem item : original) {
             DescriptionItem itemCopy = copyItem(item);
             copy.add(itemCopy);

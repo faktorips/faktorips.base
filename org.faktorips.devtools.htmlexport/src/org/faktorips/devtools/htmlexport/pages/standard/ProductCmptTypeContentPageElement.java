@@ -85,7 +85,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     private void addProductCmptList() {
         List<IIpsSrcFile> allProductCmptSrcFiles;
         try {
-            allProductCmptSrcFiles = new ArrayList<IIpsSrcFile>(
+            allProductCmptSrcFiles = new ArrayList<>(
                     getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
         } catch (CoreException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
@@ -137,10 +137,9 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         addPageElements(new WrapperPageElement(
                 WrapperType.BLOCK,
                 getContext(),
-                new IPageElement[] {
-                        new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-                        new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
-                                getContext().getLabel(to), true) }));
+                new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+                new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
+                        getContext().getLabel(to), true)));
 
     }
 

@@ -19,11 +19,13 @@ import org.w3c.dom.Element;
 
 public class DummyTocEntryFactory implements ITocEntryFactory<DummyTypedTocEntryObject> {
 
+    @Override
     public DummyTypedTocEntryObject createFromXml(Element entryElement) {
         String ipsObjectName = entryElement.getAttribute(TocEntryObject.PROPERTY_IPS_OBJECT_QNAME);
         return new DummyTypedTocEntryObject(ipsObjectName);
     }
 
+    @Override
     public String getXmlTag() {
         return DummyTypedTocEntryObject.DUMMY_RUNTIME_OBJECT;
     }

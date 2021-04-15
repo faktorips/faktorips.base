@@ -97,7 +97,7 @@ public class LinkCreatorUtil {
         // should only return true if all dragged cmpts are valid
         boolean result = false;
         for (IProductCmpt draggedCmpt : draggedCmpts) {
-            List<IProductCmptTypeAssociation> possibleAssos = new ArrayList<IProductCmptTypeAssociation>();
+            List<IProductCmptTypeAssociation> possibleAssos = new ArrayList<>();
             for (IProductCmptTypeAssociation aAssoziation : associations) {
                 if (canCreateValidLink(generation, draggedCmpt, aAssoziation)) {
                     possibleAssos.add(aAssoziation);

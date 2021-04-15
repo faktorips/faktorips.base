@@ -39,7 +39,7 @@ import org.osgi.framework.Version;
 public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOperation {
 
     private MessageList result;
-    private ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<AbstractIpsProjectMigrationOperation>();
+    private ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<>();
     private IIpsProject projectToMigrate;
 
     public IpsFeatureMigrationOperation(IIpsProject projectToMigrate) {
@@ -79,11 +79,10 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         try {
             monitor.worked(10);
             result = new MessageList();
-            for (int i = 0; i < operations.size(); i++) {
+            for (AbstractIpsProjectMigrationOperation operation : operations) {
                 if (monitor.isCanceled()) {
                     throw new InterruptedException();
                 }
-                AbstractIpsProjectMigrationOperation operation = operations.get(i);
                 result.add(operation.migrate(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000)));
             }
         } catch (CoreException e) {
@@ -101,7 +100,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         }
 
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> result = new ArrayList<>();
         projectToMigrate.findAllIpsSrcFiles(result);
         IProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
@@ -109,8 +108,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         // at this point, we do not allow the user to cancel this operation any more because
         // we now start to save all the modifications - which has to be done atomically.
         monitor.setCanceled(false);
-        for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = (result.get(i));
+        for (IIpsSrcFile element : result) {
+            IIpsSrcFile file = (element);
             if (file.isDirty()) {
                 file.save(true, monitor);
             }
@@ -121,14 +120,14 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     private void rollback() {
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ArrayList<IIpsSrcFile> result = new ArrayList<>();
         try {
             projectToMigrate.findAllIpsSrcFiles(result);
         } catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("Error during rollback of migration. Rollback might have failed", e)); //$NON-NLS-1$
         }
-        for (int i = 0; i < result.size(); i++) {
-            IIpsSrcFile file = (result.get(i));
+        for (IIpsSrcFile element : result) {
+            IIpsSrcFile file = (element);
             if (file.isDirty()) {
                 file.discardChanges();
                 file.markAsClean();
@@ -144,9 +143,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         IIpsProjectProperties props = projectToMigrate.getProperties();
 
         // for every migrated feature find the maximum target version.
-        Hashtable<String, String> features = new Hashtable<String, String>();
-        for (int i = 0; i < operations.size(); i++) {
-            AbstractIpsProjectMigrationOperation operation = operations.get(i);
+        Hashtable<String, String> features = new Hashtable<>();
+        for (AbstractIpsProjectMigrationOperation operation : operations) {
             String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
@@ -171,8 +169,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     @Override
     public String getDescription() {
         StringBuilder description = new StringBuilder();
-        for (int i = 0; i < operations.size(); i++) {
-            AbstractIpsProjectMigrationOperation operation = operations.get(i);
+        for (AbstractIpsProjectMigrationOperation operation : operations) {
             description.append("-> ").append(operation.getTargetVersion()).append(System.lineSeparator()); //$NON-NLS-1$
             description.append(operation.getDescription()).append(System.lineSeparator());
         }

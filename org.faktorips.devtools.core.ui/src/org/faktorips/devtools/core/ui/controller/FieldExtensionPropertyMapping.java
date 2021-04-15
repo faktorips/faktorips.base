@@ -14,7 +14,8 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
 
 public class FieldExtensionPropertyMapping<T> extends AbstractFieldPropertyMapping<T> {
 
-    public FieldExtensionPropertyMapping(EditField<T> edit, IExtensionPropertyAccess object, String extensionPropertyId) {
+    public FieldExtensionPropertyMapping(EditField<T> edit, IExtensionPropertyAccess object,
+            String extensionPropertyId) {
         super(edit, object, extensionPropertyId);
     }
 

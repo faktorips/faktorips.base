@@ -23,12 +23,12 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
 
     @Override
     public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject) {
-        return new ArrayList<ITargetSystem>();
+        return new ArrayList<>();
     }
 
     @Override
     public List<IFile> additionalResourcesToCommit(IIpsProject ipsProject) {
-        return new ArrayList<IFile>();
+        return new ArrayList<>();
     }
 
     @Override

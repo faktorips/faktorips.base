@@ -250,7 +250,8 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         c1.setDatatype(Datatype.DECIMAL.getName());
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertFalse(ml.isEmpty());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
+        assertNotNull(
+                ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
         assertNotNull(ml.getMessagesFor(range));
 
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
@@ -267,7 +268,8 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         ((ColumnRange)range).setParameterName("c0Toc1");
         ml = range.validate(ipsSrcFile.getIpsProject());
         assertFalse(ml.isEmpty());
-        assertNotNull(ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
+        assertNotNull(
+                ml.getMessageByCode(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE));
 
         c0.setDatatype(Datatype.DECIMAL.getName());
         ml = range.validate(ipsSrcFile.getIpsProject());

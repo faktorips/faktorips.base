@@ -56,7 +56,7 @@ public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePag
             return rowWithIpsObjectPart;
         }
 
-        List<IPageElement> rows = new ArrayList<IPageElement>(rowWithIpsObjectPart);
+        List<IPageElement> rows = new ArrayList<>(rowWithIpsObjectPart);
         rows.add(createPageElementForDefiningSuperType(attribute));
         return rows;
     }

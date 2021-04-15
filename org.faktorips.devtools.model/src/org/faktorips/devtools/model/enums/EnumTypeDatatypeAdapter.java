@@ -20,9 +20,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.DatatypeComparator;
-import org.faktorips.runtime.MessageList;
 
 /**
  * This is an adapter for an <code>IEnumType</code> that adapts the <code>EnumDatatype</code>

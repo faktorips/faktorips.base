@@ -94,7 +94,7 @@ public class ParseTreeVisitorTest {
 
         @Override
         public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(Datatype datatype) {
-            BaseDatatypeHelper<CodeFragment> datatypeHelper = new BaseDatatypeHelper<CodeFragment>() {
+            BaseDatatypeHelper<CodeFragment> datatypeHelper = new BaseDatatypeHelper<>() {
 
                 @SuppressWarnings("hiding")
                 private Datatype datatype;
@@ -148,7 +148,8 @@ public class ParseTreeVisitorTest {
         }
 
         @Override
-        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(String sourcecode, Datatype datatype) {
+        protected AbstractCompilationResult<CodeFragment> newCompilationResultImpl(String sourcecode,
+                Datatype datatype) {
             return new DummyCompilationResultImpl(sourcecode, datatype);
         }
 
@@ -501,7 +502,7 @@ public class ParseTreeVisitorTest {
         FlFunction<CodeFragment> function = mockFunction(data, new Datatype[] { Datatype.STRING, Datatype.STRING,
                 Datatype.PRIMITIVE_INT }, resultImpl);
         mockFunctionResolver(function);
-        compiler.setConversionCodeGenerator(new ConversionCodeGenerator<CodeFragment>());
+        compiler.setConversionCodeGenerator(new ConversionCodeGenerator<>());
 
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
@@ -537,7 +538,7 @@ public class ParseTreeVisitorTest {
         DummyCompilationResultImpl result2 = new DummyCompilationResultImpl(Message.newError("ERROR", "failed"));
         @SuppressWarnings("unchecked")
         AbstractCompilationResult<CodeFragment>[] compilationResultImpls = new AbstractCompilationResult[] { result1,
-            result2 };
+                result2 };
         SimpleNode childNode = mockChildNode(node, 0, data, compilationResultImpls);
 
         @SuppressWarnings("unchecked")

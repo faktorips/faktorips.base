@@ -139,7 +139,7 @@ public class MultiValueAttributeHandlerTest {
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
                 enumDatatype));
 
-        List<String> valueSetValues = new ArrayList<String>();
+        List<String> valueSetValues = new ArrayList<>();
         valueSetValues.add(PaymentMode.ANNUAL_ID);
 
         IEnumValueSet enumValueset = mock(IEnumValueSet.class);

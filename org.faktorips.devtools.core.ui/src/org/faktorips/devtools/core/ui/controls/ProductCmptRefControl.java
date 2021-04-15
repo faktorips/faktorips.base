@@ -45,7 +45,8 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         this(Arrays.asList(project), parent, toolkit, allowEmptyRef);
     }
 
-    public ProductCmptRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit, boolean allowEmptyRef) {
+    public ProductCmptRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit,
+            boolean allowEmptyRef) {
         super(projects, parent, toolkit, Messages.ProductCmptRefControl_title,
                 Messages.ProductCmptRefControl_description, allowEmptyRef);
     }
@@ -64,7 +65,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
 
-        Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             ipsSrcFiles.addAll(findIpsSrcFiles(ipsProject));
         }

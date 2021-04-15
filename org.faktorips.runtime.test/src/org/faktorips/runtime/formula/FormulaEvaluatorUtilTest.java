@@ -147,7 +147,7 @@ public class FormulaEvaluatorUtilTest {
         IBranch branch1 = mock(IBranch.class);
         IBranch branch2 = mock(IBranch.class);
 
-        List<IBranch> branches = new ArrayList<FormulaEvaluatorUtilTest.IBranch>();
+        List<IBranch> branches = new ArrayList<>();
         when(branch1.getValue()).thenReturn(Integer.valueOf(2));
         when(branch2.getValue()).thenReturn(Integer.valueOf(3));
         branches.add(branch1);
@@ -402,7 +402,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testFunctionWithListAsArgumentHelperEmptyList() {
         FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperSum();
-        List<Integer> emptyList = new ArrayList<Integer>();
+        List<Integer> emptyList = new ArrayList<>();
         assertEquals(Integer.valueOf(0), helper.getResult(emptyList));
     }
 
@@ -436,7 +436,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected List<Integer> setUpIntList(Integer... values) {
-        List<Integer> intList = new ArrayList<Integer>(Arrays.asList(values));
+        List<Integer> intList = new ArrayList<>(Arrays.asList(values));
         return intList;
     }
 
@@ -450,7 +450,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testFunctionWithEmptyListAsArgumentHelperMax() {
         FunctionWithListAsArgumentHelper<Integer> helper = setUpFunctionWithListArgumentHelperMax();
-        List<Integer> emptyList = new ArrayList<Integer>();
+        List<Integer> emptyList = new ArrayList<>();
         assertEquals(Integer.valueOf(0), helper.getResult(emptyList));
     }
 

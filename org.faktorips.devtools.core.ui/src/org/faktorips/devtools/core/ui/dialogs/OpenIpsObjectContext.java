@@ -41,13 +41,13 @@ public class OpenIpsObjectContext extends CachingOpenIpsObjectContext {
 
     @Override
     public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         IIpsProject[] projects = IIpsModel.get().getIpsProjects();
         progressMonitor.beginTask(
                 org.faktorips.devtools.core.ui.actions.Messages.OpenIpsObjectSelectionDialog_processName,
                 projects.length * 2);
         for (IIpsProject project : projects) {
-            List<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+            List<IIpsSrcFile> list = new ArrayList<>();
             project.findAllIpsSrcFiles(list);
             progressMonitor.worked(1);
             result.addAll(list);

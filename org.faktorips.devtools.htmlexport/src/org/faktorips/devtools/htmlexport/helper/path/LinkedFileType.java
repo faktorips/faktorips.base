@@ -21,9 +21,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
  */
 public enum LinkedFileType {
 
-    PACKAGE_CLASSES_OVERVIEW("package_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$ 
-    OBJECT_TYPE_CLASSES_OVERVIEW("object_type_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$ 
-    ELEMENT_CONTENT("element_", "", TargetType.CONTENT); //$NON-NLS-1$ //$NON-NLS-2$ 
+    PACKAGE_CLASSES_OVERVIEW("package_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$
+    OBJECT_TYPE_CLASSES_OVERVIEW("object_type_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$
+    ELEMENT_CONTENT("element_", "", TargetType.CONTENT); //$NON-NLS-1$ //$NON-NLS-2$
 
     private LinkedFileType(String prefix, String suffix, TargetType target) {
         this.prefix = prefix;

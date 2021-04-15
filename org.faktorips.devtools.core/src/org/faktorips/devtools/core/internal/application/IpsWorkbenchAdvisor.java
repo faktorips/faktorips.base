@@ -16,7 +16,6 @@ import java.net.URL;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
@@ -261,14 +260,11 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         // save the workspace (this has to be coded as the rcp workbench advisor is not aware of the
         // workspace! The workspace is an IDE concept!
         final MultiStatus status = new MultiStatus(IpsPlugin.PLUGIN_ID, 1, Messages.ProblemsSavingWorkspace, null);
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-            @Override
-            public void run(IProgressMonitor monitor) {
-                try {
-                    status.merge(ResourcesPlugin.getWorkspace().save(true, monitor));
-                } catch (CoreException e) {
-                    status.merge(e.getStatus());
-                }
+        IRunnableWithProgress runnable = monitor -> {
+            try {
+                status.merge(ResourcesPlugin.getWorkspace().save(true, monitor));
+            } catch (CoreException e) {
+                status.merge(e.getStatus());
             }
         };
         try {

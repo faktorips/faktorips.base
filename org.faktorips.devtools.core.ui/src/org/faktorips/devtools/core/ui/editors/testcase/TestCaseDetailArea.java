@@ -29,9 +29,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -82,25 +80,25 @@ public class TestCaseDetailArea {
     private IIpsProject ipsProject;
 
     /** Contains all edit sections the key is the name of the corresponding test parameter */
-    private HashMap<String, Section> sectionControls = new HashMap<String, Section>();
+    private HashMap<String, Section> sectionControls = new HashMap<>();
 
     /** Container holds all edit fields for test values and test attribute values */
-    private HashMap<String, EditField<?>> allEditFieldsCache = new HashMap<String, EditField<?>>();
+    private HashMap<String, EditField<?>> allEditFieldsCache = new HashMap<>();
 
     /** Contains the first edit field of each test policy component in the edit area */
-    private HashMap<String, EditField<?>> firstAttributeEditFields = new HashMap<String, EditField<?>>();
+    private HashMap<String, EditField<?>> firstAttributeEditFields = new HashMap<>();
 
-    private HashMap<String, String> failureMessageCache = new HashMap<String, String>();
-    private HashMap<String, String[]> failureDetailCache = new HashMap<String, String[]>();
+    private HashMap<String, String> failureMessageCache = new HashMap<>();
+    private HashMap<String, String[]> failureDetailCache = new HashMap<>();
 
     /** Contains all fixed fields (actual value stored as expected value) */
-    private List<String> fixedFieldsCache = new ArrayList<String>();
+    private List<String> fixedFieldsCache = new ArrayList<>();
 
     /** Contains the mapping between the edit field and model objects */
-    private HashMap<EditField<?>, IIpsObjectPart> editField2ModelObject = new HashMap<EditField<?>, IIpsObjectPart>();
+    private HashMap<EditField<?>, IIpsObjectPart> editField2ModelObject = new HashMap<>();
 
     /** Contains all ui controller */
-    private List<Control> allBindedControls = new ArrayList<Control>();
+    private List<Control> allBindedControls = new ArrayList<>();
 
     /** The section this details belongs to */
     private TestCaseSection testCaseSection;
@@ -115,7 +113,7 @@ public class TestCaseDetailArea {
     /** area which contains all detail controls */
     private Composite dynamicArea;
 
-    private List<ITestCaseDetailAreaRedrawListener> testCaseDetailAreaRedrawListener = new ArrayList<ITestCaseDetailAreaRedrawListener>(
+    private List<ITestCaseDetailAreaRedrawListener> testCaseDetailAreaRedrawListener = new ArrayList<>(
             1);
 
     private BindingContext bindingContext;
@@ -238,13 +236,10 @@ public class TestCaseDetailArea {
         scrolledComposite.setExpandHorizontal(true);
         scrolledComposite.setExpandVertical(true);
         applyHeight(scrolledComposite);
-        testCaseSection.getTreeViewer().getTree().addListener(SWT.Resize, new Listener() {
-            @Override
-            public void handleEvent(Event event) {
-                if (!scrolledComposite.isDisposed()) {
-                    applyHeight(scrolledComposite);
-                    testCaseSection.layout();
-                }
+        testCaseSection.getTreeViewer().getTree().addListener(SWT.Resize, $ -> {
+            if (!scrolledComposite.isDisposed()) {
+                applyHeight(scrolledComposite);
+                testCaseSection.layout();
             }
         });
 
@@ -353,7 +348,8 @@ public class TestCaseDetailArea {
                 StringUtils.capitalize(attributeValue.getTestAttribute()));
 
         if (testAttribute != null) {
-            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(testAttribute);
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedDescription(testAttribute);
             label.setToolTipText(localizedDescription);
         }
 

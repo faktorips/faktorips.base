@@ -27,12 +27,13 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
- * The general info section for the <code>EnumContentEditor</code>. It shows the <code>IEnumType</code> the
- * <code>IEnumContent</code> to edit is built upon and provides navigation to this <code>IEnumType</code>.
+ * The general info section for the <code>EnumContentEditor</code>. It shows the
+ * <code>IEnumType</code> the <code>IEnumContent</code> to edit is built upon and provides
+ * navigation to this <code>IEnumType</code>.
  * 
  * @see EnumContentEditor
  * 
@@ -58,8 +59,8 @@ public class EnumContentGeneralInfoSection extends IpsSection {
      * Creates a new <code>EnumContentGeneralInfoSection</code> using the specified parameters.
      * 
      * @param enumContentEditorPage The wizard page of the <code>EnumContentEditor</code>.
-     * @param enumContent The <code>IEnumContent</code> the <code>EnumContentEditor</code> is currently
-     *            editing.
+     * @param enumContent The <code>IEnumContent</code> the <code>EnumContentEditor</code> is
+     *            currently editing.
      * @param parent The parent UI composite to attach this info section to.
      * @param toolkit The UI toolkit to be used to create new UI elements.
      * 
@@ -122,7 +123,8 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             MessageList validationMessages = enumContent.validate(ipsProject);
             if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
                     || validationMessages
-                    .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
+                            .getMessageByCode(
+                                    IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
                 enumContentEditorPage.getEnumValuesSection().reinit();
             }
         } catch (CoreException e) {

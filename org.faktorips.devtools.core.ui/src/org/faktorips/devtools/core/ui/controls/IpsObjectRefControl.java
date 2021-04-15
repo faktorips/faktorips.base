@@ -151,7 +151,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     public void setIpsProjects(List<IIpsProject> projects) {
-        ipsProjects = new ArrayList<IIpsProject>();
+        ipsProjects = new ArrayList<>();
 
         for (IIpsProject project : projects) {
             if (project != null && project.exists()) {
@@ -180,7 +180,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     public List<IIpsProject> getIpsProjects() {
-        return new CopyOnWriteArrayList<IIpsProject>(ipsProjects);
+        return new CopyOnWriteArrayList<>(ipsProjects);
     }
 
     @Override
@@ -194,14 +194,11 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
         final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(getShell(), dialogTitle, context);
         dialog.setMessage(dialogMessage);
-        BusyIndicator.showWhile(getDisplay(), new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    context.setElements(getIpsSrcFiles());
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+        BusyIndicator.showWhile(getDisplay(), () -> {
+            try {
+                context.setElements(getIpsSrcFiles());
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
         });
         if (isDialogFilterEnabled()) {
@@ -209,7 +206,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         }
         if (dialog.open() == Window.OK) {
             if (dialog.getResult().length > 0) {
-                List<IIpsSrcFile> srcFiles = new ArrayList<IIpsSrcFile>();
+                List<IIpsSrcFile> srcFiles = new ArrayList<>();
                 Object[] result = dialog.getResult();
                 for (Object element : result) {
                     srcFiles.add((IIpsSrcFile)element);
@@ -259,7 +256,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * This is a convenience method for subclasses to search the source files in all given projects.
      */
     protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreException {
-        Set<IIpsSrcFile> srcFiles = new LinkedHashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(ipsProject.findIpsSrcFiles(type)));
         }

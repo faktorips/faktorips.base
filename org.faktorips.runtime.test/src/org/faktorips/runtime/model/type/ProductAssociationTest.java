@@ -684,7 +684,7 @@ public class ProductAssociationTest {
 
         @IpsAssociationLinks(association = "asso")
         public IProductComponentLink<Target> getLinkForAsso() {
-            return new ProductComponentLink<Target>(this, target);
+            return new ProductComponentLink<>(this, target);
         }
 
         @IpsAssociation(name = "overriddenAsso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
@@ -752,7 +752,7 @@ public class ProductAssociationTest {
 
         @IpsAssociationLinks(association = "SubAsso")
         public IProductComponentLink<Target> getLinkForSubAsso() {
-            return new ProductComponentLink<Target>(this, subAssoTarget);
+            return new ProductComponentLink<>(this, subAssoTarget);
         }
 
         @Override
@@ -799,7 +799,7 @@ public class ProductAssociationTest {
         @IpsMatchingAssociation(source = Policy.class, name = "Matching")
         @IpsInverseAssociation("Inverse")
         public List<Target> getTargets() {
-            ArrayList<Target> targets = new ArrayList<Target>(2);
+            ArrayList<Target> targets = new ArrayList<>(2);
             if (target != null) {
                 targets.add(target);
             }
@@ -852,12 +852,12 @@ public class ProductAssociationTest {
 
         @IpsAssociationLinks(association = "asso2")
         public List<IProductComponentLink<Target>> getLinksForTargets() {
-            List<IProductComponentLink<Target>> list = new ArrayList<IProductComponentLink<Target>>();
+            List<IProductComponentLink<Target>> list = new ArrayList<>();
             if (target != null) {
-                list.add(new ProductComponentLink<Target>(this, target));
+                list.add(new ProductComponentLink<>(this, target));
             }
             if (target2 != null) {
-                list.add(new ProductComponentLink<Target>(this, target2));
+                list.add(new ProductComponentLink<>(this, target2));
             }
             return list;
         }

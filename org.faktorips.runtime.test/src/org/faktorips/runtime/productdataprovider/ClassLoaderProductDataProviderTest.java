@@ -152,7 +152,8 @@ public class ClassLoaderProductDataProviderTest {
         DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
         ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+                "");
 
         Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
         NodeList mockChildrenList = mock(NodeList.class);
@@ -170,7 +171,8 @@ public class ClassLoaderProductDataProviderTest {
         DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
         ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+                "");
 
         Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
         NodeList mockChildrenList = mock(NodeList.class);
@@ -188,7 +190,8 @@ public class ClassLoaderProductDataProviderTest {
         DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
         ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+                "");
 
         Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
         NodeList mockChildrenList = mock(NodeList.class);
@@ -212,7 +215,8 @@ public class ClassLoaderProductDataProviderTest {
         DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
         ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "", "");
+        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+                "");
 
         Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
         NodeList mockChildrenList = mock(NodeList.class);

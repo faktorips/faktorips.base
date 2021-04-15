@@ -42,7 +42,7 @@ class ProductSearchQueryConditionMatcher {
     }
 
     private List<ISearchOperator> createSearchOperators() {
-        List<ISearchOperator> newSearchOperators = new ArrayList<ISearchOperator>();
+        List<ISearchOperator> newSearchOperators = new ArrayList<>();
         List<ProductSearchConditionPresentationModel> models = searchModel
                 .getProductSearchConditionPresentationModels();
         for (ProductSearchConditionPresentationModel conditionModel : models) {
@@ -67,7 +67,7 @@ class ProductSearchQueryConditionMatcher {
     }
 
     protected Set<IProductPartsContainer> getResults(Set<IIpsSrcFile> matchingSrcFiles) {
-        Set<IProductPartsContainer> productPartsContainers = new HashSet<IProductPartsContainer>();
+        Set<IProductPartsContainer> productPartsContainers = new HashSet<>();
         for (IIpsSrcFile srcFile : matchingSrcFiles) {
             addMatchingProductPartContainers(srcFile, productPartsContainers);
         }
@@ -96,7 +96,8 @@ class ProductSearchQueryConditionMatcher {
         return (IProductCmpt)srcFile.getIpsObject();
     }
 
-    private void addMatchingProdCmpt(Set<IProductPartsContainer> productPartsContainers, IProductCmpt productComponent) {
+    private void addMatchingProdCmpt(Set<IProductPartsContainer> productPartsContainers,
+            IProductCmpt productComponent) {
         if (isMatchingContainer(productComponent)) {
             productPartsContainers.add(productComponent);
         }

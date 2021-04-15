@@ -158,7 +158,7 @@ public class IpsSrcFileFromEditorInputFactory {
     private int calculateExternalProjectPosition(IPath fullPath) {
         IIpsProject[] allProjects = IIpsModel.get().getIpsProjects();
         List<String> projectNames = Arrays.stream(allProjects)
-                .map(project -> project.getName())
+                .map(IIpsProject::getName)
                 .collect(Collectors.toList());
         String[] segments = fullPath.segments();
         for (int i = 0; i < segments.length; i++) {

@@ -141,7 +141,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     private void initProjectSetUp() {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         result.add(srcFile1);
         result.add(srcFileReferenced);
         result.add(srcFileReferenced2);
@@ -228,7 +228,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindReferencingIpsObjTypes_OtherMethods() throws CoreException {
-        List<IIpsSrcFile> ipsScrFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> ipsScrFiles = new ArrayList<>();
         ipsScrFiles.add(srcFile1);
         ipsScrFiles.add(srcFileReferencedProdCmpt);
         when(proj.findAllIpsSrcFiles()).thenReturn(ipsScrFiles);
@@ -256,7 +256,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         initProjectSetUp();
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(objectReferenced);
-        Set<IIpsElement> resultList = new HashSet<IIpsElement>();
+        Set<IIpsElement> resultList = new HashSet<>();
         query.addDependencyDetails(resultList, prodCmpt, null);
 
         assertTrue(resultList.isEmpty());
@@ -267,7 +267,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         IDependency dependencyObj1ToObjRef = IpsObjectDependency.create(prodCmpt.getQualifiedNameType(),
                 objectReferenced.getQualifiedNameType(), DependencyType.REFERENCE);
         when(prodCmpt.dependsOn()).thenReturn(new IDependency[] { dependencyObj1ToObjRef });
-        List<IDependencyDetail> obj1ProdCmptGenerations = new ArrayList<IDependencyDetail>();
+        List<IDependencyDetail> obj1ProdCmptGenerations = new ArrayList<>();
         obj1ProdCmptGenerations.add(detail1);
         obj1ProdCmptGenerations.add(detail2);
         when(prodCmpt.getDependencyDetails(dependencyObj1ToObjRef)).thenReturn(obj1ProdCmptGenerations);
@@ -275,7 +275,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         when(detail2.getPart()).thenReturn(objectContainer2);
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(objectReferenced);
-        Set<IIpsElement> resultList = new HashSet<IIpsElement>();
+        Set<IIpsElement> resultList = new HashSet<>();
         query.addDependencyDetails(resultList, prodCmpt, dependencyObj1ToObjRef);
 
         assertEquals(2, resultList.size());

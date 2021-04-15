@@ -48,7 +48,7 @@ public class IpsRefactoringModificationSet {
     public IpsRefactoringModificationSet(IIpsElement originalElement) {
         this.originalElement = originalElement;
         this.targetElement = originalElement;
-        this.modifications = new HashSet<IpsSrcFileModification>();
+        this.modifications = new HashSet<>();
     }
 
     /**

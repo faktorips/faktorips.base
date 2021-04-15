@@ -51,7 +51,7 @@ public class UniqueKeyValidatorRange {
      * cache contains for each key value a map of column ranges (key) and sorted maps (value) each
      * map contains the KeyValueRange ('from'-value) and the rows which matches this key value range
      */
-    private Map<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> keyValueRanges = new HashMap<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>>();
+    private Map<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> keyValueRanges = new HashMap<>();
 
     private List<ColumnRange> twoColumnRanges;
 
@@ -67,11 +67,13 @@ public class UniqueKeyValidatorRange {
     public void updateUniqueKeysCache(Row row, int operation) {
         // update the key value (non two-column-key-item-value)
         KeyValue keyValue = KeyValue.createKeyValue(uniqueKeyValidator.getCachedTableStructure(), uniqueKey, row);
-        Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> listOfRangeMaps = keyValueRanges.computeIfAbsent(keyValue, $ -> new HashMap<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>());
+        Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> listOfRangeMaps = keyValueRanges
+                .computeIfAbsent(keyValue, $ -> new HashMap<>());
 
         // update the sorted maps for each two-column-range key item
         for (ColumnRange columnRange : twoColumnRanges) {
-            SortedMap<AbstractKeyValue, Set<Row>> sortedMap = listOfRangeMaps.computeIfAbsent(columnRange, $ -> new TreeMap<AbstractKeyValue, Set<Row>>());
+            SortedMap<AbstractKeyValue, Set<Row>> sortedMap = listOfRangeMaps.computeIfAbsent(columnRange,
+                    $ -> new TreeMap<>());
 
             updateUniqueKeysColumnRange(uniqueKeyValidator.getCachedTableStructure(), row, operation, columnRange,
                     sortedMap);
@@ -106,9 +108,10 @@ public class UniqueKeyValidatorRange {
         twoColumnRanges = AbstractKeyValue.getTwoColumnRanges(uniqueKey);
 
         // list to auto-fix invalid key values
-        List<KeyValue> invalidKeyValues = new ArrayList<KeyValue>();
+        List<KeyValue> invalidKeyValues = new ArrayList<>();
 
-        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> entry : keyValueRanges.entrySet()) {
+        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> entry : keyValueRanges
+                .entrySet()) {
             // check if the key value is valid
             KeyValue keyValue = entry.getKey();
             if (!keyValue.isValid()) {
@@ -140,7 +143,7 @@ public class UniqueKeyValidatorRange {
             KeyValue keyValue,
             Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> columnRangeMaps) {
 
-        Set<Row> rowsUniqueKeyViolation = new HashSet<Row>(2);
+        Set<Row> rowsUniqueKeyViolation = new HashSet<>(2);
         Map<KeyValueRange, Set<Row>> allRangesRowsSameFromValue = null;
         for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> entry2 : columnRangeMaps.entrySet()) {
             SortedMap<AbstractKeyValue, Set<Row>> keyValueRangeMap = entry2.getValue();
@@ -187,9 +190,9 @@ public class UniqueKeyValidatorRange {
         if (prevRangesRowsSameFromValue == null) {
             return rowsSameFromValue;
         } else {
-            Map<KeyValueRange, Set<Row>> result = new HashMap<KeyValueRange, Set<Row>>();
+            Map<KeyValueRange, Set<Row>> result = new HashMap<>();
 
-            Set<Row> rowsViolation = new HashSet<Row>(2);
+            Set<Row> rowsViolation = new HashSet<>(2);
 
             for (Entry<KeyValueRange, Set<Row>> entry : prevRangesRowsSameFromValue.entrySet()) {
                 KeyValueRange keyValue = entry.getKey();
@@ -244,8 +247,8 @@ public class UniqueKeyValidatorRange {
             KeyValue keyValue,
             SortedMap<AbstractKeyValue, Set<Row>> keyValueRangeMap) {
 
-        List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
-        Map<KeyValueRange, Set<Row>> mapRowsSameFrom = new HashMap<KeyValueRange, Set<Row>>();
+        List<AbstractKeyValue> invalidkeyValues = new ArrayList<>();
+        Map<KeyValueRange, Set<Row>> mapRowsSameFrom = new HashMap<>();
 
         // iterate all key value range (from-column) objects of the unique key
         KeyValueRange prevKeyValueFrom = null;
@@ -265,7 +268,7 @@ public class UniqueKeyValidatorRange {
             List<Row> validRows = updateValidRows(keyValue, keyValueFrom, keyValueObject);
 
             if (validRows.size() > 1) {
-                Set<Row> rowsSameFrom = mapRowsSameFrom.computeIfAbsent(keyValueFrom, $ -> new HashSet<Row>(2));
+                Set<Row> rowsSameFrom = mapRowsSameFrom.computeIfAbsent(keyValueFrom, $ -> new HashSet<>(2));
                 rowsSameFrom.addAll(validRows);
             } else if (validRows.size() == 0) {
                 invalidkeyValues.add(keyValueFrom);
@@ -306,7 +309,7 @@ public class UniqueKeyValidatorRange {
     }
 
     private List<Row> updateValidRows(KeyValue keyValue, KeyValueRange keyValueFrom, Set<Row> keyValueObject) {
-        List<Row> validRows = new ArrayList<Row>();
+        List<Row> validRows = new ArrayList<>();
         for (Row row : keyValueObject) {
             // check if the key value is valid for the row
             // and check if the key value from is valid
@@ -355,7 +358,7 @@ public class UniqueKeyValidatorRange {
             KeyValueRange keyValue,
             Set<Row> rows,
             List<AbstractKeyValue> invalidkeyValues) {
-        Set<Row> rowsChecked = new HashSet<Row>(rows.size());
+        Set<Row> rowsChecked = new HashSet<>(rows.size());
 
         // first check if all rows are 'valid' for the key value
         for (Row currentRow : rows) {
@@ -408,13 +411,15 @@ public class UniqueKeyValidatorRange {
 
     public void printCachedContent(String offset) {
         System.out.println(offset + " UniqueKeyRange:" + uniqueKey.getName()); //$NON-NLS-1$
-        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> entry : keyValueRanges.entrySet()) {
+        for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> entry : keyValueRanges
+                .entrySet()) {
             System.out.println(offset + " KeyValue:" + entry.getKey()); //$NON-NLS-1$
             printCachedColumnRange(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
 
-    private void printCachedColumnRange(String offset, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> sortedMap) {
+    private void printCachedColumnRange(String offset,
+            Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> sortedMap) {
         for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> entry : sortedMap.entrySet()) {
             System.out.println(offset + " ColumnRange:" + entry.getKey().getName()); //$NON-NLS-1$
             printCachedSordetMap(offset + " ", entry.getValue()); //$NON-NLS-1$

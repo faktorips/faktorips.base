@@ -75,16 +75,16 @@ public class AbstractValueHolderTest {
         abstractValueHolder.objectHasChanged("", "");
         verifyZeroInteractions(mockContent);
 
-        abstractValueHolder.objectHasChanged(new ArrayList<Object>(), new ArrayList<Object>());
+        abstractValueHolder.objectHasChanged(new ArrayList<>(), new ArrayList<>());
         verifyZeroInteractions(mockContent);
 
         abstractValueHolder.objectHasChanged("", "abc");
         verify(mockContent).ipsObjectChanged(any(ContentChangeEvent.class));
         reset(mockContent);
 
-        ArrayList<Object> oldValue = new ArrayList<Object>();
+        ArrayList<Object> oldValue = new ArrayList<>();
         oldValue.add("as");
-        abstractValueHolder.objectHasChanged(oldValue, new ArrayList<Object>());
+        abstractValueHolder.objectHasChanged(oldValue, new ArrayList<>());
         verify(mockContent).ipsObjectChanged(any(ContentChangeEvent.class));
     }
 

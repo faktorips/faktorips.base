@@ -48,7 +48,8 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
         return "Archive:" + System.lineSeparator() //$NON-NLS-1$
                 + "  <" + XML_ELEMENT + System.lineSeparator() //$NON-NLS-1$
                 + "     type=\"archive\"" + System.lineSeparator() //$NON-NLS-1$
-                + "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "     file=\"base." + IIpsArchiveEntry.FILE_EXTENSION + "\">      The archive file." //$NON-NLS-1$ //$NON-NLS-2$
+                + System.lineSeparator()
                 + "  </" + XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -107,13 +108,15 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     public MessageList validate() {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null : archive
-                    .getArchivePath().toString());
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null
+                    : archive
+                            .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         } else if (archive != null && !archive.isValid()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null : archive
-                    .getArchivePath().toString());
+            String text = NLS.bind(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null
+                    : archive
+                            .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_INVALID_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         }

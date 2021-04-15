@@ -240,16 +240,16 @@ public class ExtensionPoints {
             Class<T> expectedType) {
 
         IConfigurationElement[] configElements = extension.getConfigurationElements();
-        List<T> executables = new ArrayList<T>(configElements.length);
+        List<T> executables = new ArrayList<>(configElements.length);
         if (configElements.length == 0) {
             String text = "No config elements with name " + elementName + " found in extension "//$NON-NLS-1$ //$NON-NLS-2$
                     + extension.getUniqueIdentifier() + "."; //$NON-NLS-1$
             IpsLog.log(new IpsStatus(IStatus.WARNING, text));
             return executables;
         }
-        for (int i = 0; i < configElements.length; i++) {
-            if (elementName.equalsIgnoreCase(configElements[i].getName())) {
-                T newExecutable = createExecutableExtension(extension, configElements[i], propertyName, expectedType);
+        for (IConfigurationElement configElement : configElements) {
+            if (elementName.equalsIgnoreCase(configElement.getName())) {
+                T newExecutable = createExecutableExtension(extension, configElement, propertyName, expectedType);
                 if (newExecutable != null) {
                     executables.add(newExecutable);
                 }
@@ -281,9 +281,9 @@ public class ExtensionPoints {
 
         IConfigurationElement configElement = null;
         IConfigurationElement[] configElements = extension.getConfigurationElements();
-        for (int i = 0; i < configElements.length; i++) {
-            if (elementName.equalsIgnoreCase(configElements[i].getName())) {
-                configElement = configElements[i];
+        for (IConfigurationElement configElement2 : configElements) {
+            if (elementName.equalsIgnoreCase(configElement2.getName())) {
+                configElement = configElement2;
             }
         }
         if (configElement == null) {

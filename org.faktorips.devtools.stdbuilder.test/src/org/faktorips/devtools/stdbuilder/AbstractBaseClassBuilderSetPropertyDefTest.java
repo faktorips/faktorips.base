@@ -129,7 +129,7 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
     private static class TestBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {
 
         public TestBaseClassBuilderSetPropertyDef() {
-            Map<String, Object> properties = new HashMap<String, Object>();
+            Map<String, Object> properties = new HashMap<>();
             properties.put("type", "string");
             initialize(null, properties);
         }

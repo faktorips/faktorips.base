@@ -91,7 +91,7 @@ public class UniqueKeysProposalProviderTest {
     }
 
     private void setUpKeyList() {
-        uniqueKeylist = new ArrayList<IIndex>();
+        uniqueKeylist = new ArrayList<>();
         uniqueKeylist.add(index1);
         uniqueKeylist.add(index2);
         IIndex[] uniqueKeysStructure = uniqueKeylist.toArray(new IIndex[0]);

@@ -113,7 +113,7 @@ public abstract class AbstractPropertiesGenerator {
      */
     protected void deleteMessagesForDeletedParts(QualifiedNameType qualifiedNameType,
             AbstractLocalizedProperties existingLocalizedProperties) {
-        Collection<PropertyKey> keysForIpsObjectToDelete = new HashSet<PropertyKey>(getLocalizedProperties()
+        Collection<PropertyKey> keysForIpsObjectToDelete = new HashSet<>(getLocalizedProperties()
                 .getKeysForIpsObject(qualifiedNameType));
         Collection<? extends PropertyKey> newKeysForIpsObject = existingLocalizedProperties
                 .getKeysForIpsObject(qualifiedNameType);

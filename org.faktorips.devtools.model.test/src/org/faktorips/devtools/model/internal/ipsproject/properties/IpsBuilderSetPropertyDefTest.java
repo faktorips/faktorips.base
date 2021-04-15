@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,17 +44,17 @@ public class IpsBuilderSetPropertyDefTest {
     @Test
     public void testloadExtensions() {
 
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         attributes.put("value", "first");
         TestConfigurationElement discreteValue1 = new TestConfigurationElement("discreteValue", attributes, null,
                 new IConfigurationElement[0]);
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("value", "second");
         TestConfigurationElement discreteValue2 = new TestConfigurationElement("discreteValue", attributes, null,
                 new IConfigurationElement[0]);
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("value", "third");
         TestConfigurationElement discreteValue3 = new TestConfigurationElement("discreteValue", attributes, null,
                 new IConfigurationElement[0]);
@@ -64,7 +63,7 @@ public class IpsBuilderSetPropertyDefTest {
                 new HashMap<String, String>(), null,
                 new IConfigurationElement[] { discreteValue1, discreteValue2, discreteValue3 });
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("name", "logLevel");
         attributes.put("type", "enum");
         attributes.put("label", "Log Level");
@@ -118,7 +117,7 @@ public class IpsBuilderSetPropertyDefTest {
     @Test
     public void testloadExtensionsIntegerValue() {
 
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("name", "debugLevel");
         attributes.put("type", "integer");
         attributes.put("label", "Debug Level");
@@ -152,7 +151,7 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testloadExtensionsBooleanValue() {
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("name", "useChangeListener");
         attributes.put("type", "boolean");
         attributes.put("label", "use Change  Listener");
@@ -177,7 +176,7 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testloadExtensionsExtensionPointValue() {
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("name", "loggingConnectorRef");
         attributes.put("type", "extensionPoint");
         attributes.put("label", "Logging Connector Ref");
@@ -198,7 +197,8 @@ public class IpsBuilderSetPropertyDefTest {
                 .mockExtension(IpsModelActivator.PLUGIN_ID + "." + "ownLoggingConnector");
         IExtension loggingConnectorExt4 = TestMockingUtils.mockExtension("None");
 
-        IExtensionPoint loggingConnectorExtensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
+        IExtensionPoint loggingConnectorExtensionPoint = TestMockingUtils.mockExtensionPoint(
+                IpsModelActivator.PLUGIN_ID,
                 "loggingFrameworkConnector", loggingConnectorExt1, loggingConnectorExt2, loggingConnectorExt3,
                 loggingConnectorExt4);
 
@@ -227,12 +227,12 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testloadExtensionsWithClassSpecfied() {
-        HashMap<String, String> attributes = new HashMap<String, String>();
+        HashMap<String, String> attributes = new HashMap<>();
         attributes.put("class", IpsBuilderSetPropertyDef.class.getName());
 
-        Map<String, Object> executableExtensionMap = new HashMap<String, Object>();
+        Map<String, Object> executableExtensionMap = new HashMap<>();
 
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put("name", "testProperty");
         properties.put("type", "boolean");
         properties.put("defaultValue", "true");
@@ -254,17 +254,17 @@ public class IpsBuilderSetPropertyDefTest {
     @Test
     public void testValidateAvailability() {
 
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         attributes.put("value", "1.4");
         TestConfigurationElement jdk14 = new TestConfigurationElement("level", attributes, null,
                 new IConfigurationElement[] {});
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("value", "1.5");
         TestConfigurationElement jdk15 = new TestConfigurationElement("level", attributes, null,
                 new IConfigurationElement[] {});
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("value", "1.6");
         TestConfigurationElement jdk16 = new TestConfigurationElement("level", attributes, null,
                 new IConfigurationElement[] {});
@@ -272,7 +272,7 @@ public class IpsBuilderSetPropertyDefTest {
         TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels",
                 new HashMap<String, String>(), null, new IConfigurationElement[] { jdk14, jdk15, jdk16 });
 
-        attributes = new HashMap<String, String>();
+        attributes = new HashMap<>();
         attributes.put("name", "logLevel");
         attributes.put("type", "integer");
         attributes.put("label", "Log Level");
@@ -302,27 +302,21 @@ public class IpsBuilderSetPropertyDefTest {
 
     private IIpsProject createTestIpsProject(final String complianceLevel) {
 
-        InvocationHandler javaProjectHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("getOption") && args.length > 0
-                        && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
-                    return complianceLevel;
-                }
-                return null;
+        InvocationHandler javaProjectHandler = ($, method, args) -> {
+            if (method.getName().equals("getOption") && args.length > 0
+                    && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
+                return complianceLevel;
             }
+            return null;
         };
         final IJavaProject javaProject = (IJavaProject)Proxy.newProxyInstance(IJavaProject.class.getClassLoader(),
                 new Class[] { IJavaProject.class }, javaProjectHandler);
 
-        InvocationHandler ipsProjectHandler = new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("getJavaProject")) {
-                    return javaProject;
-                }
-                return null;
+        InvocationHandler ipsProjectHandler = ($, method, $1) -> {
+            if (method.getName().equals("getJavaProject")) {
+                return javaProject;
             }
+            return null;
         };
         return (IIpsProject)Proxy.newProxyInstance(IIpsProject.class.getClassLoader(),
                 new Class[] { IIpsProject.class }, ipsProjectHandler);

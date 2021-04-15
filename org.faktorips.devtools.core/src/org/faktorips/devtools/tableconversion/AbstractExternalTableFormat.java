@@ -48,12 +48,12 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     /**
      * List of all converters this external table format is configured with.
      */
-    private List<IValueConverter> converters = new ArrayList<IValueConverter>();
+    private List<IValueConverter> converters = new ArrayList<>();
 
     /**
      * Table specific properties like text/field delimiter chars for CSV, ...
      */
-    public Map<String, String> properties = new HashMap<String, String>();
+    public Map<String, String> properties = new HashMap<>();
 
     /**
      * Returns the given double as string. If the double has no decimal places then the double will

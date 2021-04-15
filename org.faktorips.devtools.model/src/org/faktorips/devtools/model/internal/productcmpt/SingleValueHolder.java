@@ -128,7 +128,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     @Override
     public List<IValue<?>> getValueList() {
-        ArrayList<IValue<?>> result = new ArrayList<IValue<?>>(1);
+        ArrayList<IValue<?>> result = new ArrayList<>(1);
         result.add(getValue());
         return result;
     }

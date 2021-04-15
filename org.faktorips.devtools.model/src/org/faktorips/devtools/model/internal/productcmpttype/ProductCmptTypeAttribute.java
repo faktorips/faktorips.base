@@ -33,9 +33,9 @@ import org.faktorips.devtools.model.type.AttributeProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -133,7 +133,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         if (isMultilingual()) {
-            ArrayList<ValueSetType> types = new ArrayList<ValueSetType>();
+            ArrayList<ValueSetType> types = new ArrayList<>();
             types.add(ValueSetType.UNRESTRICTED);
             return types;
         } else {

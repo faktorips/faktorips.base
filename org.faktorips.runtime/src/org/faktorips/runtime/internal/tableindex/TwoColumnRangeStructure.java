@@ -63,16 +63,17 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * Creates an empty {@link TwoColumnRangeStructure}.
      */
     public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> TwoColumnRangeStructure<K, V, R> create() {
-        return new TwoColumnRangeStructure<K, V, R>();
+        return new TwoColumnRangeStructure<>();
     }
 
     /**
      * Creates a new {@link TwoColumnRangeStructure} and adds the given range-value pair.
      */
-    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> TwoColumnRangeStructure<K, V, R> createWith(K lowerBound,
+    public static <K extends Comparable<? super K>, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> TwoColumnRangeStructure<K, V, R> createWith(
+            K lowerBound,
             K upperBound,
             V value) {
-        TwoColumnRangeStructure<K, V, R> structure = new TwoColumnRangeStructure<K, V, R>();
+        TwoColumnRangeStructure<K, V, R> structure = new TwoColumnRangeStructure<>();
         structure.put(lowerBound, upperBound, value);
         return structure;
     }
@@ -105,13 +106,13 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * @param value the nested {@link SearchStructure} to be added
      */
     public void put(K lower, K upper, boolean lowerInclusive, boolean upperInclusive, V value) {
-        TwoColumnRange<K> key = new TwoColumnRange<K>(lower, upper, lowerInclusive, upperInclusive);
+        TwoColumnRange<K> key = new TwoColumnRange<>(lower, upper, lowerInclusive, upperInclusive);
         put(key, value);
     }
 
     @Override
     public void put(TwoColumnRange<K> key, V value) {
-        new OverlappingRangePutter<K, V>(getMap()).put(key, value);
+        new OverlappingRangePutter<>(getMap()).put(key, value);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     private TwoColumnRange<K> createTwoColumnKey(Object key) {
         @SuppressWarnings("unchecked")
         K kKey = (K)key;
-        TwoColumnRange<K> twoColumnKey = new TwoColumnRange<K>(kKey, kKey);
+        TwoColumnRange<K> twoColumnKey = new TwoColumnRange<>(kKey, kKey);
         return twoColumnKey;
     }
 
@@ -185,56 +186,46 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * Example: A range structure contains several ranges (for example rangeA), and rangeB is added.
      * The algorithm executes the following steps:
      * <ul>
-     * <li>
-     * search the map for an range-entry less than rangeB (compared by lower bound). Check whether
-     * the found range (rangeA) overlaps with rangeB.
+     * <li>search the map for an range-entry less than rangeB (compared by lower bound). Check
+     * whether the found range (rangeA) overlaps with rangeB.
      * <ul>
-     * <li>
-     * If they overlap, split up the ranges (see below)</li>
-     * <li>
-     * else search an entry greater than rangeB (compared by lower bound). Check whether the found
-     * range (rangeA) overlaps with rangeB.
+     * <li>If they overlap, split up the ranges (see below)</li>
+     * <li>else search an entry greater than rangeB (compared by lower bound). Check whether the
+     * found range (rangeA) overlaps with rangeB.
      * <ul>
-     * <li>
-     * If they overlap, split up the ranges (see below).</li>
-     * <li>
-     * If the ranges do not overlap, simply add rangeB to the structure. There is no overlapping
+     * <li>If they overlap, split up the ranges (see below).</li>
+     * <li>If the ranges do not overlap, simply add rangeB to the structure. There is no overlapping
      * with other ranges.</li>
      * </ul>
      * </li>
      * </ul>
      * </li>
-     * <li>
-     * Splitting up ranges: The existing range rangeA has proven to overlap with the new rangeB.
+     * <li>Splitting up ranges: The existing range rangeA has proven to overlap with the new rangeB.
      * Split up the two overlapping into (up to) three non-overlapping ranges in the following
      * steps:
      * 
      * <ul>
-     * <li>
-     * Remove rangeA (the existing range) from the structure.</li>
-     * <li>
-     * Do not add rangeB (new range) to the structure.</li>
-     * <li>
-     * Instead create (up to) three new ranges:</li>
+     * <li>Remove rangeA (the existing range) from the structure.</li>
+     * <li>Do not add rangeB (new range) to the structure.</li>
+     * <li>Instead create (up to) three new ranges:</li>
      * <ul>
-     * <li>
-     * Lower range. Maps to the value of either rangeA or rangeB. This range can be safely added to
-     * the structure as there can be no further overlappings. If rangeA's and rangeB's lower bounds
-     * match exactly, this range may not be required and is thusly not created.</li>
-     * <li>
-     * Middle range, the actual overlapping. Create a new search structure, that contains a set
+     * <li>Lower range. Maps to the value of either rangeA or rangeB. This range can be safely added
+     * to the structure as there can be no further overlappings. If rangeA's and rangeB's lower
+     * bounds match exactly, this range may not be required and is thusly not created.</li>
+     * <li>Middle range, the actual overlapping. Create a new search structure, that contains a set
      * union of the values of both rangeA and rangeB. This range can be safely added to the
      * structure as there can be no further overlappings (all previous overlappings were removed in
      * a previous put()-call).</li>
-     * <li>
-     * Upper range. Maps to the value of either rangeB or rangeA. This range might overlap with
+     * <li>Upper range. Maps to the value of either rangeB or rangeA. This range might overlap with
      * other ranges in the rangeStructure. Recursively call the
      * {@link #putRespectingOverlapping(RangeEntry)} to let this putter handle further overlappings.
      * If rangeA's and rangeB's upper bounds match exactly, this range may not be required and is
      * thusly not created.</li>
      * </ul>
      * </ul>
-     * </li> </ul> Example:
+     * </li>
+     * </ul>
+     * Example:
      * <ul>
      * <li>RangeA: [0..20] -> {"A", "B"}. Read: the values 0 to 20, and all in between map to a set
      * containing the strings "A" and "B".</li>
@@ -253,29 +244,26 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
      * 
      * <li>Splitting up ranges:</li>
      * <ul>
-     * <li>
-     * Remove rangeA (the existing range) from the structure.</li>
-     * <li>
-     * Do not add rangeB (new range) to the structure.</li>
-     * <li>
-     * Instead create three new ranges:</li>
+     * <li>Remove rangeA (the existing range) from the structure.</li>
+     * <li>Do not add rangeB (new range) to the structure.</li>
+     * <li>Instead create three new ranges:</li>
      * <ul>
-     * <li>
-     * Lower range: [0..10[ -> {"A", "B"}. This range does not include 10 and maps to a set
+     * <li>Lower range: [0..10[ -> {"A", "B"}. This range does not include 10 and maps to a set
      * containing the strings "A" and "B". It can be safely added to the structure as there can be
      * no further overlappings.</li>
-     * <li>
-     * Middle range, the actual overlapping. Create a new search structure, that contains a set
+     * <li>Middle range, the actual overlapping. Create a new search structure, that contains a set
      * union of the values of both rangeA and rangeB: [10..20] -> {"A", "B", "X", "Y"}. This range
      * can be safely added to the structure as there can be no further overlappings (all previous
      * overlappings were removed in a previous put()-call).</li>
-     * <li>
-     * Upper range. ]20..50] -> {"X", "Y"}. This range does not include 20 and maps to a set
+     * <li>Upper range. ]20..50] -> {"X", "Y"}. This range does not include 20 and maps to a set
      * containing the strings "X" and "Y". However, it might overlap with other ranges in the
      * rangeStructure. Recursively call the {@link #putRespectingOverlapping(RangeEntry)} to let
      * this putter handle further overlappings.</li>
      * </ul>
-     * </ul> </li> </ul> See also FIPS-2451.
+     * </ul>
+     * </li>
+     * </ul>
+     * See also FIPS-2451.
      */
     private static class OverlappingRangePutter<K extends Comparable<? super K>, V extends MergeAndCopyStructure<V>> {
 
@@ -299,7 +287,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
          * @param value the value the added range maps to
          */
         public void put(TwoColumnRange<K> key, V value) {
-            putRespectingOverlapping(new RangeEntry<K, V>(key, value));
+            putRespectingOverlapping(new RangeEntry<>(key, value));
         }
 
         /**
@@ -377,19 +365,19 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         }
 
         private void createLower(RangeEntry<K, V> lowerEntry, RangeEntry<K, V> upperEntry) {
-            TwoColumnRange<K> keyBelow = new TwoColumnRange<K>(lowerEntry.key.getLowerBound(),
+            TwoColumnRange<K> keyBelow = new TwoColumnRange<>(lowerEntry.key.getLowerBound(),
                     upperEntry.key.getLowerBound(), lowerEntry.key.isLowerInclusive(),
                     !upperEntry.key.isLowerInclusive());
-            lo = new RangeEntry<K, V>(keyBelow, lowerEntry.value);
+            lo = new RangeEntry<>(keyBelow, lowerEntry.value);
         }
 
         private void createMiddle(RangeEntry<K, V> lowerEntry, RangeEntry<K, V> upperEntry) {
-            TwoColumnRange<K> keyBelow = new TwoColumnRange<K>(upperEntry.key.getLowerBound(),
+            TwoColumnRange<K> keyBelow = new TwoColumnRange<>(upperEntry.key.getLowerBound(),
                     lowerEntry.key.getUpperBound(), upperEntry.key.isLowerInclusive(),
                     lowerEntry.key.isUpperInclusive());
             V mergedValue = upperEntry.value.copy();
             mergedValue.merge(lowerEntry.value);
-            mid = new RangeEntry<K, V>(keyBelow, mergedValue);
+            mid = new RangeEntry<>(keyBelow, mergedValue);
         }
 
         /**
@@ -400,14 +388,14 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         private void mergedMiddle(RangeEntry<K, V> rangeEntry, V newValue) {
             V mergedValue = rangeEntry.value.copy();
             mergedValue.merge(newValue);
-            mid = new RangeEntry<K, V>(rangeEntry.key, mergedValue);
+            mid = new RangeEntry<>(rangeEntry.key, mergedValue);
         }
 
         private void createHigher(RangeEntry<K, V> lowerEntry, RangeEntry<K, V> upperEntry) {
-            TwoColumnRange<K> keyAbove = new TwoColumnRange<K>(lowerEntry.key.getUpperBound(),
+            TwoColumnRange<K> keyAbove = new TwoColumnRange<>(lowerEntry.key.getUpperBound(),
                     upperEntry.key.getUpperBound(), !lowerEntry.key.isUpperInclusive(),
                     upperEntry.key.isUpperInclusive());
-            hi = new RangeEntry<K, V>(keyAbove, upperEntry.value);
+            hi = new RangeEntry<>(keyAbove, upperEntry.value);
         }
 
         private void removeOverlappedRange() {
@@ -427,12 +415,12 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         private boolean findOverlappedRange() {
             Entry<TwoColumnRange<K>, V> floorEntry = treeMap.floorEntry(newEntry.key);
             if (floorEntry != null && floorEntry.getKey().isOverlapping(newEntry.key)) {
-                overlappedEntry = new RangeEntry<K, V>(floorEntry.getKey(), floorEntry.getValue());
+                overlappedEntry = new RangeEntry<>(floorEntry.getKey(), floorEntry.getValue());
                 return true;
             } else {
                 Entry<TwoColumnRange<K>, V> ceilingEntry = treeMap.ceilingEntry(newEntry.key);
                 if (ceilingEntry != null && newEntry.key.isOverlapping(ceilingEntry.getKey())) {
-                    overlappedEntry = new RangeEntry<K, V>(ceilingEntry.getKey(), ceilingEntry.getValue());
+                    overlappedEntry = new RangeEntry<>(ceilingEntry.getKey(), ceilingEntry.getValue());
                     return true;
                 } else {
                     return false;

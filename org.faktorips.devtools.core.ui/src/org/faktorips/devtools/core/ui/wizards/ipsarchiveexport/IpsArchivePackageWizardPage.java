@@ -34,10 +34,8 @@ import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -98,7 +96,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
 
     private ILabelProvider labelProvider;
 
-    private Map<Object, Object> elementsInTree = new HashMap<Object, Object>();
+    private Map<Object, Object> elementsInTree = new HashMap<>();
 
     private class IpsPackageFragmentRootTreeViewer extends ContainerCheckedTreeViewer {
         public IpsPackageFragmentRootTreeViewer(Composite parent) {
@@ -134,7 +132,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                 // show only ips projects and ips package fragment roots
                 if (element instanceof IJavaModel) {
                     Object[] children = super.getChildren(element);
-                    List<Object> result = new ArrayList<Object>(children.length);
+                    List<Object> result = new ArrayList<>(children.length);
                     for (Object element2 : children) {
                         if (element2 instanceof IJavaProject) {
                             IProject project = ((IJavaProject)element2).getProject();
@@ -156,7 +154,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                     elementsInTree.put(element, element);
                     // store to be mapped objects
                     IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                    List<Object> rootResult = new ArrayList<Object>(roots.length);
+                    List<Object> rootResult = new ArrayList<>(roots.length);
                     for (IIpsPackageFragmentRoot root : roots) {
                         if (root.getIpsStorage() != null) {
                             continue;
@@ -181,7 +179,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         treeViewer.setInput(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()));
         treeViewer.expandAll();
         treeViewer.addCheckStateListener(this);
-        List<Object> selectedObjects = new ArrayList<Object>();
+        List<Object> selectedObjects = new ArrayList<>();
         for (Iterator<Object> iter = selection.iterator(); iter.hasNext();) {
             Object objectInTree = findCorrespondingObjectInTree(iter.next());
             if (objectInTree != null) {
@@ -193,12 +191,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         } else {
             treeViewer.setCheckedElements(selectedObjects.toArray());
         }
-        treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                setMessage(null);
-            }
-        });
+        treeViewer.addSelectionChangedListener($ -> setMessage(null));
 
         includeJavaSources = toolkit.createCheckbox(composite,
                 Messages.IpsArchivePackageWizardPage_Label_IncludeJavaSources);
@@ -371,7 +364,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         // wizard is empty
         if (selection == null || selection.isEmpty()) {
             String[] selectedElements = settings.getArray(SELECTED_TREE_ELEMENTS);
-            List<Object> prevSelectedObject = new ArrayList<Object>(selectedElements.length);
+            List<Object> prevSelectedObject = new ArrayList<>(selectedElements.length);
             for (String selectedElement : selectedElements) {
                 for (Object objectInTree : elementsInTree.values()) {
                     if (labelProvider.getText(objectInTree).equals(selectedElement)) {

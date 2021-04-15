@@ -61,8 +61,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private static final String PAGE_IMAGE = "wizards/NewEnumContentWizard.png"; //$NON-NLS-1$
 
     /**
-     * The text field to choose the <code>IEnumType</code> on which the new <code>IEnumContent</code> shall
-     * be based upon.
+     * The text field to choose the <code>IEnumType</code> on which the new
+     * <code>IEnumContent</code> shall be based upon.
      */
     private TextButtonField enumTypeField;
 
@@ -71,8 +71,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     private IpsPckFragmentRootRefControl sourceFolderControl;
 
     /**
-     * Flag that is <code>true</code> if the input is validated and errors are displayed in the messages
-     * area.
+     * Flag that is <code>true</code> if the input is validated and errors are displayed in the
+     * messages area.
      */
     private boolean validateInput = true;
 
@@ -265,8 +265,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     /**
-     * Returns the <code>IEnumContent</code> that has been created by this page or <code>null</code> if it
-     * has not been created yet.
+     * Returns the <code>IEnumContent</code> that has been created by this page or <code>null</code>
+     * if it has not been created yet.
      */
     public IEnumContent getCreatedEnumContent() {
         return createdEnumContent;

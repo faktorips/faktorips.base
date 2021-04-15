@@ -12,7 +12,6 @@ package org.faktorips.devtools.ant;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class FullBuildTask extends AbstractIpsTask {
 
-    private List<EclipseProject> eclipseProjects = new ArrayList<EclipseProject>();
+    private List<EclipseProject> eclipseProjects = new ArrayList<>();
 
     public FullBuildTask() {
         super("FullBuildTask");
@@ -70,9 +69,9 @@ public class FullBuildTask extends AbstractIpsTask {
                     if (projects.length > 0) {
                         System.out.println("The following IPS-Projects are about to be built: ");
                     }
-                    for (int i = 0; i < projects.length; i++) {
+                    for (IProject project2 : projects) {
                         IIpsProject ipsProject = IIpsModel.get()
-                                .getIpsProject(projects[i].getName());
+                                .getIpsProject(project2.getName());
                         if (ipsProject.exists()) {
                             System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
                                     + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
@@ -103,9 +102,8 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {
-        List<IProject> existingProjects = new ArrayList<IProject>();
-        for (Iterator<EclipseProject> it = eclipseProjects.iterator(); it.hasNext();) {
-            EclipseProject eclipseProject = it.next();
+        List<IProject> existingProjects = new ArrayList<>();
+        for (EclipseProject eclipseProject : eclipseProjects) {
             String name = eclipseProject.getName();
             if (name != null) {
                 IProject project = workspace.getRoot().getProject(name);
@@ -138,12 +136,10 @@ public class FullBuildTask extends AbstractIpsTask {
     }
 
     private void handleMarkers(IProject[] projects) throws CoreException {
-        Set<IProject> projectsWithErrors = new HashSet<IProject>();
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
+        Set<IProject> projectsWithErrors = new HashSet<>();
+        for (IProject project : projects) {
             IMarker markers[] = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-            for (int j = 0; j < markers.length; j++) {
-                IMarker marker = markers[j];
+            for (IMarker marker : markers) {
                 Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
                 if (severity != null && severity.intValue() == IMarker.SEVERITY_ERROR) {
                     projectsWithErrors.add(project);

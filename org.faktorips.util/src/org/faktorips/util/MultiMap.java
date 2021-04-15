@@ -52,21 +52,21 @@ public class MultiMap<K, V> implements Serializable {
 
     public MultiMap(CollectionFactory<V> collectionFactory) {
         this.collectionFactory = collectionFactory;
-        internalMap = new ConcurrentHashMap<K, Collection<V>>(16, 0.75f, 1);
+        internalMap = new ConcurrentHashMap<>(16, 0.75f, 1);
     }
 
     public static <K, V> MultiMap<K, V> createWithSetsAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<K, V>(new HashSetFactory<V>());
+        MultiMap<K, V> multiMap = new MultiMap<>(new HashSetFactory<V>());
         return multiMap;
     }
 
     public static <K, V> MultiMap<K, V> createWithListsAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<K, V>(new ArrayListFactory<V>());
+        MultiMap<K, V> multiMap = new MultiMap<>(new ArrayListFactory<V>());
         return multiMap;
     }
 
     public static <K, V> MultiMap<K, V> createWithLinkedSetAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<K, V>(new LinkedHashSetFactory<V>());
+        MultiMap<K, V> multiMap = new MultiMap<>(new LinkedHashSetFactory<V>());
         return multiMap;
     }
 
@@ -245,7 +245,7 @@ public class MultiMap<K, V> implements Serializable {
 
         @Override
         public Collection<V> createCollection() {
-            return new ArrayList<V>();
+            return new ArrayList<>();
         }
 
     }
@@ -262,7 +262,7 @@ public class MultiMap<K, V> implements Serializable {
 
         @Override
         public Collection<V> createCollection() {
-            return new HashSet<V>();
+            return new HashSet<>();
         }
 
     }
@@ -279,7 +279,7 @@ public class MultiMap<K, V> implements Serializable {
 
         @Override
         public Collection<V> createCollection() {
-            return new LinkedHashSet<V>();
+            return new LinkedHashSet<>();
         }
 
     }

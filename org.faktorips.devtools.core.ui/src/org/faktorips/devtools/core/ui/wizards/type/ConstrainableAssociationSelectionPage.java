@@ -90,7 +90,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     private void bindContent() {
         bindingContext.bindContent(viewer, IAssociation.class, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION);
-        bindingContext.add(new PropertyChangeBinding<IAssociation>(composite, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(composite, pmo,
                 ConstrainableAssociationPmo.PROPERTY_SELECTED_ASSOCIATION, IAssociation.class) {
 
             @Override

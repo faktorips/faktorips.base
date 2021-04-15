@@ -30,7 +30,7 @@ import org.faktorips.util.ArgumentCheck;
 public class TypeHierarchy implements ITypeHierarchy {
 
     private IType pcType;
-    private Map<IType, Node> nodes = new HashMap<IType, Node>();
+    private Map<IType, Node> nodes = new HashMap<>();
     private boolean containsCycle = false;
 
     /**
@@ -40,7 +40,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     public static final TypeHierarchy getSupertypeHierarchy(IType pcType) {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
-        List<IType> subtypes = new ArrayList<IType>();
+        List<IType> subtypes = new ArrayList<>();
         while (pcType != null) {
             IType supertype = pcType.findSupertype(project);
             if (hierarchy.contains(supertype)) {
@@ -48,7 +48,7 @@ public class TypeHierarchy implements ITypeHierarchy {
                 supertype = null;
             }
             hierarchy.add(new Node(pcType, supertype, subtypes));
-            subtypes = new ArrayList<IType>();
+            subtypes = new ArrayList<>();
             subtypes.add(pcType);
             pcType = supertype;
         }
@@ -69,7 +69,8 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
      * resolved.
      */
-    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject) throws CoreException {
+    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject)
+            throws CoreException {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         hierarchy.addSubtypes(pcType, null, false, searchProject);
         return hierarchy;
@@ -101,7 +102,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject)
             throws CoreException {
-        List<IType> subtypes = new ArrayList<IType>();
+        List<IType> subtypes = new ArrayList<>();
         if (searchReferencingProjects) {
             IIpsProject[] referencingProjects = ipsProject.findReferencingProjectLeavesOrSelf();
             for (IIpsProject referencingProject : referencingProjects) {
@@ -175,14 +176,14 @@ public class TypeHierarchy implements ITypeHierarchy {
      */
     @Override
     public List<IType> getAllSupertypes(IType type) {
-        List<IType> result = new ArrayList<IType>();
+        List<IType> result = new ArrayList<>();
         getAllSupertypes(type, result);
         return result;
     }
 
     @Override
     public List<IType> getAllSupertypesInclSelf(IType type) {
-        List<IType> result = new ArrayList<IType>();
+        List<IType> result = new ArrayList<>();
         result.add(type);
         getAllSupertypes(type, result);
         return result;
@@ -226,7 +227,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     public List<IType> getSubtypes(IType type) {
         Node node = nodes.get(type);
         if (node == null) {
-            return new ArrayList<IType>();
+            return new ArrayList<>();
         }
         return node.subtypes;
     }
@@ -235,10 +236,10 @@ public class TypeHierarchy implements ITypeHierarchy {
     public List<IType> getAllSubtypes(IType type) {
         Node node = nodes.get(type);
         if (node == null) {
-            return new ArrayList<IType>();
+            return new ArrayList<>();
         }
 
-        ArrayList<IType> all = new ArrayList<IType>();
+        ArrayList<IType> all = new ArrayList<>();
         addSubtypes(node, all);
         return all;
     }
@@ -256,7 +257,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public List<IAttribute> getAllAttributes(IType type) {
-        List<IAttribute> attributes = new ArrayList<IAttribute>();
+        List<IAttribute> attributes = new ArrayList<>();
         List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             List<? extends IAttribute> list = type2.getAttributes();
@@ -269,10 +270,10 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public List<IAttribute> getAllAttributesRespectingOverride(IType type) {
-        List<IAttribute> attributes = new ArrayList<IAttribute>();
+        List<IAttribute> attributes = new ArrayList<>();
         List<IType> types = getAllSupertypesInclSelf(type);
 
-        Map<String, IAttribute> overridden = new HashMap<String, IAttribute>();
+        Map<String, IAttribute> overridden = new HashMap<>();
 
         for (IType type2 : types) {
             List<? extends IAttribute> attrs = type2.getAttributes();
@@ -290,7 +291,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public List<IMethod> getAllMethods(IType type) {
-        List<IMethod> methods = new ArrayList<IMethod>();
+        List<IMethod> methods = new ArrayList<>();
         List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             List<IMethod> typeMethods = type2.getMethods();
@@ -303,7 +304,7 @@ public class TypeHierarchy implements ITypeHierarchy {
 
     @Override
     public List<IValidationRule> getAllRules(IType type) {
-        List<IValidationRule> rules = new ArrayList<IValidationRule>();
+        List<IValidationRule> rules = new ArrayList<>();
         List<IType> types = getAllSupertypesInclSelf(type);
         for (IType type2 : types) {
             if (type2 instanceof IPolicyCmptType) {

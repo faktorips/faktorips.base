@@ -129,7 +129,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                     HtmlExportMessages.ProjectOverviewPageElement_noReferencedProjects), getContext()));
         }
 
-        List<String> referencedIpsProjectsName = new ArrayList<String>();
+        List<String> referencedIpsProjectsName = new ArrayList<>();
         for (IIpsProject ipsProject : objectPath.getDirectlyReferencedIpsProjects()) {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
@@ -145,7 +145,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         IIpsProject[] referencingProjectLeavesOrSelf;
         referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
 
-        List<String> referencingIpsProjectsName = new ArrayList<String>();
+        List<String> referencingIpsProjectsName = new ArrayList<>();
         for (IIpsProject ipsProject : referencingProjectLeavesOrSelf) {
             if (getProject().equals(ipsProject)) {
                 continue;
@@ -172,7 +172,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                     HtmlExportMessages.ProjectOverviewPageElement_noSourceFolder), getContext()));
         }
 
-        List<String> sourceFolder = new ArrayList<String>();
+        List<String> sourceFolder = new ArrayList<>();
         for (IIpsSrcFolderEntry folderEntry : objectPath.getSourceFolderEntries()) {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
@@ -187,11 +187,11 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         if (messageListTablePageElement.isEmpty()) {
             return;
         }
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(),
                 new TextPageElement(getContext().getMessage(
                         HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
                         getContext()),
-                messageListTablePageElement }));
+                messageListTablePageElement));
     }
 
     private MessageList validateLinkedObjects() {

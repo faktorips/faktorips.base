@@ -27,11 +27,11 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.QNameUtil;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -412,7 +412,7 @@ public abstract class Association extends TypePart implements IAssociation {
                 && !(getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER)) {
             String text = Messages.Association_msg_MaxCardinalityForDerivedUnionTooLow;
             list.add(new Message(MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW, text, Message.ERROR, this,
-                    new String[] { PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY }));
+                    PROPERTY_DERIVED_UNION, PROPERTY_MAX_CARDINALITY));
         }
     }
 
@@ -420,7 +420,7 @@ public abstract class Association extends TypePart implements IAssociation {
         if (minCardinality > maxCardinality) {
             String text = Messages.Association_msg_MinCardinalityGreaterThanMaxCardinality;
             list.add(new Message(MSGCODE_MAX_IS_LESS_THAN_MIN, text, Message.ERROR, this,
-                    new String[] { PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
+                    PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY));
         }
     }
 
@@ -473,7 +473,6 @@ public abstract class Association extends TypePart implements IAssociation {
             String text = Messages.Association_msg_TargetNotSubclass;
             list.add(new Message(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE, text, Message.ERROR, this,
                     PROPERTY_SUBSETTED_DERIVED_UNION));
-            return;
         }
     }
 
@@ -664,7 +663,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private class DerivedUnionCandidatesFinder extends TypeHierarchyVisitor<IType> {
 
-        private List<IAssociation> candidates = new ArrayList<IAssociation>();
+        private List<IAssociation> candidates = new ArrayList<>();
         private IType targetType;
 
         public DerivedUnionCandidatesFinder(IType targetType, IIpsProject ipsProject) {

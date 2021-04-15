@@ -354,7 +354,8 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         return compiler.getMatchingFunctionUsingConversion(argResults, argTypes, fctName);
     }
 
-    private AbstractCompilationResult<T> createNewResultAndCopyErrorMessagesIfExistent(AbstractCompilationResult<T>[] argResults) {
+    private AbstractCompilationResult<T> createNewResultAndCopyErrorMessagesIfExistent(
+            AbstractCompilationResult<T>[] argResults) {
         // compilation errors in the result?
         AbstractCompilationResult<T> result = newCompilationResultImpl();
         for (AbstractCompilationResult<T> argResult : argResults) {
@@ -375,7 +376,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         } else {
             @SuppressWarnings("unchecked")
             AbstractCompilationResult<T>[] compilationResultImpls = (AbstractCompilationResult<T>[])node.jjtGetChild(0)
-            .jjtAccept(this, data);
+                    .jjtAccept(this, data);
             argResults = compilationResultImpls;
         }
         return argResults;

@@ -118,7 +118,7 @@ public class ExpressionXMLBuilderHelper {
     }
 
     private Map<String, IExpression> getFormulas(List<? extends IExpression> formulas) {
-        Map<String, IExpression> formulaMap = new HashMap<String, IExpression>();
+        Map<String, IExpression> formulaMap = new HashMap<>();
         for (IExpression expression : formulas) {
             formulaMap.put(expression.getFormulaSignature(), expression);
         }

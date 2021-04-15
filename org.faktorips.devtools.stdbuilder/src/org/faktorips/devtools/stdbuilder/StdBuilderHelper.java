@@ -117,8 +117,8 @@ public final class StdBuilderHelper {
     /**
      * Returns the JDT type signature for resolved types.
      * <p>
-     * Use this method to create type signatures for types that are not found in the source code or via
-     * import (e.g. if a type is written fully qualified in the source code such as
+     * Use this method to create type signatures for types that are not found in the source code or
+     * via import (e.g. if a type is written fully qualified in the source code such as
      * <code>java.util.Calendar</code>).
      */
     public static String resolvedParam(String qualifiedTypeName) {
@@ -128,17 +128,17 @@ public final class StdBuilderHelper {
     /**
      * Returns the JDT type signature for the given {@link Datatype}.
      * <p>
-     * The JDT type signature is a special representation of a datatype so it can be used to identify
-     * {@link IJavaElement}s. For example, the datatype <code>int</code> in JDT is represented as just
-     * <code>I</code>.
+     * The JDT type signature is a special representation of a datatype so it can be used to
+     * identify {@link IJavaElement}s. For example, the datatype <code>int</code> in JDT is
+     * represented as just <code>I</code>.
      * <p>
-     * When dealing with Faktor-IPS datatypes it is also possible that the datatype should be resolved
-     * to the published interface. In this case depending on the used naming convention the name of the
-     * datatype is modified, e.g. from <code>Policy</code> to <code>IPolicy</code>.
+     * When dealing with Faktor-IPS datatypes it is also possible that the datatype should be
+     * resolved to the published interface. In this case depending on the used naming convention the
+     * name of the datatype is modified, e.g. from <code>Policy</code> to <code>IPolicy</code>.
      * 
      * @param datatype The {@link Datatype} to get the parameter type signature for
-     * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to the
-     *            published interface type
+     * @param resolveToPublishedInterface Flag indicating whether the datatype should be resolved to
+     *            the published interface type
      * 
      * @see Signature
      */
@@ -183,11 +183,11 @@ public final class StdBuilderHelper {
 
     /**
      * This method is supposed to be used for the generation of methods which deal with the range or
-     * enum value set for a datatype. Since for primitive datatypes the range and enum value set classes
-     * of the non primitive wrapper types are used. Therefore this method checks if the provided
-     * DatatypeHelper is based on a primitive datatype. If so the according wrapper datatype is
-     * retrieved from the IpsProject and returned. If the datatype is not primitive the provided
-     * datatype will be returned.
+     * enum value set for a datatype. Since for primitive datatypes the range and enum value set
+     * classes of the non primitive wrapper types are used. Therefore this method checks if the
+     * provided DatatypeHelper is based on a primitive datatype. If so the according wrapper
+     * datatype is retrieved from the IpsProject and returned. If the datatype is not primitive the
+     * provided datatype will be returned.
      */
     public static DatatypeHelper getDatatypeHelperForValueSet(IIpsProject project, DatatypeHelper helper) {
         if (helper.getDatatype().isPrimitive()) {

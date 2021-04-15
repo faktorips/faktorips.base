@@ -75,7 +75,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         List<IIpsSrcFile> allClasses = getContext().getDocumentedSourceFiles(
                 getDocumentedIpsObject().getIpsObjectType());
 
-        List<IPageElement> subTypes = new ArrayList<IPageElement>();
+        List<IPageElement> subTypes = new ArrayList<>();
         for (IIpsSrcFile srcFile : allClasses) {
             addSubType(subTypes, srcFile);
         }
@@ -84,9 +84,10 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(),
                 new TextPageElement(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_subclasses),
-                    getContext()), new ListPageElement(subTypes, getContext()) }));
+                        getContext()),
+                new ListPageElement(subTypes, getContext())));
     }
 
     private void addSubType(List<IPageElement> subTypes, IIpsSrcFile srcFile) {
@@ -121,8 +122,11 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new PageElementUtils(
-                getContext()).createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT, superTypes
-                        .get(0).getQualifiedName(), true), getContext()), getContext());
+                getContext()).createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT,
+                        superTypes
+                                .get(0).getQualifiedName(),
+                        true),
+                getContext()), getContext());
         TreeNodePageElement element = baseElement;
 
         for (int i = 1; i < superTypes.size(); i++) {
@@ -133,7 +137,8 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             }
             TreeNodePageElement subElement = new TreeNodePageElement(
                     new PageElementUtils(getContext()).createLinkPageElement(getContext(), superTypes.get(i),
-                            TargetType.CONTENT, getContext().getLabel(superTypes.get(i)), true), getContext());
+                            TargetType.CONTENT, getContext().getLabel(superTypes.get(i)), true),
+                    getContext());
             element.addPageElements(subElement);
             element = subElement;
         }
@@ -181,13 +186,14 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
             return;
         }
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext())
-        .addPageElements(new TextPageElement(IpsObjectType.ENUM_CONTENT.getDisplayName(), TextType.HEADING_2,
-                getContext()));
+                .addPageElements(new TextPageElement(IpsObjectType.ENUM_CONTENT.getDisplayName(), TextType.HEADING_2,
+                        getContext()));
 
         if (enumContent == null) {
             addPageElements(wrapper.addPageElements(TextPageElement.createParagraph(
                     getContext().getMessage("EnumTypeContentPageElement_no") //$NON-NLS-1$
-                    + IpsObjectType.ENUM_CONTENT.getDisplayName(), getContext())));
+                            + IpsObjectType.ENUM_CONTENT.getDisplayName(),
+                    getContext())));
             return;
         }
         addPageElements(wrapper.addPageElements(new PageElementUtils(getContext()).createLinkPageElement(getContext(),
@@ -226,7 +232,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      */
     private class EnumAttributesTablePageElement extends
-    AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
+            AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
 
         public EnumAttributesTablePageElement(List<IEnumAttribute> enumAttributes, DocumentationContext context) {
             super(enumAttributes, context);
@@ -234,7 +240,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
 
         @Override
         protected List<IPageElement> createRowWithIpsObjectPart(IEnumAttribute enumAttribute) {
-            List<String> attributeData1 = new ArrayList<String>();
+            List<String> attributeData1 = new ArrayList<>();
 
             attributeData1.add(getContext().getLabel(enumAttribute));
             attributeData1.add(enumAttribute.getDatatype());
@@ -253,7 +259,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
 
         @Override
         protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
+            List<String> headline = new ArrayList<>();
 
             headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineName));
             headline.add(getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineDatatype));
@@ -264,9 +270,10 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                     headline,
                     getContext().getMessage(
                             HtmlExportMessages.EnumTypeContentPageElement_headlineUsedAsNameInFaktorIpsUi),
-                            Style.CENTER);
+                    Style.CENTER);
             addHeadlineAndColumnLayout(headline,
-                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
+                    getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique),
+                    Style.CENTER);
             addHeadlineAndColumnLayout(headline,
                     getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineInherited),
                     Style.CENTER);
@@ -283,7 +290,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      */
     private static class SupertypeHierarchieVisitor extends EnumTypeHierarchyVisitor {
-        private List<IEnumType> superTypes = new ArrayList<IEnumType>();
+        private List<IEnumType> superTypes = new ArrayList<>();
 
         public SupertypeHierarchieVisitor(IIpsProject ipsProject) {
             super(ipsProject);
@@ -296,7 +303,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         }
 
         public List<IEnumType> getSuperTypes() {
-            ArrayList<IEnumType> revertedList = new ArrayList<IEnumType>(superTypes);
+            ArrayList<IEnumType> revertedList = new ArrayList<>(superTypes);
             Collections.reverse(revertedList);
             return revertedList;
         }

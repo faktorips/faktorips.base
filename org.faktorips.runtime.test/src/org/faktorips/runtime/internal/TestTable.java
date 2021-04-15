@@ -36,15 +36,15 @@ public class TestTable extends Table<TestTableRow> {
 
     /**
      * Erzeugt einen neuen Tabelleninhalt mit den uebergebenen Zeilen. Die Liste mit den Zeilen wird
-     * kopiert. Spaetere Aenderungen an dem Inhalt der Liste, aendern also nicht die erzeugte Tabelle.
-     * Dieser Konstruktor ist vor allem fuer die Verwendung in JUnit Tests vorgesehen, um beliebige
-     * Tabelleninhalte erzeugen zu koennen.
+     * kopiert. Spaetere Aenderungen an dem Inhalt der Liste, aendern also nicht die erzeugte
+     * Tabelle. Dieser Konstruktor ist vor allem fuer die Verwendung in JUnit Tests vorgesehen, um
+     * beliebige Tabelleninhalte erzeugen zu koennen.
      * 
      * @generated
      */
     public TestTable(List<TestTableRow> content) {
         super();
-        rows = new ArrayList<TestTableRow>(content);
+        rows = new ArrayList<>(content);
         init();
     }
 

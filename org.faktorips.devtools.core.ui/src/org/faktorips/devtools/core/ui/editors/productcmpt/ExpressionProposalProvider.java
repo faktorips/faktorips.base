@@ -60,7 +60,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     public IContentProposal[] getProposals(String contents, int position) {
         String consideredInput = getConsideredInput(contents, position);
 
-        proposals = new LinkedList<IContentProposal>();
+        proposals = new LinkedList<>();
         addMatchingFunctions(consideredInput);
         addIdentifierNodes(consideredInput);
         return proposals.toArray(new IContentProposal[proposals.size()]);
@@ -142,7 +142,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private void addIdentifierNodes(String contents) {
         List<IdentifierProposal> identifierProposals = identifierParser.getProposals(contents);
         Collections.sort(identifierProposals);
-        List<IContentProposal> preFunctionIdentifiers = new ArrayList<IContentProposal>();
+        List<IContentProposal> preFunctionIdentifiers = new ArrayList<>();
         for (IdentifierProposal identifierProposal : identifierProposals) {
             if (identifierProposal.getNodeType().getProposalSortOrder() < 0) {
                 preFunctionIdentifiers.add(createContentProposal(identifierProposal));

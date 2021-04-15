@@ -32,9 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractIpsPackageFragmentTest {
@@ -117,13 +115,8 @@ public class AbstractIpsPackageFragmentTest {
 
     @Test
     public void testGetParentIpsPackageFragment_SecondLevelPackage() {
-        when(ipsPackageFragmentRoot.getIpsPackageFragment(anyString())).then(new Answer<IIpsPackageFragment>() {
-
-            @Override
-            public IIpsPackageFragment answer(InvocationOnMock invocation) throws Throwable {
-                return new IpsPackageFragment(ipsPackageFragmentRoot, (String)invocation.getArguments()[0]);
-            }
-        });
+        when(ipsPackageFragmentRoot.getIpsPackageFragment(anyString())).then(
+                invocation -> new IpsPackageFragment(ipsPackageFragmentRoot, (String)invocation.getArguments()[0]));
         abstractIpsPackageFragment = new IpsPackageFragment(ipsPackageFragmentRoot, "first.second");
 
         IIpsPackageFragment parentIpsPackageFragment = abstractIpsPackageFragment.getParentIpsPackageFragment();

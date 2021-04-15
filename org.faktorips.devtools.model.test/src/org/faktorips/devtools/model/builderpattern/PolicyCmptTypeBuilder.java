@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -65,20 +64,16 @@ public class PolicyCmptTypeBuilder {
 
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-        IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+        IWorkspaceRunnable runnable = $ -> {
+            IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
+            if (!pack.exists()) {
+                pack = root.createPackageFragment(packName, true, null);
+            }
+            IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
+            IIpsObject ipsObject = file.getIpsObject();
 
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
-                if (!pack.exists()) {
-                    pack = root.createPackageFragment(packName, true, null);
-                }
-                IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
-                IIpsObject ipsObject = file.getIpsObject();
-
-                if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
-                    ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
-                }
+            if (!createAutoProductCmptType && ipsObject instanceof IPolicyCmptType) {
+                ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
             }
         };
         ResourcesPlugin.getWorkspace().run(runnable, null);

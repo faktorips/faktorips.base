@@ -179,7 +179,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private Histogram<Object, ITemplatedValue> getHistogramInternal() {
-        return new Histogram<Object, ITemplatedValue>(valueFunction(), getValueComparator(),
+        return new Histogram<>(valueFunction(), getValueComparator(),
                 getDefiningTemplatedValues());
     }
 

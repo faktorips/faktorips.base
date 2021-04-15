@@ -47,7 +47,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     // --> ? super T
     private Class<T> partsPublishedInterface;
 
-    private List<T> parts = new ArrayList<T>();
+    private List<T> parts = new ArrayList<>();
 
     public IpsObjectPartCollection(BaseIpsObject ipsObject, Class<? extends T> partsClazz, Class<T> publishedInterface,
             String xmlTag) {
@@ -145,7 +145,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * @return A copy of the list of all parts
      */
     public List<T> asList() {
-        return new ArrayList<T>(parts);
+        return new ArrayList<>(parts);
     }
 
     public IIpsObjectPart[] getParts() {
@@ -260,7 +260,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      */
     private T newPartInternal(String id, Constructor<T> constructor) {
         try {
-            T newPart = constructor.newInstance(new Object[] { parent, id });
+            T newPart = constructor.newInstance(parent, id);
             parts.add(newPart);
             return newPart;
         } catch (Exception e) {
@@ -279,7 +279,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      * @return The new indexes of the moved elements.
      */
     public int[] moveParts(int[] indexes, boolean up) {
-        ListElementMover<T> mover = new ListElementMover<T>(parts);
+        ListElementMover<T> mover = new ListElementMover<>(parts);
         int[] newIndexes = mover.move(indexes, up);
         parent.partsMoved(getParts());
         return newIndexes;

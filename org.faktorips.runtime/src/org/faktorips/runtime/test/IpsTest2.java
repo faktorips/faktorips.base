@@ -21,7 +21,9 @@ public abstract class IpsTest2 {
     private String qName;
     private String fullPath;
 
-    /* Contains the component registry the component uses to resolve references to other components */
+    /*
+     * Contains the component registry the component uses to resolve references to other components
+     */
     private IRuntimeRepository runtimeRepository;
 
     public IpsTest2(String qName) {

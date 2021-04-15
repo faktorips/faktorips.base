@@ -19,8 +19,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -129,18 +127,13 @@ public class ValidationRuleEditingUI {
         msgTextLayoutData.heightHint = 50;
         msgTextLayoutData.widthHint = UIToolkit.DEFAULT_WIDTH;
         msgText.setLayoutData(msgTextLayoutData);
-        msgText.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                updateCharCount();
-            }
-        });
+        msgText.addModifyListener($ -> updateCharCount());
 
         charCountPainter = new CharCountPainter();
         msgText.addPaintListener(charCountPainter);
 
         // create fields
-        localeComboField = new ComboViewerField<Locale>(localeCombo, Locale.class);
+        localeComboField = new ComboViewerField<>(localeCombo, Locale.class);
         localeComboField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
@@ -195,7 +188,7 @@ public class ValidationRuleEditingUI {
 
     private void createCategoryCombo(Composite workArea) {
         Combo categoryCombo = uiToolkit.createCombo(workArea);
-        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
+        categoryField = new ComboViewerField<>(categoryCombo, IProductCmptCategory.class);
         categoryField.setAllowEmptySelection(true);
         categoryField.setLabelProvider(new LabelProvider() {
             @Override

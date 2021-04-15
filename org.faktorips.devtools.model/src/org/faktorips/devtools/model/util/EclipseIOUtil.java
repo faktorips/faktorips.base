@@ -63,7 +63,7 @@ public class EclipseIOUtil {
                 file.setContents(inputStream, force, keepHistory, progressMonitor);
             } else {
                 IpsLog.log(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID,
-                "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
+                        "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } finally {
             IoUtil.close(inputStream);

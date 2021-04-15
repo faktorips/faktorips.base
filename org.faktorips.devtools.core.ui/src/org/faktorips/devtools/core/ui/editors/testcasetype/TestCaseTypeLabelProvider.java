@@ -41,8 +41,8 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      * Returns the displayed text of the test value parameter or test policy cmpt type param.<br>
      * If the element is a test value parameter then return the name of the param.<br>
      * If the element is a test policy cmpt type param return the name of the param and if a
-     * association is specified and the target name is not equal the param name return
-     * "name : association".
+     * association is specified and the target name is not equal the param name return "name :
+     * association".
      */
     @Override
     public String getText(Object element) {
@@ -51,7 +51,8 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
 
             String targetExtension = ""; //$NON-NLS-1$
 
-            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType()); //$NON-NLS-1$
+            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
+                    : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
             if (StringUtils.isNotEmpty(targetExtension) && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
                 targetExtension = " : " + targetExtension; //$NON-NLS-1$
             } else {

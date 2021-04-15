@@ -74,7 +74,7 @@ public enum FormulaEvaluatorUtil {
     public static <T extends IModelObject, R extends T> List<? extends R> getListModelObjectById(
             List<? extends T> modelObjects,
             String id) {
-        List<R> returnList = new ArrayList<R>();
+        List<R> returnList = new ArrayList<>();
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
@@ -109,8 +109,8 @@ public enum FormulaEvaluatorUtil {
     }
 
     /**
-     * Returns the value of the {@code Boolean} object as a boolean primitive. If the {@link Boolean}
-     * object is {@code null}, {@code false} is returned.
+     * Returns the value of the {@code Boolean} object as a boolean primitive. If the
+     * {@link Boolean} object is {@code null}, {@code false} is returned.
      *
      * @return the primitive {@code boolean} value of the given {@link Boolean}.
      */
@@ -163,7 +163,7 @@ public enum FormulaEvaluatorUtil {
          * @return a {@link List} of target {@link IModelObject model objects}
          */
         public List<? extends T> getTargets(List<? extends S> sourceObjects) {
-            List<T> targets = new ArrayList<T>();
+            List<T> targets = new ArrayList<>();
             for (S sourceObject : sourceObjects) {
                 List<? extends T> foundTargets = getTargetsInternal(sourceObject);
                 for (T target : foundTargets) {
@@ -203,7 +203,7 @@ public enum FormulaEvaluatorUtil {
          * @return a {@link List} of target {@link IModelObject model objects}
          */
         public List<? extends T> getTargets(List<? extends S> sourceObjects) {
-            List<T> targets = new ArrayList<T>();
+            List<T> targets = new ArrayList<>();
             for (S sourceObject : sourceObjects) {
                 T target = getTargetInternal(sourceObject);
                 if (!targets.contains(target)) {
@@ -242,7 +242,7 @@ public enum FormulaEvaluatorUtil {
          * @return a {@link List} of Values
          */
         public List<E> getAttributeValues(List<? extends S> objectList) {
-            List<E> values = new ArrayList<E>();
+            List<E> values = new ArrayList<>();
             for (S object : objectList) {
                 values.add(getValueInternal(object));
             }

@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
 public abstract class AbstractProductCmptNamingStrategy implements IProductCmptNamingStrategy {
 
     private String separator;
-    private HashMap<Character, String> specialCharReplacements = new HashMap<Character, String>();
+    private HashMap<Character, String> specialCharReplacements = new HashMap<>();
     private IIpsProject ipsProject;
 
     public AbstractProductCmptNamingStrategy() {

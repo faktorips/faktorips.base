@@ -123,7 +123,7 @@ public abstract class XProductClass extends XType {
      * @return the list of attributes defined in this type
      */
     protected Set<IProductCmptTypeAttribute> getAttributesInternal(boolean changableAttributes) {
-        Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<IProductCmptTypeAttribute>();
+        Set<IProductCmptTypeAttribute> resultingAttributes = new LinkedHashSet<>();
         List<IProductCmptTypeAttribute> allAttributes = getType().getProductCmptTypeAttributes();
         for (IProductCmptTypeAttribute attr : allAttributes) {
             if (changableAttributes == attr.isChangingOverTime()) {
@@ -154,7 +154,7 @@ public abstract class XProductClass extends XType {
      * @return the list of policy attributes configured by this product class.
      */
     Set<XPolicyAttribute> getConfiguredAttributesInternal() {
-        Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
+        Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<>();
         if (isConfigurationForPolicyCmptType()) {
             XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
             if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
@@ -201,7 +201,7 @@ public abstract class XProductClass extends XType {
      * @return The list of associations without derived unions
      */
     protected Set<IProductCmptTypeAssociation> getAssociationsInternal(boolean changableAssociations) {
-        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<IProductCmptTypeAssociation>();
+        Set<IProductCmptTypeAssociation> resultingAssociations = new LinkedHashSet<>();
         List<IProductCmptTypeAssociation> allAssociations = getType().getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation assoc : allAssociations) {
             if (changableAssociations == assoc.isChangingOverTime()) {
@@ -244,7 +244,7 @@ public abstract class XProductClass extends XType {
      */
 
     public Set<ITableStructureUsage> getTablesInternal(boolean changableTableStructureUsage) {
-        Set<ITableStructureUsage> resultingTableStructureUsages = new LinkedHashSet<ITableStructureUsage>();
+        Set<ITableStructureUsage> resultingTableStructureUsages = new LinkedHashSet<>();
         List<ITableStructureUsage> allTableUsages = getType().getTableStructureUsages();
         for (ITableStructureUsage tableUsage : allTableUsages) {
             if (changableTableStructureUsage == tableUsage.isChangingOverTime()) {
@@ -364,7 +364,7 @@ public abstract class XProductClass extends XType {
             }
             return result;
         } else {
-            return new LinkedHashSet<XPolicyCmptClass>();
+            return new LinkedHashSet<>();
         }
     }
 

@@ -193,7 +193,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     @Test
     public void testFindReferencesFor() throws CoreException {
         List<IProductCmptReference> result;
-        List<IProductCmpt> cmpts = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> cmpts = new ArrayList<>();
 
         result = structure.findReferencesFor(cmpts);
         assertTrue(result.isEmpty());

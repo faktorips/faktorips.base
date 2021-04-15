@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.productrelease;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -127,8 +126,7 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
             if (messageList != null) {
                 Object[] result = new Object[messageList.size()];
                 int i = 0;
-                for (Iterator<Message> iterator = messageList.iterator(); iterator.hasNext();) {
-                    Message msg = iterator.next();
+                for (Message msg : messageList) {
                     result[i] = msg;
                     i++;
                 }

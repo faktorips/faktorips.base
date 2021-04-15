@@ -38,7 +38,7 @@ public class TableSingleContentFunctionsResolver extends AbstractTableFunctionsR
 
     @Override
     protected List<TableData> createTableDatas() {
-        List<TableData> tableDatas = new ArrayList<TableData>();
+        List<TableData> tableDatas = new ArrayList<>();
         List<IIpsSrcFile> result = getIpsProject().findAllIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
 
         for (IIpsSrcFile srcFile : result) {

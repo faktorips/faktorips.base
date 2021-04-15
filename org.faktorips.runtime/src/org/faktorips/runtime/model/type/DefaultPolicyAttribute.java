@@ -48,7 +48,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     private Method defaultValueGetter;
     private Method defaultValueSetter;
 
-    private Map<Type, Method> valueSetMethods = new HashMap<Type, Method>(2);
+    private Map<Type, Method> valueSetMethods = new HashMap<>(2);
     private Method allowedValuesSetter;
 
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
@@ -160,7 +160,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     private ValueSet<?> getValueSet(Method valueSetMethod, Object object, IValidationContext context) {
         if (valueSetMethod == null) {
-            return new UnrestrictedValueSet<Object>(!getDatatype().isPrimitive());
+            return new UnrestrictedValueSet<>(!getDatatype().isPrimitive());
         } else if (valueSetMethod.getParameterTypes().length == 0) {
             return (ValueSet<?>)invokeMethod(valueSetMethod, object);
         } else if (valueSetMethod.getParameterTypes().length == 1) {

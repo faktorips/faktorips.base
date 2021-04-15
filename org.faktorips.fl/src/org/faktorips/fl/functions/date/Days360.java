@@ -20,8 +20,8 @@ import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.functions.AbstractFlFunction;
 import org.faktorips.fl.functions.Messages;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Calculates the difference between two date values based on the ISMA 30/360 calendar.
@@ -66,7 +66,7 @@ public class Days360 extends AbstractFlFunction {
             return new CompilationResultImpl(fragment, getType());
         } else {
             String code = ExprCompiler.PREFIX + AbstractPeriodFunction.NO_PERIOD_SUPPORT;
-            String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
+            String text = Messages.INSTANCE.getString(code, datatype);
             Message msg = Message.newError(code, text);
             return new CompilationResultImpl(msg);
         }

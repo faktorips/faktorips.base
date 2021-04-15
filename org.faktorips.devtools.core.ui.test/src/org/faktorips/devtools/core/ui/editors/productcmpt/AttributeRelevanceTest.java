@@ -567,7 +567,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     public static class ValueSetMatchers {
 
         public static Matcher<IValueSet> empty() {
-            return new TypeSafeMatcher<IValueSet>() {
+            return new TypeSafeMatcher<>() {
 
                 @Override
                 public void describeTo(Description description) {
@@ -582,7 +582,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         }
 
         public static Matcher<IValueSet> containsNull() {
-            return new TypeSafeMatcher<IValueSet>() {
+            return new TypeSafeMatcher<>() {
 
                 @Override
                 public void describeTo(Description description) {
@@ -597,7 +597,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         }
 
         public static Matcher<IValueSet> isRange(String lower, String upper) {
-            return new TypeSafeMatcher<IValueSet>() {
+            return new TypeSafeMatcher<>() {
 
                 @Override
                 public void describeTo(Description description) {
@@ -614,7 +614,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         }
 
         public static Matcher<IValueSet> contains(String... values) {
-            return new TypeSafeMatcher<IValueSet>() {
+            return new TypeSafeMatcher<>() {
 
                 @Override
                 public void describeTo(Description description) {

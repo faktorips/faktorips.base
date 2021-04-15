@@ -24,7 +24,7 @@ import org.faktorips.util.ArgumentCheck;
 public class DefaultFunctionResolver<T extends CodeFragment> implements FunctionResolver<T> {
 
     // list of supported FlFunction
-    private List<FlFunction<T>> functions = new ArrayList<FlFunction<T>>();
+    private List<FlFunction<T>> functions = new ArrayList<>();
 
     /**
      * Creates a new resolver.

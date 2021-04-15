@@ -208,7 +208,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
     }
 
     private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsSrcFile> srcFiles) {
-        Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<IIpsPackageFragment>();
+        Set<IIpsPackageFragment> relatedPackageFragments = new HashSet<>();
         for (IIpsSrcFile srcFile : srcFiles) {
             relatedPackageFragments.add(srcFile.getIpsPackageFragment());
         }

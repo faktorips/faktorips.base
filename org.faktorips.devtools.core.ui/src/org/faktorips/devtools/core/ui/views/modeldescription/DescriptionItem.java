@@ -19,7 +19,7 @@ public class DescriptionItem {
 
     private String description;
 
-    private List<DescriptionItem> children = new ArrayList<DescriptionItem>(0);
+    private List<DescriptionItem> children = new ArrayList<>(0);
 
     public DescriptionItem() {
         // Empty default constructor
@@ -54,7 +54,7 @@ public class DescriptionItem {
 
     public void setChildren(List<DescriptionItem> children) {
         if (children == null) {
-            this.children = new ArrayList<DescriptionItem>(0);
+            this.children = new ArrayList<>(0);
         }
         this.children = children;
     }

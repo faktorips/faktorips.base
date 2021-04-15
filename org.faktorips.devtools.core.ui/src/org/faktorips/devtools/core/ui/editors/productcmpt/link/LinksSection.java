@@ -24,8 +24,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -66,8 +64,8 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A section to display a product component's relations in a tree.
@@ -247,14 +245,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void addTemplateActions(IMenuManager manager) {
-        TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(IProductCmptLink.class,
+        TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<>(IProductCmptLink.class,
                 treeViewer.getSelection());
         if (typedSelection.isValid()) {
             IProductCmptLink firstLink = typedSelection.getFirstElement();
             final IProductCmptLink templateLink = firstLink.findTemplateProperty(firstLink.getIpsProject());
             if (templateLink != null) {
                 String text = getOpenTemplateText(templateLink);
-                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<IProductCmptLink>(templateLink, text);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction<>(templateLink, text);
                 manager.add(openTemplateAction);
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateLink,
                         Messages.CardinalityPanel_MenuItem_showUsage));
@@ -279,17 +277,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      * Register a double click listener to open the referenced product component in a new editor
      */
     private void registerDoubleClickListener() {
-        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(DoubleClickEvent event) {
-                TypedSelection<IAdaptable> typedSelection = new TypedSelection<IAdaptable>(IAdaptable.class,
-                        event.getSelection());
-                if (typedSelection.isValid()) {
-                    IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(typedSelection.getFirstElement(),
-                            IProductCmptLink.class);
-                    if (link != null) {
-                        openLink(link);
-                    }
+        treeViewer.addDoubleClickListener(event -> {
+            TypedSelection<IAdaptable> typedSelection = new TypedSelection<>(IAdaptable.class,
+                    event.getSelection());
+            if (typedSelection.isValid()) {
+                IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(typedSelection.getFirstElement(),
+                        IProductCmptLink.class);
+                if (link != null) {
+                    openLink(link);
                 }
             }
         });
@@ -410,7 +405,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      * @param links A list of {@link IProductCmptLink}s that will be selected.
      */
     public void setSelection(List<IProductCmptLink> links) {
-        List<LinkViewItem> linkViewItems = new ArrayList<LinkViewItem>();
+        List<LinkViewItem> linkViewItems = new ArrayList<>();
         for (IProductCmptLink productCmptLink : links) {
             LinkViewItem viewItem = new LinkViewItem(productCmptLink);
             linkViewItems.add(viewItem);

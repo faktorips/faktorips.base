@@ -109,11 +109,11 @@ import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
-import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.IoUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -364,7 +364,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private List<IJavaProject> getJavaProjectsReferencedInClasspath(IJavaProject javaProject)
             throws JavaModelException {
-        List<IJavaProject> result = new ArrayList<IJavaProject>();
+        List<IJavaProject> result = new ArrayList<>();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
         for (IClasspathEntry entrie : entries) {
             if (entrie.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
@@ -419,7 +419,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsProject[] findReferencingProjects(boolean includeIndirect) {
         IIpsProject[] projects = getIpsModel().getIpsProjects();
-        List<IIpsProject> result = new ArrayList<IIpsProject>(projects.length);
+        List<IIpsProject> result = new ArrayList<>(projects.length);
         for (IIpsProject project2 : projects) {
             if (isReferencedBy(project2, includeIndirect)) {
                 result.add(project2);
@@ -431,7 +431,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsProject[] findReferencingProjectLeavesOrSelf() {
         IIpsProject[] ipsPprojects = getIpsModel().getIpsProjects();
-        List<IIpsProject> result = new ArrayList<IIpsProject>(ipsPprojects.length);
+        List<IIpsProject> result = new ArrayList<>(ipsPprojects.length);
         result.add(this);
         for (IIpsProject ipsProject : ipsPprojects) {
             if (this.isReferencedBy(ipsProject, true)) {
@@ -556,7 +556,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots(boolean resolveContainerEntries) {
-        List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
+        List<IIpsPackageFragmentRoot> roots = new ArrayList<>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
         addPackageFragmentRoots(Arrays.asList(entries), roots, resolveContainerEntries);
         return roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
@@ -594,11 +594,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (!cont.isAccessible()) {
             return new IResource[0];
         }
-        List<IResource> childResources = new ArrayList<IResource>();
+        List<IResource> childResources = new ArrayList<>();
         IResource[] children = cont.members();
-        for (int i = 0; i < children.length; i++) {
-            if (!isPackageFragmentRoot(children[i]) & !isJavaFolder(children[i])) {
-                childResources.add(children[i]);
+        for (IResource child : children) {
+            if (!isPackageFragmentRoot(child) & !isJavaFolder(child)) {
+                childResources.add(child);
             }
         }
         IResource[] resArray = new IResource[childResources.size()];
@@ -725,9 +725,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     private ICommand getIpsBuildCommand() throws CoreException {
         ICommand[] commands = getProject().getDescription().getBuildSpec();
-        for (int i = 0; i < commands.length; ++i) {
-            if (commands[i].getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
-                return commands[i];
+        for (ICommand command : commands) {
+            if (command.getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
+                return command;
             }
         }
 
@@ -818,14 +818,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues) {
 
-        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
         findAllIpsSrcFiles(ipsSrcFiles, IpsObjectType.ENUM_TYPE);
         List<IEnumType> enumTypes = filesToIpsObjects(ipsSrcFiles, IEnumType.class);
         if (includeAbstract && includeNotContainingValues) {
             return enumTypes;
         }
 
-        List<IEnumType> filteredList = new ArrayList<IEnumType>(enumTypes.size());
+        List<IEnumType> filteredList = new ArrayList<>(enumTypes.size());
         for (IEnumType currentEnumType : enumTypes) {
             if (!includeAbstract && currentEnumType.isAbstract()) {
                 continue;
@@ -870,7 +870,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @SuppressWarnings("unchecked")
     private <T extends IIpsObject> List<T> filesToIpsObjects(List<IIpsSrcFile> files, Class<? extends T> clazz) {
 
-        List<T> objects = new ArrayList<T>(files.size());
+        List<T> objects = new ArrayList<>(files.size());
         for (IIpsSrcFile file : files) {
             IIpsObject ipsObject = null;
             if (file.exists()) {
@@ -952,7 +952,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             List<Datatype> excludedDatatypes,
             boolean includeAbstract) {
 
-        Set<Datatype> result = new LinkedHashSet<Datatype>();
+        Set<Datatype> result = new LinkedHashSet<>();
         getDatatypesDefinedInProjectPropertiesInclSubprojects(valuetypesOnly, includeVoid, includePrimitives, result);
 
         List<IEnumType> enumTypeList = findEnumTypes(includeAbstract, true);
@@ -1006,7 +1006,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void findDatatypesDefinedByIpsObjects(Set<Datatype> result) {
-        List<IIpsSrcFile> refDatatypeFiles = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> refDatatypeFiles = new ArrayList<>();
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
         for (IpsObjectType objectType : objectTypes) {
             if (objectType.isDatatype()) {
@@ -1027,7 +1027,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // has to be separated within the IpsModel class
 
         Datatype[] datatypes = findDatatypes(true, false);
-        ArrayList<Datatype> enumDatatypeList = new ArrayList<Datatype>();
+        ArrayList<Datatype> enumDatatypeList = new ArrayList<>();
         for (Datatype datatype : datatypes) {
             if (datatype instanceof EnumDatatype) {
                 enumDatatypeList.add(datatype);
@@ -1213,7 +1213,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) {
-        List<ValueSetType> types = new ArrayList<ValueSetType>();
+        List<ValueSetType> types = new ArrayList<>();
         types.add(ValueSetType.DERIVED);
         if (datatype == null) {
             types.add(ValueSetType.UNRESTRICTED);
@@ -1264,7 +1264,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private List<IIpsSrcFile> findAllProducts(IIpsSrcFile[] ipsSrcFiles,
             IProductCmptType productCmptType,
             boolean includeSubtypes) {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             String referencedTypeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (productCmptType == null || productCmptType.getQualifiedName().equals(referencedTypeName)) {
@@ -1286,7 +1286,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType) {
         IIpsSrcFile[] allTemplates = findIpsSrcFiles(IpsObjectType.PRODUCT_TEMPLATE);
         List<String> subtypes = getSupertypes(productCmptType);
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        List<IIpsSrcFile> result = new ArrayList<>();
         for (IIpsSrcFile templateCandidate : allTemplates) {
             String referencedTypeName = templateCandidate.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (subtypes.contains(referencedTypeName)) {
@@ -1302,8 +1302,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     protected List<String> getSupertypes(IType type) {
-        final List<String> supertypes = new ArrayList<String>();
-        TypeHierarchyVisitor<IType> collector = new TypeHierarchyVisitor<IType>(this) {
+        final List<String> supertypes = new ArrayList<>();
+        TypeHierarchyVisitor<IType> collector = new TypeHierarchyVisitor<>(this) {
 
             @Override
             public boolean visit(IType type) {
@@ -1321,7 +1321,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (testCaseType == null) {
             return ipsSrcFiles;
         }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        List<IIpsSrcFile> result = new ArrayList<>(ipsSrcFiles.length);
         for (IIpsSrcFile srcFile : ipsSrcFiles) {
             String testCaseTypeCandidateQName = srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
             if (testCaseType.getQualifiedName().equals(testCaseTypeCandidateQName)) {
@@ -1338,7 +1338,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (enumType == null) {
             return ipsSrcFiles;
         }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        List<IIpsSrcFile> result = new ArrayList<>(ipsSrcFiles.length);
         for (IIpsSrcFile srcFile : ipsSrcFiles) {
             String enumTypeCandidateQNmae = srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
             if (enumType.getQualifiedName().equals(enumTypeCandidateQNmae)) {
@@ -1371,7 +1371,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() {
-        List<IIpsPackageFragmentRoot> result = new ArrayList<IIpsPackageFragmentRoot>();
+        List<IIpsPackageFragmentRoot> result = new ArrayList<>();
         getSourceIpsFragmentRoots(result);
         IIpsPackageFragmentRoot[] sourceRoots = new IIpsPackageFragmentRoot[result.size()];
         result.toArray(sourceRoots);
@@ -1594,7 +1594,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private List<IPath> collectTocPaths(IIpsArtefactBuilderSet builderSet, IIpsProject ipsProject) {
-        List<IPath> tocPaths = new ArrayList<IPath>();
+        List<IPath> tocPaths = new ArrayList<>();
         IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             String fileName = builderSet.getRuntimeRepositoryTocResourceName(root);

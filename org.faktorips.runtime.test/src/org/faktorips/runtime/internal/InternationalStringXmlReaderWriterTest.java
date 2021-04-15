@@ -73,7 +73,7 @@ public class InternationalStringXmlReaderWriterTest {
 
     @Test
     public void testToXml() throws Exception {
-        Collection<LocalizedString> localizedString = new ArrayList<LocalizedString>();
+        Collection<LocalizedString> localizedString = new ArrayList<>();
         localizedString.add(new LocalizedString(Locale.GERMAN, "bla"));
         localizedString.add(new LocalizedString(Locale.ENGLISH, "blubb"));
         DefaultInternationalString internationalString = new DefaultInternationalString(localizedString, Locale.GERMAN);

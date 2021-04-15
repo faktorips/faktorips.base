@@ -71,7 +71,8 @@ public class DateValueConverter extends AbstractValueConverter {
 
         messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                 "" + externalDataValue, externalDataValue //$NON-NLS-1$
-                        .getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                        .getClass().getName(),
+                getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

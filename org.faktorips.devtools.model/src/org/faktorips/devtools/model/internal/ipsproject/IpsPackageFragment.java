@@ -119,16 +119,16 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * Get all child IIpsPackageFragments as List.
      */
     private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
-        List<IIpsPackageFragment> list = new ArrayList<IIpsPackageFragment>();
+        List<IIpsPackageFragment> list = new ArrayList<>();
 
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] content = folder.members();
 
-        for (int i = 0; i < content.length; i++) {
-            if (content[i].getType() == IResource.FOLDER) {
-                if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
+        for (IResource element : content) {
+            if (element.getType() == IResource.FOLDER) {
+                if (!getIpsProject().getNamingConventions().validateIpsPackageName(element.getName())
                         .containsErrorMsg()) {
-                    String packageName = getSubPackageName(content[i].getName());
+                    String packageName = getSubPackageName(element.getName());
                     list.add(new IpsPackageFragment(getParent(), packageName));
                 }
             }
@@ -140,11 +140,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     @Override
     public IResource[] getNonIpsResources() throws CoreException {
         IContainer cont = (IContainer)getCorrespondingResource();
-        List<IResource> childResources = new ArrayList<IResource>();
+        List<IResource> childResources = new ArrayList<>();
         IResource[] children = cont.members();
-        for (int i = 0; i < children.length; i++) {
-            if (!isIpsContent(children[i])) {
-                childResources.add(children[i]);
+        for (IResource child : children) {
+            if (!isIpsContent(child)) {
+                childResources.add(child);
             }
         }
         IResource[] resArray = new IResource[childResources.size()];
@@ -291,7 +291,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
         IpsObjectType[] types = getIpsModel().getIpsObjectTypes();
 
-        Set<String> fileExtensionNames = new HashSet<String>();
+        Set<String> fileExtensionNames = new HashSet<>();
         for (IpsObjectType type : types) {
             fileExtensionNames.add(type.getFileExtension());
         }
@@ -376,9 +376,9 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         IFolder folder = (IFolder)getCorrespondingResource();
         IResource[] content = folder.members();
 
-        for (int i = 0; i < content.length; i++) {
-            if (content[i].getType() == IResource.FOLDER) {
-                if (!getIpsProject().getNamingConventions().validateIpsPackageName(content[i].getName())
+        for (IResource element : content) {
+            if (element.getType() == IResource.FOLDER) {
+                if (!getIpsProject().getNamingConventions().validateIpsPackageName(element.getName())
                         .containsErrorMsg()) {
                     return true;
                 }
@@ -463,11 +463,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         private final Map<IIpsElement, Integer> sortOrder;
 
         public DefinedOrderComparator() {
-            sortOrder = new LinkedHashMap<IIpsElement, Integer>();
+            sortOrder = new LinkedHashMap<>();
         }
 
         public DefinedOrderComparator(IIpsElement... orderedElements) {
-            sortOrder = new LinkedHashMap<IIpsElement, Integer>(orderedElements.length);
+            sortOrder = new LinkedHashMap<>(orderedElements.length);
             int i = 0;
             for (IIpsElement element : orderedElements) {
                 sortOrder.put(element, i++);
@@ -536,7 +536,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                          * (windows), \n (unix) or \r (old mac)
                          */
                         String[] lines = content.split("[\r\n]++"); //$NON-NLS-1$
-                        LinkedHashMap<IIpsElement, Integer> sortOrder = new LinkedHashMap<IIpsElement, Integer>(
+                        LinkedHashMap<IIpsElement, Integer> sortOrder = new LinkedHashMap<>(
                                 lines.length);
                         for (String line : lines) {
                             read(line.trim(), parentPackage, sortOrder);
@@ -593,24 +593,20 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 final String charsetName = parentPackage.getIpsProject().getPlainTextFileCharset();
                 final String content = toPersistenceContent(sortOrder);
 
-                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                IWorkspaceRunnable runnable = $ -> {
 
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
+                    byte[] bytes = content.getBytes(Charset.forName(charsetName));
 
-                        byte[] bytes = content.getBytes(Charset.forName(charsetName));
-
-                        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-                        try {
-                            // overwrite existing files
-                            if (sortOrderFile.exists()) {
-                                EclipseIOUtil.writeToFile(sortOrderFile, is, true, true, null);
-                            } else {
-                                sortOrderFile.create(is, true, null);
-                            }
-                        } catch (CoreException e) {
-                            throw new CoreRuntimeException(e);
+                    ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                    try {
+                        // overwrite existing files
+                        if (sortOrderFile.exists()) {
+                            EclipseIOUtil.writeToFile(sortOrderFile, is, true, true, null);
+                        } else {
+                            sortOrderFile.create(is, true, null);
                         }
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
                     }
                 };
                 try {

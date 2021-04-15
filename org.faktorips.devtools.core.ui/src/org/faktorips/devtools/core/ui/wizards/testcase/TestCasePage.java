@@ -81,7 +81,6 @@ public class TestCasePage extends IpsObjectPage {
         } else if (obj instanceof ITestCase) {
             superTypeControl.setText(((ITestCase)obj).getTestCaseType());
         }
-        return;
     }
 
     @Override

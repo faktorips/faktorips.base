@@ -92,7 +92,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     }
 
     private List<String> parseValues(String[] split) {
-        List<String> parseValues = new ArrayList<String>();
+        List<String> parseValues = new ArrayList<>();
         for (String text : split) {
             String parsedValue = parseValue(text);
             if (isValidValue(text, parsedValue)) {

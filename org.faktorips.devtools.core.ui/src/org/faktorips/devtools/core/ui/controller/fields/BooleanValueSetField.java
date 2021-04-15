@@ -92,7 +92,7 @@ public class BooleanValueSetField extends DefaultEditField<IValueSet> {
     }
 
     private List<String> createValuesAsList() {
-        List<String> valuesAsList = new ArrayList<String>();
+        List<String> valuesAsList = new ArrayList<>();
         addValue(valuesAsList, booleanValueSetControl.getTrueCheckBox(), Boolean.TRUE.toString());
         addValue(valuesAsList, booleanValueSetControl.getFalseCheckBox(), Boolean.FALSE.toString());
         addValue(valuesAsList, booleanValueSetControl.getNullCheckBox(), null);

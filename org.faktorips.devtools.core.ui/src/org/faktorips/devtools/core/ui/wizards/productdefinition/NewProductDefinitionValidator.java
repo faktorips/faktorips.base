@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import java.util.Iterator;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -101,8 +99,7 @@ public abstract class NewProductDefinitionValidator {
 
     protected MessageList addInvalidObjectProperty(MessageList msgListName, String propertyOfNameField) {
         MessageList result = new MessageList();
-        for (Iterator<Message> msgIterator = msgListName.iterator(); msgIterator.hasNext();) {
-            Message msg = msgIterator.next();
+        for (Message msg : msgListName) {
             result.add(new Message(msg.getCode(), msg.getText(), msg.getSeverity(), getPmo(), propertyOfNameField));
         }
         return result;

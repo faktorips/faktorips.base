@@ -51,13 +51,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        resourceChangeListener = new IResourceChangeListener() {
-
-            @Override
-            public void resourceChanged(IResourceChangeEvent event) {
-                IpsViewRefreshVisitorTest.this.event = event;
-            }
-        };
+        resourceChangeListener = event -> IpsViewRefreshVisitorTest.this.event = event;
         ipsProject = newIpsProject();
         packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener);
@@ -364,7 +358,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     @Test
     public void testUpdateIfManifestIsChanged() throws CoreException {
 
-        ModelExplorerConfiguration config = new ModelExplorerConfiguration(ipsProject.getIpsModel().getIpsObjectTypes());
+        ModelExplorerConfiguration config = new ModelExplorerConfiguration(
+                ipsProject.getIpsModel().getIpsObjectTypes());
         ModelContentProvider contentProvider = new ModelContentProvider(config, LayoutStyle.HIERACHICAL);
         IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
 
@@ -394,7 +389,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     }
 
     private IpsViewRefreshVisitor newVisitor(LayoutStyle style) throws CoreException, InterruptedException {
-        ModelExplorerConfiguration config = new ModelExplorerConfiguration(ipsProject.getIpsModel().getIpsObjectTypes());
+        ModelExplorerConfiguration config = new ModelExplorerConfiguration(
+                ipsProject.getIpsModel().getIpsObjectTypes());
         ModelContentProvider contentProvider = new ModelContentProvider(config, style);
         IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
         IResourceDelta delta = getTriggeredEvent().getDelta();

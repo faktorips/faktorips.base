@@ -77,12 +77,12 @@ public class ProductCmptGenerationToTypeDeltaTest {
     public void setUp() throws CoreException {
         delta = spy(new ProductCmptGenerationToTypeDelta(gen, ipsProject));
 
-        List<IProductCmptLink> genLinks = new ArrayList<IProductCmptLink>();
+        List<IProductCmptLink> genLinks = new ArrayList<>();
         genLinks.add(link1);
         genLinks.add(link2);
         genLinks.add(link3);
         when(gen.getLinksAsList()).thenReturn(genLinks);
-        List<IProductCmptLink> cmptLinks = new ArrayList<IProductCmptLink>();
+        List<IProductCmptLink> cmptLinks = new ArrayList<>();
         cmptLinks.add(staticLink1);
         cmptLinks.add(staticLink2);
         when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);

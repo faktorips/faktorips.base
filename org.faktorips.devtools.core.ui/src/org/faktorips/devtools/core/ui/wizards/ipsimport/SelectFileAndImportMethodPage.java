@@ -174,7 +174,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         // must not be empty
         if (fileFormatField.getCombo().getSelectionIndex() == -1) {
             setErrorMessage(Messages.SelectFileAndImportMethodPage_msgMissingFileFormat);
-            return;
         }
     }
 

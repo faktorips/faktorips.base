@@ -15,10 +15,8 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
@@ -140,7 +138,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
 
     private void createCategoryCombo(Composite workArea) {
         Combo categoryCombo = getToolkit().createCombo(workArea);
-        categoryField = new ComboViewerField<IProductCmptCategory>(categoryCombo, IProductCmptCategory.class);
+        categoryField = new ComboViewerField<>(categoryCombo, IProductCmptCategory.class);
 
         categoryPmo = new CategoryPmo(tableStructureUsage);
         categoryField.setInput(categoryPmo.getCategories());
@@ -189,12 +187,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
         viewer.setLabelProvider(new DefaultLabelProvider());
         viewer.setInput(tableStructureUsage);
 
-        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateButtonsEnabledState();
-            }
-        });
+        viewer.addSelectionChangedListener($ -> updateButtonsEnabledState());
         repackTable(viewer);
     }
 
@@ -318,7 +311,8 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
      * <code>null</code> if the user select nothing.
      */
     private ITableStructure selectTableStructureByDialog() throws CoreException {
-        ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(), new DefaultLabelProvider());
+        ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
+                new DefaultLabelProvider());
         selectDialog.setTitle(Messages.TblsStructureUsageEditDialog_selectStructurDialogTitle);
         selectDialog.setMessage(Messages.TblsStructureUsageEditDialog_selectStructurDialogMessage);
 

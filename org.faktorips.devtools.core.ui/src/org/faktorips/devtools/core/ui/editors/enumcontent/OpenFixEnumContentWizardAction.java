@@ -54,8 +54,8 @@ public class OpenFixEnumContentWizardAction extends Action {
      * @param enumContent The <code>IEnumContent</code> to fix.
      * @param parentShell The parent shell.
      * 
-     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is <code>null</code>
-     *             .
+     * @throws NullPointerException If <code>enumContent</code> or <code>parentShell</code> is
+     *             <code>null</code> .
      */
     public OpenFixEnumContentWizardAction(IpsObjectEditorPage editorPage, IEnumContent enumContent, Shell parentShell) {
         super();
@@ -72,7 +72,7 @@ public class OpenFixEnumContentWizardAction extends Action {
 
     @Override
     public void run() {
-        FixContentWizard<IEnumType, IEnumAttribute> wizard = new FixContentWizard<IEnumType, IEnumAttribute>(
+        FixContentWizard<IEnumType, IEnumAttribute> wizard = new FixContentWizard<>(
                 enumContent, new FixEnumContentStrategy(enumContent));
         WizardDialog dialog = new WizardDialog(parentShell, wizard);
         dialog.open();

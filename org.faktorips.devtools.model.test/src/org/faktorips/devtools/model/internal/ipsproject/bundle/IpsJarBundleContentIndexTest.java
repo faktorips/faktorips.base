@@ -56,7 +56,7 @@ public class IpsJarBundleContentIndexTest {
 
     @Before
     public void setUp() {
-        jarEntries = new ArrayList<JarEntry>();
+        jarEntries = new ArrayList<>();
 
         pathRelative = new Path("src/model");
         pathAbsolute = new Path("/src2/model");

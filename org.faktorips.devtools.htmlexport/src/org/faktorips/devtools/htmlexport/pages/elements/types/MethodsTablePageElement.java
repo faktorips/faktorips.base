@@ -44,7 +44,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
      * 
      */
     protected List<String> getMethodData(IMethod method) {
-        List<String> methodData = new ArrayList<String>();
+        List<String> methodData = new ArrayList<>();
 
         methodData.add(getContext().getLabel(method));
         methodData.add(method.isAbstract() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -58,7 +58,7 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
 
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
-        ArrayList<String> headline = new ArrayList<String>();
+        ArrayList<String> headline = new ArrayList<>();
 
         headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineName));
         headline.add(getContext().getMessage(HtmlExportMessages.MethodsTablePageElement_headlineAbstract));

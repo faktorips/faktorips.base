@@ -37,7 +37,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
     public XPolicyBuilder(IPolicyCmptType type, GeneratorModelContext context, ModelService modelService) {
         super(type, context, modelService);
         nameProvider = new XTypeBuilderClassNameProvider(this);
-        xpBuilderUtil = new XPBuilderUtil<XPolicyBuilder, XPolicyBuilderAssociation, XPolicyAttribute>(this);
+        xpBuilderUtil = new XPBuilderUtil<>(this);
     }
 
     @Override

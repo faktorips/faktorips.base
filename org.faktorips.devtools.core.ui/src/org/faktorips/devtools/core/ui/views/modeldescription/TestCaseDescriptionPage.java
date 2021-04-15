@@ -36,7 +36,7 @@ public class TestCaseDescriptionPage extends DefaultModelDescriptionPage {
 
     @Override
     protected List<DescriptionItem> createDescriptions() throws CoreException {
-        List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
+        List<DescriptionItem> descriptions = new ArrayList<>();
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = getIpsObject().getTestPolicyCmptTypeParameters();
         for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : testPolicyCmptTypeParameters) {
             ITestAttribute[] testAttributes = testPolicyCmptTypeParameter.getTestAttributes();

@@ -81,7 +81,7 @@ public class PageElementUtils {
             TargetType target,
             Set<Style> styles,
             DocumentationContext context) {
-        List<IPageElement> liste = new ArrayList<IPageElement>();
+        List<IPageElement> liste = new ArrayList<>();
 
         for (IIpsSrcFile srcFile : srcFiles) {
             IPageElement linkPageElement = createLinkPageElement(context, srcFile, target, srcFile.getIpsObjectName(),
@@ -152,7 +152,8 @@ public class PageElementUtils {
                         new IpsElementImagePageElement(ipsElement, getContext())).addPageElements(
                                 new TextPageElement('\u00A0' + text, context));
             } catch (CoreException e) {
-                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName(), e)); //$NON-NLS-1$
+                context.addStatus(
+                        new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName(), e)); //$NON-NLS-1$
             }
         }
         return new TextPageElement(text, context);

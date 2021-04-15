@@ -54,7 +54,7 @@ public class TemplateValueUiUtil {
             final ToolBar toolBar,
             final ToolItem toolItem,
             final AbstractTemplateValuePmo<T> pmo) {
-        bindingContext.add(new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
+        bindingContext.add(new PropertyChangeBinding<>(toolBar, pmo,
                 AbstractTemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
 
             @Override

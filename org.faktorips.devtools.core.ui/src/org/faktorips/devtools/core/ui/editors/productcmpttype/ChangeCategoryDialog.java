@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
  */
 public class ChangeCategoryDialog extends ElementListSelectionDialog {
 
-    private final List<IProductCmptCategory> categories = new ArrayList<IProductCmptCategory>();
+    private final List<IProductCmptCategory> categories = new ArrayList<>();
 
     private final IProductCmptType productCmptType;
 

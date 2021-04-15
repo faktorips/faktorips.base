@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
 public abstract class IpsTestCase2 extends IpsTestCaseBase {
 
     // map containing extension attributes
-    private Map<ModelObjectAttribute, Object> extensionAttributes = new HashMap<ModelObjectAttribute, Object>();
+    private Map<ModelObjectAttribute, Object> extensionAttributes = new HashMap<>();
 
     public IpsTestCase2(String qName) {
         super(qName);

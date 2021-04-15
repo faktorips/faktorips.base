@@ -81,7 +81,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
 
         assertThat(options.keySet(), hasItem("true"));
         assertThat(options.keySet(), hasItem("false"));
-        assertTrue(options.keySet().contains(null));
+        assertTrue(options.containsKey(null));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     }
 
     private static Matcher<Control> enabled() {
-        return new TypeSafeMatcher<Control>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

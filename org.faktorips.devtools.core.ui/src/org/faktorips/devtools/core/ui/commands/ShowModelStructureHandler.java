@@ -44,7 +44,7 @@ public class ShowModelStructureHandler extends IpsAbstractHandler {
     public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
             throws ExecutionException {
         // this method must be called first! Otherwise the selection is not valid.
-        TypedSelection<IAdaptable> selection = new TypedSelection<IAdaptable>(IAdaptable.class,
+        TypedSelection<IAdaptable> selection = new TypedSelection<>(IAdaptable.class,
                 HandlerUtil.getCurrentSelection(event));
         try {
             IViewPart modelOverviewView = activePage.showView(ModelStructure.EXTENSION_ID, null,

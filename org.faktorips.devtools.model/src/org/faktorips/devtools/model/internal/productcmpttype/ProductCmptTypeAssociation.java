@@ -84,7 +84,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
             throws CoreException {
-        Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<IPolicyCmptTypeAssociation>();
+        Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<>();
 
         IPolicyCmptType sourcePolicyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         if (sourcePolicyCmptType == null) {
@@ -249,7 +249,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * policy component type, but ignoring associations of type COMPOSITION_DETAIL_TO_MASTER.
      */
     private IPolicyCmptTypeAssociation[] getAssociationsFor(IPolicyCmptType from, IPolicyCmptType target) {
-        List<IPolicyCmptTypeAssociation> result = new ArrayList<IPolicyCmptTypeAssociation>();
+        List<IPolicyCmptTypeAssociation> result = new ArrayList<>();
         String targetQName = target.getQualifiedName();
         List<IPolicyCmptTypeAssociation> policyAssociations = from.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyAssociations) {
@@ -264,7 +264,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     private int getAssociationIndex() {
-        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<IAssociation>();
+        List<IAssociation> allAssociationsForTheTargetType = new ArrayList<>();
         for (IAssociation element : getType().getAssociations()) {
             if (getTarget().equals(element.getTarget())) {
                 allAssociationsForTheTargetType.add(element);

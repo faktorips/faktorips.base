@@ -41,9 +41,9 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     private Size size = new Size(100, 60);
 
-    private List<String> incommingControlFlows = new ArrayList<String>();
+    private List<String> incommingControlFlows = new ArrayList<>();
 
-    private List<String> outgoingControlFlows = new ArrayList<String>();
+    private List<String> outgoingControlFlows = new ArrayList<>();
 
     public BFElement(IIpsObject parent, String id) {
         super(parent, id);
@@ -76,7 +76,7 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     @Override
     public List<IControlFlow> getIncomingControlFlow() {
-        ArrayList<IControlFlow> inList = new ArrayList<IControlFlow>();
+        ArrayList<IControlFlow> inList = new ArrayList<>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
             for (String id : incommingControlFlows) {
@@ -90,7 +90,7 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     @Override
     public List<IControlFlow> getAllControlFlows() {
-        List<IControlFlow> allEdges = new ArrayList<IControlFlow>();
+        List<IControlFlow> allEdges = new ArrayList<>();
         allEdges.addAll(getIncomingControlFlow());
         allEdges.addAll(getOutgoingControlFlow());
         return allEdges;
@@ -128,7 +128,7 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
 
     @Override
     public List<IControlFlow> getOutgoingControlFlow() {
-        ArrayList<IControlFlow> outList = new ArrayList<IControlFlow>();
+        ArrayList<IControlFlow> outList = new ArrayList<>();
         List<IControlFlow> controlFlowList = getBusinessFunction().getControlFlows();
         for (IControlFlow controlFlow : controlFlowList) {
             for (String id : outgoingControlFlows) {
@@ -275,7 +275,6 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
                 Messages.BFElement_nameNotValid, this, ipsProject);
         if (msg != null) {
             msgList.add(msg);
-            return;
         }
     }
 

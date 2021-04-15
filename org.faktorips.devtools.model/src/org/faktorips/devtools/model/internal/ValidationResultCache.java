@@ -23,7 +23,8 @@ import org.faktorips.runtime.MessageList;
  */
 public class ValidationResultCache {
 
-    private HashMap<IIpsObjectPartContainer, MessageList> data = new HashMap<IIpsObjectPartContainer, MessageList>(1000);
+    private HashMap<IIpsObjectPartContainer, MessageList> data = new HashMap<>(
+            1000);
 
     /**
      * Puts a copy of the given the validation result for the given IPS object part container into

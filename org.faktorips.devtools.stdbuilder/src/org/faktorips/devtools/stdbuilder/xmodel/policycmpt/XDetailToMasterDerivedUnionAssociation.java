@@ -64,7 +64,7 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
      * @param policyClass the policy class to search for detail to master subsets
      */
     public Set<XPolicyAssociation> getDetailToMasterSubsetAssociations(XPolicyCmptClass policyClass) {
-        Set<XPolicyAssociation> subsets = new LinkedHashSet<XPolicyAssociation>();
+        Set<XPolicyAssociation> subsets = new LinkedHashSet<>();
         for (XPolicyAssociation detailToMaster : policyClass.getAssociations()) {
             if (detailToMaster.isCompositionDetailToMaster()) {
                 if (detailToMaster.isSharedAssociation()) {

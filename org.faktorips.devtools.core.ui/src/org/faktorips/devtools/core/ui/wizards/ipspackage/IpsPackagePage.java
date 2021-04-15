@@ -93,7 +93,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             IAdaptable adaptable = (IAdaptable)selectedObject;
             return adaptable.getAdapter(IResource.class);
         } else {
-        	return null;
+            return null;
         }
     }
 
@@ -383,7 +383,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         if (folder != null) {
             if (folder.exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, ipsPackage.getName()));
-                return;
             }
         }
     }

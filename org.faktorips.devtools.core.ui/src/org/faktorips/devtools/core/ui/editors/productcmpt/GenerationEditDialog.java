@@ -76,7 +76,8 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected String buildTitle() {
-        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getIpsPart()) + ' ' + getIpsPart().getName();
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getIpsPart()) + ' '
+                + getIpsPart().getName();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
         DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
-        dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
+        dateField = new FormattingTextField<>(textControl, GregorianCalendarFormat.newInstance());
 
         createExtensionProperties(workArea);
 

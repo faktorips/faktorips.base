@@ -32,11 +32,11 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.runtime.Message;
-import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

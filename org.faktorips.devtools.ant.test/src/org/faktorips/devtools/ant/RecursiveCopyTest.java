@@ -78,12 +78,10 @@ public class RecursiveCopyTest {
 
         try {
             FileOutputStream stream = new FileOutputStream(tmpFile);
-            try {
+            try (stream) {
                 stream.write(data);
             } catch (IOException e) {
                 throw e;
-            } finally {
-                stream.close();
             }
 
             // copy file to dir => should throw an Exception

@@ -38,8 +38,6 @@ import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,7 +54,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
-import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dnd.IpsByteArrayTransfer;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;
@@ -64,6 +61,7 @@ import org.faktorips.devtools.core.ui.editors.ViewerButtonComposite;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -128,12 +126,7 @@ class CategoryComposite extends ViewerButtonComposite {
     }
 
     private void addDisposeListener() {
-        addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                contextType.getIpsModel().removeChangeListener(policySideChangedListener);
-            }
-        });
+        addDisposeListener($ -> contextType.getIpsModel().removeChangeListener(policySideChangedListener));
     }
 
     /**
@@ -277,7 +270,7 @@ class CategoryComposite extends ViewerButtonComposite {
     }
 
     private IStructuredSelection createSelection(int[] selectionIndices) {
-        List<Object> itemsToSelect = new ArrayList<Object>(selectionIndices.length);
+        List<Object> itemsToSelect = new ArrayList<>(selectionIndices.length);
         for (int index : selectionIndices) {
             itemsToSelect.add(contentProvider.getElements(category)[index]);
         }
@@ -448,7 +441,7 @@ class CategoryComposite extends ViewerButtonComposite {
 
         @Override
         public Object[] getElements(Object inputElement) {
-            List<IProductCmptProperty> properties = new ArrayList<IProductCmptProperty>();
+            List<IProductCmptProperty> properties = new ArrayList<>();
             try {
                 properties.addAll(category.findProductCmptProperties(contextType, true, contextType.getIpsProject()));
             } catch (CoreException e) {

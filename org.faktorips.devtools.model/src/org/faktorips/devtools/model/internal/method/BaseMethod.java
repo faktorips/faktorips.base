@@ -31,10 +31,10 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.method.IParameter;
-import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,7 +47,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
 
     public static final String XML_ELEMENT_NAME = "Method"; //$NON-NLS-1$
 
-    private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<IParameter>(this,
+    private IpsObjectPartCollection<IParameter> parameters = new IpsObjectPartCollection<>(this,
             Parameter.class, IParameter.class, Parameter.TAG_NAME);
 
     private String datatype = "void"; //$NON-NLS-1$
@@ -109,7 +109,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
 
     @Override
     public List<Datatype> getParameterDatatypes() {
-        List<Datatype> parameterDatatypes = new ArrayList<Datatype>();
+        List<Datatype> parameterDatatypes = new ArrayList<>();
         try {
             for (IParameter parameter : getParameters()) {
                 Datatype parameterDatatype = parameter.findDatatype(getIpsProject());
@@ -169,8 +169,8 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     }
 
     private void validateMultipleParameterNames(MessageList msgList) {
-        List<String> parameterNames = new ArrayList<String>();
-        Set<String> multipleNames = new HashSet<String>();
+        List<String> parameterNames = new ArrayList<>();
+        Set<String> multipleNames = new HashSet<>();
         for (IParameter p : getParameters()) {
             if (parameterNames.contains(p.getName())) {
                 multipleNames.add(p.getName());
@@ -181,7 +181,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
             return;
         }
         for (String paramName : multipleNames) {
-            ArrayList<ObjectProperty> objProps = new ArrayList<ObjectProperty>();
+            ArrayList<ObjectProperty> objProps = new ArrayList<>();
             for (int j = 0; j < parameterNames.size(); j++) {
                 if (parameterNames.get(j).equals(paramName)) {
                     objProps.add(new ObjectProperty(getParameter(j), IBaseMethod.PROPERTY_PARAMETERS, j));

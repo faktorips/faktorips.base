@@ -60,7 +60,7 @@ public class InMemoryRuntimeRepositoryTest {
 
     @Test
     public void testPutEnumValues() {
-        List<TestEnumValue> values = new ArrayList<TestEnumValue>();
+        List<TestEnumValue> values = new ArrayList<>();
         TestEnumValue value1 = new TestEnumValue("1");
         TestEnumValue value2 = new TestEnumValue("2");
         values.add(value1);

@@ -67,7 +67,7 @@ public class XmlUtil {
     /**
      * This is a thread local variable because the {@link Transformer} is not thread safe.
      */
-    private static ThreadLocal<Transformer> transformerHolder = new ThreadLocal<Transformer>() {
+    private static ThreadLocal<Transformer> transformerHolder = new ThreadLocal<>() {
         @Override
         protected Transformer initialValue() {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

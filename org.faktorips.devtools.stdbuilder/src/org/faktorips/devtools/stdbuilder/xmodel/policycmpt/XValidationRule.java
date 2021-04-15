@@ -93,7 +93,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public List<String> getValidatedAttributeConstants() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         String[] attributes = getValidationRule().getValidatedAttributes();
         for (String attributeName : attributes) {
             IAttribute attr = getValidationRule().getType().findAttribute(attributeName, getIpsProject());
@@ -120,7 +120,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public List<MethodParameter> getCreateMessageParameters() {
-        List<MethodParameter> result = new ArrayList<MethodParameter>();
+        List<MethodParameter> result = new ArrayList<>();
         result.add(new MethodParameter(addImport(IValidationContext.class), "context"));
         for (String replacementParameter : getReplacementParameters()) {
             result.add(new MethodParameter(addImport(Object.class), replacementParameter));
@@ -175,7 +175,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
      * 
      */
     LinkedHashSet<String> convertToJavaParameters(LinkedHashSet<String> parameters) {
-        LinkedHashSet<String> result = new LinkedHashSet<String>();
+        LinkedHashSet<String> result = new LinkedHashSet<>();
         for (final String parameterName : parameters) {
             if (!Character.isJavaIdentifierStart(parameterName.charAt(0))) {
                 String javaIdent = "p" + parameterName;
@@ -191,7 +191,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public List<String> getMarkers() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         List<String> markerIds = getValidationRule().getMarkers();
         LinkedHashSet<IIpsSrcFile> markerEnums = getIpsProject().getMarkerEnums();
         if (markerEnums.size() > 0) {

@@ -52,7 +52,7 @@ public class ValidationRuleCsvImporterTest {
 
     @Test
     public void testIndexTableEntries_simpleIndex() throws Exception {
-        List<CsvTableBean> list = new ArrayList<CsvTableBean>();
+        List<CsvTableBean> list = new ArrayList<>();
         list.add(new CsvTableBean("1", "a"));
         list.add(new CsvTableBean("2", "b"));
         list.add(new CsvTableBean("3", "a"));
@@ -66,7 +66,7 @@ public class ValidationRuleCsvImporterTest {
 
     @Test
     public void testIndexTableEntries_emptyList() throws Exception {
-        List<CsvTableBean> list = new ArrayList<CsvTableBean>();
+        List<CsvTableBean> list = new ArrayList<>();
 
         Map<String, String> indexTableEntries = validationRuleCsvImporter.indexTableEntries(list, multipleMessages);
 
@@ -75,7 +75,7 @@ public class ValidationRuleCsvImporterTest {
 
     @Test
     public void testIndexTableEntries_emptyDuplicateKey() throws Exception {
-        List<CsvTableBean> list = new ArrayList<CsvTableBean>();
+        List<CsvTableBean> list = new ArrayList<>();
         list.add(new CsvTableBean("1", "a"));
         list.add(new CsvTableBean("1", "b"));
 

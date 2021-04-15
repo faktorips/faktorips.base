@@ -89,18 +89,11 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
 
             File importFile = new File(sourceFile);
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(importFile);
-
+            try (FileInputStream fis = new FileInputStream(importFile)) {
                 // update datatypes because the structure might be altered if this operation is
                 // reused
                 initDatatypes();
                 messageList.add(fillGeneration(fis));
-            } finally {
-                if (fis != null) {
-                    fis.close();
-                }
             }
 
             monitor.worked(1);

@@ -50,8 +50,8 @@ public class MoveEnumValueAction extends Action {
      * Creates a new <code>MoveEnumValueAction</code>.
      * 
      * @param enumValuesTableViewer The table viewer linking the table widget with the model data.
-     * @param up Flag indicating whether the selected <code>IEnumValue</code> shall be moved upwards or
-     *            downwards.
+     * @param up Flag indicating whether the selected <code>IEnumValue</code> shall be moved upwards
+     *            or downwards.
      * 
      * @throws NullPointerException If <code>enumValuesTableViewer</code> is <code>null</code>.
      */
@@ -82,7 +82,7 @@ public class MoveEnumValueAction extends Action {
 
         @SuppressWarnings("unchecked")
         Iterator<IEnumValue> selectedEnumValues = selection.iterator();
-        List<IEnumValue> enumValuesToMove = new ArrayList<IEnumValue>();
+        List<IEnumValue> enumValuesToMove = new ArrayList<>();
         while (selectedEnumValues.hasNext()) {
             enumValuesToMove.add(selectedEnumValues.next());
         }
@@ -123,7 +123,7 @@ public class MoveEnumValueAction extends Action {
 
             // Perform moving starting with last selected EnumValue.
             int numberToMove = enumValuesToMove.size();
-            List<IEnumValue> orderedValues = new ArrayList<IEnumValue>(numberToMove);
+            List<IEnumValue> orderedValues = new ArrayList<>(numberToMove);
             for (int i = numberToMove - 1; i >= 0; i--) {
                 orderedValues.add(enumValuesToMove.get(i));
             }

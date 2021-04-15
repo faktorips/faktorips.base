@@ -48,7 +48,7 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
     }
 
     protected static List<ListChooserValue> createValueListFromStringList(List<String> stringValues) {
-        List<ListChooserValue> chooserValues = new ArrayList<ListChooserValue>();
+        List<ListChooserValue> chooserValues = new ArrayList<>();
         for (String string : stringValues) {
             chooserValues.add(new ListChooserValue(string));
         }
@@ -64,7 +64,7 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
     }
 
     public void moveValuesFromResultingToPredefined(List<ListChooserValue> values) {
-        removeFromResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
+        removeFromResultingValues(new CopyOnWriteArrayList<>(values));
     }
 
     protected void fireValuesChangedEvents(List<ListChooserValue> oldResultingValues) {
@@ -84,7 +84,7 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
      * @param values the values to be moved
      */
     public void moveValuesFromPreDefinedToResulting(List<ListChooserValue> values) {
-        addToResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
+        addToResultingValues(new CopyOnWriteArrayList<>(values));
     }
 
     public abstract List<ListChooserValue> getAllValues();
@@ -123,10 +123,10 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
     }
 
     public List<ListChooserValue> getPreDefinedValues() {
-        LinkedHashSet<ListChooserValue> allValues = new LinkedHashSet<ListChooserValue>(getAllValues());
-        Set<ListChooserValue> resultingValues = new HashSet<ListChooserValue>(getResultingValues());
+        LinkedHashSet<ListChooserValue> allValues = new LinkedHashSet<>(getAllValues());
+        Set<ListChooserValue> resultingValues = new HashSet<>(getResultingValues());
         allValues.removeAll(resultingValues);
-        return new ArrayList<ListChooserValue>(allValues);
+        return new ArrayList<>(allValues);
     }
 
     public void moveUp(List<ListChooserValue> selectedValues) {

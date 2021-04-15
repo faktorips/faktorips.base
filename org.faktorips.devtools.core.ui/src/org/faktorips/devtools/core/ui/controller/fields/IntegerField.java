@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.util.ArgumentCheck;
@@ -76,12 +74,7 @@ public class IntegerField extends DefaultEditField<Integer> {
 
     @Override
     protected void addListenerToControl() {
-        text.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(IntegerField.this));
-            }
-        });
+        text.addModifyListener($ -> notifyChangeListeners(new FieldValueChangedEvent(IntegerField.this)));
     }
 
 }

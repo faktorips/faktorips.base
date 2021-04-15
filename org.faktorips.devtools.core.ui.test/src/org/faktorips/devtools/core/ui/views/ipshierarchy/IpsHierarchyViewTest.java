@@ -67,7 +67,7 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
     public void testIsNodeOfHierarchy() throws CoreException {
         IpsHierarchyViewMock testMock = new IpsHierarchyViewMock();
 
-        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> ipsSrcFiles = new HashSet<>();
         ipsSrcFiles.add(pcType.getIpsSrcFile());
         testMock.isNodeOfHierarchy(ipsSrcFiles, TypeHierarchy.getTypeHierarchy(pcType));
         assertEquals(pcType, testMock.element);

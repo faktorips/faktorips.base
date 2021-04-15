@@ -144,7 +144,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         testCaseType = (ITestCaseType)getIpsObject();
         project = testCaseType.getIpsProject();
 
-        policyTypeParamsWithExtensionAttr = new ArrayList<ITestPolicyCmptTypeParameter>();
+        policyTypeParamsWithExtensionAttr = new ArrayList<>();
     }
 
     @Override
@@ -198,11 +198,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestValueParameter(JavaCodeFragmentBuilder codeBuilder,
             ITestValueParameter[] testValueParams,
             String variablePrefix) throws CoreException {
-        for (int i = 0; i < testValueParams.length; i++) {
-            if (!testValueParams[i].isValid(getIpsProject())) {
+        for (ITestValueParameter testValueParam : testValueParams) {
+            if (!testValueParam.isValid(getIpsProject())) {
                 continue;
             }
-            ITestValueParameter testValueParam = testValueParams[i];
             DatatypeHelper helper = getCachedDatatypeHelper(testValueParam);
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, helper.getJavaClassName(),
@@ -233,8 +232,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.varDeclaration(Modifier.PRIVATE + Modifier.FINAL + Modifier.STATIC, String.class,
                 notViolatedConstantName, new JavaCodeFragment("\"notViolated\""));
 
-        for (int i = 0; i < testRuleParams.length; i++) {
-            if (!testRuleParams[i].isValid(getIpsProject())) {
+        for (ITestRuleParameter testRuleParam : testRuleParams) {
+            if (!testRuleParam.isValid(getIpsProject())) {
                 continue;
             }
             // create two lists, the list will be filled in the init expected result from xml method
@@ -242,11 +241,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // violation type: violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, List.class.getName() + "<" + String.class.getName() + ">",
-                    getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, testRuleParams[i]));
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated, testRuleParam));
             // violation type: not violated
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
             codeBuilder.varDeclaration(Modifier.PRIVATE, List.class.getName() + "<" + String.class.getName() + ">",
-                    getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, testRuleParams[i]));
+                    getRuleMemberVariableName(variablePrefix, violationTypePrefixNotViolated, testRuleParam));
         }
     }
 
@@ -286,13 +285,13 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMemberForTestPolicyCmptParameter(JavaCodeFragmentBuilder codeBuilder,
             ITestPolicyCmptTypeParameter[] policyTypeParams,
             String variablePrefix) throws CoreException {
-        for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid(getIpsProject())) {
+        for (ITestPolicyCmptTypeParameter policyTypeParam : policyTypeParams) {
+            if (!policyTypeParam.isValid(getIpsProject())) {
                 continue;
             }
             codeBuilder.javaDoc("", ANNOTATION_GENERATED);
-            codeBuilder.varDeclaration(Modifier.PRIVATE, getQualifiedNameFromTestPolicyCmptParam(policyTypeParams[i]),
-                    variablePrefix + policyTypeParams[i].getName());
+            codeBuilder.varDeclaration(Modifier.PRIVATE, getQualifiedNameFromTestPolicyCmptParam(policyTypeParam),
+                    variablePrefix + policyTypeParam.getName());
         }
     }
 
@@ -419,16 +418,16 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.appendln(" childElement = null;");
         }
 
-        for (int i = 0; i < policyTypeParams.length; i++) {
-            if (!policyTypeParams[i].isValid(getIpsProject())) {
+        for (ITestPolicyCmptTypeParameter policyTypeParam : policyTypeParams) {
+            if (!policyTypeParam.isValid(getIpsProject())) {
                 continue;
             }
 
             // create the local variable for the XML callback class
             // if at least on extension attribute exists
             String callbackClassName = null;
-            if (policyTypeParamsWithExtensionAttr.contains(policyTypeParams[i])) {
-                callbackClassName = policyTypeParams[i].getName() + "XmlCallback";
+            if (policyTypeParamsWithExtensionAttr.contains(policyTypeParam)) {
+                callbackClassName = policyTypeParam.getName() + "XmlCallback";
                 body.appendClassName(StringUtils.capitalize(callbackClassName));
                 body.append(" ");
                 body.append(StringUtils.uncapitalize(callbackClassName));
@@ -439,10 +438,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
                 body.appendln(");");
             }
 
-            ITestPolicyCmptTypeParameter policyTypeParam = policyTypeParams[i];
             body.append("childElement = ");
             body.appendClassName(XmlUtil.class);
-            body.appendln(".getFirstElement(element, \"" + policyTypeParams[i].getName() + "\");");
+            body.appendln(".getFirstElement(element, \"" + policyTypeParam.getName() + "\");");
             body.appendln("if (childElement != null){");
             buildConstrutorForTestPolicyCmptParameter(body, policyTypeParam, variablePrefix, objectReferenceStoreName,
                     StringUtils.uncapitalize(callbackClassName));
@@ -518,11 +516,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         if (valueParams.length > 0) {
             body.appendln("String value = null;");
         }
-        for (int i = 0; i < valueParams.length; i++) {
-            if (!valueParams[i].isValid(getIpsProject())) {
+        for (ITestValueParameter policyTypeParam : valueParams) {
+            if (!policyTypeParam.isValid(getIpsProject())) {
                 continue;
             }
-            ITestValueParameter policyTypeParam = valueParams[i];
             DatatypeHelper dataTypeHelper = getCachedDatatypeHelper(policyTypeParam);
             body.append("value = ");
             body.appendClassName(ValueToXmlHelper.class);
@@ -559,15 +556,15 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildInitForTestRuleParameter(JavaCodeFragment body,
             ITestRuleParameter[] ruleParams,
             String variablePrefix) throws CoreException {
-        for (int i = 0; i < ruleParams.length; i++) {
-            if (!ruleParams[i].isValid(getIpsProject())) {
+        for (ITestRuleParameter ruleParam : ruleParams) {
+            if (!ruleParam.isValid(getIpsProject())) {
                 continue;
             }
             String rulesVariableNameNotViolated = getRuleMemberVariableName(variablePrefix,
-                    violationTypePrefixNotViolated, ruleParams[i]);
+                    violationTypePrefixNotViolated, ruleParam);
             String rulesVariableNameViolated = getRuleMemberVariableName(variablePrefix, violationTypePrefixViolated,
-                    ruleParams[i]);
-            String ruleListName = "rules" + StringUtils.capitalize(ruleParams[i].getName());
+                    ruleParam);
+            String ruleListName = "rules" + StringUtils.capitalize(ruleParam.getName());
             body.append(rulesVariableNameNotViolated);
             body.append(" = new ");
             body.appendClassName(ArrayList.class.getName());
@@ -587,7 +584,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             body.append(" = ");
             body.appendClassName(XmlUtil.class);
             body.append(".getElementsFromNode(element, \"");
-            body.append(ruleParams[i].getName());
+            body.append(ruleParam.getName());
             body.appendln("\", \"type\", \"testrule\");");
             body.append("for (");
             body.appendClassName(Iterator.class.getName());
@@ -692,11 +689,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         if (ruleParams.length == 0) {
             return;
         }
-        for (int i = 0; i < ruleParams.length; i++) {
-            if (!ruleParams[i].isValid(getIpsProject())) {
+        for (ITestRuleParameter ruleParam : ruleParams) {
+            if (!ruleParam.isValid(getIpsProject())) {
                 continue;
             }
-            buildMethodAssertRule(codeBuilder, variablePrefix, ruleParams[i].getName());
+            buildMethodAssertRule(codeBuilder, variablePrefix, ruleParam.getName());
         }
     }
 
@@ -765,11 +762,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType)
             throws CoreException {
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
-        for (int i = 0; i < testPolicyCmptTypeParameters.length; i++) {
-            if (!testPolicyCmptTypeParameters[i].isValid(getIpsProject())) {
+        for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : testPolicyCmptTypeParameters) {
+            if (!testPolicyCmptTypeParameter.isValid(getIpsProject())) {
                 continue;
             }
-            buildXmlCallbackClasseFor(memberVarBuilder, testPolicyCmptTypeParameters[i]);
+            buildXmlCallbackClasseFor(memberVarBuilder, testPolicyCmptTypeParameter);
         }
     }
 

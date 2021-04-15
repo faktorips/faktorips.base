@@ -12,9 +12,9 @@ package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -133,7 +133,7 @@ public class XProductClassTest {
 
     @Before
     public void setUpAssociations() {
-        List<IProductCmptTypeAssociation> assocList = new ArrayList<IProductCmptTypeAssociation>();
+        List<IProductCmptTypeAssociation> assocList = new ArrayList<>();
         IProductCmptTypeAssociation assoc1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc2 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc3 = mock(IProductCmptTypeAssociation.class);
@@ -153,7 +153,7 @@ public class XProductClassTest {
 
     @Before
     public void setUpAttributes() {
-        List<IProductCmptTypeAttribute> attrList = new ArrayList<IProductCmptTypeAttribute>();
+        List<IProductCmptTypeAttribute> attrList = new ArrayList<>();
         IProductCmptTypeAttribute attr1 = mock(IProductCmptTypeAttribute.class);
         IProductCmptTypeAttribute attr2 = mock(IProductCmptTypeAttribute.class);
         IProductCmptTypeAttribute attr3 = mock(IProductCmptTypeAttribute.class);
@@ -264,7 +264,7 @@ public class XProductClassTest {
         when(assocNode1.isDerived()).thenReturn(true);
         when(assocNode2.isOneToMany()).thenReturn(true);
 
-        HashSet<XProductAssociation> associations = new HashSet<XProductAssociation>();
+        HashSet<XProductAssociation> associations = new HashSet<>();
         associations.add(assocNode1);
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
@@ -276,7 +276,7 @@ public class XProductClassTest {
         when(assocNode1.isConstrain()).thenReturn(true);
         when(assocNode2.isOneToMany()).thenReturn(true);
 
-        HashSet<XProductAssociation> associations = new HashSet<XProductAssociation>();
+        HashSet<XProductAssociation> associations = new HashSet<>();
         associations.add(assocNode1);
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
@@ -301,7 +301,7 @@ public class XProductClassTest {
         when(polAttrNode1.isGenerateGetAllowedValuesForAndGetDefaultValue()).thenReturn(true);
         when(polAttrNode2.isProductRelevant()).thenReturn(true);
 
-        Set<XPolicyAttribute> attributes = new LinkedHashSet<XPolicyAttribute>();
+        Set<XPolicyAttribute> attributes = new LinkedHashSet<>();
         attributes.add(polAttrNode1);
         attributes.add(polAttrNode2);
         attributes.add(polAttrNode3);

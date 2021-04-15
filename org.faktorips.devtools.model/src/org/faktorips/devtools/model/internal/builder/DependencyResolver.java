@@ -173,7 +173,7 @@ public class DependencyResolver {
     private void collectEnumTypeDependencies(IEnumContent enumContent,
             IIpsProject enumTypeProject,
             EnumSet<DependencyType> transitiveTypes) {
-        Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
+        Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<>();
         DependencyResolver enumTypedependencyResolver = new DependencyResolver(enumTypeProject, this);
         QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(), IpsObjectType.ENUM_TYPE);
         enumTypedependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent, transitiveTypes);

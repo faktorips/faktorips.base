@@ -47,10 +47,10 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.ArgumentCheck;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
 /**
@@ -99,7 +99,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         extensible = false;
         isAbstract = false;
         enumContentPackageFragment = StringUtils.EMPTY;
-        enumAttributes = new IpsObjectPartCollection<IEnumAttribute>(this, EnumAttribute.class, IEnumAttribute.class,
+        enumAttributes = new IpsObjectPartCollection<>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
     }
 
@@ -206,7 +206,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private List<IEnumAttribute> getEnumAttributesInternal(boolean includeInheritedCopies,
             boolean includeLiteralNameAttributes) {
 
-        List<IEnumAttribute> attributesList = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> attributesList = new ArrayList<>();
         IIpsObjectPart[] parts = enumAttributes.getParts();
         for (IIpsObjectPart currentIpsObjectPart : parts) {
             IEnumAttribute currentEnumAttribute = (IEnumAttribute)currentIpsObjectPart;
@@ -225,7 +225,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public List<IEnumAttribute> findAllEnumAttributes(final boolean includeLiteralName, IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
-        final LinkedList<IEnumAttribute> allAttributes = new LinkedList<IEnumAttribute>();
+        final LinkedList<IEnumAttribute> allAttributes = new LinkedList<>();
         EnumTypeHierarchyVisitor collector = new AttributeFinder(getIpsProject(), allAttributes, includeLiteralName);
         collector.start(this);
         return allAttributes;
@@ -302,7 +302,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
             throws CoreException {
 
-        List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<IEnumAttribute>(2);
+        List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<>(2);
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
             if (currentEnumAttribute.findIsUnique(ipsProject)) {
                 uniqueEnumAttributes.add(currentEnumAttribute);
@@ -457,7 +457,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         ArgumentCheck.notNull(new Object[] { ipsProject, name });
 
-        final List<IEnumAttribute> result = new ArrayList<IEnumAttribute>(1);
+        final List<IEnumAttribute> result = new ArrayList<>(1);
         EnumTypeHierarchyVisitor visitor = new EnumTypeHierarchyVisitor(ipsProject) {
             @Override
             protected boolean visit(IEnumType currentType) {
@@ -713,7 +713,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * <code>IEnumType</code>.
      */
     private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) {
-        List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> returnAttributesList = new ArrayList<>();
 
         /*
          * Go over all EnumAttributes of every EnumType in the supertype hierarchy. Do this
@@ -747,7 +747,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException {
-        Set<IEnumType> collectedEnumTypes = new HashSet<IEnumType>(25);
+        Set<IEnumType> collectedEnumTypes = new HashSet<>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
             IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.ENUM_TYPE);
@@ -818,8 +818,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             deleteEnumValues = currentEnumValue.getEnumAttributeValuesCount() == 0;
         }
         if (deleteEnumValues) {
-            for (int i = 0; i < enumValues.size(); i++) {
-                enumValues.get(i).delete();
+            for (IEnumValue enumValue : enumValues) {
+                enumValue.delete();
             }
         }
     }
@@ -838,7 +838,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
-        final List<IEnumType> superEnumTypes = new ArrayList<IEnumType>();
+        final List<IEnumType> superEnumTypes = new ArrayList<>();
         IEnumType directSuperEnumType = findSuperEnumType(ipsProject);
         if (directSuperEnumType != null) {
             EnumTypeHierarchyVisitor collector = new EnumTypeHierarchyVisitor(getIpsProject()) {
@@ -858,14 +858,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException {
         ArgumentCheck.notNull(ipsProject);
 
-        List<IEnumAttribute> inheritedEnumAttributes = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> inheritedEnumAttributes = new ArrayList<>();
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(false)) {
             if (currentEnumAttribute.isInherited()) {
                 inheritedEnumAttributes.add(currentEnumAttribute);
             }
         }
         List<IEnumAttribute> supertypeHierarchyAttributes = findAllAttributesInSupertypeHierarchy(ipsProject);
-        List<IEnumAttribute> notInheritedEnumAttributes = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> notInheritedEnumAttributes = new ArrayList<>();
 
         for (IEnumAttribute currentSupertypeHierarchyAttribute : supertypeHierarchyAttributes) {
             if (!(containsEqualEnumAttribute(inheritedEnumAttributes, currentSupertypeHierarchyAttribute))) {
@@ -893,7 +893,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException {
-        List<IEnumAttribute> newEnumAttributes = new ArrayList<IEnumAttribute>();
+        List<IEnumAttribute> newEnumAttributes = new ArrayList<>();
         for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
             String currentSuperEnumAttributeName = currentSuperEnumAttribute.getName();
 
@@ -951,7 +951,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        ArrayList<IDependency> dependencies = new ArrayList<IDependency>();
+        ArrayList<IDependency> dependencies = new ArrayList<>();
         if (hasSuperEnumType()) {
             IDependency superEnumTypeDependency = IpsObjectDependency.createSubtypeDependency(getQualifiedNameType(),
                     new QualifiedNameType(superEnumType, IpsObjectType.ENUM_TYPE));
@@ -1065,7 +1065,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         @Override
         protected boolean visit(IEnumType currentType) {
-            LinkedList<IEnumAttribute> attributesToPrepend = new LinkedList<IEnumAttribute>();
+            LinkedList<IEnumAttribute> attributesToPrepend = new LinkedList<>();
             for (IEnumAttribute localAttribute : ((EnumType)currentType).getEnumAttributesInternal(true,
                     includeLiteralName)) {
                 if (!contains(localAttribute)) {

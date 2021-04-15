@@ -88,7 +88,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite rangeTypeArea = getToolkit().createGridComposite(c, 2, false, true);
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-        rangeTypeField = new EnumField<ColumnRangeType>(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.class),
+        rangeTypeField = new EnumField<>(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.class),
                 ColumnRangeType.class);
         rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue()));
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
@@ -148,11 +148,11 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
             @Override
             public Object[] getElements(Object inputElement) {
                 IColumn[] columns = range.getTableStructure().getColumns();
-                ArrayList<IColumn> result = new ArrayList<IColumn>();
-                for (int i = 0; i < columns.length; i++) {
+                ArrayList<IColumn> result = new ArrayList<>();
+                for (IColumn column : columns) {
                     try {
-                        if (columns[i].findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
-                            result.add(columns[i]);
+                        if (column.findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
+                            result.add(column);
                         }
                     } catch (CoreException e) {
                         throw new CoreRuntimeException(e);

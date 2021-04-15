@@ -21,7 +21,7 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
 
     private ProductCmptViewItem parent;
 
-    private final List<ProductCmptViewItem> children = new ArrayList<ProductCmptViewItem>();
+    private final List<ProductCmptViewItem> children = new ArrayList<>();
 
     public ProductCmptViewItem(IIpsSrcFile ipsSrcFile) {
         super(ipsSrcFile);

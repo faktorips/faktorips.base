@@ -13,9 +13,9 @@ package org.faktorips.devtools.stdbuilder.labels;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -220,7 +220,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(1)));
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties().getMessage(
-                        new MessageKey(pcType2, DocumentationKind.LABEL).getKey()), is(equalTo("foobar")));
+                        new MessageKey(pcType2, DocumentationKind.LABEL).getKey()),
+                is(equalTo("foobar")));
     }
 
     @Test
@@ -249,7 +250,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties()
-                .getKeysForIpsObject(pcType.getQualifiedNameType()),
+                        .getKeysForIpsObject(pcType.getQualifiedNameType()),
                 hasItems(new MessageKey(association, DocumentationKind.LABEL), new MessageKey(association,
                         DocumentationKind.PLURAL_LABEL)));
     }

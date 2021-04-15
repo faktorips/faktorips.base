@@ -15,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.viewers.IFilter;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -71,15 +70,11 @@ public class IpsSrcFileContentProposalProviderTest {
         IpsSrcFileContentProposalProvider contentProposalProvider = new IpsSrcFileContentProposalProvider(ipsProject,
                 ipsObjectType);
 
-        contentProposalProvider.setFilter(new IFilter() {
-
-            @Override
-            public boolean select(Object toTest) {
-                if (toTest == srcFiles[0]) {
-                    return true;
-                } else {
-                    return false;
-                }
+        contentProposalProvider.setFilter(toTest -> {
+            if (toTest == srcFiles[0]) {
+                return true;
+            } else {
+                return false;
             }
         });
 

@@ -51,7 +51,8 @@ public abstract class ControlPropertyBinding {
             property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
             if (expectedType != null && !expectedType.isAssignableFrom(property.getPropertyType())) {
                 throw new IllegalArgumentException(
-                        "Property " + propertyName + " of type " + object.getClass() + " is not of type " + expectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        "Property " + propertyName + " of type " + object.getClass() + " is not of type " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                + expectedType);
             }
         }
     }
@@ -103,12 +104,13 @@ public abstract class ControlPropertyBinding {
 
     @Override
     public String toString() {
-        return "Binding " + object.toString() + "#" + (property == null ? null : property.getName()) + " to control " + control; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "Binding " + object.toString() + "#" + (property == null ? null : property.getName()) + " to control " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + control;
     }
 
     protected Object readProperty() {
         try {
-            return getProperty().getReadMethod().invoke(getObject(), new Object[0]);
+            return getProperty().getReadMethod().invoke(getObject());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

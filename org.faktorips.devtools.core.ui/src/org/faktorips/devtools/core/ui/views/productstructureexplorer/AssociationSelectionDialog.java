@@ -22,7 +22,8 @@ import org.faktorips.devtools.model.type.IAssociation;
 public class AssociationSelectionDialog extends ListSelectionDialog {
 
     public AssociationSelectionDialog(Shell parentShell, List<IAssociation> associations, String message) {
-        super(parentShell, associations, new SimpleContentProvider(associations), new WorkbenchLabelProvider(), message);
+        super(parentShell, associations, new SimpleContentProvider(associations), new WorkbenchLabelProvider(),
+                message);
     }
 
     private static class SimpleContentProvider implements IStructuredContentProvider {

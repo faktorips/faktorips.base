@@ -342,7 +342,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * Returns the number of messages in this list that have the indicated severity.
      */
     public int getNoOfMessages(Severity severity) {
-        List<Message> msgList = new ArrayList<Message>(getMessages().size());
+        List<Message> msgList = new ArrayList<>(getMessages().size());
         for (Message msg : getMessages()) {
             if (msg.getSeverity() == severity) {
                 msgList.add(msg);
@@ -530,7 +530,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * @param messageCode the messageCode to find
      */
     public void wrapUpMessages(String messageCode) {
-        Map<String, Message> messageTextMap = new LinkedHashMap<String, Message>();
+        Map<String, Message> messageTextMap = new LinkedHashMap<>();
         for (Message message : getMessages()) {
             if (message.getCode().equals(messageCode)) {
                 Message msgByText = getMessageByText(messageTextMap, message);
@@ -541,7 +541,7 @@ public class MessageList implements Serializable, Iterable<Message> {
                 messageTextMap.put(newMessage.getText(), newMessage);
             }
         }
-        setMessages(new ArrayList<Message>(messageTextMap.values()));
+        setMessages(new ArrayList<>(messageTextMap.values()));
     }
 
     private Message getMessageByText(Map<String, Message> messageTextMap, Message message) {
@@ -557,7 +557,7 @@ public class MessageList implements Serializable, Iterable<Message> {
         if (invalidObjectProperties.equals(newObjectProperties)) {
             return invalidObjectProperties;
         } else {
-            List<ObjectProperty> newOne = new ArrayList<ObjectProperty>();
+            List<ObjectProperty> newOne = new ArrayList<>();
             newOne.addAll(invalidObjectProperties);
             newOne.addAll(newObjectProperties);
             return newOne;

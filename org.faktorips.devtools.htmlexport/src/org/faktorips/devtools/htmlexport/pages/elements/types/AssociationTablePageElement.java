@@ -46,7 +46,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IAssociation association) {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
 
         values.add(getContext().getLabel(association));
         values.add(getContext().getLabel(association));
@@ -84,7 +84,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
     @Override
     protected List<String> getHeadlineWithIpsObjectPart() {
-        List<String> headline = new ArrayList<String>();
+        List<String> headline = new ArrayList<>();
 
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineName));
         headline.add(getContext().getMessage(HtmlExportMessages.AssociationTablePageElement_headlineLabel));

@@ -36,7 +36,7 @@ public abstract class AttributeCollector<T extends Attribute, D extends Abstract
     }
 
     static class IpsAttributeProcessor<D extends AbstractAttributeDescriptor<? extends Attribute>> extends
-    AnnotationProcessor<IpsAttribute, D> {
+            AnnotationProcessor<IpsAttribute, D> {
 
         public IpsAttributeProcessor() {
             super(IpsAttribute.class);
@@ -48,7 +48,9 @@ public abstract class AttributeCollector<T extends Attribute, D extends Abstract
         }
 
         @Override
-        public void process(D descriptor, AnnotatedDeclaration annotatedDeclaration, AnnotatedElement annotatedElement) {
+        public void process(D descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
             descriptor.setAnnotatedElement(annotatedElement);
         }
 
@@ -67,7 +69,9 @@ public abstract class AttributeCollector<T extends Attribute, D extends Abstract
         }
 
         @Override
-        public void process(D descriptor, AnnotatedDeclaration annotatedDeclaration, AnnotatedElement annotatedElement) {
+        public void process(D descriptor,
+                AnnotatedDeclaration annotatedDeclaration,
+                AnnotatedElement annotatedElement) {
             descriptor.setSetterMethod((Method)annotatedElement);
         }
 

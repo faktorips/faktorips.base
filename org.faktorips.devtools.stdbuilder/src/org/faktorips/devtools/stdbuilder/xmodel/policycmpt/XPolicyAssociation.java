@@ -55,7 +55,7 @@ public class XPolicyAssociation extends XAssociation {
     private Set<XDetailToMasterDerivedUnionAssociation> getSubsettedDetailToMasterAssociationsInternal(
             Set<String> resultingNames,
             IType currentType) {
-        LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<XDetailToMasterDerivedUnionAssociation>();
+        LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations = new LinkedHashSet<>();
         try {
             if (isCompositionDetailToMaster()) {
                 if (isSharedAssociation()) {

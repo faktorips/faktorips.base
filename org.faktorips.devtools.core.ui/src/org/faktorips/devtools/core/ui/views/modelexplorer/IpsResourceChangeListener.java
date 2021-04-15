@@ -51,25 +51,20 @@ public class IpsResourceChangeListener implements IResourceChangeListener {
     public void resourceChanged(final IResourceChangeEvent event) {
         Control ctrl = viewer.getControl();
         if (ctrl != null && !ctrl.isDisposed()) {
-            ctrl.getDisplay().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    IResourceDelta delta = event.getDelta();
-                    try {
-                        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
-                        delta.accept(visitor, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-                        for (Object element : visitor.getElementsToRefresh()) {
-                            viewer.refresh(element);
-                        }
-                        for (Object element : visitor.getElementsToUpdate()) {
-                            viewer.update(element, null);
-                        }
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
+            ctrl.getDisplay().asyncExec(() -> {
+                IResourceDelta delta = event.getDelta();
+                try {
+                    IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
+                    delta.accept(visitor, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
+                    for (Object element1 : visitor.getElementsToRefresh()) {
+                        viewer.refresh(element1);
                     }
+                    for (Object element2 : visitor.getElementsToUpdate()) {
+                        viewer.update(element2, null);
+                    }
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
                 }
-
             });
         }
     }

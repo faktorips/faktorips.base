@@ -10,8 +10,8 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;

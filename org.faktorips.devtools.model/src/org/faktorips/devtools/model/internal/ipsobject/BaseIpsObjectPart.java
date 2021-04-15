@@ -30,9 +30,9 @@ import org.w3c.dom.Element;
  */
 public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
-    private List<String> tagsToIgnore = new ArrayList<String>(0);
+    private List<String> tagsToIgnore = new ArrayList<>(0);
 
-    private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<IpsObjectPartCollection<?>>(1);
+    private List<IpsObjectPartCollection<?>> partCollections = new ArrayList<>(1);
 
     public BaseIpsObjectPart(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
@@ -48,7 +48,7 @@ public abstract class BaseIpsObjectPart extends IpsObjectPart {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        List<IIpsElement> children = new ArrayList<IIpsElement>();
+        List<IIpsElement> children = new ArrayList<>();
         for (IpsObjectPartCollection<?> container : partCollections) {
             int size = container.size();
             for (int i = 0; i < size; i++) {

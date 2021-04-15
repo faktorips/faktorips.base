@@ -84,7 +84,7 @@ public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
     public void testMoveLinks() throws Exception {
         NonIPSMoveOperation operation = new NonIPSMoveOperation(folderTarget.getProject(), new Object[] {
                 file1.getLocation().toOSString(), file2.getLocation().toOSString() }, folderTarget.getLocation()
-                .toOSString());
+                        .toOSString());
         operation.run(null);
 
         assertTrue(folderTarget.getFile("file1").exists());

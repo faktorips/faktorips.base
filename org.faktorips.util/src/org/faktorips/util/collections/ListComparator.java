@@ -30,7 +30,7 @@ public class ListComparator<T> implements Comparator<List<T>>, Serializable {
     }
 
     public static <T> ListComparator<T> listComparator(Comparator<T> elementComparator) {
-        return new ListComparator<T>(elementComparator);
+        return new ListComparator<>(elementComparator);
     }
 
     @Override

@@ -69,7 +69,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      */
     public List<IpsTest2> getTests() {
         if (testSuite == null) {
-            return new ArrayList<IpsTest2>(0);
+            return new ArrayList<>(0);
         }
 
         return testSuite.getTests();
@@ -157,7 +157,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * Extract a list from the given string. Format: {elem1}{elem2}{...}{elem3}
      */
     public static List<String> extractListFromString(String input) {
-        ArrayList<String> repositoryNameList = new ArrayList<String>();
+        ArrayList<String> repositoryNameList = new ArrayList<>();
         if (input != null) {
             String restOfInput = input;
             while (restOfInput.length() > 0) {

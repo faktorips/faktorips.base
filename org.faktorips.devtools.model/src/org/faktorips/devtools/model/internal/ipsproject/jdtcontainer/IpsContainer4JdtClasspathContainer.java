@@ -48,7 +48,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
 
     private IClasspathContainer jdtClasspathContainer = null;
 
-    private List<IIpsObjectPathEntry> resolvedEntries = new CopyOnWriteArrayList<IIpsObjectPathEntry>();
+    private List<IIpsObjectPathEntry> resolvedEntries = new CopyOnWriteArrayList<>();
 
     private JdtClasspathResolver jdtClasspathResolver;
 
@@ -103,7 +103,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
                 }
             } else {
                 if (currentContainer == null) {
-                    return new ArrayList<IIpsObjectPathEntry>(0);
+                    return new ArrayList<>(0);
                 }
             }
             jdtClasspathContainer = currentContainer;
@@ -118,10 +118,10 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
     }
 
     private void updateResolvedEntries() {
-        resolvedEntries = new CopyOnWriteArrayList<IIpsObjectPathEntry>();
+        resolvedEntries = new CopyOnWriteArrayList<>();
         IClasspathEntry[] entries = jdtClasspathContainer.getClasspathEntries();
-        for (int i = 0; i < entries.length; i++) {
-            IClasspathEntry jdtEntry = jdtClasspathResolver.getResolvedClasspathEntry(entries[i]);
+        for (IClasspathEntry entry : entries) {
+            IClasspathEntry jdtEntry = jdtClasspathResolver.getResolvedClasspathEntry(entry);
             IIpsObjectPathEntry ipsEntry = entryCreator.createIpsEntry(jdtEntry);
             if (ipsEntry != null) {
                 resolvedEntries.add(ipsEntry);
@@ -144,9 +144,9 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
             return null;
         }
         IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (int i = 0; i < entries.length; i++) {
-            if (entries[i].getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-                if (getOptionalPath().equals(entries[i].getPath())) {
+        for (IClasspathEntry entry : entries) {
+            if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+                if (getOptionalPath().equals(entry.getPath())) {
                     return getClasspathContainer();
                 }
             }

@@ -123,7 +123,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
         DropTarget dropTarget = new DropTarget(parent, DND.DROP_LINK);
         dropTarget.addDropListener(new HierarchyDropListener());
-        dropTarget.setTransfer(new Transfer[] { FileTransfer.getInstance() });
+        dropTarget.setTransfer(FileTransfer.getInstance());
 
         selected = new Label(panel, SWT.LEFT);
         selected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -351,14 +351,10 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             return;
         }
         if (changedIpsSrcFiles.size() > 0) {
-            Display.getDefault().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    ITypeHierarchy hierarchyTree = (ITypeHierarchy)treeViewer.getInput();
-                    if (hierarchyTree != null) {
-                        isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTree);
-                    }
+            Display.getDefault().asyncExec(() -> {
+                ITypeHierarchy hierarchyTree = (ITypeHierarchy)treeViewer.getInput();
+                if (hierarchyTree != null) {
+                    isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTree);
                 }
             });
         }
@@ -548,12 +544,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         protected IStatus run(IProgressMonitor monitor) {
             try {
                 final ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
-                display.asyncExec(new Runnable() {
-                    @Override
-                    public void run() {
-                        setInputData(hierarchy);
-                    }
-                });
+                display.asyncExec(() -> setInputData(hierarchy));
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }

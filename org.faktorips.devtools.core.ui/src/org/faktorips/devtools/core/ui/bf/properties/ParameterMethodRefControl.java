@@ -66,7 +66,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
         if (parameterType == null) {
             return new IMethod[0];
         }
-        ArrayList<IMethod> methods = new ArrayList<IMethod>();
+        ArrayList<IMethod> methods = new ArrayList<>();
         for (IMethod method : parameterType.findAllMethods(parameterType.getIpsProject())) {
             if (method.getParameters().length == 0) {
                 methods.add(method);

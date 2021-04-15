@@ -43,7 +43,7 @@ public class IpsElementNamesMatcher extends TypeSafeMatcher<Iterable<? extends I
     }
 
     private List<String> map(Iterable<? extends IIpsElement> items) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         for (IIpsElement item : items) {
             result.add(getName(item));
         }

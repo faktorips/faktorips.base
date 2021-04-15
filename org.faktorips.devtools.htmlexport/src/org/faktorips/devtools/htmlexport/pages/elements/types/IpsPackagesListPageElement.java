@@ -43,12 +43,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     /**
      * Comparator, which support the sorting of packages by name
      */
-    private Comparator<IIpsSrcFile> packagesComparator = new Comparator<IIpsSrcFile>() {
-        @Override
-        public int compare(IIpsSrcFile arg0, IIpsSrcFile arg1) {
-            return arg0.getIpsPackageFragment().getName().compareTo(arg1.getIpsPackageFragment().getName());
-        }
-    };
+    private Comparator<IIpsSrcFile> packagesComparator = Comparator
+            .comparing(sourceFile -> sourceFile.getIpsPackageFragment().getName());
 
     /**
      * @see AbstractIpsElementListPageElement
@@ -94,8 +90,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
 
         Set<IIpsPackageFragment> packageFragments = getRelatedPackageFragments();
 
-        List<IPageElement> packageLinks = new ArrayList<IPageElement>();
-        Set<String> linkedPackagesNames = new HashSet<String>();
+        List<IPageElement> packageLinks = new ArrayList<>();
+        Set<String> linkedPackagesNames = new HashSet<>();
 
         for (IIpsPackageFragment packageFragment : packageFragments) {
             if (!getFilter().accept(packageFragment)) {

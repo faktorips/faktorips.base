@@ -124,7 +124,7 @@ public class UsernamePasswordDialog extends Dialog {
         ISecurePreferences securePreferences = SecurePreferencesFactory.getDefault();
         IDialogSettings dialogSettings = IpsUIPlugin.getDefault().getDialogSettings()
                 .getSection(ProductReleaserBuilderWizard.DIALOG_SETTINGS);
-        String username = dialogSettings.get(USERNAME_SETTINGS + "@" + targetSystem.getName()); //$NON-NLS-1$ 
+        String username = dialogSettings.get(USERNAME_SETTINGS + "@" + targetSystem.getName()); //$NON-NLS-1$
         String password = securePreferences.get(username + "@" + targetSystem.getName(), ""); //$NON-NLS-1$ //$NON-NLS-2$
         if (username != null) {
             passwordAuthentication = new PasswordAuthentication(username, password.toCharArray());
@@ -139,7 +139,7 @@ public class UsernamePasswordDialog extends Dialog {
         IDialogSettings dialogSettings = IpsUIPlugin.getDefault().getDialogSettings()
                 .getSection(ProductReleaserBuilderWizard.DIALOG_SETTINGS);
         try {
-            dialogSettings.put(USERNAME_SETTINGS + "@" + targetSystem.getName(), username); //$NON-NLS-1$ 
+            dialogSettings.put(USERNAME_SETTINGS + "@" + targetSystem.getName(), username); //$NON-NLS-1$
             if (savePassworField.isChecked()) {
                 securePreferences.put(username + "@" + targetSystem.getName(), password, true); //$NON-NLS-1$
             }

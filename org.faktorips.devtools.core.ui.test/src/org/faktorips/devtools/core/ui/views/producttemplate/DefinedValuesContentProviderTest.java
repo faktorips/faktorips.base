@@ -11,8 +11,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.function.Function;
@@ -63,7 +63,7 @@ public class DefinedValuesContentProviderTest {
         when(valueB2.getPropertyValue()).thenReturn("B");
         when(valueC.getPropertyValue()).thenReturn("C");
 
-        histogram = new Histogram<Object, ITemplatedValue>(getValueFunction(),
+        histogram = new Histogram<>(getValueFunction(),
                 Lists.<ITemplatedValue> newArrayList(valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);

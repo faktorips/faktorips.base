@@ -204,12 +204,7 @@ public class ObjectPathOrderComposite extends DataChangeableComposite {
         if (Display.getCurrent() != null) {
             tableViewer.refresh();
         } else {
-            Display.getDefault().asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    tableViewer.refresh();
-                }
-            });
+            Display.getDefault().asyncExec(tableViewer::refresh);
         }
     }
 

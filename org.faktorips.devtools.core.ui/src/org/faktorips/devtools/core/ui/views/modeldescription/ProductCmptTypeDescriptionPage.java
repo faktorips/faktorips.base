@@ -40,10 +40,11 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
 
     @Override
     protected List<DescriptionItem> createDescriptions() throws CoreException {
-        List<DescriptionItem> descriptions = new ArrayList<DescriptionItem>();
+        List<DescriptionItem> descriptions = new ArrayList<>();
         IIpsProject ipsProject = getIpsObject().getIpsProject();
         if (getIpsObject() != null) {
-            String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(getIpsObject());
+            String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedDescription(getIpsObject());
             DescriptionItem structureDescription = new DescriptionItem(
                     Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
             descriptions.add(structureDescription);

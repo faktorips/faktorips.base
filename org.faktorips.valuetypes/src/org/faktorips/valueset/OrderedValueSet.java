@@ -28,7 +28,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
 
     private boolean containsNull;
     private E nullValue;
-    private final LinkedHashSet<E> set = new LinkedHashSet<E>();
+    private final LinkedHashSet<E> set = new LinkedHashSet<>();
 
     private int hashCode;
 
@@ -113,7 +113,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * Returns a new instance of {@link OrderedValueSet} with an empty set.
      */
     public static <E> OrderedValueSet<E> empty() {
-        return new OrderedValueSet<E>(null);
+        return new OrderedValueSet<>(null);
     }
 
     /**
@@ -126,7 +126,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * @throws IllegalArgumentException if the values Collection contains duplicate entries
      */
     public static <E> OrderedValueSet<E> of(Collection<E> values) {
-        return new OrderedValueSet<E>(values);
+        return new OrderedValueSet<>(values);
     }
 
     /**
@@ -180,6 +180,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
         return Collections.unmodifiableSet(set);
     }
 
+    @Override
     public Set<E> getValues(boolean excludeNull) {
         return excludeNull ? getValuesWithoutNull() : getValues();
     }
@@ -192,6 +193,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
         return Collections.unmodifiableSet(set);
     }
 
+    @Override
     public final boolean isDiscrete() {
         return true;
     }
@@ -209,6 +211,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
         return false;
     }
 
+    @Override
     public boolean containsNull() {
         return containsNull;
     }
@@ -220,22 +223,27 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
                 .collect(Collectors.joining(", ", "[", "]"));
     }
 
+    @Override
     public boolean contains(E value) {
         return set.contains(value);
     }
 
+    @Override
     public boolean isEmpty() {
         return set.isEmpty();
     }
 
+    @Override
     public boolean isRange() {
         return false;
     }
 
+    @Override
     public int size() {
         return set.size();
     }
 
+    @Override
     public Iterator<E> iterator() {
         return set.iterator();
     }

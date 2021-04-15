@@ -13,10 +13,7 @@ package org.faktorips.devtools.core.ui.views.testrunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -52,19 +49,11 @@ public class IpsTestProgressBar extends Canvas {
                 redraw();
             }
         });
-        addPaintListener(new PaintListener() {
-            @Override
-            public void paintControl(PaintEvent e) {
-                paint(e);
-            }
-        });
-        addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                fFailureColor.dispose();
-                fOKColor.dispose();
-                fStoppedColor.dispose();
-            }
+        addPaintListener(this::paint);
+        addDisposeListener($ -> {
+            fFailureColor.dispose();
+            fOKColor.dispose();
+            fStoppedColor.dispose();
         });
         Display display = parent.getDisplay();
         fFailureColor = new Color(display, 159, 63, 63);

@@ -14,11 +14,10 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
  * A {@link IDeepCopyOperationFixup} will be run at the end of the
- * {@link DeepCopyOperation#run(IProgressMonitor)} method to allow additional changes to the
- * copied objects by plugins.
+ * {@link DeepCopyOperation#run(IProgressMonitor)} method to allow additional changes to the copied
+ * objects by plugins.
  * <p>
- * <strong>This feature is experimental and the interface may change in future
- * releases.</strong>
+ * <strong>This feature is experimental and the interface may change in future releases.</strong>
  * </p>
  * 
  * @since 3.6
@@ -29,11 +28,10 @@ public interface IDeepCopyOperationFixup {
     String EXTENSION_POINT_ID_DEEP_COPY_OPERATION = "deepCopyOperation"; //$NON-NLS-1$
 
     /**
-     * Makes changes to the new {@link IProductCmpt} after the {@link DeepCopyOperation}. The
-     * old {@link IProductCmpt} is passed as reference.
+     * Makes changes to the new {@link IProductCmpt} after the {@link DeepCopyOperation}. The old
+     * {@link IProductCmpt} is passed as reference.
      * <p>
-     * <strong>This method is experimental and the signature may change in future
-     * releases.</strong>
+     * <strong>This method is experimental and the signature may change in future releases.</strong>
      * </p>
      * 
      * @param productCmptNew the new {@link IProductCmpt}

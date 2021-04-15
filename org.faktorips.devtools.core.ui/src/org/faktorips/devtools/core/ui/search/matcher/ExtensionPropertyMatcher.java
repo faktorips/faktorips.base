@@ -31,7 +31,7 @@ public class ExtensionPropertyMatcher implements IMatcher<IIpsElement> {
 
     private final WildcardMatcher wildcardMatcher;
 
-    private final Map<Class<? extends IExtensionPropertyAccess>, Collection<IExtensionPropertyDefinition>> extensionProperties = new HashMap<Class<? extends IExtensionPropertyAccess>, Collection<IExtensionPropertyDefinition>>();
+    private final Map<Class<? extends IExtensionPropertyAccess>, Collection<IExtensionPropertyDefinition>> extensionProperties = new HashMap<>();
 
     public ExtensionPropertyMatcher(WildcardMatcher wildcardMatcher) {
         this.wildcardMatcher = wildcardMatcher;

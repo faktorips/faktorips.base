@@ -16,10 +16,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -72,7 +68,7 @@ public final class DescriptionEditComposite extends Composite {
 
         this.uiToolkit = uiToolkit;
         this.describedElement = describedElement;
-        languageCodes = new LinkedHashMap<String, String>();
+        languageCodes = new LinkedHashMap<>();
         this.bindingContext = bindingContext;
 
         createLayout();
@@ -93,13 +89,9 @@ public final class DescriptionEditComposite extends Composite {
      */
     public DescriptionEditComposite(Composite parent, IDescribedElement describedElement, UIToolkit uiToolkit) {
         this(parent, describedElement, uiToolkit, new BindingContext());
-        addDisposeListener(new DisposeListener() {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e) {
-                if (bindingContext != null) {
-                    bindingContext.dispose();
-                }
+        addDisposeListener($ -> {
+            if (bindingContext != null) {
+                bindingContext.dispose();
             }
         });
     }
@@ -112,14 +104,7 @@ public final class DescriptionEditComposite extends Composite {
 
     private Combo createLanguageCombo() {
         Combo combo = uiToolkit.createCombo(this);
-        combo.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                updateDescription();
-            }
-
-        });
+        combo.addModifyListener($ -> updateDescription());
 
         return combo;
     }
@@ -154,7 +139,7 @@ public final class DescriptionEditComposite extends Composite {
      * happen that the editor is opened while the supported languages change.
      */
     private boolean isLanguageComboRefreshRequired() {
-        Map<String, String> newLanguageCodes = new LinkedHashMap<String, String>();
+        Map<String, String> newLanguageCodes = new LinkedHashMap<>();
         if (describedElement != null) {
             for (IDescription description : describedElement.getDescriptions()) {
                 Locale locale = description.getLocale();

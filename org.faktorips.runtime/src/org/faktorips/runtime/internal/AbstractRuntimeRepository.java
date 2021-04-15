@@ -60,19 +60,19 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
 
-    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<Class<?>, List<?>>();
+    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<>();
 
     // The name of the repository
     private String name;
 
     // list of repositories this one directly depends on
-    private List<IRuntimeRepository> repositories = new ArrayList<IRuntimeRepository>(0);
+    private List<IRuntimeRepository> repositories = new ArrayList<>(0);
 
     // a list of all repositories this one depends on directly or indirectly
     // see getAllRepositories() for further information
     private List<IRuntimeRepository> allRepositories = null;
 
-    private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<Class<?>, IEnumValueLookupService<?>>();
+    private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<>();
 
     private IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
@@ -125,9 +125,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (allRepositories != null) {
             return allRepositories;
         }
-        List<IRuntimeRepository> result = new ArrayList<IRuntimeRepository>(repositories.size());
+        List<IRuntimeRepository> result = new ArrayList<>(repositories.size());
         // list is so small, linear search is ok.
-        LinkedList<IRuntimeRepository> candidates = new LinkedList<IRuntimeRepository>();
+        LinkedList<IRuntimeRepository> candidates = new LinkedList<>();
         candidates.add(this);
         while (!candidates.isEmpty()) {
             IRuntimeRepository candidate = candidates.get(0);
@@ -199,7 +199,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<IProductComponent> getAllProductComponents(String kindId) {
-        List<IProductComponent> result = new ArrayList<IProductComponent>();
+        List<IProductComponent> result = new ArrayList<>();
         if (kindId == null) {
             return result;
         }
@@ -261,7 +261,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final <T extends IProductComponent> List<T> getAllProductComponents(Class<T> productCmptClass) {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         getAllProductComponentsInternal(productCmptClass, result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -279,7 +279,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected <T extends IProductComponent> void getAllProductComponentsInternal(Class<T> productCmptClass,
             List<T> result) {
-        List<IProductComponent> allPCmpsOfThisRepos = new ArrayList<IProductComponent>();
+        List<IProductComponent> allPCmpsOfThisRepos = new ArrayList<>();
         getAllProductComponents(allPCmpsOfThisRepos);
         for (IProductComponent productCmpt : allPCmpsOfThisRepos) {
             if (productCmptClass.isAssignableFrom(productCmpt.getClass())) {
@@ -293,7 +293,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<IProductComponent> getAllProductComponents() {
-        List<IProductComponent> result = new ArrayList<IProductComponent>();
+        List<IProductComponent> result = new ArrayList<>();
         getAllProductComponents(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -310,7 +310,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
-        List<IProductComponentGeneration> result = new ArrayList<IProductComponentGeneration>();
+        List<IProductComponentGeneration> result = new ArrayList<>();
         getProductComponentGenerations(productCmpt, result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -328,7 +328,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<String> getAllProductComponentIds() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         getAllProductComponentIds(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -345,7 +345,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public List<ITable<?>> getAllTables() {
-        List<ITable<?>> result = new ArrayList<ITable<?>>();
+        List<ITable<?>> result = new ArrayList<>();
         getAllTables(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -406,7 +406,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
-        List<IpsTest2> result = new ArrayList<IpsTest2>();
+        List<IpsTest2> result = new ArrayList<>();
         getAllIpsTestCases(result, runtimeRepository);
         for (IRuntimeRepository refRuntimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)refRuntimeRepository;
@@ -417,7 +417,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix, IRuntimeRepository runtimeRepository) {
-        List<IpsTest2> result = new ArrayList<IpsTest2>();
+        List<IpsTest2> result = new ArrayList<>();
         getIpsTestCasesStartingWith(qNamePrefix, result, runtimeRepository);
         for (IRuntimeRepository refRuntimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)refRuntimeRepository;
@@ -497,7 +497,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (qNamePrefix == null) {
             throw new NullPointerException();
         }
-        Map<String, IpsTestSuite> suites = new ConcurrentHashMap<String, IpsTestSuite>();
+        Map<String, IpsTestSuite> suites = new ConcurrentHashMap<>();
         String suiteName = removeLastSegment(qNamePrefix);
         suiteName = suiteName.length() == 0 ? ROOTIPSTESTSUITENAME : suiteName;
         IpsTestSuite rootSuite = new IpsTestSuite(suiteName);
@@ -637,7 +637,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final Set<String> getAllModelTypeImplementationClasses() {
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new HashSet<>();
         getAllModelTypeImplementationClasses(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -686,10 +686,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
         List<T> enumValues = getEnumValues(clazz);
         try {
-            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId", new Class[0]); //$NON-NLS-1$
+            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId"); //$NON-NLS-1$
             enumValueIdMethod.setAccessible(true);
             for (T enumValue : enumValues) {
-                Object idValue = enumValueIdMethod.invoke(enumValue, new Object[0]);
+                Object idValue = enumValueIdMethod.invoke(enumValue);
                 if (id.equals(idValue)) {
                     return enumValue;
                 }
@@ -735,7 +735,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             return lookup.getEnumValues();
         } else {
             List<T> valuesFromType = getEnumValuesDefinedInType(clazz);
-            ArrayList<T> allValues = new ArrayList<T>(valuesFromType);
+            ArrayList<T> allValues = new ArrayList<>(valuesFromType);
             List<T> values = getEnumValuesInternal(clazz);
             if (values != null) {
                 allValues.addAll(values);
@@ -875,13 +875,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final List<Class<?>> getAllEnumClasses() {
-        LinkedHashSet<Class<?>> result = new LinkedHashSet<Class<?>>();
+        LinkedHashSet<Class<?>> result = new LinkedHashSet<>();
         getAllEnumClasses(result);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
             refRepository.getAllEnumClasses(result);
         }
-        return new ArrayList<Class<?>>(result);
+        return new ArrayList<>(result);
     }
 
     /**
@@ -896,7 +896,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * product components.
      */
     public JAXBContext newJAXBContext(JAXBContext ctx) {
-        LinkedList<XmlAdapter<?, ?>> adapters = new LinkedList<XmlAdapter<?, ?>>();
+        LinkedList<XmlAdapter<?, ?>> adapters = new LinkedList<>();
         addAllEnumXmlAdapters(adapters, this);
         for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
@@ -918,7 +918,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         ClassLoader tccl = null;
         try {
             Set<String> classNames = getAllModelTypeImplementationClasses();
-            Set<Class<?>> classes = new LinkedHashSet<Class<?>>(classNames.size());
+            Set<Class<?>> classes = new LinkedHashSet<>(classNames.size());
             for (String className : classNames) {
                 Class<?> clazz = getClassLoader().loadClass(className);
                 if (isAnnotatedXmlRootElement(clazz)) {

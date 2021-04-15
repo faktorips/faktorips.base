@@ -41,7 +41,7 @@ final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
         List<? extends ISearchOperatorType> operatorTypes = model.getConditionType().getSearchOperatorTypes(
                 model.getSearchedElement());
 
-        List<String> operatorTypesLabels = new ArrayList<String>();
+        List<String> operatorTypesLabels = new ArrayList<>();
 
         for (ISearchOperatorType searchOperatorType : operatorTypes) {
             operatorTypesLabels.add(searchOperatorType.getLabel());

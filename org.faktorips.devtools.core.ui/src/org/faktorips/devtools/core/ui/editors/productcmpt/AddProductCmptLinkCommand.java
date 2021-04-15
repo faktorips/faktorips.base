@@ -17,9 +17,7 @@ import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -85,7 +83,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
     private void addLinksOnAssociation(ExecutionEvent event) {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<AbstractAssociationViewItem>(
+        TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<>(
                 AbstractAssociationViewItem.class, selection);
         if (!typedSelection.isValid()) {
             return;
@@ -139,17 +137,17 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
      */
     private Set<IIpsSrcFile> getSelectableTargetProductCmpts(IIpsSrcFile[] ipsSrcFiles,
             List<IProductCmptLink> existingLinks) {
-        Set<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
+        Set<IIpsSrcFile> result = new LinkedHashSet<>();
 
-        for (int i = 0; i < ipsSrcFiles.length; i++) {
+        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             boolean exists = false;
             for (IProductCmptLink link : existingLinks) {
-                if ((ipsSrcFiles[i].getQualifiedNameType().getName()).equals(link.getTarget())) {
+                if ((ipsSrcFile.getQualifiedNameType().getName()).equals(link.getTarget())) {
                     exists = true;
                 }
             }
             if (!exists) {
-                result.add(ipsSrcFiles[i]);
+                result.add(ipsSrcFile);
             }
         }
         return result;
@@ -159,17 +157,14 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             final IProductCmptTypeAssociation association,
             final List<IIpsElement> selectedIpsElements) {
 
-        IpsUIPlugin.getDefault().runWorkspaceModification(new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                for (IIpsElement element : selectedIpsElements) {
-                    if (element instanceof IIpsSrcFile) {
-                        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-                        IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+        IpsUIPlugin.getDefault().runWorkspaceModification($ -> {
+            for (IIpsElement element : selectedIpsElements) {
+                if (element instanceof IIpsSrcFile) {
+                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
+                    IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
-                        LinkCreatorUtil util = new LinkCreatorUtil(false);
-                        util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName());
-                    }
+                    LinkCreatorUtil util = new LinkCreatorUtil(false);
+                    util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName());
                 }
             }
         });
@@ -178,7 +173,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
     private void addLinkOnReference(ExecutionEvent event) {
         LinkCreatorUtil linkCreator = new LinkCreatorUtil(true);
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<IProductCmptStructureReference>(
+        TypedSelection<IProductCmptStructureReference> typedSelection = new TypedSelection<>(
                 IProductCmptStructureReference.class, selection);
         if (!typedSelection.isValid()) {
             return;
@@ -200,7 +195,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             IProductCmptStructureReference linkTarget,
             Shell shell) {
 
-        List<IProductCmpt> selectedResults = new ArrayList<IProductCmpt>();
+        List<IProductCmpt> selectedResults = new ArrayList<>();
         OpenIpsObjectSelectionDialog dialog = getSelectDialog(ipsProject, linkTarget, shell);
 
         if (dialog.open() == Window.OK) {

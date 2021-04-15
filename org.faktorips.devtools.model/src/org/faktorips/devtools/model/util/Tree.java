@@ -26,7 +26,7 @@ public class Tree<T> {
 
     /** Constructs a new tree whose root node holds the given element. */
     public Tree(T element) {
-        this(new Node<T>(null, element));
+        this(new Node<>(null, element));
     }
 
     private Tree(Node<T> root) {
@@ -62,7 +62,7 @@ public class Tree<T> {
         if (isEmpty()) {
             return emptyTree();
         }
-        return new Tree<U>(root.transform(transformFunction, null));
+        return new Tree<>(root.transform(transformFunction, null));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Tree<T> {
 
     /** Returns a new empty tree. */
     public static <U> Tree<U> emptyTree() {
-        return new Tree<U>((Node<U>)null);
+        return new Tree<>((Node<U>)null);
     }
 
     /**
@@ -127,7 +127,7 @@ public class Tree<T> {
          * element.
          */
         public Node<T> addChild(T s) {
-            Node<T> child = new Node<T>(this, s);
+            Node<T> child = new Node<>(this, s);
             addChild(child);
             return child;
         }
@@ -151,7 +151,7 @@ public class Tree<T> {
         }
 
         private <U> Node<U> transform(Function<? super T, U> transformFunction, Node<U> newParent) {
-            Node<U> transformedNode = new Node<U>(newParent, transformFunction.apply(element));
+            Node<U> transformedNode = new Node<>(newParent, transformFunction.apply(element));
             for (Node<T> child : children) {
                 transformedNode.addChild(child.transform(transformFunction, transformedNode));
             }

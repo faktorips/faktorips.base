@@ -42,14 +42,14 @@ import org.faktorips.devtools.model.internal.bf.ControlFlow;
 public class PaletteBuilder {
 
     private List<PaletteContainer> createCategories(PaletteRoot root) {
-        List<PaletteContainer> categories = new ArrayList<PaletteContainer>();
+        List<PaletteContainer> categories = new ArrayList<>();
         categories.add(createControlGroup(root));
         categories.add(createComponentsDrawer());
         return categories;
     }
 
     private PaletteContainer createComponentsDrawer() {
-        List<ToolEntry> entries = new ArrayList<ToolEntry>();
+        List<ToolEntry> entries = new ArrayList<>();
 
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "obj16/CallOperationAction.gif"); //$NON-NLS-1$
@@ -114,7 +114,7 @@ public class PaletteBuilder {
 
     static private PaletteContainer createControlGroup(PaletteRoot root) {
         PaletteGroup controlGroup = new PaletteGroup("Control Group"); //$NON-NLS-1$
-        List<PaletteEntry> entries = new ArrayList<PaletteEntry>();
+        List<PaletteEntry> entries = new ArrayList<>();
 
         ToolEntry tool = new PanningSelectionToolEntry();
         entries.add(tool);
