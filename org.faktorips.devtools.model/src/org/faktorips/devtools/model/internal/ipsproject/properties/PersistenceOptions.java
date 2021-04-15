@@ -28,13 +28,13 @@ public class PersistenceOptions implements IPersistenceOptions {
     private ITableColumnNamingStrategy tableColumnNamingStrategy = new CamelCaseToUpperUnderscoreColumnNamingStrategy();
     private ITableNamingStrategy tableNamingStrategy = new CamelCaseToUpperUnderscoreTableNamingStrategy();
 
-    private int maxColumnNameLength = 255;
-    private int maxTableNameLength = 255;
+    private int maxColumnNameLength = 30;
+    private int maxTableNameLength = 30;
     private boolean allowLazyFetchForSingleValuedAssociations = true;
 
-    private int maxTableColumnScale = 255;
-    private int maxTableColumnPrecision = 255;
-    private int maxTableColumnSize = 255;
+    private int maxTableColumnScale = 31;
+    private int maxTableColumnPrecision = 31;
+    private int maxTableColumnSize = 4000;
     // note that only the maximum could be changed in the ips-project-file, the minimum is always 1
     private int minTableColumnScale = 1;
     private int minTableColumnPrecision = 1;
@@ -48,13 +48,18 @@ public class PersistenceOptions implements IPersistenceOptions {
      * Initializes this strategy using the XML-Element named PersistenceOptions.
      * <p>
      * The concrete structure is:
-     * 
+     *
      * <pre>
-     *       &lt;PersistenceOptions maxColumnNameLength=&quot;255&quot; maxTableNameLength=&quot;255&quot; maxTableColumnPrecision=&quot;255&quot; maxTableColumnScale=&quot;255&quot;
-     *       maxTableColumnSize=&quot;255&quot; allowLazyFetchForSingleValuedAssociations=&quot;false&quot;&gt;
-     *         &lt;TableNamingStrategy id=&quot;org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy&quot; /&gt;
-     *         &lt;TableColumnNamingStrategy id=&quot;org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy&quot; /&gt;
-     *       &lt;/PersistenceOptions&gt;
+     * {@code
+     * <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
+     *       maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="4000"
+     *       allowLazyFetchForSingleValuedAssociations="true">
+     *      <TableNamingStrategy
+     *          id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
+     *      <TableColumnNamingStrategy
+     *          id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
+     * </PersistenceOptions>
+     * }
      * </pre>
      */
     public PersistenceOptions(Element element) {

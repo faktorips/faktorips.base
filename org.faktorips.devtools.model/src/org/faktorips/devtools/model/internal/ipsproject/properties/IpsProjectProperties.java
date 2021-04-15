@@ -1509,22 +1509,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void createPersistenceOptionsDescriptionComment(Node parentEl) {
         String s = "PersistenceOptions" + System.lineSeparator() //$NON-NLS-1$
                 + " " + System.lineSeparator() //$NON-NLS-1$
-                + "In this section you can adjust parameters relating the persistence of IPolicyCmptTypes." + System.lineSeparator() //$NON-NLS-1$
+                + "In this section you can adjust parameters relating to the persistence of IPolicyCmptTypes." + System.lineSeparator() //$NON-NLS-1$
                 + "The table and column naming strategies define how identifier names are transformed into" + System.lineSeparator() //$NON-NLS-1$
                 + "database table and column names. The attributes maxTableNameLength and maxColumnNameLength" + System.lineSeparator() //$NON-NLS-1$
                 + "constrain the maximum possible length of a table or column name." + System.lineSeparator() //$NON-NLS-1$
+                + "The attribute maxTableColumnScale limits the scale of columns representing floating point" + System.lineSeparator() //$NON-NLS-1$
+                + "numbers while maxTableColumnPrecision limits their precision. The number of characters in a" + System.lineSeparator() //$NON-NLS-1$
+                + "String column is limited by maxTableColumnSize." + System.lineSeparator() //$NON-NLS-1$
+                + "All limits are in byte length but are only validated in character length in Faktor-IPS, as the" + System.lineSeparator() //$NON-NLS-1$
+                + "mapping of multi-byte characters depends on the encoding and database used." + System.lineSeparator() //$NON-NLS-1$
                 + "The attribute " //$NON-NLS-1$
                 + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS
-                + " defines if is is allowed to use lazy fetching " + System.lineSeparator() //$NON-NLS-1$
+                + " defines if it is allowed to use lazy fetching " + System.lineSeparator() //$NON-NLS-1$
                 + "on the association side which holds a single value (to-one relationship side)." + System.lineSeparator() //$NON-NLS-1$
                 + " " + System.lineSeparator() //$NON-NLS-1$
-                + "<PersistenceOptions maxColumnNameLength=\"255\" maxTableNameLength=\"255\">" + System.lineSeparator() //$NON-NLS-1$
-                + "    <TableNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreTableNamingStrategy\">" + System.lineSeparator() //$NON-NLS-1$
-                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.core.CamelCaseToUpperUnderscoreColumnNamingStrategy\">" + System.lineSeparator() //$NON-NLS-1$
+                + "<PersistenceOptions maxColumnNameLength=\"30\" maxTableNameLength=\"30\"" + System.lineSeparator() //$NON-NLS-1$
+                + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"4000\"" + System.lineSeparator() //$NON-NLS-1$
+                + "        allowLazyFetchForSingleValuedAssociations=\"true\">" + System.lineSeparator() //$NON-NLS-1$
+                + "    <TableNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
+                + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
                 + "</PersistenceOptions>" + System.lineSeparator() //$NON-NLS-1$
                 + " " + System.lineSeparator() //$NON-NLS-1$
                 + "Currently Faktor-IPS includes the strategies CamelCaseToUpperUnderscoreTableNamingStrategy" + System.lineSeparator() //$NON-NLS-1$
-                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, examples:" + System.lineSeparator() //$NON-NLS-1$
+                + "for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, example:" + System.lineSeparator() //$NON-NLS-1$
                 + "    IdentifierName1 -> IDENTIFIER_NAME1" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);
     }
