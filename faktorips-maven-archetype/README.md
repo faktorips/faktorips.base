@@ -20,7 +20,7 @@ Because of this, they have to be adjusted if Faktor-IPS changes.
 There are two types of templates:
 
 - replaced by ``mvn archetype:generate`` (format: _\${value}_)
-- replaced by the postprocessor groovy script (format: _$value$_)
+- replaced by the post-processor groovy script (format: _$value$_)
 
 ### MANIFEST.MF
 Take care that the MANIFEST.MF template ends with an empty line.
@@ -68,6 +68,8 @@ If that is not the case, the Maven-Jar-Plugin will build faulty JARs.
 - **runtime-ID-prefix**: <br/>
   the used runtime-ID-prefix, e.g. _lineOfBusiness._ 
   (**important**: do not forget the dot at the end)
+- **IPS-ConfigureIpsBuild**: <br/>
+  _true_, if the faktorips-maven-plugin should be configured to build the project, else _false_
 
 _Postprocessor_:
 - _(optional)_ **Persistence API** <br/>
@@ -93,7 +95,7 @@ _Postprocessor_:
 ### German
 
 #### Voraussetzungen zur Verwendung
-- Installation der neusten Version von Faktor-IPS
+- Installation der neuesten Version von Faktor-IPS
 - Installation von Maven (mindestens Version 3.5.0)
 
 #### Setzbare Parameter bei der Erstellung eines Archetypes
@@ -130,6 +132,8 @@ _Postprocessor_:
 - **runtime-ID-prefix**: <br/>
   die verwendete Laufzeit-ID-Prefix, z.B. _hausrat._ 
   (**wichtig**: Punkt am Ende nicht vergessen)
+- **IPS-ConfigureIpsBuild**: <br/>
+  _true_, wenn das faktorips-maven-plugin zum Bauen des Projekts konfiguriert werden soll, sonst _false_
   
 _Postprozessor_:
 - _(optional)_ **Persistenz API** <br/>
