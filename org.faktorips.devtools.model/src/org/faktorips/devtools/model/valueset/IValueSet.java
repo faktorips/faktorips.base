@@ -78,7 +78,9 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns {@code true} if this value set contains the other value set, otherwise {@code false}.
+     * Returns {@code true} if this value set contains the other value set and both value sets are
+     * valid and only contain values that can be parsed to the datatype of their value set,
+     * otherwise {@code false}.
      * 
      * @param subset The value set to check.
      * 

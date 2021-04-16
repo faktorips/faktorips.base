@@ -78,8 +78,8 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     @Test
     public void testOf_EnumWithoutNull() {
         EnumValueSet enumValueSet = new EnumValueSet(configuredValueSet, "1");
-        enumValueSet.addValue("Foo");
-        enumValueSet.addValue("Bar");
+        enumValueSet.addValue("1");
+        enumValueSet.addValue("3");
         enumValueSet.setContainsNull(false);
 
         assertThat(AttributeRelevance.of(enumValueSet),
@@ -89,8 +89,8 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     @Test
     public void testOf_EnumWithNull() {
         EnumValueSet enumValueSet = new EnumValueSet(configuredValueSet, "1");
-        enumValueSet.addValue("Foo");
-        enumValueSet.addValue("Bar");
+        enumValueSet.addValue("1");
+        enumValueSet.addValue("3");
         enumValueSet.setContainsNull(true);
 
         assertThat(AttributeRelevance.of(enumValueSet),
