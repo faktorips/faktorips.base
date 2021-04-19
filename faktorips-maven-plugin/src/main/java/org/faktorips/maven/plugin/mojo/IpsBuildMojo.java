@@ -420,7 +420,7 @@ public class IpsBuildMojo extends AbstractMojo {
                 String version = pluginDescriptor.getVersion();
                 Matcher versionMatcher = MAJOR_MINOR_VERSION_PATTERN.matcher(version);
                 if (versionMatcher.matches()) {
-                    return "v" + versionMatcher.group(1) + "_" + versionMatcher.group(2);
+                    return "v" + versionMatcher.group(1) + "_" + versionMatcher.group(2) + "/" + version;
                 }
                 return version;
             }

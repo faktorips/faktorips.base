@@ -135,6 +135,9 @@
                     <value>rfinal</value>
                 </property>
             </activation>
+            <properties>
+              <qualifiedVersion>${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</qualifiedVersion>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
