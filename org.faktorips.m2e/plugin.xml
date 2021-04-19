@@ -7,7 +7,7 @@
             class="org.faktorips.m2e.IpsProjectConfigurator"
             id="org.faktorips.maven.projectConfigurator"
             name="IPS"
-            runsAfter="org.eclipse.m2e.jdt.javaConfigurator">
+            runsAfter="org.eclipse.m2e.jdt.javaConfigurator?">
       </configurator>
    </extension>
    <extension

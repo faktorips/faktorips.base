@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This file is read by Eclipse's m2e plugin from the installed Faktor-IPS m2e plugin. It must be in the bundle root as 
+    of the documentation of the org.eclipse.m2e.core.lifecycleMappingMetadataSource extension point. This is not to be confused 
+    with a file of the same name the Eclipse m2e plugin would read from a Maven plugin's META-INF/m2e folder. DO NOT MOVE IT 
+    THERE! -->
 <lifecycleMappingMetadata>
     <pluginExecutions>
         <pluginExecution>
