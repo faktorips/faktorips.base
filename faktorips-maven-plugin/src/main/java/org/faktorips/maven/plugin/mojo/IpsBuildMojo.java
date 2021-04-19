@@ -71,7 +71,7 @@ import org.xml.sax.SAXException;
  * Additional plugins (like the Faktor-IPS Product Variant Plugin) can be configured with
  * {@link #additionalPlugins}.
  */
-@Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, threadSafe = true)
+@Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class IpsBuildMojo extends AbstractMojo {
 
     private static Pattern MAJOR_MINOR_VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+).*");
@@ -502,85 +502,91 @@ public class IpsBuildMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // add default repositories if no repositories are specified in the pom.xml
-        if (repositories.isEmpty()) {
-            addRepository(eclipseRepository);
-            addRepository(getFipsRepository());
-        }
-        repositories.addAll(additionalRepositories);
+        @SuppressWarnings("unchecked")
+        boolean alreadyBuilt = getPluginContext().put("BUILT" + getProjectName(), Boolean.TRUE) != null;
+        if (!alreadyBuilt) {
 
-        // default values for parameter dependencies
-        addDependency("org.faktorips.devtools.core");
-        addDependency("org.faktorips.devtools.stdbuilder");
-        addDependency("org.faktorips.runtime.groovy");
-        addDependency("org.faktorips.valuetypes.joda");
-        addDependency("org.faktorips.devtools.ant");
-        if (exportHtml) {
-            addDependency("org.faktorips.devtools.htmlexport");
-        }
-        if (importAsMavenProject) {
-            addDependency("org.eclipse.m2e.core");
-            addDependency("org.eclipse.m2e.maven.runtime");
-            addDependency("org.faktorips.m2e");
-        }
-        dependencies.addAll(additionalPlugins);
-
-        // default values for parameter applicationArgs
-        applicationsArgs.add("-consoleLog");
-        applicationsArgs.add("-application");
-        applicationsArgs.add("org.eclipse.ant.core.antRunner");
-        applicationsArgs.add("-buildfile");
-        applicationsArgs.add(getPathToAntScript());
-        applicationsArgs.add("import");
-
-        // default values for parameter jvmArgs
-        jvmArgs.add("-Xmx1024m");
-        jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
-        jvmArgs.add("-DjavacFailOnError=true");
-        if (usesCustomJdk()) {
-            jvmArgs.add("-Djdk.dir=" + getPathToJdk());
-        }
-        jvmArgs.add("-DprojectName=" + getProjectName());
-        jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
-        if (debug) {
-            jvmArgs.add("-Xdebug");
-            jvmArgs.add("-Xnoagent");
-            jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
-        }
-
-        File workDir = work.getAbsoluteFile();
-        if (workDir.exists()) {
-            try {
-                FileUtils.deleteDirectory(workDir);
-            } catch (IOException e) {
-                throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(), e);
+            // add default repositories if no repositories are specified in the pom.xml
+            if (repositories.isEmpty()) {
+                addRepository(eclipseRepository);
+                addRepository(getFipsRepository());
             }
+            repositories.addAll(additionalRepositories);
+
+            // default values for parameter dependencies
+            addDependency("org.faktorips.devtools.core");
+            addDependency("org.faktorips.devtools.stdbuilder");
+            addDependency("org.faktorips.runtime.groovy");
+            addDependency("org.faktorips.valuetypes.joda");
+            addDependency("org.faktorips.devtools.ant");
+            if (exportHtml) {
+                addDependency("org.faktorips.devtools.htmlexport");
+            }
+            if (importAsMavenProject) {
+                addDependency("org.eclipse.m2e.core");
+                addDependency("org.eclipse.m2e.maven.runtime");
+                addDependency("org.faktorips.m2e");
+            }
+            dependencies.addAll(additionalPlugins);
+
+            // default values for parameter applicationArgs
+            applicationsArgs.add("-consoleLog");
+            applicationsArgs.add("-application");
+            applicationsArgs.add("org.eclipse.ant.core.antRunner");
+            applicationsArgs.add("-buildfile");
+            applicationsArgs.add(getPathToAntScript());
+            applicationsArgs.add("import");
+
+            // default values for parameter jvmArgs
+            jvmArgs.add("-Xmx1024m");
+            jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
+            jvmArgs.add("-DjavacFailOnError=true");
+            if (usesCustomJdk()) {
+                jvmArgs.add("-Djdk.dir=" + getPathToJdk());
+            }
+            jvmArgs.add("-DprojectName=" + getProjectName());
+            jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
+            if (debug) {
+                jvmArgs.add("-Xdebug");
+                jvmArgs.add("-Xnoagent");
+                jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
+            }
+
+            File workDir = work.getAbsoluteFile();
+            if (workDir.exists()) {
+                try {
+                    FileUtils.deleteDirectory(workDir);
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
+                            e);
+                }
+            }
+            // no need to clean as we just deleted the parent directory
+            boolean clearWorkspaceBeforeLaunch = false;
+
+            copyMavenSettings();
+
+            EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
+                    clearWorkspaceBeforeLaunch,
+                    project,
+                    dependencies,
+                    addDefaultDependencies,
+                    executionEnvironment,
+                    repositories,
+                    session,
+                    jvmArgs,
+                    skip,
+                    applicationsArgs,
+                    forkedProcessTimeoutInSeconds,
+                    environmentVariables,
+                    installationFactory,
+                    launcher,
+                    toolchainProvider,
+                    equinox,
+                    logger,
+                    toolchainManager);
+            eclipseRunMojo.execute();
         }
-        // no need to clean as we just deleted the parent directory
-        boolean clearWorkspaceBeforeLaunch = false;
-
-        copyMavenSettings();
-
-        EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
-                clearWorkspaceBeforeLaunch,
-                project,
-                dependencies,
-                addDefaultDependencies,
-                executionEnvironment,
-                repositories,
-                session,
-                jvmArgs,
-                skip,
-                applicationsArgs,
-                forkedProcessTimeoutInSeconds,
-                environmentVariables,
-                installationFactory,
-                launcher,
-                toolchainProvider,
-                equinox,
-                logger,
-                toolchainManager);
-        eclipseRunMojo.execute();
     }
 
     private void copyMavenSettings() {
