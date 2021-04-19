@@ -238,7 +238,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Returns the number of messages in the list.
      * 
-     * @deprecated Use #size() instead
+     * @deprecated for removal. Use #size() instead.
      */
     @Deprecated
     public int getNoOfMessages() {
@@ -384,27 +384,6 @@ public class MessageList implements Serializable, Iterable<Message> {
             }
         }
         return sublist;
-    }
-
-    /**
-     * Returns a new message list containing all the message in this list with a {@link IMarker} the
-     * specified {@code IPredicate} matches. Returns an empty list if this list does not contain any
-     * such message.
-     * <p>
-     * Sample usage:
-     * <code>messages.getMessagesByMarker(new IPredicate&lt;IMarker&gt;(){public boolean test(IMarker t){return t.isRequiredInformationMissing();}});</code>
-     * <p>
-     * Sample usage (Java8):
-     * <code>messages.getMessagesByMarker(IMarker::isRequiredInformationMissing);</code>
-     * 
-     * @param markerPredicate to match a {@link IMarker} with. Must not be <code>null</code>
-     * @throws NullPointerException if markerPredicate is <code>null</code>
-     * @deprecated for removal since 21.6; Use {@link #getMessagesByMarker(Predicate)} with the Java
-     *             8 {@link Predicate} instead.
-     */
-    @Deprecated
-    public MessageList getMessagesByMarker(org.faktorips.runtime.util.function.IPredicate<IMarker> markerPredicate) {
-        return getMessagesByMarker((Predicate<IMarker>)markerPredicate);
     }
 
     /**
