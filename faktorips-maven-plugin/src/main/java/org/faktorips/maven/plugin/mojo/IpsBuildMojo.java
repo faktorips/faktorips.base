@@ -118,6 +118,33 @@ public class IpsBuildMojo extends AbstractMojo {
      * </additionalPlugins>
      * }
      * </pre>
+     * 
+     * If JUnit is integrated as an Eclipse library, one of the following two dependencies must be
+     * added:
+     *
+     * <pre>
+     * {@code
+     * <additionalPlugins>
+     *  <dependency>
+     *   <artifactId>org.eclipse.jdt.junit</artifactId>
+     *   <type>eclipse-plugin</type>
+     *  </dependency>
+     * </additionalPlugins>
+     * }
+     * </pre>
+     *
+     * or
+     * 
+     * <pre>
+     * {@code
+     * <additionalPlugins>
+     *  <dependency>
+     *   <artifactId>org.eclipse.jdt.junit5.runtime</artifactId>
+     *   <type>eclipse-plugin</type>
+     *  </dependency>
+     * </additionalPlugins>
+     * }
+     * </pre>
      */
     @Parameter
     private List<Dependency> additionalPlugins = new ArrayList<>();
@@ -488,8 +515,6 @@ public class IpsBuildMojo extends AbstractMojo {
         addDependency("org.faktorips.runtime.groovy");
         addDependency("org.faktorips.valuetypes.joda");
         addDependency("org.faktorips.devtools.ant");
-        addDependency("org.eclipse.jdt.junit");
-        addDependency("org.eclipse.jdt.junit5.runtime");
         if (exportHtml) {
             addDependency("org.faktorips.devtools.htmlexport");
         }
@@ -497,7 +522,6 @@ public class IpsBuildMojo extends AbstractMojo {
             addDependency("org.eclipse.m2e.core");
             addDependency("org.eclipse.m2e.maven.runtime");
             addDependency("org.faktorips.m2e");
-            addDependency("org.eclipse.m2e.lifecyclemapping.defaults");
         }
         dependencies.addAll(additionalPlugins);
 
