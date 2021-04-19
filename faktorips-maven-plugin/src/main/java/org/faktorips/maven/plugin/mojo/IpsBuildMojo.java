@@ -65,8 +65,8 @@ import org.xml.sax.SAXException;
  * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
  * <p>
  * To change from where the plugins are installed, see {@link #additionalRepositories},
- * {@link #repositories}, {@link #fipsRepository}/{@link #fipsRepositoryVersion},
- * {@link #eclipseRepository} and {@link #thirdpartyRepository}.
+ * {@link #repositories}, {@link #fipsRepository}/{@link #fipsRepositoryVersion} and
+ * {@link #eclipseRepository}.
  * <p>
  * Additional plugins (like the Faktor-IPS Product Variant Plugin) can be configured with
  * {@link #additionalPlugins}.
@@ -160,9 +160,9 @@ public class IpsBuildMojo extends AbstractMojo {
      * p2 repositories which will be used to resolve dependencies. If the default values should be
      * used this parameter must remain unused. Additional repositories can then be defined using the
      * {@link #additionalRepositories} parameter. The paths of the default repositories can be
-     * changed individually using the parameters {@link #fipsRepository}, {@link #eclipseRepository}
-     * and {@link #thirdpartyRepository} or the properties {@code repository.fips},
-     * {@code repository.eclipse} and {@code repository.thirdparty}.
+     * changed individually using the parameters {@link #fipsRepository} and
+     * {@link #eclipseRepository} or the properties {@code repository.fips},
+     * {@code repository.eclipse}.
      * <p>
      * Example:
      * 
@@ -178,11 +178,6 @@ public class IpsBuildMojo extends AbstractMojo {
      *   <id>eclipse-2020-12</id>
      *   <layout>p2</layout>
      *   <url>http://download.eclipse.org/eclipse/updates/4.18/</url>
-     *  </repository>
-     *  <repository>
-     *   <id>thirdparty</id>
-     *   <layout>p2</layout>
-     *   <url>https://drone.faktorzehn.de/p2/thirdparty-1.6</url>
      *  </repository>
      * </repositories>
      * }
@@ -315,12 +310,6 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     @Parameter(property = "repository.fips", defaultValue = "https://update.faktorzehn.org/faktorips/${faktorips.repository.version}/")
     private String fipsRepository;
-
-    /**
-     * Path to the third-party repository.
-     */
-    @Parameter(property = "repository.thirdparty", defaultValue = "https://drone.faktorzehn.de/p2/thirdparty-1.6")
-    private String thirdpartyRepository;
 
     /**
      * Path to the update site to install Eclipse.
@@ -490,7 +479,6 @@ public class IpsBuildMojo extends AbstractMojo {
         if (repositories.isEmpty()) {
             addRepository(eclipseRepository);
             addRepository(getFipsRepository());
-            addRepository(thirdpartyRepository);
         }
         repositories.addAll(additionalRepositories);
 
