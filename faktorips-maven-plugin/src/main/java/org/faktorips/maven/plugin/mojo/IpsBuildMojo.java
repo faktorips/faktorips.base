@@ -19,10 +19,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,11 +33,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -68,6 +73,8 @@ import org.xml.sax.SAXException;
  */
 @Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.PROCESS_RESOURCES, threadSafe = true)
 public class IpsBuildMojo extends AbstractMojo {
+
+    private static Pattern MAJOR_MINOR_VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+).*");
 
     /**
      * Whether to add default dependencies to bundles org.eclipse.equinox.launcher, org.eclipse.osgi
@@ -217,7 +224,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * Additional environments to set for the forked JVM.
      */
     // @Parameter
-    private Map<String, String> environmentVariables;
+    private Map<String, String> environmentVariables = Collections.emptyMap();
 
     /**
      * Work area. This includes:
@@ -289,20 +296,22 @@ public class IpsBuildMojo extends AbstractMojo {
     private String jdkId;
 
     /**
-     * Whether to import the fips project as a maven project. If set to {@code true} the m2e plugin
-     * will be used to import the pom.xml of the fips project.
+     * Whether to import the Faktor-IPS project as a Maven project. If set to {@code true} the m2e
+     * plugin will be used to import the pom.xml of the Faktor-IPS project.
      */
     @Parameter(defaultValue = "true")
     private boolean importAsMavenProject;
 
     /**
-     * The version of Faktor-IPS to be installed.
+     * The version of the Faktor-IPS repository to be used. This parameter is used in the default
+     * {@link #fipsRepository} property.
      */
-    @Parameter(property = "faktorips.repository.version", defaultValue = "latest")
+    @Parameter(property = "faktorips.repository.version")
     private String fipsRepositoryVersion;
 
     /**
-     * Path to the update site to install Faktor-IPS.
+     * Path to the update site to install Faktor-IPS. The default uses the official Faktor-IPS
+     * repository for the {@link #fipsRepositoryVersion}.
      */
     @Parameter(property = "repository.fips", defaultValue = "https://update.faktorzehn.org/faktorips/${faktorips.repository.version}/")
     private String fipsRepository;
@@ -355,6 +364,9 @@ public class IpsBuildMojo extends AbstractMojo {
     @Component
     private ToolchainManager toolchainManager;
 
+    @Component
+    private PluginDescriptor pluginDescriptor;
+
     /**
      * Returns the name of the project in a way that it can be used in the ant script. It should be
      * the same as seen in eclipse. For example in the project or package explorer.
@@ -381,13 +393,32 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     /**
-     * Gets the default fips repository https://update.faktorzehn.org/faktorips/[VERSION] with the
-     * correct version.
+     * Gets the version of the Faktor-IPS repository to be used.
+     *
+     * @return the version of the Faktor-IPS repository to be used.
+     */
+    public String getFipsRepositoryVersion() {
+        if (StringUtils.isBlank(fipsRepositoryVersion)) {
+            PluginDescriptor pluginDescriptor = (PluginDescriptor)getPluginContext().get("pluginDescriptor");
+            if (pluginDescriptor != null) {
+                String version = pluginDescriptor.getVersion();
+                Matcher versionMatcher = MAJOR_MINOR_VERSION_PATTERN.matcher(version);
+                if (versionMatcher.matches()) {
+                    return "v" + versionMatcher.group(1) + "_" + versionMatcher.group(2);
+                }
+                return version;
+            }
+        }
+        return fipsRepositoryVersion;
+    }
+
+    /**
+     * Gets the P2-repository containing the Faktor-IPS plugins.
      * 
-     * @return the default repository
+     * @return the Faktor-IPS repository
      */
     public String getFipsRepository() {
-        return fipsRepository.replace("${faktorips.repository.version}", fipsRepositoryVersion);
+        return fipsRepository.replace("${faktorips.repository.version}", getFipsRepositoryVersion());
     }
 
     /**
