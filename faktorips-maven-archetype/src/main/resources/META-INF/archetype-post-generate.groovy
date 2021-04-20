@@ -177,7 +177,7 @@ class FaktoripsMavenPluginSupport {
                         <goals>$lineSeparator\
                             <goal>faktorips-build</goal>$lineSeparator\
                         </goals>$lineSeparator\
-                        <phase>process-resources</phase>$lineSeparator\
+                        <phase>generate-sources</phase>$lineSeparator\
                     </execution>$lineSeparator\
                 </executions>$lineSeparator\
             </plugin>"""
