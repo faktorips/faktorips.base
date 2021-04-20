@@ -108,7 +108,7 @@ public class ProjectImportTask extends AbstractIpsTask {
         }
 
         if (!copy) {
-            description.setLocation(Path.fromPortableString(getDir()));
+            description.setLocation(Path.fromPortableString(getDir()).makeAbsolute());
         }
 
         // create new project with name provided in description
