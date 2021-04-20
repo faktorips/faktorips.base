@@ -82,6 +82,21 @@
             <artifactId>faktorips-valuetypes</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-maven-archetype</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-maven-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
