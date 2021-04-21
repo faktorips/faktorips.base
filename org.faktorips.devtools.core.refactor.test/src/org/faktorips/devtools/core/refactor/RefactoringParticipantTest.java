@@ -13,10 +13,13 @@ package org.faktorips.devtools.core.refactor;
 import static org.faktorips.devtools.core.refactor.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
 import static org.faktorips.devtools.core.refactor.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.core.refactor.RefactoringTestUtil.getPublishedInterfaceName;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.Location;
@@ -32,6 +35,9 @@ import org.faktorips.devtools.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 
 /**
@@ -99,11 +105,27 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String targetPackageName,
             String newName) {
 
-        assertFalse(getJavaType(originalPackageName, originalName, true, false, ipsProject).exists());
-        assertFalse(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true, ipsProject).exists());
+        assertThat(getJavaType(originalPackageName, originalName, true, false, ipsProject), not(exists()));
+        assertThat(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true, ipsProject),
+                not(exists()));
 
-        assertTrue(getJavaType(targetPackageName, newName, true, false, ipsProject).exists());
-        assertTrue(getJavaType(targetPackageName, newName + "XmlAdapter", false, false, ipsProject).exists());
+        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
+        assertThat(getJavaType(targetPackageName, newName + "XmlAdapter", false, false, ipsProject), exists());
+    }
+
+    private static Matcher<IType> exists() {
+        return new TypeSafeMatcher<>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("exists");
+            }
+
+            @Override
+            protected boolean matchesSafely(IType type) {
+                return type.exists();
+            }
+        };
     }
 
     protected void checkJavaSourceFilesTableStructure(String originalPackageName,
@@ -111,11 +133,11 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String targetPackageName,
             String newName) {
 
-        assertFalse(getJavaType(originalPackageName, originalName, false, false, ipsProject).exists());
-        assertFalse(getJavaType(originalPackageName, originalName + "Row", false, false, ipsProject).exists());
+        assertThat(getJavaType(originalPackageName, originalName, false, false, ipsProject), not(exists()));
+        assertThat(getJavaType(originalPackageName, originalName + "Row", false, false, ipsProject), not(exists()));
 
-        assertTrue(getJavaType(targetPackageName, newName, false, false, ipsProject).exists());
-        assertTrue(getJavaType(targetPackageName, newName + "Row", false, false, ipsProject).exists());
+        assertThat(getJavaType(targetPackageName, newName, false, false, ipsProject), exists());
+        assertThat(getJavaType(targetPackageName, newName + "Row", false, false, ipsProject), exists());
     }
 
     protected void checkJavaSourceFilesTestCaseType(String originalPackageName,
@@ -123,9 +145,9 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String targetPackageName,
             String newName) {
 
-        assertFalse(getJavaType(originalPackageName, originalName, false, false, ipsProject).exists());
+        assertThat(getJavaType(originalPackageName, originalName, false, false, ipsProject), not(exists()));
 
-        assertTrue(getJavaType(targetPackageName, newName, false, false, ipsProject).exists());
+        assertThat(getJavaType(targetPackageName, newName, false, false, ipsProject), exists());
     }
 
     protected void checkJavaSourceFilesBusinessFunction(String originalPackageName,
@@ -133,9 +155,9 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String targetPackageName,
             String newName) {
 
-        assertFalse(getJavaType(originalPackageName, originalName, true, false, ipsProject).exists());
+        assertThat(getJavaType(originalPackageName, originalName, true, false, ipsProject), not(exists()));
 
-        assertTrue(getJavaType(targetPackageName, newName, true, false, ipsProject).exists());
+        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
     }
 
     protected IEnumType createEnumType(String name,

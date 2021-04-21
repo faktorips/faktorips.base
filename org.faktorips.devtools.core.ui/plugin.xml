@@ -1870,23 +1870,10 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <or>
-                     <adapt
-                           type="org.eclipse.core.resources.IResource">
-                        <adapt
-                              type="org.faktorips.devtools.model.type.IType">
-                        </adapt>
-                     </adapt>
-                     <instanceof
-                           value="org.faktorips.devtools.model.type.IType">
-                     </instanceof>
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <instanceof
-                              value="org.faktorips.devtools.model.type.IType">
-                        </instanceof>
-                     </adapt>
-                  </or>
+                  <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                    <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isType">
+                    </test>
+                  </adapt>
                </iterate>
                <count
                      value="1">
@@ -1915,11 +1902,9 @@
                      ifEmpty="false"
                      operator="and">
                   <or>
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <instanceof
-                              value="org.faktorips.devtools.model.IIpsMetaClass">
-                        </instanceof>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isMetaType">
+                       </test>
                      </adapt>
                   </or>
                </iterate>
@@ -1952,11 +1937,9 @@
                      ifEmpty="false"
                      operator="and">
                   <or>
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <instanceof
-                              value="org.faktorips.devtools.model.IIpsMetaObject">
-                        </instanceof>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isMetaType">
+                       </test>
                      </adapt>
                   </or>
                </iterate>
@@ -1977,14 +1960,12 @@
                      operator="and">
                   <or>
                      <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <adapt
-                              type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
-                        </adapt>
+                           type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isIpsObjectType"
+                              value="ProductCmpt">
+                        </test>
                      </adapt>
-                     <instanceof
-                           value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
-                     </instanceof>
                   </or>
                </iterate>
                <count
@@ -2020,10 +2001,10 @@
                   variable="selection">
                <iterate
                      ifEmpty="false"
-                     operator="and">
-                 <adapt
-                       type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                 </adapt>
+                     operator="and">                       
+                 <test
+                       property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
+                 </test>
                </iterate>
                <count
                      value="1">
@@ -2160,10 +2141,10 @@
                   <or>
                   	<adapt
                          type="org.eclipse.core.resources.IFile">
-                  	</adapt>
-                    <adapt 
-                        type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                    </adapt>
+                  	</adapt>                        
+                     <test
+                           property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
+                     </test>
                   </or>
                </iterate>
                <count
@@ -2202,24 +2183,13 @@
                      ifEmpty="false"
                      operator="and">
                   <or>
-                     <adapt
-                           type="org.eclipse.core.resources.IResource">
-                        <adapt
-                              type="org.faktorips.devtools.model.type.IType">
-                        </adapt>
-                     </adapt>
-                     <instanceof
-                           value="org.faktorips.devtools.model.type.IType">
-                     </instanceof>
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <instanceof
-                              value="org.faktorips.devtools.model.type.IType">
-                        </instanceof>
-                     </adapt>
-                     <instanceof
-                           value="org.faktorips.devtools.model.ipsproject.IIpsProject">
-                     </instanceof>
+                    <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                      <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isType">
+                      </test>
+                    </adapt>
+                    <instanceof
+                          value="org.faktorips.devtools.model.ipsproject.IIpsProject">
+                    </instanceof>
                   </or>
                </iterate>
                <count
@@ -2488,6 +2458,20 @@
             properties="allowGenerations,isProductTemplate"
             type="org.faktorips.devtools.model.productcmpt.IProductCmpt">
       </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
+            id="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
+            namespace="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
+            properties="isIpsObjectType,isType,isMetaType,isModelType"
+            type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+      </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.IpsObjectTester"
+            id="org.faktorips.devtools.core.ui.commands.IpsObjectTester"
+            namespace="org.faktorips.devtools.core.ui.commands.IpsObjectTester"
+            properties="isIpsObject"
+            type="java.lang.Object">
+      </propertyTester>
    </extension>
    
       <extension
@@ -2628,10 +2612,11 @@
                            variable="selection">
                         <iterate>
                            <adapt
-                                 type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                              <instanceof
-                                    value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
-                              </instanceof>
+                                 type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                              <test
+                                    property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isIpsObjectType"
+                                    value="ProductCmpt">
+                              </test>
                            </adapt>
                         </iterate>
                      </with>
@@ -2712,12 +2697,9 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <test
-                              forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                        </test>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                       </test>
                      </adapt>
                   </iterate>
                </with>
@@ -2736,12 +2718,9 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <test
-                              forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                        </test>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                       </test>
                      </adapt>
                   </iterate>
                </with>
@@ -2760,14 +2739,9 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <not>
-                           <test
-                                 forcePluginActivation="true"
-                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                           </test>
-                        </not>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                       </test>
                      </adapt>
                   </iterate>
                </with>
@@ -2785,10 +2759,10 @@
                      variable="selection">
                   <iterate
                         ifEmpty="false"
-                        operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                     </adapt>
+                        operator="and">                        
+                     <test
+                           property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
+                     </test>
                   </iterate>
                </with>
             </visibleWhen>
@@ -2806,14 +2780,9 @@
                   <iterate
                         ifEmpty="false"
                         operator="and">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <not>
-                           <test
-                                 forcePluginActivation="true"
-                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                           </test>
-                        </not>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                       </test>
                      </adapt>
                   </iterate>
                </with>
@@ -2833,17 +2802,14 @@
                         ifEmpty="false"
                         operator="or">
                      <or>
-                        <adapt
-                              type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                           <test
-                                 forcePluginActivation="true"
-                                 property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                           </test>
-                        </adapt>
-                        <test
-                              forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester.isModelIpsProject">
-                        </test>
+                       <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                         <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                         </test>
+                       </adapt>
+                       <test
+                             forcePluginActivation="true"
+                             property="org.faktorips.devtools.core.ui.commands.IpsModelProjectTester.isModelIpsProject">
+                       </test>
                      </or>
                   </iterate>
                </with>
@@ -2955,12 +2921,13 @@
                <with
                      variable="selection">
                   <iterate>
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <instanceof
-                              value="org.faktorips.devtools.model.productcmpt.IProductCmpt">
-                        </instanceof>
-                     </adapt>
+                           <adapt
+                                 type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                              <test
+                                    property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isIpsObjectType"
+                                    value="ProductCmpt">
+                              </test>
+                           </adapt>
                   </iterate>
                </with>
             </visibleWhen>

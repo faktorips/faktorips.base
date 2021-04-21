@@ -19,12 +19,9 @@
                      variable="selection">
                   <iterate
                         operator="or">
-                     <adapt
-                           type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-                        <test
-                              forcePluginActivation="true"
-                              property="org.faktorips.devtools.core.ui.ModelObjectTester.isModelObject">
-                        </test>
+                     <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                       </test>
                      </adapt>
                   </iterate>
                </with>

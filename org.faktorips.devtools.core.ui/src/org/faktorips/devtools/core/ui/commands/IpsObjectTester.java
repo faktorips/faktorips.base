@@ -7,29 +7,27 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
+import org.eclipse.core.resources.IResource;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
-/**
- * This property tester is able to test an Object if it is a model object or not.
- * 
- * @author dirmeier
- * @deprecated Use {@link IpsObjectTypeTester#PROPERTY_IS_MODEL_TYPE} instead to avoid needless
- *             instantiation of {@link IIpsObject}.
- */
-@Deprecated(since = "21.6", forRemoval = true)
-public class ModelObjectTester extends PropertyTester {
-
-    public ModelObjectTester() {
-        super();
-    }
+public class IpsObjectTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        return !((IIpsObject)receiver).getIpsObjectType().isProductDefinitionType();
+        if (receiver instanceof IIpsObject || receiver instanceof IIpsSrcFile) {
+            return true;
+        }
+        if (receiver instanceof IResource) {
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement((IResource)receiver);
+            return ipsElement instanceof IIpsSrcFile;
+        }
+        return false;
     }
 
 }

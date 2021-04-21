@@ -120,6 +120,63 @@ public class IpsObjectType {
     public static final IpsObjectType IPS_SOURCE_FILE = new IpsObjectType(
             "Unknown", "Unknown", "Ips Source file", "Ips Source files", "*", false, true, null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
+    /** The human readable type's name */
+    private final String displayName;
+
+    /** The human readable type's plural name */
+    private final String displayNamePlural;
+
+    /** The identifying name of this type */
+    private final String id;
+
+    /** Name of xml elements that represent objects of this type */
+    private final String xmlElementName;
+
+    /** Extension of files that store objects of this type */
+    private final String fileExtension;
+
+    /** Flag indicating whether this type defines a data type */
+    private final boolean datatype;
+
+    /** Flag indicating whether this type is a product definition type */
+    private final boolean productDefinitionType;
+
+    /** The class that is implementing the concrete IpsObjectType */
+    private final Class<? extends IpsObject> implementingClass;
+
+    /**
+     * Creates a new IPS object type.
+     * 
+     * @param id The name of the new IPS object type.
+     * @param xmlElementName The name for the XML element.
+     * @param displayName A human readable name for the new IPS object type.
+     * @param fileExtension The file extension for the new IPS object type.
+     * @param datatype Flag indicating whether this new IPS object type represents a data type.
+     * @param productDefinitionType Flag indicating whether this new IPS object type is a product
+     *            definition type.
+     * 
+     * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
+     *             <code>null</code>.
+     */
+    // CSOFF: ParameterNumber
+    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
+            String fileExtension, boolean datatype, boolean productDefinitionType,
+            Class<? extends IpsObject> implementingClass) {
+        // CSON: ParameterNumber
+        ArgumentCheck.notNull(xmlElementName);
+        ArgumentCheck.notNull(id);
+        ArgumentCheck.notNull(fileExtension);
+
+        this.id = id;
+        this.xmlElementName = xmlElementName;
+        this.displayName = displayName;
+        this.displayNamePlural = displayNamePlural;
+        this.fileExtension = fileExtension;
+        this.datatype = datatype;
+        this.productDefinitionType = productDefinitionType;
+        this.implementingClass = implementingClass;
+    }
+
     /**
      * Returns the IPS object type that has the given file extension. Returns <code>null</code>, if
      * no type with the given file extension exists or <code>null</code> has been given as file
@@ -162,30 +219,6 @@ public class IpsObjectType {
         return null;
     }
 
-    /** The human readable type's name */
-    private final String displayName;
-
-    /** The human readable type's plural name */
-    private final String displayNamePlural;
-
-    /** The identifying name of this type */
-    private final String id;
-
-    /** Name of xml elements that represent objects of this type */
-    private final String xmlElementName;
-
-    /** Extension of files that store objects of this type */
-    private final String fileExtension;
-
-    /** Flag indicating whether this type defines a data type */
-    private final boolean datatype;
-
-    /** Flag indicating whether this type is a product definition type */
-    private final boolean productDefinitionType;
-
-    /** The class that is implementing the concrete IpsObjectType */
-    private final Class<? extends IpsObject> implementingClass;
-
     /**
      * Creates a new IPS object for the given file.
      * 
@@ -193,6 +226,7 @@ public class IpsObjectType {
      * 
      * @return The IPS object that has been created for the given IPS source file.
      */
+    // CSOFF: CyclomaticComplexity
     public IIpsObject newObject(IIpsSrcFile file) {
         if (this == POLICY_CMPT_TYPE) {
             return new PolicyCmptType(file);
@@ -233,6 +267,7 @@ public class IpsObjectType {
 
         throw new RuntimeException("Can't create object for type " + this); //$NON-NLS-1$
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Returns the type's name.
@@ -326,38 +361,6 @@ public class IpsObjectType {
     @Override
     public final String toString() {
         return "IpsObjectTyp: " + displayName; //$NON-NLS-1$
-    }
-
-    /**
-     * Creates a new IPS object type.
-     * 
-     * @param id The name of the new IPS object type.
-     * @param xmlElementName The name for the XML element.
-     * @param displayName A human readable name for the new IPS object type.
-     * @param fileExtension The file extension for the new IPS object type.
-     * @param datatype Flag indicating whether this new IPS object type represents a data type.
-     * @param productDefinitionType Flag indicating whether this new IPS object type is a product
-     *            definition type.
-     * 
-     * @throws NullPointerException If any of xmlElementName, name, fileExtension or enableImage is
-     *             <code>null</code>.
-     */
-    protected IpsObjectType(String id, String xmlElementName, String displayName, String displayNamePlural,
-            String fileExtension, boolean datatype, boolean productDefinitionType,
-            Class<? extends IpsObject> implementingClass) {
-
-        ArgumentCheck.notNull(xmlElementName);
-        ArgumentCheck.notNull(id);
-        ArgumentCheck.notNull(fileExtension);
-
-        this.id = id;
-        this.xmlElementName = xmlElementName;
-        this.displayName = displayName;
-        this.displayNamePlural = displayNamePlural;
-        this.fileExtension = fileExtension;
-        this.datatype = datatype;
-        this.productDefinitionType = productDefinitionType;
-        this.implementingClass = implementingClass;
     }
 
     public Class<? extends IpsObject> getImplementingClass() {

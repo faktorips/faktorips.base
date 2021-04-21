@@ -14,13 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -51,21 +49,9 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
 
         if (adaptableObject instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
-            try {
-                if (ipsSrcFile.exists() && ipsSrcFile.isContentParsable()) {
-                    Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
-                    if (implementingClass != null) {
-                        return (T)getAdapterByClass(implementingClass);
-                    }
-                    /*
-                     * Comment from old Code in IpsObject.getImage(): The IPS source file doesn't
-                     * exists, thus the IPS object couldn't be linked to an IPS source file in the
-                     * workspace, return the image of the IPS source file to decide between valid
-                     * and invalid IPS objects.
-                     */
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
+            if (implementingClass != null) {
+                return (T)getAdapterByClass(implementingClass);
             }
         }
         if (adaptableObject instanceof IpsElement) {
