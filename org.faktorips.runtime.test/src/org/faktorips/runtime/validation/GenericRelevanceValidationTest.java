@@ -6,7 +6,9 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
@@ -169,5 +171,31 @@ public class GenericRelevanceValidationTest {
         assertThat(message.getCode(), containsString("TestPolicy"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("The field \"Integer Attribute\" contains an invalid value."));
+    }
+
+    @Test
+    public void testValidate_ShouldNotValidate() {
+        AtomicBoolean called = new AtomicBoolean(false);
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US) {
+            @Override
+            public boolean shouldValidate(PolicyAttribute policyAttribute, IModelObject modelObject) {
+                called.set(true);
+                return false;
+            }
+        };
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
+        modelObject.setAllowedValuesForIntegerAttribute(valueSet);
+
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
+                config);
+
+        MessageList messageList = relevanceValidation.validate();
+        assertThat(messageList.isEmpty(), is(true));
+        assertThat(called.get(), is(true));
     }
 }

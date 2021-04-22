@@ -76,9 +76,12 @@ public class GenericRelevanceValidation {
      */
     public MessageList validate() {
         MessageList messages = new MessageList();
-        messages.add(validateValuePresentIfMandatory());
-        messages.add(validateValueNullIfIrrelevant());
-        messages.add(validateValueContainedIfPresent());
+
+        if (config.shouldValidate(policyAttribute, modelObject)) {
+            messages.add(validateValuePresentIfMandatory());
+            messages.add(validateValueNullIfIrrelevant());
+            messages.add(validateValueContainedIfPresent());
+        }
         return messages;
     }
 
