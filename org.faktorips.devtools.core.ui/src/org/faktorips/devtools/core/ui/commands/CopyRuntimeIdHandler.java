@@ -9,45 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.commands;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import java.util.Optional;
+
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
-public class CopyRuntimeIdHandler extends IpsAbstractHandler {
-    @Override
-    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
-            throws ExecutionException {
-        ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
-        Clipboard clipboard = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
-        copyRuntimeIdToClipboard(selection, clipboard);
-    }
+public class CopyRuntimeIdHandler extends AbstractCopyRuntimeIdHandler<IProductCmpt> {
 
-    public void copyRuntimeIdToClipboard(ISelection selection, Clipboard clipboard) {
-        StringBuilder runtimeIds = new StringBuilder();
-        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
-
-        boolean first = true;
-        for (IAdaptable element : typedSelection.getElements()) {
-            if (element.getAdapter(IProductCmpt.class) != null) {
-                IProductCmpt productComponent = element.getAdapter(IProductCmpt.class);
-                if (!first) {
-                    runtimeIds.append(System.lineSeparator());
-                }
-                first = false;
-                runtimeIds.append(productComponent.getRuntimeId());
-            }
-        }
-
-        Object[] ids = new Object[] { runtimeIds.toString() };
-        clipboard.setContents(ids, new Transfer[] { TextTransfer.getInstance() });
+    public CopyRuntimeIdHandler() {
+        super(element -> Optional.ofNullable(element.getAdapter(IProductCmpt.class)), IProductCmpt::getRuntimeId);
     }
 }
