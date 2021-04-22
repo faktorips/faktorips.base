@@ -77,19 +77,29 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
             UIToolkit toolkit = new UIToolkit(null);
             CellEditor editor = null;
 
-            if (type.equals("string")) { //$NON-NLS-1$
-                editor = new TextCellEditor(viewer.getTable());
-            } else if (type.equals("boolean")) { //$NON-NLS-1$
-                Combo combo = toolkit.createComboForBoolean(viewer.getTable(), false, "true", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-                editor = getCellEditorInternal(combo);
-            } else if (type.equals("integer")) { //$NON-NLS-1$
-                editor = new TextCellEditor(viewer.getTable());
-                editor.setValidator(value -> {
-                    if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
-                        return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;
-                    }
-                    return null;
-                });
+            switch (type) {
+                case "string": //$NON-NLS-1$
+                    editor = new TextCellEditor(viewer.getTable());
+                    break;
+                case "boolean": //$NON-NLS-1$
+                    Combo booleanCombo = toolkit.createComboForBoolean(viewer.getTable(), false, "true", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+                    editor = getCellEditorInternal(booleanCombo);
+                    break;
+                case "integer": //$NON-NLS-1$
+                    editor = new TextCellEditor(viewer.getTable());
+                    editor.setValidator(value -> {
+                        if (value == null || !value.toString().matches("[0-9]+")) { //$NON-NLS-1$
+                            return Messages.BuilderSetPropertyEditingSupport_validatorErrorMessage;
+                        }
+                        return null;
+                    });
+                    break;
+                case "enum": //$NON-NLS-1$
+                case "extensionPoint": //$NON-NLS-1$
+                    Combo combo = toolkit.createCombo(viewer.getTable());
+                    combo.setItems(propertyDef.getDiscreteValues());
+                    editor = getCellEditorInternal(combo);
+                    break;
             }
             return editor;
         }

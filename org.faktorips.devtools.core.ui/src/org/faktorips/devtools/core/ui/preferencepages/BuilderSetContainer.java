@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -62,10 +61,11 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class BuilderSetContainer {
 
-    private static final int COLUMNS_COUNT = 3;
     public static final int PROPERTY_NAME_COLUMN_INDEX = 0;
     public static final int PROPERTY_VALUE_COLUMN_INDEX = 1;
     public static final int PROPERTY_DESCRIPTION_COLUMN_INDEX = 2;
+
+    private static final int COLUMNS_COUNT = 3;
 
     private IIpsProject ipsProject;
     private String builderSetId;
@@ -255,7 +255,6 @@ public class BuilderSetContainer {
     }
 
     private String getBuilderSetIdByLabel(String builderSetLabel) {
-        String builderSetId = null;
         IIpsArtefactBuilderSetInfo[] ipsArtefactBuilderSetInfos = IIpsModel.get()
                 .getIpsArtefactBuilderSetInfos();
         for (IIpsArtefactBuilderSetInfo ipsArtefactBuilderSetInfo : ipsArtefactBuilderSetInfos) {
@@ -263,7 +262,7 @@ public class BuilderSetContainer {
                 return ipsArtefactBuilderSetInfo.getBuilderSetId();
             }
         }
-        return builderSetId;
+        return null;
     }
 
     private IIpsArtefactBuilderSetInfo getBuilderSetInfo(String builderSetId) {
@@ -481,7 +480,8 @@ public class BuilderSetContainer {
      * Sorter for IIpsBuilderSetPropertyDef class. Note that only "Property name" is taken into
      * account (value, description, ... are omitted).
      */
-    private static class BuilderSetPropertyDefSorter extends ViewerSorter {
+    @SuppressWarnings("deprecation")
+    private static class BuilderSetPropertyDefSorter extends org.eclipse.jface.viewers.ViewerSorter {
 
         private IIpsProject ipsProject;
         private final TableViewerColumn[] columns;
