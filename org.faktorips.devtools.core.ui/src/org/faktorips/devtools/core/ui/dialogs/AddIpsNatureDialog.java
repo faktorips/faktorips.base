@@ -311,8 +311,9 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
             ipsProjectCreationProperties.setPersistentProject(enablePersistenceCheckbox.getSelection());
             ipsProjectCreationProperties.setPersistenceSupport(persistenceSupport.getText());
-            ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
-
+            if (isGroovyAvailable()) {
+                ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
+            }
             ipsProjectCreationProperties.setLocales(supportedLanguagesControl.getLocales());
             MessageList messages = ipsProjectCreationProperties.validate(javaProject);
             if (messages.containsErrorMsg()) {
