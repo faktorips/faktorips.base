@@ -38,27 +38,6 @@ def static String body(XPolicyCmptClass it) '''
      «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS)»
      «getAnnotationsForPublishedInterface(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS, genInterface())»
     public «CommonGeneratorExtensions::isAbstract(it)» class «implClassName» extends «superclassName» «CommonDefinitions.implementedInterfaces(it)»{
-    
-        /**
-         * «localizedJDoc("IPS_PACKAGE_FIELD")»
-         *
-         * @generated
-         */
-        public static final String IPS_PACKAGE = "«ipsObjectPartContainer.ipsPackageFragment.name»";
-        
-        /**
-         * «localizedJDoc("SIMPLE_NAME_FIELD")»
-         *
-         * @generated
-         */
-        public static final String SIMPLE_NAME = "«name»";
-        
-        /**
-         * «localizedJDoc("QUALIFIED_NAME_FIELD")»
-         *
-         * @generated
-         */
-        public static final String QUALIFIED_NAME = IPS_PACKAGE + '.' + SIMPLE_NAME;      
 
         «IF !generatePublishedInterfaces»
             «FOR association : associations» «PolicyCmptAssociationTmpl.constants(association)» «ENDFOR»
