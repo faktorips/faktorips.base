@@ -34,7 +34,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -83,6 +82,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Returns the array of children of the given parentElement without filtering out children of a
      * specific type or with a specific name.
      */
+    // CSOFF: CyclomaticComplexity
     protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
             if (parentElement instanceof IPolicyCmptTypeAttribute) {
@@ -100,11 +100,12 @@ public class ModelContentProvider implements ITreeContentProvider {
                 } else if (parentElement instanceof IIpsPackageFragment) {
                     return getPackageFragmentContent((IIpsPackageFragment)parentElement);
                 } else if (parentElement instanceof IIpsSrcFile) {
-                    if (IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)parentElement).getIpsObjectType())) {
+                    if (configuration.shouldDisplayChildrenFor(((IIpsSrcFile)parentElement).getIpsObjectType())) {
+                        IIpsObject ipsObject = ((IIpsSrcFile)parentElement).getIpsObject();
+                        return getChildren(ipsObject);
+                    } else {
                         return EMPTY_ARRAY;
                     }
-                    IIpsObject ipsObject = ((IIpsSrcFile)parentElement).getIpsObject();
-                    return getChildren(ipsObject);
                 } else {
                     return ((IIpsElement)parentElement).getChildren();
                 }
@@ -137,6 +138,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
         return EMPTY_ARRAY;
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * <p>
@@ -365,12 +367,13 @@ public class ModelContentProvider implements ITreeContentProvider {
         return concatenate(pcts.toArray(), filesNonIps);
     }
 
-    /*
-     * Returns a new object array containig all <code>IIpsElement</code>s and
-     * <code>IResource</code>s of the given array that are allowed by the configuration. Hidden
-     * <code>IResource</code>s (files and folders starting with ".") and class-files are not
+    /**
+     * Returns a new object array containing all {@link IIpsElement IIpsElements} and
+     * {@link IResource IResources} of the given array that are allowed by the configuration. Hidden
+     * {@link IResource IResources} (files and folders starting with ".") and class-files are not
      * returned. An exception to this rule is the ".ipsproject"-file.
      */
+    // CSOFF: CyclomaticComplexity
     private Object[] filter(Object[] elements) {
         List<Object> filtered = new ArrayList<>();
 
@@ -412,6 +415,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
         return filtered.toArray();
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public Object getParent(Object element) {

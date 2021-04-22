@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -142,7 +143,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() {
+    public void testGetChildren() throws CoreException {
         List<Object> list;
         // --- Tests for hierarchical layout style ---
         // Proj contains only the packageFragmentRoot and a folder,
@@ -255,6 +256,13 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         list = Arrays.asList(children);
         assertTrue(list.contains(subFolder));
         assertTrue(list.contains(file));
+
+        // test for type with no children
+        assertEquals(0, hierarchyProvider.getChildren(tableContents.getIpsSrcFile()).length);
+        EnumContent enumContent = newEnumContent(root, "enumcontent");
+        assertEquals(0, hierarchyProvider.getChildren(enumContent.getIpsSrcFile()).length);
+        // test with allowed children
+        assertEquals(3, hierarchyProvider.getChildren(polCmptType.getIpsSrcFile()).length);
     }
 
     @Test

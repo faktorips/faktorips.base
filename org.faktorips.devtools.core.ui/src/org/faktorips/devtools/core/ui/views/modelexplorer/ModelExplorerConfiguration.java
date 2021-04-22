@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -42,11 +43,13 @@ import org.faktorips.devtools.model.type.IMethod;
  */
 public class ModelExplorerConfiguration {
 
-    private HashSet<Class<? extends IIpsElement>> allowedIpsElementTypes = new HashSet<>();
+    private final Set<Class<? extends IIpsElement>> allowedIpsElementTypes = new HashSet<>();
 
-    private HashSet<Class<? extends IResource>> allowedResourceTypes = new HashSet<>();
+    private final Set<Class<? extends IResource>> allowedResourceTypes = new HashSet<>();
 
     private final IpsObjectType[] allowedIpsObjectTypes;
+
+    private final Set<IpsObjectType> ipsObjectTypesWithDisplayedChildren = new HashSet<>();
 
     /**
      * Constructs a ModelExplorerConfiguration that allows the given list of IpsElement types and
@@ -74,6 +77,18 @@ public class ModelExplorerConfiguration {
         allowedResourceTypes.add(IFolder.class);
         allowedResourceTypes.add(IFile.class);
         allowedResourceTypes.add(IProject.class);
+
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.POLICY_CMPT_TYPE);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.PRODUCT_CMPT_TYPE);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.PRODUCT_CMPT);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.PRODUCT_TEMPLATE);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.ENUM_TYPE);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.TABLE_STRUCTURE);
+        ipsObjectTypesWithDisplayedChildren.add(IpsObjectType.IPS_SOURCE_FILE);
+    }
+
+    public boolean shouldDisplayChildrenFor(IpsObjectType ipsObjectType) {
+        return ipsObjectTypesWithDisplayedChildren.contains(ipsObjectType);
     }
 
     /**
@@ -139,7 +154,7 @@ public class ModelExplorerConfiguration {
      * Returns true if the given class, one of its superclasses or implemented interfaces are
      * contained in the given set.
      */
-    private <T> boolean isAllowedType(Class<? extends T> type, HashSet<Class<? extends T>> allowedTypes) {
+    private <T> boolean isAllowedType(Class<? extends T> type, Set<Class<? extends T>> allowedTypes) {
         for (Class<? extends T> allowedType : allowedTypes) {
             Class<?> allowedClass = allowedType;
             if (allowedClass.isAssignableFrom(type)) {
