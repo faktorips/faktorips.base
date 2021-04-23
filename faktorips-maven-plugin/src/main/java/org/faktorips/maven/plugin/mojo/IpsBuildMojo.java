@@ -510,8 +510,8 @@ public class IpsBuildMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         @SuppressWarnings("unchecked")
         boolean alreadyBuilt = getPluginContext().put("BUILT" + getProjectName(), Boolean.TRUE) != null;
-        if (!alreadyBuilt) {
 
+        if (!alreadyBuilt) {
             // add default repositories if no repositories are specified in the pom.xml
             if (repositories.isEmpty()) {
                 addRepository(eclipseRepository);
@@ -558,15 +558,6 @@ public class IpsBuildMojo extends AbstractMojo {
                 jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
             }
 
-            File workDir = work.getAbsoluteFile();
-            if (workDir.exists()) {
-                try {
-                    FileUtils.deleteDirectory(workDir);
-                } catch (IOException e) {
-                    throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
-                            e);
-                }
-            }
             // no need to clean as we just deleted the parent directory
             boolean clearWorkspaceBeforeLaunch = false;
 
