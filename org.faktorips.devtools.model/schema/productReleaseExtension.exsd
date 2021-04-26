@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.faktorips.devtools.model" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.core" id="releaseDeploymentExtension" name="Release Deployment Extension"/>
+         <meta.schema plugin="org.faktorips.devtools.model" id="releaseDeploymentExtension" name="Release Deployment Extension"/>
       </appInfo>
       <documentation>
          With this extension point you could register an extension for the release deployment process. You have to implement the interface IReleaseAndDeploymentOperation that provides the available target platforms and the concrete implementation of the deployment process.
@@ -63,7 +63,7 @@ To validate the version format you have to specify the correct version format by
                   An implementaion of IDeploymentOperation that provides the available target systems and implements the concrete deployment.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation"/>
                </appInfo>
             </annotation>
          </attribute>

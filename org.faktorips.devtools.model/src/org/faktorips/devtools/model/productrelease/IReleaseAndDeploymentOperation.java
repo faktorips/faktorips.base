@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.productrelease;
+package org.faktorips.devtools.model.productrelease;
 
 import java.util.List;
 

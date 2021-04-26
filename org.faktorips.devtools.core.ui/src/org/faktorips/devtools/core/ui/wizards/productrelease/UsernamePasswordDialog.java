@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.productrelease.ITargetSystem;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.productrelease.ITargetSystem;
 
 public class UsernamePasswordDialog extends Dialog {
 

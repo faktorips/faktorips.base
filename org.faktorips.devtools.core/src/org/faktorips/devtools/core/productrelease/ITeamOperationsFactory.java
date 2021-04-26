@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.productrelease;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 
 /**
  * Implementations create {@link ITeamOperations} for {@link IIpsProject IIpsProjects} configured

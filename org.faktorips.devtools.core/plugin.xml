@@ -8,7 +8,6 @@
    <extension-point id="externalTableFormat" name="External Table Format" schema="schema/externalTableFormat.exsd"/>
    <extension-point id="externalValueConverter" name="External Value Converter" schema="schema/externalValueConverter.exsd"/>
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
-   <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
    <extension-point id="teamOperationsFactory" name="Team Operations Factory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
    

@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <fragment>
    <extension
-         point="org.faktorips.devtools.core.productReleaseExtension">
+         point="org.faktorips.devtools.model.productReleaseExtension">
 	<!--
 	This extension is used to test the deployment wizard
 	-->

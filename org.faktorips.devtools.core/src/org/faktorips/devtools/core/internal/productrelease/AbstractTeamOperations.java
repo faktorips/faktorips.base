@@ -25,7 +25,7 @@ import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
-import org.faktorips.devtools.core.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 
 /**
  * Basic implementation of {@link ITeamOperations} that handles everything that can be done with the
@@ -51,12 +51,17 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
                 return;
             }
             Subscriber subscriber = repositoryProvider.getSubscriber();
-            subscriber.refresh(resources, IResource.DEPTH_ZERO,
+
+            SyncInfoSet outOfSync = new SyncInfoSet();
+            subscriber.collectOutOfSync(resources, 0, outOfSync, monitor);
+            IResource[] underControl = outOfSync.getResources();
+
+            subscriber.refresh(underControl, IResource.DEPTH_ZERO,
                     new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
             List<IResource> syncResources = new ArrayList<>();
-            for (IResource aResource : resources) {
+            for (IResource aResource : underControl) {
                 SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
-                if (syncInfo == null) {
+                if (syncInfo == null || syncInfo.getRemote() == null) {
                     // file seems to be ignored
                     continue;
                 }
