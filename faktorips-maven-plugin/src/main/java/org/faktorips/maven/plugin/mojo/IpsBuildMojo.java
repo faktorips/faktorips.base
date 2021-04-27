@@ -268,6 +268,12 @@ public class IpsBuildMojo extends AbstractMojo {
     private String antScriptPath;
 
     /**
+     * Name of the ant target to call. If no target name is specified, import is used.
+     */
+    @Parameter(property = "ant.target", defaultValue = "import")
+    private String antTarget;
+
+    /**
      * Whether to include the HTML export. It will be generated in {@code target/html}.
      * <p>
      * <em>UI-libraries are required for the HTML export to work, so if you run this build on a CI
@@ -535,7 +541,7 @@ public class IpsBuildMojo extends AbstractMojo {
             applicationsArgs.add("org.eclipse.ant.core.antRunner");
             applicationsArgs.add("-buildfile");
             applicationsArgs.add(getPathToAntScript());
-            applicationsArgs.add("import");
+            applicationsArgs.add(antTarget);
 
             // default values for parameter jvmArgs
             jvmArgs.add("-Xmx1024m");

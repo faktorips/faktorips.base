@@ -11,6 +11,12 @@
                 <item name="Plugins" href="plugins.html" />
                 <item name="Summary" href="summary.html" />
             </item>
+            <item name="Examples" href="examples.html">
+                <item name="Repositories and additional plugins" href="repositories-additional-plugins.html" />
+                <item name="Using a different JDK" href="using-different-jdk.html" />
+                <item name="Faktor-IPS workspace settings" href="workspace-settings.html" />
+                <item name="Properties" href="properties.html" />
+            </item>
         </menu>
     </body>
 

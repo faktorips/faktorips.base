@@ -23,7 +23,6 @@ Include
                         <goals>
                             <goal>faktorips-build</goal>
                         </goals>
-                        <phase>generate-sources</phase>
                     </execution>
                 </executions>
             </plugin>
