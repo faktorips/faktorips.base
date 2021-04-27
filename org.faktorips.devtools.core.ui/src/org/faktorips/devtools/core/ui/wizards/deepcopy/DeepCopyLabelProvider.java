@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
@@ -36,7 +37,9 @@ import org.faktorips.util.StringUtil;
 public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
 
     private final ResourceManager resourceManager;
-    private ImageDescriptor overlay = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("LinkOverlay.gif", true); //$NON-NLS-1$
+    private ImageDescriptor overlay = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
+            "overlays/LinkOverlay.gif", //$NON-NLS-1$
+            true);
     private final DeepCopyPreview deepCopyPreview;
     private final int segmentsToIgnore;
 
