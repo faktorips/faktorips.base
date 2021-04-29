@@ -11,6 +11,7 @@
 package org.faktorips.devtools.ant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,26 +31,45 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
- * Implements a custom Ant task, which triggers a full build on the current workspace. Alternatively
- * one or more {@code EclipseProject} nested tags can be specified to indicate for which projects a
- * full build should be executed. The {@code EclipseProject} tag has a {@code name} attribute where
- * the name of the Eclipse project within the workspace can be specified. If the specified project
+ * Implements a custom Ant task, which triggers a build on the current workspace. Alternatively one
+ * or more {@code EclipseProject} nested tags can be specified to indicate for which projects a full
+ * build should be executed. The {@code EclipseProject} tag has a {@code name} attribute where the
+ * name of the Eclipse project within the workspace can be specified. If the specified project
  * doesn't exist in the workspace the {@code EclipseProject} entry will be ignored during build and
  * a information will be logged to system out.
  */
-public class FullBuildTask extends AbstractIpsTask {
+public class BuildTask extends AbstractIpsTask {
 
     private List<EclipseProject> eclipseProjects = new ArrayList<>();
+    private boolean fullBuild = true;
+    private boolean ipsOnly = false;
 
-    public FullBuildTask() {
-        super("FullBuildTask");
+    public BuildTask() {
+        super("BuildTask");
     }
 
     public void addEclipseProject(EclipseProject eclipsProject) {
         eclipseProjects.add(eclipsProject);
+    }
+
+    public boolean isFullBuild() {
+        return fullBuild;
+    }
+
+    public void setFullBuild(boolean fullBuild) {
+        this.fullBuild = fullBuild;
+    }
+
+    public boolean isIpsOnly() {
+        return ipsOnly;
+    }
+
+    public void setIpsOnly(boolean ipsOnly) {
+        this.ipsOnly = ipsOnly;
     }
 
     /**
@@ -93,7 +113,27 @@ public class FullBuildTask extends AbstractIpsTask {
                     } else {
                         System.out.println();
                     }
-                    project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+                    if (fullBuild) {
+                        System.out.println("Perform full build");
+                        if (ipsOnly) {
+                            project.build(IncrementalProjectBuilder.FULL_BUILD,
+                                    IpsBuilder.BUILDER_ID,
+                                    Collections.emptyMap(),
+                                    null);
+                        } else {
+                            project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+                        }
+                    } else {
+                        System.out.println("Perform incremental build");
+                        if (ipsOnly) {
+                            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
+                                    IpsBuilder.BUILDER_ID,
+                                    Collections.emptyMap(),
+                                    null);
+                        } else {
+                            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+                        }
+                    }
                     System.out.println("finished building project " + project.getName());
                 } else {
                     logProblem(project, IMarker.SEVERITY_WARNING, "Unable to locate the project " + project.getName()
@@ -108,7 +148,6 @@ public class FullBuildTask extends AbstractIpsTask {
 
     private void logProblem(IProject project, Integer severity, String text) {
         System.out.println("Project: " + project.getName() + ", " + getSeverityText(severity) + ": " + text);
-
     }
 
     private void handleMarkers(IProject[] projects) throws CoreException {
@@ -171,7 +210,13 @@ public class FullBuildTask extends AbstractIpsTask {
                             + ipsProject.getIpsArtefactBuilderSet().getVersion());
                 }
             }
-            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            if (fullBuild) {
+                System.out.println("Perform full build");
+                workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+            } else {
+                System.out.println("Perform incremental build");
+                workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
+            }
         } else {
             projects = buildEclipseProjects(workspace);
         }

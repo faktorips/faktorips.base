@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -372,6 +373,18 @@ public class IpsBuildMojo extends AbstractMojo {
     private int debugPort;
 
     /**
+     * The full path to a custom trace-options file. This option can significantly increase the
+     * logging output. Per default an extensive list of trace-options is added when maven is started
+     * with {@code -X} or {@code -debug}.
+     * <p>
+     * For more information see
+     * <a href="https://wiki.eclipse.org/FAQ_How_do_I_use_the_platform_debug_tracing_facility">FAQ
+     * How do I use the platform debug tracing facility</a>
+     */
+    @Parameter(property = "faktorips.debuglog.options")
+    private String debugLogOptions;
+
+    /**
      * Runs a Git diff on the project to see if any files where changed. Can be configured to only
      * print warnings or to fail the build for uncommitted changes.
      *
@@ -386,6 +399,14 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     @Parameter
     private GitStatusPorcelain gitStatusPorcelain;
+
+    /**
+     * Whether to only start the {@code IpsBuilder} or all configured builders. The default is to
+     * use only the {@code IpsBuilder} as it creates the Java source files before the Maven compiler
+     * plugin compiles the entire project.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean buildIpsOnly;
 
     @Component
     private MavenProject project;
@@ -475,11 +496,13 @@ public class IpsBuildMojo extends AbstractMojo {
         if (antScriptPath == null) {
             try {
                 antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
+                Files.deleteIfExists(Paths.get(antScriptPath));
                 FileUtils.forceMkdir(new File(project.getBuild().getDirectory()));
                 String script = IOUtils.toString(getClass().getResourceAsStream("/importProjects.xml"),
                         StandardCharsets.UTF_8);
 
                 boolean usesCustomJdk = usesCustomJdk();
+
                 List<String> replaced = script.lines()
                         .filter(line -> usesCustomJdk || !line.contains("faktorips.configureJdk"))
                         .filter(line -> exportHtml || !line.contains("faktorips.exportHtml"))
@@ -564,7 +587,6 @@ public class IpsBuildMojo extends AbstractMojo {
             if (isGitStatusPorcelain()) {
                 addDependency("org.eclipse.egit.core");
             }
-
             dependencies.addAll(additionalPlugins);
 
             // default values for parameter applicationArgs
@@ -585,6 +607,10 @@ public class IpsBuildMojo extends AbstractMojo {
             jvmArgs.add("-DprojectName=" + getProjectName());
             jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
 
+            boolean fullBuild = session.getGoals().contains("clean");
+            jvmArgs.add("-DfullBuild=" + Boolean.toString(fullBuild));
+            jvmArgs.add("-Dbuild.ipsOnly=" + Boolean.toString(buildIpsOnly));
+
             if (isGitStatusPorcelain()) {
                 jvmArgs.add("-Dfail.build=" + gitStatusPorcelain.getFailBuild());
                 jvmArgs.add("-Dverbosity=" + gitStatusPorcelain.getVerbosity().getName());
@@ -593,6 +619,12 @@ public class IpsBuildMojo extends AbstractMojo {
                 jvmArgs.add("-Xdebug");
                 jvmArgs.add("-Xnoagent");
                 jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
+            }
+
+            if (session.getRequest().getLoggingLevel() == Logger.LEVEL_DEBUG || debugLogOptions != null) {
+                jvmArgs.add("-Declipse.log.level=DEBUG");
+                applicationsArgs.add("-debug");
+                applicationsArgs.add(writeDebugLogSettings());
             }
 
             copyMavenSettings();
@@ -663,17 +695,58 @@ public class IpsBuildMojo extends AbstractMojo {
                             .getAbsoluteFile();
             FileUtils.forceMkdir(settingsDir);
 
-            Properties p = new Properties();
-            p.put("eclipse.m2.userSettingsFile", userSettingsPath);
-            p.put("eclipse.m2.globalSettingsFile", session.getRequest().getGlobalSettingsFile().getAbsolutePath());
-            p.put("eclipse.preferences.version", "1");
-            try (FileOutputStream settings = new FileOutputStream(
-                    new File(settingsDir, "org.eclipse.m2e.core.prefs"))) {
-                p.store(settings, "IpsBuildMojo");
-            }
+            final String finalUserSettings = userSettingsPath;
+
+            writeProperties(settingsDir, "org.eclipse.m2e.core.prefs", p -> {
+                p.put("eclipse.m2.userSettingsFile", finalUserSettings);
+                p.put("eclipse.m2.globalSettingsFile", session.getRequest().getGlobalSettingsFile().getAbsolutePath());
+            });
+            writeProperties(settingsDir, "org.eclipse.core.resources.prefs", p -> {
+                p.put("refresh.enabled", "true");
+                p.put("description.autobuilding", "false");
+            });
+
         } catch (IOException e) {
             getLog().error("Error while copying the maven settings into the workspace", e);
         }
+    }
+
+    private void writeProperties(File settingsDir, String propertyFileName, Consumer<Properties> properties) {
+        try {
+            Properties p = new Properties();
+            properties.accept(p);
+            p.put("eclipse.preferences.version", "1");
+            try (FileOutputStream settings = new FileOutputStream(
+                    new File(settingsDir, propertyFileName))) {
+                p.store(settings, "IpsBuildMojo");
+            }
+        } catch (IOException e) {
+            getLog().error("Error writing settings file " + propertyFileName + " into the workspace metadata dir "
+                    + settingsDir, e);
+        }
+    }
+
+    private String writeDebugLogSettings() {
+        if (debugLogOptions == null) {
+            try {
+                File settingsDir = new File(work,
+                        "data")
+                                .getAbsoluteFile();
+                FileUtils.forceMkdir(settingsDir);
+                String path = settingsDir.getAbsolutePath() + "/.options";
+
+                List<String> loggingOptions = IOUtils.readLines(getClass().getResourceAsStream("/debug_trace"),
+                        StandardCharsets.UTF_8);
+
+                Files.write(Paths.get(path), loggingOptions,
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+
+                return path;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return debugLogOptions;
     }
 
     private void addRepository(String url) {

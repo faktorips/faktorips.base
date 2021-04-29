@@ -116,16 +116,16 @@ public class ProjectImportTask extends AbstractIpsTask {
 
         // check if project already exists in current workspace
         if (project.exists()) {
-            throw new BuildException("Project " + project.getName() + " does already exist.");
-        }
-        System.out.println("importing: " + project.getName());
-        project.create(description, monitor);
+            System.out.println("already in workspace: " + project.getName());
+        } else {
+            System.out.println("importing: " + project.getName());
+            project.create(description, monitor);
 
-        if (copy) {
-            RecursiveCopy copyUtil = new RecursiveCopy();
-            copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+            if (copy) {
+                RecursiveCopy copyUtil = new RecursiveCopy();
+                copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+            }
         }
-
         project.open(monitor);
         project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
         // build is done via FullBuild-Target separately

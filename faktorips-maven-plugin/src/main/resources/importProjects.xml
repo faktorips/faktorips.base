@@ -1,6 +1,6 @@
 <project name="importProjects" default="import">
     <taskdef name="faktorips.import" classname="org.faktorips.devtools.ant.ProjectImportTask" />
-    <taskdef name="faktorips.fullBuild" classname="org.faktorips.devtools.ant.FullBuildTask" />
+    <taskdef name="faktorips.build" classname="org.faktorips.devtools.ant.BuildTask" />
     <taskdef name="faktorips.exportHtml" classname="org.faktorips.devtools.ant.ExportHtmlTask" />
     <taskdef name="faktorips.configureJdk" classname="org.faktorips.devtools.ant.ConfigureJdkTask" />
     <taskdef name="faktorips.mavenImport" classname="org.faktorips.devtools.ant.MavenProjectImportTask" />
@@ -12,8 +12,10 @@
         <faktorips.configureJdk dir="${jdk.dir}" />
         <faktorips.import dir="${sourcedir}" copy="false" />
         <faktorips.mavenImport dir="${sourcedir}" />
-        <faktorips.mavenRefresh updateSnapshots="true" />
-        <faktorips.fullBuild />
+        <faktorips.mavenRefresh updateSnapshots="true" cleanProjects="${fullBuild}" />
+        <faktorips.build fullBuild="${fullBuild}" ipsOnly="${build.ipsOnly}">
+          <EclipseProject name="${projectName}" />           
+        </faktorips.build>
         <faktorips.gitStatus failBuild="${fail.build}" verbosity="${verbosity}" />
         <faktorips.exportHtml ipsProjectName="${projectName}" showValidationErrors="true" showInheritedObjectPartsInTable="true" locale="de" destination="${sourcedir}/target/html/" ipsObjectTypes="ALL" />
     </target>

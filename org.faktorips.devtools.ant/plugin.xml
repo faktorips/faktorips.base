@@ -12,7 +12,7 @@
   
   <extension point="org.eclipse.ant.core.antTasks">
     <antTask
-      class="org.faktorips.devtools.ant.FullBuildTask"
+      class="org.faktorips.devtools.ant.BuildTask"
       eclipseRuntime="true"
       headless="true"
       library="ant_tasks/ant-tasks.jar"
