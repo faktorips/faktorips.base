@@ -31,6 +31,7 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>
@@ -51,6 +52,7 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>
@@ -88,6 +90,7 @@ Also it is possible to add `additionalRepositories` to the Eclipse-Runtime. Thes
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>

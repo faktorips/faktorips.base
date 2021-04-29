@@ -21,6 +21,7 @@ Include
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>

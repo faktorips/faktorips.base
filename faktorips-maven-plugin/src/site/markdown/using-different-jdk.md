@@ -23,6 +23,7 @@ For example, use the JDK with the Id `JavaSE-1.8` in your toolchains.xml.
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>
@@ -41,6 +42,7 @@ The other possibility is to use the directory directly in the `jdkDir` parameter
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>

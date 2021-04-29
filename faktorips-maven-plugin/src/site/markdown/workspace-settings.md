@@ -16,6 +16,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>
@@ -76,6 +77,7 @@ If a custom ant script is used the parameters `exportHtml`, `importAsMavenProjec
                 <executions>
                     <execution>
                         <goals>
+                            <goal>faktorips-clean</goal>
                             <goal>faktorips-build</goal>
                         </goals>
                     </execution>

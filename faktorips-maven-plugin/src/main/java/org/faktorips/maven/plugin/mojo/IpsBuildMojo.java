@@ -558,10 +558,10 @@ public class IpsBuildMojo extends AbstractMojo {
                 jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
             }
 
-            // no need to clean as we just deleted the parent directory
-            boolean clearWorkspaceBeforeLaunch = false;
-
             copyMavenSettings();
+
+            // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
+            boolean clearWorkspaceBeforeLaunch = false;
 
             EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
                     clearWorkspaceBeforeLaunch,
@@ -596,7 +596,10 @@ public class IpsBuildMojo extends AbstractMojo {
             Properties p = new Properties();
             p.put("eclipse.m2.userSettingsFile", session.getRequest().getUserSettingsFile().getAbsolutePath());
             p.put("eclipse.preferences.version", "1");
-            p.store(new FileOutputStream(new File(settingsDir, "org.eclipse.m2e.core.prefs")), "IpsBuildMojo");
+            try (FileOutputStream settings = new FileOutputStream(
+                    new File(settingsDir, "org.eclipse.m2e.core.prefs"))) {
+                p.store(settings, "IpsBuildMojo");
+            }
         } catch (IOException e) {
             getLog().error("Error while copying the maven settings into the workspace", e);
         }

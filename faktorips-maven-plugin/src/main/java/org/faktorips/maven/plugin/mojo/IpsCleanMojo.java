@@ -20,6 +20,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
 
+/**
+ * Cleans the {@link #work} directory of the Faktor-IPS project.
+ */
 @Mojo(name = "faktorips-clean", defaultPhase = LifecyclePhase.CLEAN, threadSafe = true)
 public class IpsCleanMojo extends AbstractMojo {
 
@@ -38,6 +41,7 @@ public class IpsCleanMojo extends AbstractMojo {
         File workDir = work.getAbsoluteFile();
         if (workDir.exists()) {
             try {
+                System.out.println("Deleting " + workDir.toString());
                 FileUtils.deleteDirectory(workDir);
             } catch (IOException e) {
                 throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
