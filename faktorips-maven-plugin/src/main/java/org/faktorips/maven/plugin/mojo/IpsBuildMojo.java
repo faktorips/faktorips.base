@@ -54,6 +54,7 @@ import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo;
+import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.Repository;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -365,6 +366,21 @@ public class IpsBuildMojo extends AbstractMojo {
     @Parameter(property = "faktorips.debug.port", defaultValue = "8000")
     private int debugPort;
 
+    /**
+     * Runs a Git diff on the project to see if any files where changed. Can be configured to only
+     * print warnings or to fail the build for uncommitted changes.
+     * <pre>
+     * {@code
+     * <gitStatusPorcelain>
+     *     <failBuild>false</failBuild>
+     *     <verbosity>VERBOSE</verbosity>
+     * </gitStatusPorcelain>
+     * }
+     * </pre>
+     */
+    @Parameter
+    private GitStatusPorcelain gitStatusPorcelain;
+
     @Component
     private MavenProject project;
 
@@ -464,6 +480,7 @@ public class IpsBuildMojo extends AbstractMojo {
                         .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenRefresh"))
                         .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenImport"))
                         .filter(line -> !importAsMavenProject || !line.contains("faktorips.import"))
+                        .filter(line -> isGitStatusPorcelain() || !line.contains("faktorips.gitStatus"))
                         .collect(Collectors.toList());
 
                 Files.write(Paths.get(antScriptPath), replaced, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
@@ -533,6 +550,10 @@ public class IpsBuildMojo extends AbstractMojo {
                 addDependency("org.eclipse.m2e.maven.runtime");
                 addDependency("org.faktorips.m2e");
             }
+            if (isGitStatusPorcelain()) {
+                addDependency("org.eclipse.egit.core");
+            }
+
             dependencies.addAll(additionalPlugins);
 
             // default values for parameter applicationArgs
@@ -552,6 +573,11 @@ public class IpsBuildMojo extends AbstractMojo {
             }
             jvmArgs.add("-DprojectName=" + getProjectName());
             jvmArgs.add("-Dsourcedir=" + project.getBasedir().getAbsolutePath());
+
+            if (isGitStatusPorcelain()) {
+                jvmArgs.add("-Dfail.build=" + gitStatusPorcelain.getFailBuild());
+                jvmArgs.add("-Dverbosity=" + gitStatusPorcelain.getVerbosity().getName());
+            }
             if (debug) {
                 jvmArgs.add("-Xdebug");
                 jvmArgs.add("-Xnoagent");
@@ -584,6 +610,10 @@ public class IpsBuildMojo extends AbstractMojo {
                     toolchainManager);
             eclipseRunMojo.execute();
         }
+    }
+
+    private boolean isGitStatusPorcelain() {
+        return gitStatusPorcelain != null;
     }
 
     private void copyMavenSettings() {
