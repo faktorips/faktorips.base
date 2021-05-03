@@ -130,7 +130,7 @@ public class FullBuildTask extends AbstractIpsTask {
 
     }
 
-    private void logProblem(IProject project, int severity, String text) {
+    private void logProblem(IProject project, Integer severity, String text) {
         System.out.println("Project: " + project.getName() + ", " + getSeverityText(severity) + ": " + text);
 
     }
@@ -138,13 +138,13 @@ public class FullBuildTask extends AbstractIpsTask {
     private void handleMarkers(IProject[] projects) throws CoreException {
         Set<IProject> projectsWithErrors = new HashSet<>();
         for (IProject project : projects) {
-            IMarker markers[] = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+            IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
             for (IMarker marker : markers) {
                 Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
                 if (severity != null && severity.intValue() == IMarker.SEVERITY_ERROR) {
                     projectsWithErrors.add(project);
                 }
-                logProblem(project, severity.intValue(),
+                logProblem(project, severity,
                         marker.getAttribute(IMarker.MESSAGE, "Problem has no message"));
             }
         }
@@ -155,17 +155,21 @@ public class FullBuildTask extends AbstractIpsTask {
         }
     }
 
-    private String getSeverityText(int severity) {
-        if (severity == IMarker.SEVERITY_ERROR) {
-            return "ERROR";
+    private String getSeverityText(Integer severity) {
+        if (severity == null) {
+            return "";
         }
-        if (severity == IMarker.SEVERITY_WARNING) {
-            return "WARNING";
+
+        switch (severity) {
+            case IMarker.SEVERITY_ERROR:
+                return "ERROR";
+            case IMarker.SEVERITY_WARNING:
+                return "WARNING";
+            case IMarker.SEVERITY_INFO:
+                return "INFO";
+            default:
+                return "Severity-" + severity;
         }
-        if (severity == IMarker.SEVERITY_INFO) {
-            return "INFO";
-        }
-        throw new IllegalArgumentException("Unexpected severity: " + severity);
     }
 
     private String getErroneousProjectsAsText(Set<IProject> projectSet) {

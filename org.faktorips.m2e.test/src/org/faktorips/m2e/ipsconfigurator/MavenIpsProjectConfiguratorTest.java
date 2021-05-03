@@ -422,6 +422,11 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertNotNull(jarPlugin);
         assertThat(jarPlugin.getGroupId(), is(mavenPluginsGroupId));
         assertThat(jarPlugin.getVersion(), is("3.2.0"));
+
+        Plugin ipsPlugin = plugins.get("faktorips-maven-plugin");
+        assertNotNull(ipsPlugin);
+        assertThat(ipsPlugin.getGroupId(), is("org.faktorips"));
+        assertThat(ipsPlugin.getVersion(), is(faktorIpsVersion));
     }
 
     private void checkMavenPlugins(Build build) {
@@ -447,6 +452,14 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         Xpp3Dom configuration = (Xpp3Dom)jarPlugin.getConfiguration();
         assertNotNull(configuration);
         checkJarPluginRequiredConfiguration(configuration);
+
+        Plugin ipsPlugin = plugins.get("faktorips-maven-plugin");
+        assertNotNull(ipsPlugin);
+        assertThat(ipsPlugin.getGroupId(), is("org.faktorips"));
+        PluginExecution ipsPluginExecution = ipsPlugin.getExecutions().get(0);
+        assertNotNull(ipsPluginExecution);
+        assertThat(ipsPluginExecution.getGoals().contains("faktorips-clean"), is(true));
+        assertThat(ipsPluginExecution.getGoals().contains("faktorips-build"), is(true));
     }
 
     private void checkExistingManifestFile() throws Exception {
@@ -530,6 +543,11 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertNotNull(jarPlugin);
         assertThat(jarPlugin.getGroupId(), is(mavenPluginsGroupId));
         assertThat(jarPlugin.getVersion(), is("3.1.2"));
+
+        Plugin ipsPlugin = plugins.get("faktorips-maven-plugin");
+        assertNotNull(ipsPlugin);
+        assertThat(ipsPlugin.getGroupId(), is("org.faktorips"));
+        assertThat(ipsPlugin.getVersion(), is("20.6.0"));
     }
 
     private void checkMavenPluginsContentPom(Build build) {
@@ -574,6 +592,14 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         Xpp3Dom stayArchiveForce = configuration.getChild("archive").getChild("forced");
         assertNotNull(stayArchiveForce);
         assertThat(stayArchiveForce.getValue(), is("true"));
+
+        Plugin ipsPlugin = plugins.get("faktorips-maven-plugin");
+        assertNotNull(ipsPlugin);
+        assertThat(ipsPlugin.getGroupId(), is("org.faktorips"));
+        PluginExecution ipsPluginExecution = ipsPlugin.getExecutions().get(0);
+        assertNotNull(ipsPluginExecution);
+        assertThat(ipsPluginExecution.getGoals().contains("faktorips-clean"), is(true));
+        assertThat(ipsPluginExecution.getGoals().contains("faktorips-build"), is(true));
     }
 
     private void checkJarPluginRequiredConfiguration(Xpp3Dom configuration) {

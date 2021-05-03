@@ -175,9 +175,9 @@ class FaktoripsMavenPluginSupport {
                 <executions>$lineSeparator\
                     <execution>$lineSeparator\
                         <goals>$lineSeparator\
+                            <goal>faktorips-clean</goal>$lineSeparator\
                             <goal>faktorips-build</goal>$lineSeparator\
                         </goals>$lineSeparator\
-                        <phase>generate-sources</phase>$lineSeparator\
                     </execution>$lineSeparator\
                 </executions>$lineSeparator\
             </plugin>"""

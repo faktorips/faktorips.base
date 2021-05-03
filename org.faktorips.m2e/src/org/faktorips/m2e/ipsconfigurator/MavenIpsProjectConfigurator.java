@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
@@ -66,7 +67,8 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     private static final String META_INF_FOLDER = "META-INF";
     private static final String MANIFEST_FILE = "MANIFEST.MF";
 
-    private static final String DEPENDENCY_IPS_GROUP_ID = "org.faktorips";
+    private static final String IPS_GROUP_ID = "org.faktorips";
+    private static final String IPS_PLUGIN_ARTIFACT_ID = "faktorips-maven-plugin";
     private static final String MAVEN_PROPERTY_IPS_VERSION = "faktorips.version";
 
     private static final String MAVEN_PLUGINS_GROUP_ID = "org.apache.maven.plugins";
@@ -313,7 +315,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         String runtimeArtifactId = "faktorips-runtime";
         if (!dependencies.contains(runtimeArtifactId)) {
             Dependency ipsRuntimeDependency = new Dependency();
-            ipsRuntimeDependency.setGroupId(DEPENDENCY_IPS_GROUP_ID);
+            ipsRuntimeDependency.setGroupId(IPS_GROUP_ID);
             ipsRuntimeDependency.setArtifactId(runtimeArtifactId);
             ipsRuntimeDependency.setVersion(ipsVersion);
             mavenModel.addDependency(ipsRuntimeDependency);
@@ -323,7 +325,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             String groovyArtifactId = "faktorips-runtime-groovy";
             if (!dependencies.contains(groovyArtifactId)) {
                 Dependency ipsGroovyDependency = new Dependency();
-                ipsGroovyDependency.setGroupId(DEPENDENCY_IPS_GROUP_ID);
+                ipsGroovyDependency.setGroupId(IPS_GROUP_ID);
                 ipsGroovyDependency.setArtifactId(groovyArtifactId);
                 ipsGroovyDependency.setVersion(ipsVersion);
                 mavenModel.addDependency(ipsGroovyDependency);
@@ -444,6 +446,16 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             pluginManagement.addPlugin(sourcePlugin);
         }
 
+        // IPS plugin
+        Plugin ipsPlugin;
+        if (!managementPlugins.containsKey(IPS_PLUGIN_ARTIFACT_ID)) {
+            ipsPlugin = new Plugin();
+            ipsPlugin.setGroupId(IPS_GROUP_ID);
+            ipsPlugin.setArtifactId(IPS_PLUGIN_ARTIFACT_ID);
+            ipsPlugin.setVersion("${" + MAVEN_PROPERTY_IPS_VERSION + "}");
+            pluginManagement.addPlugin(ipsPlugin);
+        }
+
         mavenBuild.setPluginManagement(pluginManagement);
     }
 
@@ -497,6 +509,18 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             execution.addGoal(goal);
             sourcePlugin.addExecution(execution);
         }
+
+        // IPS plugin
+        Plugin ipsPlugin;
+        if (buildPlugins.containsKey(IPS_PLUGIN_ARTIFACT_ID)) {
+            ipsPlugin = buildPlugins.get(IPS_PLUGIN_ARTIFACT_ID);
+        } else {
+            ipsPlugin = new Plugin();
+            ipsPlugin.setGroupId(IPS_GROUP_ID);
+            ipsPlugin.setArtifactId(IPS_PLUGIN_ARTIFACT_ID);
+            mavenBuild.addPlugin(ipsPlugin);
+        }
+        addIpsPluginConfiguration(ipsPlugin);
     }
 
     /**
@@ -515,6 +539,34 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         }
         addJarPluginSkipConfiguration(configuration);
         addJarPluginArchiveConfiguration(configuration);
+    }
+
+    /**
+     * Creates the configuration required by the Faktor-IPS-Plugin.
+     * <p>
+     * The configuration has to be the following DOM object:<br>
+     * {@code org.codehaus.plexus.util.xml.Xpp3Dom}
+     * 
+     * @param ipsPlugin The Faktor-IPS-Plugin to be configured
+     */
+    private void addIpsPluginConfiguration(Plugin ipsPlugin) {
+        Optional<PluginExecution> maybePluginExecution = ipsPlugin.getExecutions().stream()
+                .findAny();
+        PluginExecution pluginExecution = null;
+        if (maybePluginExecution.isPresent()) {
+            pluginExecution = maybePluginExecution.get();
+        } else {
+            pluginExecution = new PluginExecution();
+            ipsPlugin.addExecution(pluginExecution);
+        }
+        String cleanGoal = "faktorips-clean";
+        String buildGoal = "faktorips-build";
+        if (pluginExecution.getGoals().stream().noneMatch(Predicate.isEqual(cleanGoal))) {
+            pluginExecution.addGoal(cleanGoal);
+        }
+        if (pluginExecution.getGoals().stream().noneMatch(Predicate.isEqual(buildGoal))) {
+            pluginExecution.addGoal(buildGoal);
+        }
     }
 
     /**
