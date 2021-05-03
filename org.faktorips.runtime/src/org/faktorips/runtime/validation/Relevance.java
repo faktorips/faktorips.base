@@ -12,6 +12,16 @@ package org.faktorips.runtime.validation;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
+import org.faktorips.runtime.model.type.ValueSetKind;
+import org.faktorips.valueset.BigDecimalRange;
+import org.faktorips.valueset.DecimalRange;
+import org.faktorips.valueset.DefaultRange;
+import org.faktorips.valueset.DoubleRange;
+import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.LongRange;
+import org.faktorips.valueset.MoneyRange;
+import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 /**
@@ -32,17 +42,68 @@ public enum Relevance {
     /**
      * An attribute with an empty (or {@code null}) value set - no value should be set.
      */
-    IRRELEVANT,
+    IRRELEVANT {
+        @Override
+        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
+            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
+            if (valueSetKind == ValueSetKind.Range) {
+                return new DefaultRange<>();
+            }
+            return new OrderedValueSet<>(false, null);
+        }
+    },
     /**
      * An attribute with value set {@link ValueSet#containsNull() containing} {@code null} - a value
      * can be set but is not required.
      */
-    OPTIONAL,
+    OPTIONAL {
+        @Override
+        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
+            ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
+            Class<?> datatype = policyAttribute.getDatatype();
+            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
+
+            if (Boolean.class.equals(datatype) || boolean.class.equals(datatype)) {
+                return new OrderedValueSet<>(true, null, Boolean.TRUE, Boolean.FALSE);
+            }
+            if (valueSetKind == ValueSetKind.Range) {
+                if (valueSet.containsNull()) {
+                    return valueSet;
+                }
+                return changeRangeRelevance(valueSet, true);
+            }
+            if (valueSetKind == ValueSetKind.Enum) {
+                return new OrderedValueSet<>(true, null, datatype.getEnumConstants());
+            }
+            return new UnrestrictedValueSet<>(true);
+        }
+    },
     /**
      * An attribute with a non-empty value set not {@link ValueSet#containsNull() containing}
      * {@code null} - a value must be set.
      */
-    MANDATORY;
+    MANDATORY {
+        @Override
+        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
+            ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
+            Class<?> datatype = policyAttribute.getDatatype();
+            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
+
+            if (Boolean.class.equals(datatype) || boolean.class.equals(datatype)) {
+                return new OrderedValueSet<>(false, null, Boolean.TRUE, Boolean.FALSE);
+            }
+            if (valueSetKind == ValueSetKind.Range) {
+                if (!valueSet.containsNull()) {
+                    return valueSet;
+                }
+                return changeRangeRelevance(valueSet, false);
+            }
+            if (valueSetKind == ValueSetKind.Enum) {
+                return new OrderedValueSet<>(false, null, datatype.getEnumConstants());
+            }
+            return new UnrestrictedValueSet<>(false);
+        }
+    };
 
     /**
      * Returns whether the attribute with the given property name is considered {@link #IRRELEVANT}
@@ -129,4 +190,53 @@ public enum Relevance {
             return Relevance.MANDATORY;
         }
     }
+
+    /**
+     * Returns a {@link ValueSet} for the given model object's attribute that matches this
+     * {@link Relevance}.
+     */
+    public abstract ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute);
+
+    /**
+     * Returns a {@link ValueSet} for the given model object's attribute identified by the given
+     * property name that matches this {@link Relevance}.
+     */
+    public ValueSet<?> asValueSetFor(IModelObject modelObject, String property) {
+        return this.asValueSetFor(modelObject, IpsModel.getPolicyCmptType(modelObject).getAttribute(property));
+    }
+
+    private static ValueSet<?> changeRangeRelevance(ValueSet<?> valueSet, boolean containsNull) {
+        if (valueSet instanceof BigDecimalRange) {
+            BigDecimalRange bigDecimalRange = (BigDecimalRange)valueSet;
+            return BigDecimalRange.valueOf(bigDecimalRange.getLowerBound(), bigDecimalRange.getUpperBound(),
+                    bigDecimalRange.getStep(), containsNull);
+        }
+        if (valueSet instanceof DecimalRange) {
+            DecimalRange decimalRange = (DecimalRange)valueSet;
+            return DecimalRange.valueOf(decimalRange.getLowerBound(), decimalRange.getUpperBound(),
+                    decimalRange.getStep(), containsNull);
+        }
+        if (valueSet instanceof DoubleRange) {
+            DoubleRange doubleRange = (DoubleRange)valueSet;
+            return DoubleRange.valueOf(doubleRange.getLowerBound(), doubleRange.getUpperBound(), doubleRange.getStep(),
+                    containsNull);
+        }
+        if (valueSet instanceof IntegerRange) {
+            IntegerRange integerRange = (IntegerRange)valueSet;
+            return IntegerRange.valueOf(integerRange.getLowerBound(), integerRange.getUpperBound(),
+                    integerRange.getStep(), containsNull);
+        }
+        if (valueSet instanceof LongRange) {
+            LongRange longRange = (LongRange)valueSet;
+            return LongRange.valueOf(longRange.getLowerBound(), longRange.getUpperBound(),
+                    longRange.getStep(), containsNull);
+        }
+        if (valueSet instanceof MoneyRange) {
+            MoneyRange moneyRange = (MoneyRange)valueSet;
+            return MoneyRange.valueOf(moneyRange.getLowerBound(), moneyRange.getUpperBound(),
+                    moneyRange.getStep(), containsNull);
+        }
+        return null;
+    }
+
 }

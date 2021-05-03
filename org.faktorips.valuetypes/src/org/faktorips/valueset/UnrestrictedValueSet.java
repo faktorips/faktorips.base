@@ -12,6 +12,8 @@ package org.faktorips.valueset;
 
 import java.util.Set;
 
+import org.faktorips.values.NullObject;
+
 /**
  * Special case of value set that represents an unrestricted value set. This is a value set that
  * does not restrict the values allowed by a datatype (Integer, String, etc.).
@@ -43,12 +45,12 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
     }
 
     /**
-     * Returns {@code true} if the given value is not {@code null}. The return value for
-     * {@code null} is dependent on the constructor.
+     * Returns {@code true} if the given value is not {@code null} or a {@link NullObject}. The
+     * return value for {@code null} is dependent on the {@code containsNull} constructor parameter.
      */
     @Override
     public boolean contains(T value) {
-        if (value == null) {
+        if (value == null || value instanceof NullObject) {
             return containsNull;
         } else {
             return true;

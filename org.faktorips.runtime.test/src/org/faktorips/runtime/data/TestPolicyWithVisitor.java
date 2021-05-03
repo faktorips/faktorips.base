@@ -37,11 +37,14 @@ import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.LongRange;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 @IpsPolicyCmptType(name = "TestPolicy")
-@IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute" })
+@IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute", "BooleanAttribute",
+        "EnumAttribute", "RangeAttribute" })
 @IpsAssociations({ "TestDeckung" })
 @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
 public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
@@ -50,6 +53,9 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     public static final String PROPERTY_DECIMAL_ATTRIBUTE = "DecimalAttribute";
     public static final String PROPERTY_MONEY_ATTRIBUTE = "MoneyAttribute";
     public static final String PROPERTY_STRING_ATTRIBUTE = "StringAttribute";
+    public static final String PROPERTY_BOOLEAN_ATTRIBUTE = "BooleanAttribute";
+    public static final String PROPERTY_ENUM_ATTRIBUTE = "EnumAttribute";
+    public static final String PROPERTY_RANGE_ATTRIBUTE = "RangeAttribute";
     public static final IntegerRange MAX_MULTIPLICITY_OF_TESTDECKUNG = IntegerRange.valueOf(0, 2147483647);
     public static final String ASSOCIATION_TESTDECKUNGUNGEN = "testDeckungungen";
 
@@ -57,12 +63,19 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     private Decimal decimalAttribute;
     private Money moneyAttribute;
     private String stringAttribute;
+    private Boolean booleanAttribute;
+    private TestEnum enumAttribute;
+    private Long rangeAttribute;
     private final List<TestDeckungWithVisitor> testDeckungungen = new ArrayList<>();
 
     private ValueSet<Integer> setOfAllowedValuesIntegerAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Decimal> setOfAllowedValuesDecimalAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Money> setOfAllowedValuesMoneyAttribute = new UnrestrictedValueSet<>();
     private ValueSet<String> setOfAllowedValuesStringAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<Boolean> setOfAllowedValuesBooleanAttribute = new UnrestrictedValueSet<>();
+    private OrderedValueSet<TestEnum> setOfAllowedValuesEnumAttribute = new OrderedValueSet<>(true, null,
+            TestEnum.values());
+    private LongRange rangeForRangeAttribute = LongRange.valueOf(2L, 5L, 1L, true);
 
     @IpsAllowedValues("IntegerAttribute")
     public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
@@ -146,6 +159,69 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     @IpsAttributeSetter("StringAttribute")
     public void setStringAttribute(String newValue) {
         stringAttribute = newValue;
+    }
+
+    @IpsAttribute(name = "BooleanAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Boolean getBooleanAttribute() {
+        return booleanAttribute;
+    }
+
+    @IpsAttributeSetter("BooleanAttribute")
+    public void setBooleanAttribute(Boolean newValue) {
+        booleanAttribute = newValue;
+    }
+
+    @IpsAllowedValues("BooleanAttribute")
+    public ValueSet<Boolean> getSetOfAllowedValuesForBooleanAttribute() {
+        return setOfAllowedValuesBooleanAttribute;
+    }
+
+    @IpsAllowedValuesSetter("BooleanAttribute")
+    public void setAllowedValuesForBooleanAttribute(ValueSet<Boolean> setOfAllowedValuesBooleanAttribute) {
+        this.setOfAllowedValuesBooleanAttribute = setOfAllowedValuesBooleanAttribute;
+    }
+
+    @IpsAttribute(name = "EnumAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public TestEnum getEnumAttribute() {
+        return enumAttribute;
+    }
+
+    @IpsAttributeSetter("EnumAttribute")
+    public void setEnumAttribute(TestEnum newValue) {
+        enumAttribute = newValue;
+    }
+
+    @IpsAllowedValues("EnumAttribute")
+    public OrderedValueSet<TestEnum> getAllowedValuesForEnumAttribute() {
+        return setOfAllowedValuesEnumAttribute;
+    }
+
+    @IpsAllowedValuesSetter("EnumAttribute")
+    public void setAllowedValuesForEnumAttribute(ValueSet<TestEnum> setOfAllowedValuesEnumAttribute) {
+        this.setOfAllowedValuesEnumAttribute = (OrderedValueSet<TestEnum>)setOfAllowedValuesEnumAttribute;
+    }
+
+    @IpsAttribute(name = "RangeAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Long getRangeAttribute() {
+        return rangeAttribute;
+    }
+
+    @IpsAttributeSetter("RangeAttribute")
+    public void setRangeAttribute(Long newValue) {
+        rangeAttribute = newValue;
+    }
+
+    @IpsAllowedValues("RangeAttribute")
+    public LongRange getRangeForRangeAttribute() {
+        return rangeForRangeAttribute;
+    }
+
+    @IpsAllowedValuesSetter("RangeAttribute")
+    public void setAllowedValuesForRangeAttribute(ValueSet<Long> rangeForRangeAttribute) {
+        this.rangeForRangeAttribute = (LongRange)rangeForRangeAttribute;
     }
 
     @Override

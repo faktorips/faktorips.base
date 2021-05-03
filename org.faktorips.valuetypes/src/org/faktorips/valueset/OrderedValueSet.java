@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -205,7 +206,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
             OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
             return set.equals(other.set) && containsNull == other.containsNull
                     && (containsNull
-                            ? ((null == nullValue && null == other.nullValue) || (nullValue.equals(other.nullValue)))
+                            ? Objects.equals(nullValue, other.nullValue)
                             : true);
         }
         return false;
