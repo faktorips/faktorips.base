@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -221,8 +222,12 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     private void build(IIpsSrcFile ipsSrcFile, Element root) {
         try {
-            String nodeToString = XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset());
+
+            IIpsProjectProperties properties = ipsSrcFile.getIpsProject().getReadOnlyProperties();
+            String nodeToString = XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset(),
+                    properties.isEscapeNonStandardBlanks());
             build(ipsSrcFile, nodeToString);
+
         } catch (TransformerException e) {
             throw new CoreRuntimeException(new CoreException(new IpsStatus(e)));
         }

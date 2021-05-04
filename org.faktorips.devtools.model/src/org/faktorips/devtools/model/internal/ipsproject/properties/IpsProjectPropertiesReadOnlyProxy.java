@@ -46,6 +46,8 @@ import org.faktorips.values.Decimal;
  */
 public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties {
 
+    private static final String ERROR_READ_ONLY = "This is a read only object and can therefore not be manipulated."; //$NON-NLS-1$
+
     private IIpsProjectProperties propertiesInternal;
 
     public IpsProjectPropertiesReadOnlyProxy(IIpsProjectProperties propertiesInternal) {
@@ -58,7 +60,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void addDefinedDatatype(IDynamicValueDatatype datatype) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -189,7 +191,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -197,7 +199,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setBuilderSetId(String id) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -205,7 +207,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -213,17 +215,17 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setDefinedDatatypes(IDynamicValueDatatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void addDefinedDatatype(Datatype datatype) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setDefinedDatatypes(Datatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -231,7 +233,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -239,7 +241,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setIpsObjectPath(IIpsObjectPath path) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -247,7 +249,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setMinRequiredVersionNumber(String featureId, String version) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -268,12 +270,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void setResourcesPathExcludedFromTheProductDefiniton(
             Set<String> resourcesPathExcludedFromTheProductDefiniton) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -286,7 +288,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setModelProject(boolean modelProject) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -294,7 +296,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setPredefinedDatatypesUsed(String[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -302,7 +304,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -310,7 +312,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -318,7 +320,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setProductDefinitionProject(boolean productDefinitionProject) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -326,7 +328,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -334,12 +336,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setRulesWithoutReferencesAllowedEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -347,7 +349,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setRuntimeIdPrefix(String runtimeIdPrefix) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     /**
@@ -371,7 +373,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      */
     @Override
     public void setLastPersistentModificationTimestamp(long timestamp) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -396,17 +398,17 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setPersistenceSupport(boolean persistentProject) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setTableNamingStrategy(ITableNamingStrategy newStrategy) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     // --
@@ -435,32 +437,32 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setDefaultLanguage(ISupportedLanguage supportedLanguage) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setDefaultLanguage(Locale locale) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void addSupportedLanguage(Locale locale) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void removeSupportedLanguage(ISupportedLanguage supportedLanguage) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void removeSupportedLanguage(Locale locale) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setDefaultCurrency(Currency defaultCurrency) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -475,7 +477,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setVersion(String version) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -495,7 +497,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setReleaseExtensionId(String releaseExtensionId) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -505,7 +507,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setAssociationsInFormulas(boolean associationsInFormulas) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -520,7 +522,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setFormulaLanguageLocale(Locale locale) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -530,12 +532,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void addMarkerEnum(String qualifiedName) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void removeMarkerEnum(String qualifiedName) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -545,7 +547,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setMarkerEnumsEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -555,7 +557,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setBusinessFunctionsForValidationRules(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -565,12 +567,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setChangingOverTimeDefault(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setInferredTemplatePropertyValueThreshold(Decimal relativePropertyValueThreshold) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -580,7 +582,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setInferredTemplateLinkThreshold(Decimal relativeLinkThreshold) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -590,7 +592,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -600,7 +602,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -615,7 +617,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setTableContentFormat(TableContentFormat tableContentFormat) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -625,7 +627,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setGenerateValidatorClassDefault(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -635,6 +637,16 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setGenericValidationDefault(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
+    }
+
+    @Override
+    public boolean isEscapeNonStandardBlanks() {
+        return propertiesInternal.isEscapeNonStandardBlanks();
+    }
+
+    @Override
+    public void setEscapeNonStandardBlanks(boolean enabled) {
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 }

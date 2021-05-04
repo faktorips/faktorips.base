@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -234,5 +235,17 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         XmlUtil.writeXMLtoFile(file, inputDoc, null, 2, UTF8);
         return file;
     }
-
+	
+    @Test
+    public void testEscapeSpacesToXml() throws TransformerException {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
+        Element el = doc.createElement("ElementWithNonBreakingSpace");
+        el.setTextContent(
+                "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them.");
+        docElement.appendChild(el);
+        String string = XmlUtil.nodeToString(doc, "UTF-8", true);
+        assertThat(string, containsString(
+                "For&#160;some&#8239;reason,&#65279;someone&#8192;used&#8193;a&#8194;lot&#8195;of&#8196;different&#8197;spaces.&#8198;Thanks&#8199;to&#8200;apache&#8201;commons&#8202;we&#8287;can&#12288;replace them."));
+    }
 }
