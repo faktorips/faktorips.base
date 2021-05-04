@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.tablestructure;
 
 import java.util.Arrays;
 
+import org.faktorips.devtools.model.INamedValue;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -19,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Peter Erzberger
  */
-public enum ColumnRangeType {
+public enum ColumnRangeType implements INamedValue {
     TWO_COLUMN_RANGE("twoColumn", Messages.ColumnRangeType_twoColumns), //$NON-NLS-1$
     ONE_COLUMN_RANGE_FROM("oneColumnFrom", Messages.ColumnRangeType_fromColumnOnly), //$NON-NLS-1$
     ONE_COLUMN_RANGE_TO("oneColumnTo", Messages.ColumnRangeType_toColumnOnly); //$NON-NLS-1$
@@ -41,10 +42,12 @@ public enum ColumnRangeType {
         return Arrays.stream(ColumnRangeType.values()).filter(s -> s.id.equals(id)).findAny().orElse(null);
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

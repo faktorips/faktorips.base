@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.function.Function;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
@@ -68,6 +69,7 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.faktorips.devtools.model.INamedValue;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -862,11 +864,14 @@ public class UIToolkit {
      */
     @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, E[] values) {
+        return createCombo(parent, values, INamedValue::getName);
+    }
+
+    private <E> Combo createCombo(Composite parent,
+            E[] values,
+            Function<? super E, String> toString) {
         Combo newCombo = createCombo(parent);
-        String[] names = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            names[i] = values[i].toString();
-        }
+        String[] names = Arrays.stream(values).map(toString).toArray(String[]::new);
         newCombo.setItems(names);
         return newCombo;
     }

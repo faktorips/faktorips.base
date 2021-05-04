@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.testcase;
 
 import java.util.Arrays;
 
+import org.faktorips.devtools.model.INamedValue;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -19,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-public enum TestRuleViolationType {
+public enum TestRuleViolationType implements INamedValue {
 
     VIOLATED("violated", Messages.TestRuleViolationType_Violated, Messages.TestRuleViolationType_TextViolated), //$NON-NLS-1$
     NOT_VIOLATED("notViolated", Messages.TestRuleViolationType_NotViolated, //$NON-NLS-1$
@@ -47,10 +48,12 @@ public enum TestRuleViolationType {
         return Arrays.stream(TestRuleViolationType.values()).filter(s -> s.id.equals(id)).findAny().orElse(UNKNOWN);
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

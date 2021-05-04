@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.testcase.deltapresentation;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.INamedValue;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -31,7 +32,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Joerg Ortmann
  */
-enum TestCaseDeltaType {
+enum TestCaseDeltaType implements INamedValue {
 
     /* Test case side */
 
@@ -78,10 +79,12 @@ enum TestCaseDeltaType {
         imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(icon);
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }

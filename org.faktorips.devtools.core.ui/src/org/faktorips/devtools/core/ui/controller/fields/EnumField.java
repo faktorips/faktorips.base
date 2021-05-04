@@ -10,8 +10,11 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.Arrays;
+
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.model.INamedValue;
 
 /**
  * An edit field for the Combo control whose items are derived from an Java Enum (introduced in Java
@@ -55,10 +58,9 @@ public class EnumField<T extends Enum<T>> extends ComboField<T> {
 
     protected void initComboItems(Combo combo, T[] enumConstants) {
         usedEnumValues = enumConstants;
-        String[] allEnumValues = new String[enumConstants.length];
-        for (int i = 0; i < enumConstants.length; i++) {
-            allEnumValues[i] = enumConstants[i].toString();
-        }
+        String[] allEnumValues = Arrays.stream(enumConstants)
+                .map(INamedValue::getName)
+                .toArray(String[]::new);
         combo.setItems(allEnumValues);
     }
 
@@ -76,7 +78,9 @@ public class EnumField<T extends Enum<T>> extends ComboField<T> {
     }
 
     public void setEnumValue(Enum<?> newValue) {
-        getCombo().setText(newValue == null ? "" : newValue.toString()); //$NON-NLS-1$
+        getCombo().setText(newValue == null
+                ? "" //$NON-NLS-1$
+                : INamedValue.getName(newValue));
     }
 
     @Override
