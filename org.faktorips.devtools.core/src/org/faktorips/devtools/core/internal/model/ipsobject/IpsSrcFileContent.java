@@ -320,7 +320,8 @@ public class IpsSrcFileContent {
                     }
                     Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
                     String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-                    String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding);
+                    String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding,
+                            ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                     ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
                     IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                     EclipseIOUtil.writeToFile(file, is, force, true, monitor);

@@ -54,6 +54,41 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
+    private static final String CARRIAGE_RETURN = "\r"; //$NON-NLS-1$
+    private static final String DOUBLE_CARRIAGE_RETURN = "\r\r"; //$NON-NLS-1$
+    private static final String IDEOGRAPHIC_ESC = "&#12288;"; //$NON-NLS-1$
+    private static final String IDEOGRAPHIC = "\u3000"; //$NON-NLS-1$
+    private static final String MEDIUM_MATH_ESC = "&#8287;"; //$NON-NLS-1$
+    private static final String MEDIUM_MATH = "\u205F"; //$NON-NLS-1$
+    private static final String HAIR_ESC = "&#8202;"; //$NON-NLS-1$
+    private static final String HAIR = "\u200A"; //$NON-NLS-1$
+    private static final String THIN_ESC = "&#8201;"; //$NON-NLS-1$
+    private static final String THIN = "\u2009"; //$NON-NLS-1$
+    private static final String PUNCTUATION_ESC = "&#8200;"; //$NON-NLS-1$
+    private static final String PUNCTUATION = "\u2008"; //$NON-NLS-1$
+    private static final String FIGURE_ESC = "&#8199;"; //$NON-NLS-1$
+    private static final String FIGURE = "\u2007"; //$NON-NLS-1$
+    private static final String SIX_PER_EM_ESC = "&#8198;"; //$NON-NLS-1$
+    private static final String SIX_PER_EM = "\u2006"; //$NON-NLS-1$
+    private static final String FOUR_PER_EM_ESC = "&#8197;"; //$NON-NLS-1$
+    private static final String FOUR_PER_EM = "\u2005"; //$NON-NLS-1$
+    private static final String THREE_PER_EM_ESC = "&#8196;"; //$NON-NLS-1$
+    private static final String THREE_PER_EM = "\u2004"; //$NON-NLS-1$
+    private static final String EM_SPACE_ESC = "&#8195;"; //$NON-NLS-1$
+    private static final String EM_SPACE = "\u2003"; //$NON-NLS-1$
+    private static final String EN_SPACE_ESC = "&#8194;"; //$NON-NLS-1$
+    private static final String EN_SPACE = "\u2002"; //$NON-NLS-1$
+    private static final String EM_QUAD_ESC = "&#8193;"; //$NON-NLS-1$
+    private static final String EM_QUAD = "\u2001"; //$NON-NLS-1$
+    private static final String EN_QUAD_ESC = "&#8192;"; //$NON-NLS-1$
+    private static final String EN_QUAD = "\u2000"; //$NON-NLS-1$
+    private static final String ZERO_WIDTH_NO_BREAK_ESC = "&#65279;"; //$NON-NLS-1$
+    private static final String ZERO_WIDTH_NO_BREAK = "\uFEFF"; //$NON-NLS-1$
+    private static final String NARROW_NO_BREAK_ESC = "&#8239;"; //$NON-NLS-1$
+    private static final String NARROW_NO_BREAK = "\u202F"; //$NON-NLS-1$
+    private static final String NO_BREAK_ESC = "&#160;"; //$NON-NLS-1$
+    private static final String NO_BREAK = "\u00A0"; //$NON-NLS-1$
+
     public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$
 
     public static final String XML_ATTRIBUTE_SPACE_VALUE = "preserve"; //$NON-NLS-1$
@@ -169,6 +204,20 @@ public class XmlUtil {
      * Transforms the given node to a String.
      */
     public static final String nodeToString(Node node, String encoding) throws TransformerException {
+        return nodeToString(node, encoding, false);
+    }
+
+    /**
+     * Transforms the given node to a String.
+     * 
+     * @param node the node
+     * @param encoding the used encoding
+     * @param escapeBlanks if non standard blanks should be escaped
+     * @return the node as {@link String}
+     * @throws TransformerException for errors that occurred during the transformation process
+     */
+    public static final String nodeToString(Node node, String encoding, boolean escapeBlanks)
+            throws TransformerException {
         boolean preserveSpace = removePreserveSpace(node);
 
         StringWriter writer = new StringWriter();
@@ -179,7 +228,71 @@ public class XmlUtil {
             xml = addPreserveSpace(xml);
         }
         xml = noIndentationAroundCDATA(xml);
-        return removeDuplicateWindowsLineBreaks(xml);
+
+        xml = removeOrEscapeUnwantedCharacters(xml, escapeBlanks);
+
+        return xml;
+
+    }
+
+    /**
+     * Will always replace Duplicate Windows Line Breaks. If escapeBlanks is {@code true} this
+     * method will also escape non standard blanks with the corresponding XML entity (e.g. non
+     * breaking space {@code U+00A0} to {@code &#160;}).
+     * <p>
+     * Supported space characters are:
+     * <ul>
+     * <li>no-break space</li>
+     * <li>narrow no-break space</li>
+     * <li>zero width no-break space</li>
+     * <li>en quad</li>
+     * <li>em quad</li>
+     * <li>en space</li>
+     * <li>em space</li>
+     * <li>three-per-em space</li>
+     * <li>four-per-em space</li>
+     * <li>six-per-em space</li>
+     * <li>figure space</li>
+     * <li>punctuation space</li>
+     * <li>thin space</li>
+     * <li>hair space</li>
+     * <li>medium mathematical space</li>
+     * <li>ideographic space</li>
+     * </ul>
+     * 
+     * @param xml the XML to replace
+     * @param escapeBlanks whether to escape non standard blanks
+     * @return the replaced XML
+     */
+    private static String removeOrEscapeUnwantedCharacters(String xml, boolean escapeBlanks) {
+        String[] searchList = null;
+        String[] replacementList = null;
+
+        if (escapeBlanks) {
+            searchList = new String[] { NO_BREAK, NARROW_NO_BREAK,
+                    ZERO_WIDTH_NO_BREAK, EN_QUAD,
+                    EM_QUAD, EN_SPACE,
+                    EM_SPACE, THREE_PER_EM,
+                    FOUR_PER_EM, SIX_PER_EM,
+                    FIGURE, PUNCTUATION,
+                    THIN, HAIR,
+                    MEDIUM_MATH, IDEOGRAPHIC,
+                    DOUBLE_CARRIAGE_RETURN };
+            replacementList = new String[] { NO_BREAK_ESC, NARROW_NO_BREAK_ESC,
+                    ZERO_WIDTH_NO_BREAK_ESC, EN_QUAD_ESC,
+                    EM_QUAD_ESC, EN_SPACE_ESC,
+                    EM_SPACE_ESC, THREE_PER_EM_ESC,
+                    FOUR_PER_EM_ESC, SIX_PER_EM_ESC,
+                    FIGURE_ESC, PUNCTUATION_ESC,
+                    THIN_ESC, HAIR_ESC,
+                    MEDIUM_MATH_ESC, IDEOGRAPHIC_ESC,
+                    CARRIAGE_RETURN };
+        } else {
+            searchList = new String[] { DOUBLE_CARRIAGE_RETURN };
+            replacementList = new String[] { CARRIAGE_RETURN };
+        }
+
+        return StringUtils.replaceEach(xml, searchList, replacementList);
     }
 
     /**
@@ -214,13 +327,6 @@ public class XmlUtil {
     private static String noIndentationAroundCDATA(String xml) {
         return xml.replaceAll(">[\\n\\r\\s]+<!\\[CDATA", "><![CDATA") //$NON-NLS-1$//$NON-NLS-2$
                 .replaceAll("]]>[\\n\\r\\s]+</", "]]></"); //$NON-NLS-1$//$NON-NLS-2$
-    }
-
-    /**
-     * Workaround for Windows bug producing \r\r\n in CDATA sections.
-     */
-    private static String removeDuplicateWindowsLineBreaks(String xml) {
-        return xml.replace("\r\r", "\r"); //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**

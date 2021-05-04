@@ -124,6 +124,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT = "generateValidatorClassDefault"; //$NON-NLS-1$
 
+    private static final String SETTING_ESCAPE_NON_STANDARD_BLANKS = "escapeNonStandardBlanks"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -185,6 +187,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
     private boolean generateValidatorClassByDefault = false;
+    private boolean escapeNonStandardBlanks = false;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
@@ -688,6 +691,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT,
                 isGenerateValidatorClassDefaultEnabled()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ESCAPE_NON_STANDARD_BLANKS,
+                isEscapeNonStandardBlanks()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1055,6 +1061,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setChangingOverTimeDefault(enabled);
         } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
             setGenerateValidatorClassDefault(enabled);
+        } else if (name.equals(SETTING_ESCAPE_NON_STANDARD_BLANKS)) {
+            setEscapeNonStandardBlanks(enabled);
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD)) {
             setInferredTemplateLinkThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
@@ -1467,6 +1475,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- Default value for 'generate validation class' property on new PolicyCmptTypes." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Whether non-standard blanks such as the non-breaking space should be escaped as XML entities when writing XML files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ESCAPE_NON_STANDARD_BLANKS + "\" value=\"false\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1825,6 +1836,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
+    public boolean isEscapeNonStandardBlanks() {
+        return escapeNonStandardBlanks;
+    }
+
+    @Override
+    public void setEscapeNonStandardBlanks(boolean enabled) {
+        this.escapeNonStandardBlanks = enabled;
+    }
+
+    @Override
     public Decimal getInferredTemplateLinkThreshold() {
         return inferredTemplateLinkThreshold;
     }
@@ -1873,5 +1894,4 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void setTableContentFormat(TableContentFormat tableContentFormat) {
         this.tableContentFormat = tableContentFormat;
     }
-
 }

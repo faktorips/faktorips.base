@@ -734,4 +734,16 @@ public interface IIpsProjectProperties {
      * @see #isGenerateValidatorClassDefaultEnabled()
      */
     void setGenerateValidatorClassDefault(boolean enabled);
+
+    /**
+     * Returns {@code true} if non-standard blanks should be escaped to their XML entity (e.g.
+     * non-breaking space {@code U+00A0} to {@code &#160;}).
+     * 
+     */
+    boolean isEscapeNonStandardBlanks();
+
+    /**
+     * @see #isEscapeNonStandardBlanks()
+     */
+    void setEscapeNonStandardBlanks(boolean enabled);
 }

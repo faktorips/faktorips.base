@@ -45,6 +45,8 @@ import org.faktorips.values.Decimal;
  */
 public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties {
 
+    private static final String ERROR_READ_ONLY = "This is a read only object and can therefor not be manipulated."; //$NON-NLS-1$
+
     private IIpsProjectProperties propertiesInternal;
 
     public IpsProjectPropertiesReadOnlyProxy(IIpsProjectProperties propertiesInternal) {
@@ -550,7 +552,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setMarkerEnumsEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -570,12 +572,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setChangingOverTimeDefault(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
     public void setInferredTemplatePropertyValueThreshold(Decimal relativePropertyValueThreshold) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -585,7 +587,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setInferredTemplateLinkThreshold(Decimal relativeLinkThreshold) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -595,7 +597,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -605,7 +607,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -620,7 +622,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setTableContentFormat(TableContentFormat tableContentFormat) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
@@ -630,7 +632,17 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setGenerateValidatorClassDefault(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+        throw new RuntimeException(ERROR_READ_ONLY);
 
+    }
+
+    @Override
+    public boolean isEscapeNonStandardBlanks() {
+        return propertiesInternal.isEscapeNonStandardBlanks();
+    }
+
+    @Override
+    public void setEscapeNonStandardBlanks(boolean enabled) {
+        throw new RuntimeException(ERROR_READ_ONLY);
     }
 }
