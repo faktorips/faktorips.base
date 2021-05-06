@@ -7,6 +7,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeExtensionTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import org.faktorips.devtools.model.builder.naming.BuilderAspect
 
 class PolicyCmptAttributeTmpl {
 
@@ -274,7 +275,11 @@ class PolicyCmptAttributeTmpl {
   '''
 
   def package static genericValidation(XPolicyAttribute it) '''
-    ml.add(«GenericRelevanceValidation».of(this, «constantNamePropertyName», context));
+      «IF policyCmptNode.ipsObjectPartContainer.generateValidatorClass»
+      ml.add(«GenericRelevanceValidation».of(get«policyCmptNode.implClassName»(), «addStaticImport(policyCmptNode.getQualifiedName(BuilderAspect.INTERFACE),constantNamePropertyName)», context));
+      «ELSE»
+      ml.add(«GenericRelevanceValidation».of(this, «constantNamePropertyName», context));
+      «ENDIF»
   '''
 
 }
