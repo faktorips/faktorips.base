@@ -218,7 +218,7 @@ replacePomsAndPluginXml $MAVEN_PLUGIN $MAVEN_PLUGIN_JAR $MAVEN_PLUGIN_POM
 # $5  POM file 
 function signAndDeploy {
   echo "signing and deploying $1"
-  mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$2 -Dsources=$3 -Djavadoc=$4 -Dversion=$RELEASE_VERSION -DpomFile=$5
+  mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$2 -Dsources=$3 -Djavadoc=$4 -Dversion=$RELEASE_VERSION -DpomFile=$5 -Dpackaging=jar
 }
 
 # $1  Project Name
@@ -227,7 +227,7 @@ function signAndDeploy {
 # $4  POM file 
 function signAndDeployWithoutJavadoc {
   echo "signing and deploying $1"
-  mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$2 -Dsources=$3 -Dversion=$RELEASE_VERSION -DpomFile=$4
+  mvn gpg:sign-and-deploy-file -Durl=$REPO_URL -DrepositoryId=$REPO_ID -Dfile=$2 -Dsources=$3 -Dversion=$RELEASE_VERSION -DpomFile=$4 -Dpackaging=jar
 }
 
 echo "########################"

@@ -376,7 +376,7 @@
   <Setting enabled="false" name="sharedDetailToMasterAssociations"/>
   <Setting enabled="false" name="associationsInFormulas"/>
   <Setting name="formulaLanguageLocale" value="en"/>
-  <Setting enabled="true" name="markerEnums" value=""/>
+  <Setting enabled="false" name="markerEnums" value=""/>
   <Setting enabled="false" name="businessFunctionsForValidationRules"/>
   <Setting enabled="false" name="changingOverTimeDefault"/>
   <Setting name="inferredTemplateLinkThreshold" value="1"/>
