@@ -182,6 +182,29 @@ function replacePom {
 # $1  Project Name
 # $2  JAR File
 # $3  POM file
+function replacePomsForArchetype {
+    echo "working on $1"
+    unzip $2 META-INF/maven/*
+    unzip $2 archetype-resources/*
+ 
+    JAR_POM=$(find META-INF/maven -name pom.xml)
+    cp $3 $JAR_POM
+ 
+    JAR_PROP=$(find META-INF/maven -name pom.properties)
+    sed -i "s/version=.*/version=$RELEASE_VERSION/g" $JAR_PROP
+ 
+    JAR_ARCHETYPE_POM=$(find archetype-resources -name pom.xml)
+    mv $JAR_ARCHETYPE_POM $JAR_ARCHETYPE_POM.old
+    xmlstarlet edit -N x="http://maven.apache.org/POM/4.0.0" --update "/x:project/x:properties/x:faktor-ips.version" --value "$RELEASE_VERSION" $JAR_ARCHETYPE_POM.old > $JAR_ARCHETYPE_POM
+  
+    zip $2 $JAR_POM $JAR_PROP $JAR_ARCHETYPE_POM
+    rm -rf META-INF
+    rm -rf archetype-resources
+}
+
+# $1  Project Name
+# $2  JAR File
+# $3  POM file
 function replacePomsAndPluginXml {
     echo "working on $1"
     unzip $2 META-INF/maven/*
@@ -208,7 +231,7 @@ replacePom $RUNTIME_LIB $RUNTIME_LIB_JAR $RUNTIME_LIB_POM
 replacePom $VALUETYPES_LIB $VALUETYPES_LIB_JAR $VALUETYPES_LIB_POM
 replacePom $VALUETYPES_JODA_LIB $VALUETYPES_JODA_LIB_JAR $VALUETYPES_JODA_LIB_POM
 replacePom $GROOVY_LIB $GROOVY_LIB_JAR $GROOVY_LIB_POM
-replacePom $MAVEN_ARCHETYPE $MAVEN_ARCHETYPE_JAR $MAVEN_ARCHETYPE_POM
+replacePomsForArchetype $MAVEN_ARCHETYPE $MAVEN_ARCHETYPE_JAR $MAVEN_ARCHETYPE_POM
 replacePomsAndPluginXml $MAVEN_PLUGIN $MAVEN_PLUGIN_JAR $MAVEN_PLUGIN_POM
 
 # $1  Project Name
