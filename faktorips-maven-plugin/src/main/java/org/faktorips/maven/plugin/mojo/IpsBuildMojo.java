@@ -540,7 +540,7 @@ public class IpsBuildMojo extends AbstractMojo {
             applicationsArgs.add("-application");
             applicationsArgs.add("org.eclipse.ant.core.antRunner");
             applicationsArgs.add("-buildfile");
-            applicationsArgs.add(getPathToAntScript());
+            applicationsArgs.add("\"" + getPathToAntScript() + "\"");
             applicationsArgs.add(antTarget);
 
             // default values for parameter jvmArgs
