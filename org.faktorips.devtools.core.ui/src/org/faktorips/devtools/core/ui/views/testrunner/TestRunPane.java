@@ -116,49 +116,6 @@ public class TestRunPane {
         fTable.setMenu(menu);
     }
 
-    private class TableMenu extends MenuManager implements IMenuListener {
-        @Override
-        public void menuAboutToShow(IMenuManager manager) {
-            if (!(fTable.getItemCount() > 0) && getSelectedItem() != null) {
-                return;
-            }
-
-            Action open = new Action("actionOpen", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
-                @Override
-                public void run() {
-                    new OpenTestInEditorAction(testRunnerViewPart, testRunnerViewPart.getSelectedTestFullPath(),
-                            testRunnerViewPart.getSelectedTestQualifiedName(), null).run();
-                }
-            };
-            open.setText(Messages.TestRunPane_Menu_GoToFile);
-            manager.add(open);
-
-            manager.add(new Separator());
-
-            Action runAction = new Action("actionRun", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
-                @Override
-                public void run() {
-                    startSelectedTest(ILaunchManager.RUN_MODE);
-                }
-            };
-            runAction.setText(Messages.TestRunPane_Menu_Run);
-            manager.add(runAction);
-
-            // show debug entry only if the current perspective is not the produduct definition
-            // perspective
-            if (!IpsPlugin.getDefault().isProductDefinitionPerspective()) {
-                Action debugAction = new Action("actionDebug", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
-                    @Override
-                    public void run() {
-                        startSelectedTest(ILaunchManager.DEBUG_MODE);
-                    }
-                };
-                debugAction.setText(Messages.TestRunPane_MenuDebug);
-                manager.add(debugAction);
-            }
-        }
-    }
-
     private void startSelectedTest(String mode) {
         String selectedTestQualifiedName = getSelectedTestQualifiedName();
         if (StringUtils.isEmpty(selectedTestQualifiedName)) {
@@ -200,7 +157,7 @@ public class TestRunPane {
      */
     private void showDetailsInFailurePane(TableItem tableItem) {
         TestTableEntry testEntry = (TestTableEntry)tableItem.getData();
-        String details[] = EMPTY_STRING_ARRAY;
+        String[] details = EMPTY_STRING_ARRAY;
         if (testEntry.isFailure()) {
             details = testEntry.getFailureDetails().toArray(new String[0]);
         } else if (testEntry.isError()) {
@@ -447,6 +404,116 @@ public class TestRunPane {
         return fTable.getItem(index);
     }
 
+    void checkMissingEntries() {
+        if (missingTestEntries.size() == 0) {
+            return;
+        }
+        synchronized (missingTestEntries) {
+            for (String element : missingTestEntries) {
+                TestTableEntry testTableEntry = fTableItemMap.get(element);
+                if (testTableEntry == null) {
+                    missingTestEntries.add(element);
+                    return;
+                }
+                updateTestEntryStatusImage(testTableEntry);
+            }
+        }
+    }
+
+    public void toggleShowErrorsOrFailuresOnly() {
+        showErrorsOrFailureOnly = !showErrorsOrFailureOnly;
+        setShowErrorsOrFailuresOnly(showErrorsOrFailureOnly);
+    }
+
+    public void setShowErrorsOrFailuresOnly(boolean showErrorsOrFailuresOnly) {
+        if (showErrorsOrFailuresOnly) {
+            removeNonErrorsAndFailuresFromTable();
+        } else {
+            showAllElementsInTable();
+        }
+    }
+
+    private void showAllElementsInTable() {
+        for (TestTableEntry tableEntry : fTableItemMap.values()) {
+            if (tableEntry.getTableItem() == null) {
+                TableItem tableItem = new TableItem(fTable, SWT.NONE);
+                tableItem.setText(tableEntry.getQualifiedTestName());
+                // test was successful before, because it was not visible <- show only error or
+                // failure filter
+                ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                        "obj16/testok.gif"); //$NON-NLS-1$
+                tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
+                tableItem.setData(tableEntry);
+                tableEntry.setTableItem(tableItem);
+            }
+        }
+    }
+
+    private void removeNonErrorsAndFailuresFromTable() {
+        List<Integer> nonErrorsOrFailuresIndices = new ArrayList<>();
+        for (TestTableEntry testTableEntry : fTableItemMap.values()) {
+            if (!(testTableEntry.isError() || testTableEntry.isFailure())) {
+                TableItem tableItem = testTableEntry.getTableItem();
+                if (tableItem == null) {
+                    continue;
+                }
+                nonErrorsOrFailuresIndices.add(fTable.indexOf(tableItem));
+                testTableEntry.removeTableItem();
+            }
+        }
+        if (nonErrorsOrFailuresIndices.size() == 0) {
+            return;
+        }
+        int[] indicesToRemove = new int[nonErrorsOrFailuresIndices.size()];
+        for (int i = 0; i < nonErrorsOrFailuresIndices.size(); i++) {
+            indicesToRemove[i] = nonErrorsOrFailuresIndices.get(i);
+        }
+        fTable.remove(indicesToRemove);
+    }
+
+    private class TableMenu extends MenuManager implements IMenuListener {
+        @Override
+        public void menuAboutToShow(IMenuManager manager) {
+            if (!(fTable.getItemCount() > 0) && getSelectedItem() != null) {
+                return;
+            }
+
+            Action open = new Action("actionOpen", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                @Override
+                public void run() {
+                    new OpenTestInEditorAction(testRunnerViewPart, testRunnerViewPart.getSelectedTestFullPath(),
+                            testRunnerViewPart.getSelectedTestQualifiedName(), null).run();
+                }
+            };
+            open.setText(Messages.TestRunPane_Menu_GoToFile);
+            manager.add(open);
+
+            manager.add(new Separator());
+
+            Action runAction = new Action("actionRun", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                @Override
+                public void run() {
+                    startSelectedTest(ILaunchManager.RUN_MODE);
+                }
+            };
+            runAction.setText(Messages.TestRunPane_Menu_Run);
+            manager.add(runAction);
+
+            // show debug entry only if the current perspective is not the produduct definition
+            // perspective
+            if (!IpsPlugin.getDefault().isProductDefinitionPerspective()) {
+                Action debugAction = new Action("actionDebug", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
+                    @Override
+                    public void run() {
+                        startSelectedTest(ILaunchManager.DEBUG_MODE);
+                    }
+                };
+                debugAction.setText(Messages.TestRunPane_MenuDebug);
+                manager.add(debugAction);
+            }
+        }
+    }
+
     /*
      * Inner class to store a test case.
      */
@@ -544,72 +611,5 @@ public class TestRunPane {
         public void setTableItem(TableItem tableItem) {
             this.tableItem = tableItem;
         }
-    }
-
-    void checkMissingEntries() {
-        if (missingTestEntries.size() == 0) {
-            return;
-        }
-        synchronized (missingTestEntries) {
-            for (String element : missingTestEntries) {
-                TestTableEntry testTableEntry = fTableItemMap.get(element);
-                if (testTableEntry == null) {
-                    missingTestEntries.add(element);
-                    return;
-                }
-                updateTestEntryStatusImage(testTableEntry);
-            }
-        }
-    }
-
-    public void toggleShowErrorsOrFailuresOnly() {
-        showErrorsOrFailureOnly = !showErrorsOrFailureOnly;
-        setShowErrorsOrFailuresOnly(showErrorsOrFailureOnly);
-    }
-
-    public void setShowErrorsOrFailuresOnly(boolean showErrorsOrFailuresOnly) {
-        if (showErrorsOrFailuresOnly) {
-            removeNonErrorsAndFailuresFromTable();
-        } else {
-            showAllElementsInTable();
-        }
-    }
-
-    private void showAllElementsInTable() {
-        for (TestTableEntry tableEntry : fTableItemMap.values()) {
-            if (tableEntry.getTableItem() == null) {
-                TableItem tableItem = new TableItem(fTable, SWT.NONE);
-                tableItem.setText(tableEntry.getQualifiedTestName());
-                // test was successful before, because it was not visible <- show only error or
-                // failure filter
-                ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                        "obj16/testok.gif"); //$NON-NLS-1$
-                tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
-                tableItem.setData(tableEntry);
-                tableEntry.setTableItem(tableItem);
-            }
-        }
-    }
-
-    private void removeNonErrorsAndFailuresFromTable() {
-        List<Integer> nonErrorsOrFailuresIndices = new ArrayList<>();
-        for (TestTableEntry testTableEntry : fTableItemMap.values()) {
-            if (!(testTableEntry.isError() || testTableEntry.isFailure())) {
-                TableItem tableItem = testTableEntry.getTableItem();
-                if (tableItem == null) {
-                    continue;
-                }
-                nonErrorsOrFailuresIndices.add(fTable.indexOf(tableItem));
-                testTableEntry.removeTableItem();
-            }
-        }
-        if (nonErrorsOrFailuresIndices.size() == 0) {
-            return;
-        }
-        int[] indicesToRemove = new int[nonErrorsOrFailuresIndices.size()];
-        for (int i = 0; i < nonErrorsOrFailuresIndices.size(); i++) {
-            indicesToRemove[i] = nonErrorsOrFailuresIndices.get(i);
-        }
-        fTable.remove(indicesToRemove);
     }
 }

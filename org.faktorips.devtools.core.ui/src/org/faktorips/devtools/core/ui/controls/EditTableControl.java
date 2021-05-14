@@ -206,75 +206,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             }
         });
         // support switching rows while editing:
-        control.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
-                    if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
-                        // allow starting multi-selection even if in edit mode
-                        editor.deactivate();
-                        e.doit = false;
-                        return;
-                    }
-                }
-
-                if (e.stateMask != SWT.NONE) {
-                    return;
-                }
-
-                switch (e.keyCode) {
-                    case SWT.ARROW_DOWN:
-                        e.doit = false;
-                        int nextRow = table.getSelectionIndex() + 1;
-                        if (nextRow >= table.getItemCount()) {
-                            break;
-                        }
-                        table.setSelection(nextRow);
-                        editColumnOrPrevPossible(editorColumn);
-                        break;
-
-                    case SWT.ARROW_UP:
-                        e.doit = false;
-                        int prevRow = table.getSelectionIndex() - 1;
-                        if (prevRow < 0) {
-                            break;
-                        }
-                        table.setSelection(prevRow);
-                        editColumnOrPrevPossible(editorColumn);
-                        break;
-
-                    case SWT.F2:
-                        e.doit = false;
-                        editor.deactivate();
-                        break;
-                }
-            }
-        });
+        control.addKeyListener(new CellNavigationKeyAdapter(editor, editorColumn));
 
         if (editor instanceof UnfocusableTextCellEditor) {
             final UnfocusableTextCellEditor contentAssistEditor = (UnfocusableTextCellEditor)editor;
-            contentAssistEditor.addListener(new ICellEditorListener() {
-                /*
-                 * bug 58540: change signature refactoring interaction: validate as you type
-                 * [refactoring] CellEditors validate on keystroke by updating model on
-                 * editorValueChanged(..)
-                 */
-                @Override
-                public void applyEditorValue() {
-                    // default behavior is OK
-                }
-
-                @Override
-                public void cancelEditor() {
-                    // must reset model to original value:
-                    contentAssistEditor.fireModifyEvent(contentAssistEditor.getOriginalValue(), editorColumn);
-                }
-
-                @Override
-                public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-                    contentAssistEditor.fireModifyEvent(contentAssistEditor.getValue(), editorColumn);
-                }
-            });
+            contentAssistEditor.addListener(new CellEditorListener(editorColumn, contentAssistEditor));
         }
     }
 
@@ -419,29 +355,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         final Button button = new Button(buttonComposite, SWT.PUSH);
         button.setText("Remove"); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int[] indices = table.getSelectionIndices();
-                for (int i = indices.length - 1; i >= 0; i--) {
-                    removeElement(indices[i]);
-                }
-                if (indices.length > 0) {
-                    restoreSelection(indices[0]);
-                }
-            }
-
-            private void restoreSelection(int index) {
-                refreshTableViewer();
-                tableViewer.getControl().setFocus();
-                int itemCount = table.getItemCount();
-                if (itemCount != 0 && index >= itemCount) {
-                    index = itemCount - 1;
-                    table.setSelection(index);
-                }
-                updateButtonsEnabledState();
-            }
-        });
+        button.addSelectionListener(new RemoveButtonSelectionListener());
         return button;
     }
 
@@ -516,10 +430,151 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     protected abstract void swapElements(int index1, int index2);
 
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        dataChangeable = changeable;
+        addButton.setEnabled(changeable);
+        removeButton.setEnabled(changeable);
+        downButton.setEnabled(changeable);
+        upButton.setEnabled(changeable);
+        table.setEnabled(changeable);
+        if (tableLabel != null) {
+            tableLabel.setEnabled(changeable);
+        }
+    }
+
+    @Override
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        setDataChangeable(enabled);
+    }
+
+    protected UIToolkit getUiToolkit() {
+        return uiToolkit;
+    }
+
+    private final class RemoveButtonSelectionListener extends SelectionAdapter {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            int[] indices = table.getSelectionIndices();
+            for (int i = indices.length - 1; i >= 0; i--) {
+                removeElement(indices[i]);
+            }
+            if (indices.length > 0) {
+                restoreSelection(indices[0]);
+            }
+        }
+
+        private void restoreSelection(int index) {
+            refreshTableViewer();
+            tableViewer.getControl().setFocus();
+            int itemCount = table.getItemCount();
+            int i = index;
+            if (itemCount != 0 && i >= itemCount) {
+                i = itemCount - 1;
+                table.setSelection(i);
+            }
+            updateButtonsEnabledState();
+        }
+    }
+
+    private final class CellEditorListener implements ICellEditorListener {
+        private final int editorColumn;
+        private final UnfocusableTextCellEditor contentAssistEditor;
+
+        private CellEditorListener(int editorColumn, UnfocusableTextCellEditor contentAssistEditor) {
+            this.editorColumn = editorColumn;
+            this.contentAssistEditor = contentAssistEditor;
+        }
+
+        /*
+         * bug 58540: change signature refactoring interaction: validate as you type [refactoring]
+         * CellEditors validate on keystroke by updating model on editorValueChanged(..)
+         */
+        @Override
+        public void applyEditorValue() {
+            // default behavior is OK
+        }
+
+        @Override
+        public void cancelEditor() {
+            // must reset model to original value:
+            contentAssistEditor.fireModifyEvent(contentAssistEditor.getOriginalValue(), editorColumn);
+        }
+
+        @Override
+        public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+            contentAssistEditor.fireModifyEvent(contentAssistEditor.getValue(), editorColumn);
+        }
+    }
+
+    private final class CellNavigationKeyAdapter extends KeyAdapter {
+        private final CellEditor editor;
+        private final int editorColumn;
+
+        private CellNavigationKeyAdapter(CellEditor editor, int editorColumn) {
+            this.editor = editor;
+            this.editorColumn = editorColumn;
+        }
+
+        // CSOFF: CyclomaticComplexity
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
+                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                    // allow starting multi-selection even if in edit mode
+                    editor.deactivate();
+                    e.doit = false;
+                    return;
+                }
+            }
+
+            if (e.stateMask != SWT.NONE) {
+                return;
+            }
+
+            switch (e.keyCode) {
+                case SWT.ARROW_DOWN:
+                    e.doit = false;
+                    int nextRow = table.getSelectionIndex() + 1;
+                    if (nextRow >= table.getItemCount()) {
+                        break;
+                    }
+                    table.setSelection(nextRow);
+                    editColumnOrPrevPossible(editorColumn);
+                    break;
+
+                case SWT.ARROW_UP:
+                    e.doit = false;
+                    int prevRow = table.getSelectionIndex() - 1;
+                    if (prevRow < 0) {
+                        break;
+                    }
+                    table.setSelection(prevRow);
+                    editColumnOrPrevPossible(editorColumn);
+                    break;
+
+                case SWT.F2:
+                    e.doit = false;
+                    editor.deactivate();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        // CSON: CyclomaticComplexity
+    }
+
     public class UnfocusableTextCellEditor extends TextCellEditor {
 
         private Object fOriginalValue;
-        SubjectControlContentAssistant fContentAssistant;
+        private SubjectControlContentAssistant fContentAssistant;
         private boolean fSaveNextModification;
 
         public UnfocusableTextCellEditor(Composite parent) {
@@ -570,33 +625,4 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             });
         }
     }
-
-    @Override
-    public void setDataChangeable(boolean changeable) {
-        dataChangeable = changeable;
-        addButton.setEnabled(changeable);
-        removeButton.setEnabled(changeable);
-        downButton.setEnabled(changeable);
-        upButton.setEnabled(changeable);
-        table.setEnabled(changeable);
-        if (tableLabel != null) {
-            tableLabel.setEnabled(changeable);
-        }
-    }
-
-    @Override
-    public boolean isDataChangeable() {
-        return dataChangeable;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-        setDataChangeable(enabled);
-    }
-
-    protected UIToolkit getUiToolkit() {
-        return uiToolkit;
-    }
-
 }

@@ -304,7 +304,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
         // check for duplicate test attribute names and types
         TestPolicyCmptTypeParameter typeParam = (TestPolicyCmptTypeParameter)getParent();
-        ITestAttribute testAttributes[] = typeParam.getTestAttributes();
+        ITestAttribute[] testAttributes = typeParam.getTestAttributes();
         for (ITestAttribute testAttribute : testAttributes) {
             if (testAttribute != this && testAttribute.getName().equals(name)) {
                 // duplicate name

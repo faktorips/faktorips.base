@@ -21,8 +21,8 @@ import java.math.RoundingMode;
  */
 public class DecimalNull extends Decimal implements NullObject {
 
-    private static final long serialVersionUID = -662857878963625638L;
     static final String STRING_REPRESENTATION = "DecimalNull";
+    private static final long serialVersionUID = -662857878963625638L;
 
     DecimalNull() {
         super(null);

@@ -74,21 +74,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
         Job buildJob = new Job(name) {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-                try {
-                    WorkbenchRunnableAdapter.this.run(monitor);
-                } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if (cause instanceof CoreException) {
-                        return ((CoreException)cause).getStatus();
-                    } else {
-                        return new IpsStatus(e);
-                    }
-                } catch (InterruptedException e) {
-                    return Status.CANCEL_STATUS;
-                } finally {
-                    monitor.done();
-                }
-                return Status.OK_STATUS;
+                return runJob(monitor);
             }
 
             @Override
@@ -99,6 +85,24 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
         buildJob.setRule(rule);
         buildJob.setUser(true);
         buildJob.schedule();
+    }
+
+    private IStatus runJob(IProgressMonitor monitor) {
+        try {
+            WorkbenchRunnableAdapter.this.run(monitor);
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof CoreException) {
+                return ((CoreException)cause).getStatus();
+            } else {
+                return new IpsStatus(e);
+            }
+        } catch (InterruptedException e) {
+            return Status.CANCEL_STATUS;
+        } finally {
+            monitor.done();
+        }
+        return Status.OK_STATUS;
     }
 
 }

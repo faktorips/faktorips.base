@@ -48,22 +48,6 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     private Color labelBackground;
     private LabelPositioner labelPositioner;
 
-    private class LabelPositioner implements FigureListener {
-
-        @Override
-        public void figureMoved(IFigure source) {
-            PolylineConnection conn = (PolylineConnection)getFigure();
-            PointList points = conn.getPoints();
-            Point p1 = points.getFirstPoint();
-            Point p2 = points.getPoint(1);
-            int x = p1.x + (p2.x - p1.x) / 2;
-            int y = p1.y + (p2.y - p1.y) / 2;
-            Point location = new Point(x, y);
-            conn.translateToAbsolute(location);
-            label.setLocation(location.x, location.y);
-        }
-    }
-
     @Override
     public void removeNotify() {
         super.removeNotify();
@@ -170,6 +154,22 @@ public class ControlFlowEditPart extends AbstractConnectionEditPart implements C
     public void contentsChanged(ContentChangeEvent event) {
         if (event.isAffected(getControlFlow()) && event.getEventType() == ContentChangeEvent.TYPE_PROPERTY_CHANGED) {
             refreshVisuals();
+        }
+    }
+
+    private class LabelPositioner implements FigureListener {
+
+        @Override
+        public void figureMoved(IFigure source) {
+            PolylineConnection conn = (PolylineConnection)getFigure();
+            PointList points = conn.getPoints();
+            Point p1 = points.getFirstPoint();
+            Point p2 = points.getPoint(1);
+            int x = p1.x + (p2.x - p1.x) / 2;
+            int y = p1.y + (p2.y - p1.y) / 2;
+            Point location = new Point(x, y);
+            conn.translateToAbsolute(location);
+            label.setLocation(location.x, location.y);
         }
     }
 }

@@ -33,39 +33,6 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
     boolean filterTestCase = false;
     boolean filterProductCmpt = false;
 
-    /**
-     * Sorting the search result. Test cases will be sorted on the end of the result list.
-     * 
-     * @author Joerg Ortmann
-     */
-    public class ReferenceViewerSorter extends ViewerSorter {
-
-        @Override
-        public int compare(Viewer viewer, Object e1, Object e2) {
-            IIpsSrcFile src1 = getCorrespondingIpsSrcFile(e1);
-            IIpsSrcFile src2 = getCorrespondingIpsSrcFile(e2);
-
-            if (src1 == null || src2 == null) {
-                return 0;
-            }
-
-            IpsObjectType type1 = src1.getIpsObjectType();
-            IpsObjectType type2 = src2.getIpsObjectType();
-            if (isTestCase(type1) && !isTestCase(type2)) {
-                return 1;
-            }
-            if (!isTestCase(type1) && isTestCase(type2)) {
-                return -1;
-            }
-
-            return src1.getName().compareToIgnoreCase(src2.getName());
-        }
-
-        private boolean isTestCase(IpsObjectType ipsObjectType) {
-            return IpsObjectType.TEST_CASE.equals(ipsObjectType);
-        }
-    }
-
     @Override
     public void restoreState(IMemento memento) {
         super.restoreState(memento);
@@ -129,4 +96,36 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
         viewer.addDoubleClickListener(new TreeViewerDoubleclickListener(viewer));
     }
 
+    /**
+     * Sorting the search result. Test cases will be sorted on the end of the result list.
+     * 
+     * @author Joerg Ortmann
+     */
+    public class ReferenceViewerSorter extends ViewerSorter {
+
+        @Override
+        public int compare(Viewer viewer, Object e1, Object e2) {
+            IIpsSrcFile src1 = getCorrespondingIpsSrcFile(e1);
+            IIpsSrcFile src2 = getCorrespondingIpsSrcFile(e2);
+
+            if (src1 == null || src2 == null) {
+                return 0;
+            }
+
+            IpsObjectType type1 = src1.getIpsObjectType();
+            IpsObjectType type2 = src2.getIpsObjectType();
+            if (isTestCase(type1) && !isTestCase(type2)) {
+                return 1;
+            }
+            if (!isTestCase(type1) && isTestCase(type2)) {
+                return -1;
+            }
+
+            return src1.getName().compareToIgnoreCase(src2.getName());
+        }
+
+        private boolean isTestCase(IpsObjectType ipsObjectType) {
+            return IpsObjectType.TEST_CASE.equals(ipsObjectType);
+        }
+    }
 }

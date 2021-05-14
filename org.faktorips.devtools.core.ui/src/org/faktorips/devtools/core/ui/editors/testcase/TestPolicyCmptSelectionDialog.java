@@ -231,65 +231,6 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
     }
 
     /**
-     * Inner class of filter implementation.
-     */
-    private class TestPolicyCmptFilter extends ViewerFilter {
-
-        @Override
-        public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
-            int size = elements.length;
-            ArrayList<Object> out = new ArrayList<>(size);
-            for (int i = 0; i < size; ++i) {
-                Object element = elements[i];
-                if (select(viewer, parent, element)) {
-                    out.add(element);
-                }
-            }
-            return out.toArray();
-        }
-
-        /**
-         * The filter is always active.
-         */
-        @Override
-        public boolean isFilterProperty(Object element, String property) {
-            return true;
-        }
-
-        @Override
-        public boolean select(Viewer viewer, Object parentElement, Object element) {
-            try {
-                if (element instanceof ITestPolicyCmpt) {
-                    return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
-                } else if (element instanceof TestCaseTypeAssociation) {
-                    TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
-                    ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
-                    if (testPolicyCmpt == null) {
-                        return true;
-                    }
-                    ITestPolicyCmptLink childs[] = testPolicyCmpt.getTestPolicyCmptLinks();
-                    boolean found = false;
-                    for (ITestPolicyCmptLink elem : childs) {
-                        String linkName = ""; //$NON-NLS-1$
-                        if (elem.findTarget() != null) {
-                            linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
-                            if (linkName.equals(dummyAssociation.getName())) {
-                                found = isFilterChildOfLink(elem, filteredPolicyCmptType);
-                                if (found) {
-                                    return found;
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (CoreException e) {
-                // ignore exception and don't display the element
-            }
-            return false;
-        }
-    }
-
-    /**
      * Returns <code>true</code> if the to be filtered object is a child of the given test policy
      * component. If there is no such child object return <code>false</code>.
      * 
@@ -331,5 +272,64 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
             found = isFilterChildOf(testPolicyCmpt, filter);
         }
         return found;
+    }
+
+    /**
+     * Inner class of filter implementation.
+     */
+    private class TestPolicyCmptFilter extends ViewerFilter {
+
+        @Override
+        public Object[] filter(Viewer viewer, Object parent, Object[] elements) {
+            int size = elements.length;
+            ArrayList<Object> out = new ArrayList<>(size);
+            for (int i = 0; i < size; ++i) {
+                Object element = elements[i];
+                if (select(viewer, parent, element)) {
+                    out.add(element);
+                }
+            }
+            return out.toArray();
+        }
+
+        /**
+         * The filter is always active.
+         */
+        @Override
+        public boolean isFilterProperty(Object element, String property) {
+            return true;
+        }
+
+        @Override
+        public boolean select(Viewer viewer, Object parentElement, Object element) {
+            try {
+                if (element instanceof ITestPolicyCmpt) {
+                    return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
+                } else if (element instanceof TestCaseTypeAssociation) {
+                    TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
+                    ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
+                    if (testPolicyCmpt == null) {
+                        return true;
+                    }
+                    ITestPolicyCmptLink[] childs = testPolicyCmpt.getTestPolicyCmptLinks();
+                    boolean found = false;
+                    for (ITestPolicyCmptLink elem : childs) {
+                        String linkName = ""; //$NON-NLS-1$
+                        if (elem.findTarget() != null) {
+                            linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
+                            if (linkName.equals(dummyAssociation.getName())) {
+                                found = isFilterChildOfLink(elem, filteredPolicyCmptType);
+                                if (found) {
+                                    return found;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                // ignore exception and don't display the element
+            }
+            return false;
+        }
     }
 }

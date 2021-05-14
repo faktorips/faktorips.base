@@ -39,43 +39,6 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
     private Button testRuleParameterBtn;
     private Button prevSelection;
 
-    /**
-     * Listener for the radio buttons.
-     */
-    private class KindOfTestParamSelectionListener implements SelectionListener {
-
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-            // if no reverse association is selected then disable next wizard page
-            // other wise enable next wizard page
-            if (prevSelection != e.getSource()) {
-                String title = ""; //$NON-NLS-1$
-                String description = ""; //$NON-NLS-1$
-                prevSelection = (Button)e.getSource();
-                if (e.getSource() == testValueParameterBtn) {
-                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_VALUE_PARAMETER);
-                    title = Messages.NewRootParamWizardPage_Title_TestValueParam;
-                    description = Messages.NewRootParamWizardPage_Description_TestValueParam;
-                } else if (e.getSource() == testPolicyCmptTypeParameterBtn) {
-                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER);
-                    title = Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam;
-                    description = Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam;
-                } else if (e.getSource() == testRuleParameterBtn) {
-                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_RULE_PARAMETER);
-                    title = Messages.NewRootParamWizardPage_Title_TestRuleParam;
-                    description = Messages.NewRootParamWizardPage_Description_TestRuleParam;
-                }
-                wizard.setTitleAndDescriptionOfSecondPage(title, description);
-                wizard.resetWizard();
-            }
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            widgetSelected(e);
-        }
-    }
-
     public NewRootParamFirstWizardPage(NewRootParameterWizard wizard) {
         super(PAGE_ID, Messages.NewRootParamFirstWizardPage_Title, null);
         setDescription(Messages.NewRootParamFirstWizardPage_Decription);
@@ -134,5 +97,42 @@ public class NewRootParamFirstWizardPage extends WizardPage implements ValueChan
     public IWizardPage getNextPage() {
         wizard.setMaxPageShown(PAGE_NUMBER);
         return super.getNextPage();
+    }
+
+    /**
+     * Listener for the radio buttons.
+     */
+    private class KindOfTestParamSelectionListener implements SelectionListener {
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            // if no reverse association is selected then disable next wizard page
+            // other wise enable next wizard page
+            if (prevSelection != e.getSource()) {
+                String title = ""; //$NON-NLS-1$
+                String description = ""; //$NON-NLS-1$
+                prevSelection = (Button)e.getSource();
+                if (e.getSource() == testValueParameterBtn) {
+                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_VALUE_PARAMETER);
+                    title = Messages.NewRootParamWizardPage_Title_TestValueParam;
+                    description = Messages.NewRootParamWizardPage_Description_TestValueParam;
+                } else if (e.getSource() == testPolicyCmptTypeParameterBtn) {
+                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER);
+                    title = Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam;
+                    description = Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam;
+                } else if (e.getSource() == testRuleParameterBtn) {
+                    wizard.setKindOfTestParameter(NewRootParameterWizard.TEST_RULE_PARAMETER);
+                    title = Messages.NewRootParamWizardPage_Title_TestRuleParam;
+                    description = Messages.NewRootParamWizardPage_Description_TestRuleParam;
+                }
+                wizard.setTitleAndDescriptionOfSecondPage(title, description);
+                wizard.resetWizard();
+            }
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+        }
     }
 }

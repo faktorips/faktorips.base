@@ -27,6 +27,10 @@ import org.w3c.dom.Node;
 @UtilityClass
 public class ArgumentCheck {
 
+    private ArgumentCheck() {
+        // Prohibit instantiation.
+    }
+
     /**
      * Checks if the indicated argument is not null.
      * 
@@ -222,9 +226,4 @@ public class ArgumentCheck {
             throw new IllegalArgumentException("Node has name " + node.getNodeName() + ", expected " + name + ".");
         }
     }
-
-    private ArgumentCheck() {
-        // Prohibit instantiation.
-    }
-
 }

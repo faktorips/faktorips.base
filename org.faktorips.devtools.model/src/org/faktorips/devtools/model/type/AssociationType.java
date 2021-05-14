@@ -28,8 +28,13 @@ public enum AssociationType {
     private final String id;
     private final String name;
 
+    private AssociationType(String id, String name) {
+        this.name = name;
+        this.id = id;
+    }
+
     public static final AssociationType getRelationType(String id) {
-        if (id.equals("agg")) { //$NON-NLS-1$
+        if ("agg".equals(id)) { //$NON-NLS-1$
             // Renamed aggregation to composition (including the id!)
             return COMPOSITION_MASTER_TO_DETAIL;
         }
@@ -69,11 +74,6 @@ public enum AssociationType {
             return AggregationKind.SHARED;
         }
         return AggregationKind.NONE;
-    }
-
-    private AssociationType(String id, String name) {
-        this.name = name;
-        this.id = id;
     }
 
     @Override

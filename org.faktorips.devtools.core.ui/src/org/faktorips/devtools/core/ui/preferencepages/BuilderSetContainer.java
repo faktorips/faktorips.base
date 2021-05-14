@@ -153,8 +153,7 @@ public class BuilderSetContainer {
         int currentBuilderSetIndex = -1;
         for (int i = 0; i < builderSetInfos.size(); i++) {
             IIpsArtefactBuilderSetInfo info = builderSetInfos.get(i);
-            String builderSetId = info.getBuilderSetId();
-            if (ipsProjectProperties.getBuilderSetId().equals(builderSetId)) {
+            if (ipsProjectProperties.getBuilderSetId().equals(info.getBuilderSetId())) {
                 currentBuilderSetIndex = i;
             }
             builderSetLabels[i] = info.getBuilderSetLabel();
@@ -197,40 +196,7 @@ public class BuilderSetContainer {
         });
         columns[PROPERTY_VALUE_COLUMN_INDEX].setLabelProvider(new BuilderSetPropertyLabelProvider(ipsProject,
                 builderSetConfigModel));
-        columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new ColumnLabelProvider() {
-            private static final int TOOLTIP_LINE_LENGTH = 75;
-
-            @Override
-            public String getText(Object element) {
-                return ((IIpsBuilderSetPropertyDef)element).getDescription();
-            }
-
-            @Override
-            public String getToolTipText(Object element) {
-                if (element instanceof IIpsBuilderSetPropertyDef) {
-                    IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-                    String description = propertyDef.getDescription();
-                    String wrappedText = StringUtils.wrapText(description, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
-                    return wrappedText;
-                }
-                return ""; //$NON-NLS-1$
-            }
-
-            @Override
-            public Point getToolTipShift(Object object) {
-                return new Point(5, 5);
-            }
-
-            @Override
-            public int getToolTipDisplayDelayTime(Object object) {
-                return 200;
-            }
-
-            @Override
-            public int getToolTipTimeDisplayed(Object object) {
-                return 10000;
-            }
-        });
+        columns[PROPERTY_DESCRIPTION_COLUMN_INDEX].setLabelProvider(new DescriptionColumnLabelProvider());
 
         TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(tableViewer,
                 new FocusCellOwnerDrawHighlighter(tableViewer));
@@ -300,7 +266,7 @@ public class BuilderSetContainer {
 
         tableViewer.getTable().setSortDirection(SWT.UP);
         tableViewer.getTable().setSortColumn(columns[PROPERTY_NAME_COLUMN_INDEX].getColumn());
-        tableViewer.setSorter(new BuilderSetPropertyDefSorter(ipsProject, columns));
+        tableViewer.setComparator(new BuilderSetPropertyDefSorter(ipsProject, columns));
         tableViewer.setInput(builderSetId);
 
         ColumnViewerToolTipSupport.enableFor(tableViewer);
@@ -405,8 +371,8 @@ public class BuilderSetContainer {
     }
 
     private void validateBuilderSetConfig() {
-        String builderSetId = getBuilderSetIdByLabel(builderSetComboField.getText());
-        IIpsArtefactBuilderSetInfo info = getBuilderSetInfo(builderSetId);
+        String id = getBuilderSetIdByLabel(builderSetComboField.getText());
+        IIpsArtefactBuilderSetInfo info = getBuilderSetInfo(id);
         builderSetConfigModel.validate(ipsProject, info);
     }
 
@@ -416,10 +382,10 @@ public class BuilderSetContainer {
         tableViewer.getTable().setSortColumn(columns[PROPERTY_NAME_COLUMN_INDEX].getColumn());
         tableViewer.refresh();
 
-        if (hasPropertyNameColumnSorter == false) {
+        if (!hasPropertyNameColumnSorter) {
             hasPropertyNameColumnSorter = true;
             builderSetPropertyDefSorter = new BuilderSetPropertyDefSorter(ipsProject, columns);
-            tableViewer.setSorter(builderSetPropertyDefSorter);
+            tableViewer.setComparator(builderSetPropertyDefSorter);
         }
     }
 
@@ -451,6 +417,41 @@ public class BuilderSetContainer {
         tableViewer.setInput(builderSetId);
 
         updateColumnWidths();
+    }
+
+    private final class DescriptionColumnLabelProvider extends ColumnLabelProvider {
+        private static final int TOOLTIP_LINE_LENGTH = 75;
+
+        @Override
+        public String getText(Object element) {
+            return ((IIpsBuilderSetPropertyDef)element).getDescription();
+        }
+
+        @Override
+        public String getToolTipText(Object element) {
+            if (element instanceof IIpsBuilderSetPropertyDef) {
+                IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+                String description = propertyDef.getDescription();
+                String wrappedText = StringUtils.wrapText(description, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
+                return wrappedText;
+            }
+            return ""; //$NON-NLS-1$
+        }
+
+        @Override
+        public Point getToolTipShift(Object object) {
+            return new Point(5, 5);
+        }
+
+        @Override
+        public int getToolTipDisplayDelayTime(Object object) {
+            return 200;
+        }
+
+        @Override
+        public int getToolTipTimeDisplayed(Object object) {
+            return 10000;
+        }
     }
 
     /** Widget action handling */

@@ -20,16 +20,16 @@ import org.faktorips.fl.ExprCompiler;
  */
 public class NotEqualsObjectDatatype extends EqualsObjectDatatype {
 
-    protected static String getErrorMessageCode() {
-        return ExprCompiler.PREFIX + "NOTEQUALS-OPERATION"; //$NON-NLS-1$
-    }
-
     public NotEqualsObjectDatatype(Datatype type) {
         super("!=", type, type);
     }
 
     public NotEqualsObjectDatatype(Datatype lhsDatatype, Datatype rhsDatatype) {
         super("!=", lhsDatatype, rhsDatatype);
+    }
+
+    protected static String getErrorMessageCode() {
+        return ExprCompiler.PREFIX + "NOTEQUALS-OPERATION"; //$NON-NLS-1$
     }
 
     @Override

@@ -179,8 +179,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     public IIpsProject getIpsProject() {
-        return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-                IIpsModel.get().getIpsProject(projectField.getText());
+        return "".equals(projectField.getText()) ? null //$NON-NLS-1$
+                : IIpsModel.get().getIpsProject(projectField.getText());
     }
 
     protected void validateFormat() {
@@ -419,7 +419,8 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (e.field == filenameField) {
             filenameChanged();
         }
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             validatePage();
         }
         updatePageComplete();

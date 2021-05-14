@@ -48,36 +48,6 @@ import org.faktorips.runtime.IProductComponent;
  */
 public class ProductComponentAssociationConditionType extends AbstractConditionType {
 
-    private static final class ProductComponentAssociationOperandProvider implements IOperandProvider {
-
-        private final IProductCmptTypeAssociation productCmptTypeAssociation;
-
-        public ProductComponentAssociationOperandProvider(IProductCmptTypeAssociation productCmptTypeAssociation) {
-            this.productCmptTypeAssociation = productCmptTypeAssociation;
-        }
-
-        @Override
-        public Object getSearchOperand(IProductPartsContainer linkContainer) {
-            List<String> targetNames = new ArrayList<>();
-
-            List<IProductCmptLink> links = linkContainer.getProductParts(IProductCmptLink.class);
-            for (IProductCmptLink link : links) {
-                try {
-                    boolean linkOfAssociation = link.isLinkOfAssociation(productCmptTypeAssociation,
-                            linkContainer.getIpsProject());
-                    if (linkOfAssociation) {
-                        targetNames.add(link.getTarget());
-                    }
-                } catch (CoreException e) {
-                    // TODO handle exception
-                    e.printStackTrace();
-                }
-            }
-
-            return targetNames;
-        }
-    }
-
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {
         try {
@@ -150,5 +120,35 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
     @Override
     public boolean isArgumentIpsObject() {
         return true;
+    }
+
+    private static final class ProductComponentAssociationOperandProvider implements IOperandProvider {
+
+        private final IProductCmptTypeAssociation productCmptTypeAssociation;
+
+        public ProductComponentAssociationOperandProvider(IProductCmptTypeAssociation productCmptTypeAssociation) {
+            this.productCmptTypeAssociation = productCmptTypeAssociation;
+        }
+
+        @Override
+        public Object getSearchOperand(IProductPartsContainer linkContainer) {
+            List<String> targetNames = new ArrayList<>();
+
+            List<IProductCmptLink> links = linkContainer.getProductParts(IProductCmptLink.class);
+            for (IProductCmptLink link : links) {
+                try {
+                    boolean linkOfAssociation = link.isLinkOfAssociation(productCmptTypeAssociation,
+                            linkContainer.getIpsProject());
+                    if (linkOfAssociation) {
+                        targetNames.add(link.getTarget());
+                    }
+                } catch (CoreException e) {
+                    // TODO handle exception
+                    e.printStackTrace();
+                }
+            }
+
+            return targetNames;
+        }
     }
 }

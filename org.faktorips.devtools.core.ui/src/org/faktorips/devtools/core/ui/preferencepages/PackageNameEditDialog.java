@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Dialog for editing base or specific package names of IPS source folder entries (or global for the
@@ -83,7 +84,7 @@ public class PackageNameEditDialog extends StatusDialog {
         text.setLayoutData(new GridData(SWT.HORIZONTAL));
 
         selectedPackageName = getSpecificPackageName();
-        if (selectedPackageName.equals("")) { //$NON-NLS-1$
+        if (IpsStringUtils.isBlank(selectedPackageName)) {
             // default IPS object path package name is used
             selectedPackageName = getDefaultPackageName();
             buttonCustomPackageNameSelected.setSelection(false);

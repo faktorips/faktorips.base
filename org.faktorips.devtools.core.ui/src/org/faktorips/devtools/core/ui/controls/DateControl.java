@@ -57,27 +57,7 @@ public class DateControl extends AbstractDateTimeControl {
         dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM);
         initWidgetWithCurrentDate(dateWidget);
 
-        dateWidget.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseUp(MouseEvent e) {
-                if (e.count != 1) {
-                    // do nothing on double click to avoid closing to early
-                    return;
-                }
-                GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
-                        dateWidget.getDay());
-                Calendar oldCalendar = getOldCalendar();
-                if ((oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH) || oldCalendar
-                        .get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR))
-                        && oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH)) {
-                    // only month or year changed --> the user did not selected a date
-                    oldCalendar = newCalendar;
-                    return;
-                }
-                setFieldValueToSelectedDate(dateWidget);
-                closeCalendarShell(calendarShell);
-            }
-        });
+        dateWidget.addMouseListener(new DateSelectionMouseAdapter(calendarShell));
         dateWidget.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -97,4 +77,31 @@ public class DateControl extends AbstractDateTimeControl {
         setText(getDateFormat().formatDate(calendar.getTime()));
     }
 
+    private final class DateSelectionMouseAdapter extends MouseAdapter {
+        private final Shell calendarShell;
+
+        private DateSelectionMouseAdapter(Shell calendarShell) {
+            this.calendarShell = calendarShell;
+        }
+
+        @Override
+        public void mouseUp(MouseEvent e) {
+            if (e.count != 1) {
+                // do nothing on double click to avoid closing too early
+                return;
+            }
+            GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
+                    dateWidget.getDay());
+            Calendar oldCalendar = getOldCalendar();
+            if ((oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH) || oldCalendar
+                    .get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR))
+                    && oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH)) {
+                // only month or year changed --> the user did not selected a date
+                oldCalendar = newCalendar;
+                return;
+            }
+            setFieldValueToSelectedDate(dateWidget);
+            closeCalendarShell(calendarShell);
+        }
+    }
 }

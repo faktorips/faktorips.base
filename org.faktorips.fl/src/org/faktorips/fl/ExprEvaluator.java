@@ -75,12 +75,12 @@ public class ExprEvaluator {
 
         ArgumentCheck.length(variableValues, variables.length,
                 "the variableValues parameter and the variables parameter need to have the same amount of values.");
-        Interpreter i = new Interpreter(); // Construct an interpreter
+        Interpreter interpreter = new Interpreter();
         if (classLoader != null) {
-            i.setClassLoader(classLoader);
+            interpreter.setClassLoader(classLoader);
         }
         for (int r = 0; r < variables.length; r++) {
-            i.set(variables[r], variableValues[r]);
+            interpreter.set(variables[r], variableValues[r]);
         }
         JavaCodeFragment fragment = compileExpressionToJava(expression);
 
@@ -88,23 +88,23 @@ public class ExprEvaluator {
         sb.append(fragment.getImportDeclaration().toString());
         sb.append(System.lineSeparator());
         sb.append(fragment.getSourcecode());
-        return i.eval(sb.toString());
+        return interpreter.eval(sb.toString());
     }
 
     /**
      * Evaluates and returns the result of the given {@link JavaCodeFragment java code fragment}.
      */
     public Object evaluate(JavaCodeFragment javaCodeFragment) throws Exception {
-        Interpreter i = new Interpreter(); // Construct an interpreter
+        Interpreter interpreter = new Interpreter();
         if (classLoader != null) {
-            i.setClassLoader(classLoader);
+            interpreter.setClassLoader(classLoader);
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append(javaCodeFragment);
 
         // execute the expression.
-        return i.eval(sb.toString());
+        return interpreter.eval(sb.toString());
     }
 
     /**

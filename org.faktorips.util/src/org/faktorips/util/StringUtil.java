@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.faktorips.annotation.UtilityClass;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A collection of utility methods for Strings.
@@ -121,20 +122,21 @@ public class StringUtil {
     }
 
     public static String toCamelCase(String text, boolean firstUp) {
-        if (text == null || text.equals("")) {
+        if (IpsStringUtils.isBlank(text)) {
             return "";
         }
         String[] words = text.split(CAMEL_CASE_SEPERATORS);
         StringBuilder result = new StringBuilder();
+        boolean firstUp2 = firstUp;
         for (String word : words) {
             char firstChar = word.charAt(0);
-            if (firstUp) {
+            if (firstUp2) {
                 firstChar = Character.toUpperCase(firstChar);
             } else {
                 firstChar = Character.toLowerCase(firstChar);
             }
             result.append(firstChar).append(word.substring(1).toLowerCase());
-            firstUp = true;
+            firstUp2 = true;
         }
         return result.toString();
     }
@@ -171,7 +173,7 @@ public class StringUtil {
      * 
      */
     public static String camelCaseToUnderscore(String text, boolean splitUppercaseSequences) {
-        if (text == null || text.equals("")) {
+        if (text == null || "".equals(text)) {
             return "";
         }
         String regex;

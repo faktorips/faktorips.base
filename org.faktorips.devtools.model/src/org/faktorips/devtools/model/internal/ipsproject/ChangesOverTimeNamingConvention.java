@@ -24,8 +24,8 @@ import org.faktorips.util.StringUtil;
  */
 public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingConvention {
 
-    private static final String pack = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
-    private static final String unqualifiedClassName = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class
+    private static final String PACK = StringUtil.getPackageName(ChangesOverTimeNamingConvention.class.getName());
+    private static final String UNQUALIFIED_CLASS_NAME = StringUtil.unqualifiedName(ChangesOverTimeNamingConvention.class
             .getName());
 
     private String id;
@@ -33,7 +33,7 @@ public class ChangesOverTimeNamingConvention implements IChangesOverTimeNamingCo
 
     public ChangesOverTimeNamingConvention(String id) {
         this(id, new LocalizedStringsSet(
-                pack + "." + id + unqualifiedClassName, ChangesOverTimeNamingConvention.class.getClassLoader())); //$NON-NLS-1$
+                PACK + "." + id + UNQUALIFIED_CLASS_NAME, ChangesOverTimeNamingConvention.class.getClassLoader())); //$NON-NLS-1$
     }
 
     public ChangesOverTimeNamingConvention(String id, LocalizedStringsSet locStringSet) {

@@ -431,61 +431,8 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
                     @Override
                     protected boolean execute() throws CoreException {
-                        if (!policyCmptTypeAssociation.isAssoziation()) {
-                            // link is composition
-                            // add new link including a test policy component child
-                            result = new TestPolicyCmptLink(TestPolicyCmpt.this, getNextPartId());
-                            result.setTestPolicyCmptTypeParameter(typeParam.getName());
-
-                            ITestPolicyCmpt newTestPolicyCmpt = result.newTargetTestPolicyCmptChild();
-                            newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
-                            newTestPolicyCmpt
-                                    .setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
-                            newTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt);
-
-                            // add all test attribute values as specified in the test parameter type
-                            ITestAttribute attributes[] = typeParam.getTestAttributes();
-                            for (ITestAttribute attribute : attributes) {
-                                ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
-                                attrValue.setTestAttribute(attribute.getName());
-                            }
-
-                            // set the defaults for all attribute values
-                            newTestPolicyCmpt.updateDefaultTestAttributeValues();
-
-                            // if desired, recursively add links as possible
-                            if (recursivelyAddRequired && newTestPolicyCmpt.findProductCmpt(getIpsProject()) != null) {
-                                newTestPolicyCmpt.addRequiredLinks(typeParam.getIpsProject());
-                            }
-
-                        } else {
-                            // link is association
-                            // add new association link (only the target will be set and no child
-                            // will be created)
-                            result = new TestPolicyCmptLink(TestPolicyCmpt.this, getNextPartId());
-                            result.setTestPolicyCmptTypeParameter(typeParam.getName());
-                            result.setTarget(targetName);
-                        }
-
-                        // add the new link at the end of the existing links, grouped by the link
-                        // name
-                        ITestPolicyCmptLink prevLinkWithSameName = null;
-                        for (ITestPolicyCmptLink currLink : testPolicyCmptLinks) {
-                            if (result.getTestPolicyCmptTypeParameter().equals(
-                                    currLink.getTestPolicyCmptTypeParameter())) {
-                                prevLinkWithSameName = currLink;
-                            }
-                        }
-
-                        if (prevLinkWithSameName != null) {
-                            int idx = testPolicyCmptLinks.indexOf(prevLinkWithSameName);
-                            testPolicyCmptLinks.add(idx + 1, result);
-                        } else {
-                            testPolicyCmptLinks.add(result);
-                        }
-
-                        fixDifferentChildSortOrder();
-
+                        result = addTestPolicyComponentLink(typeParam, productCmpt, policyCmptType, targetName,
+                                recursivelyAddRequired, policyCmptTypeAssociation);
                         return true;
                     }
                 });
@@ -1009,6 +956,71 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         String oldPolicyCmptType = this.policyCmptType;
         this.policyCmptType = policyCmptType;
         valueChanged(oldPolicyCmptType, policyCmptType);
+    }
+
+    private ITestPolicyCmptLink addTestPolicyComponentLink(final ITestPolicyCmptTypeParameter typeParam,
+            final String productCmpt,
+            final String policyCmptType,
+            final String targetName,
+            final boolean recursivelyAddRequired,
+            final IPolicyCmptTypeAssociation policyCmptTypeAssociation) throws CoreException {
+        ITestPolicyCmptLink result;
+        if (!policyCmptTypeAssociation.isAssoziation()) {
+            // link is composition
+            // add new link including a test policy component child
+            result = new TestPolicyCmptLink(TestPolicyCmpt.this, getNextPartId());
+            result.setTestPolicyCmptTypeParameter(typeParam.getName());
+
+            ITestPolicyCmpt newTestPolicyCmpt = result.newTargetTestPolicyCmptChild();
+            newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
+            newTestPolicyCmpt
+                    .setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
+            newTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt);
+
+            // add all test attribute values as specified in the test parameter type
+            ITestAttribute[] attributes = typeParam.getTestAttributes();
+            for (ITestAttribute attribute : attributes) {
+                ITestAttributeValue attrValue = newTestPolicyCmpt.newTestAttributeValue();
+                attrValue.setTestAttribute(attribute.getName());
+            }
+
+            // set the defaults for all attribute values
+            newTestPolicyCmpt.updateDefaultTestAttributeValues();
+
+            // if desired, recursively add links as possible
+            if (recursivelyAddRequired && newTestPolicyCmpt.findProductCmpt(getIpsProject()) != null) {
+                newTestPolicyCmpt.addRequiredLinks(typeParam.getIpsProject());
+            }
+
+        } else {
+            // link is association
+            // add new association link (only the target will be set and no child
+            // will be created)
+            result = new TestPolicyCmptLink(TestPolicyCmpt.this, getNextPartId());
+            result.setTestPolicyCmptTypeParameter(typeParam.getName());
+            result.setTarget(targetName);
+        }
+
+        // add the new link at the end of the existing links, grouped by the link
+        // name
+        ITestPolicyCmptLink prevLinkWithSameName = null;
+        for (ITestPolicyCmptLink currLink : testPolicyCmptLinks) {
+            if (result.getTestPolicyCmptTypeParameter().equals(
+                    currLink.getTestPolicyCmptTypeParameter())) {
+                prevLinkWithSameName = currLink;
+            }
+        }
+
+        if (prevLinkWithSameName != null) {
+            int idx = testPolicyCmptLinks.indexOf(prevLinkWithSameName);
+            testPolicyCmptLinks.add(idx + 1, result);
+        } else {
+            testPolicyCmptLinks.add(result);
+        }
+
+        fixDifferentChildSortOrder();
+
+        return result;
     }
 
 }

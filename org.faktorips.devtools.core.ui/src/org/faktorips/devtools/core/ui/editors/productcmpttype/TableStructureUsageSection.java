@@ -54,63 +54,6 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
         this.productCmptType = productCmptType;
     }
 
-    /**
-     * Action to open the selected target in a new editor window
-     */
-    private class OpenTableStructuresInEditorAction extends IpsAction {
-        String textSingular = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
-        String textPlural = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
-
-        public OpenTableStructuresInEditorAction(ISelectionProvider selectionProvider) {
-            super(selectionProvider);
-            setText(textSingular);
-        }
-
-        @Override
-        protected boolean computeEnabledProperty(IStructuredSelection selection) {
-            Object selected = selection.getFirstElement();
-            return (selected instanceof ITableStructureUsage);
-        }
-
-        @Override
-        public void run(IStructuredSelection selection) {
-            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
-            if (tableStructureUsage == null) {
-                return;
-            }
-            try {
-                String[] tableStructures = tableStructureUsage.getTableStructures();
-                for (String tblStruct : tableStructures) {
-                    IpsUIPlugin.getDefault().openEditor(
-                            getProductCmptType().getIpsProject()
-                                    .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tblStruct));
-                }
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-
-        private ITableStructureUsage getTableStructureFromSelection(ISelection selection) {
-            if (!(selection instanceof IStructuredSelection)) {
-                return null;
-            }
-            Object selected = ((IStructuredSelection)selection).getFirstElement();
-            if (selected instanceof ITableStructureUsage) {
-                return (ITableStructureUsage)selected;
-            }
-            return null;
-        }
-
-        public void updateLabelFromSelection(ISelection selection) {
-            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
-            if (tableStructureUsage.getTableStructures().length > 1) {
-                setText(textPlural);
-            } else {
-                setText(textSingular);
-            }
-        }
-    }
-
     public IProductCmptType getProductCmptType() {
         return (IProductCmptType)getIpsObject();
     }
@@ -220,6 +163,63 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
             }
         }
 
+    }
+
+    /**
+     * Action to open the selected target in a new editor window
+     */
+    private class OpenTableStructuresInEditorAction extends IpsAction {
+        String textSingular = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
+        String textPlural = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
+
+        public OpenTableStructuresInEditorAction(ISelectionProvider selectionProvider) {
+            super(selectionProvider);
+            setText(textSingular);
+        }
+
+        @Override
+        protected boolean computeEnabledProperty(IStructuredSelection selection) {
+            Object selected = selection.getFirstElement();
+            return (selected instanceof ITableStructureUsage);
+        }
+
+        @Override
+        public void run(IStructuredSelection selection) {
+            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
+            if (tableStructureUsage == null) {
+                return;
+            }
+            try {
+                String[] tableStructures = tableStructureUsage.getTableStructures();
+                for (String tblStruct : tableStructures) {
+                    IpsUIPlugin.getDefault().openEditor(
+                            getProductCmptType().getIpsProject()
+                                    .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tblStruct));
+                }
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+
+        private ITableStructureUsage getTableStructureFromSelection(ISelection selection) {
+            if (!(selection instanceof IStructuredSelection)) {
+                return null;
+            }
+            Object selected = ((IStructuredSelection)selection).getFirstElement();
+            if (selected instanceof ITableStructureUsage) {
+                return (ITableStructureUsage)selected;
+            }
+            return null;
+        }
+
+        public void updateLabelFromSelection(ISelection selection) {
+            ITableStructureUsage tableStructureUsage = getTableStructureFromSelection(selection);
+            if (tableStructureUsage.getTableStructures().length > 1) {
+                setText(textPlural);
+            } else {
+                setText(textSingular);
+            }
+        }
     }
 
 }

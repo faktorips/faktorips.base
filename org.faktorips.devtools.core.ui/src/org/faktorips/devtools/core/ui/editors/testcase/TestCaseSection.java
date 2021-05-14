@@ -133,15 +133,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     public static final String VALUESECTION = "VALUESECTION"; //$NON-NLS-1$
 
+    // Ui refresh interval
+    static final int REFRESH_INTERVAL = 400;
+
     // Used for saving the current layout style and filter in a eclipse memento.
     private static final String DIALOG_SETTINGS_KEY = "TestCaseSection"; //$NON-NLS-1$
     private static final String CONTENT_TYPE_KEY = "contenttype"; //$NON-NLS-1$
     private static final String SHOW_POLICY_COMPONENT_TYPE = "showpolicycomponenttype"; //$NON-NLS-1$
     private static final String SHOW_ASSOCIATION_KEY = "associations"; //$NON-NLS-1$
     private static final String SHOW_ALL_KEY = "all"; //$NON-NLS-1$
-
-    // Ui refresh interval
-    static final int REFRESH_INTERVAL = 400;
 
     // The tree view which displays all test policy components and test values which are available
     // in this test
@@ -781,8 +781,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
-                    RemoveAction removeAction = new RemoveAction();
-                    removeAction.run();
+                    new RemoveAction().run();
                 }
             }
 
@@ -1079,27 +1078,14 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void renamePolicyCmpt(final ITestPolicyCmpt testPolicyCmpt) {
-        IInputValidator validator = new IInputValidator() {
-            @Override
-            public String isValid(String nameCandidate) {
-                if (testPolicyCmpt.getName().equals(nameCandidate)) {
-                    return Messages.TestCaseSection_Rename_Problem_ChooseDifferentName;
-                }
-                if (!isNameValid(nameCandidate)) {
-                    return Messages.TestCaseSection_Rename_Problem_NameInUse;
-                }
-                return null;
+        IInputValidator validator = nameCandidate -> {
+            if (testPolicyCmpt.getName().equals(nameCandidate)) {
+                return Messages.TestCaseSection_Rename_Problem_ChooseDifferentName;
             }
-
-            /*
-             * Returns true if generateUniqueNameForTestPolicyCmpt() creates the same string as the
-             * given one.
-             */
-            private boolean isNameValid(String nameCandidate) {
-                ITestCase testCase = testPolicyCmpt.getTestCase();
-                return testCase.generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, nameCandidate)
-                        .equals(nameCandidate);
+            if (!isNameValid(nameCandidate, testPolicyCmpt)) {
+                return Messages.TestCaseSection_Rename_Problem_NameInUse;
             }
+            return null;
         };
 
         InputDialog dialog = new InputDialog(getShell(), Messages.TestCaseSection_RenameDialogTitle,
@@ -1109,6 +1095,15 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         if (result == Window.OK) {
             testPolicyCmpt.setName(dialog.getValue());
         }
+    }
+
+    /*
+     * Returns true if generateUniqueNameForTestPolicyCmpt() creates the same string as the given
+     * one.
+     */
+    private boolean isNameValid(String nameCandidate, ITestPolicyCmpt testPolicyCmpt) {
+        return testPolicyCmpt.getTestCase().generateUniqueNameForTestPolicyCmpt(testPolicyCmpt, nameCandidate)
+                .equals(nameCandidate);
     }
 
     private void showAllClicked() {
@@ -1847,37 +1842,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * button is pressed.
      */
     private void hookeSectionTitleHyperlink() {
-        getFormTitleLabel().addMouseListener(new MouseListener() {
-            @Override
-            public void mouseDoubleClick(MouseEvent e) {
-                // Nothing to do
-            }
-
-            @Override
-            public void mouseDown(MouseEvent event) {
-                if ((event.stateMask & SWT.CTRL) > 0) {
-                    if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-                        return;
-                    }
-                    ITestCaseType type = null;
-                    try {
-                        type = getTestCase().findTestCaseType(ipsProject);
-                    } catch (CoreException e) {
-                        IpsPlugin.log(e);
-                        return;
-                    }
-                    if (type == null) {
-                        return;
-                    }
-                    IpsUIPlugin.getDefault().openEditor(type.getIpsSrcFile());
-                }
-            }
-
-            @Override
-            public void mouseUp(MouseEvent e) {
-                // Nothing to do
-            }
-        });
+        getFormTitleLabel().addMouseListener(new LinkMouseListener());
     }
 
     void postSetFailureBackgroundAndToolTip(final EditField<?> editField, final String expectedResult) {
@@ -2208,17 +2173,49 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         this.treeViewer = treeViewer;
     }
 
+    private final class LinkMouseListener implements MouseListener {
+        @Override
+        public void mouseDoubleClick(MouseEvent e) {
+            // Nothing to do
+        }
+
+        @Override
+        public void mouseDown(MouseEvent event) {
+            if ((event.stateMask & SWT.CTRL) > 0) {
+                if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+                    return;
+                }
+                ITestCaseType type = null;
+                try {
+                    type = getTestCase().findTestCaseType(ipsProject);
+                } catch (CoreException e) {
+                    IpsPlugin.log(e);
+                    return;
+                }
+                if (type == null) {
+                    return;
+                }
+                IpsUIPlugin.getDefault().openEditor(type.getIpsSrcFile());
+            }
+        }
+
+        @Override
+        public void mouseUp(MouseEvent e) {
+            // Nothing to do
+        }
+    }
+
     /**
      * State class contains the enable state of all actions (for buttons and context menu)
      */
     private class TreeActionEnableState {
-        boolean productCmptChangeEnable = false;
-        boolean productCmptRemoveEnable = false;
-        boolean removeEnable = false;
-        boolean addEnable = false;
-        boolean moveEnable = false;
-        boolean openInNewEditorEnable = true;
-        boolean renameEnable = false;
+        private boolean productCmptChangeEnable = false;
+        private boolean productCmptRemoveEnable = false;
+        private boolean removeEnable = false;
+        private boolean addEnable = false;
+        private boolean moveEnable = false;
+        private boolean openInNewEditorEnable = true;
+        private boolean renameEnable = false;
     }
 
     /**
@@ -2438,8 +2435,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             Action actionStoreActualValue = new Action("actionStoreActualValue", IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
                 @Override
                 public void run() {
-                    List<FailureDetails> failureDetailsList = contextMenuManager.getFailureDetailsList();
-                    if (failureDetailsList.size() > 1) {
+                    List<FailureDetails> newFailureDetailsList = contextMenuManager.getFailureDetailsList();
+                    if (newFailureDetailsList.size() > 1) {
                         boolean overwriteExpectedResult = MessageDialog.openQuestion(getShell(),
                                 Messages.TestCaseSection_MessageDialog_TitleStoreExpectedResults,
                                 Messages.TestCaseSection_MessageDialog_QuestionStoreExpectedResults);

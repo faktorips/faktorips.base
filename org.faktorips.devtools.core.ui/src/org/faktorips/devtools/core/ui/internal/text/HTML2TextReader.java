@@ -31,37 +31,37 @@ import org.eclipse.swt.custom.StyleRange;
 public class HTML2TextReader extends SubstitutionTextReader {
 
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
-    private static final Map<String, String> fgEntityLookup;
-    private static final Set<String> fgTags;
+    private static final Map<String, String> FG_ENTITY_LOOKUP;
+    private static final Set<String> FG_TAGS;
 
     static {
-        fgTags = new HashSet<>();
-        fgTags.add("b"); //$NON-NLS-1$
-        fgTags.add("br"); //$NON-NLS-1$
-        fgTags.add("br/"); //$NON-NLS-1$
-        fgTags.add("div"); //$NON-NLS-1$
-        fgTags.add("h1"); //$NON-NLS-1$
-        fgTags.add("h2"); //$NON-NLS-1$
-        fgTags.add("h3"); //$NON-NLS-1$
-        fgTags.add("h4"); //$NON-NLS-1$
-        fgTags.add("h5"); //$NON-NLS-1$
-        fgTags.add("p"); //$NON-NLS-1$
-        fgTags.add("dl"); //$NON-NLS-1$
-        fgTags.add("dt"); //$NON-NLS-1$
-        fgTags.add("dd"); //$NON-NLS-1$
-        fgTags.add("li"); //$NON-NLS-1$
-        fgTags.add("ul"); //$NON-NLS-1$
-        fgTags.add("pre"); //$NON-NLS-1$
-        fgTags.add("head"); //$NON-NLS-1$
+        FG_TAGS = new HashSet<>();
+        FG_TAGS.add("b"); //$NON-NLS-1$
+        FG_TAGS.add("br"); //$NON-NLS-1$
+        FG_TAGS.add("br/"); //$NON-NLS-1$
+        FG_TAGS.add("div"); //$NON-NLS-1$
+        FG_TAGS.add("h1"); //$NON-NLS-1$
+        FG_TAGS.add("h2"); //$NON-NLS-1$
+        FG_TAGS.add("h3"); //$NON-NLS-1$
+        FG_TAGS.add("h4"); //$NON-NLS-1$
+        FG_TAGS.add("h5"); //$NON-NLS-1$
+        FG_TAGS.add("p"); //$NON-NLS-1$
+        FG_TAGS.add("dl"); //$NON-NLS-1$
+        FG_TAGS.add("dt"); //$NON-NLS-1$
+        FG_TAGS.add("dd"); //$NON-NLS-1$
+        FG_TAGS.add("li"); //$NON-NLS-1$
+        FG_TAGS.add("ul"); //$NON-NLS-1$
+        FG_TAGS.add("pre"); //$NON-NLS-1$
+        FG_TAGS.add("head"); //$NON-NLS-1$
 
-        fgEntityLookup = new HashMap<>(7);
-        fgEntityLookup.put("lt", "<"); //$NON-NLS-1$ //$NON-NLS-2$
-        fgEntityLookup.put("gt", ">"); //$NON-NLS-1$ //$NON-NLS-2$
-        fgEntityLookup.put("nbsp", " "); //$NON-NLS-1$ //$NON-NLS-2$
-        fgEntityLookup.put("amp", "&"); //$NON-NLS-1$ //$NON-NLS-2$
-        fgEntityLookup.put("circ", "^"); //$NON-NLS-1$ //$NON-NLS-2$
-        fgEntityLookup.put("tilde", "~"); //$NON-NLS-2$ //$NON-NLS-1$
-        fgEntityLookup.put("quot", "\""); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP = new HashMap<>(7);
+        FG_ENTITY_LOOKUP.put("lt", "<"); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP.put("gt", ">"); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP.put("nbsp", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP.put("amp", "&"); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP.put("circ", "^"); //$NON-NLS-1$ //$NON-NLS-2$
+        FG_ENTITY_LOOKUP.put("tilde", "~"); //$NON-NLS-2$ //$NON-NLS-1$
+        FG_ENTITY_LOOKUP.put("quot", "\""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private int fCounter = 0;
@@ -148,7 +148,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
             tag = tag.substring(1);
         }
 
-        if (!fgTags.contains(tag)) {
+        if (!FG_TAGS.contains(tag)) {
             return EMPTY_STRING;
         }
 
@@ -302,7 +302,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
                 // ignore exception
             }
         } else {
-            String str = fgEntityLookup.get(symbol);
+            String str = FG_ENTITY_LOOKUP.get(symbol);
             if (str != null) {
                 return str;
             }

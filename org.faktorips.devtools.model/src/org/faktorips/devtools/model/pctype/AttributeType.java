@@ -53,9 +53,15 @@ public enum AttributeType {
     private final String id;
     private final String name;
 
+    private AttributeType(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public static final AttributeType getAttributeType(String id) {
-        if (id.equals("changable")) { //$NON-NLS-1$
-            return CHANGEABLE; // migration of old files
+        if ("changeable".equals(id)) { //$NON-NLS-1$
+            // migration of old files
+            return CHANGEABLE;
         }
         for (AttributeType at : values()) {
             if (at.getId().equals(id)) {
@@ -70,11 +76,6 @@ public enum AttributeType {
      */
     public boolean isDerived() {
         return this == DERIVED_BY_EXPLICIT_METHOD_CALL || this == DERIVED_ON_THE_FLY;
-    }
-
-    private AttributeType(String id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     /**

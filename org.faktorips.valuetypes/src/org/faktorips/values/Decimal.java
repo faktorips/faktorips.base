@@ -49,6 +49,10 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
 
     private final BigDecimal value;
 
+    Decimal(BigDecimal value) {
+        this.value = value;
+    }
+
     /**
      * Returns a {@link Collector} that sums a {@link Stream} of Decimals.
      */
@@ -78,7 +82,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @throws NumberFormatException if <code>s</code> is not a valid representation of a Decimal.
      */
     public static final Decimal valueOf(String s) {
-        if (s == null || s.equals("") || s.equals(DecimalNull.STRING_REPRESENTATION)) {
+        if (s == null || "".equals(s) || DecimalNull.STRING_REPRESENTATION.equals(s)) {
             return NULL;
         }
         return new Decimal(new BigDecimal(s));
@@ -114,10 +118,6 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
 
     public static final Decimal valueOf(long unscaledValue, int scale) {
         return new Decimal(BigDecimal.valueOf(unscaledValue, scale));
-    }
-
-    Decimal(BigDecimal value) {
-        this.value = value;
     }
 
     @Override

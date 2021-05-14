@@ -39,35 +39,6 @@ public class TableImportExportAction extends IpsAction {
 
     private boolean isImport;
 
-    private static class SimpleSelectionProvider implements ISelectionProvider {
-        private ITableContents tableContents;
-
-        public SimpleSelectionProvider(ITableContents tableContents) {
-            this.tableContents = tableContents;
-        }
-
-        @Override
-        public void addSelectionChangedListener(ISelectionChangedListener listener) {
-            // Nothing to do
-        }
-
-        @Override
-        public ISelection getSelection() {
-            return new StructuredSelection(tableContents);
-        }
-
-        @Override
-        public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-            // Nothing to do
-        }
-
-        @Override
-        public void setSelection(ISelection selection) {
-            // Nothing to do
-        }
-
-    }
-
     public static TableImportExportAction createTableImportAction(Shell shell, ISelectionProvider selectionProvider) {
         TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
         tableImportExportAction.initImportAction();
@@ -159,4 +130,32 @@ public class TableImportExportAction extends IpsAction {
         return true;
     }
 
+    private static class SimpleSelectionProvider implements ISelectionProvider {
+        private ITableContents tableContents;
+
+        public SimpleSelectionProvider(ITableContents tableContents) {
+            this.tableContents = tableContents;
+        }
+
+        @Override
+        public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
+        }
+
+        @Override
+        public ISelection getSelection() {
+            return new StructuredSelection(tableContents);
+        }
+
+        @Override
+        public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+            // Nothing to do
+        }
+
+        @Override
+        public void setSelection(ISelection selection) {
+            // Nothing to do
+        }
+
+    }
 }

@@ -56,6 +56,16 @@ public class IpsPropertiesAction extends IpsAction {
     }
 
     /**
+     * Returns <code>true</code> if the property action supports the given object.
+     */
+    public boolean isEnabledFor(Object selected) {
+        if (selected instanceof IIpsObjectPart) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Helper class to simulate a selection provider
      */
     private static final class SelProvider implements ISelectionProvider {
@@ -85,16 +95,6 @@ public class IpsPropertiesAction extends IpsAction {
         public void setSelection(ISelection selection) {
             // do nothing
         }
-    }
-
-    /**
-     * Returns <code>true</code> if the property action supports the given object.
-     */
-    public boolean isEnabledFor(Object selected) {
-        if (selected instanceof IIpsObjectPart) {
-            return false;
-        }
-        return true;
     }
 
 }

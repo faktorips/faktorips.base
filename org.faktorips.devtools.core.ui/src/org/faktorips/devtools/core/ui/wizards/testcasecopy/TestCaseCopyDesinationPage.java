@@ -286,47 +286,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         });
 
         // create label provider
-        tableViewer.setLabelProvider(new ITableLabelProvider() {
-            @Override
-            public Image getColumnImage(Object element, int columnIndex) {
-                if (columnIndex == 0) {
-                    return defaultLabelProvider.getImage(element);
-                } else if (columnIndex == 1) {
-                    return defaultLabelProvider.getImage(rootParameterProductCmpt.get(element));
-                }
-                return null;
-            }
-
-            @Override
-            public String getColumnText(Object element, int columnIndex) {
-                if (columnIndex == 0) {
-                    return defaultLabelProvider.getText(element);
-                } else if (columnIndex == 1) {
-                    return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
-                }
-                return null;
-            }
-
-            @Override
-            public void addListener(ILabelProviderListener listener) {
-                // Nothing to do
-            }
-
-            @Override
-            public void dispose() {
-                // Nothing to do
-            }
-
-            @Override
-            public boolean isLabelProperty(Object element, String property) {
-                return false;
-            }
-
-            @Override
-            public void removeListener(ILabelProviderListener listener) {
-                // Nothing to do
-            }
-        });
+        tableViewer.setLabelProvider(new TableLabelProvider());
 
         // create cell editor/modifier
         CellEditor delegateCellEditor;
@@ -339,50 +299,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             return;
         }
         tableViewer.setCellEditors(new CellEditor[] { null, delegateCellEditor });
-        tableViewer.setCellModifier(new ICellModifier() {
-            @Override
-            public boolean canModify(Object element, String property) {
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public Object getValue(Object element, String property) {
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
-                    return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
-                }
-                return null;
-            }
-
-            @Override
-            public void modify(Object element, String property, Object value) {
-                ITestPolicyCmpt rootTestPolicyCmpt = null;
-                if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
-                    rootTestPolicyCmpt = (ITestPolicyCmpt)((TableItem)element).getData();
-                    IIpsSrcFile[] canditates = rootParameterProductCmptCandidates.get(rootTestPolicyCmpt);
-                    IIpsSrcFile changedValue = null;
-                    for (IIpsSrcFile canditate : canditates) {
-                        if (defaultLabelProvider.getText(canditate).equals(value)) {
-                            changedValue = canditate;
-                            break;
-                        }
-                    }
-                    if (changedValue == null) {
-                        throw new RuntimeException("Wrong table content!"); //$NON-NLS-1$
-                    }
-                    Object oldValue = rootParameterProductCmpt.get(rootTestPolicyCmpt);
-                    if (oldValue != changedValue) {
-                        rootParameterProductCmpt.put(rootTestPolicyCmpt, changedValue);
-                        needRecreateTarget = true;
-                    }
-                }
-                tableViewer.refresh();
-                pageChanged();
-                setInfoMessageVersionIdChange(rootTestPolicyCmpt);
-            }
-        });
+        tableViewer.setCellModifier(new CellModifier());
 
         column1.pack();
         column2.pack();
@@ -624,5 +541,92 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         boolean pageComplete = validatePage();
         setPageComplete(pageComplete);
         getContainer().updateButtons();
+    }
+
+    private final class CellModifier implements ICellModifier {
+        @Override
+        public boolean canModify(Object element, String property) {
+            if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Object getValue(Object element, String property) {
+            if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
+                return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
+            }
+            return null;
+        }
+
+        @Override
+        public void modify(Object element, String property, Object value) {
+            ITestPolicyCmpt rootTestPolicyCmpt = null;
+            if (COLUMN_NEW_PRODUCTCMPT.equals(property)) {
+                rootTestPolicyCmpt = (ITestPolicyCmpt)((TableItem)element).getData();
+                IIpsSrcFile[] canditates = rootParameterProductCmptCandidates.get(rootTestPolicyCmpt);
+                IIpsSrcFile changedValue = null;
+                for (IIpsSrcFile canditate : canditates) {
+                    if (defaultLabelProvider.getText(canditate).equals(value)) {
+                        changedValue = canditate;
+                        break;
+                    }
+                }
+                if (changedValue == null) {
+                    throw new RuntimeException("Wrong table content!"); //$NON-NLS-1$
+                }
+                Object oldValue = rootParameterProductCmpt.get(rootTestPolicyCmpt);
+                if (oldValue != changedValue) {
+                    rootParameterProductCmpt.put(rootTestPolicyCmpt, changedValue);
+                    needRecreateTarget = true;
+                }
+            }
+            tableViewer.refresh();
+            pageChanged();
+            setInfoMessageVersionIdChange(rootTestPolicyCmpt);
+        }
+    }
+
+    private final class TableLabelProvider implements ITableLabelProvider {
+        @Override
+        public Image getColumnImage(Object element, int columnIndex) {
+            if (columnIndex == 0) {
+                return defaultLabelProvider.getImage(element);
+            } else if (columnIndex == 1) {
+                return defaultLabelProvider.getImage(rootParameterProductCmpt.get(element));
+            }
+            return null;
+        }
+
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+            if (columnIndex == 0) {
+                return defaultLabelProvider.getText(element);
+            } else if (columnIndex == 1) {
+                return defaultLabelProvider.getText(rootParameterProductCmpt.get(element));
+            }
+            return null;
+        }
+
+        @Override
+        public void addListener(ILabelProviderListener listener) {
+            // Nothing to do
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to do
+        }
+
+        @Override
+        public boolean isLabelProperty(Object element, String property) {
+            return false;
+        }
+
+        @Override
+        public void removeListener(ILabelProviderListener listener) {
+            // Nothing to do
+        }
     }
 }

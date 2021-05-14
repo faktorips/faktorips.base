@@ -80,6 +80,252 @@ public class FailurePane implements IMenuListener {
     private String[] lastFailures = new String[0];
     private IpsTestRunnerViewPart viewPart;
 
+    public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart, Clipboard clipboard) {
+        this.viewPart = viewPart;
+        this.clipboard = clipboard;
+
+        table = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+
+        table.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                viewPart.setStatusBarMessage(getSelectedTableRowText());
+            }
+        });
+
+        table.addSelectionListener(new TableSelectionListener(viewPart));
+
+        // fill the failure trace viewer toolbar
+        ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
+        showStackTraceAction = new ShowStackTraceAction();
+        failureToolBarmanager.add(showStackTraceAction);
+        failureToolBarmanager.update(true);
+
+        initMenu();
+    }
+
+    private String getSelectedTableRowText() {
+        TableItem[] items = table.getSelection();
+        if (items.length > 0) {
+            return items[0].getText();
+        }
+        return ""; //$NON-NLS-1$
+    }
+
+    private boolean containsTraceLineRelevantSourceFile() {
+        return true;
+        // the stacktrace will always be displayed
+        // it doesn't matter if the source is inside the projects source folder or not
+    }
+
+    /*
+     * Open the editor and mark corresponding line.
+     */
+    private boolean openEditor(String traceLine) {
+        try {
+            TraceLineElement tli = new TraceLineElement(traceLine);
+            if (!tli.isValidElement()) {
+                // no link to java source code
+                return false;
+            }
+
+            IJavaElement file = findElement(viewPart.getLaunchedProject(), tli.getTestName());
+            if (file == null) {
+                MessageDialog.openError(viewPart.getShell(), Messages.FailurePane_DialogClassNotFound_Title,
+                        NLS.bind(Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName()));
+                return false;
+            }
+
+            // try to get the editor input from the projects source folder
+            IEditorInput editorInput = getEditorInput(file);
+            if (editorInput == null) {
+                // maybe this is a java class file in an jar archive
+                IEditorPart part = JavaUI.openInEditor(file);
+                if (part == null) {
+                    MessageDialog
+                            .openInformation(
+                                    viewPart.getShell(),
+                                    Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title,
+                                    NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description,
+                                            tli.getTestName()));
+                    return false;
+                }
+                editorInput = part.getEditorInput();
+            }
+            // goto corresponding line in the editor
+            IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName(), true, true);
+            ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
+                    .getActivePage().openEditor(editorInput, editor.getId(), true);
+            IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+            if (document == null) {
+                return false;
+            }
+            textEditor
+                    .selectAndReveal(document.getLineOffset(tli.getLine() - 1), document.getLineLength(tli.getLine()));
+        } catch (BadLocationException x) {
+            // marker refers to invalid text position -> do nothing
+        } catch (StringIndexOutOfBoundsException x) {
+            // invalid text -> do nothing
+        } catch (CoreException e) {
+            IpsPlugin.logAndShowErrorDialog(e);
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * Returns the editor input. Only files in the project source folder (compilation unit) are
+     * supported. Class files in e.g. Jar's with source attachment are not supported.
+     */
+    private IEditorInput getEditorInput(IJavaElement javaElement) {
+        IJavaElement element = javaElement;
+        while (element != null) {
+            if (element instanceof ICompilationUnit) {
+                ICompilationUnit unit = (ICompilationUnit)element;
+                IResource resource = unit.getResource();
+                if (resource instanceof IFile) {
+                    return new FileEditorInput((IFile)resource);
+                }
+            }
+            element = element.getParent();
+        }
+
+        return null;
+    }
+
+    /*
+     * Find java element in the given java project by the given class name.
+     */
+    private IJavaElement findElement(IJavaProject project, String className) throws CoreException {
+        return project == null ? null : project.findType(className);
+    }
+
+    /**
+     * Returns the composite used to present the failures.
+     */
+    public Composite getComposite() {
+        return table;
+    }
+
+    /**
+     * Inserts the given test case failure details in the table. One row for each given failure. If
+     * showStackTrace is <code>false</code> and the given failure details contains stack trace
+     * elements, then these elements will be hidden.
+     */
+    public void showFailureDetails(String[] testCaseFailures) {
+        final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        showStackTraceAction.setEnabled(false);
+        lastFailures = testCaseFailures;
+        table.removeAll();
+        for (int i = 0; i < testCaseFailures.length; i++) {
+            if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)) {
+                String text = testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length());
+                if (text.trim().length() > 0) {
+                    TableItem tableItem = new TableItem(table, SWT.NONE);
+                    tableItem.setText(text);
+                    ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                            "obj16/stkfrm_msg.gif"); //$NON-NLS-1$
+                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                }
+            } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
+                showStackTraceAction.setEnabled(true);
+                if (showStackTrace) {
+                    String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
+                    if (containsTraceLineRelevantSourceFile() || i == 0) {
+                        TableItem tableItem = new TableItem(table, SWT.NONE);
+                        // show the stacktrace line only if the element is inside the projects
+                        // sources or this is the last stacktrace line,
+                        // thus if the last stacktrace line is not inside the souce the error could
+                        // be better determined with at least this trace line
+                        tableItem.setText(traceLine);
+                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                                "obj16/stkfrm_obj.gif"); //$NON-NLS-1$
+                        tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                    }
+                }
+            } else {
+                if (testCaseFailures[i].trim().length() > 0) {
+                    TableItem tableItem = new TableItem(table, SWT.NONE);
+                    tableItem.setText(testCaseFailures[i]);
+                    ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                            "obj16/testfail.gif"); //$NON-NLS-1$
+                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                }
+            }
+        }
+        table.addDisposeListener($ -> resourceManager.dispose());
+    }
+
+    /**
+     * A new test run will be started.
+     */
+    public void aboutToStart() {
+        table.removeAll();
+    }
+
+    /**
+     * Returns the index of the selected element.
+     */
+    int getSelectedTableIndex() {
+        return table.getSelectionIndex();
+    }
+
+    @Override
+    public void menuAboutToShow(IMenuManager manager) {
+        if (table.getSelectionCount() > 0) {
+            manager.add(new IpsTestCopyAction(getFailureDetailsAsString()));
+        }
+    }
+
+    private String getFailureDetailsAsString() {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        TableItem[] tableItems = table.getItems();
+        for (TableItem tableItem : tableItems) {
+            printWriter.println(tableItem.getText());
+        }
+        return stringWriter.toString();
+    }
+
+    private void initMenu() {
+        MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(this);
+        Menu menu = menuMgr.createContextMenu(table);
+        table.setMenu(menu);
+    }
+
+    private final class TableSelectionListener implements SelectionListener {
+        private final IpsTestRunnerViewPart vp;
+
+        private TableSelectionListener(IpsTestRunnerViewPart viewPart) {
+            this.vp = viewPart;
+        }
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            // Nothing to do
+        }
+
+        @Override
+        public void widgetDefaultSelected(SelectionEvent e) {
+            if (table.getSelectionCount() > 0) {
+                boolean navigate = false;
+                if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+                    // the user can modify to the model or sources, open the java class
+                    navigate = openEditor(getSelectedTableRowText());
+                }
+                if (!navigate) {
+                    // navigate to corresponding test case, if no source navigation is allowed
+                    // or the source navigation failed (e.g. no stacktrace line, but failure
+                    // line indicator)
+                    new OpenTestInEditorAction(vp, vp.getSelectedTestFullPath(), vp
+                            .getSelectedTestQualifiedName(), getSelectedTableRowText()).run();
+                }
+            }
+        }
+    }
+
     /*
      * Action to filter the stack trace elements
      */
@@ -174,240 +420,4 @@ public class FailurePane implements IMenuListener {
 
     }
 
-    public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart, Clipboard clipboard) {
-        this.viewPart = viewPart;
-        this.clipboard = clipboard;
-
-        table = new Table(parent, SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-
-        table.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                viewPart.setStatusBarMessage(getSelectedTableRowText());
-            }
-        });
-
-        table.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                if (table.getSelectionCount() > 0) {
-                    boolean navigate = false;
-                    if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-                        // the user can modify to the model or sources, open the java class
-                        navigate = openEditor(getSelectedTableRowText());
-                    }
-                    if (!navigate) {
-                        // navigate to corresponding test case, if no source navigation is allowed
-                        // or the source navigation failed (e.g. no stacktrace line, but failure
-                        // line indicator)
-                        new OpenTestInEditorAction(viewPart, viewPart.getSelectedTestFullPath(), viewPart
-                                .getSelectedTestQualifiedName(), getSelectedTableRowText()).run();
-                    }
-                }
-            }
-        });
-
-        // fill the failure trace viewer toolbar
-        ToolBarManager failureToolBarmanager = new ToolBarManager(toolBar);
-        showStackTraceAction = new ShowStackTraceAction();
-        failureToolBarmanager.add(showStackTraceAction);
-        failureToolBarmanager.update(true);
-
-        initMenu();
-    }
-
-    private String getSelectedTableRowText() {
-        TableItem[] items = table.getSelection();
-        if (items.length > 0) {
-            return items[0].getText();
-        }
-        return ""; //$NON-NLS-1$
-    }
-
-    private boolean containsTraceLineRelevantSourceFile() {
-        return true;
-        // the stacktrace will always be displayed
-        // it doesn't matter if the source is inside the projects source folder or not
-    }
-
-    /*
-     * Open the editor and mark corresponding line.
-     */
-    private boolean openEditor(String traceLine) {
-        try {
-            TraceLineElement tli = new TraceLineElement(traceLine);
-            if (!tli.isValidElement()) {
-                // no link to java source code
-                return false;
-            }
-
-            IJavaElement file = findElement(viewPart.getLaunchedProject(), tli.getTestName());
-            if (file == null) {
-                MessageDialog.openError(viewPart.getShell(), Messages.FailurePane_DialogClassNotFound_Title,
-                        NLS.bind(Messages.FailurePane_DialogClassNotFound_Description, tli.getTestName()));
-                return false;
-            }
-
-            // try to get the editor input from the projects source folder
-            IEditorInput editorInput = getEditorInput(file);
-            if (editorInput == null) {
-                // maybe this is a java class file in an jar archive
-                IEditorPart part = JavaUI.openInEditor(file);
-                if (part == null) {
-                    MessageDialog
-                            .openInformation(
-                                    viewPart.getShell(),
-                                    Messages.FailurePane_DialogClassNotFoundInSrcFolder_Title,
-                                    NLS.bind(Messages.FailurePane_DialogClassNotFoundInSrcFolder_Description,
-                                            tli.getTestName()));
-                    return false;
-                }
-                editorInput = part.getEditorInput();
-            }
-            // goto corresponding line in the editor
-            IEditorDescriptor editor = IDE.getEditorDescriptor(editorInput.getName(), true, true);
-            ITextEditor textEditor = (ITextEditor)IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                    .getActivePage().openEditor(editorInput, editor.getId(), true);
-            IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-            if (document == null) {
-                return false;
-            }
-            textEditor
-                    .selectAndReveal(document.getLineOffset(tli.getLine() - 1), document.getLineLength(tli.getLine()));
-        } catch (BadLocationException x) {
-            // marker refers to invalid text position -> do nothing
-        } catch (StringIndexOutOfBoundsException x) {
-            // invalid text -> do nothing
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        }
-        return true;
-    }
-
-    /*
-     * Returns the editor input. Only files in the project source folder (compilation unit) are
-     * supported. Class files in e.g. Jar's with source attachment are not supported.
-     */
-    private IEditorInput getEditorInput(IJavaElement element) {
-        while (element != null) {
-            if (element instanceof ICompilationUnit) {
-                ICompilationUnit unit = (ICompilationUnit)element;
-                IResource resource = unit.getResource();
-                if (resource instanceof IFile) {
-                    return new FileEditorInput((IFile)resource);
-                }
-            }
-            element = element.getParent();
-        }
-
-        return null;
-    }
-
-    /*
-     * Find java element in the given java project by the given class name.
-     */
-    private IJavaElement findElement(IJavaProject project, String className) throws CoreException {
-        return project == null ? null : project.findType(className);
-    }
-
-    /**
-     * Returns the composite used to present the failures.
-     */
-    public Composite getComposite() {
-        return table;
-    }
-
-    /**
-     * Inserts the given test case failure details in the table. One row for each given failure. If
-     * showStackTrace is <code>false</code> and the given failure details contains stack trace
-     * elements, then these elements will be hidden.
-     */
-    public void showFailureDetails(String[] testCaseFailures) {
-        final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        showStackTraceAction.setEnabled(false);
-        lastFailures = testCaseFailures;
-        table.removeAll();
-        for (int i = 0; i < testCaseFailures.length; i++) {
-            if (testCaseFailures[i].startsWith(TEST_ERROR_MESSAGE_INDICATOR)) {
-                String text = testCaseFailures[i].substring(TEST_ERROR_MESSAGE_INDICATOR.length());
-                if (text.trim().length() > 0) {
-                    TableItem tableItem = new TableItem(table, SWT.NONE);
-                    tableItem.setText(text);
-                    ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                            "obj16/stkfrm_msg.gif");//$NON-NLS-1$
-                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
-                }
-            } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
-                showStackTraceAction.setEnabled(true);
-                if (showStackTrace) {
-                    String traceLine = testCaseFailures[i].substring(TEST_ERROR_STACK_INDICATOR.length());
-                    if (containsTraceLineRelevantSourceFile() || i == 0) {
-                        TableItem tableItem = new TableItem(table, SWT.NONE);
-                        // show the stacktrace line only if the element is inside the projects
-                        // sources or this is the last stacktrace line,
-                        // thus if the last stacktrace line is not inside the souce the error could
-                        // be better determined with at least this trace line
-                        tableItem.setText(traceLine);
-                        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "obj16/stkfrm_obj.gif");//$NON-NLS-1$
-                        tableItem.setImage((Image)resourceManager.get(imageDescriptor));
-                    }
-                }
-            } else {
-                if (testCaseFailures[i].trim().length() > 0) {
-                    TableItem tableItem = new TableItem(table, SWT.NONE);
-                    tableItem.setText(testCaseFailures[i]);
-                    ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                            "obj16/testfail.gif");//$NON-NLS-1$
-                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
-                }
-            }
-        }
-        table.addDisposeListener($ -> resourceManager.dispose());
-    }
-
-    /**
-     * A new test run will be started.
-     */
-    public void aboutToStart() {
-        table.removeAll();
-    }
-
-    /**
-     * Returns the index of the selected element.
-     */
-    int getSelectedTableIndex() {
-        return table.getSelectionIndex();
-    }
-
-    @Override
-    public void menuAboutToShow(IMenuManager manager) {
-        if (table.getSelectionCount() > 0) {
-            manager.add(new IpsTestCopyAction(getFailureDetailsAsString()));
-        }
-    }
-
-    private String getFailureDetailsAsString() {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-        TableItem[] tableItems = table.getItems();
-        for (TableItem tableItem : tableItems) {
-            printWriter.println(tableItem.getText());
-        }
-        return stringWriter.toString();
-    }
-
-    private void initMenu() {
-        MenuManager menuMgr = new MenuManager();
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(this);
-        Menu menu = menuMgr.createContextMenu(table);
-        table.setMenu(menu);
-    }
 }

@@ -23,7 +23,7 @@ public abstract class SingleCharReader extends Reader {
     public abstract int read() throws IOException;
 
     @Override
-    public int read(char cbuf[], int off, int len) throws IOException {
+    public int read(char[] cbuf, int off, int len) throws IOException {
         int end = off + len;
         for (int i = off; i < end; i++) {
             int ch = read();

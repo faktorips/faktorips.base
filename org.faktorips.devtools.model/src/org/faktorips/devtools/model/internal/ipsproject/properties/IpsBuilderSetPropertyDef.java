@@ -105,22 +105,26 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         if (value == null) {
             return null;
         }
-        if (type.equals("string")) { //$NON-NLS-1$
-            return value;
-        } else if (type.equals("boolean")) { //$NON-NLS-1$
-            return Boolean.valueOf(value);
-        } else if (type.equals("integer")) { //$NON-NLS-1$
-            return Integer.valueOf(value);
-        } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-            for (String discreteValue : discretePropertyValues) {
-                if (discreteValue.equals(value)) {
-                    return value;
+        switch (type) {
+            case "string": //$NON-NLS-1$
+                return value;
+            case "boolean": //$NON-NLS-1$
+                return Boolean.valueOf(value);
+            case "integer": //$NON-NLS-1$
+                return Integer.valueOf(value);
+            case "enum": //$NON-NLS-1$
+            case "extensionPoint": //$NON-NLS-1$
+                for (String discreteValue : discretePropertyValues) {
+                    if (discreteValue.equals(value)) {
+                        return value;
+                    }
                 }
-            }
-            return disableValue;
+                return disableValue;
+            default:
+                throw new IllegalArgumentException("The provided value \"" + value //$NON-NLS-1$
+                        + "\" cannot be converted into an instance of the type " + type //$NON-NLS-1$
+                        + " of this IpsBuilderSetPropertyDef."); //$NON-NLS-1$
         }
-        throw new IllegalArgumentException("The provided value \"" + value //$NON-NLS-1$
-                + "\" cannot be converted into an instance of the type " + type + " of this IpsBuilderSetPropertyDef."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
@@ -135,18 +139,27 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             return null;
         }
         boolean parsable = false;
-        if (type.equals("string")) { //$NON-NLS-1$
-            parsable = Datatype.STRING.isParsable(value);
-        } else if (type.equals("boolean")) { //$NON-NLS-1$
-            parsable = Datatype.BOOLEAN.isParsable(value);
-        } else if (type.equals("integer")) { //$NON-NLS-1$
-            parsable = Datatype.INTEGER.isParsable(value);
-        } else if (type.equals("enum") || type.equals("extensionPoint")) { //$NON-NLS-1$ //$NON-NLS-2$
-            for (String discreteValue : discretePropertyValues) {
-                if (discreteValue.equals(value)) {
-                    parsable = true;
+
+        switch (type) {
+            case "string": //$NON-NLS-1$
+                parsable = Datatype.STRING.isParsable(value);
+                break;
+            case "boolean": //$NON-NLS-1$
+                parsable = Datatype.BOOLEAN.isParsable(value);
+                break;
+            case "integer": //$NON-NLS-1$
+                parsable = Datatype.INTEGER.isParsable(value);
+                break;
+            case "enum": //$NON-NLS-1$
+            case "extensionPoint": //$NON-NLS-1$
+                for (String discreteValue : discretePropertyValues) {
+                    if (discreteValue.equals(value)) {
+                        parsable = true;
+                    }
                 }
-            }
+                break;
+            default:
+                break;
         }
 
         if (!parsable) {
@@ -198,8 +211,8 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             String extensionPointId = element.getAttribute("extensionPointId"); //$NON-NLS-1$
             if (StringUtils.isEmpty(extensionPointId)) {
                 logger.log(new IpsStatus("If the type attribute of the builder set property " + element.getName() //$NON-NLS-1$
-                        + " of the builder set " + //$NON-NLS-1$
-                        builderSetId
+                        + " of the builder set " //$NON-NLS-1$
+                        + builderSetId
                         + " has the value \"extensionPoint\" then the \"extensionPointId\" attribute has to have a value.")); //$NON-NLS-1$
                 return false;
             }

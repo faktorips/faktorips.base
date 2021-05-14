@@ -44,27 +44,6 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
 
     private TableViewer viewer;
 
-    private static class CopyAction extends Action {
-        private MessageContentProvider contentProvider;
-        private Clipboard clipboard;
-
-        public CopyAction(Clipboard clipboard, MessageContentProvider contentProvider) {
-            super(Messages.StatusPage_copyToClipboardActionText);
-            this.clipboard = clipboard;
-            this.contentProvider = contentProvider;
-        }
-
-        @Override
-        public void run() {
-            Object[] elements = contentProvider.getElements(null);
-            StringBuilder sb = new StringBuilder();
-            for (Object msg : elements) {
-                sb.append(msg).append(System.lineSeparator());
-            }
-            clipboard.setContents(new String[] { sb.toString() }, new Transfer[] { TextTransfer.getInstance() });
-        }
-    }
-
     protected StatusPage() {
         super(Messages.ReleaserBuilderWizardSelectionPage_title, Messages.ReleaserBuilderWizardSelectionPage_title,
                 IpsUIPlugin.getImageHandling().createImageDescriptor("wizards/DeploymentWizard.png")); //$NON-NLS-1$
@@ -184,4 +163,24 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
 
     }
 
+    private static class CopyAction extends Action {
+        private MessageContentProvider contentProvider;
+        private Clipboard clipboard;
+
+        public CopyAction(Clipboard clipboard, MessageContentProvider contentProvider) {
+            super(Messages.StatusPage_copyToClipboardActionText);
+            this.clipboard = clipboard;
+            this.contentProvider = contentProvider;
+        }
+
+        @Override
+        public void run() {
+            Object[] elements = contentProvider.getElements(null);
+            StringBuilder sb = new StringBuilder();
+            for (Object msg : elements) {
+                sb.append(msg).append(System.lineSeparator());
+            }
+            clipboard.setContents(new String[] { sb.toString() }, new Transfer[] { TextTransfer.getInstance() });
+        }
+    }
 }

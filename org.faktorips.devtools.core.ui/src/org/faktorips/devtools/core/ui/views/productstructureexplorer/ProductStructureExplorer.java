@@ -821,40 +821,36 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     @Override
     public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
         final Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
-        Display.getDefault().asyncExec(new Runnable() {
-
-            @Override
-            public void run() {
-                if (file != null) {
-                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                        if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
-                            treeViewer.setInput(null);
-                            return;
-                        }
-                    }
-                }
-                refreshIfSourceFilesArePartOfCurrentStructure(ipsSrcFiles);
-            }
-
-            protected void refreshIfSourceFilesArePartOfCurrentStructure(final Set<IIpsSrcFile> ipsSrcFiles) {
-                /*
-                 * Source-file change may be processed by not yet initialized/visible product
-                 * structure explorer. Prevent NPE. See FIPS-1040.
-                 */
-                if (contentProvider != null) {
-                    /*
-                     * Refresh only if an IPS source file in the product component structure was
-                     * changed to avoid unnecessary rebuilding of the structure.
-                     */
-                    for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                        if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
-                            postRefresh();
-                            return;
-                        }
+        Display.getDefault().asyncExec(() -> {
+            if (file != null) {
+                for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                    if (file.getName().equals(ipsSrcFile.getName()) && !ipsSrcFile.exists()) {
+                        treeViewer.setInput(null);
+                        return;
                     }
                 }
             }
+            refreshIfSourceFilesArePartOfCurrentStructure(ipsSrcFiles);
         });
+    }
+
+    protected void refreshIfSourceFilesArePartOfCurrentStructure(final Set<IIpsSrcFile> ipsSrcFiles) {
+        /*
+         * Source-file change may be processed by not yet initialized/visible product structure
+         * explorer. Prevent NPE. See FIPS-1040.
+         */
+        if (contentProvider != null) {
+            /*
+             * Refresh only if an IPS source file in the product component structure was changed to
+             * avoid unnecessary rebuilding of the structure.
+             */
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                if (contentProvider.isIpsSrcFilePartOfStructure(ipsSrcFile)) {
+                    postRefresh();
+                    return;
+                }
+            }
+        }
     }
 
     private void postRefresh() {

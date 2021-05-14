@@ -98,12 +98,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
 
     private Map<Object, Object> elementsInTree = new HashMap<>();
 
-    private class IpsPackageFragmentRootTreeViewer extends ContainerCheckedTreeViewer {
-        public IpsPackageFragmentRootTreeViewer(Composite parent) {
-            super(parent);
-        }
-    }
-
     public IpsArchivePackageWizardPage(IStructuredSelection selection) {
         super(PAGE_NAME);
         this.selection = selection;
@@ -118,60 +112,9 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
 
-        ITreeContentProvider treeContentProvider = new StandardJavaElementContentProvider() {
-            private Object[] EMPTY_ARRAY = new Object[0];
+        ITreeContentProvider treeContentProvider = new ContentProvider();
 
-            @Override
-            public boolean hasChildren(Object element) {
-                // prevent the + from being shown in front of packages
-                return !(element instanceof IPackageFragmentRoot) && super.hasChildren(element);
-            }
-
-            @Override
-            public Object[] getChildren(Object element) {
-                // show only ips projects and ips package fragment roots
-                if (element instanceof IJavaModel) {
-                    Object[] children = super.getChildren(element);
-                    List<Object> result = new ArrayList<>(children.length);
-                    for (Object element2 : children) {
-                        if (element2 instanceof IJavaProject) {
-                            IProject project = ((IJavaProject)element2).getProject();
-                            try {
-                                if (project.hasNature(IIpsProject.NATURE_ID)) {
-                                    IIpsProject ipsProject = IIpsModel.get()
-                                            .getIpsProject(project.getName());
-                                    elementsInTree.put(project, ipsProject);
-                                    result.add(ipsProject);
-                                }
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                            }
-                        }
-                    }
-                    return result.toArray();
-                } else if (element instanceof IIpsProject) {
-                    // store elements for product definition view
-                    elementsInTree.put(element, element);
-                    // store to be mapped objects
-                    IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-                    List<Object> rootResult = new ArrayList<>(roots.length);
-                    for (IIpsPackageFragmentRoot root : roots) {
-                        if (root.getIpsStorage() != null) {
-                            continue;
-                        }
-                        rootResult.add(root);
-                        // store elements for product definition view
-                        elementsInTree.put(root, root);
-                        // store to be mapped objects
-                        elementsInTree.put(root.getEnclosingResource(), root);
-                    }
-                    return rootResult.toArray();
-                }
-                return EMPTY_ARRAY;
-            }
-        };
-
-        treeViewer = new IpsPackageFragmentRootTreeViewer(composite);
+        treeViewer = new ContainerCheckedTreeViewer(composite);
         treeViewer.setContentProvider(treeContentProvider);
         labelProvider = new ModelLabelProvider();
         treeViewer.setLabelProvider(labelProvider);
@@ -381,7 +324,8 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         destinationNamesCombo.setText(""); //$NON-NLS-1$
         String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES);
         if (directoryNames == null) {
-            return; // ie.- no settings stored
+            // ie.- no settings stored
+            return;
         }
         if (!destinationNamesCombo.getText().equals(directoryNames[0])) {
             destinationNamesCombo.add(destinationNamesCombo.getText());
@@ -432,4 +376,56 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         // Nothing to do
     }
 
+    private final class ContentProvider extends StandardJavaElementContentProvider {
+        private Object[] emptyArray = new Object[0];
+
+        @Override
+        public boolean hasChildren(Object element) {
+            // prevent the + from being shown in front of packages
+            return !(element instanceof IPackageFragmentRoot) && super.hasChildren(element);
+        }
+
+        @Override
+        public Object[] getChildren(Object element) {
+            // show only ips projects and ips package fragment roots
+            if (element instanceof IJavaModel) {
+                Object[] children = super.getChildren(element);
+                List<Object> result = new ArrayList<>(children.length);
+                for (Object element2 : children) {
+                    if (element2 instanceof IJavaProject) {
+                        IProject project = ((IJavaProject)element2).getProject();
+                        try {
+                            if (project.hasNature(IIpsProject.NATURE_ID)) {
+                                IIpsProject ipsProject = IIpsModel.get()
+                                        .getIpsProject(project.getName());
+                                elementsInTree.put(project, ipsProject);
+                                result.add(ipsProject);
+                            }
+                        } catch (CoreException e) {
+                            IpsPlugin.logAndShowErrorDialog(e);
+                        }
+                    }
+                }
+                return result.toArray();
+            } else if (element instanceof IIpsProject) {
+                // store elements for product definition view
+                elementsInTree.put(element, element);
+                // store to be mapped objects
+                IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
+                List<Object> rootResult = new ArrayList<>(roots.length);
+                for (IIpsPackageFragmentRoot root : roots) {
+                    if (root.getIpsStorage() != null) {
+                        continue;
+                    }
+                    rootResult.add(root);
+                    // store elements for product definition view
+                    elementsInTree.put(root, root);
+                    // store to be mapped objects
+                    elementsInTree.put(root.getEnclosingResource(), root);
+                }
+                return rootResult.toArray();
+            }
+            return emptyArray;
+        }
+    }
 }

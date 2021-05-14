@@ -62,13 +62,13 @@ import org.faktorips.runtime.MessageList;
  */
 public class ParametersEditControl extends Composite implements IDataChangeableReadWriteAccess {
 
-    private IParameterContainer paramContainer;
-
     private static final String[] PROPERTIES = { "message", "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$ //$NON-NLS-4$
     private static final int MESSAGE_PROP = 0;
     private static final int TYPE_PROP = 1;
     private static final int NEWNAME_PROP = 2;
     private static final int DEFAULT_PROP = 3;
+
+    private IParameterContainer paramContainer;
 
     // configuration parameters
     private boolean fCanChangeParameterNames = true;
@@ -352,10 +352,10 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     }
 
     private void addSpacer(Composite parent) {
-        Label label = new Label(parent, SWT.NONE);
+        Label spacerLabel = new Label(parent, SWT.NONE);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.heightHint = 5;
-        label.setLayoutData(gd);
+        spacerLabel.setLayoutData(gd);
     }
 
     private void updateButtonsEnabledState() {
@@ -425,28 +425,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         final Button button = new Button(buttonComposite, SWT.PUSH);
         button.setText(Messages.ParametersEditControl_buttonLabelRemove);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int index = getTable().getSelectionIndices()[0];
-                IParameter[] selected = getSelectedElements();
-                for (IParameter element : selected) {
-                    element.delete();
-                }
-                restoreSelection(index);
-            }
-
-            private void restoreSelection(int index) {
-                fTableViewer.refresh();
-                fTableViewer.getControl().setFocus();
-                int itemCount = getTableItemCount();
-                if (itemCount != 0 && index >= itemCount) {
-                    index = itemCount - 1;
-                    getTable().setSelection(index);
-                }
-                updateButtonsEnabledState();
-            }
-        });
+        button.addSelectionListener(new RemoveButtonSelectionListener());
         return button;
     }
 
@@ -476,7 +455,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
     // ---- editing
     // -----------------------------------------------------------------------------------------------
-
+    // CSOFF: AnonInnerLengthCheck
     private void addCellEditors() {
         class UnfocusableTextCellEditor extends TextCellEditor {
             private Object fOriginalValue;
@@ -502,7 +481,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             }
         }
 
-        final UnfocusableTextCellEditor editors[] = new UnfocusableTextCellEditor[PROPERTIES.length];
+        final UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[PROPERTIES.length];
 
         editors[TYPE_PROP] = new UnfocusableTextCellEditor(getTable());
         editors[NEWNAME_PROP] = new UnfocusableTextCellEditor(getTable());
@@ -583,6 +562,9 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                             e.doit = false;
                             editor.deactivate();
                             break;
+
+                        default:
+                            break;
                     }
                 }
             });
@@ -616,6 +598,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         fTableViewer.setColumnProperties(PROPERTIES);
         fTableViewer.setCellModifier(new ParametersCellModifier());
     }
+    // CSON: AnonInnerLengthCheck
 
     private void installParameterTypeContentAssist(Control control) {
         if (!(control instanceof Text)) {
@@ -627,6 +610,41 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         provider.setValueDatatypesOnly(false);
         provider.setIncludeAbstract(true);
         uiToolkit.attachContentProposalAdapter(text, provider, new DatatypeContentProposalLabelProvider());
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        dataChangeable = changeable;
+        updateButtonsEnabledState();
+    }
+
+    @Override
+    public boolean isDataChangeable() {
+        return dataChangeable;
+    }
+
+    private final class RemoveButtonSelectionListener extends SelectionAdapter {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            int index = getTable().getSelectionIndices()[0];
+            IParameter[] selected = getSelectedElements();
+            for (IParameter element : selected) {
+                element.delete();
+            }
+            restoreSelection(index);
+        }
+
+        private void restoreSelection(int index) {
+            fTableViewer.refresh();
+            fTableViewer.getControl().setFocus();
+            int itemCount = getTableItemCount();
+            int i = index;
+            if (itemCount != 0 && i >= itemCount) {
+                i = itemCount - 1;
+                getTable().setSelection(i);
+            }
+            updateButtonsEnabledState();
+        }
     }
 
     private class ParameterInfoContentProvider implements IStructuredContentProvider {
@@ -705,13 +723,14 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
         @Override
         public void modify(Object element, String property, Object value) {
-            if (element instanceof TableItem) {
-                element = ((TableItem)element).getData();
+            Object el = element;
+            if (el instanceof TableItem) {
+                el = ((TableItem)element).getData();
             }
-            if (!(element instanceof IParameter)) {
+            if (!(el instanceof IParameter)) {
                 return;
             }
-            IParameter param = (IParameter)element;
+            IParameter param = (IParameter)el;
             if (property.equals(PROPERTIES[NEWNAME_PROP])) {
                 param.setName((String)value);
             } else if (property.equals(PROPERTIES[TYPE_PROP])) {
@@ -724,16 +743,5 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
              */
             fTableViewer.update(paramContainer.getParameters(), new String[] { property });
         }
-    }
-
-    @Override
-    public void setDataChangeable(boolean changeable) {
-        dataChangeable = changeable;
-        updateButtonsEnabledState();
-    }
-
-    @Override
-    public boolean isDataChangeable() {
-        return dataChangeable;
     }
 }

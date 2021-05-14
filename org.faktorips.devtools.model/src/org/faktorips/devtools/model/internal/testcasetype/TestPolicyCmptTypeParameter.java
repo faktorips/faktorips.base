@@ -223,9 +223,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         association = element.getAttribute(PROPERTY_ASSOCIATION);
         String needsProductCmptAttr = element.getAttribute(PROPERTY_REQUIRES_PRODUCTCMT);
         if (StringUtils.isNotEmpty(needsProductCmptAttr)) {
-            requiresProductCmpt = needsProductCmptAttr.equalsIgnoreCase("yes") ? true : //$NON-NLS-1$
-                    needsProductCmptAttr.equalsIgnoreCase("true") ? true : //$NON-NLS-1$
-                            needsProductCmptAttr.equalsIgnoreCase("1") ? true : false; //$NON-NLS-1$
+            requiresProductCmpt = "yes".equalsIgnoreCase(needsProductCmptAttr) ? true //$NON-NLS-1$
+                    : "true".equalsIgnoreCase(needsProductCmptAttr) ? true //$NON-NLS-1$
+                            : "1".equalsIgnoreCase(needsProductCmptAttr) ? true : false; //$NON-NLS-1$
         } else {
             requiresProductCmpt = false;
         }
@@ -300,14 +300,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public ITestAttribute[] getTestAttributes(String attributeName) {
-        List<ITestAttribute> testAttributes = new ArrayList<>();
+        List<ITestAttribute> testAttributeList = new ArrayList<>();
 
         for (ITestAttribute testAttribute : this.testAttributes) {
             if (testAttribute.getAttribute().equals(attributeName)) {
-                testAttributes.add(testAttribute);
+                testAttributeList.add(testAttribute);
             }
         }
-        return testAttributes.toArray(new ITestAttribute[testAttributes.size()]);
+        return testAttributeList.toArray(new ITestAttribute[testAttributeList.size()]);
     }
 
     /** Removes the attribute from the type. */
@@ -432,11 +432,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             throws CoreException {
 
         if (isRoot() || productCmpt == null) {
-            IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProjectToSearch);
-            if (policyCmptType == null) {
+            IPolicyCmptType allowedPolicyCmptType = findPolicyCmptType(ipsProjectToSearch);
+            if (allowedPolicyCmptType == null) {
                 return new IIpsSrcFile[0];
             }
-            IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProjectToSearch);
+            IProductCmptType productCmptType = allowedPolicyCmptType.findProductCmptType(ipsProjectToSearch);
             if (productCmptType == null) {
                 return new IIpsSrcFile[0];
             }
@@ -455,9 +455,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         if (productCmptTypeTarget == null) {
             return new IIpsSrcFile[0];
         }
-        IProductCmptTypeAssociation association = policyCmptTypeAssociation
+        IProductCmptTypeAssociation association2 = policyCmptTypeAssociation
                 .findMatchingProductCmptTypeAssociation(ipsProjectToSearch);
-        if (association == null) {
+        if (association2 == null) {
             // no matching association found
             return new IIpsSrcFile[0];
         }
@@ -581,8 +581,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                             if (!isTestObject) {
                                 // check if the test parameter implements no accosiation
                                 // because we search only for non accosiations
-                                IPolicyCmptTypeAssociation association = tPCTP.findAssociation(ipsProject);
-                                isTestObject = (association == null) || !association.isAssoziation();
+                                IPolicyCmptTypeAssociation association2 = tPCTP.findAssociation(ipsProject);
+                                isTestObject = (association2 == null) || !association2.isAssoziation();
                             }
                             if (isTestObject && tPCTP.getPolicyCmptType().equals(associationFound.getTarget())) {
                                 // check if the parameter type matches, if the parameter type is

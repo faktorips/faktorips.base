@@ -18,16 +18,16 @@ import org.eclipse.core.runtime.Platform;
  */
 public enum Modifier implements IAdaptable {
 
-    PUBLISHED("published", Modifier.AccPublic, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
+    PUBLISHED("published", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
 
     },
 
-    PUBLIC("public", Modifier.AccPublic, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
+    PUBLIC("public", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
 
     };
 
     // from org.eclipse.jdt.core.Flags
-    private static final int AccPublic = 0x0001;
+    private static final int ACC_PUBLIC = 0x0001;
 
     /** Flags constant according to org.eclipse.jdt.core.Flags */
     private int jdtFlags;

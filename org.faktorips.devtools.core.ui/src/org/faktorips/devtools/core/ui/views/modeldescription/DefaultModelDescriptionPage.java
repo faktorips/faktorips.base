@@ -344,83 +344,6 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
     }
 
     /**
-     * "sort" action for DescriptionItems.
-     * 
-     * @author Markus Blum
-     */
-    class LexicalSortingAction extends Action {
-
-        public LexicalSortingAction() {
-            super(Messages.DefaultModelDescriptionPage_SortText, SWT.TOGGLE);
-
-            setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
-            setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
-
-            // get image: "alphabetical sort enabled"
-            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(descriptor);
-            setImageDescriptor(descriptor);
-
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
-                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
-            setChecked(checked);
-            sortAndFilterDescriptionList();
-        }
-
-        @Override
-        public void run() {
-            sortAndFilterDescriptionList();
-            IpsPlugin.getDefault().getPreferenceStore()
-                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
-        }
-
-    }
-
-    /**
-     * "filter" action for DescriptionItems.
-     * 
-     * @author Quirin Stoll
-     */
-    class FilterEmptyDescriptionsAction extends Action {
-        public FilterEmptyDescriptionsAction() {
-            super(Messages.DefaultModelDescriptionPage_FilterEmptyText, SWT.TOGGLE);
-
-            setToolTipText(Messages.DefaultModelDescriptionPage_FilterEmptyTooltipText);
-            setDescription(Messages.DefaultModelDescriptionPage_FilterEmptyDescription);
-            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(descriptor);
-            setImageDescriptor(descriptor);
-
-            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
-                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
-            setChecked(checked);
-            sortAndFilterDescriptionList();
-        }
-
-        @Override
-        public void run() {
-            sortAndFilterDescriptionList();
-            IpsPlugin.getDefault().getPreferenceStore()
-                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Comparator for DescriptionItems. Sort DescriptionItems by Name & Unicodestyle: z < ä,ö,ü,ß.
-     * 
-     * @author Markus Blum
-     */
-    class DescriptionItemComparator implements Comparator<DescriptionItem> {
-        @Override
-        public int compare(DescriptionItem item1, DescriptionItem item2) {
-            Assert.isNotNull(item1, "DescriptionItem1"); //$NON-NLS-1$
-            Assert.isNotNull(item2, "DescriptionItem2"); //$NON-NLS-1$
-            return item1.getName().compareTo(item2.getName());
-        }
-    }
-
-    /**
      * Delete empty descriptions
      * 
      */
@@ -496,6 +419,83 @@ abstract public class DefaultModelDescriptionPage extends Page implements IIpsSr
         copyItem.setDescription(item.getDescription());
         copyItem.setChildren(copyDescriptionItems(item.getChildren()));
         return copyItem;
+    }
+
+    /**
+     * "sort" action for DescriptionItems.
+     * 
+     * @author Markus Blum
+     */
+    class LexicalSortingAction extends Action {
+
+        public LexicalSortingAction() {
+            super(Messages.DefaultModelDescriptionPage_SortText, SWT.TOGGLE);
+
+            setToolTipText(Messages.DefaultModelDescriptionPage_SortTooltipText);
+            setDescription(Messages.DefaultModelDescriptionPage_SortDescription);
+
+            // get image: "alphabetical sort enabled"
+            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(descriptor);
+            setImageDescriptor(descriptor);
+
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            setChecked(checked);
+            sortAndFilterDescriptionList();
+        }
+
+        @Override
+        public void run() {
+            sortAndFilterDescriptionList();
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+        }
+
+    }
+
+    /**
+     * "filter" action for DescriptionItems.
+     * 
+     * @author Quirin Stoll
+     */
+    class FilterEmptyDescriptionsAction extends Action {
+        public FilterEmptyDescriptionsAction() {
+            super(Messages.DefaultModelDescriptionPage_FilterEmptyText, SWT.TOGGLE);
+
+            setToolTipText(Messages.DefaultModelDescriptionPage_FilterEmptyTooltipText);
+            setDescription(Messages.DefaultModelDescriptionPage_FilterEmptyDescription);
+            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(descriptor);
+            setImageDescriptor(descriptor);
+
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+            setChecked(checked);
+            sortAndFilterDescriptionList();
+        }
+
+        @Override
+        public void run() {
+            sortAndFilterDescriptionList();
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Comparator for DescriptionItems. Sort DescriptionItems by Name & Unicodestyle: z < ä,ö,ü,ß.
+     * 
+     * @author Markus Blum
+     */
+    class DescriptionItemComparator implements Comparator<DescriptionItem> {
+        @Override
+        public int compare(DescriptionItem item1, DescriptionItem item2) {
+            Assert.isNotNull(item1, "DescriptionItem1"); //$NON-NLS-1$
+            Assert.isNotNull(item2, "DescriptionItem2"); //$NON-NLS-1$
+            return item1.getName().compareTo(item2.getName());
+        }
     }
 
 }

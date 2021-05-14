@@ -64,13 +64,13 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
 
     static class FragmentDatatypeWrapper {
 
+        private JavaCodeFragment fragment;
+        private Datatype datatype;
+
         FragmentDatatypeWrapper(JavaCodeFragment fragment, Datatype datatype) {
             this.fragment = fragment;
             this.datatype = datatype;
         }
-
-        private JavaCodeFragment fragment;
-        private Datatype datatype;
     }
 
 }

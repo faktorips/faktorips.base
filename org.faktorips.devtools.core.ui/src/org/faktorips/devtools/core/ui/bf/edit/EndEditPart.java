@@ -39,27 +39,7 @@ public class EndEditPart extends NodeEditPart {
     }
 
     private LayoutEditPolicy createLayoutEditPolicy() {
-        LayoutEditPolicy lep = new LayoutEditPolicy() {
-
-            @Override
-            protected EditPolicy createChildEditPolicy(EditPart child) {
-                EditPolicy result = child.getEditPolicy(EditPolicy.PRIMARY_DRAG_ROLE);
-                if (result == null) {
-                    result = new NonResizableEditPolicy();
-                }
-                return result;
-            }
-
-            @Override
-            protected Command getMoveChildrenCommand(Request request) {
-                return null;
-            }
-
-            @Override
-            protected Command getCreateCommand(CreateRequest request) {
-                return null;
-            }
-        };
+        LayoutEditPolicy lep = new NonResizableForDragableChildrenLayoutEditPolicy();
         return lep;
     }
 
@@ -80,4 +60,24 @@ public class EndEditPart extends NodeEditPart {
         return figure;
     }
 
+    private final class NonResizableForDragableChildrenLayoutEditPolicy extends LayoutEditPolicy {
+        @Override
+        protected EditPolicy createChildEditPolicy(EditPart child) {
+            EditPolicy result = child.getEditPolicy(EditPolicy.PRIMARY_DRAG_ROLE);
+            if (result == null) {
+                result = new NonResizableEditPolicy();
+            }
+            return result;
+        }
+
+        @Override
+        protected Command getMoveChildrenCommand(Request request) {
+            return null;
+        }
+
+        @Override
+        protected Command getCreateCommand(CreateRequest request) {
+            return null;
+        }
+    }
 }

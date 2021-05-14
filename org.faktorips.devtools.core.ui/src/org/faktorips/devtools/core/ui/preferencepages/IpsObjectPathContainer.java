@@ -51,15 +51,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class IpsObjectPathContainer {
 
-    private static final ImageDescriptor packageFragmentRootImage = IIpsDecorators
+    private static final ImageDescriptor PACKAGE_FRAGMENT_ROOT_IMAGE = IIpsDecorators
             .getDefaultImageDescriptor(IpsPackageFragmentRoot.class);
 
-    private static final ImageDescriptor projectImage = IIpsDecorators.getDefaultImageDescriptor(IpsProject.class);
+    private static final ImageDescriptor PROJECT_IMAGE = IIpsDecorators.getDefaultImageDescriptor(IpsProject.class);
 
-    private static final ImageDescriptor archiveImage = IIpsDecorators
+    private static final ImageDescriptor ARCHIVE_IMAGE = IIpsDecorators
             .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
 
-    private static final ImageDescriptor objectPathImage = IpsUIPlugin.getImageHandling().createImageDescriptor(
+    private static final ImageDescriptor OBJECT_PATH_IMAGE = IpsUIPlugin.getImageHandling().createImageDescriptor(
             "obj16/cp_order_obj.gif"); //$NON-NLS-1$
 
     private IIpsProject currentIpsProject;
@@ -155,13 +155,13 @@ public class IpsObjectPathContainer {
         orderComposite = new ObjectPathOrderComposite(folder);
 
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_source,
-                (Image)resourceManager.get(packageFragmentRootImage), srcFolderComposite);
+                (Image)resourceManager.get(PACKAGE_FRAGMENT_ROOT_IMAGE), srcFolderComposite);
 
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(projectImage),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(PROJECT_IMAGE),
                 refProjectsComposite);
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(archiveImage),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(ARCHIVE_IMAGE),
                 archiveComposite);
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, (Image)resourceManager.get(objectPathImage),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, (Image)resourceManager.get(OBJECT_PATH_IMAGE),
                 orderComposite);
 
         srcFolderComposite.init(ipsObjectPath);

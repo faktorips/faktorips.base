@@ -25,6 +25,12 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * generations, which share the same differences.
  */
 class ProductCmptGenerationsDeltaViewItem {
+
+    /**
+     * A formatter instance to display the correct format of the dates to the user.
+     */
+    private static final GregorianCalendarFormat FORMATTER = GregorianCalendarFormat.newInstance();
+
     /**
      * List of all valid from dates of generations in this wrapper.
      */
@@ -34,11 +40,6 @@ class ProductCmptGenerationsDeltaViewItem {
      * The differences, which all generations represented here, share.
      */
     private final ProductCmptGenerationToTypeDelta delta;
-
-    /**
-     * A formatter instance to display the correct format of the dates to the user.
-     */
-    private static final GregorianCalendarFormat formatter = GregorianCalendarFormat.newInstance();
 
     ProductCmptGenerationsDeltaViewItem(ProductCmptGenerationToTypeDelta delta) {
         validFromDates = new ArrayList<>();
@@ -54,7 +55,7 @@ class ProductCmptGenerationsDeltaViewItem {
      * Returns a comma separated list of all dates in this object.
      */
     String getDates() {
-        return IpsStringUtils.join(validFromDates, cal -> formatter.format(cal, true));
+        return IpsStringUtils.join(validFromDates, cal -> FORMATTER.format(cal, true));
     }
 
     void addDate(ProductCmptGenerationToTypeDelta dateProvider) {

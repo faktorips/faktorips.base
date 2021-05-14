@@ -32,10 +32,10 @@ public class BooleanDatatype extends ValueClassNameDatatype {
         if (s == null) {
             return null;
         }
-        if (s.equalsIgnoreCase("false")) { //$NON-NLS-1$
+        if ("false".equalsIgnoreCase(s)) { //$NON-NLS-1$
             return Boolean.FALSE;
         }
-        if (s.equalsIgnoreCase("true")) { //$NON-NLS-1$
+        if ("true".equalsIgnoreCase(s)) { //$NON-NLS-1$
             return Boolean.TRUE;
         }
         throw new IllegalArgumentException("Can't parse " + s + " to Boolean!"); //$NON-NLS-1$ //$NON-NLS-2$

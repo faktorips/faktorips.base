@@ -144,33 +144,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         table.setLayoutData(data);
         columnViewer = new TableViewer(table);
         columnViewer.setLabelProvider(new LocalizedLabelProvider());
-        columnViewer.setContentProvider(new IStructuredContentProvider() {
-            @Override
-            public Object[] getElements(Object inputElement) {
-                IColumn[] columns = range.getTableStructure().getColumns();
-                ArrayList<IColumn> result = new ArrayList<>();
-                for (IColumn column : columns) {
-                    try {
-                        if (column.findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
-                            result.add(column);
-                        }
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
-                }
-                return result.toArray();
-            }
-
-            @Override
-            public void dispose() {
-                // Nothing to do
-            }
-
-            @Override
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                // Nothing to do
-            }
-        });
+        columnViewer.setContentProvider(new ComparableDatatypeColumnsProvider());
         columnViewer.setInput(this);
     }
 
@@ -314,5 +288,33 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
 
     private void clearColumn(TextField field) {
         field.setValue(""); //$NON-NLS-1$
+    }
+
+    private final class ComparableDatatypeColumnsProvider implements IStructuredContentProvider {
+        @Override
+        public Object[] getElements(Object inputElement) {
+            IColumn[] columns = range.getTableStructure().getColumns();
+            ArrayList<IColumn> result = new ArrayList<>();
+            for (IColumn column : columns) {
+                try {
+                    if (column.findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
+                        result.add(column);
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
+            return result.toArray();
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
+        }
     }
 }

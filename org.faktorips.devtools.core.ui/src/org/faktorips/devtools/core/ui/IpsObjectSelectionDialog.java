@@ -41,20 +41,6 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
         setMatchEmptyString(true);
     }
 
-    private static class QualifierLabelProvider extends LabelProvider {
-
-        @Override
-        public Image getImage(Object element) {
-            return IpsUIPlugin.getImageHandling().getImage(((IIpsSrcFile)element).getIpsPackageFragment());
-        }
-
-        @Override
-        public String getText(Object element) {
-            IIpsPackageFragment pck = ((IIpsSrcFile)element).getIpsPackageFragment();
-            return pck.getName() + " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
-        }
-    }
-
     /**
      * Set the selected elements of the upper pane as result if more than one element is select.
      * <p>
@@ -74,4 +60,17 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
         }
     }
 
+    private static class QualifierLabelProvider extends LabelProvider {
+
+        @Override
+        public Image getImage(Object element) {
+            return IpsUIPlugin.getImageHandling().getImage(((IIpsSrcFile)element).getIpsPackageFragment());
+        }
+
+        @Override
+        public String getText(Object element) {
+            IIpsPackageFragment pck = ((IIpsSrcFile)element).getIpsPackageFragment();
+            return pck.getName() + " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
+        }
+    }
 }

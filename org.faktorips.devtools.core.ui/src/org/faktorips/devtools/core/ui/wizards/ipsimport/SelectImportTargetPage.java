@@ -80,8 +80,8 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      * @return The currently set project, or <code>null</code> if not set.
      */
     public IIpsProject getIpsProject() {
-        return "".equals(projectField.getText()) ? null : //$NON-NLS-1$
-                IIpsModel.get().getIpsProject(projectField.getText());
+        return "".equals(projectField.getText()) ? null //$NON-NLS-1$
+                : IIpsModel.get().getIpsProject(projectField.getText());
     }
 
     /**
@@ -207,7 +207,8 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         if (e.field == projectField) {
             projectChanged();
         }
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             validatePage();
         }
         updatePageComplete();

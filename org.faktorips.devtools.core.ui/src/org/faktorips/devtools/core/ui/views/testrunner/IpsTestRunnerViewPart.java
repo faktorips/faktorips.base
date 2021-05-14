@@ -179,203 +179,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     }
 
     /*
-     * Action to lock the scroll
-     */
-    private class LockScrollAction extends Action {
-        public LockScrollAction() {
-            super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, IAction.AS_CHECK_BOX);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(imageDescriptor);
-            setImageDescriptor(imageDescriptor);
-        }
-
-        @Override
-        public void run() {
-            scrollLocked = !scrollLocked;
-        }
-    }
-
-    /*
-     * Action to stop the currently running test.
-     */
-    private class StopTestRunAction extends Action {
-        public StopTestRunAction() {
-            setText(Messages.IpsTestRunnerViewPart_Action_StopTest);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(imageDescriptor);
-            setImageDescriptor(imageDescriptor);
-            setEnabled(false);
-        }
-
-        @Override
-        public void run() {
-            try {
-                IpsPlugin.getDefault().getIpsTestRunner().terminate();
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-    }
-
-    /*
-     * Action to rerun a test.
-     */
-    private class RerunLastAction extends Action {
-        public RerunLastAction() {
-            setText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_Text);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/relaunch.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(imageDescriptor);
-            setImageDescriptor(imageDescriptor);
-            setEnabled(false);
-        }
-
-        @Override
-        public void run() {
-            try {
-                rerunTestRun();
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-        }
-    }
-
-    /*
-     * Action to select the next error or failure
-     */
-    private class ShowNextErrorAction extends Action {
-        public ShowNextErrorAction() {
-            setText(Messages.IpsTestRunnerViewPart_Action_NextFailure);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_next.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(imageDescriptor);
-            setImageDescriptor(imageDescriptor);
-            setEnabled(false);
-        }
-
-        @Override
-        public void run() {
-            fTestRunPane.selectNextFailureOrError();
-        }
-    }
-
-    /*
-     * Action to select the previous error or failure
-     */
-    private class ShowPreviousErrorAction extends Action {
-        public ShowPreviousErrorAction() {
-            setText(Messages.IpsTestRunnerViewPart_Action_PrevFailure);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
-            ImageDescriptor createImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_prev.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(createImageDescriptor);
-            setImageDescriptor(createImageDescriptor);
-            setEnabled(false);
-        }
-
-        @Override
-        public void run() {
-            fTestRunPane.selectPreviousFailureOrError();
-        }
-    }
-
-    /*
-     * Action to show only failures or errors
-     */
-    private class ShowErrorsFailureOnlyAction extends Action {
-        public ShowErrorsFailureOnlyAction() {
-            super(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly, IAction.AS_CHECK_BOX);
-            setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly_ToolTip);
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
-            setHoverImageDescriptor(imageDescriptor);
-            setImageDescriptor(imageDescriptor);
-        }
-
-        @Override
-        public void run() {
-            fTestRunPane.toggleShowErrorsOrFailuresOnly();
-        }
-    }
-
-    /*
-     * ShowErrorsFailureOnlyAction Action to toggle the orientation of the view
-     */
-    private class ToggleOrientationAction extends Action {
-        private final int fActionOrientation;
-
-        public ToggleOrientationAction(int orientation) {
-            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
-            if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
-                setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
-            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
-                setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
-            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
-                setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
-            }
-            fActionOrientation = orientation;
-        }
-
-        public int getOrientation() {
-            return fActionOrientation;
-        }
-
-        @Override
-        public void run() {
-            if (isChecked()) {
-                fOrientation = fActionOrientation;
-                computeOrientation();
-            }
-        }
-    }
-
-    /*
      * Runs the last runned test.
      */
     private void rerunTestRun() throws CoreException {
         IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
-    }
-
-    /*
-     * UIJob to refresh the counter in th user interface.
-     */
-    class UpdateUIJob extends UIJob {
-        private boolean fRunning = true;
-
-        public UpdateUIJob(String name) {
-            super(name);
-            setSystem(true);
-        }
-
-        @Override
-        public IStatus runInUIThread(IProgressMonitor monitor) {
-            if (!isDisposed()) {
-                doShowStatus();
-                refreshCounters();
-            }
-            schedule(REFRESH_INTERVAL);
-            return Status.OK_STATUS;
-        }
-
-        public void stop() {
-            fRunning = false;
-        }
-
-        @Override
-        public boolean shouldSchedule() {
-            return fRunning;
-        }
     }
 
     @Override
@@ -651,66 +458,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         }
     }
 
-    private class TableEntryQueueDrainer implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                TestCaseEntry testCaseEntry;
-                synchronized (fTableEntryQueue) {
-                    if (fTableEntryQueue.isEmpty() || isDisposed()) {
-                        fQueueDrainRequestOutstanding = false;
-                        return;
-                    }
-                    testCaseEntry = fTableEntryQueue.remove(0);
-                }
-                fTestRunPane.newTableEntry(testCaseEntry.getTestId(), testCaseEntry.getQualifiedName(),
-                        testCaseEntry.fullPath);
-                fTestRunPane.checkMissingEntries();
-            }
-        }
-    }
-
-    // inner class to represent an ips test case
-    private class TestCaseEntry {
-        private String qualifiedName;
-        private String fullPath;
-        @SuppressWarnings("hiding")
-        private String testId;
-
-        public TestCaseEntry(String testId, String qualifiedName, String fullPath) {
-            this.testId = testId;
-            this.qualifiedName = qualifiedName;
-            this.fullPath = fullPath;
-        }
-
-        public String getQualifiedName() {
-            return qualifiedName;
-        }
-
-        public String getTestId() {
-            return testId;
-        }
-    }
-
-    class IpsTestIsRunningJob extends Job {
-        public IpsTestIsRunningJob(String name) {
-            super(name);
-            setSystem(true);
-        }
-
-        @Override
-        public IStatus run(IProgressMonitor monitor) {
-            // wait until the test run terminates
-            ipsTestIsRunningLock.acquire();
-            return Status.OK_STATUS;
-        }
-
-        @Override
-        public boolean belongsTo(Object family) {
-            return family == FAMILY_IPT_TEST_RUN;
-        }
-    }
-
     public Display getDisplay() {
         return getViewSite().getShell().getDisplay();
     }
@@ -939,14 +686,14 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     @Override
     public void testTableEntry(final String qualifiedName, final String fullPath) {
         // get a new or a cached test id
-        String testId = getTestId(qualifiedName);
-        if (testId == null) {
-            testId = nextTestId();
-            testId2TestQualifiedNameMap.put(qualifiedName, testId);
+        String id = getTestId(qualifiedName);
+        if (id == null) {
+            id = nextTestId();
+            testId2TestQualifiedNameMap.put(qualifiedName, id);
         }
 
         synchronized (fTableEntryQueue) {
-            fTableEntryQueue.add(new TestCaseEntry(testId, qualifiedName, fullPath));
+            fTableEntryQueue.add(new TestCaseEntry(id, qualifiedName, fullPath));
             if (!fQueueDrainRequestOutstanding) {
                 fQueueDrainRequestOutstanding = true;
                 if (!isDisposed()) {
@@ -962,12 +709,12 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
         synchronized (fTableEntryQueue) {
             for (int i = 0; i < fullPaths.length; i++) {
-                String testId = getTestId(qualifiedNames[i]);
-                if (testId == null) {
-                    testId = nextTestId();
-                    testId2TestQualifiedNameMap.put(qualifiedNames[i], testId);
+                String id = getTestId(qualifiedNames[i]);
+                if (id == null) {
+                    id = nextTestId();
+                    testId2TestQualifiedNameMap.put(qualifiedNames[i], id);
                 }
-                fTableEntryQueue.add(new TestCaseEntry(testId, qualifiedNames[i], fullPaths[i]));
+                fTableEntryQueue.add(new TestCaseEntry(id, qualifiedNames[i], fullPaths[i]));
             }
             if (!fQueueDrainRequestOutstanding) {
                 fQueueDrainRequestOutstanding = true;
@@ -1095,5 +842,258 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
      */
     public ResourceManager getResourceManager() {
         return resourceManager;
+    }
+
+    /*
+     * Action to lock the scroll
+     */
+    private class LockScrollAction extends Action {
+        public LockScrollAction() {
+            super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, IAction.AS_CHECK_BOX);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(imageDescriptor);
+            setImageDescriptor(imageDescriptor);
+        }
+
+        @Override
+        public void run() {
+            scrollLocked = !scrollLocked;
+        }
+    }
+
+    /*
+     * Action to stop the currently running test.
+     */
+    private class StopTestRunAction extends Action {
+        public StopTestRunAction() {
+            setText(Messages.IpsTestRunnerViewPart_Action_StopTest);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(imageDescriptor);
+            setImageDescriptor(imageDescriptor);
+            setEnabled(false);
+        }
+
+        @Override
+        public void run() {
+            try {
+                IpsPlugin.getDefault().getIpsTestRunner().terminate();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+
+    /*
+     * Action to rerun a test.
+     */
+    private class RerunLastAction extends Action {
+        public RerunLastAction() {
+            setText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_Text);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "elcl16/relaunch.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(imageDescriptor);
+            setImageDescriptor(imageDescriptor);
+            setEnabled(false);
+        }
+
+        @Override
+        public void run() {
+            try {
+                rerunTestRun();
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+        }
+    }
+
+    /*
+     * Action to select the next error or failure
+     */
+    private class ShowNextErrorAction extends Action {
+        public ShowNextErrorAction() {
+            setText(Messages.IpsTestRunnerViewPart_Action_NextFailure);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "elcl16/select_next.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(imageDescriptor);
+            setImageDescriptor(imageDescriptor);
+            setEnabled(false);
+        }
+
+        @Override
+        public void run() {
+            fTestRunPane.selectNextFailureOrError();
+        }
+    }
+
+    /*
+     * Action to select the previous error or failure
+     */
+    private class ShowPreviousErrorAction extends Action {
+        public ShowPreviousErrorAction() {
+            setText(Messages.IpsTestRunnerViewPart_Action_PrevFailure);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
+            ImageDescriptor createImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
+                    "elcl16/select_prev.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(createImageDescriptor);
+            setImageDescriptor(createImageDescriptor);
+            setEnabled(false);
+        }
+
+        @Override
+        public void run() {
+            fTestRunPane.selectPreviousFailureOrError();
+        }
+    }
+
+    /*
+     * Action to show only failures or errors
+     */
+    private class ShowErrorsFailureOnlyAction extends Action {
+        public ShowErrorsFailureOnlyAction() {
+            super(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly, IAction.AS_CHECK_BOX);
+            setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly_ToolTip);
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
+            setHoverImageDescriptor(imageDescriptor);
+            setImageDescriptor(imageDescriptor);
+        }
+
+        @Override
+        public void run() {
+            fTestRunPane.toggleShowErrorsOrFailuresOnly();
+        }
+    }
+
+    /*
+     * ShowErrorsFailureOnlyAction Action to toggle the orientation of the view
+     */
+    private class ToggleOrientationAction extends Action {
+        private final int fActionOrientation;
+
+        public ToggleOrientationAction(int orientation) {
+            super("", AS_RADIO_BUTTON); //$NON-NLS-1$
+            if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation);
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
+            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation);
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
+            } else if (orientation == IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC) {
+                setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
+            }
+            fActionOrientation = orientation;
+        }
+
+        public int getOrientation() {
+            return fActionOrientation;
+        }
+
+        @Override
+        public void run() {
+            if (isChecked()) {
+                fOrientation = fActionOrientation;
+                computeOrientation();
+            }
+        }
+    }
+
+    /*
+     * UIJob to refresh the counter in th user interface.
+     */
+    class UpdateUIJob extends UIJob {
+        private boolean fRunning = true;
+
+        public UpdateUIJob(String name) {
+            super(name);
+            setSystem(true);
+        }
+
+        @Override
+        public IStatus runInUIThread(IProgressMonitor monitor) {
+            if (!isDisposed()) {
+                doShowStatus();
+                refreshCounters();
+            }
+            schedule(REFRESH_INTERVAL);
+            return Status.OK_STATUS;
+        }
+
+        public void stop() {
+            fRunning = false;
+        }
+
+        @Override
+        public boolean shouldSchedule() {
+            return fRunning;
+        }
+    }
+
+    private class TableEntryQueueDrainer implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                TestCaseEntry testCaseEntry;
+                synchronized (fTableEntryQueue) {
+                    if (fTableEntryQueue.isEmpty() || isDisposed()) {
+                        fQueueDrainRequestOutstanding = false;
+                        return;
+                    }
+                    testCaseEntry = fTableEntryQueue.remove(0);
+                }
+                fTestRunPane.newTableEntry(testCaseEntry.getTestId(), testCaseEntry.getQualifiedName(),
+                        testCaseEntry.fullPath);
+                fTestRunPane.checkMissingEntries();
+            }
+        }
+    }
+
+    // inner class to represent an ips test case
+    private class TestCaseEntry {
+        private String qualifiedName;
+        private String fullPath;
+        @SuppressWarnings("hiding")
+        private String testId;
+
+        public TestCaseEntry(String testId, String qualifiedName, String fullPath) {
+            this.testId = testId;
+            this.qualifiedName = qualifiedName;
+            this.fullPath = fullPath;
+        }
+
+        public String getQualifiedName() {
+            return qualifiedName;
+        }
+
+        public String getTestId() {
+            return testId;
+        }
+    }
+
+    class IpsTestIsRunningJob extends Job {
+        public IpsTestIsRunningJob(String name) {
+            super(name);
+            setSystem(true);
+        }
+
+        @Override
+        public IStatus run(IProgressMonitor monitor) {
+            // wait until the test run terminates
+            ipsTestIsRunningLock.acquire();
+            return Status.OK_STATUS;
+        }
+
+        @Override
+        public boolean belongsTo(Object family) {
+            return family == FAMILY_IPT_TEST_RUN;
+        }
     }
 }

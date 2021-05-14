@@ -64,12 +64,12 @@ import org.faktorips.util.ArgumentCheck;
 @Deprecated
 public class ParametersEditControl extends Composite {
 
-    private IBusinessFunction paramContainer;
-
     private static final String[] PROPERTIES = { "message", "type", "new" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$
     private static final int MESSAGE_PROP = 0;
     private static final int TYPE_PROP = 1;
     private static final int NEWNAME_PROP = 2;
+
+    private IBusinessFunction paramContainer;
 
     private int tableStyle = SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION;
 
@@ -306,28 +306,7 @@ public class ParametersEditControl extends Composite {
     private Button createRemoveButton(Composite buttonComposite) {
         final Button button = uiToolkit.createButton(buttonComposite, Messages.ParametersEditControl_RemoveLabel);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                int index = getTable().getSelectionIndices()[0];
-                IParameterBFE[] selected = getSelectedElements();
-                for (IParameterBFE element : selected) {
-                    element.delete();
-                }
-                restoreSelection(index);
-            }
-
-            private void restoreSelection(int index) {
-                fTableViewer.refresh();
-                fTableViewer.getControl().setFocus();
-                int itemCount = getTableItemCount();
-                if (itemCount != 0 && index >= itemCount) {
-                    index = itemCount - 1;
-                    getTable().setSelection(index);
-                }
-                updateButtonsEnabledState();
-            }
-        });
+        button.addSelectionListener(new RemoveButtonSelectionListener());
         return button;
     }
 
@@ -336,15 +315,15 @@ public class ParametersEditControl extends Composite {
 
     private void addCellEditors() {
 
-        final CellEditor editors[] = new CellEditor[PROPERTIES.length];
+        final CellEditor[] editors = new CellEditor[PROPERTIES.length];
 
         class UndoableTextCellEditor extends TextCellEditor {
+
+            private String originalValue;
 
             public UndoableTextCellEditor(Composite parent) {
                 super(parent);
             }
-
-            private String originalValue;
 
             @Override
             public void activate() {
@@ -380,74 +359,9 @@ public class ParametersEditControl extends Composite {
                 }
             });
             // support switching rows while editing:
-            editor.getControl().addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
-                        if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
-                            // allow starting multi-selection even if in edit mode
-                            editor.deactivate();
-                            e.doit = false;
-                            return;
-                        }
-                    }
+            editor.getControl().addKeyListener(new CellNavigationKeyAdapter(editor, editorColumn));
 
-                    if (e.stateMask != SWT.NONE) {
-                        return;
-                    }
-
-                    switch (e.keyCode) {
-                        case SWT.ARROW_DOWN:
-                            e.doit = false;
-                            int nextRow = getTableSelectionIndex() + 1;
-                            if (nextRow >= getTableItemCount()) {
-                                break;
-                            }
-                            getTable().setSelection(nextRow);
-                            editColumnOrPrevPossible(editorColumn);
-                            break;
-
-                        case SWT.ARROW_UP:
-                            e.doit = false;
-                            int prevRow = getTableSelectionIndex() - 1;
-                            if (prevRow < 0) {
-                                break;
-                            }
-                            getTable().setSelection(prevRow);
-                            editColumnOrPrevPossible(editorColumn);
-                            break;
-
-                        case SWT.F2:
-                            e.doit = false;
-                            editor.deactivate();
-                            break;
-                    }
-                }
-            });
-
-            editor.addListener(new ICellEditorListener() {
-                /*
-                 * bug 58540: change signature refactoring interaction: validate as you type
-                 * [refactoring] CellEditors validate on keystroke by updating model on
-                 * editorValueChanged(..)
-                 */
-                @Override
-                public void applyEditorValue() {
-                    // default behavior is OK
-                }
-
-                @Override
-                public void cancelEditor() {
-                    editor.performUndo();
-                }
-
-                @Override
-                public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-                    fTableViewer.getCellModifier().modify(
-                            ((IStructuredSelection)fTableViewer.getSelection()).getFirstElement(),
-                            PROPERTIES[editorColumn], editor.getValue());
-                }
-            });
+            editor.addListener(new CellEditorListener(editor, editorColumn));
 
         }
 
@@ -467,6 +381,119 @@ public class ParametersEditControl extends Composite {
         SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
         ContentAssistHandler.createHandlerForText(text, contentAssistant);
         return contentAssistant;
+    }
+
+    private final class CellEditorListener implements ICellEditorListener {
+        private final CellEditor editor;
+        private final int editorColumn;
+
+        private CellEditorListener(CellEditor editor, int editorColumn) {
+            this.editor = editor;
+            this.editorColumn = editorColumn;
+        }
+
+        /*
+         * bug 58540: change signature refactoring interaction: validate as you type [refactoring]
+         * CellEditors validate on keystroke by updating model on editorValueChanged(..)
+         */
+        @Override
+        public void applyEditorValue() {
+            // default behavior is OK
+        }
+
+        @Override
+        public void cancelEditor() {
+            editor.performUndo();
+        }
+
+        @Override
+        public void editorValueChanged(boolean oldValidState, boolean newValidState) {
+            fTableViewer.getCellModifier().modify(
+                    ((IStructuredSelection)fTableViewer.getSelection()).getFirstElement(),
+                    PROPERTIES[editorColumn], editor.getValue());
+        }
+    }
+
+    private final class CellNavigationKeyAdapter extends KeyAdapter {
+        private final CellEditor editor;
+        private final int editorColumn;
+
+        private CellNavigationKeyAdapter(CellEditor editor, int editorColumn) {
+            this.editor = editor;
+            this.editorColumn = editorColumn;
+        }
+
+        // CSOFF: CyclomaticComplexity
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
+                if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+                    // allow starting multi-selection even if in edit mode
+                    editor.deactivate();
+                    e.doit = false;
+                    return;
+                }
+            }
+
+            if (e.stateMask != SWT.NONE) {
+                return;
+            }
+
+            switch (e.keyCode) {
+                case SWT.ARROW_DOWN:
+                    e.doit = false;
+                    int nextRow = getTableSelectionIndex() + 1;
+                    if (nextRow >= getTableItemCount()) {
+                        break;
+                    }
+                    getTable().setSelection(nextRow);
+                    editColumnOrPrevPossible(editorColumn);
+                    break;
+
+                case SWT.ARROW_UP:
+                    e.doit = false;
+                    int prevRow = getTableSelectionIndex() - 1;
+                    if (prevRow < 0) {
+                        break;
+                    }
+                    getTable().setSelection(prevRow);
+                    editColumnOrPrevPossible(editorColumn);
+                    break;
+
+                case SWT.F2:
+                    e.doit = false;
+                    editor.deactivate();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        // CSON: CyclomaticComplexity
+    }
+
+    private final class RemoveButtonSelectionListener extends SelectionAdapter {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            int index = getTable().getSelectionIndices()[0];
+            IParameterBFE[] selected = getSelectedElements();
+            for (IParameterBFE element : selected) {
+                element.delete();
+            }
+            restoreSelection(index);
+        }
+
+        private void restoreSelection(int index) {
+            fTableViewer.refresh();
+            fTableViewer.getControl().setFocus();
+            int itemCount = getTableItemCount();
+            int i = index;
+            if (itemCount != 0 && i >= itemCount) {
+                i = itemCount - 1;
+                getTable().setSelection(i);
+            }
+            updateButtonsEnabledState();
+        }
     }
 
     private class ParameterInfoContentProvider implements IStructuredContentProvider {
@@ -541,13 +568,14 @@ public class ParametersEditControl extends Composite {
 
         @Override
         public void modify(Object element, String property, Object value) {
-            if (element instanceof TableItem) {
-                element = ((TableItem)element).getData();
+            Object el = element;
+            if (el instanceof TableItem) {
+                el = ((TableItem)element).getData();
             }
-            if (!(element instanceof IParameterBFE)) {
+            if (!(el instanceof IParameterBFE)) {
                 return;
             }
-            IParameterBFE param = (IParameterBFE)element;
+            IParameterBFE param = (IParameterBFE)el;
             if (property.equals(PROPERTIES[NEWNAME_PROP])) {
                 param.setName((String)value);
                 fTableViewer.update(param, new String[] { PROPERTIES[NEWNAME_PROP] });

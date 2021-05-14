@@ -43,39 +43,6 @@ public class DelegateCellEditor extends CellEditor {
     // contains the last active cell editor
     private IpsCellEditor currentCellEditor;
 
-    // Dummy value datatype to indicate that the delegate cell editor is used for this datatype
-    private static class DelegateValueDatatype extends AbstractPrimitiveDatatype {
-        @Override
-        public Object getValue(String value) {
-            return null;
-        }
-
-        @Override
-        public String getDefaultValue() {
-            return null;
-        }
-
-        @Override
-        public ValueDatatype getWrapperType() {
-            return null;
-        }
-
-        @Override
-        public boolean supportsCompare() {
-            return false;
-        }
-
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public String getQualifiedName() {
-            return null;
-        }
-    }
-
     // The table viewer this cell editor is used for
     private TableViewer tableViewer;
 
@@ -174,5 +141,38 @@ public class DelegateCellEditor extends CellEditor {
                     "Undefined table cell editor! No table cell editor is specified for the selected row."); //$NON-NLS-1$
         }
         return ((IpsCellEditor)cellEditors.get(currentCellEditorRow));
+    }
+
+    // Dummy value datatype to indicate that the delegate cell editor is used for this datatype
+    private static class DelegateValueDatatype extends AbstractPrimitiveDatatype {
+        @Override
+        public Object getValue(String value) {
+            return null;
+        }
+
+        @Override
+        public String getDefaultValue() {
+            return null;
+        }
+
+        @Override
+        public ValueDatatype getWrapperType() {
+            return null;
+        }
+
+        @Override
+        public boolean supportsCompare() {
+            return false;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
+
+        @Override
+        public String getQualifiedName() {
+            return null;
+        }
     }
 }

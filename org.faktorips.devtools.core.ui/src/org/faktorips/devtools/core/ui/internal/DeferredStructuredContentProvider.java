@@ -110,6 +110,16 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
         deleteObserver(listener);
     }
 
+    @Override
+    public void dispose() {
+        elements = null;
+        deleteObservers();
+        if (collector != null) {
+            collector.cancel();
+        }
+        collector = null;
+    }
+
     private class CollectorJob extends Job {
 
         private final Object inputElement;
@@ -155,16 +165,6 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
                 });
             }
         }
-    }
-
-    @Override
-    public void dispose() {
-        elements = null;
-        deleteObservers();
-        if (collector != null) {
-            collector.cancel();
-        }
-        collector = null;
     }
 
 }

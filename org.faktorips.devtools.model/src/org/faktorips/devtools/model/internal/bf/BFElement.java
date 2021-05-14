@@ -217,10 +217,10 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
             Element posElement = (Element)nl.item(i);
             String type = posElement.getAttribute("type"); //$NON-NLS-1$
             String controlFlowId = posElement.getAttribute("id"); //$NON-NLS-1$
-            if (type.equals("in")) { //$NON-NLS-1$
+            if ("in".equals(type)) { //$NON-NLS-1$
                 incommingControlFlows.add(controlFlowId);
             }
-            if (type.equals("out")) { //$NON-NLS-1$
+            if ("out".equals(type)) { //$NON-NLS-1$
                 outgoingControlFlows.add(controlFlowId);
             }
         }
@@ -290,7 +290,7 @@ public class BFElement extends AtomicIpsObjectPart implements IBFElement {
      */
     protected final void validateNotAllowedNames(String name, String nameOfName, MessageList msgList) {
         String uncapName = StringUtils.uncapitalize(name);
-        if (uncapName.equals("execute") || uncapName.equals("start") || uncapName.equals("end")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if ("execute".equals(uncapName) || "start".equals(uncapName) || "end".equals(uncapName)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             String text = NLS.bind(Messages.BFElement_nameNotAllowed, name);
             msgList.add(new Message(MSGCODE_NAME_NOT_VALID, text, Message.ERROR, this));
         }

@@ -771,7 +771,7 @@ public class JavaCodeFragmentBuilder {
     public JavaCodeFragmentBuilder classBegin(int modifier,
             String className,
             Class<?> extendsClass,
-            Class<?> interfaces[]) {
+            Class<?>[] interfaces) {
 
         String extendsClassString = extendsClass == null ? null : extendsClass.getName();
         if (interfaces == null) {
@@ -793,7 +793,7 @@ public class JavaCodeFragmentBuilder {
     public JavaCodeFragmentBuilder classBegin(int modifier,
             String className,
             String extendsClassName,
-            String interfaces[]) {
+            String[] interfaces) {
 
         fragment.append(Modifier.toString(modifier));
         fragment.append(" class "); //$NON-NLS-1$
@@ -825,7 +825,7 @@ public class JavaCodeFragmentBuilder {
     public JavaCodeFragmentBuilder enumBegin(int modifier,
             String className,
             String extendsClassName,
-            String interfaces[]) {
+            String[] interfaces) {
 
         fragment.append(Modifier.toString(modifier));
         fragment.append(" enum "); //$NON-NLS-1$
@@ -1507,7 +1507,7 @@ public class JavaCodeFragmentBuilder {
      * 
      * @author Peter Erzberger
      */
-    private static abstract class MethodSignatureTypesSupport {
+    private abstract static class MethodSignatureTypesSupport {
 
         protected void check(String[] parameterNames, Object[] parameterTypes) {
             if (parameterNames != null && parameterNames.length != parameterTypes.length) {

@@ -60,31 +60,7 @@ public class FullBuildTask extends AbstractIpsTask {
         WorkspaceJob job = new WorkspaceJob("build") {
             @Override
             public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-                // Fetch Workspace
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                IProject projects[] = null;
-                if (eclipseProjects.isEmpty()) {
-                    // Iterate over Projects in Workspace to find Warning and Errormarkers
-                    projects = workspace.getRoot().getProjects();
-                    if (projects.length > 0) {
-                        System.out.println("The following IPS-Projects are about to be built: ");
-                    }
-                    for (IProject project2 : projects) {
-                        IIpsProject ipsProject = IIpsModel.get()
-                                .getIpsProject(project2.getName());
-                        if (ipsProject.exists()) {
-                            System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
-                                    + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
-                                    + ipsProject.getIpsArtefactBuilderSet().getVersion());
-                        }
-                    }
-                    workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-
-                } else {
-                    projects = buildEclipseProjects(workspace);
-                }
-
-                handleMarkers(projects);
+                buildWorkspace(monitor);
                 return Status.OK_STATUS;
             }
         };
@@ -174,6 +150,32 @@ public class FullBuildTask extends AbstractIpsTask {
 
     private String getErroneousProjectsAsText(Set<IProject> projectSet) {
         return projectSet.stream().map(IProject::getName).collect(Collectors.joining(", "));
+    }
+
+    private void buildWorkspace(IProgressMonitor monitor) throws CoreException {
+        // Fetch Workspace
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject[] projects = null;
+        if (eclipseProjects.isEmpty()) {
+            // Iterate over Projects in Workspace to find Warning and Errormarkers
+            projects = workspace.getRoot().getProjects();
+            if (projects.length > 0) {
+                System.out.println("The following IPS-Projects are about to be built: ");
+            }
+            for (IProject project2 : projects) {
+                IIpsProject ipsProject = IIpsModel.get()
+                        .getIpsProject(project2.getName());
+                if (ipsProject.exists()) {
+                    System.out.println("IPS-Project: " + ipsProject.getName() + ", IPS-Builder Set: "
+                            + ipsProject.getIpsArtefactBuilderSet().getId() + ", Version: "
+                            + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                }
+            }
+            workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+        } else {
+            projects = buildEclipseProjects(workspace);
+        }
+        handleMarkers(projects);
     }
 
     /**

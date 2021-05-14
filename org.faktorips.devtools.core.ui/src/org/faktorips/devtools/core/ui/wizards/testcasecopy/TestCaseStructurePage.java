@@ -64,6 +64,7 @@ import org.faktorips.runtime.MessageList;
  * @author Joerg Ortmann
  */
 public class TestCaseStructurePage extends WizardPage {
+
     private UIToolkit toolkit;
 
     // controls
@@ -74,7 +75,7 @@ public class TestCaseStructurePage extends WizardPage {
     private IIpsSrcFile checkedProductCmpt = null;
     private TestCaseContentProvider testCaseContentProvider;
 
-    final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
+    private final ILabelProvider defaultLabelProvider = DefaultLabelProvider.createWithIpsSourceFileMapping();
 
     public TestCaseStructurePage(UIToolkit toolkit, IIpsProject ipsProject) {
         super("TestCaseStructurePage"); //$NON-NLS-1$
@@ -162,53 +163,7 @@ public class TestCaseStructurePage extends WizardPage {
         tableViewer.setCellEditors(new CellEditor[] { new CheckboxCellEditor(tableViewer.getTable()),
                 new CheckboxCellEditor(tableViewer.getTable()) });
 
-        tableViewer.setCellModifier(new ICellModifier() {
-            @Override
-            public boolean canModify(Object element, String property) {
-                return true;
-            }
-
-            @Override
-            public Object getValue(Object element, String property) {
-                return Boolean.TRUE;
-            }
-
-            @Override
-            public void modify(Object element, String property, Object value) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
-                checkedProductCmpt = ipsSrcFile;
-                IProductCmpt newProductCmpt = null;
-                newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                replaceSelectedProductCmpt(newProductCmpt);
-                refreshTree();
-                tableViewer.refresh();
-            }
-
-            /**
-             * Refreshes the tree. This method resets the target as new input, because a simple
-             * refresh doesn't work correctly if we change product cmpts and the labels.
-             */
-            private void refreshTree() {
-                try {
-                    treeViewer.getTree().setRedraw(false);
-                    TreeViewerExpandStateStorage storage = new TreeViewerExpandStateStorage(treeViewer);
-                    storage.storeExpandedStatus();
-                    pageChanged();
-                    treeViewer.refresh();
-                    storage.restoreExpandedStatus();
-                    // we must refresh the candidates, because the selectionChangedListener
-                    // will not be triggered under windows using TreeView#setSelection
-                    TreeItem[] selectedTreeItem = treeViewer.getTree().getSelection();
-                    if (selectedTreeItem.length > 0) {
-                        refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                } finally {
-                    treeViewer.getTree().setRedraw(true);
-                }
-            }
-        });
+        tableViewer.setCellModifier(new CellModifier());
 
         tableViewer.setContentProvider(new IStructuredContentProvider() {
             @Override
@@ -230,46 +185,7 @@ public class TestCaseStructurePage extends WizardPage {
                 // Nothing to do
             }
         });
-        tableViewer.setLabelProvider(new ITableLabelProvider() {
-            @Override
-            public Image getColumnImage(Object element, int columnIndex) {
-                if (columnIndex == 1) {
-                    return defaultLabelProvider.getImage(element);
-                } else {
-                    return element.equals(checkedProductCmpt) ? IpsUIPlugin.getImageHandling().getSharedImage(
-                            "ArrowRight.gif", true) : null; //$NON-NLS-1$
-                }
-            }
-
-            @Override
-            public String getColumnText(Object element, int columnIndex) {
-                if (columnIndex == 1) {
-                    return defaultLabelProvider.getText(element);
-                } else {
-                    return ""; //$NON-NLS-1$
-                }
-            }
-
-            @Override
-            public void addListener(ILabelProviderListener listener) {
-                // Nothing to do
-            }
-
-            @Override
-            public void dispose() {
-                // Nothing to do
-            }
-
-            @Override
-            public boolean isLabelProperty(Object element, String property) {
-                return false;
-            }
-
-            @Override
-            public void removeListener(ILabelProviderListener listener) {
-                // Nothing to do
-            }
-        });
+        tableViewer.setLabelProvider(new TableLabelProvider());
     }
 
     private void hookTreeListeners() {
@@ -453,6 +369,95 @@ public class TestCaseStructurePage extends WizardPage {
         for (IIpsElement child : childs) {
             if (child instanceof IIpsObjectPartContainer) {
                 collectMessages(result, msgList, (IIpsObjectPartContainer)child);
+            }
+        }
+    }
+
+    private final class TableLabelProvider implements ITableLabelProvider {
+        @Override
+        public Image getColumnImage(Object element, int columnIndex) {
+            if (columnIndex == 1) {
+                return defaultLabelProvider.getImage(element);
+            } else {
+                return element.equals(checkedProductCmpt) ? IpsUIPlugin.getImageHandling().getSharedImage(
+                        "ArrowRight.gif", true) : null; //$NON-NLS-1$
+            }
+        }
+
+        @Override
+        public String getColumnText(Object element, int columnIndex) {
+            if (columnIndex == 1) {
+                return defaultLabelProvider.getText(element);
+            } else {
+                return ""; //$NON-NLS-1$
+            }
+        }
+
+        @Override
+        public void addListener(ILabelProviderListener listener) {
+            // Nothing to do
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to do
+        }
+
+        @Override
+        public boolean isLabelProperty(Object element, String property) {
+            return false;
+        }
+
+        @Override
+        public void removeListener(ILabelProviderListener listener) {
+            // Nothing to do
+        }
+    }
+
+    private final class CellModifier implements ICellModifier {
+        @Override
+        public boolean canModify(Object element, String property) {
+            return true;
+        }
+
+        @Override
+        public Object getValue(Object element, String property) {
+            return Boolean.TRUE;
+        }
+
+        @Override
+        public void modify(Object element, String property, Object value) {
+            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
+            checkedProductCmpt = ipsSrcFile;
+            IProductCmpt newProductCmpt = null;
+            newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            replaceSelectedProductCmpt(newProductCmpt);
+            refreshTree();
+            tableViewer.refresh();
+        }
+
+        /**
+         * Refreshes the tree. This method resets the target as new input, because a simple refresh
+         * doesn't work correctly if we change product cmpts and the labels.
+         */
+        private void refreshTree() {
+            try {
+                treeViewer.getTree().setRedraw(false);
+                TreeViewerExpandStateStorage storage = new TreeViewerExpandStateStorage(treeViewer);
+                storage.storeExpandedStatus();
+                pageChanged();
+                treeViewer.refresh();
+                storage.restoreExpandedStatus();
+                // we must refresh the candidates, because the selectionChangedListener
+                // will not be triggered under windows using TreeView#setSelection
+                TreeItem[] selectedTreeItem = treeViewer.getTree().getSelection();
+                if (selectedTreeItem.length > 0) {
+                    refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
+                }
+            } catch (CoreException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            } finally {
+                treeViewer.getTree().setRedraw(true);
             }
         }
     }

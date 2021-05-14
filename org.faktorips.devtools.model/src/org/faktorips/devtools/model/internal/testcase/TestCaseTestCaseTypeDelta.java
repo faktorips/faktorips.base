@@ -574,7 +574,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     private void computeTestAttributeValuesWithMissingTestAttribute(ITestPolicyCmpt cmpt,
             List<ITestAttributeValue> missingTestAttributeValue) throws CoreException {
 
-        ITestAttributeValue testAttributeValues[] = cmpt.getTestAttributeValues();
+        ITestAttributeValue[] testAttributeValues = cmpt.getTestAttributeValues();
         for (ITestAttributeValue testAttributeValue : testAttributeValues) {
             ITestAttribute testAttribute = testAttributeValue.findTestAttribute(testCase.getIpsProject());
             if (testAttribute == null) {

@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -116,7 +117,7 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         String localeCode = element.getAttribute(PROPERTY_LOCALE);
-        locale = localeCode.equals("") ? null : new Locale(localeCode); //$NON-NLS-1$
+        locale = IpsStringUtils.isBlank(localeCode) ? null : new Locale(localeCode);
         text = element.getTextContent();
 
         super.initPropertiesFromXml(element, id);

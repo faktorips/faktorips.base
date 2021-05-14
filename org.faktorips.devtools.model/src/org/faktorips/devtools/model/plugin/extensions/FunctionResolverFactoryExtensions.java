@@ -36,13 +36,13 @@ public class FunctionResolverFactoryExtensions extends
     public static final String CONFIG_ELEMENT_PROPERTY_SORTORDER = "sortorder"; //$NON-NLS-1$
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static final Class<IFunctionResolverFactory<JavaCodeFragment>> javaFunctionResolverFactoryClass = (Class)IFunctionResolverFactory.class;
+    private static final Class<IFunctionResolverFactory<JavaCodeFragment>> JAVA_FUNCTION_RESOLVER_FACTORY_CLASS = (Class)IFunctionResolverFactory.class;
 
     public FunctionResolverFactoryExtensions(ExtensionPoints extensionPoints) {
         super(extensionPoints,
                 EXTENSION_POINT_ID_FL_FUNCTION_RESOLVER_FACTORY,
                 ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
-                javaFunctionResolverFactoryClass,
+                JAVA_FUNCTION_RESOLVER_FACTORY_CLASS,
                 SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>::new,
                 FunctionResolverFactoryExtensions::initializeFunctionResolverFactory);
     }

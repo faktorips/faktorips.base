@@ -18,6 +18,10 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ClassNameUtil {
 
+    private ClassNameUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Takes a name like a class name and removes the package information from the beginning.
      */
@@ -56,9 +60,4 @@ public class ClassNameUtil {
         }
         return qualifiedClassName.substring(0, index);
     }
-
-    private ClassNameUtil() {
-        // Utility class not to be instantiated.
-    }
-
 }

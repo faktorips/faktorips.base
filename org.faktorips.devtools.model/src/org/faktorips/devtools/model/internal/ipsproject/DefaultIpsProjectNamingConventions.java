@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
@@ -35,11 +36,6 @@ import org.faktorips.util.StringUtil;
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
-
-    private IIpsProject ipsProject;
-
-    private Map<IpsObjectType, String> errorMsgTxtNameIsEmpty = new HashMap<>(1);
-    private Map<IpsObjectType, String> errorMsgTxtNameIsQualified = new HashMap<>(1);
 
     /*
      * setup the invalid names; @see OS valid names and characters taken from http://msdn.microsoft
@@ -58,6 +54,11 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public static final String FORBIDDEN_CHARACTERS_IN_TESTCASENAME = "\\[\\]{},:"; //$NON-NLS-1$
     private static final Pattern FORBIDDEN_CHARACTERS_IN_TESTCASENAME_PATTERN = Pattern
             .compile("[" + FORBIDDEN_CHARACTERS_IN_TESTCASENAME + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+
+    private IIpsProject ipsProject;
+
+    private Map<IpsObjectType, String> errorMsgTxtNameIsEmpty = new HashMap<>(1);
+    private Map<IpsObjectType, String> errorMsgTxtNameIsQualified = new HashMap<>(1);
 
     public DefaultIpsProjectNamingConventions(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
@@ -276,7 +277,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     @Override
     public MessageList validateIpsPackageName(String name) {
         MessageList ml = new MessageList();
-        if (name.equals("")) { //$NON-NLS-1$
+        if (IpsStringUtils.isBlank(name)) {
             return ml;
         }
         ml.add(validateJavaPackageName(name, Messages.DefaultIpsProjectNamingConventions_error,

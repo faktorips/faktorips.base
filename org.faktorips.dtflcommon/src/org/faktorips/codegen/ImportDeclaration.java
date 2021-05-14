@@ -30,17 +30,6 @@ import org.faktorips.util.StringUtil;
  */
 public class ImportDeclaration {
 
-    /**
-     * Returns true if this is a package import, e.g. <code>java.util.*</code> Returns false if
-     * importSpec is null.
-     */
-    public static final boolean isPackageImport(String importSpec) {
-        if (importSpec == null) {
-            return false;
-        }
-        return "*".equals(importSpec.substring(importSpec.length() - 1)); //$NON-NLS-1$
-    }
-
     private static final String JAVA_LANG_ASTERIX = "java.lang.*"; //$NON-NLS-1$
 
     /** List that holds the class imports. */
@@ -80,6 +69,17 @@ public class ImportDeclaration {
                 add(importSpec);
             }
         }
+    }
+
+    /**
+     * Returns true if this is a package import, e.g. <code>java.util.*</code> Returns false if
+     * importSpec is null.
+     */
+    public static final boolean isPackageImport(String importSpec) {
+        if (importSpec == null) {
+            return false;
+        }
+        return "*".equals(importSpec.substring(importSpec.length() - 1)); //$NON-NLS-1$
     }
 
     /**
@@ -164,7 +164,7 @@ public class ImportDeclaration {
         }
         if (importSpec.equals(Boolean.TYPE.getName()) || importSpec.equals(Integer.TYPE.getName())
                 || importSpec.equals(Double.TYPE.getName()) || importSpec.equals(Long.TYPE.getName())
-                || importSpec.equals("void")) { //$NON-NLS-1$
+                || "void".equals(importSpec)) { //$NON-NLS-1$
             return true; // this is a primitive type
         }
         if (isPackageImport(importSpec)) {
