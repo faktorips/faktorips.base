@@ -13,6 +13,7 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
@@ -87,6 +88,14 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
+        IFile javaFile = getJavaFile(ipsSrcFile);
+        if (javaFile.exists()) {
+            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            String oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
+            if (oldJavaFileContentsStr.contains('@' + JavaSourceFileBuilder.ANNOTATION_GENERATED)) {
+                setMergeEnabled(true);
+            }
+        }
         super.build(ipsSrcFile);
     }
 
@@ -103,7 +112,8 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     protected void generateCodeForJavatype() throws CoreException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.getJavaDocForTypeBuilder()
-                .javaDoc(getLocalizedText("CLASS_JAVADOC", getEnumType().getQualifiedName()));
+                .javaDoc(getLocalizedText("CLASS_JAVADOC", getEnumType().getQualifiedName()),
+                        JavaSourceFileBuilder.ANNOTATION_GENERATED);
         mainSection.setClass(true);
         mainSection.setEnum(false);
         mainSection.setClassModifier(Modifier.PUBLIC);
@@ -136,7 +146,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateFieldRepository(JavaCodeFragmentBuilder builder) {
-        builder.javaDoc(getLocalizedText("FIELD_REPOSITORY_JAVADOC"));
+        builder.javaDoc(getLocalizedText("FIELD_REPOSITORY_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         builder.varDeclaration(Modifier.PRIVATE, IRuntimeRepository.class, "repository"); //$NON-NLS-1$
     }
 
@@ -151,7 +161,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      * </pre>
      */
     private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
-        builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"));
+        builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$
         builder.append(new JavaCodeFragment("this.repository = repository;")); //$NON-NLS-1$
@@ -182,10 +192,10 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         body.append(getEnumModelNode().getIdentifierAttribute().getMethodNameGetter());
         body.append("();"); //$NON-NLS-1$
 
-        builder.javaDoc(getLocalizedText("METHOD_MARSHAL_JAVADOC"));
-        builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         builder.method(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), "marshal", new String[] { "value" }, //$NON-NLS-1$ //$NON-NLS-2$
-                new String[] { getEnumModelNode().getQualifiedClassName() }, body, null);
+                new String[] { getEnumModelNode().getQualifiedClassName() }, body,
+                getLocalizedText("METHOD_MARSHAL_JAVADOC"), new String[] { JavaSourceFileBuilder.ANNOTATION_GENERATED },
+                new String[] { JavaSourceFileBuilder.ANNOTATION_OVERRIDE });
     }
 
     /**
@@ -216,10 +226,11 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
         String throwsJavadoc = "throws IllegalArgumentException "
                 + getLocalizedText("METHOD_UNMARSHAL_JAVADOC_ILLEGALARGUMENTEXCEPTION");
-        builder.javaDoc(getLocalizedText("METHOD_UNMARSHAL_JAVADOC"), throwsJavadoc);
-        builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
         builder.method(Modifier.PUBLIC, getEnumModelNode().getQualifiedClassName(), "unmarshal", //$NON-NLS-1$
-                new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body, null); //$NON-NLS-1$
+                new String[] { "id" }, new String[] { datatypeHelper.getJavaClassName() }, body,
+                getLocalizedText("METHOD_UNMARSHAL_JAVADOC"),
+                new String[] { throwsJavadoc, JavaSourceFileBuilder.ANNOTATION_GENERATED },
+                new String[] { JavaSourceFileBuilder.ANNOTATION_OVERRIDE });
 
     }
 

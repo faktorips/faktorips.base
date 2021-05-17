@@ -746,7 +746,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         writeToFile(javaFile, inputStream, true, false);
     }
 
-    /* private */ String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
+    /* private */ protected String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
         InputStream javaFileContents = null;
         try {
             javaFileContents = javaFile.getContents(true);
