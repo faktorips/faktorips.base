@@ -35,9 +35,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.core.GitProvider;
+import org.eclipse.egit.core.op.CreatePatchOperation;
+import org.eclipse.egit.core.op.CreatePatchOperation.DiffHeaderFormat;
 import org.eclipse.egit.core.project.GitProjectData;
 import org.eclipse.egit.core.project.RepositoryFinder;
 import org.eclipse.egit.core.project.RepositoryMapping;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -93,23 +97,25 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
     @Override
     protected void executeInternal() throws Exception {
 
-        final List<IResource> outOfSync = new ArrayList<>();
+        final Map<IProject, List<IResource>> outOfSync = new HashMap<>();
         final Map<IProject, RepositoryProvider> projectWithRepository = connectWorkspaceProjectsToRepository();
 
         WorkspaceJob job = new WorkspaceJob("sync") {
             @Override
             public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-
                 for (Entry<IProject, RepositoryProvider> sourceCtrl : projectWithRepository.entrySet()) {
+                    IProject projekt = sourceCtrl.getKey();
 
-                    Objects.requireNonNull(sourceCtrl.getValue(),
-                            "No RepositoryProvider found for " + sourceCtrl.getKey().getName());
+                    Subscriber subscriber = Objects.requireNonNull(sourceCtrl.getValue(),
+                            "No RepositoryProvider found for " + projekt.getName()).getSubscriber();
 
-                    Subscriber subscriber = sourceCtrl.getValue().getSubscriber();
                     SyncInfoSet syncInfoSet = new SyncInfoSet();
-                    subscriber.collectOutOfSync(new IResource[] { sourceCtrl.getKey() }, IResource.DEPTH_INFINITE,
+                    subscriber.collectOutOfSync(new IResource[] { projekt }, IResource.DEPTH_INFINITE,
                             syncInfoSet, monitor);
-                    Arrays.stream(syncInfoSet.getResources()).forEach(outOfSync::add);
+
+                    Arrays.stream(syncInfoSet.getResources())
+                            .forEach(resource -> outOfSync.computeIfAbsent(projekt, $ -> new ArrayList<>())
+                                    .add(resource));
                 }
                 return Status.OK_STATUS;
             }
@@ -119,20 +125,35 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
         job.join();
 
         if (!outOfSync.isEmpty()) {
-            // until the diff viewer ist implemented Verbosity.DIFF is the same as VERBOSE
-            if (Verbosity.VERBOSE.matches(getVerbosity()) || Verbosity.DIFF.matches(getVerbosity())) {
-                for (IResource resource : outOfSync) {
-                    log(resource.getFullPath() + " is out of sync!", Project.MSG_INFO);
+            if (Verbosity.VERBOSE.matches(getVerbosity())) {
+                for (List<IResource> resources : outOfSync.values()) {
+                    for (IResource resource : resources) {
+                        log("Changes: " + resource.getLocation(), Project.MSG_INFO);
+                    }
+                }
+            }
+            if (Verbosity.DIFF.matches(getVerbosity())) {
+                for (IProject gitProject : outOfSync.keySet()) {
+                    DiffViewer diff = new DiffViewer(gitProject);
+                    log(diff.createDiffView(), Project.MSG_INFO);
                 }
             }
             if (failBuild) {
-                log("ERROR: There were out of sync resources!", Project.MSG_ERR);
-                throw new BuildException("ERROR: There were out of sync resources!");
+                logNotQuiet("ERROR: There were changes!", Project.MSG_ERR);
+                throw new BuildException("ERROR: There were changes!");
             } else {
-                log("WARNING: There were out of sync resources!", Project.MSG_WARN);
+                logNotQuiet("WARNING: There were changes!", Project.MSG_WARN);
             }
+        } else {
+            logNotQuiet("Your branch is up to date.", Project.MSG_INFO);
         }
         errorHandling(job);
+    }
+
+    private void logNotQuiet(String msg, int level) {
+        if (!Verbosity.QUIET.matches(getVerbosity())) {
+            log(msg, level);
+        }
     }
 
     private Map<IProject, RepositoryProvider> connectWorkspaceProjectsToRepository() {
@@ -206,6 +227,37 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
             }
             throw new RuntimeException("Error while syncing Faktor-IPS: " + result.getMessage(),
                     result.getException());
+        }
+    }
+
+    private static class DiffViewer {
+
+        private RepositoryMapping mapping;
+        private String repoRelativePath;
+
+        public DiffViewer(IProject project) {
+            mapping = getGitRepository(project);
+            repoRelativePath = mapping.getRepoRelativePath(project.getLocation());
+        }
+
+        private RepositoryMapping getGitRepository(IProject project) {
+            GitProjectData gpd = GitProjectData.get(project);
+            if (gpd != null) {
+                return gpd.getRepositoryMapping(project);
+            }
+            throw new BuildException("Failed finding RepositoryMapping");
+        }
+
+        public String createDiffView() throws CoreException {
+            return createDiffView(null);
+        }
+
+        public String createDiffView(RevCommit rev) throws CoreException {
+            CreatePatchOperation op = new CreatePatchOperation(mapping.getRepository(), rev);
+            op.setHeaderFormat(DiffHeaderFormat.NONE);
+            op.setPathFilter(PathFilterGroup.createFromStrings(repoRelativePath));
+            op.execute(new NullProgressMonitor());
+            return op.getPatchContent();
         }
     }
 }

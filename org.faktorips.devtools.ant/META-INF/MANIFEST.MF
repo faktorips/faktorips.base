@@ -13,6 +13,7 @@ Require-Bundle: org.faktorips.runtime,
  org.eclipse.m2e.core;resolution:=optional,
  org.eclipse.m2e.maven.runtime;resolution:=optional,
  org.eclipse.team.core;resolution:=optional,
- org.eclipse.egit.core;resolution:=optional
+ org.eclipse.egit.core;resolution:=optional,
+ org.eclipse.jgit;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: ant_tasks/ant-tasks.jar
