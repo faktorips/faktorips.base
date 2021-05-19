@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -135,7 +136,14 @@ public class TestCaseDetailArea {
         Iterator<Section> iter = sectionControls.values().iterator();
         while (iter.hasNext()) {
             Section section = iter.next();
-            section.setBackground(form.getBackground());
+            try {
+                if (!section.isDisposed()) {
+                    section.setBackground(form.getBackground());
+                }
+            } catch (SWTException e) {
+                // ignore
+            }
+
         }
     }
 
@@ -887,8 +895,12 @@ public class TestCaseDetailArea {
 
     public void selectSection(String uniquePath) {
         Section sectionCtrl = getSection(uniquePath);
-        if (sectionCtrl != null) {
-            sectionCtrl.setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        if (sectionCtrl != null && !sectionCtrl.isDisposed()) {
+            try {
+                sectionCtrl.setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+            } catch (SWTException e) {
+                // ignore
+            }
         }
     }
 
