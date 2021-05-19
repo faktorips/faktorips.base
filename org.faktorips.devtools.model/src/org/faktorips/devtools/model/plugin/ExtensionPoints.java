@@ -17,7 +17,6 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -170,7 +169,7 @@ public class ExtensionPoints {
             String propertyName,
             Class<T> expectedType) {
         return createExecutableExtensions(pointId, elementName, propertyName, expectedType, ($1, $2) -> {
-            /* NOP */});
+            /* NOP */ });
     }
 
     /**
@@ -346,12 +345,14 @@ public class ExtensionPoints {
                         + propertyName + " is null")); //$NON-NLS-1$
                 return null;
             }
-        } catch (CoreException e) {
+            // CSOFF: IllegalCatchCheck
+        } catch (Exception e) {
             IpsLog.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
                     + extensionId + ". Reason: Can't instantiate " //$NON-NLS-1$
                     + element.getAttribute(propertyName), e));
             return null;
         }
+        // CSON: IllegalCatchCheck
         if (!(expectedType.isAssignableFrom(object.getClass()))) {
             IpsLog.log(new IpsStatus("Unable to create extension " //$NON-NLS-1$
                     + extensionId + "Reason: " //$NON-NLS-1$
