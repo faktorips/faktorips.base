@@ -34,6 +34,26 @@ public class GenericVisitorSupportTest {
     }
 
     @Test
+    public void testGenericVisitorWithAssociations() {
+        TestPolicy policy = new TestPolicy();
+        TestDeckung d1 = new TestDeckung();
+        policy.addTestDeckung(d1);
+        TestDeckung d2 = new TestDeckung();
+        policy.addTestDeckung(d2);
+        TestDeckung d3 = new TestDeckung();
+        d2.setAndereTestDeckung(d3);
+
+        List<IModelObject> visited = new ArrayList<>();
+        new GenericVisitorSupport(policy).accept(modelObject -> {
+            visited.add(modelObject);
+            return true;
+        });
+
+        assertThat(visited.size(), is(3));
+        assertThat(visited, hasItems(policy, d1, d2));
+    }
+
+    @Test
     public void testGenericVisitorWithoutChildren() {
         TestPolicy policy = new TestPolicy();
 

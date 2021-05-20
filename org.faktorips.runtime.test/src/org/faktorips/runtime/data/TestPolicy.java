@@ -27,8 +27,11 @@ import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
+import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
+import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.ValueSetKind;
@@ -40,7 +43,7 @@ import org.faktorips.valueset.ValueSet;
 
 @IpsPolicyCmptType(name = "TestPolicy")
 @IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute" })
-@IpsAssociations({ "TestDeckung" })
+@IpsAssociations({ "TestDeckung", "DerivedTestDeckung" })
 @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
 public class TestPolicy implements IModelObject {
 
@@ -48,8 +51,10 @@ public class TestPolicy implements IModelObject {
     public static final String PROPERTY_DECIMAL_ATTRIBUTE = "DecimalAttribute";
     public static final String PROPERTY_MONEY_ATTRIBUTE = "MoneyAttribute";
     public static final String PROPERTY_STRING_ATTRIBUTE = "StringAttribute";
+
     public static final IntegerRange MAX_MULTIPLICITY_OF_TESTDECKUNG = IntegerRange.valueOf(0, 2147483647);
     public static final String ASSOCIATION_TESTDECKUNGUNGEN = "testDeckungungen";
+    public static final String ASSOCIATION_DERIVEDTESTDECKUNGEN = "derivedTestDeckungen";
 
     private Integer integerAttribute;
     private Decimal decimalAttribute;
@@ -151,7 +156,7 @@ public class TestPolicy implements IModelObject {
         return new MessageList();
     }
 
-    public int getNumOfTestDeckungungen() {
+    public int getNumOfTestDeckungen() {
         return testDeckungungen.size();
     }
 
@@ -159,8 +164,10 @@ public class TestPolicy implements IModelObject {
         return testDeckungungen.contains(objectToTest);
     }
 
-    @IpsAssociation(name = "TestDeckung", pluralName = "TestDeckungungen", kind = AssociationKind.Composition, targetClass = TestDeckung.class, min = 0, max = Integer.MAX_VALUE)
-    public List<? extends TestDeckung> getTestDeckungungen() {
+    @IpsAssociation(name = "TestDeckung", pluralName = "TestDeckungen", kind = AssociationKind.Composition, targetClass = TestDeckung.class, min = 0, max = Integer.MAX_VALUE)
+    @IpsSubsetOfDerivedUnion("DerivedTestDeckung")
+    @IpsInverseAssociation("TestPolicy")
+    public List<? extends TestDeckung> getTestDeckungen() {
         return Collections.unmodifiableList(testDeckungungen);
     }
 
@@ -181,6 +188,7 @@ public class TestPolicy implements IModelObject {
             return;
         }
         testDeckungungen.add(objectToAdd);
+        objectToAdd.setTestPolicyInternal(this);
     }
 
     public TestDeckung newTestDeckung() {
@@ -198,10 +206,28 @@ public class TestPolicy implements IModelObject {
     }
 
     public void validateDependants(MessageList ml, IValidationContext context) {
-        if (getNumOfTestDeckungungen() > 0) {
-            for (TestDeckung rel : getTestDeckungungen()) {
+        if (getNumOfTestDeckungen() > 0) {
+            for (TestDeckung rel : getTestDeckungen()) {
                 ml.add(rel.validate(context));
             }
         }
+    }
+
+    @IpsAssociation(name = "DerivedTestDeckung", pluralName = "DerivedTestDeckungen", kind = AssociationKind.Composition, targetClass = TestDeckung.class, min = 0, max = Integer.MAX_VALUE)
+    @IpsDerivedUnion
+    public List<TestDeckung> getDerivedTestDeckungen() {
+        List<TestDeckung> result = new ArrayList<>(getNumOfDerivedTestDeckungenInternal());
+        result.addAll(getTestDeckungen());
+        return result;
+    }
+
+    public int getNumOfDerivedTestDeckungen() {
+        return getNumOfDerivedTestDeckungenInternal();
+    }
+
+    private int getNumOfDerivedTestDeckungenInternal() {
+        int num = 0;
+        num += getNumOfTestDeckungen();
+        return num;
     }
 }

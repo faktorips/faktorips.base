@@ -10,6 +10,8 @@
 package org.faktorips.runtime;
 
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.type.AssociationKind;
+import org.faktorips.runtime.model.type.PolicyAssociation;
 
 /**
  * Implementation of {@link IVisitorSupport} for {@link IModelObject IModelObjects} not generated
@@ -34,10 +36,15 @@ public class GenericVisitorSupport implements IVisitorSupport {
             return false;
         }
         IpsModel.getPolicyCmptType(modelObject).getAssociations().stream()
+                .filter(GenericVisitorSupport::shouldFollow)
                 .flatMap(a -> a.getTargetObjects(modelObject).stream())
                 .map(IVisitorSupport::orGenericVisitorSupport)
                 .forEach(c -> c.accept(visitor));
         return true;
+    }
+
+    private static boolean shouldFollow(PolicyAssociation association) {
+        return !association.isDerivedUnion() && AssociationKind.Composition == association.getAssociationKind();
     }
 
 }
