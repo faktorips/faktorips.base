@@ -15,9 +15,11 @@ import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -36,12 +38,25 @@ public class IpsCleanMojo extends AbstractMojo {
     @Parameter(defaultValue = "${java.io.tmpdir}/${project.name}/eclipserun-work")
     private File work;
 
+    /**
+     * Whether to skip mojo execution.
+     */
+    @Parameter(property = "faktorips.skip", defaultValue = "false")
+    private boolean skip;
+
+    @Component
+    private Logger logger;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("skipping mojo execution");
+            return;
+        }
         File workDir = work.getAbsoluteFile();
         if (workDir.exists()) {
             try {
-                System.out.println("Deleting " + workDir.toString());
+                getLog().info("Deleting " + workDir.toString());
                 FileUtils.deleteDirectory(workDir);
             } catch (IOException e) {
                 throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),

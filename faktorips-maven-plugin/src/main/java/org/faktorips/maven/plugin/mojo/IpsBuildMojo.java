@@ -94,8 +94,8 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Whether to skip mojo execution.
      */
-    // @Parameter(property = "eclipserun.skip", defaultValue = "false")
-    private boolean skip = false;
+    @Parameter(property = "faktorips.skip", defaultValue = "false")
+    private boolean skip;
 
     /**
      * Dependencies which will be resolved transitively to make up the eclipse runtime.
@@ -369,6 +369,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Runs a Git diff on the project to see if any files where changed. Can be configured to only
      * print warnings or to fail the build for uncommitted changes.
+     *
      * <pre>
      * {@code
      * <gitStatusPorcelain>
@@ -525,6 +526,11 @@ public class IpsBuildMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("skipping mojo execution");
+            return;
+        }
+
         @SuppressWarnings("unchecked")
         boolean alreadyBuilt = getPluginContext().put("BUILT" + getProjectName(), Boolean.TRUE) != null;
 
