@@ -15,6 +15,7 @@
                 <item name="Repositories and additional plugins" href="repositories-additional-plugins.html" />
                 <item name="Using a different JDK" href="using-different-jdk.html" />
                 <item name="Faktor-IPS workspace settings" href="workspace-settings.html" />
+                <item name="Using Git to check for modifications" href="git-status.html" />
                 <item name="Properties" href="properties.html" />
             </item>
         </menu>
