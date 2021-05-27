@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -49,8 +48,7 @@ public class AssociationRefControl extends TextButtonControl {
         AssociationCompletionProcessor completionProcessor = new AssociationCompletionProcessor(parentPolicyCmptType,
                 true);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler.createHandlerForText(getTextControl(),
-                CompletionUtil.createContentAssistant(completionProcessor));
+        CompletionUtil.createHandlerForText(getTextControl(), completionProcessor);
     }
 
     @Override

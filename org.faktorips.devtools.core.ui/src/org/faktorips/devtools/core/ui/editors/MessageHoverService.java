@@ -159,6 +159,18 @@ public abstract class MessageHoverService {
     class Hover {
 
         /**
+         * This info hover's shell.
+         */
+        Shell fHoverShell;
+
+        /**
+         * The info hover text.
+         */
+        String fText = ""; //$NON-NLS-1$
+
+        Shell parentShell;
+
+        /**
          * Distance of info hover arrow from left side.
          */
         private int HD = 10;
@@ -176,18 +188,6 @@ public abstract class MessageHoverService {
         private int LABEL_MARGIN = 2;
 
         private int defaultOffsetOfArrow = HD + HW / 2;
-
-        /**
-         * This info hover's shell.
-         */
-        Shell fHoverShell;
-
-        /**
-         * The info hover text.
-         */
-        String fText = ""; //$NON-NLS-1$
-
-        Shell parentShell;
 
         Hover(Shell shell, int arrowOffset) {
             HD = arrowOffset;

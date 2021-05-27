@@ -40,11 +40,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * @author Stefan Widmaier
  */
 public class NewFolderAction extends IpsAction {
-    private Shell shell;
 
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
     private static final String BLANK = " "; //$NON-NLS-1$
     private static final String DOT = "."; //$NON-NLS-1$
+
+    private Shell shell;
 
     public NewFolderAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
@@ -164,7 +165,7 @@ public class NewFolderAction extends IpsAction {
             if (newText.trim().equals(EMPTY_STRING)) {
                 return Messages.NewFolderAction_InvalidFoldername;
             }
-            if (JavaConventions.validatePackageName(newText).getSeverity() == IStatus.ERROR) {
+            if (JavaConventions.validatePackageName(newText, "1.3", "1.3").getSeverity() == IStatus.ERROR) { //$NON-NLS-1$ //$NON-NLS-2$
                 return Messages.NewFolderAction_InvalidFoldername;
             }
             IFolder folder = getFolder(parent, newText);

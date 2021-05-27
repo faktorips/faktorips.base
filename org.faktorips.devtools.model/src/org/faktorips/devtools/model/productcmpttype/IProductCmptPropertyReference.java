@@ -89,6 +89,6 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * 
      * @see #getReferencedIpsObjectType()
      */
-    public void setReferencedIpsObjectType(IpsObjectType IpsObjectType);
+    public void setReferencedIpsObjectType(IpsObjectType ipsObjectType);
 
 }

@@ -88,6 +88,7 @@ public class TreeViewerExpandStateStorage {
         checkedElements = ((CheckboxTreeViewer)treeViewer).getCheckedElements();
     }
 
+    @SuppressWarnings("deprecation")
     private void restoreCheckedStatus() {
         if (!(treeViewer instanceof CheckboxTreeViewer)) {
             return;

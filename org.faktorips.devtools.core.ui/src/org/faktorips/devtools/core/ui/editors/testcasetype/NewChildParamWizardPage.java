@@ -19,8 +19,8 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -40,8 +40,8 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
  */
 public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener {
 
-    private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
     protected static final int PAGE_NUMBER = 1;
+    private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
 
     private NewChildParameterWizard wizard;
 
@@ -91,13 +91,15 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
     }
 
     /**
-     * Connects the edit fields with the given controller to the given test parameter
+     * Connects the edit fields with the given binding context to the given test parameter
      */
-    void connectToModel(IpsObjectUIController controller) {
-        controller.add(editFieldAssociation, ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
-        controller.add(editFieldTarget, ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
-        controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
-        controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+    void connectToModel(BindingContext bindingContext, ITestParameter newTestParameter) {
+        bindingContext.bindContent(editFieldAssociation, newTestParameter,
+                ITestPolicyCmptTypeParameter.PROPERTY_ASSOCIATION);
+        bindingContext.bindContent(editFieldTarget, newTestParameter,
+                ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
+        bindingContext.bindContent(editFieldName, newTestParameter, ITestParameter.PROPERTY_NAME);
+        bindingContext.bindContent(editFieldParamType, newTestParameter, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
 
     @Override
@@ -163,7 +165,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
             return false;
         }
 
-        IStatus status = JavaConventions.validateFieldName(editFieldName.getText());
+        IStatus status = JavaConventions.validateFieldName(editFieldName.getText(), "1.3", "1.3"); //$NON-NLS-1$ //$NON-NLS-2$
         if (!status.isOK()) {
             setErrorMessage(NLS.bind(Messages.NewChildParamWizardPage_ValidationError_InvalidTestParameterName,
                     editFieldName.getText()));

@@ -42,7 +42,8 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     @SuppressWarnings("hiding")
     public static final String XML_TAG_NAME = "DateBasedProductCmptNamingStrategy"; //$NON-NLS-1$
 
-    private String dateFormatPattern; // the pattern has to be kept in order to save the state to
+    // the pattern has to be kept in order to save the state to
+    private String dateFormatPattern;
 
     private DateFormat dateFormat;
 
@@ -114,16 +115,17 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     @Override
     public MessageList validateVersionId(String versionId) {
         MessageList list = new MessageList();
-        if (versionId.length() < dateFormatPattern.length()) {
+        String id = versionId;
+        if (id.length() < dateFormatPattern.length()) {
             list.add(newInvalidVersionIdMsg());
             return list;
         }
         if (postfixAllowed) {
-            versionId = versionId.substring(0, dateFormatPattern.length());
+            id = id.substring(0, dateFormatPattern.length());
         }
         try {
-            dateFormat.parse(versionId);
-            if (versionId.length() != dateFormatPattern.length()) {
+            dateFormat.parse(id);
+            if (id.length() != dateFormatPattern.length()) {
                 throw new RuntimeException();
             }
         } catch (Exception e) {

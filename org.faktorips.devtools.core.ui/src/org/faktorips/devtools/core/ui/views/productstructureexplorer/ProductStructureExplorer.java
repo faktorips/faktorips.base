@@ -402,7 +402,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
         GenerationDateContentProvider adjustmentContentProvider = new GenerationDateContentProvider();
         generationDateViewer.setContentProvider(adjustmentContentProvider);
-        adjustmentContentProvider.addCollectorFinishedListener(($1, $2) -> generationDateViewer.setSelection(0));
+        adjustmentContentProvider.addCollectorFinishedListener($ -> generationDateViewer.setSelection(0));
 
         generationDateViewer.addSelectionChangedListener($ -> {
             GenerationDate adjDate = generationDateViewer.getSelectedDate();

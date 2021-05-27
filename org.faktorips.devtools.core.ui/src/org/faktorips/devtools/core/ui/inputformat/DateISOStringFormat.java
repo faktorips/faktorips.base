@@ -28,14 +28,14 @@ import org.faktorips.values.DateUtil;
  */
 public class DateISOStringFormat extends AbstractDateFormat<String> {
 
+    protected DateISOStringFormat() {
+        // only hide the constructor
+    }
+
     public static DateISOStringFormat newInstance() {
         DateISOStringFormat dateISOStringFormat = new DateISOStringFormat();
         dateISOStringFormat.initFormat();
         return dateISOStringFormat;
-    }
-
-    protected DateISOStringFormat() {
-        // only hide the constructor
     }
 
     @Override

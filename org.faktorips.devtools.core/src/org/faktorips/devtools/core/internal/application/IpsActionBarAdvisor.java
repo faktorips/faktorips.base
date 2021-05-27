@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.application;
 
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -185,7 +184,9 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     private IContributionItem pinEditorContributionItem;
 
-    private Preferences.IPropertyChangeListener prefListener;
+    // TODO FIPS-7874 Replace Preferences with IEclipsePreferences
+    @SuppressWarnings("deprecation")
+    private org.eclipse.core.runtime.Preferences.IPropertyChangeListener prefListener;
 
     private IPageListener pageListener;
 
@@ -285,17 +286,16 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_file, IWorkbenchActionConstants.M_FILE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
-        {
-            // Create the "New" sub menu, using the same ID for it as for the "New" action.
-            String newText = Messages.IpsActionBarAdvisor_new;
-            String newId = ActionFactory.NEW.getId();
-            MenuManager newMenu = new MenuManager(newText, newId);
-            newMenu.add(new Separator(newId));
-            newWizardMenu = new NewWizardMenu(getWindow());
-            newMenu.add(newWizardMenu);
-            newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            menu.add(newMenu);
-        }
+
+        // Create the "New" sub menu, using the same ID for it as for the "New" action.
+        String newText = Messages.IpsActionBarAdvisor_new;
+        String newId = ActionFactory.NEW.getId();
+        MenuManager newMenu = new MenuManager(newText, newId);
+        newMenu.add(new Separator(newId));
+        newWizardMenu = new NewWizardMenu(getWindow());
+        newMenu.add(newWizardMenu);
+        newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menu.add(newMenu);
 
         menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
         menu.add(new Separator());
@@ -389,12 +389,11 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
             menu.add(new Separator(IWorkbenchActionConstants.OPEN_EXT + i));
         }
         menu.add(new Separator(IWorkbenchActionConstants.SHOW_EXT));
-        {
 
-            MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-1$
-            showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN.create(getWindow()));
-            menu.add(showInSubMenu);
-        }
+        MenuManager showInSubMenu = new MenuManager(Messages.IpsActionBarAdvisor_showIn, "showIn"); //$NON-NLS-1$
+        showInSubMenu.add(ContributionItemFactory.VIEWS_SHOW_IN.create(getWindow()));
+        menu.add(showInSubMenu);
+
         for (int i = 2; i < 5; ++i) {
             menu.add(new Separator(IWorkbenchActionConstants.SHOW_EXT + i));
         }
@@ -523,6 +522,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
      * Disposes any resources and unhooks any listeners that are no longer needed. Called when the
      * window is closed.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void dispose() {
         if (isDisposed) {
@@ -609,6 +609,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         super.dispose();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void makeActions(final IWorkbenchWindow window) {
         newWizardAction = ActionFactory.NEW.create(window);

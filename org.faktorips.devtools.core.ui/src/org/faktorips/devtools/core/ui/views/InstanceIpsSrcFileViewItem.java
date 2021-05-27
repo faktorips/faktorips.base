@@ -31,6 +31,14 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
     private IpsSrcFileCollection collection;
 
     /**
+     * @param ipsSrcFile The IpsSrcFile represented by this viewer item
+     */
+    private InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile, IpsSrcFileCollection collection) {
+        super(ipsSrcFile);
+        this.collection = collection;
+    }
+
+    /**
      * Creates an item for each ips source file and marks the items as duplicate, if two (or more)
      * ips source files have the same unqualified name.
      * 
@@ -47,14 +55,6 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
             i++;
         }
         return items;
-    }
-
-    /**
-     * @param ipsSrcFile The IpsSrcFile represented by this viewer item
-     */
-    private InstanceIpsSrcFileViewItem(IIpsSrcFile ipsSrcFile, IpsSrcFileCollection collection) {
-        super(ipsSrcFile);
-        this.collection = collection;
     }
 
     /**

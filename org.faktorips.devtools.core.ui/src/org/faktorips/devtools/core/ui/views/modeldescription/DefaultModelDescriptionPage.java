@@ -54,17 +54,18 @@ import org.faktorips.devtools.model.type.IAssociation;
  * @author Markus Blum
  * 
  */
-abstract public class DefaultModelDescriptionPage extends Page implements IIpsSrcFilesChangeListener {
+public abstract class DefaultModelDescriptionPage extends Page implements IIpsSrcFilesChangeListener {
 
     private FormToolkit toolkit;
 
     private ScrolledForm form;
     private Composite expandableContainer;
 
-    private List<DescriptionItem> defaultList; // List of DescriptionItems sorted by parent.
-    private List<DescriptionItem> activeList; // defaultList
-    // sorted lexical
-    // or not.
+    // List of DescriptionItems sorted by parent
+    private List<DescriptionItem> defaultList;
+    // defaultList sorted lexical or not
+    private List<DescriptionItem> activeList;
+
     private String title;
 
     private Color colorGray;

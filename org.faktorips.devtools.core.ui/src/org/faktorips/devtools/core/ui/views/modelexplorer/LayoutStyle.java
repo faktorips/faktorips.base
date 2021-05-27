@@ -47,6 +47,13 @@ public enum LayoutStyle {
      */
     HIERACHICAL(0);
 
+    // for historical reason: 0 is hierarchical, and flat is 1.
+    private int id;
+
+    private LayoutStyle(int id) {
+        this.id = id;
+    }
+
     /**
      * Returns the layout style by id. Needed as before version 2.4.2, the layout style was
      * represented by int constants and is saved in the dialog settings.
@@ -59,13 +66,6 @@ public enum LayoutStyle {
             return FLAT;
         }
         throw new RuntimeException("Unknown layout style id " + id); //$NON-NLS-1$
-    }
-
-    // for historical reason: 0 is hierarchical, and flat is 1.
-    private int id;
-
-    private LayoutStyle(int id) {
-        this.id = id;
     }
 
     /**

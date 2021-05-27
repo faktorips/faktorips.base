@@ -37,7 +37,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
     public IpsObjectCompletionProcessor(IpsObjectRefControl control) {
         ArgumentCheck.notNull(control);
         this.control = control;
-        ipsProject = control.getIpsProject();
+        ipsProject = getFirstIpsProjectIfPresent();
         ipsObjectType = null;
     }
 
@@ -71,7 +71,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             int documentOffset) {
 
         if (ipsProject == null && control != null) {
-            ipsProject = control.getIpsProject();
+            ipsProject = getFirstIpsProjectIfPresent();
         }
         return super.computeCompletionProposals(contentAssistSubjectControl, documentOffset);
     }
@@ -120,7 +120,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
 
             IIpsProject prj = ipsProject;
             if (prj == null && control != null) {
-                prj = control.getIpsProject();
+                prj = getFirstIpsProjectIfPresent();
             }
             if (prj == null) {
                 return;
@@ -146,5 +146,10 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             IpsPlugin.log(e);
             return;
         }
+    }
+
+    private IIpsProject getFirstIpsProjectIfPresent() {
+        List<IIpsProject> ipsProjects = control.getIpsProjects();
+        return ipsProjects.isEmpty() ? null : ipsProjects.get(0);
     }
 }

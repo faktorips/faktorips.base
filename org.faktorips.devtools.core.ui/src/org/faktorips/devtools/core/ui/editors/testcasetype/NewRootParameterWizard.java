@@ -15,7 +15,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
@@ -31,6 +31,10 @@ import org.faktorips.util.memento.Memento;
  * @author Joerg Ortmann
  */
 public class NewRootParameterWizard extends Wizard implements IBlockedValidationWizard {
+
+    public static final int TEST_POLICY_CMPT_TYPE_PARAMETER = 0;
+    public static final int TEST_VALUE_PARAMETER = 1;
+    public static final int TEST_RULE_PARAMETER = 2;
 
     private UIToolkit uiToolkit = new UIToolkit(null);
 
@@ -49,18 +53,14 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     /** The maximum wizard page number which was displayed */
     private int pageDisplayedMax = 0;
 
-    /** Controller to connect the model with the ui */
-    private IpsObjectUIController controller;
+    /** Binding context to connect the model with the ui */
+    private BindingContext bindingContext;
 
     /**
      * Indicates if a test policy cmpt type parameter is created by the wizard (true) or a test
      * value parameter (false)
      */
     private boolean isTestPolicyCmptTypeParam = false;
-
-    public static final int TEST_POLICY_CMPT_TYPE_PARAMETER = 0;
-    public static final int TEST_VALUE_PARAMETER = 1;
-    public static final int TEST_RULE_PARAMETER = 2;
 
     private int kindOfTestParameter = TEST_POLICY_CMPT_TYPE_PARAMETER;
 
@@ -90,8 +90,8 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     }
 
     @Override
-    public IpsObjectUIController getController() {
-        return controller;
+    public BindingContext getBindingContext() {
+        return bindingContext;
     }
 
     /**
@@ -161,12 +161,12 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
      * Connects the new test parameter to the model controller
      */
     private void connectNewParameterToModel() {
-        controller = new IpsObjectUIController(newTestParameter);
-        rootParamSelectWizardPage.connectToModel(controller, newTestParameter);
+        bindingContext = new BindingContext();
+        rootParamSelectWizardPage.connectToModel(bindingContext, newTestParameter);
         if (isTestPolicyCmptTypeParam) {
-            rootParamDetailWizardPage.connectToModel(controller, newTestParameter);
+            rootParamDetailWizardPage.connectToModel(bindingContext, newTestParameter);
         }
-        controller.updateUI();
+        bindingContext.updateUI();
 
         getContainer().updateButtons();
     }

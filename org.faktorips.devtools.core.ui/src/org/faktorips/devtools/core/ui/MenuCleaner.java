@@ -66,6 +66,34 @@ public final class MenuCleaner implements IMenuListener {
     private String matchingGroup;
 
     /**
+     * Creates an empty menu cleaner meaning that no prefixes or menu groups are filtered out as
+     * long as none are added via {@link #addFilteredPrefix(String)} or
+     * {@link #addFilteredMenuGroup(String)}.
+     */
+    public MenuCleaner() {
+        // Nothing to do
+    }
+
+    /**
+     * Creates a new menu cleaner that filters the set of {@link #filteredPrefixes} and the set of
+     * {@link #filteredMenuGroups}. The cleaner could only filter out those groups that does exists
+     * in the menu. That means if you want to filter out all additions that are contributed by
+     * eclipse you have to add a separator for additions first. .
+     * 
+     * @param filteredPrefixes Set of prefixes that should be filtered out (will be copied
+     *            defensively)
+     * @param filteredMenuGroups Set of menu group IDs that should be filtered out (will be copied
+     *            defensively)
+     * 
+     * @throws NullPointerException If any parameter is null
+     */
+    public MenuCleaner(Set<String> filteredPrefixes, Set<String> filteredMenuGroups) {
+        this();
+        this.filteredPrefixes.addAll(filteredPrefixes);
+        this.filteredMenuGroups.addAll(filteredMenuGroups);
+    }
+
+    /**
      * Creates a menu cleaner that filters out the some default menu groups like "additions" and
      * "group.reorganize".
      * <p>
@@ -103,34 +131,6 @@ public final class MenuCleaner implements IMenuListener {
         menuManager.addMenuListener(additionsCleaner);
 
         return additionsCleaner;
-    }
-
-    /**
-     * Creates an empty menu cleaner meaning that no prefixes or menu groups are filtered out as
-     * long as none are added via {@link #addFilteredPrefix(String)} or
-     * {@link #addFilteredMenuGroup(String)}.
-     */
-    public MenuCleaner() {
-        // Nothing to do
-    }
-
-    /**
-     * Creates a new menu cleaner that filters the set of {@link #filteredPrefixes} and the set of
-     * {@link #filteredMenuGroups}. The cleaner could only filter out those groups that does exists
-     * in the menu. That means if you want to filter out all additions that are contributed by
-     * eclipse you have to add a separator for additions first. .
-     * 
-     * @param filteredPrefixes Set of prefixes that should be filtered out (will be copied
-     *            defensively)
-     * @param filteredMenuGroups Set of menu group IDs that should be filtered out (will be copied
-     *            defensively)
-     * 
-     * @throws NullPointerException If any parameter is null
-     */
-    public MenuCleaner(Set<String> filteredPrefixes, Set<String> filteredMenuGroups) {
-        this();
-        this.filteredPrefixes.addAll(filteredPrefixes);
-        this.filteredMenuGroups.addAll(filteredMenuGroups);
     }
 
     /**

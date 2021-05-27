@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
  */
 public class TestCaseTypeContentProvider implements ITreeContentProvider {
 
-    private static Object[] EMPTY_ARRAY = new Object[0];
+    private static final Object[] EMPTY_ARRAY = new Object[0];
 
     private TestCaseTypeTreeRootElement rootElement;
 

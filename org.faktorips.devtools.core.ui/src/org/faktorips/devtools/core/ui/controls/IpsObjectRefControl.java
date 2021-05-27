@@ -58,6 +58,11 @@ import org.faktorips.util.StringUtil;
  */
 public abstract class IpsObjectRefControl extends TextButtonControl {
 
+    /**
+     * The {@link IpsObjectType} of the currently selected object.
+     */
+    protected IpsObjectType objectType;
+
     private List<IIpsProject> ipsProjects;
 
     private String dialogTitle;
@@ -67,11 +72,6 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     private IContentProposalProvider proposalProvider;
 
     private Button deleteButton;
-
-    /**
-     * The {@link IpsObjectType} of the currently selected object.
-     */
-    protected IpsObjectType objectType;
 
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {

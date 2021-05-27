@@ -69,7 +69,8 @@ public class SubsetChooserBuilder {
                 | SWT.H_SCROLL);
         GridData srcTableLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
         preDefinedValuesTable.setLayoutData(srcTableLayout);
-        srcParent.addColumnData(new ColumnPixelData(15, false)); // message image
+        // message image
+        srcParent.addColumnData(new ColumnPixelData(15, false));
         srcParent.addColumnData(new ColumnWeightData(95, true));
 
         addChooseButtons(mainComposite);
@@ -82,7 +83,8 @@ public class SubsetChooserBuilder {
         GridData targetTableLayout = new GridData(SWT.FILL, SWT.FILL, true, true);
         targetTableLayout.horizontalIndent = 5;
         resultingValuesTable.setLayoutData(targetTableLayout);
-        targetParent.addColumnData(new ColumnPixelData(15, false)); // message image
+        // message image
+        targetParent.addColumnData(new ColumnPixelData(15, false));
         targetParent.addColumnData(new ColumnWeightData(95, true));
 
         addMoveButtons(mainComposite);

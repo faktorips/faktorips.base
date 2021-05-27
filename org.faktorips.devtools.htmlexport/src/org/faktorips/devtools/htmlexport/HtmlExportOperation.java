@@ -34,8 +34,9 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
  * 
  */
 public class HtmlExportOperation implements IWorkspaceRunnable {
-    private DocumentationContext context;
+
     private static final Set<Class<? extends NLS>> MESSAGE_CLAZZES = new HashSet<>();
+    private DocumentationContext context;
 
     /**
      * Instantiates a HtmlExportOperation.

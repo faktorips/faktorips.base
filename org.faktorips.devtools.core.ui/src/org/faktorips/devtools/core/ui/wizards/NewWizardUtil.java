@@ -21,6 +21,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
  */
 public class NewWizardUtil {
 
+    private NewWizardUtil() {
+        // Utility class not to be instantiated
+    }
+
     /**
      * Creates the default categories "Attributes", "Tables and Formulas", "Validation Rules" and
      * "Defaults and Value Sets" for the indicated {@link IProductCmptType} if it has no supertype.
@@ -54,9 +58,4 @@ public class NewWizardUtil {
         defaultsAndValueSets.setDefaultForPolicyCmptTypeAttributes(true);
         defaultsAndValueSets.setPosition(Position.RIGHT);
     }
-
-    private NewWizardUtil() {
-        // Utility class not to be instantiated
-    }
-
 }

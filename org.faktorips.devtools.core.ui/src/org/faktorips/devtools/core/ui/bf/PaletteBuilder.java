@@ -112,7 +112,7 @@ public class PaletteBuilder {
         return drawer;
     }
 
-    static private PaletteContainer createControlGroup(PaletteRoot root) {
+    private static PaletteContainer createControlGroup(PaletteRoot root) {
         PaletteGroup controlGroup = new PaletteGroup("Control Group"); //$NON-NLS-1$
         List<PaletteEntry> entries = new ArrayList<>();
 

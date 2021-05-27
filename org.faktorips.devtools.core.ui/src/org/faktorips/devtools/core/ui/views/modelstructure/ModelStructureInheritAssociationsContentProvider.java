@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.type.IType;
 
 public final class ModelStructureInheritAssociationsContentProvider extends AbstractModelStructureContentProvider {
 
-    private List<ComponentNode> storedRootElements;
-    private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
+    private static final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
+    private List<ComponentNode> storedRootElements;
 
     @Override
     public Object getParent(Object element) {
@@ -195,7 +195,8 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         List<IType> subtypes = parent.findSubtypes(false, false, project);
         boolean foundNothing = true;
         for (IType subtype : subtypes) {
-            if (subtype.getIpsProject().equals(project)) { // root-element found
+            if (subtype.getIpsProject().equals(project)) {
+                // root-element found
                 rootElements.add(subtype);
                 foundNothing = false;
             }

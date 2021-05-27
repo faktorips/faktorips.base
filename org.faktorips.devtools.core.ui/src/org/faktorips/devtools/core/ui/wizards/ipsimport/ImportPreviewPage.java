@@ -244,7 +244,8 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             validatePage();
         }
         updatePageComplete();

@@ -27,6 +27,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class HtmlPathFactory {
 
+    private HtmlPathFactory() {
+        // Utility class not to be instantiated
+    }
+
     /**
      * returns {@link IHtmlPath} for the given {@link IIpsElement}
      * 

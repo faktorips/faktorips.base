@@ -79,8 +79,8 @@ public abstract class ViewerButtonSection extends IpsSection {
     @Override
     protected void performRefresh() {
         if (viewer.getInput() == null) {
-            viewer.setInput(this); // if viewer's input is null, it's content provider is not asked
-            // for the contents!
+            viewer.setInput(this);
+            // if viewer's input is null, it's content provider is not asked for the contents!
         }
         viewer.refresh();
         updateButtonEnabledStates();

@@ -28,6 +28,10 @@ public class PersistenceUtil {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("[_\\p{Alpha}]\\w*"); //$NON-NLS-1$
 
+    private PersistenceUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Checks if given String is a valid table or column name.
      * <p>
@@ -59,10 +63,6 @@ public class PersistenceUtil {
 
     public static boolean isSupportingLenght(ValueDatatype valueDatatype) {
         return valueDatatype instanceof StringDatatype;
-    }
-
-    private PersistenceUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

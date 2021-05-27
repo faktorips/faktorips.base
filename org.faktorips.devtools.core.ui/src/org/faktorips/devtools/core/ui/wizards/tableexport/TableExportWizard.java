@@ -43,7 +43,6 @@ import org.faktorips.runtime.MessageList;
  */
 public class TableExportWizard extends IpsObjectExportWizard {
 
-    @SuppressWarnings("hiding")
     private static final String DIALOG_SETTINGS_KEY = "TableExportWizard"; //$NON-NLS-1$
 
     /* The details-page of this wizard */

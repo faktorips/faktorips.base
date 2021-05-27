@@ -46,7 +46,7 @@ public abstract class LocalizedFunctionsResolver<T extends CodeFragment> extends
      * 
      * @return the base name for the localization files
      */
-    abstract protected String getLocalizationFileBaseName();
+    protected abstract String getLocalizationFileBaseName();
 
     /**
      * Returns the localized name for the {@link FlFunction} identified by the key.
@@ -70,13 +70,14 @@ public abstract class LocalizedFunctionsResolver<T extends CodeFragment> extends
 
     class NameDescription {
 
+        String name;
+        String description;
+
         NameDescription(String name, String description) {
             this.name = name;
             this.description = description;
         }
 
-        String name;
-        String description;
     }
 
 }

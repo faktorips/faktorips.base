@@ -52,7 +52,7 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
         });
     }
 
-    abstract protected AbstractDateFormat<String> createDateFormat();
+    protected abstract AbstractDateFormat<String> createDateFormat();
 
     @Override
     protected void buttonClicked() {
@@ -60,7 +60,7 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
         getButtonControl().setSelection(true);
     }
 
-    abstract protected void showCalendarShell();
+    protected abstract void showCalendarShell();
 
     private void initOldCalendar() {
         oldCalendar = new GregorianCalendar();

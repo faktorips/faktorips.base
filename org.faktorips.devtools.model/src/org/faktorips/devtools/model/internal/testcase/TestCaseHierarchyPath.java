@@ -30,62 +30,6 @@ public class TestCaseHierarchyPath {
     /** Contains the complete hierarchy path. */
     private String hierarchyPath = ""; //$NON-NLS-1$
 
-    /**
-     * Removes the folder information from the beginning.
-     */
-    public static String unqualifiedName(String hierarchyPath) {
-        int index = hierarchyPath.lastIndexOf(SEPARATOR);
-        if (index == -1) {
-            return hierarchyPath;
-        }
-        return hierarchyPath.substring(index + SEPARATOR.length());
-    }
-
-    /**
-     * Evaluate the test policy component type parameter path of the given test policy component.
-     */
-    public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) {
-        String pathWithOffset = ""; //$NON-NLS-1$
-
-        while (!testPolicyCmpt.isRoot()) {
-            int offset = 0;
-            ITestPolicyCmpt parent = testPolicyCmpt.getParentTestPolicyCmpt();
-            ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
-            for (ITestPolicyCmptLink link : links) {
-                if (link.findTarget().equals(testPolicyCmpt)) {
-                    break;
-                }
-                // Check for same parameter and increment offset if necessary.
-                if (link.getTestPolicyCmptTypeParameter().equals(testPolicyCmpt.getTestPolicyCmptTypeParameter())) {
-                    offset++;
-                }
-            }
-            pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
-                    + (pathWithOffset.length() > 0 ? "." + pathWithOffset : ""); //$NON-NLS-1$ //$NON-NLS-2$
-            testPolicyCmpt = parent;
-        }
-
-        /*
-         * Get the offset of the test policy component by searching test policy component with the
-         * same test policy component type parameter.
-         */
-        ITestCase testCase = testPolicyCmpt.getTestCase();
-        ITestPolicyCmpt[] tpcs = testCase.getTestPolicyCmpts();
-        int offset = 0;
-        for (ITestPolicyCmpt tpc : tpcs) {
-            if (testPolicyCmpt.equals(tpc)) {
-                break;
-            }
-            // Check for same parameter and increment offset if necessary.
-            if (testPolicyCmpt.getTestPolicyCmptTypeParameter().equals(tpc.getTestPolicyCmptTypeParameter())) {
-                offset++;
-            }
-        }
-        pathWithOffset = testPolicyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
-                + (pathWithOffset.length() > 0 ? "." + pathWithOffset : ""); //$NON-NLS-1$ //$NON-NLS-2$
-        return pathWithOffset;
-    }
-
     public TestCaseHierarchyPath(String hierarchyPath) {
         this.hierarchyPath = hierarchyPath;
     }
@@ -128,6 +72,63 @@ public class TestCaseHierarchyPath {
         } else {
             hierarchyPath = evalHierarchyPathForTestCaseType((ITestPolicyCmpt)link.getParent(), linkPath);
         }
+    }
+
+    /**
+     * Removes the folder information from the beginning.
+     */
+    public static String unqualifiedName(String hierarchyPath) {
+        int index = hierarchyPath.lastIndexOf(SEPARATOR);
+        if (index == -1) {
+            return hierarchyPath;
+        }
+        return hierarchyPath.substring(index + SEPARATOR.length());
+    }
+
+    /**
+     * Evaluate the test policy component type parameter path of the given test policy component.
+     */
+    public static String evalTestPolicyCmptParamPath(ITestPolicyCmpt testPolicyCmpt) {
+        String pathWithOffset = ""; //$NON-NLS-1$
+        ITestPolicyCmpt policyCmpt = testPolicyCmpt;
+
+        while (!policyCmpt.isRoot()) {
+            int offset = 0;
+            ITestPolicyCmpt parent = policyCmpt.getParentTestPolicyCmpt();
+            ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
+            for (ITestPolicyCmptLink link : links) {
+                if (link.findTarget().equals(policyCmpt)) {
+                    break;
+                }
+                // Check for same parameter and increment offset if necessary.
+                if (link.getTestPolicyCmptTypeParameter().equals(policyCmpt.getTestPolicyCmptTypeParameter())) {
+                    offset++;
+                }
+            }
+            pathWithOffset = policyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
+                    + (pathWithOffset.length() > 0 ? "." + pathWithOffset : ""); //$NON-NLS-1$ //$NON-NLS-2$
+            policyCmpt = parent;
+        }
+
+        /*
+         * Get the offset of the test policy component by searching test policy component with the
+         * same test policy component type parameter.
+         */
+        ITestCase testCase = policyCmpt.getTestCase();
+        ITestPolicyCmpt[] tpcs = testCase.getTestPolicyCmpts();
+        int offset = 0;
+        for (ITestPolicyCmpt tpc : tpcs) {
+            if (policyCmpt.equals(tpc)) {
+                break;
+            }
+            // Check for same parameter and increment offset if necessary.
+            if (policyCmpt.getTestPolicyCmptTypeParameter().equals(tpc.getTestPolicyCmptTypeParameter())) {
+                offset++;
+            }
+        }
+        pathWithOffset = policyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
+                + (pathWithOffset.length() > 0 ? "." + pathWithOffset : ""); //$NON-NLS-1$ //$NON-NLS-2$
+        return pathWithOffset;
     }
 
     /**
@@ -197,31 +198,35 @@ public class TestCaseHierarchyPath {
     }
 
     private String evalHierarchyPathForTestCaseType(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath) {
-        while (!currTestPolicyCmpt.isRoot()) {
-            if (hierarchyPath.length() > 0) {
-                hierarchyPath = SEPARATOR + hierarchyPath;
+        String path = hierarchyPath;
+        ITestPolicyCmpt policyCmpt = currTestPolicyCmpt;
+        while (!policyCmpt.isRoot()) {
+            if (path.length() > 0) {
+                path = SEPARATOR + path;
             }
-            ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)currTestPolicyCmpt.getParent();
-            hierarchyPath = testPcTypeLink.getTestPolicyCmptTypeParameter() + hierarchyPath;
-            currTestPolicyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
+            ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)policyCmpt.getParent();
+            path = testPcTypeLink.getTestPolicyCmptTypeParameter() + path;
+            policyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
         }
-        hierarchyPath = currTestPolicyCmpt.getTestPolicyCmptTypeParameter()
-                + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
-        return hierarchyPath;
+        path = policyCmpt.getTestPolicyCmptTypeParameter()
+                + (path.length() > 0 ? SEPARATOR + path : ""); //$NON-NLS-1$
+        return path;
     }
 
     private String evalHierarchyPathForTestCase(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath) {
-        while (!currTestPolicyCmpt.isRoot()) {
-            if (hierarchyPath.length() > 0) {
-                hierarchyPath = SEPARATOR + hierarchyPath;
+        String path = hierarchyPath;
+        ITestPolicyCmpt policyCmpt = currTestPolicyCmpt;
+        while (!policyCmpt.isRoot()) {
+            if (path.length() > 0) {
+                path = SEPARATOR + path;
             }
-            hierarchyPath = SEPARATOR + currTestPolicyCmpt.getName() + hierarchyPath;
-            ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)currTestPolicyCmpt.getParent();
-            hierarchyPath = testPcTypeLink.getTestPolicyCmptTypeParameter() + hierarchyPath;
-            currTestPolicyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
+            path = SEPARATOR + policyCmpt.getName() + path;
+            ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)policyCmpt.getParent();
+            path = testPcTypeLink.getTestPolicyCmptTypeParameter() + path;
+            policyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
         }
-        hierarchyPath = currTestPolicyCmpt.getName() + (hierarchyPath.length() > 0 ? SEPARATOR + hierarchyPath : ""); //$NON-NLS-1$
-        return hierarchyPath;
+        path = policyCmpt.getName() + (path.length() > 0 ? SEPARATOR + path : ""); //$NON-NLS-1$
+        return path;
     }
 
 }

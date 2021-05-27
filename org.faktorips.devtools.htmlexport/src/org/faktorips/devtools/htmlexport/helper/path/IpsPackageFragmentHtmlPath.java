@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
  * 
  */
 public class IpsPackageFragmentHtmlPath extends AbstractIpsElementHtmlPath<IIpsPackageFragment> {
-    private static String PACKAGE_INDEX_FILE_NAME = "package_index"; //$NON-NLS-1$
+    private static final String PACKAGE_INDEX_FILE_NAME = "package_index"; //$NON-NLS-1$
 
     public IpsPackageFragmentHtmlPath(IIpsPackageFragment ipsElement) {
         super(ipsElement);

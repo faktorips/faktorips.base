@@ -15,8 +15,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -76,10 +76,11 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    void connectToModel(IpsObjectUIController controller, ITestParameter testParameter) {
-        controller.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
-        controller.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
-        controller.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
+    void connectToModel(BindingContext bindingContext, ITestParameter testParameter) {
+        bindingContext.bindContent(editFieldMin, testParameter, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+        bindingContext.bindContent(editFieldMax, testParameter, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+        bindingContext.bindContent(editFieldReqProd, testParameter,
+                ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
 
         editFieldMin.getControl().setEnabled(true);
         editFieldMax.getControl().setEnabled(true);
@@ -137,10 +138,8 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
     }
 
     public void resetPage() {
-        if (wizard.getController() != null) {
-            wizard.getController().remove(editFieldMin);
-            wizard.getController().remove(editFieldMax);
-            wizard.getController().remove(editFieldReqProd);
+        if (wizard.getBindingContext() != null) {
+            wizard.getBindingContext().clear();
         }
         editFieldMin.setText(""); //$NON-NLS-1$
         editFieldMax.setText(""); //$NON-NLS-1$

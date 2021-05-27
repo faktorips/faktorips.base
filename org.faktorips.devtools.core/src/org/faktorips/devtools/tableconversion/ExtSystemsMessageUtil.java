@@ -20,6 +20,10 @@ import org.faktorips.runtime.Message;
  */
 public class ExtSystemsMessageUtil {
 
+    private ExtSystemsMessageUtil() {
+        // Utility class not to be instantiated.
+    }
+
     public static Message createConvertExtToIntLostValueErrorMessage(String value, String convertedValue) {
         String msg = NLS.bind(Messages.Messages_extToIntInformationLostError, new String[] { value, convertedValue });
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
@@ -40,9 +44,4 @@ public class ExtSystemsMessageUtil {
         String msg = NLS.bind(Messages.Messages_intToExtError, new String[] { ipsValue, internalType, externalType });
         return new Message("", msg, Message.ERROR); //$NON-NLS-1$
     }
-
-    private ExtSystemsMessageUtil() {
-        // Utility class not to be instantiated.
-    }
-
 }

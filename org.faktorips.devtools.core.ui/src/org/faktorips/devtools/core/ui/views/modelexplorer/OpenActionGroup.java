@@ -21,20 +21,21 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.OpenFileAction;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
 import org.eclipse.ui.actions.OpenWithMenu;
-import org.eclipse.ui.views.navigator.ResourceSelectionUtil;
+import org.eclipse.ui.ide.ResourceSelectionUtil;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * This is the action group for the open actions.
  */
 public class OpenActionGroup extends ActionGroup {
-    private ModelExplorer explorer;
-    private OpenFileAction openFileAction;
 
     /**
      * The id for the Open With submenu.
      */
     public static final String OPEN_WITH_ID = IpsPlugin.PLUGIN_ID + ".OpenWithSubMenu"; //$NON-NLS-1$
+
+    private ModelExplorer explorer;
+    private OpenFileAction openFileAction;
 
     public OpenActionGroup(ModelExplorer explorer) {
         this.explorer = explorer;

@@ -449,7 +449,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public String getFullTocPath() {
         String path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses()).toString();
         if (StringUtils.isEmpty(path)) {
-            return tocPath.toString();
+            return tocPath;
         }
         return path + IPath.SEPARATOR + tocPath;
     }

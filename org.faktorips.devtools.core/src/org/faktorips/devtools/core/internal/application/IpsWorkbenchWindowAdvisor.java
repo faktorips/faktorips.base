@@ -40,7 +40,6 @@ class IpsWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
         // show the progress indicator, which are hidden by default
         configurer.setShowPerspectiveBar(false);
-        configurer.setShowFastViewBars(true);
         configurer.setShowProgressIndicator(true);
         configurer.setTitle(Messages.IpsWorkbenchAdvisor_title);
     }

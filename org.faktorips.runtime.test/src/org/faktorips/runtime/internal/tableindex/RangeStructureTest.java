@@ -57,7 +57,7 @@ public class RangeStructureTest {
         resultSetForKeyNull(isEmpty());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "javadoc" })
     /**
      * Tests the {@link RangeStructure} with {@link RangeType#LOWER_BOUND}. May be deleted when
      * {@link RangeType#LOWER_BOUND} is removed.
@@ -94,7 +94,7 @@ public class RangeStructureTest {
         resultSetForKeyNull(isEmpty());
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "javadoc" })
     /**
      * Tests the {@link RangeStructure} with {@link RangeType#UPPER_BOUND}. May be deleted when
      * {@link RangeType#UPPER_BOUND} is removed.

@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 
 public class IpsObjectPartStateListTransfer extends ByteArrayTransfer {
 
-    private static IpsObjectPartStateListTransfer INSTANCE = new IpsObjectPartStateListTransfer(null);
+    private static IpsObjectPartStateListTransfer instance = new IpsObjectPartStateListTransfer(null);
     private static final String TYPE_NAME = "IpsObjectPartStateListTransfer"; //$NON-NLS-1$
     private static final int TYPE_ID = registerType(TYPE_NAME);
 
@@ -35,7 +35,7 @@ public class IpsObjectPartStateListTransfer extends ByteArrayTransfer {
     }
 
     public static IpsObjectPartStateListTransfer getWriteInstance() {
-        return INSTANCE;
+        return instance;
     }
 
     @Override

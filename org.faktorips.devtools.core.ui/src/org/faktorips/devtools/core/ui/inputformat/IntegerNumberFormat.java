@@ -23,23 +23,22 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public class IntegerNumberFormat extends AbstractNumberFormat {
 
+    /**
+     * String that is an example of a valid input string.
+     */
+    private String exampleString;
     private DecimalFormat numberFormat;
     private final ValueDatatype datatype;
+
+    protected IntegerNumberFormat(ValueDatatype datatype) {
+        this.datatype = datatype;
+    }
 
     public static IntegerNumberFormat newInstance(ValueDatatype datatype) {
         IntegerNumberFormat longFormat = new IntegerNumberFormat(datatype);
         longFormat.initFormat();
         return longFormat;
     }
-
-    protected IntegerNumberFormat(ValueDatatype datatype) {
-        this.datatype = datatype;
-    }
-
-    /**
-     * String that is an example of a valid input string.
-     */
-    private String exampleString;
 
     @Override
     protected void initFormat(Locale locale) {

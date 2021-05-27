@@ -55,6 +55,13 @@ import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
  */
 public class DocumentationContext {
 
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
+
+    /**
+     * Path for output
+     */
+    protected String path;
+
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
@@ -63,11 +70,6 @@ public class DocumentationContext {
     private List<IStatus> exportStatus = new ArrayList<>();
 
     private final IPluginResourceFacade pluginResources;
-
-    /**
-     * Path for output
-     */
-    protected String path;
 
     private boolean showValidationErrors = true;
 
@@ -92,8 +94,6 @@ public class DocumentationContext {
      * {@link ILayouter} contains the layout for the documentation
      */
     private ILayouter layouter;
-
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy"); //$NON-NLS-1$
 
     /**
      * All {@link IIpsSrcFile}s, which should be documented within the Export

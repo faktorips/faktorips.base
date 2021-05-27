@@ -213,6 +213,7 @@ public class TestCaseStructurePage extends WizardPage {
     /**
      * Sets and display a given target test case.
      */
+    @SuppressWarnings("deprecation")
     public void setTargetTestCase(ITestCase targetTestCase) {
         // Note: creating a new tree viewer is necessary because the checked elements are cached
         // inside the viewer and if the target test case has changed on the first page the old
@@ -223,6 +224,7 @@ public class TestCaseStructurePage extends WizardPage {
         treeViewer.setContentProvider(testCaseContentProvider);
         treeViewer.setInput(targetTestCase);
         treeViewer.expandAll();
+        // TODO FIPS-7874 Replace method setAllChecked
         treeViewer.setAllChecked(true);
         treeViewer.refresh();
         pageChanged();

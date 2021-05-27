@@ -23,12 +23,12 @@ public abstract class AbstractTraversalStrategy implements TraversalStrategy {
 
     private IpsCellEditor cellEditor;
 
-    public IpsCellEditor getCellEditor() {
-        return cellEditor;
-    }
-
     protected AbstractTraversalStrategy(IpsCellEditor cellEditor) {
         this.cellEditor = cellEditor;
+    }
+
+    public IpsCellEditor getCellEditor() {
+        return cellEditor;
     }
 
     @Override

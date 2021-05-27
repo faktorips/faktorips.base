@@ -18,6 +18,10 @@ import java.util.List;
  */
 public class CollectionUtil {
 
+    private CollectionUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Adds the objects in the given array to the given list.
      */
@@ -40,10 +44,6 @@ public class CollectionUtil {
         ArrayList<T> list = new ArrayList<>(array.length);
         add(list, array);
         return list;
-    }
-
-    private CollectionUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -43,8 +43,8 @@ import org.faktorips.runtime.MessageList;
  */
 public class NewRootParamWizardPage extends WizardPage implements ValueChangeListener {
 
-    private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
     protected static final int PAGE_NUMBER = 2;
+    private static final String PAGE_ID = "RootParameterSelection"; //$NON-NLS-1$
 
     private NewRootParameterWizard wizard;
 
@@ -94,10 +94,9 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     /**
      * Connects the edit fields with the given controller to the given test parameter
      */
-    protected void connectToModel(IpsObjectUIController controller,
-            @SuppressWarnings("unused") ITestParameter testParameter) {
-        controller.add(editFieldName, ITestParameter.PROPERTY_NAME);
-        controller.add(editFieldParamType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+    protected void connectToModel(BindingContext bindingContext, ITestParameter testParameter) {
+        bindingContext.bindContent(editFieldName, testParameter, ITestParameter.PROPERTY_NAME);
+        bindingContext.bindContent(editFieldParamType, testParameter, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
 
     @Override
@@ -162,7 +161,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             return false;
         }
 
-        IStatus status = JavaConventions.validateFieldName(editFieldName.getText());
+        IStatus status = JavaConventions.validateFieldName(editFieldName.getText(), "1.3", "1.3"); //$NON-NLS-1$ //$NON-NLS-2$
         if (!status.isOK()) {
             setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_ValidationError_InvalidTestParameterName,
                     editFieldName.getText()));
@@ -219,9 +218,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     }
 
     protected void resetPage() {
-        if (wizard.getController() != null) {
-            wizard.getController().remove(editFieldName);
-            wizard.getController().remove(editFieldParamType);
+        if (wizard.getBindingContext() != null) {
+            wizard.getBindingContext().clear();
         }
 
         prevDatatypeOrRule = ""; //$NON-NLS-1$
@@ -245,7 +243,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     }
 
     /**
-     * Creates the datattyppe or rule browse control
+     * Creates the datatype or rule browse control
      */
     private void createRefEditControl(Composite c) {
         if (editFieldDatatypeOrRule != null) {

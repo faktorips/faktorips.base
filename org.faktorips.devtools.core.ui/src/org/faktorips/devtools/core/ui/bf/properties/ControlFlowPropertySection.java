@@ -37,10 +37,10 @@ import org.faktorips.devtools.model.bf.IDecisionBFE;
 @Deprecated
 public class ControlFlowPropertySection extends AbstractPropertySection {
 
-    private Composite contentPanel;
-    private Text conditionValueField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
+    private Composite contentPanel;
+    private Text conditionValueField;
 
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {

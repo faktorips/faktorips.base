@@ -27,23 +27,22 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalNumberFormat extends AbstractNumberFormat {
 
+    /**
+     * String that is an example of a valid input string.
+     */
+    private String exampleString;
     private DecimalFormat numberFormat;
     private final ValueDatatype datatype;
+
+    protected DecimalNumberFormat(ValueDatatype datatype) {
+        this.datatype = datatype;
+    }
 
     public static DecimalNumberFormat newInstance(ValueDatatype datatype) {
         DecimalNumberFormat bigDecimalFormat = new DecimalNumberFormat(datatype);
         bigDecimalFormat.initFormat();
         return bigDecimalFormat;
     }
-
-    protected DecimalNumberFormat(ValueDatatype datatype) {
-        this.datatype = datatype;
-    }
-
-    /**
-     * String that is an example of a valid input string.
-     */
-    private String exampleString;
 
     @Override
     protected void initFormat(Locale locale) {

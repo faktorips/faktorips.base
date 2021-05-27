@@ -24,6 +24,10 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
  */
 public class ValueListExtractor {
 
+    private ValueListExtractor() {
+        // Utility class not to be instantiated
+    }
+
     public static List<String> extractValues(EnumDatatype valueDatatype, boolean includeNull) {
         return Arrays.asList(valueDatatype.getAllValueIds(includeNull));
     }

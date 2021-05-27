@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 public class NewEnumContentAction extends Action {
 
     /** The file name of the image for this action */
-    private final String IMAGE_FILENAME = "NewEnumContent.gif"; //$NON-NLS-1$
+    private static final String IMAGE_FILENAME = "NewEnumContent.gif"; //$NON-NLS-1$
 
     private IWorkbenchWindow window;
 

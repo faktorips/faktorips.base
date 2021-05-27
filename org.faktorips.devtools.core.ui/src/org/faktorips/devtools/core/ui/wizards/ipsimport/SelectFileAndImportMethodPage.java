@@ -53,6 +53,9 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private static final String FIRST_ROW_HAS_COLUMN_NAMES = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
     private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
 
+    // true if the input is validated and errors are displayed in the messes area.
+    protected boolean validateInput = true;
+
     private Text nullRepresentation;
 
     // edit fields
@@ -63,9 +66,6 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private CheckboxField importExistingAppendField;
     private CheckboxField importIgnoreColumnHeaderRowField;
     private StringValueComboField fileFormatField;
-
-    // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
 
     // page control as defined by the wizard page class
     private Composite pageControl;
@@ -101,7 +101,8 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
             // TODO rg: update preview
         }
 
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             validatePage();
         }
         updatePageComplete();

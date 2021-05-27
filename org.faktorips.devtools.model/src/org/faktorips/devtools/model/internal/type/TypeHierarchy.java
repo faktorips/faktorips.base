@@ -33,6 +33,10 @@ public class TypeHierarchy implements ITypeHierarchy {
     private Map<IType, Node> nodes = new HashMap<>();
     private boolean containsCycle = false;
 
+    private TypeHierarchy(IType pcType) {
+        this.pcType = pcType;
+    }
+
     /**
      * Creates a new type hierarchy containing all the given type's supertypes. Subtypes are not
      * resolved.
@@ -41,16 +45,17 @@ public class TypeHierarchy implements ITypeHierarchy {
         IIpsProject project = pcType.getIpsProject();
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         List<IType> subtypes = new ArrayList<>();
-        while (pcType != null) {
-            IType supertype = pcType.findSupertype(project);
+        IType type = pcType;
+        while (type != null) {
+            IType supertype = type.findSupertype(project);
             if (hierarchy.contains(supertype)) {
                 hierarchy.containsCycle = true;
                 supertype = null;
             }
-            hierarchy.add(new Node(pcType, supertype, subtypes));
+            hierarchy.add(new Node(type, supertype, subtypes));
             subtypes = new ArrayList<>();
-            subtypes.add(pcType);
-            pcType = supertype;
+            subtypes.add(type);
+            type = supertype;
         }
         return hierarchy;
     }
@@ -132,10 +137,6 @@ public class TypeHierarchy implements ITypeHierarchy {
                 }
             }
         }
-    }
-
-    private TypeHierarchy(IType pcType) {
-        this.pcType = pcType;
     }
 
     @Override

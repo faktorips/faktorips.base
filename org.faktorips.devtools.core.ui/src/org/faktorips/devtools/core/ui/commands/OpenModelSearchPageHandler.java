@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class OpenModelSearchPageHandler extends AbstractHandler {
 
-    private static final String MODEL_SEARCH_PAGE_ID = "org.faktorips.devtools.core.ui.search.model.ModelSearchPage"; //$NON-NLS-1$
     public static final String CONTRIBUTION_ID = "org.faktorips.devtools.core.ui.search.model"; //$NON-NLS-1$
+    private static final String MODEL_SEARCH_PAGE_ID = "org.faktorips.devtools.core.ui.search.model.ModelSearchPage"; //$NON-NLS-1$
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {

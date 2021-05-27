@@ -31,8 +31,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
 public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
 
-    public static String ID = "org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"; //$NON-NLS-1$
-    private static String DIALOG_SETTINGS_KEY = "IpsArchiveExportWizard"; //$NON-NLS-1$
+    public static final String ID = "org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_KEY = "IpsArchiveExportWizard"; //$NON-NLS-1$
 
     private IpsArchivePackageWizardPage ipsArPackageWizardPage;
 
@@ -102,8 +102,8 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
 
     // TODO AW: Internationalize
     private boolean askForCreateParent(File folder) {
-        if (MessageDialog.openQuestion(getShell(), "Create Directory", NLS.bind( //$NON-NLS-1$
-                "Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) { //$NON-NLS-1$
+        if (MessageDialog.openQuestion(getShell(), "Create Directory", //$NON-NLS-1$
+                NLS.bind("Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) { //$NON-NLS-1$
             try {
                 folder.mkdirs();
                 return true;

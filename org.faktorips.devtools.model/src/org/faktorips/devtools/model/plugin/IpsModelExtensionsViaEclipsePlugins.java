@@ -49,7 +49,7 @@ import org.osgi.framework.Version;
 
 public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions {
 
-    private static /* final */ IpsModelExtensionsViaEclipsePlugins INSTANCE = new IpsModelExtensionsViaEclipsePlugins();
+    private static /* final */ IpsModelExtensionsViaEclipsePlugins instance = new IpsModelExtensionsViaEclipsePlugins();
 
     private final Supplier<IIpsModelPreferences> modelPreferences;
 
@@ -77,24 +77,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     private final Supplier<List<IIpsObjectPathContainerType>> ipsObjectPathContainerTypes;
 
-    /**
-     * Returns the singleton instance initialized from the Eclipse {@link Platform}.
-     */
-    public static IpsModelExtensionsViaEclipsePlugins get() {
-        return INSTANCE;
-    }
-
     private IpsModelExtensionsViaEclipsePlugins() {
         this(Platform.getExtensionRegistry());
-    }
-
-    /**
-     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
-     * 
-     * @param testInstance an IpsModelExtensionsViaEclipsePlugins with test data
-     */
-    protected static void setInstanceForTest(IpsModelExtensionsViaEclipsePlugins testInstance) {
-        INSTANCE = testInstance;
     }
 
     /**
@@ -118,6 +102,22 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         extensionPropertyDefinitions = new ExtensionPropertyDefinitionExtensions(extensionPoints);
         versionProviderFactories = new VersionProviderFactoryExtensions(extensionPoints);
         ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
+    }
+
+    /**
+     * Returns the singleton instance initialized from the Eclipse {@link Platform}.
+     */
+    public static IpsModelExtensionsViaEclipsePlugins get() {
+        return instance;
+    }
+
+    /**
+     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
+     * 
+     * @param testInstance an IpsModelExtensionsViaEclipsePlugins with test data
+     */
+    protected static void setInstanceForTest(IpsModelExtensionsViaEclipsePlugins testInstance) {
+        instance = testInstance;
     }
 
     @Override

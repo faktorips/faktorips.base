@@ -26,8 +26,8 @@ public abstract class SubstitutionTextReader extends SingleCharReader {
 
     protected static final String LINE_DELIM = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private Reader fReader;
     protected boolean fWasWhiteSpace;
+    private Reader fReader;
     private int fCharAfterWhiteSpace;
 
     /**

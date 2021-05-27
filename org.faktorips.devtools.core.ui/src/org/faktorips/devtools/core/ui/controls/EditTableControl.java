@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -574,7 +573,10 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     public class UnfocusableTextCellEditor extends TextCellEditor {
 
         private Object fOriginalValue;
-        private SubjectControlContentAssistant fContentAssistant;
+        // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
+        // support
+        @SuppressWarnings("deprecation")
+        private org.eclipse.jface.contentassist.SubjectControlContentAssistant fContentAssistant;
         private boolean fSaveNextModification;
 
         public UnfocusableTextCellEditor(Composite parent) {
@@ -605,7 +607,11 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             }
         }
 
-        public void setContentAssistant(SubjectControlContentAssistant assistant, final int property) {
+        // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
+        // support
+        @SuppressWarnings("deprecation")
+        public void setContentAssistant(org.eclipse.jface.contentassist.SubjectControlContentAssistant assistant,
+                final int property) {
             fContentAssistant = assistant;
             /*
              * The following comment was copied along with the code when "reusing" functionality

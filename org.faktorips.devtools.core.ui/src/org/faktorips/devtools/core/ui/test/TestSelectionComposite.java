@@ -33,9 +33,10 @@ import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
+import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -247,30 +248,26 @@ public class TestSelectionComposite extends Composite {
     }
 
     private void newTest(Composite buttonComposite) {
-        IpsObjectSelectionDialog dialog = new IpsObjectSelectionDialog(buttonComposite.getShell(),
-                Messages.TestSelectionComposite_dialogTitleSelectTestCase,
-                Messages.TestSelectionComposite_dialogTextSelectTestCase);
-        dialog.setMultipleSelection(false);
-        try {
-            dialog.setElements(getAllIpsTestObjects());
-            dialog.setFilter(""); //$NON-NLS-1$
-            if (dialog.open() == Window.OK) {
-                Object[] result = dialog.getResult();
-                Object lastAdded = null;
-                for (Object element : result) {
-                    if (!content.contains(element)) {
-                        content.add(element);
-                    }
-                    lastAdded = element;
+        List<IIpsSrcFile> allIpsSrcFiles = project.findAllIpsSrcFiles(IpsObjectType.TEST_CASE);
+        StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
+        context.setElements(allIpsSrcFiles.toArray(new IIpsSrcFile[allIpsSrcFiles.size()]));
+        OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(buttonComposite.getShell(),
+                Messages.TestSelectionComposite_dialogTitleSelectTestCase, context, false);
+        dialog.setFilter(""); //$NON-NLS-1$
+        if (dialog.open() == Window.OK) {
+            Object[] result = dialog.getResult();
+            Object lastAdded = null;
+            for (Object element : result) {
+                if (!content.contains(element)) {
+                    content.add(element);
                 }
-                viewer.refresh();
-                if (lastAdded != null) {
-                    viewer.setSelection(new StructuredSelection(lastAdded));
-                }
-                notifyListener();
+                lastAdded = element;
             }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            viewer.refresh();
+            if (lastAdded != null) {
+                viewer.setSelection(new StructuredSelection(lastAdded));
+            }
+            notifyListener();
         }
     }
 
@@ -331,7 +328,7 @@ public class TestSelectionComposite extends Composite {
         return list.toArray(new IIpsObject[list.size()]);
     }
 
-    public void initContent(IIpsProject project, String tocPaths, String testSuites) throws CoreException {
+    public void initContent(IIpsProject project, String testSuites) throws CoreException {
         ArgumentCheck.notNull(project);
 
         this.project = project;

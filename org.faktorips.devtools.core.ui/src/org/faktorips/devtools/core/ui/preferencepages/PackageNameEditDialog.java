@@ -104,7 +104,8 @@ public class PackageNameEditDialog extends StatusDialog {
 
         buttonDefaultPackageNameSelected.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            public void widgetDefaultSelected(SelectionEvent e) {
+                /* nothing to do */
             }
 
             @Override
@@ -116,7 +117,8 @@ public class PackageNameEditDialog extends StatusDialog {
 
         buttonCustomPackageNameSelected.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) { /* nothing to do */
+            public void widgetDefaultSelected(SelectionEvent e) {
+                /* nothing to do */
             }
 
             @Override

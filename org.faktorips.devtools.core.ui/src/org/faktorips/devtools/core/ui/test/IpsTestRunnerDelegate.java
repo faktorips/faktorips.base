@@ -36,9 +36,9 @@ import org.faktorips.devtools.core.ui.actions.IpsTestAction;
  */
 public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
 
-    private static DateFormat DEBUG_FORMAT;
-
     public static final boolean TRACE_IPS_TEST_RUNNER;
+
+    private static DateFormat debugFormat;
 
     static {
         TRACE_IPS_TEST_RUNNER = Boolean
@@ -102,12 +102,12 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
 
     private void trace(String line) {
         if (TRACE_IPS_TEST_RUNNER) {
-            if (DEBUG_FORMAT == null) {
-                DEBUG_FORMAT = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
+            if (debugFormat == null) {
+                debugFormat = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
             }
             StringBuffer msgBuf = new StringBuffer(line.length() + 40);
             msgBuf.append("IpsTestRunnerDelegate "); //$NON-NLS-1$
-            DEBUG_FORMAT.format(new Date(), msgBuf, new FieldPosition(0));
+            debugFormat.format(new Date(), msgBuf, new FieldPosition(0));
             msgBuf.append(line);
             System.out.println(msgBuf.toString());
         }

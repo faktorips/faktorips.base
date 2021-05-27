@@ -27,14 +27,14 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
  */
 public class GregorianCalendarFormat extends AbstractDateFormat<GregorianCalendar> {
 
+    private GregorianCalendarFormat() {
+        // only hide the constructor
+    }
+
     public static GregorianCalendarFormat newInstance() {
         GregorianCalendarFormat format = new GregorianCalendarFormat();
         format.initFormat();
         return format;
-    }
-
-    private GregorianCalendarFormat() {
-        // only hide the constructor
     }
 
     @Override

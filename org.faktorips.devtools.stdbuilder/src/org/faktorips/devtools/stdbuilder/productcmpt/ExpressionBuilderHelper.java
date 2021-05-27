@@ -34,6 +34,10 @@ import org.faktorips.runtime.MessageList;
  */
 public class ExpressionBuilderHelper {
 
+    private ExpressionBuilderHelper() {
+        // Utility class not to be instantiated
+    }
+
     /**
      * Compiles the given formula to java code, logging errors to the given status object.
      * 

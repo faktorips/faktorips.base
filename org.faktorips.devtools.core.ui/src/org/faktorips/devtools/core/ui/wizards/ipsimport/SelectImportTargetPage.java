@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipsimport;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
@@ -191,15 +193,15 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
 
     protected void projectChanged() {
         if ("".equals(projectField.getText())) { //$NON-NLS-1$
-            importTargetControl.setIpsProject(null);
+            importTargetControl.setIpsProjects();
             return;
         }
         IIpsProject project = IIpsModel.get().getIpsProject(projectField.getText());
         if (project.exists()) {
-            importTargetControl.setIpsProject(project);
+            importTargetControl.setIpsProjects(project);
             return;
         }
-        importTargetControl.setIpsProject(null);
+        importTargetControl.setIpsProjects(new ArrayList<>());
     }
 
     @Override

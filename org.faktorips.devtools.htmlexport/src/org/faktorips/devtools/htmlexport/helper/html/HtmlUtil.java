@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
  * 
  */
 public class HtmlUtil {
-    private final DateFormat META_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
+    private final DateFormat metaDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); //$NON-NLS-1$
 
     /**
      * returns complete html with a frameset-definition with two columns and in the left column two
@@ -71,7 +71,7 @@ public class HtmlUtil {
         builder.append(title);
         builder.append("</title>"); //$NON-NLS-1$
         builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"); //$NON-NLS-1$
-        builder.append("<meta name=\"date\" content=\"" + META_DATE_FORMAT.format(new Date()) + "\" />"); //$NON-NLS-1$ //$NON-NLS-2$
+        builder.append("<meta name=\"date\" content=\"" + metaDateFormat.format(new Date()) + "\" />"); //$NON-NLS-1$ //$NON-NLS-2$
         if (!StringUtils.isBlank(stylePath)) {
             builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""); //$NON-NLS-1$
             builder.append(stylePath);

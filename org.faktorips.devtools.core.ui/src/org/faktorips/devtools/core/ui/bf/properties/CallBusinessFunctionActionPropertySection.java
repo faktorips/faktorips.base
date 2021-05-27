@@ -35,9 +35,9 @@ import org.faktorips.devtools.model.bf.IMethodCallBFE;
 @Deprecated
 public class CallBusinessFunctionActionPropertySection extends AbstractPropertySection {
 
-    private BusinessFunctionRefControl businessFunctionField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
+    private BusinessFunctionRefControl businessFunctionField;
     private boolean avoidDoubleCall = false;
 
     @Override

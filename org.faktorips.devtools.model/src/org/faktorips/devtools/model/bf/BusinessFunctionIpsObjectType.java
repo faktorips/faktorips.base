@@ -29,9 +29,12 @@ public class BusinessFunctionIpsObjectType extends IpsObjectType {
     public static final String ID = "org.faktorips.devtools.bf.model.BusinessFunction"; //$NON-NLS-1$
 
     public BusinessFunctionIpsObjectType() {
-        super(ID, "BusinessFunction", // XML element name $NON-NLS-1$ //$NON-NLS-1$
-                Messages.BusinessFunctionIpsObjectType_displayName, // display name
-                Messages.BusinessFunctionIpsObjectType_displayNamePlural, // display name plural
+        // XML element name
+        super(ID, "BusinessFunction", //$NON-NLS-1$
+                // display name
+                Messages.BusinessFunctionIpsObjectType_displayName,
+                // display name plural
+                Messages.BusinessFunctionIpsObjectType_displayNamePlural,
                 "ipsbusinessfunction", false, false, org.faktorips.devtools.model.internal.bf.BusinessFunction.class); //$NON-NLS-1$
     }
 

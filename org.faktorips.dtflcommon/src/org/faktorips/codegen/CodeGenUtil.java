@@ -21,6 +21,10 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
  */
 public class CodeGenUtil {
 
+    private CodeGenUtil() {
+        // Utility class not to be instantiated.
+    }
+
     public static final JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
         if (type instanceof PrimitiveBooleanDatatype) {
             return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression);
@@ -29,10 +33,6 @@ public class CodeGenUtil {
             return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)type).toWrapper(expression);
         }
         throw new IllegalArgumentException("Can't convert dataype " + type); //$NON-NLS-1$
-    }
-
-    private CodeGenUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

@@ -165,7 +165,8 @@ public class ImportDeclaration {
         if (importSpec.equals(Boolean.TYPE.getName()) || importSpec.equals(Integer.TYPE.getName())
                 || importSpec.equals(Double.TYPE.getName()) || importSpec.equals(Long.TYPE.getName())
                 || "void".equals(importSpec)) { //$NON-NLS-1$
-            return true; // this is a primitive type
+            // this is a primitive type
+            return true;
         }
         if (isPackageImport(importSpec)) {
             if (JAVA_LANG_ASTERIX.equals(importSpec)) {

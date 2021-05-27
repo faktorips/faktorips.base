@@ -33,7 +33,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -91,13 +90,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.UIController;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
@@ -320,10 +318,11 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         public Section getSection(IIpsObjectPart mainSectionObject) {
-            if (mainSectionObject instanceof ITestAttribute) {
-                mainSectionObject = (IIpsObjectPart)((ITestAttribute)mainSectionObject).getParent();
+            var part = mainSectionObject;
+            if (part instanceof ITestAttribute) {
+                part = (IIpsObjectPart)((ITestAttribute)part).getParent();
             }
-            return sections.get(getKeyFor(mainSectionObject));
+            return sections.get(getKeyFor(part));
         }
 
         public IIpsObjectPart getObject(IIpsObjectPart object) {
@@ -1200,19 +1199,19 @@ public class TestCaseTypeSection extends IpsSection {
         toolkit.getFormToolkit().createCompositeSeparator(section);
         storeSection(section, testParam);
 
-        IpsObjectUIController uiController = createUIController(testParam);
+        BindingContext bindingContext = new BindingContext();
 
         // create common edit fields
         Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
         section.setClient(editFieldsComposite);
 
-        createTestParamDetails(editFieldsComposite, testParam, uiController);
+        createTestParamDetails(editFieldsComposite, testParam, bindingContext);
 
         // create details depending on the test parameter
         if (testParam instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
 
-            createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, uiController);
+            createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, bindingContext);
 
             // Spacer between test policy cmpt type param and test attribute
             toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
@@ -1263,12 +1262,12 @@ public class TestCaseTypeSection extends IpsSection {
                         testPolicyCmptTypeParam.getAssociation()), true, false);
             }
         } else if (testParam instanceof ITestValueParameter) {
-            createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, uiController);
+            createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, bindingContext);
         } else if (testParam instanceof ITestRuleParameter) {
             createTestRuleParamDetails(editFieldsComposite, testParam);
         }
 
-        uiController.updateUI();
+        bindingContext.updateUI();
 
         return section;
     }
@@ -1291,8 +1290,6 @@ public class TestCaseTypeSection extends IpsSection {
             attributeTableViewer.getTable().getColumn(i).pack();
         }
     }
-
-    ICompletionProposal proposal = null;
 
     /**
      * Create the test attribute table
@@ -1433,14 +1430,14 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void createTestParamDetails(Composite editFieldsComposite,
             ITestParameter testParam,
-            IpsObjectUIController uiController) {
+            BindingContext bindingContext) {
 
         Label label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_Name);
         EditField<String> editFieldName = new TextField(toolkit.createText(editFieldsComposite));
         editFieldName.setText(testParam.getName());
         addSectionSelectionListeners(editFieldName, label, testParam);
         objectCache.putFirstEditFieldInSection(testParam, editFieldName);
-        uiController.add(editFieldName, IIpsElement.PROPERTY_NAME);
+        bindingContext.bindContent(editFieldName, testParam, IIpsElement.PROPERTY_NAME);
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
@@ -1456,7 +1453,7 @@ public class TestCaseTypeSection extends IpsSection {
         EnumField<TestParameterType> editFieldType = new EnumField<>(
                 toolkit.createCombo(editFieldsComposite), allowedValues);
         addSectionSelectionListeners(editFieldType, label, testParam);
-        uiController.add(editFieldType, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
+        bindingContext.bindContent(editFieldType, testParam, ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
     }
 
     private boolean isAssociation(ITestPolicyCmptTypeParameter testParam) {
@@ -1540,9 +1537,8 @@ public class TestCaseTypeSection extends IpsSection {
         if (partInMainSection == null) {
             return null;
         }
-
         if (partInMainSection instanceof ITestAttribute) {
-            partInMainSection = (ITestPolicyCmptTypeParameter)partInMainSection.getParent();
+            return (ITestPolicyCmptTypeParameter)partInMainSection.getParent();
         }
         return (ITestParameter)partInMainSection;
     }
@@ -1559,10 +1555,9 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Creates the edit fields for the test value parameter
      */
-    @SuppressWarnings("deprecation")
     private void createTestValueParamDetails(Composite editFieldsComposite,
             ITestValueParameter parameter,
-            IpsObjectUIController uiController) {
+            BindingContext bindingContext) {
 
         Label label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_Datatype);
@@ -1578,7 +1573,7 @@ public class TestCaseTypeSection extends IpsSection {
         gd.horizontalSpan = 2;
 
         // connect to model
-        uiController.add(editFieldDatatype, ITestValueParameter.PROPERTY_VALUEDATATYPE);
+        bindingContext.bindContent(editFieldDatatype, parameter, ITestValueParameter.PROPERTY_VALUEDATATYPE);
     }
 
     /**
@@ -1597,7 +1592,7 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void createTestPolicyCmptTypeParamDetails(Composite editFieldsComposite,
             ITestPolicyCmptTypeParameter parameter,
-            IpsObjectUIController uiController) {
+            BindingContext bindingContext) {
 
         Label label = null;
         if (!(isAssociation(parameter))) {
@@ -1605,21 +1600,22 @@ public class TestCaseTypeSection extends IpsSection {
                     Messages.TestCaseTypeSection_EditFieldLabel_RequiresProduct);
             EditField<Boolean> editFieldReqProd = new CheckboxField(toolkit.createCheckbox(editFieldsComposite));
             addSectionSelectionListeners(editFieldReqProd, label, parameter);
-            uiController.add(editFieldReqProd, ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
+            bindingContext.bindContent(editFieldReqProd, parameter,
+                    ITestPolicyCmptTypeParameter.PROPERTY_REQUIRES_PRODUCTCMT);
         }
 
         // min and max instances only for child parameters
         label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MinInstances);
         EditField<Integer> editFieldMin = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMin.setValue(parameter.getMinInstances());// $
+        editFieldMin.setValue(parameter.getMinInstances());
         addSectionSelectionListeners(editFieldMin, label, parameter);
-        uiController.add(editFieldMin, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
+        bindingContext.bindContent(editFieldMin, parameter, ITestPolicyCmptTypeParameter.PROPERTY_MIN_INSTANCES);
 
         label = toolkit.createFormLabel(editFieldsComposite, Messages.TestCaseTypeSection_EditFieldLabel_MaxInstances);
         EditField<Integer> editFieldMax = new CardinalityField(toolkit.createText(editFieldsComposite));
-        editFieldMax.setValue(parameter.getMaxInstances());// $
+        editFieldMax.setValue(parameter.getMaxInstances());
         addSectionSelectionListeners(editFieldMax, label, parameter);
-        uiController.add(editFieldMax, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
+        bindingContext.bindContent(editFieldMax, parameter, ITestPolicyCmptTypeParameter.PROPERTY_MAX_INSTANCES);
 
         // disable min and max for root parameter
         if (parameter.isRoot()) {
@@ -1933,9 +1929,7 @@ public class TestCaseTypeSection extends IpsSection {
                 return prevTreeItem;
             }
 
-            prevTreeItem = child;
-
-            TreeItem found = searchChilds(child.getItems(), selectedItem, prevTreeItem);
+            TreeItem found = searchChilds(child.getItems(), selectedItem, child);
             if (found != null) {
                 return found;
             }
@@ -2041,8 +2035,10 @@ public class TestCaseTypeSection extends IpsSection {
         }
         if (showAll) {
             // recreate and select element after moving
-            showAllClicked(); // off
-            showAllClicked(); // and on again
+            // off
+            showAllClicked();
+            // and on again
+            showAllClicked();
             postSelectedTestParameterInTree(testParameter);
         }
     }
@@ -2099,26 +2095,27 @@ public class TestCaseTypeSection extends IpsSection {
     }
 
     private TreeActionEnableState evaluateTreeActionEnableState(Object object) {
+        Object obj = object;
         TreeActionEnableState treeActionEnableState = new TreeActionEnableState();
-        if (object == null) {
-            object = getSelectedObjectInTree();
+        if (obj == null) {
+            obj = getSelectedObjectInTree();
         }
 
-        if (object == null || !isDataChangeable()) {
+        if (obj == null || !isDataChangeable()) {
             return treeActionEnableState;
         }
 
-        if (object instanceof ITestPolicyCmptTypeParameter) {
+        if (obj instanceof ITestPolicyCmptTypeParameter) {
             treeActionEnableState.removeEnable = true;
             treeActionEnableState.addEnable = true;
             treeActionEnableState.upEnable = true;
             treeActionEnableState.downEnable = true;
-        } else if (object instanceof ITestParameter) {
+        } else if (obj instanceof ITestParameter) {
             treeActionEnableState.removeEnable = true;
             treeActionEnableState.addEnable = false;
             treeActionEnableState.upEnable = true;
             treeActionEnableState.downEnable = true;
-        } else if (object instanceof TestCaseTypeTreeRootElement) {
+        } else if (obj instanceof TestCaseTypeTreeRootElement) {
             treeActionEnableState.removeEnable = false;
             treeActionEnableState.addEnable = true;
             treeActionEnableState.upEnable = false;
@@ -2289,23 +2286,6 @@ public class TestCaseTypeSection extends IpsSection {
         if (!form.isDisposed()) {
             form.setRedraw(redraw);
         }
-    }
-
-    /**
-     * Creates a new ui controller for the given object.
-     */
-    @SuppressWarnings("deprecation")
-    private IpsObjectUIController createUIController(IIpsObjectPart part) {
-        return new IpsObjectUIController(part) {
-            @Override
-            public void valueChanged(FieldValueChangedEvent e) {
-                try {
-                    super.valueChanged(e);
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-        };
     }
 
     /**

@@ -22,11 +22,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
  */
 public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConnector {
 
-    private String id;
-
     public static final String LOG4J_LEVEL_QNAME = "org.apache.log4j.Level"; //$NON-NLS-1$
 
     public static final String LOG4J_LOGGER_QNAME = "org.apache.log4j.Logger"; //$NON-NLS-1$
+
+    private String id;
 
     @Override
     public String getId() {

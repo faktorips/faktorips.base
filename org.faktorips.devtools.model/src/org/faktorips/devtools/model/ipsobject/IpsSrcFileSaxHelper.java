@@ -33,6 +33,40 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public abstract class IpsSrcFileSaxHelper {
 
+    /**
+     * Reads and returns all attributes of the first (root) node of the given source file.
+     * 
+     * @throws CoreException if an error occurs.
+     */
+    public static Map<String, String> getHeaderAttributes(IIpsSrcFile file) throws CoreException {
+        AttributeReadHandler handler = new AttributeReadHandler(file.getIpsObjectType().getXmlElementName());
+        parseContent(file, handler);
+        return handler.getAttributeValue();
+    }
+
+    private static void parseContent(IIpsSrcFile ipsSrcFile, AttributeReadHandler handler) throws CoreException {
+        if (!ipsSrcFile.exists()) {
+            return;
+        }
+        InputStream is = ipsSrcFile.getContentFromEnclosingResource();
+        try {
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), handler);
+        } catch (SAXFinishedException ignored) {
+            // nothing to do
+        } catch (Exception e) {
+            throw new CoreException(new IpsStatus(e));
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException ignored) {
+                // nothing to do
+            }
+        }
+    }
+
     /*
      * Exception to indicate the end of parsing. Remark (SAX 2.0 documentation): this is the only
      * way to abort the parser because parse method is synchronous, it will not return until parsing
@@ -40,11 +74,11 @@ public abstract class IpsSrcFileSaxHelper {
      * exception.
      */
     private static class SAXFinishedException extends SAXException {
+        private static final long serialVersionUID = 1L;
+
         public SAXFinishedException() {
             super("Parser finished"); //$NON-NLS-1$
         }
-
-        private static final long serialVersionUID = 1L;
     }
 
     /**
@@ -77,41 +111,6 @@ public abstract class IpsSrcFileSaxHelper {
          */
         public Map<String, String> getAttributeValue() {
             return attributeValue;
-        }
-
-    }
-
-    /**
-     * Reads and returns all attributes of the first (root) node of the given source file.
-     * 
-     * @throws CoreException if an error occurs.
-     */
-    public static Map<String, String> getHeaderAttributes(IIpsSrcFile file) throws CoreException {
-        AttributeReadHandler handler = new AttributeReadHandler(file.getIpsObjectType().getXmlElementName());
-        parseContent(file, handler);
-        return handler.getAttributeValue();
-    }
-
-    private static void parseContent(IIpsSrcFile ipsSrcFile, AttributeReadHandler handler) throws CoreException {
-        if (!ipsSrcFile.exists()) {
-            return;
-        }
-        InputStream is = ipsSrcFile.getContentFromEnclosingResource();
-        try {
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            saxParser.parse(new InputSource(is), handler);
-        } catch (SAXFinishedException ignored) {
-            // nothing to do
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException ignored) {
-                // nothing to do
-            }
         }
     }
 

@@ -45,7 +45,8 @@ public class IpsarViewerFilter extends ViewerFilter {
                 return false;
             }
             return isArchiveFile(fullPath);
-        } else if (element instanceof IContainer) { // IProject, IFolder
+        } else if (element instanceof IContainer) {
+            // IProject, IFolder
             if (!recursive) {
                 return true;
             }

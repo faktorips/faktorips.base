@@ -30,7 +30,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
 
     // it is important that this list does not contain a set of AssociationTypes which would cause
     // association loops
-    private final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
+    private static final AssociationType[] ASSOCIATION_TYPES = { AssociationType.AGGREGATION,
             AssociationType.COMPOSITION_MASTER_TO_DETAIL };
     private List<ComponentNode> storedRootElements;
 
@@ -48,8 +48,8 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
 
         // get the root elements
         Collection<IType> rootComponents;
-        if (inputElement instanceof IType) { // get the root elements if the input is an IType
-
+        if (inputElement instanceof IType) {
+            // get the root elements if the input is an IType
             IType input = (IType)inputElement;
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
             progress.worked(50);
@@ -62,7 +62,8 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
                     new ArrayList<PathElement>());
             progress.worked(25);
 
-        } else { // get the root elements if the input is an IpsProject
+        } else {
+            // get the root elements if the input is an IpsProject
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType());
             progress.worked(70);
 

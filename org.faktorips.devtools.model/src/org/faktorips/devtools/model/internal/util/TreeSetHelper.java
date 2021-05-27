@@ -21,6 +21,10 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  */
 public class TreeSetHelper {
 
+    private TreeSetHelper() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Creates and returns a tree set containing <code>IIpsSrcFile</code>s with alphabetic ordered
      * names. If two names are equal but different source files, both source files are stored in the
@@ -38,10 +42,6 @@ public class TreeSetHelper {
                 return result;
             }
         });
-    }
-
-    private TreeSetHelper() {
-        // Utility class not to be instantiated.
     }
 
 }

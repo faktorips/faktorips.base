@@ -27,6 +27,10 @@ public final class BeanUtil {
 
     private static final Map<ClassAndProperty, PropertyDescriptor> PROPERTY_DESCRIPTORS = new HashMap<>();
 
+    private BeanUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Returns the <code>PropertyDescriptor</code> for the given class and property name.
      * 
@@ -53,10 +57,6 @@ public final class BeanUtil {
                     + clazz, e);
         }
         throw new IllegalArgumentException("Class " + clazz + " hasn't got a property " + propertyName); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    private BeanUtil() {
-        // Utility class not to be instantiated.
     }
 
     private static class ClassAndProperty {

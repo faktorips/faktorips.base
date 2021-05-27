@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -29,10 +33,11 @@ public class PcTypeRefControl extends IpsObjectRefControl {
 
     @Override
     protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        if (getIpsProject() == null) {
-            return new IIpsSrcFile[0];
+        ArrayList<IIpsSrcFile> srcFiles = new ArrayList<>();
+        for (IIpsProject p : getIpsProjects()) {
+            srcFiles.addAll(Arrays.asList(p.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)));
         }
-        return getIpsProject().findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        return srcFiles.toArray(new IIpsSrcFile[srcFiles.size()]);
     }
 
     /**
@@ -43,11 +48,11 @@ public class PcTypeRefControl extends IpsObjectRefControl {
      * @throws CoreException if an error occurs while searching for the type.
      */
     public IPolicyCmptType findPcType() throws CoreException {
-        IIpsProject project = getIpsProject();
-        if (project == null) {
+        List<IIpsProject> ipsProjects = getIpsProjects();
+        if (ipsProjects.isEmpty()) {
             return null;
         }
-        return project.findPolicyCmptType(getText());
+        return ipsProjects.get(0).findPolicyCmptType(getText());
     }
 
 }

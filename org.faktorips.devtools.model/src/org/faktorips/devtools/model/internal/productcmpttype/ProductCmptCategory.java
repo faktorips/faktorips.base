@@ -505,8 +505,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             boolean above) throws CoreException {
 
         int targetIndex = above ? targetPropertyIndex : targetPropertyIndex + 1;
-        for (; propertyIndex > targetIndex; propertyIndex--) {
-            moveProductCmptProperties(new int[] { propertyIndex }, true, contextType);
+        for (int i = propertyIndex; i > targetIndex; i--) {
+            moveProductCmptProperties(new int[] { i }, true, contextType);
         }
     }
 
@@ -520,8 +520,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             boolean above) throws CoreException {
 
         int targetIndex = above ? targetPropertyIndex - 1 : targetPropertyIndex;
-        for (; propertyIndex < targetIndex; propertyIndex++) {
-            moveProductCmptProperties(new int[] { propertyIndex }, false, contextType);
+        for (int i = propertyIndex; i < targetIndex; i++) {
+            moveProductCmptProperties(new int[] { i }, false, contextType);
         }
     }
 

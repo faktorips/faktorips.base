@@ -142,8 +142,9 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         while (line != null) {
             int index = line.indexOf(' ');
             if (index != 0) {
-                return line; // next ips source file (source file lines start with a /, key/value
-                // pair lines with a blank
+                // next ips source file (source file lines start with a /, key/value pair lines with
+                // a blank
+                return line;
             }
             index = line.indexOf(' ', index + 1);
             String key = line.substring(1, index);

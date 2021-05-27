@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class HtmlExportWizard extends Wizard implements IExportWizard {
 
-    private static String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_KEY = "org.faktorips.devtools.htmlexport.ipsProjectHtmlExportWizard"; //$NON-NLS-1$
     private HtmlExportWizardPage ipsProjectHtmlExportWizardPage;
     /**
      * Create a new IpsArExportWizard

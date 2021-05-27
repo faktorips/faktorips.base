@@ -21,6 +21,10 @@ import org.eclipse.core.runtime.Path;
  */
 public class QNameUtil {
 
+    private QNameUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Returns the package name for a given class name. Returns an empty String if the class name
      * does not contain a package name.
@@ -158,9 +162,4 @@ public class QNameUtil {
         }
         return new Path(qName.replace('.', IPath.SEPARATOR));
     }
-
-    private QNameUtil() {
-        // Utility class not to be instantiated.
-    }
-
 }

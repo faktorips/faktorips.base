@@ -29,9 +29,9 @@ public class ConnectionCommand extends Command {
 
     protected IBFElement sourceNode;
     protected IBFElement targetNode;
+    protected IControlFlow controlFlow;
     private Memento businessFunctionState;
     private IBusinessFunction businessFunction;
-    protected IControlFlow controlFlow;
     private boolean reconnect = false;
 
     public ConnectionCommand(boolean reconnect) {

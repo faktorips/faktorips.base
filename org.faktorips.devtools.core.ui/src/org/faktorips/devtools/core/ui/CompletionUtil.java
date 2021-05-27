@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.ui.internal.text.HTMLTextPresenter;
  * ContentAssistHandler is replaced by JFace field assist support. So this class encapsulate the
  * calls to the deprecated API.
  */
+// TODO FIPS-7874 Replace ContentAssistHandler with JFace field assist support
 @SuppressWarnings({ "deprecation", "javadoc" })
 public class CompletionUtil {
 
@@ -62,6 +63,10 @@ public class CompletionUtil {
     private static final String PREFIX_COMPLETION = PreferenceConstants.CODEASSIST_PREFIX_COMPLETION;
 
     private static JavaTextTools textTools;
+
+    private CompletionUtil() {
+        // Utility class not to be instantiated.
+    }
 
     /**
      * Encapsulate the deprecated call to
@@ -101,6 +106,8 @@ public class CompletionUtil {
         return ContentAssistHandler.createHandlerForCombo(combo, contentAssistant);
     }
 
+    // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
+    // support
     public static SubjectControlContentAssistant createContentAssistant(IContentAssistProcessor processor) {
         final SubjectControlContentAssistant contentAssistant = new SubjectControlContentAssistant();
         contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
@@ -157,9 +164,4 @@ public class CompletionUtil {
         RGB rgb = PreferenceConverter.getColor(store, key);
         return manager.getColor(rgb);
     }
-
-    private CompletionUtil() {
-        // Utility class not to be instantiated.
-    }
-
 }

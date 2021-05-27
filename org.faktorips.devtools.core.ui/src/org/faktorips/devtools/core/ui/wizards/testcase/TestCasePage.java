@@ -62,9 +62,9 @@ public class TestCasePage extends IpsObjectPage {
         super.sourceFolderChanged();
         IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
         if (root != null) {
-            superTypeControl.setIpsProject(root.getIpsProject());
+            superTypeControl.setIpsProjects(root.getIpsProject());
         } else {
-            superTypeControl.setIpsProject(null);
+            superTypeControl.setIpsProjects();
         }
     }
 

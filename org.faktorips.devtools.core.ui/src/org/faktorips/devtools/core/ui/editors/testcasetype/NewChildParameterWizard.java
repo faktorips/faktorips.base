@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
@@ -44,8 +44,8 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     // The maximum wizard page number which was displayed
     private int pageDisplayedMax = 0;
 
-    // Controller to connect the model with the ui
-    private IpsObjectUIController controller;
+    // Binding Context to connect the model with the ui
+    private BindingContext bindingContext;
 
     public NewChildParameterWizard(ITestCaseType testCaseType,
             ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParameter) {
@@ -72,8 +72,8 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
     }
 
     @Override
-    public IpsObjectUIController getController() {
-        return controller;
+    public BindingContext getBindingContext() {
+        return bindingContext;
     }
 
     /**
@@ -139,10 +139,10 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
             newTestParameter.setTestParameterType(parent.getTestParameterType());
         }
 
-        controller = new IpsObjectUIController(newTestParameter);
-        childParamSelectWizardPage.connectToModel(controller);
-        detailWizardPage.connectToModel(controller, newTestParameter);
-        controller.updateUI();
+        bindingContext = new BindingContext();
+        childParamSelectWizardPage.connectToModel(bindingContext, newTestParameter);
+        detailWizardPage.connectToModel(bindingContext, newTestParameter);
+        bindingContext.updateUI();
 
         getContainer().updateButtons();
 

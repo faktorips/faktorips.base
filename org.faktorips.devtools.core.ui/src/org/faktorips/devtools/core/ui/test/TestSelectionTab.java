@@ -44,6 +44,11 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
 
     private IIpsProject project;
 
+    /**
+     * Modify listener that simply updates the owning launch configuration dialog.
+     */
+    private ModifyListener basicModifyListener = $ -> updateLaunchConfigurationDialog();
+
     @Override
     public void createControl(Composite parent) {
         Composite main = toolkit.createComposite(parent);
@@ -89,7 +94,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
                     IpsTestRunner.getIpsProjectFromTocPath(packageFragmentRoot));
             if (project != null) {
                 projectText.setText(project.getName());
-                testSuiteSelectionComposite.initContent(project, packageFragmentRoot, testCases);
+                testSuiteSelectionComposite.initContent(project, testCases);
             } else {
                 projectText.setText(Messages.TestSelectionTab_ErrorUnknownProjekt);
                 new UIToolkit(null).setDataChangeable(testSuiteSelectionComposite, false);
@@ -126,9 +131,4 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
     public void testConfigurationHasChanged() {
         updateLaunchConfigurationDialog();
     }
-
-    /**
-     * Modify listener that simply updates the owning launch configuration dialog.
-     */
-    private ModifyListener basicModifyListener = $ -> updateLaunchConfigurationDialog();
 }

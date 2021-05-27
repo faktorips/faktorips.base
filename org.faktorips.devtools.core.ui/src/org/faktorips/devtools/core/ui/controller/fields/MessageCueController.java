@@ -49,6 +49,27 @@ import org.faktorips.util.ArgumentCheck;
 @Deprecated
 public class MessageCueController {
 
+    private static final String MESSAGE_CUE_CONTROLLER = MessageCueController.class.getName();
+    private static final String FIELD_CONTROLLER = MESSAGE_CUE_CONTROLLER + ".FieldController"; //$NON-NLS-1$
+    private static final String ANNOTATION_HANDLER = MESSAGE_CUE_CONTROLLER + ".annotationHandler"; //$NON-NLS-1$
+
+    private static String fgPlatform = SWT.getPlatform();
+    private static boolean fgCarbon = "carbon".equals(fgPlatform); //$NON-NLS-1$
+
+    /** the shell the controller is attached to */
+    private Shell shell;
+
+    private MessageCueController(Shell initShell) {
+        shell = initShell;
+        shell.addDisposeListener($ -> {
+            Object data = shell.getData(MESSAGE_CUE_CONTROLLER);
+            if (data == MessageCueController.this) {
+                shell.setData(MESSAGE_CUE_CONTROLLER, null);
+                shell = null;
+            }
+        });
+    }
+
     /**
      * Installs or de-installs a visual cue indicating messages related to the control's content. If
      * the user moves the mouse over the cue image or the control the messages are displayed in a
@@ -71,27 +92,6 @@ public class MessageCueController {
             shell.setData(MESSAGE_CUE_CONTROLLER, controller);
         }
         controller.getFieldController(control, true).setMessageList(list);
-    }
-
-    private static final String MESSAGE_CUE_CONTROLLER = MessageCueController.class.getName();
-    private static final String FIELD_CONTROLLER = MESSAGE_CUE_CONTROLLER + ".FieldController"; //$NON-NLS-1$
-    private static final String ANNOTATION_HANDLER = MESSAGE_CUE_CONTROLLER + ".annotationHandler"; //$NON-NLS-1$
-
-    private static String fgPlatform = SWT.getPlatform();
-    private static boolean fgCarbon = "carbon".equals(fgPlatform); //$NON-NLS-1$
-
-    /** the shell the controller is attached to */
-    private Shell shell;
-
-    private MessageCueController(Shell initShell) {
-        shell = initShell;
-        shell.addDisposeListener($ -> {
-            Object data = shell.getData(MESSAGE_CUE_CONTROLLER);
-            if (data == MessageCueController.this) {
-                shell.setData(MESSAGE_CUE_CONTROLLER, null);
-                shell = null;
-            }
-        });
     }
 
     private FieldController getFieldController(Control control, boolean create) {
@@ -186,6 +186,8 @@ public class MessageCueController {
                     case SWT.Deactivate:
                     case SWT.Iconify:
                         hideHover();
+                        break;
+                    default:
                         break;
                 }
             };
@@ -329,7 +331,8 @@ public class MessageCueController {
                 return;
             }
             fDy = 8;
-            fDx = -9; // image size is 8
+            // image size is 8
+            fDx = -9;
 
             Point global = fControl.toDisplay(fDx, fDy);
             Point local = ((Control)e.widget).toControl(global);
@@ -426,6 +429,19 @@ public class MessageCueController {
     class Hover {
 
         /**
+         * This info hover's shell.
+         */
+        Shell fHoverShell;
+
+        /** the control the hover belongs to. */
+        Control control;
+
+        /**
+         * The info hover text.
+         */
+        String fText = ""; //$NON-NLS-1$
+
+        /**
          * Distance of info hover arrow from left side.
          */
         private int HD = 10;
@@ -446,19 +462,6 @@ public class MessageCueController {
         private int LABEL_MARGIN = 2;
 
         private int defaultOffsetOfArrow = HD + HW / 2;
-
-        /**
-         * This info hover's shell.
-         */
-        Shell fHoverShell;
-
-        /** the control the hover belongs to. */
-        Control control;
-
-        /**
-         * The info hover text.
-         */
-        String fText = ""; //$NON-NLS-1$
 
         Hover(Control control, int arrowOffset) {
             HD = arrowOffset;

@@ -87,7 +87,7 @@ public abstract class IpsAction extends Action {
         return selectedIpsObjects;
     }
 
-    abstract public void run(IStructuredSelection selection);
+    public abstract void run(IStructuredSelection selection);
 
     /**
      * This method returns all <code>IIpsObject</code>s found in the given selection. Returns an

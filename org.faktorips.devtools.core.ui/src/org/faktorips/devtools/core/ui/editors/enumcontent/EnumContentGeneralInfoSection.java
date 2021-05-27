@@ -43,6 +43,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class EnumContentGeneralInfoSection extends IpsSection {
 
+    /** The label showing the base <code>IEnumType</code>. */
+    Label enumTypeLabel;
+
     /** The <code>IEnumContent</code> the editor is currently editing. */
     private IEnumContent enumContent;
 
@@ -51,9 +54,6 @@ public class EnumContentGeneralInfoSection extends IpsSection {
 
     /** The extension property control factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
-
-    /** The label showing the base <code>IEnumType</code>. */
-    Label enumTypeLabel;
 
     /**
      * Creates a new <code>EnumContentGeneralInfoSection</code> using the specified parameters.

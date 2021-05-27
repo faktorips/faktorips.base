@@ -22,8 +22,12 @@ import org.w3c.dom.Text;
  */
 public class DescriptionHelper {
 
-    private static final String XML_ATTRIBUTE_NAME = "description"; //$NON-NLS-1$
     public static final String XML_ELEMENT_NAME = "Description"; //$NON-NLS-1$
+    private static final String XML_ATTRIBUTE_NAME = "description"; //$NON-NLS-1$
+
+    private DescriptionHelper() {
+        // Helper class not to be instantiated.
+    }
 
     /**
      * Adds the description to the element.
@@ -52,7 +56,8 @@ public class DescriptionHelper {
     public static final String getDescription(Element element) {
         Element descEl = XmlUtil.getFirstElement(element, XML_ELEMENT_NAME);
         if (descEl == null) {
-            return element.getAttribute(XML_ATTRIBUTE_NAME); // conversion of old files
+            // conversion of old files
+            return element.getAttribute(XML_ATTRIBUTE_NAME);
         }
         Text text = XmlUtil.getTextNode(descEl);
         if (text == null) {
@@ -74,10 +79,6 @@ public class DescriptionHelper {
             }
         }
         return null;
-    }
-
-    private DescriptionHelper() {
-        // Helper class not to be instantiated.
     }
 
 }

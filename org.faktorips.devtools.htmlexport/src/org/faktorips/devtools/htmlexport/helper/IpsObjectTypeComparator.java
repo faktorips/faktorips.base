@@ -41,7 +41,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
  */
 public class IpsObjectTypeComparator implements Comparator<IpsObjectType> {
 
-    private static List<IpsObjectType> IPS_OBJECT_TYPES = Arrays.asList(IpsObjectType.PRODUCT_CMPT_TYPE,
+    private static final List<IpsObjectType> IPS_OBJECT_TYPES = Arrays.asList(IpsObjectType.PRODUCT_CMPT_TYPE,
             IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.ENUM_TYPE, IpsObjectType.TABLE_STRUCTURE,
             IpsObjectType.TEST_CASE_TYPE, IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_TEMPLATE,
             IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE);

@@ -81,7 +81,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
     /**
      * Commit the files using the commit comment.
      */
-    abstract protected void commitFiles(List<IResource> syncResources, String comment, IProgressMonitor monitor)
+    protected abstract void commitFiles(List<IResource> syncResources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
     @SuppressWarnings("deprecation")
@@ -162,7 +162,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
      * @param monitor the {@link IProgressMonitor} to report the operation's progress
      * @return the tag operation's {@link IStatus status}
      */
-    abstract protected IStatus tagProject(RepositoryProvider repositoryProvider,
+    protected abstract IStatus tagProject(RepositoryProvider repositoryProvider,
             IResource[] resources,
             String tag,
             IProgressMonitor monitor) throws TeamException;

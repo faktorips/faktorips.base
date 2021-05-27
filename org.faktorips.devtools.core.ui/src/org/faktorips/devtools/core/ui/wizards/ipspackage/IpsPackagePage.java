@@ -62,6 +62,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
+    // true if the input is validated and errors are displayed in the messes area.
+    protected boolean validateInput = true;
+
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
 
@@ -71,9 +74,6 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     // edit fields
     private TextField packageNameField;
     private TextButtonField sourceFolderField;
-
-    // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
 
     // page control as defined by the wizard page class
     private Composite pageControl;
@@ -276,7 +276,8 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             sourceFolderChanged();
         }
 
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             try {
                 validatePage();
             } catch (CoreException coreEx) {

@@ -88,7 +88,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite rangeTypeArea = getToolkit().createGridComposite(c, 2, false, true);
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
-        rangeTypeField = new EnumField<>(getToolkit().createCombo(rangeTypeArea, ColumnRangeType.class),
+        rangeTypeField = new EnumField<>(getToolkit().createCombo(rangeTypeArea),
                 ColumnRangeType.class);
         rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue()));
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);

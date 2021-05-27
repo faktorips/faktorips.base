@@ -53,6 +53,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
 
+    // true if the input is validated and errors are displayed in the messes area.
+    protected boolean validateInput = true;
+
     // edit controls
     private IpsPckFragmentRootRefControl sourceFolderControl;
     private IpsPckFragmentRefControl packageControl;
@@ -61,9 +64,6 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     private TextField nameField;
     private TextButtonField sourceFolderField;
     private TextButtonField packageField;
-
-    // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
 
     // page control as defined by the wizard page class
     private Composite pageControl;
@@ -297,7 +297,8 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
             IpsPlugin.log(exception);
         }
 
-        if (validateInput) { // don't validate during control creating!
+        if (validateInput) {
+            // don't validate during control creating!
             try {
                 validatePage();
             } catch (CoreException coreEx) {

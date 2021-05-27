@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.faktorips.devtools.model.tablecontents.IRow;
 
-public class TableSorter extends ViewerSorter {
+public class TableSorter extends ViewerComparator {
 
     @Override
     public int compare(Viewer viewer, Object e1, Object e2) {

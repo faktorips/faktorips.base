@@ -98,7 +98,7 @@ public class DatatypeDependency implements IDependency, Serializable {
 
     @Override
     public String toString() {
-        return "(" + source.toString() + " -> " + target.toString() + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        return "(" + source.toString() + " -> " + target + ", type: " + type + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
 }

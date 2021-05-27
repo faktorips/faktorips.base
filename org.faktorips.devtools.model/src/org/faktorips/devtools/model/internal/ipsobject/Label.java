@@ -76,22 +76,24 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
 
     @Override
     public void setPluralValue(String pluralValue) {
-        if (pluralValue == null) {
-            pluralValue = ""; //$NON-NLS-1$
+        String newPluralValue = pluralValue;
+        if (newPluralValue == null) {
+            newPluralValue = ""; //$NON-NLS-1$
         }
         String oldValue = this.pluralValue;
-        this.pluralValue = pluralValue;
-        valueChanged(oldValue, pluralValue);
+        this.pluralValue = newPluralValue;
+        valueChanged(oldValue, newPluralValue);
     }
 
     @Override
     public void setValue(String value) {
-        if (value == null) {
-            value = ""; //$NON-NLS-1$
+        String newValue = value;
+        if (newValue == null) {
+            newValue = ""; //$NON-NLS-1$
         }
         String oldValue = this.value;
-        this.value = value;
-        valueChanged(oldValue, value);
+        this.value = newValue;
+        valueChanged(oldValue, newValue);
     }
 
     @Override

@@ -82,13 +82,13 @@ public enum BFElementType {
         }
     };
 
+    private String name;
+    private String id;
+
     private BFElementType(String id, String name) {
         this.name = name;
         this.id = id;
     }
-
-    private String name;
-    private String id;
 
     /**
      * Returns the describing name of the business function element type.

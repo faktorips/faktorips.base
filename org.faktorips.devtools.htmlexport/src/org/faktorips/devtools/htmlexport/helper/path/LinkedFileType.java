@@ -25,15 +25,15 @@ public enum LinkedFileType {
     OBJECT_TYPE_CLASSES_OVERVIEW("object_type_classes_", "", TargetType.CLASSES), //$NON-NLS-1$ //$NON-NLS-2$
     ELEMENT_CONTENT("element_", "", TargetType.CONTENT); //$NON-NLS-1$ //$NON-NLS-2$
 
+    private String prefix;
+    private String suffix;
+    private TargetType target;
+
     private LinkedFileType(String prefix, String suffix, TargetType target) {
         this.prefix = prefix;
         this.suffix = suffix;
         this.target = target;
     }
-
-    private String prefix;
-    private String suffix;
-    private TargetType target;
 
     public String getPrefix() {
         return prefix;

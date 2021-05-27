@@ -90,7 +90,8 @@ public class EditTableControlUIBuilder {
      * @param layouter the composite that lays out the contained table
      */
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(15, false)); // message image
+        // message image
+        layouter.addColumnData(new ColumnPixelData(15, false));
         layouter.addColumnData(new ColumnWeightData(95, true));
     }
 

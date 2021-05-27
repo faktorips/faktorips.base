@@ -20,6 +20,10 @@ import org.faktorips.runtime.Severity;
 
 public class IpsProblemOverlayIcon {
 
+    private IpsProblemOverlayIcon() {
+        // Utility class not to be instantiated
+    }
+
     /**
      * Get overlay error overlay image descriptor
      */

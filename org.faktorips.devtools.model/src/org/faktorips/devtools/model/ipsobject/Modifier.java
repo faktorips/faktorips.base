@@ -37,6 +37,12 @@ public enum Modifier implements IAdaptable {
 
     private String id;
 
+    Modifier(String id, int jdtFlags, int javaModifier) {
+        this.id = id;
+        this.jdtFlags = jdtFlags;
+        this.javaModifier = javaModifier;
+    }
+
     /**
      * Returns the appropriate JDT Flags constants corresponding to the modifier.
      * 
@@ -61,12 +67,6 @@ public enum Modifier implements IAdaptable {
 
     public boolean isPublic() {
         return this == PUBLIC;
-    }
-
-    Modifier(String id, int jdtFlags, int javaModifier) {
-        this.id = id;
-        this.jdtFlags = jdtFlags;
-        this.javaModifier = javaModifier;
     }
 
     public String getId() {

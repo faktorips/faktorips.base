@@ -31,6 +31,10 @@ import org.faktorips.util.StringUtil;
  */
 public final class RefactorUtil {
 
+    private RefactorUtil() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Copies the given <code>IIpsSrcFile</code> into a new source file at the desired destination
      * package. Returns a handle to the new <code>IIpsSrcFile</code>.
@@ -158,10 +162,6 @@ public final class RefactorUtil {
     public static boolean isOnlyCapitalizationChanged(IIpsSrcFile fileToBeCopied, String newName) {
         String oldName = StringUtil.getFilenameWithoutExtension(fileToBeCopied.getName());
         return newName.toLowerCase().equals(oldName.toLowerCase());
-    }
-
-    private RefactorUtil() {
-        // Utility class not to be instantiated.
     }
 
 }

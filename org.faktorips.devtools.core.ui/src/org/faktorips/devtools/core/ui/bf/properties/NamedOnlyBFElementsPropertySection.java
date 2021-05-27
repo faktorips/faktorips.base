@@ -36,9 +36,9 @@ import org.faktorips.devtools.model.bf.IBFElement;
 @Deprecated
 public class NamedOnlyBFElementsPropertySection extends AbstractPropertySection {
 
-    private Text nameField;
     protected BindingContext bindingContext;
     protected UIToolkit uiToolkit;
+    private Text nameField;
 
     @Override
     public final void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {

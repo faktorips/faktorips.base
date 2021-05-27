@@ -38,6 +38,17 @@ public class IpsSrcFileModification {
 
     private final IIpsSrcFileMemento originalContent;
 
+    private IpsSrcFileModification(IIpsSrcFile affectedIpsSrcFile, IIpsSrcFileMemento originalContent) {
+        this(affectedIpsSrcFile, affectedIpsSrcFile, originalContent);
+    }
+
+    private IpsSrcFileModification(IIpsSrcFile originalIpsSrcFile, IIpsSrcFile targetIpsSrcFile,
+            IIpsSrcFileMemento originalContent) {
+        this.originalIpsSrcFile = originalIpsSrcFile;
+        this.targetIpsSrcFile = targetIpsSrcFile;
+        this.originalContent = originalContent;
+    }
+
     /**
      * This creates a modification class holding the state of the {@link IIpsSrcFile} before it was
      * modified.
@@ -88,17 +99,6 @@ public class IpsSrcFileModification {
             IIpsSrcFile target,
             IIpsSrcFileMemento originalContent) {
         return new IpsSrcFileModification(original, target, originalContent);
-    }
-
-    private IpsSrcFileModification(IIpsSrcFile affectedIpsSrcFile, IIpsSrcFileMemento originalContent) {
-        this(affectedIpsSrcFile, affectedIpsSrcFile, originalContent);
-    }
-
-    private IpsSrcFileModification(IIpsSrcFile originalIpsSrcFile, IIpsSrcFile targetIpsSrcFile,
-            IIpsSrcFileMemento originalContent) {
-        this.originalIpsSrcFile = originalIpsSrcFile;
-        this.targetIpsSrcFile = targetIpsSrcFile;
-        this.originalContent = originalContent;
     }
 
     /**

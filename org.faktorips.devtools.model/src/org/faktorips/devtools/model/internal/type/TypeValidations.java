@@ -213,7 +213,7 @@ public class TypeValidations {
 
         if (validator.cycleDetected()) {
             String msg = Messages.Type_msg_cycleInTypeHierarchy;
-            return new Message(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg.toString(), Message.ERROR, type,
+            return new Message(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, type,
                     IType.PROPERTY_SUPERTYPE);
         }
         return null;

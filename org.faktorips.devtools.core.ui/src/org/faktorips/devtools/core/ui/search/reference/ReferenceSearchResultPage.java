@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.search.reference;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.swt.widgets.Tree;
@@ -92,7 +92,7 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
     @Override
     protected void configureTreeViewer(TreeViewer viewer) {
         super.configureTreeViewer(viewer);
-        viewer.setSorter(new ReferenceViewerSorter());
+        viewer.setComparator(new ReferenceViewerSorter());
         viewer.addDoubleClickListener(new TreeViewerDoubleclickListener(viewer));
     }
 
@@ -101,7 +101,7 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
      * 
      * @author Joerg Ortmann
      */
-    public class ReferenceViewerSorter extends ViewerSorter {
+    public class ReferenceViewerSorter extends ViewerComparator {
 
         @Override
         public int compare(Viewer viewer, Object e1, Object e2) {

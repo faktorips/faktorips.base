@@ -25,6 +25,10 @@ import org.faktorips.values.Decimal;
  */
 public class BuilderHelper {
 
+    private BuilderHelper() {
+        super();
+    }
+
     public static final String[] extractParameterNames(IParameter[] params) {
         String[] paramNames = new String[params.length];
         for (int i = 0; i < params.length; i++) {
@@ -35,17 +39,19 @@ public class BuilderHelper {
 
     public static final String[] extractMessageParameters(String message) {
         ArrayList<String> al = new ArrayList<>();
+        String msg = message;
         while (true) {
-            int start = message.indexOf('{');
+            int start = msg.indexOf('{');
             if (start > -1) {
-                int end = message.indexOf('}', start + 2); // param may not be empty string
+                // parameter may not be an empty string
+                int end = msg.indexOf('}', start + 2);
                 if (end > -1) {
-                    String param = message.substring(start + 1, end);
+                    String param = msg.substring(start + 1, end);
                     param = param.trim();
                     param = param.replace(' ', '_');
                     param = StringUtils.uncapitalize(param);
                     al.add(param);
-                    message = message.substring(end + 1);
+                    msg = msg.substring(end + 1);
                 } else {
                     break;
                 }
@@ -59,23 +65,25 @@ public class BuilderHelper {
     public static final String transformMessage(String message) {
         int count = 0;
         String transformedMessage = ""; //$NON-NLS-1$
+        String msg = message;
         while (true) {
-            int start = message.indexOf('{');
+            int start = msg.indexOf('{');
             if (start > -1) {
-                int end = message.indexOf('}', start + 2); // parameter may not be an empty string.
+                // parameter may not be an empty string
+                int end = msg.indexOf('}', start + 2);
                 if (end > -1) {
-                    transformedMessage += message.substring(0, start);
+                    transformedMessage += msg.substring(0, start);
                     transformedMessage += "{"; //$NON-NLS-1$
                     transformedMessage += count;
                     transformedMessage += "}"; //$NON-NLS-1$
-                    message = message.substring(end + 1);
+                    msg = msg.substring(end + 1);
                     count++;
                 } else {
-                    transformedMessage += message;
+                    transformedMessage += msg;
                     break;
                 }
             } else {
-                transformedMessage += message;
+                transformedMessage += msg;
                 break;
             }
         }
@@ -94,9 +102,4 @@ public class BuilderHelper {
         }
         return false;
     }
-
-    private BuilderHelper() {
-        super();
-    }
-
 }

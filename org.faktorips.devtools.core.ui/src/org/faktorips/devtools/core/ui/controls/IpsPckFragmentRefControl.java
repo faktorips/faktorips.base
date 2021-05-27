@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.controls;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
@@ -31,10 +30,8 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
 
     public IpsPckFragmentRefControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
-
         completionProcessor = new IpsPckFragmenCompletionProcessor(this);
-        ContentAssistHandler.createHandlerForText(getTextControl(),
-                CompletionUtil.createContentAssistant(completionProcessor));
+        CompletionUtil.createHandlerForText(getTextControl(), completionProcessor);
     }
 
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {

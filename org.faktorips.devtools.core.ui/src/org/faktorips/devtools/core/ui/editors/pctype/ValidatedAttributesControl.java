@@ -38,13 +38,13 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.runtime.MessageList;
 
 /**
- * A gui control to edit the validationAttributes property of a IValidationRuleDef object.
+ * A GUI control to edit the validationAttributes property of a IValidationRuleDef object.
  */
 public class ValidatedAttributesControl extends EditTableControl {
 
-    private static String MESSAGE_COLUMN_PROPERTY = "message"; //$NON-NLS-1$
+    private static final String MESSAGE_COLUMN_PROPERTY = "message"; //$NON-NLS-1$
 
-    private static String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName"; //$NON-NLS-1$
+    private static final String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName"; //$NON-NLS-1$
 
     private static String[] columnProperties = new String[] { MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
 
@@ -56,10 +56,11 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     @Override
     public void initialize(Object modelObject, String label) {
-        if (label == null) {
-            label = Messages.ValidatedAttributesControl_description;
+        String validatedAttributesLabel = label;
+        if (validatedAttributesLabel == null) {
+            validatedAttributesLabel = Messages.ValidatedAttributesControl_description;
         }
-        super.initialize(modelObject, label);
+        super.initialize(modelObject, validatedAttributesLabel);
         new MessageService(getTableViewer());
     }
 
@@ -71,7 +72,7 @@ public class ValidatedAttributesControl extends EditTableControl {
     @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
-        editors[0] = null; // no editor for the message image column
+        editors[0] = null;
         editors[1] = new UnfocusableTextCellEditor(getTable());
         ValidatedAttributesCompletionProcessor completionProcessor = new ValidatedAttributesCompletionProcessor(rule);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
@@ -111,7 +112,8 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(20, false)); // message image
+        // message image
+        layouter.addColumnData(new ColumnPixelData(20, false));
         layouter.addColumnData(new ColumnWeightData(100, true));
     }
 
@@ -241,10 +243,11 @@ public class ValidatedAttributesControl extends EditTableControl {
 
         @Override
         public void modify(Object element, String property, Object value) {
-            if (element instanceof Item) {
-                element = ((Item)element).getData();
+            Object elem = element;
+            if (elem instanceof Item) {
+                elem = ((Item)elem).getData();
             }
-            IndexedValidatedAttributeWrapper validatedAttribute = (IndexedValidatedAttributeWrapper)element;
+            IndexedValidatedAttributeWrapper validatedAttribute = (IndexedValidatedAttributeWrapper)elem;
             validatedAttribute.setAttributeName((String)value);
             getTableViewer().update(getWrappersForAttributes(), null);
         }

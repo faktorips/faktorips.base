@@ -10,9 +10,14 @@
 
 package org.faktorips.devtools.core.ui.internal;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -35,9 +40,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author Cornelius Dirmeier
  */
-@SuppressWarnings("deprecation")
-public abstract class DeferredStructuredContentProvider extends java.util.Observable
-        implements IStructuredContentProvider {
+public abstract class DeferredStructuredContentProvider implements IStructuredContentProvider {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
 
@@ -45,6 +48,8 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
     private volatile Object[] elements;
 
     private Job collector;
+
+    private PropertyChangeSupport changes = new PropertyChangeSupport(this);
 
     /**
      * A label showing the user that a job is collecting data. Normally with '...' at the end. e.g.
@@ -98,22 +103,22 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
             collector.cancel();
         }
         collector = new CollectorJob(newInput);
-        collector.addJobChangeListener(new JobDoneAdapter(viewer));
+        collector.addJobChangeListener(new JobDoneAdapter(viewer, Arrays.copyOf(elements, elements.length)));
         collector.schedule();
     }
 
-    public void addCollectorFinishedListener(ICollectorFinishedListener listener) {
-        addObserver(listener);
+    public void addCollectorFinishedListener(PropertyChangeListener listener) {
+        changes.addPropertyChangeListener(listener);
     }
 
-    public void removeCollectorFinishedListener(ICollectorFinishedListener listener) {
-        deleteObserver(listener);
+    public void removeCollectorFinishedListener(PropertyChangeListener listener) {
+        changes.removePropertyChangeListener(listener);
     }
 
     @Override
     public void dispose() {
         elements = null;
-        deleteObservers();
+        Arrays.asList(changes.getPropertyChangeListeners()).forEach(changes::removePropertyChangeListener);
         if (collector != null) {
             collector.cancel();
         }
@@ -133,8 +138,7 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
         protected IStatus run(IProgressMonitor monitor) {
             try {
                 monitor.beginTask(getWaitingLabel(), 1);
-                org.eclipse.core.runtime.SubProgressMonitor collectMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
-                        monitor, 1);
+                SubMonitor collectMonitor = SubMonitor.convert(monitor, 1);
                 Object[] result = collectElements(inputElement, collectMonitor);
                 // only set the result if this is still the active job!
                 if (this == collector) {
@@ -150,9 +154,11 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
     private class JobDoneAdapter extends JobChangeAdapter {
 
         private final Viewer viewerToRefresh;
+        private Object[] oldElements;
 
-        public JobDoneAdapter(Viewer viewerToRefresh) {
+        public JobDoneAdapter(Viewer viewerToRefresh, Object[] oldElements) {
             this.viewerToRefresh = viewerToRefresh;
+            this.oldElements = oldElements;
         }
 
         @Override
@@ -160,8 +166,7 @@ public abstract class DeferredStructuredContentProvider extends java.util.Observ
             if (viewerToRefresh != null && !viewerToRefresh.getControl().isDisposed()) {
                 viewerToRefresh.getControl().getDisplay().asyncExec(() -> {
                     viewerToRefresh.refresh();
-                    setChanged();
-                    notifyObservers();
+                    changes.firePropertyChange("Elements", oldElements, elements); //$NON-NLS-1$
                 });
             }
         }

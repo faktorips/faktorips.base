@@ -115,7 +115,7 @@ public class ValidationRuleEditingUI {
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelCode);
         Text codeText = uiToolkit.createText(msgComposite);
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
-        Combo severityCombo = uiToolkit.createCombo(msgComposite, MessageSeverity.class);
+        Combo severityCombo = uiToolkit.createCombo(msgComposite);
 
         // text group
         Group textGroup = uiToolkit.createGroup(msgComposite, Messages.RuleEditDialog_groupText);

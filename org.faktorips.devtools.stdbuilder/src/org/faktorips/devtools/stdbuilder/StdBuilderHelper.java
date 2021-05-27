@@ -25,6 +25,10 @@ import org.faktorips.devtools.model.util.QNameUtil;
  */
 public final class StdBuilderHelper {
 
+    private StdBuilderHelper() {
+        // prohibit instantiation
+    }
+
     /**
      * Returns the JDT signature for a primitive integer parameter.
      */
@@ -106,12 +110,12 @@ public final class StdBuilderHelper {
     }
 
     /**
-     * Shortcut for <code>unresolvedParam(class_.getSimpleName())</code>.
+     * Shortcut for <code>unresolvedParam(clazz.getSimpleName())</code>.
      * 
      * @see #unresolvedParam(String)
      */
-    public static String unresolvedParam(Class<?> class_) {
-        return unresolvedParam(class_.getSimpleName());
+    public static String unresolvedParam(Class<?> clazz) {
+        return unresolvedParam(clazz.getSimpleName());
     }
 
     /**
@@ -194,10 +198,6 @@ public final class StdBuilderHelper {
             return project.getDatatypeHelper(((ValueDatatype)helper.getDatatype()).getWrapperType());
         }
         return helper;
-    }
-
-    private StdBuilderHelper() {
-        // prohibit instantiation
     }
 
 }

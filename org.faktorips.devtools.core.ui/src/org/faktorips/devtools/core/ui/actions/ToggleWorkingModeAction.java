@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
  */
 public class ToggleWorkingModeAction extends Action implements IPropertyChangeListener {
 
-    public static String ID = "org.faktorips.devtools.actions.ToggleWorkingModeAction"; //$NON-NLS-1$
+    public static final String ID = "org.faktorips.devtools.actions.ToggleWorkingModeAction"; //$NON-NLS-1$
 
     private boolean propertyChangedByThisAction = false;
 

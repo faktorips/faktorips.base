@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.jface.wizard.IWizard;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 /**
- * Interface for a wizard wich disables the next button if the editing object is not valid. If a
+ * Interface for a wizard which disables the next button if the editing object is not valid. If a
  * page is displayed the next button from the previous page is always enabled.
  * 
  * @author Joerg Ortmann
@@ -39,7 +39,7 @@ public interface IBlockedValidationWizard extends IWizard {
     public void postAsyncRunnable(Runnable runnable);
 
     /**
-     * Returns the ui controller.
+     * Returns the binding context.
      */
-    public IpsObjectUIController getController();
+    public BindingContext getBindingContext();
 }

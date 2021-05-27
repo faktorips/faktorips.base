@@ -30,9 +30,9 @@ import org.faktorips.devtools.tableconversion.ITableFormat;
  */
 public abstract class IpsObjectExportWizard extends Wizard implements IExportWizard {
 
-    protected static String DIALOG_SETTINGS_KEY = "IpsObjectExportWizard"; //$NON-NLS-1$
-    protected boolean hasNewDialogSettings;
+    private static final String DIALOG_SETTINGS_KEY = "IpsObjectExportWizard"; //$NON-NLS-1$
 
+    protected boolean hasNewDialogSettings;
     protected IStructuredSelection selection;
     protected Map<ITableFormat, TableFormatPropertiesPage> customPages;
 

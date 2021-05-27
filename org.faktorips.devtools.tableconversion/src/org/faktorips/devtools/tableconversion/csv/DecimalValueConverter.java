@@ -29,9 +29,12 @@ public class DecimalValueConverter extends NumberValueConverter {
         try {
             Decimal d = (Decimal)new DecimalDatatype().getValue(ipsValue);
             String result = d.toString();
-            String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
-            if (tableFormat != null && decimalSeparator.length() == 1) {
-                result = result.replace(".", tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR)); //$NON-NLS-1$
+            if (tableFormat != null) {
+                String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
+                if (decimalSeparator.length() == 1) {
+                    result = result.replace(".", //$NON-NLS-1$
+                            tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR));
+                }
             }
 
             return result;

@@ -786,13 +786,13 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 case IResourceDelta.REMOVED:
                     removedIpsSrcFiles.add(ipsSrcFile);
                     break;
-                case IResourceDelta.CHANGED: {
+                case IResourceDelta.CHANGED:
                     // skip changes, not caused by content changes,
                     if (delta.getFlags() != 0 && element.exists()) {
                         changedAndAddedIpsSrcFiles.add(ipsSrcFile);
                         return true;
+
                     }
-                }
                     break;
             }
             return true;

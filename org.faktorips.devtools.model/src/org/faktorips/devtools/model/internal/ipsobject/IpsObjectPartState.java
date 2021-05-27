@@ -31,16 +31,6 @@ import org.xml.sax.SAXException;
 public class IpsObjectPartState {
 
     /**
-     * Type information to create a new IIpsObjectPart.
-     */
-    private Class<? extends IIpsObjectPart> type;
-
-    /**
-     * The complete state-information to create a copy of an IIpsObjectPart.
-     */
-    private Document state;
-
-    /**
      * Name of the node to store the type-information.
      */
     private static final String ELEMENT_TYPE = "ipsObjectPartStateTypeInformation"; //$NON-NLS-1$
@@ -49,6 +39,16 @@ public class IpsObjectPartState {
      * Name of the node to store the object-representation.
      */
     private static final String ELEMENT_DATA = "ipsObjectPartStateData"; //$NON-NLS-1$
+
+    /**
+     * Type information to create a new IIpsObjectPart.
+     */
+    private Class<? extends IIpsObjectPart> type;
+
+    /**
+     * The complete state-information to create a copy of an IIpsObjectPart.
+     */
+    private Document state;
 
     /**
      * Creates a new state-snapshot from the given part.

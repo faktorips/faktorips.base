@@ -240,7 +240,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
 
             reader = new CSVReader(new FileReader(filename.toOSString()), fieldDelimiter);
-            String[] line = (ignoreColumnHeaderRow == true) ? reader.readNext() : null;
+            String[] line = (ignoreColumnHeaderRow) ? reader.readNext() : null;
             int linesLeft = maxNumberOfRows;
             while ((line = reader.readNext()) != null) {
                 if (linesLeft-- <= 0) {

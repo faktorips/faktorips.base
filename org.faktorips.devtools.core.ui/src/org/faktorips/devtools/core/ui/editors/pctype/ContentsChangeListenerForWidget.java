@@ -40,11 +40,10 @@ public abstract class ContentsChangeListenerForWidget implements ContentsChangeL
     }
 
     public void setWidget(Widget newWidget) {
-        ArgumentCheck
-                .notNull(
-                        newWidget,
-                        "Hint: Be sure to create the listener in the methods that are responsible for creating the controls. Sometimes this happens AFTER the object was created. E.g. in IpsSections"); //$NON-NLS-1$
-        if (widget != null) { // widget can still be null
+        ArgumentCheck.notNull(newWidget,
+                "Hint: Be sure to create the listener in the methods that are responsible for creating the controls. Sometimes this happens AFTER the object was created. E.g. in IpsSections"); //$NON-NLS-1$
+        // widget can still be null
+        if (widget != null) {
             widget.removeDisposeListener(this);
         }
         widget = newWidget;

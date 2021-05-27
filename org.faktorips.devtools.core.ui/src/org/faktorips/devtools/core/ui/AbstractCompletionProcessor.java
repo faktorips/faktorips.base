@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
-import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -29,7 +28,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 /**
  * Abstract base class for ips completion processors.
  */
-public abstract class AbstractCompletionProcessor implements ISubjectControlContentAssistProcessor {
+// TODO FIPS-7874 Replace ISubjectControlContentAssistProcessor with Platform UI's field assist
+// support
+@SuppressWarnings("deprecation")
+public abstract class AbstractCompletionProcessor
+        implements org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor {
 
     protected IIpsProject ipsProject;
     private String errorMessage;
@@ -89,7 +92,8 @@ public abstract class AbstractCompletionProcessor implements ISubjectControlCont
 
     @Override
     public IContextInformationValidator getContextInformationValidator() {
-        return null; // no context
+        // no context
+        return null;
     }
 
     @Override
@@ -167,10 +171,8 @@ public abstract class AbstractCompletionProcessor implements ISubjectControlCont
      * empty, otherwise returns the given package name without change.
      */
     protected String mapDefaultPackageName(String packageName) {
-        if (StringUtils.isEmpty(packageName)) {
-            packageName = Messages.AbstractCompletionProcessor_labelDefaultPackage;
-        }
-        return packageName;
+        return (StringUtils.isEmpty(packageName)) ? Messages.AbstractCompletionProcessor_labelDefaultPackage
+                : packageName;
     }
 
     // TODO Throws Exception?

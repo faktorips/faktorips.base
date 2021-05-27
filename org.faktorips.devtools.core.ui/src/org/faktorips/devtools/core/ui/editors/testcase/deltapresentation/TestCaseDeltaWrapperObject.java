@@ -54,6 +54,15 @@ public class TestCaseDeltaWrapperObject {
      */
     private TestCaseContentProvider testCaseContentProvider;
 
+    private TestCaseDeltaWrapperObject(TestCaseContentProvider testCaseContentProvider, TestCaseDeltaType deltaType,
+            TestCaseDeltaWrapperObject parent, Object baseObject) {
+
+        this.testCaseContentProvider = testCaseContentProvider;
+        this.baseObject = baseObject;
+        this.parent = parent;
+        this.deltaType = deltaType;
+    }
+
     /**
      * Returns a list of delta wrapper objects for the given list of base objects.
      */
@@ -67,15 +76,6 @@ public class TestCaseDeltaWrapperObject {
             parts[i] = new TestCaseDeltaWrapperObject(testCaseContentProvider, deltaType, parent, baseObjects[i]);
         }
         return parts;
-    }
-
-    private TestCaseDeltaWrapperObject(TestCaseContentProvider testCaseContentProvider, TestCaseDeltaType deltaType,
-            TestCaseDeltaWrapperObject parent, Object baseObject) {
-
-        this.testCaseContentProvider = testCaseContentProvider;
-        this.baseObject = baseObject;
-        this.parent = parent;
-        this.deltaType = deltaType;
     }
 
     /**

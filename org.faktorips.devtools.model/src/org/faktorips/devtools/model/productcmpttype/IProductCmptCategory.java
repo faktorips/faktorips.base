@@ -363,6 +363,12 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
         RIGHT("right"); //$NON-NLS-1$
 
+        private final String id;
+
+        private Position(String id) {
+            this.id = id;
+        }
+
         /**
          * Returns the {@link Position} corresponding to the provided id.
          */
@@ -373,12 +379,6 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
                 return RIGHT;
             }
             return null;
-        }
-
-        private final String id;
-
-        private Position(String id) {
-            this.id = id;
         }
 
         /**

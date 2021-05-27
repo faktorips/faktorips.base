@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -242,9 +241,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        @SuppressWarnings({ "deprecation", "unused" })
-        ContentAssistHandler createHandlerForText = ContentAssistHandler.createHandlerForText(unionText,
-                CompletionUtil.createContentAssistant(completionProcessor));
+        CompletionUtil.createHandlerForText(unionText, completionProcessor);
     }
 
     @Override

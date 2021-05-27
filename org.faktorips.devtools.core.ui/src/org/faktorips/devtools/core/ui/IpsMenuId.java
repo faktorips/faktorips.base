@@ -59,7 +59,7 @@ public enum IpsMenuId {
     },
     GROUP_REFACTORING("refactoring"), //$NON-NLS-1$
 
-    GROUP_EDIT("fips.edit") {//$NON-NLS-1$
+    GROUP_EDIT("fips.edit") { //$NON-NLS-1$
         @Override
         protected boolean isEnabled() {
             return !IpsPlugin.getDefault().getIpsPreferences().isSimpleContextMenuEnabled();

@@ -39,6 +39,16 @@ public class TableImportExportAction extends IpsAction {
 
     private boolean isImport;
 
+    protected TableImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
+        super(selectionProvider);
+        this.shell = shell;
+    }
+
+    protected TableImportExportAction(Shell shell, ITableContents tableContents) {
+        super(new SimpleSelectionProvider(tableContents));
+        this.shell = shell;
+    }
+
     public static TableImportExportAction createTableImportAction(Shell shell, ISelectionProvider selectionProvider) {
         TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
         tableImportExportAction.initImportAction();
@@ -49,16 +59,6 @@ public class TableImportExportAction extends IpsAction {
         TableImportExportAction tableImportExportAction = new TableImportExportAction(shell, selectionProvider);
         tableImportExportAction.initExportAction();
         return tableImportExportAction;
-    }
-
-    protected TableImportExportAction(Shell shell, ISelectionProvider selectionProvider) {
-        super(selectionProvider);
-        this.shell = shell;
-    }
-
-    protected TableImportExportAction(Shell shell, ITableContents tableContents) {
-        super(new SimpleSelectionProvider(tableContents));
-        this.shell = shell;
     }
 
     protected void initImportAction() {

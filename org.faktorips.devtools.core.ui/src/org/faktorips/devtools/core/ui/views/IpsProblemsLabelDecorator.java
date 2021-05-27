@@ -43,6 +43,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
 
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
+
+    private static final int DEFAULT_FLAG = -1;
+
     /**
      * Indicates if the LabelDecorator works with a flat or hierarchical view structure where
      * <code>true</code> means flat layout and <code>false</code> means hierarchical layout. Default
@@ -50,11 +54,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      */
     private boolean isFlatLayout = false;
 
-    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ipsproblemsdecorator"; //$NON-NLS-1$
-
     private ArrayList<ILabelProviderListener> listeners = null;
-
-    private static final int DEFAULT_FLAG = -1;
 
     private ResourceManager resourceManager;
 

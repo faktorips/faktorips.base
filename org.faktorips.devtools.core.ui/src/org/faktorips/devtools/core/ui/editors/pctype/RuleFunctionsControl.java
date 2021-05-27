@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -28,7 +27,6 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -59,9 +57,10 @@ public class RuleFunctionsControl extends EditTableControl {
     @Override
     public void initialize(Object modelObject, String label) {
         if (label == null) {
-            label = Messages.RuleFunctionsControl_title;
+            super.initialize(modelObject, Messages.RuleFunctionsControl_title);
+        } else {
+            super.initialize(modelObject, label);
         }
-        super.initialize(modelObject, label);
         new MessageService(getTableViewer());
     }
 
@@ -97,7 +96,8 @@ public class RuleFunctionsControl extends EditTableControl {
 
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(20, false)); // message image
+        // message image
+        layouter.addColumnData(new ColumnPixelData(20, false));
         layouter.addColumnData(new ColumnWeightData(100, true));
     }
 
@@ -105,14 +105,18 @@ public class RuleFunctionsControl extends EditTableControl {
     @Override
     protected UnfocusableTextCellEditor[] createCellEditors() {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
-        editors[0] = null; // no editor for the message image column
+        // no editor for the message image column
+        editors[0] = null;
         editors[1] = new UnfocusableTextCellEditor(getTable());
         Text text = (Text)editors[1].getControl();
         IpsObjectCompletionProcessor processor = new IpsObjectCompletionProcessor(getRule().getIpsProject(),
                 IpsObjectType.BUSINESS_FUNCTION);
         processor.setComputeProposalForEmptyPrefix(true);
-        SubjectControlContentAssistant contentAssistant = CompletionUtil.createContentAssistant(processor);
-        ContentAssistHandler.createHandlerForText(text, contentAssistant);
+        // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
+        // support
+        org.eclipse.jface.contentassist.SubjectControlContentAssistant contentAssistant = CompletionUtil
+                .createContentAssistant(processor);
+        CompletionUtil.createHandlerForText(text, contentAssistant);
         editors[1].setContentAssistant(contentAssistant, 1);
         return editors;
     }

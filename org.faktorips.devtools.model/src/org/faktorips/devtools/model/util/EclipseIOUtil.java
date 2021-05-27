@@ -29,6 +29,10 @@ import org.faktorips.util.IoUtil;
  */
 public class EclipseIOUtil {
 
+    private EclipseIOUtil() {
+        // Utility class not to be instantiated
+    }
+
     /**
      * Writes the stream as content to the specified file regards the additional boolean flags and
      * forwards the status to the progress monitor.

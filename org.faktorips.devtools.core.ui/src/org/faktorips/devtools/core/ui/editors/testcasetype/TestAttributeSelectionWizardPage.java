@@ -50,11 +50,12 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
     private static final String PAGE_ID = "TestAttributeSelectionWizardPage"; //$NON-NLS-1$
 
+    protected FilteredList fFilteredList;
+
     private NewTestAttributeWizard wizard;
 
     private Text fFilterText = null;
     private String fFilter = null;
-    protected FilteredList fFilteredList;
 
     private boolean fIsMultipleSelection = true;
     private boolean fMatchEmptyString = true;

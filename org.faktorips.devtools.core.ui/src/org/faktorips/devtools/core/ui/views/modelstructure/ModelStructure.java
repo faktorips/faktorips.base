@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
 import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
-import org.faktorips.devtools.core.ui.internal.ICollectorFinishedListener;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.AbstractShowInSupportingViewPart;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
@@ -84,7 +85,7 @@ import org.faktorips.devtools.model.type.IType;
  * 
  * @author noschinski2
  */
-public final class ModelStructure extends AbstractShowInSupportingViewPart implements ICollectorFinishedListener {
+public final class ModelStructure extends AbstractShowInSupportingViewPart implements PropertyChangeListener {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"; //$NON-NLS-1$
 
@@ -726,10 +727,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void update(java.util.Observable o, Object arg) {
-        if (o.equals(this.provider)) {
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue().equals(this.provider)) {
             if (this.treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
                 expandPaths((IType)this.treeViewer.getInput());
             }

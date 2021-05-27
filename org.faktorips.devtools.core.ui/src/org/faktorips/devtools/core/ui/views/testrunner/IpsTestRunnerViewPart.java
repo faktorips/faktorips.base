@@ -72,9 +72,24 @@ import org.faktorips.util.StringUtil;
 public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListener {
 
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.testRunner"; //$NON-NLS-1$
+    public static final Object FAMILY_IPT_TEST_RUN = new Object();
 
     // Ui refresh intervall
     static final int REFRESH_INTERVAL = 200;
+
+    /* Sash form orientations */
+    static final int VIEW_ORIENTATION_VERTICAL = 0;
+    static final int VIEW_ORIENTATION_HORIZONTAL = 1;
+    static final int VIEW_ORIENTATION_AUTOMATIC = 2;
+
+    // Persistence tags.
+    static final String LAYOUT_MEMENTO = "layout"; //$NON-NLS-1$
+    static final String TAG_RATIO = "ratio"; //$NON-NLS-1$
+    static final String TAG_ORIENTATION = "orientation"; //$NON-NLS-1$
+    static final String TAG_SCROLL = "scroll"; //$NON-NLS-1$
+
+    // Contains the status message
+    protected volatile String fStatus = ""; //$NON-NLS-1$
 
     /* Ui components */
     private Composite fCounterComposite;
@@ -84,9 +99,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private FailurePane fFailurePane;
     private TestRunPane fTestRunPane;
     private Composite fParent;
-
-    // Contains the status message
-    protected volatile String fStatus = ""; //$NON-NLS-1$
 
     /*
      * The current orientation; either <code>VIEW_ORIENTATION_HORIZONTAL</code>
@@ -106,17 +118,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     private Action fShowErrorsOrFailuresOnlyAction;
     private Action fLockScrollAction;
     private ToggleOrientationAction[] fToggleOrientationActions;
-
-    /* Sash form orientations */
-    static final int VIEW_ORIENTATION_VERTICAL = 0;
-    static final int VIEW_ORIENTATION_HORIZONTAL = 1;
-    static final int VIEW_ORIENTATION_AUTOMATIC = 2;
-
-    // Persistence tags.
-    static final String LAYOUT_MEMENTO = "layout"; //$NON-NLS-1$
-    static final String TAG_RATIO = "ratio"; //$NON-NLS-1$
-    static final String TAG_ORIENTATION = "orientation"; //$NON-NLS-1$
-    static final String TAG_SCROLL = "scroll"; //$NON-NLS-1$
 
     private IMemento fMemento;
 
@@ -155,8 +156,6 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
      */
     private IpsTestIsRunningJob ipsTestIsRunningJob;
     private ILock ipsTestIsRunningLock;
-
-    public static final Object FAMILY_IPT_TEST_RUN = new Object();
 
     private int testRuns = 0;
     private int testId;
@@ -315,7 +314,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         ViewForm top = new ViewForm(fSashForm, SWT.NONE);
         CLabel label = new CLabel(top, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestRunPane_Text);
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif");//$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif"); //$NON-NLS-1$
         label.setImage((Image)resourceManager.get(imageDescriptor));
         top.setTopLeft(label);
         fTestRunPane = new TestRunPane(top, this);
@@ -324,7 +323,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         ViewForm bottom = new ViewForm(fSashForm, SWT.NONE);
         label = new CLabel(bottom, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestFailurePane_Text);
-        ImageDescriptor failureImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif");//$NON-NLS-1$
+        ImageDescriptor failureImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
         label.setImage((Image)resourceManager.get(failureImageDescriptor));
         bottom.setTopLeft(label);
 

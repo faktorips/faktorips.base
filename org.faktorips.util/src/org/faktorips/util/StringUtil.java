@@ -196,7 +196,7 @@ public class StringUtil {
             result = result.substring(0, result.length() - 1);
         }
 
-        return result.toString();
+        return result;
     }
 
     /**

@@ -25,7 +25,7 @@ public final class Consumers {
      */
     public static <C> Consumer<C> ignore() {
         return $ -> {
-            /* ignore */};
+            /* ignore */ };
     }
 
 }
