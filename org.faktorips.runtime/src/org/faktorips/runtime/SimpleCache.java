@@ -50,8 +50,7 @@ public class SimpleCache implements IComputable<Object, Object> {
             }
             result = computable.compute(key);
             if (result != null) {
-                objects.putIfAbsent(key, result);
-                return result;
+                return objects.putIfAbsent(key, result);
             }
             return null;
         }

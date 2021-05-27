@@ -145,16 +145,15 @@ public class IpsProjectData {
 
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
         LinkedHashSet<IIpsSrcFile> result = markerEnums;
-        if (result == null) {
-            synchronized (this) {
-                result = markerEnums;
-                if (result == null) {
-                    result = initMarkerEnums();
-                    markerEnums = result;
-                }
-            }
+        if (result != null) {
+            return result;
         }
-        return result;
+        synchronized (this) {
+            if (markerEnums == null) {
+                markerEnums = initMarkerEnums();
+            }
+            return markerEnums;
+        }
     }
 
     private LinkedHashSet<IIpsSrcFile> initMarkerEnums() {

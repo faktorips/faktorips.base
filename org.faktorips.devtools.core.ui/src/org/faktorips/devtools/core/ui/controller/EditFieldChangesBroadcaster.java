@@ -49,7 +49,7 @@ public class EditFieldChangesBroadcaster {
     private FieldValueChangedEvent currentEvent = null;
 
     /** mutex for synchronize reason */
-    private Boolean mutex = Boolean.TRUE;
+    private Object mutex = new Object();
 
     /** indicates if the internal delay job is running */
     private boolean running = false;

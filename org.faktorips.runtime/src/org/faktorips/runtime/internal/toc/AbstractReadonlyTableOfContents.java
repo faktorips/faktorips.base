@@ -41,7 +41,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
 
     private String productDataVersion;
 
-    private Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
+    private volatile Map<String, ITocEntryFactory<?>> tocEntryFactoriesByXmlTag;
     private final ClassLoader classLoader;
 
     /**
@@ -56,19 +56,22 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     }
 
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
-        if (tocEntryFactoriesByXmlTag == null) {
+        Map<String, ITocEntryFactory<?>> result = tocEntryFactoriesByXmlTag;
+        if (tocEntryFactoriesByXmlTag != null) {
+            return result;
+        } else {
             synchronized (TocEntryObject.class) {
                 if (tocEntryFactoriesByXmlTag == null) {
-                    tocEntryFactoriesByXmlTag = new HashMap<>();
+                    result = new HashMap<>();
                     for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
-                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+                        result.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
-                    loadExtendedTocEntryFactories();
+                    loadExtendedTocEntryFactories(result);
+                    tocEntryFactoriesByXmlTag = result;
                 }
-
+                return tocEntryFactoriesByXmlTag;
             }
         }
-        return tocEntryFactoriesByXmlTag;
     }
 
     /**
@@ -79,16 +82,18 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      * per line).
      * <p>
      * The method is marked with <code>@SuppressWarnings("rawtypes")</code> because
-     * {@link ITocEntryFactory} has a generic type which cannot not be inferred when using the
-     * service loader.
+     * {@link ITocEntryFactory} has a generic type which cannot be inferred when using the service
+     * loader.
+     *
+     * @param newTocEntryFactoriesByXmlTag the new Map being initialized
      * 
      * @see ServiceLoader
      */
     @SuppressWarnings("rawtypes")
-    private void loadExtendedTocEntryFactories() {
+    private void loadExtendedTocEntryFactories(Map<String, ITocEntryFactory<?>> newTocEntryFactoriesByXmlTag) {
         ServiceLoader<ITocEntryFactory> serviceLoader = ServiceLoader.load(ITocEntryFactory.class, classLoader);
         for (ITocEntryFactory<?> tocEntryFactory : serviceLoader) {
-            tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
+            newTocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
         }
     }
 
