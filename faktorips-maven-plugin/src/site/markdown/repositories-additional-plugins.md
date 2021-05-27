@@ -23,7 +23,7 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                         <repository>
                            <id>eclipse-2019-03</id>
                            <layout>p2</layout>
-                           <url>http://update.faktorzehn.org/p2repositories/2019-03/</url>
+                           <url>https://download.eclipse.org/eclipse/updates/4.11/</url>
                         </repository>
                     </repositories>
                     -->
