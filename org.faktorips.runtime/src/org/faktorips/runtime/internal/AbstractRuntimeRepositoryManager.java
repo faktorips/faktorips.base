@@ -52,7 +52,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
     @Override
     public IRuntimeRepository getCurrentRuntimeRepository() {
         IRuntimeRepository runtimeRepository = currentRuntimeRepository;
-        if (!(isRepositoryUpToDate(runtimeRepository) && areReferencedRepositoriesUpToDate())) {
+        if (isRepositoryUpToDate(runtimeRepository) && areReferencedRepositoriesUpToDate()) {
+            return runtimeRepository;
+        } else {
             synchronized (this) {
                 runtimeRepository = currentRuntimeRepository;
                 if (!(isRepositoryUpToDate(runtimeRepository) && areReferencedRepositoriesUpToDate())) {
@@ -65,9 +67,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
                     }
                     currentRuntimeRepository = runtimeRepository;
                 }
+                return currentRuntimeRepository;
             }
         }
-        return runtimeRepository;
     }
 
     /**
@@ -130,7 +132,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
     @Override
     public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers() {
         List<IRuntimeRepositoryManager> result = allManagers;
-        if (result == null) {
+        if (result != null) {
+            return result;
+        } else {
             synchronized (this) {
                 result = allManagers;
                 if (result == null) {
@@ -152,9 +156,9 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
                     result = Collections.unmodifiableList(result);
                     allManagers = result;
                 }
+                return allManagers;
             }
         }
-        return result;
     }
 
 }

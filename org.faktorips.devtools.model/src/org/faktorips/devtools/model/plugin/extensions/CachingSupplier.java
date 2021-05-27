@@ -13,16 +13,15 @@ public abstract class CachingSupplier<T> implements Supplier<T> {
     @Override
     public T get() {
         T result = value;
-        if (result == null) {
-            synchronized (this) {
-                if (value == null) {
-                    // CSOFF: InnerAssignmentCheck
-                    value = result = initializeValue();
-                    // CSON: InnerAssignmentCheck
-                }
-            }
+        if (result != null) {
+            return result;
         }
-        return result;
+        synchronized (this) {
+            if (value == null) {
+                value = initializeValue();
+            }
+            return value;
+        }
     }
 
     /**

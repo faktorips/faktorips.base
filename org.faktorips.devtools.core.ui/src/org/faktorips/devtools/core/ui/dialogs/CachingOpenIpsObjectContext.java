@@ -28,19 +28,22 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 public abstract class CachingOpenIpsObjectContext implements ISelectIpsObjectContext {
 
     // volatile for double checking ideom
-    public volatile List<IIpsSrcFile> srcFiles;
+    private volatile List<IIpsSrcFile> srcFiles;
 
     @Override
     public final List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
-        if (srcFiles == null) {
+        List<IIpsSrcFile> result = srcFiles;
+        if (result != null) {
+            return result;
+        } else {
             synchronized (this) {
                 if (srcFiles == null) {
                     srcFiles = new ArrayList<>();
                     srcFiles = loadIpsSrcFiles(progressMonitor);
                 }
+                return srcFiles;
             }
         }
-        return srcFiles;
     }
 
     /**
