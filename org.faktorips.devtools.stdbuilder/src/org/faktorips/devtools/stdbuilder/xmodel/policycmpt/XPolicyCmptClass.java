@@ -465,7 +465,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public Set<XPolicyAttribute> getAttributesForGenericValidation() {
-        return filtered(getAttributes(), a -> a.getAttribute().isGenericValidationEnabled());
+        return filtered(getAttributesIncludingAbstract(), a -> a.getAttribute().isGenericValidationEnabled());
     }
 
     public Set<XPolicyAttribute> getAttributesForDeltaComputation() {
