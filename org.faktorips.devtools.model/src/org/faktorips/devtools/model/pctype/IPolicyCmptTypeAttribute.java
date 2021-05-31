@@ -75,6 +75,13 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
             + "OverwrittenAttributeDifferentType"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an attribute with disabled generic validation
+     * overwrites another attribute with enabled generic validation (which is not allowed).
+     */
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_DISABLED_GENERIC_VALIDATION = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDisabledGenericValidation"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the currently configured value set is not allowed
      * for this attribute.
      */

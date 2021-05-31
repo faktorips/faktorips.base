@@ -350,6 +350,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                                 this, PROPERTY_ATTRIBUTE_TYPE));
                     }
                 }
+                if (superAttr.isGenericValidationEnabled() && !isGenericValidationEnabled()) {
+                    String text = Messages.PolicyCmptTypeAttribute_OverwrittenAttributeDisabledGenericValidation;
+                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_DISABLED_GENERIC_VALIDATION, text,
+                            Message.ERROR, this,
+                            PROPERTY_GENERIC_VALIDATION));
+                }
             }
         }
     }
