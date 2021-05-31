@@ -50,13 +50,12 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        JavaCodeFragment ment = new JavaCodeFragment();
-        ment.append("new "); //$NON-NLS-1$
-        ment.appendClassName(Double.class);
-        ment.append('(');
-        ment.append(value);
-        ment.append(')');
-        return ment;
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(Double.class);
+        fragment.append(".valueOf("); //$NON-NLS-1$
+        fragment.append(value);
+        fragment.append(')');
+        return fragment;
     }
 
     @Override
