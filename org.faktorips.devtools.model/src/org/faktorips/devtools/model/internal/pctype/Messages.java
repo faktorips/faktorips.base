@@ -104,6 +104,7 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType;
     public static String PolicyCmptTypeAttribute_msg_ProductRelevantAttributeCanNotHaveDerivedValueSet;
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
+    public static String PolicyCmptTypeAttribute_OverwrittenAttributeDisabledGenericValidation;
 
     public static String Association_msg_InverseAssociationInconsistentWithDerivedUnion;
     public static String Association_msg_AssociationNotFoundInTarget;

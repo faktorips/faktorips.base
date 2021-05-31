@@ -807,6 +807,24 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (genericValidation != null) {
             getBindingContext().bindContent(genericValidation.getButton(), ruleModel, RuleUIModel.PROPERTY_GENERIC);
+            getBindingContext()
+                    .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_GENERIC, null) {
+                        @Override
+                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                            if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
+                                try {
+                                    if (attribute.isGenericValidationEnabled() && attribute.isOverwrite()
+                                            && ((IPolicyCmptTypeAttribute)attribute
+                                                    .findOverwrittenAttribute(ipsProject))
+                                                            .isGenericValidationEnabled()) {
+                                        genericValidation.setEnabled(false);
+                                    }
+                                } catch (CoreException e) {
+                                    throw new CoreRuntimeException(e);
+                                }
+                            }
+                        }
+                    });
         }
         getBindingContext()
                 .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
@@ -939,9 +957,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     getToolkit().setDataChangeable(group, false);
                     return;
                 }
-                if (enabled) {
-                    enableOrDisableDatatypeDependingControls();
-                }
+                enableOrDisableDatatypeDependingControls();
             }
         });
 
