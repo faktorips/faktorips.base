@@ -30,15 +30,15 @@ public class GenericRelevanceValidationTest {
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
-        MessageList messageList = GenericRelevanceValidation.of(modelObject,
+        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicyWithVisitor.class,
                 TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                 new ValidationContext(Locale.GERMANY, getClass().getClassLoader(), config));
         assertThat(messageList.size(), is(1));
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_MANDATORY_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
     }
@@ -51,7 +51,7 @@ public class GenericRelevanceValidationTest {
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
-        MessageList messageList = GenericRelevanceValidation.of(modelObject,
+        MessageList messageList = GenericRelevanceValidation.of(modelObject, TestPolicyWithVisitor.class,
                 TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                 // ValidationContext has different Locale, which is ignored.
                 new ValidationContext(Locale.ENGLISH, getClass().getClassLoader(), config));
@@ -59,15 +59,16 @@ public class GenericRelevanceValidationTest {
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_MANDATORY_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testOf_AttributeNotFound() {
-        GenericRelevanceValidation.of(new TestPolicyWithVisitor(), "Foobar", new ValidationContext());
+        GenericRelevanceValidation.of(new TestPolicyWithVisitor(), TestPolicyWithVisitor.class, "Foobar",
+                new ValidationContext());
     }
 
     @Test
@@ -81,7 +82,8 @@ public class GenericRelevanceValidationTest {
         PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
 
-        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject,
+                TestPolicyWithVisitor.class, policyAttribute,
                 config);
 
         MessageList messageList = relevanceValidation.validate();
@@ -89,8 +91,8 @@ public class GenericRelevanceValidationTest {
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_MANDATORY_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("The field \"Integer Attribute\" must contain a value."));
     }
@@ -107,7 +109,8 @@ public class GenericRelevanceValidationTest {
         PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
 
-        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject,
+                TestPolicyWithVisitor.class, policyAttribute,
                 config);
 
         MessageList messageList = relevanceValidation.validate();
@@ -115,8 +118,8 @@ public class GenericRelevanceValidationTest {
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_IRRELEVANT_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.IrrelevantValuePresent.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("The field \"Integer Attribute\" must not contain a value."));
     }
@@ -133,7 +136,8 @@ public class GenericRelevanceValidationTest {
         PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
 
-        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject,
+                TestPolicyWithVisitor.class, policyAttribute,
                 config);
 
         MessageList messageList = relevanceValidation.validate();
@@ -141,8 +145,8 @@ public class GenericRelevanceValidationTest {
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_IRRELEVANT_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.IrrelevantValuePresent.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("The field \"Integer Attribute\" must not contain a value."));
     }
@@ -159,7 +163,8 @@ public class GenericRelevanceValidationTest {
         PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
 
-        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject,
+                TestPolicyWithVisitor.class, policyAttribute,
                 config);
 
         MessageList messageList = relevanceValidation.validate();
@@ -167,8 +172,8 @@ public class GenericRelevanceValidationTest {
 
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(),
-                startsWith(DefaultGenericAttributeValidationConfiguration.ERROR_INVALID_MSG_CODE_PREFIX));
-        assertThat(message.getCode(), containsString("TestPolicy"));
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("The field \"Integer Attribute\" contains an invalid value."));
     }
@@ -191,8 +196,8 @@ public class GenericRelevanceValidationTest {
         PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
 
-        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject, policyAttribute,
-                config);
+        GenericRelevanceValidation relevanceValidation = new GenericRelevanceValidation(modelObject,
+                TestPolicyWithVisitor.class, policyAttribute, config);
 
         MessageList messageList = relevanceValidation.validate();
         assertThat(messageList.isEmpty(), is(true));

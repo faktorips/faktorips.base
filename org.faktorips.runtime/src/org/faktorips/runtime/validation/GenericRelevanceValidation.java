@@ -31,11 +31,16 @@ public class GenericRelevanceValidation {
 
     private final IModelObject modelObject;
     private final PolicyAttribute policyAttribute;
+    private final Class<? extends IModelObject> definingModelObjectClass;
     private final IGenericAttributeValidationConfiguration config;
 
-    public GenericRelevanceValidation(IModelObject modelObject, PolicyAttribute policyAttribute,
+    public GenericRelevanceValidation(IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass,
+            PolicyAttribute policyAttribute,
             IGenericAttributeValidationConfiguration config) {
         this.modelObject = requireNonNull(modelObject, "modelObject must not be null");
+        this.definingModelObjectClass = requireNonNull(definingModelObjectClass,
+                "definingModelObjectClass must not be null");
         this.policyAttribute = requireNonNull(policyAttribute, "policyAttribute must not be null");
         this.config = requireNonNull(config, "config must not be null");
     }
@@ -55,8 +60,11 @@ public class GenericRelevanceValidation {
      *         {@link IGenericAttributeValidationConfiguration#shouldValidate(PolicyAttribute, IModelObject)}
      *         returning {@code false}
      */
-    public static MessageList of(IModelObject modelObject, String propertyName, IValidationContext validationContext) {
-        return new GenericRelevanceValidation(modelObject,
+    public static MessageList of(IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass,
+            String propertyName,
+            IValidationContext validationContext) {
+        return new GenericRelevanceValidation(modelObject, definingModelObjectClass,
                 IpsModel.getPolicyCmptType(modelObject).getAttribute(propertyName),
                 validationContext.getGenericAttributeValidationConfiguration())
                         .validate();
@@ -87,21 +95,23 @@ public class GenericRelevanceValidation {
 
     private Message validateValuePresentIfMandatory() {
         if (isInvalidMandatory()) {
-            return config.createMessageForMissingMandatoryValue(policyAttribute, modelObject);
+            return config.createMessageForMissingMandatoryValue(policyAttribute, modelObject, definingModelObjectClass);
         }
         return null;
     }
 
     private Message validateValueNullIfIrrelevant() {
         if (isInvalidIrrelevance()) {
-            return config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject);
+            return config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject,
+                    definingModelObjectClass);
         }
         return null;
     }
 
     private Message validateValueContainedIfPresent() {
         if (isInvalidNotContained()) {
-            return config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject);
+            return config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                    definingModelObjectClass);
         }
         return null;
     }
@@ -151,5 +161,26 @@ public class GenericRelevanceValidation {
     @SuppressWarnings("unchecked")
     private <T> ValueSet<T> getValueSet() {
         return (ValueSet<T>)policyAttribute.getValueSet(modelObject);
+    }
+
+    public enum Error {
+        IrrelevantValuePresent("IRRELEVANT"),
+        MandatoryValueMissing("MANDATORY"),
+        ValueNotInValueSet("INVALID");
+
+        private String id;
+
+        Error(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getDefaultMessageCode(Class<? extends IModelObject> definingModelObjectClass,
+                String propertyName) {
+            return getId() + "." + definingModelObjectClass.getSimpleName() + "." + propertyName;
+        }
     }
 }

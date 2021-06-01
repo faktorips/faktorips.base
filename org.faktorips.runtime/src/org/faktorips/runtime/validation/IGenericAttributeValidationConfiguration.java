@@ -40,8 +40,12 @@ public interface IGenericAttributeValidationConfiguration {
      *
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute was validated
+     * @param definingModelObjectClass the model object class where the generic validation is
+     *            defined
      */
-    Message createMessageForMissingMandatoryValue(PolicyAttribute policyAttribute, IModelObject modelObject);
+    Message createMessageForMissingMandatoryValue(PolicyAttribute policyAttribute,
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass);
 
     /**
      * Creates a message to indicate that the given attribute's value on the given model object is
@@ -49,9 +53,12 @@ public interface IGenericAttributeValidationConfiguration {
      *
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute was validated
+     * @param definingModelObjectClass the model object class where the generic validation is
+     *            defined
      */
     Message createMessageForValuePresentForIrrelevantAttribute(PolicyAttribute policyAttribute,
-            IModelObject modelObject);
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass);
 
     /**
      * Creates a message to indicate that the given attribute's value on the given model object is
@@ -59,7 +66,11 @@ public interface IGenericAttributeValidationConfiguration {
      *
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute was validated
+     * @param definingModelObjectClass the model object class where the generic validation is
+     *            defined
      */
-    Message createMessageForValueNotInAllowedValueSet(PolicyAttribute policyAttribute, IModelObject modelObject);
+    Message createMessageForValueNotInAllowedValueSet(PolicyAttribute policyAttribute,
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass);
 
 }

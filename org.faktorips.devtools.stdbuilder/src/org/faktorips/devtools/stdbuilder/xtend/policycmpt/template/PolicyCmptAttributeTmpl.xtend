@@ -276,9 +276,9 @@ class PolicyCmptAttributeTmpl {
 
   def package static genericValidation(XPolicyAttribute it) '''
       «IF policyCmptNode.ipsObjectPartContainer.generateValidatorClass»
-      ml.add(«GenericRelevanceValidation».of(get«policyCmptNode.implClassName»(), «addStaticImport(policyCmptNode.getQualifiedName(BuilderAspect.INTERFACE),constantNamePropertyName)», context));
+      ml.add(«GenericRelevanceValidation».of(get«policyCmptNode.implClassName»(), «policyCmptNode.implClassName».class, «addStaticImport(policyCmptNode.getQualifiedName(BuilderAspect.INTERFACE),constantNamePropertyName)», context));
       «ELSE»
-      ml.add(«GenericRelevanceValidation».of(this, «constantNamePropertyName», context));
+      ml.add(«GenericRelevanceValidation».of(this, «policyCmptNode.implClassName».class, «constantNamePropertyName», context));
       «ENDIF»
   '''
 

@@ -18,7 +18,6 @@ import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.Range;
@@ -95,14 +94,15 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
 
     /**
      * Creates an error message with a message code created from the given prefix via
-     * {@link #createMsgCode(String, IModelObject, PolicyAttribute)} and an invalid object property
-     * for the given attribute.
+     * {@link #createMsgCode(GenericRelevanceValidation.Error, PolicyAttribute, Class)} and an
+     * invalid object property for the given attribute.
      */
     protected Message createErrorMessage(PolicyAttribute policyAttribute,
             IModelObject modelObject,
-            String msgCodePrefix,
+            GenericRelevanceValidation.Error error,
+            Class<? extends IModelObject> definingModelObjectClass,
             String message) {
-        String msgCode = createMsgCode(msgCodePrefix, modelObject, policyAttribute);
+        String msgCode = createMsgCode(error, policyAttribute, definingModelObjectClass);
         return Message.error(message)
                 .code(msgCode)
                 .invalidObjectWithProperties(modelObject, policyAttribute.getName())
@@ -111,11 +111,12 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
 
     /**
      * Creates a message code from the pattern
-     * &lt;prefix&gt;.&lt;policyCmptTypeName&gt;.&lt;policyAttributeName&gt;.
+     * &lt;errorCode&gt;.&lt;definingModelObjectClassName&gt;.&lt;policyAttributeName&gt;.
      */
-    protected String createMsgCode(String msgCodePrefix, IModelObject modelObject, PolicyAttribute policyAttribute) {
-        return String.format("%s.%s.%s", msgCodePrefix, IpsModel.getPolicyCmptType(modelObject).getName(),
-                policyAttribute.getName());
+    protected String createMsgCode(GenericRelevanceValidation.Error error,
+            PolicyAttribute policyAttribute,
+            Class<? extends IModelObject> definingModelObjectClass) {
+        return error.getDefaultMessageCode(definingModelObjectClass, policyAttribute.getName());
     }
 
     /**
@@ -145,21 +146,27 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
     }
 
     @Override
-    public Message createMessageForMissingMandatoryValue(PolicyAttribute policyAttribute, IModelObject modelObject) {
-        return createErrorMessage(policyAttribute, modelObject, ERROR_MANDATORY_MSG_CODE_PREFIX,
+    public Message createMessageForMissingMandatoryValue(PolicyAttribute policyAttribute,
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass) {
+        return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.MandatoryValueMissing,
+                definingModelObjectClass,
                 format(ERROR_MANDATORY_MSG_CODE_PREFIX, getLabelFor(policyAttribute, modelObject)));
     }
 
     @Override
     public Message createMessageForValuePresentForIrrelevantAttribute(PolicyAttribute policyAttribute,
-            IModelObject modelObject) {
-        return createErrorMessage(policyAttribute, modelObject, ERROR_IRRELEVANT_MSG_CODE_PREFIX,
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass) {
+        return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.IrrelevantValuePresent,
+                definingModelObjectClass,
                 format(ERROR_IRRELEVANT_MSG_CODE_PREFIX, getLabelFor(policyAttribute, modelObject)));
     }
 
     @Override
     public Message createMessageForValueNotInAllowedValueSet(PolicyAttribute policyAttribute,
-            IModelObject modelObject) {
+            IModelObject modelObject,
+            Class<? extends IModelObject> definingModelObjectClass) {
         StringBuilder sb = new StringBuilder(
                 format(ERROR_INVALID_MSG_CODE_PREFIX, getLabelFor(policyAttribute, modelObject)));
         ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
@@ -179,7 +186,8 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
                 sb.append(format(MSG_KEY_VALUE_IN_RANGE, lowerBound, upperBound, stepLabel));
             }
         }
-        return createErrorMessage(policyAttribute, modelObject, ERROR_INVALID_MSG_CODE_PREFIX, sb.toString());
+        return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.ValueNotInValueSet,
+                definingModelObjectClass, sb.toString());
     }
 
 }
