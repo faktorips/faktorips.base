@@ -9,10 +9,15 @@
  *******************************************************************************/
 package org.faktorips.runtime.validation;
 
+import java.math.BigDecimal;
+
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
+import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ValueSetKind;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
 import org.faktorips.valueset.BigDecimalRange;
 import org.faktorips.valueset.DecimalRange;
 import org.faktorips.valueset.DefaultRange;
@@ -23,6 +28,8 @@ import org.faktorips.valueset.MoneyRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Defines the relevance of a {@link PolicyAttribute}, derived from its
@@ -43,11 +50,18 @@ public enum Relevance {
      * An attribute with an empty (or {@code null}) value set - no value should be set.
      */
     IRRELEVANT {
+
         @Override
-        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
+        public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+                PolicyAttribute policyAttribute,
+                ValueSet<T> parentValueSet) {
+            @SuppressWarnings("unchecked")
+            Class<T> datatype = (Class<T>)policyAttribute.getDatatype();
             ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
             if (valueSetKind == ValueSetKind.Range) {
-                return new DefaultRange<>();
+                @SuppressWarnings("unchecked")
+                ValueSet<T> range = (ValueSet<T>)createEmptyRange(datatype);
+                return range;
             }
             return new OrderedValueSet<>(false, null);
         }
@@ -57,25 +71,15 @@ public enum Relevance {
      * can be set but is not required.
      */
     OPTIONAL {
-        @Override
-        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
-            ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
-            Class<?> datatype = policyAttribute.getDatatype();
-            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
 
-            if (Boolean.class.equals(datatype) || boolean.class.equals(datatype)) {
-                return new OrderedValueSet<>(true, null, Boolean.TRUE, Boolean.FALSE);
-            }
-            if (valueSetKind == ValueSetKind.Range) {
-                if (valueSet.containsNull()) {
-                    return valueSet;
-                }
-                return changeRangeRelevance(valueSet, true);
-            }
-            if (valueSetKind == ValueSetKind.Enum) {
-                return new OrderedValueSet<>(true, null, datatype.getEnumConstants());
-            }
-            return new UnrestrictedValueSet<>(true);
+        @Override
+        public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+                PolicyAttribute policyAttribute,
+                ValueSet<T> parentValueSet) {
+            @SuppressWarnings("unchecked")
+            Class<T> datatype = (Class<T>)policyAttribute.getDatatype();
+            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
+            return asValueSet(datatype, valueSetKind, true, parentValueSet);
         }
     },
     /**
@@ -83,27 +87,102 @@ public enum Relevance {
      * {@code null} - a value must be set.
      */
     MANDATORY {
-        @Override
-        public ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
-            ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
-            Class<?> datatype = policyAttribute.getDatatype();
-            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
 
-            if (Boolean.class.equals(datatype) || boolean.class.equals(datatype)) {
-                return new OrderedValueSet<>(false, null, Boolean.TRUE, Boolean.FALSE);
-            }
-            if (valueSetKind == ValueSetKind.Range) {
-                if (!valueSet.containsNull()) {
-                    return valueSet;
-                }
-                return changeRangeRelevance(valueSet, false);
-            }
-            if (valueSetKind == ValueSetKind.Enum) {
-                return new OrderedValueSet<>(false, null, datatype.getEnumConstants());
-            }
-            return new UnrestrictedValueSet<>(false);
+        @Override
+        public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+                PolicyAttribute policyAttribute,
+                ValueSet<T> parentValueSet) {
+            @SuppressWarnings("unchecked")
+            Class<T> datatype = (Class<T>)policyAttribute.getDatatype();
+            ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
+            return asValueSet(datatype, valueSetKind, false, parentValueSet);
         }
     };
+
+    private static <T> ValueSet<T> asValueSet(Class<T> datatype,
+            ValueSetKind valueSetKind,
+            boolean containsNull,
+            ValueSet<T> parentValueSet) {
+        if (isCompatible(parentValueSet, valueSetKind) && parentValueSet.containsNull() == containsNull) {
+            return parentValueSet;
+        }
+        if (isBoolean(datatype)) {
+            return asBooleanValueSet(containsNull, parentValueSet);
+        }
+        if (isRange(valueSetKind, parentValueSet)) {
+            return asRange(datatype, containsNull, parentValueSet);
+        }
+        if (isEnum(valueSetKind, parentValueSet)) {
+            return asEnum(datatype, containsNull, parentValueSet);
+        }
+        return new UnrestrictedValueSet<>(containsNull);
+    }
+
+    private static <T> boolean isEnum(ValueSetKind valueSetKind, ValueSet<T> parentValueSet) {
+        return valueSetKind == ValueSetKind.Enum
+                || (parentValueSet != null && parentValueSet instanceof OrderedValueSet);
+    }
+
+    private static <T> boolean isRange(ValueSetKind valueSetKind, ValueSet<T> parentValueSet) {
+        return valueSetKind == ValueSetKind.Range || (parentValueSet != null && parentValueSet.isRange());
+    }
+
+    private static <T> boolean isBoolean(Class<T> datatype) {
+        return Boolean.class.equals(datatype) || boolean.class.equals(datatype);
+    }
+
+    private static <T> ValueSet<T> asEnum(Class<T> datatype, boolean containsNull, ValueSet<T> parentValueSet) {
+        if (parentValueSet != null) {
+            return new OrderedValueSet<>(parentValueSet.getValues(true), containsNull, nullValue(datatype));
+        } else {
+            return new OrderedValueSet<>(containsNull, nullValue(datatype), datatype.getEnumConstants());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T nullValue(Class<T> datatype) {
+        if (Money.class.isAssignableFrom(datatype)) {
+            return (T)Money.NULL;
+        }
+        if (Decimal.class.isAssignableFrom(datatype)) {
+            return (T)Decimal.NULL;
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> ValueSet<T> asRange(Class<T> datatype, boolean containsNull, ValueSet<T> parentValueSet) {
+        if (parentValueSet != null) {
+            return (ValueSet<T>)changeRangeRelevance(parentValueSet, containsNull);
+        } else {
+            return (ValueSet<T>)createRangeRelevance(datatype, containsNull);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> ValueSet<T> asBooleanValueSet(boolean containsNull, ValueSet<T> parentValueSet) {
+        if (parentValueSet != null) {
+            return new OrderedValueSet<>(parentValueSet.getValues(true), containsNull, null);
+        } else {
+            return (ValueSet<T>)new OrderedValueSet<Boolean>(containsNull, null, Boolean.TRUE, Boolean.FALSE);
+        }
+    }
+
+    private static boolean isCompatible(ValueSet<?> parentValueSet, ValueSetKind valueSetKind) {
+        if (parentValueSet == null) {
+            return false;
+        }
+        switch (valueSetKind) {
+            case AllValues:
+                return true;
+            case Enum:
+                return parentValueSet instanceof OrderedValueSet;
+            case Range:
+                return parentValueSet.isRange();
+            default:
+                return false;
+        }
+    }
 
     /**
      * Returns whether the attribute with the given property name is considered {@link #IRRELEVANT}
@@ -195,14 +274,51 @@ public enum Relevance {
      * Returns a {@link ValueSet} for the given model object's attribute that matches this
      * {@link Relevance}.
      */
-    public abstract ValueSet<?> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute);
+    public <T> ValueSet<T> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
+        return asValueSetFor(modelObject, policyAttribute, null);
+    }
 
     /**
      * Returns a {@link ValueSet} for the given model object's attribute identified by the given
      * property name that matches this {@link Relevance}.
      */
-    public ValueSet<?> asValueSetFor(IModelObject modelObject, String property) {
+    public <T> ValueSet<T> asValueSetFor(IModelObject modelObject, String property) {
         return this.asValueSetFor(modelObject, IpsModel.getPolicyCmptType(modelObject).getAttribute(property));
+    }
+
+    /**
+     * Returns a {@link ValueSet} for the given model object's attribute that matches this
+     * {@link Relevance}. If a parent value set is given, the returned value set will be of the same
+     * type (if allowed by the attribute's {@link ValueSetKind}) and contain no values not allowed
+     * by that parent value set (with the exception of a null value if the value set is converted to
+     * {@link #OPTIONAL}).
+     *
+     * @param modelObject a model object
+     * @param policyAttribute an attribute present on the model object's {@link PolicyCmptType}
+     * @param parentValueSet an optional parent {@link ValueSet}, which can limit the allowed values
+     *            for the returned value set
+     */
+    public abstract <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+            PolicyAttribute policyAttribute,
+            @CheckForNull ValueSet<T> parentValueSet);
+
+    /**
+     * Returns a {@link ValueSet} for the given model object's attribute identified by the given
+     * property name that matches this {@link Relevance}. If a parent value set is given, the
+     * returned value set will be of the same type (if allowed by the attribute's
+     * {@link ValueSetKind}) and contain no values not allowed by that parent value set (with the
+     * exception of a null value if the value set is converted to {@link #OPTIONAL}).
+     *
+     * @param modelObject a model object
+     * @param property the name of an attribute present on the model object's {@link PolicyCmptType}
+     * @param parentValueSet an optional parent {@link ValueSet}, which can limit the allowed values
+     *            for the returned value set
+     */
+    public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+            String property,
+            @CheckForNull ValueSet<T> parentValueSet) {
+        return this.asValueSetFor(modelObject, IpsModel.getPolicyCmptType(modelObject).getAttribute(property),
+                parentValueSet);
     }
 
     private static ValueSet<?> changeRangeRelevance(ValueSet<?> valueSet, boolean containsNull) {
@@ -237,6 +353,52 @@ public enum Relevance {
                     moneyRange.getStep(), containsNull);
         }
         return null;
+    }
+
+    private static ValueSet<?> createRangeRelevance(Class<?> datatype, boolean containsNull) {
+        if (BigDecimal.class.isAssignableFrom(datatype)) {
+            return BigDecimalRange.valueOf((BigDecimal)null, null, null, containsNull);
+        }
+        if (Decimal.class.isAssignableFrom(datatype)) {
+            return DecimalRange.valueOf((Decimal)null, null, null, containsNull);
+        }
+        if (Double.class.isAssignableFrom(datatype) || Double.TYPE.isAssignableFrom(datatype)) {
+            return DoubleRange.valueOf((Double)null, null, null, containsNull);
+        }
+        if (Integer.class.isAssignableFrom(datatype) || Integer.TYPE.isAssignableFrom(datatype)) {
+            return IntegerRange.valueOf((Integer)null, null, null, containsNull);
+        }
+        if (Long.class.isAssignableFrom(datatype) || Long.TYPE.isAssignableFrom(datatype)) {
+            return LongRange.valueOf((Long)null, null, null, containsNull);
+        }
+        if (Money.class.isAssignableFrom(datatype)) {
+            return MoneyRange.valueOf((Money)null, null, null, containsNull);
+        }
+        return null;
+    }
+
+    private static ValueSet<?> createEmptyRange(Class<?> datatype) {
+        if (BigDecimal.class.isAssignableFrom(datatype)) {
+            return new BigDecimalRange();
+        }
+        if (Decimal.class.isAssignableFrom(datatype)) {
+            return new DecimalRange();
+        }
+        if (Double.class.isAssignableFrom(datatype) || Double.TYPE.isAssignableFrom(datatype)) {
+            return new DoubleRange();
+        }
+        if (Integer.class.isAssignableFrom(datatype) || Integer.TYPE.isAssignableFrom(datatype)) {
+            return new IntegerRange();
+        }
+        if (Long.class.isAssignableFrom(datatype) || Long.TYPE.isAssignableFrom(datatype)) {
+            return new LongRange();
+        }
+        if (Money.class.isAssignableFrom(datatype)) {
+            return new MoneyRange();
+        }
+        @SuppressWarnings("rawtypes")
+        DefaultRange defaultRange = new DefaultRange();
+        return defaultRange;
     }
 
 }

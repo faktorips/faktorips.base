@@ -3,13 +3,26 @@ package org.faktorips.runtime.validation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.data.TestEnum;
 import org.faktorips.runtime.data.TestPolicyWithVisitor;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
+import org.faktorips.runtime.model.annotation.IpsAssociations;
+import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
+import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
+import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.PolicyAttribute;
+import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
+import org.faktorips.valueset.MoneyRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -347,6 +360,18 @@ public class RelevanceTest {
                 is(new OrderedValueSet<>(false, Money.NULL)));
     }
 
+    @Test
+    public void testAsValueSetFor_Irrelevant_ValueSetTypeRange() {
+        assertThat(
+                Relevance.IRRELEVANT.asValueSetFor(new TestPolicyWithIntegerRange(),
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE),
+                is(new IntegerRange()));
+        assertThat(
+                Relevance.IRRELEVANT.asValueSetFor(new TestPolicyWithMoneyRange(),
+                        TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
+                is(new MoneyRange()));
+    }
+
     private Matcher<ValueSet<?>> emptyRange() {
         return new TypeSafeMatcher<ValueSet<?>>() {
 
@@ -384,8 +409,89 @@ public class RelevanceTest {
                 is(new OrderedValueSet<>(false, null, TestEnum.values())));
 
         assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Range),
+                is(LongRange.valueOf((Long)null, null, null, false)));
+
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_Derived() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedMandatoryValueSet();
+
+        assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(new UnrestrictedValueSet<Integer>(false)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_WithPreviousValueSet() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        PolicyAttribute policyAttribute_Unrestricted = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        PolicyAttribute policyAttribute_Boolean = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_BOOLEAN_ATTRIBUTE);
+        PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_ENUM_ATTRIBUTE);
+        PolicyAttribute policyAttribute_Range = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_RANGE_ATTRIBUTE);
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Unrestricted,
+                        new OrderedValueSet<>(true, null, 1, 2, 3)),
+                is(new OrderedValueSet<>(false, null, 1, 2, 3)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Boolean,
+                        new OrderedValueSet<>(true, null, Boolean.TRUE)),
+                is(new OrderedValueSet<>(false, null, Boolean.TRUE)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Enum,
+                        new OrderedValueSet<>(true, null, TestEnum.TEST_A, TestEnum.TEST_B)),
+                is(new OrderedValueSet<>(false, null, TestEnum.TEST_A, TestEnum.TEST_B)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Range,
+                        LongRange.valueOf(2L, 5L, 1L, true)),
                 is(LongRange.valueOf(2L, 5L, 1L, false)));
 
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_PrimitiveBoolean() {
+        TestPolicyWithPrimitiveBoolean modelObject = new TestPolicyWithPrimitiveBoolean();
+        PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithPrimitiveBoolean.class)
+                .getAttribute(TestPolicyWithPrimitiveBoolean.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM);
+
+        assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Enum),
+                is(new OrderedValueSet<>(false, null, true, false)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Enum,
+                        new OrderedValueSet<>(false, null, false)),
+                is(new OrderedValueSet<>(false, null, false)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_ValueSetTypeEnum() {
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerEnum(),
+                        TestPolicyWithIntegerEnum.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM),
+                is(new OrderedValueSet<>(false, null)));
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithMoneyEnum(),
+                        TestPolicyWithMoneyEnum.PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM),
+                is(new OrderedValueSet<>(false, Money.NULL)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_ValueSetTypeRange() {
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerRange(),
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE),
+                is(IntegerRange.valueOf((Integer)null, null, null, false)));
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithMoneyRange(),
+                        TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
+                is(MoneyRange.valueOf((Money)null, null, null, false)));
     }
 
     @Test
@@ -412,7 +518,268 @@ public class RelevanceTest {
                 is(new OrderedValueSet<>(true, null, TestEnum.values())));
 
         assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Range),
-                is(LongRange.valueOf(2L, 5L, 1L, true)));
+                is(LongRange.valueOf((Long)null, null, null, true)));
 
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_Derived() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedOptionalValueSet();
+
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
+                is(new UnrestrictedValueSet<Integer>(true)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_PrimitiveBoolean() {
+        TestPolicyWithPrimitiveBoolean modelObject = new TestPolicyWithPrimitiveBoolean();
+        PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithPrimitiveBoolean.class)
+                .getAttribute(TestPolicyWithPrimitiveBoolean.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM);
+
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Enum),
+                is(new OrderedValueSet<>(true, null, true, false)));
+
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Enum,
+                        new OrderedValueSet<>(false, null, false)),
+                is(new OrderedValueSet<>(true, null, false)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeEnum() {
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithIntegerEnum(),
+                        TestPolicyWithIntegerEnum.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM),
+                is(new OrderedValueSet<>(true, null)));
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithMoneyEnum(),
+                        TestPolicyWithMoneyEnum.PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM),
+                is(new OrderedValueSet<>(true, Money.NULL)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange() {
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithIntegerRange(),
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE),
+                is(IntegerRange.valueOf((Integer)null, null, null, true)));
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithMoneyRange(),
+                        TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
+                is(MoneyRange.valueOf((Money)null, null, null, true)));
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithDerivedMandatoryValueSet")
+    @IpsAttributes({ "IntegerAttribute" })
+    public static class TestPolicyWithDerivedMandatoryValueSet extends TestPolicyWithVisitor {
+
+        @IpsAllowedValues("IntegerAttribute")
+        @Override
+        public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
+            return Relevance.MANDATORY.asValueSetFor(this, PROPERTY_INTEGER_ATTRIBUTE);
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithDerivedOptionalValueSet")
+    @IpsAttributes({ "IntegerAttribute" })
+    public static class TestPolicyWithDerivedOptionalValueSet extends TestPolicyWithVisitor {
+
+        @IpsAllowedValues("IntegerAttribute")
+        @Override
+        public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
+            return Relevance.OPTIONAL.asValueSetFor(this, PROPERTY_INTEGER_ATTRIBUTE);
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithIntegerEnum")
+    @IpsAttributes({ "IntegerAttributeWithEnum" })
+    @IpsAssociations({})
+    static class TestPolicyWithIntegerEnum implements IModelObject {
+
+        public static final String PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM = "IntegerAttributeWithEnum";
+
+        private Integer integerAttributeWithEnum;
+
+        private ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithEnum = new OrderedValueSet<>(true, null, 1,
+                2, 3);
+
+        @IpsAllowedValues(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttributeWithEnum() {
+            return setOfAllowedValuesIntegerAttributeWithEnum;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public void setAllowedValuesForIntegerAttributeWithEnum(
+                ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithEnum) {
+            this.setOfAllowedValuesIntegerAttributeWithEnum = setOfAllowedValuesIntegerAttributeWithEnum;
+        }
+
+        @IpsAttribute(name = PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public Integer getIntegerAttributeWithEnum() {
+            return integerAttributeWithEnum;
+        }
+
+        @IpsAttributeSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public void setIntegerAttributeWithEnum(Integer newValue) {
+            integerAttributeWithEnum = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithIntegerRange")
+    @IpsAttributes({ "IntegerAttributeWithRange" })
+    @IpsAssociations({})
+    static class TestPolicyWithIntegerRange implements IModelObject {
+
+        public static final String PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE = "IntegerAttributeWithRange";
+
+        private Integer integerAttributeWithRange;
+
+        private ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithRange = new IntegerRange(0, 10);
+
+        @IpsAllowedValues(PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE)
+        public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttributeWithRange() {
+            return setOfAllowedValuesIntegerAttributeWithRange;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE)
+        public void setAllowedValuesForIntegerAttributeWithRange(
+                ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithRange) {
+            this.setOfAllowedValuesIntegerAttributeWithRange = setOfAllowedValuesIntegerAttributeWithRange;
+        }
+
+        @IpsAttribute(name = PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        public Integer getIntegerAttributeWithRange() {
+            return integerAttributeWithRange;
+        }
+
+        @IpsAttributeSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE)
+        public void setIntegerAttributeWithRange(Integer newValue) {
+            integerAttributeWithRange = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithMoneyEnum")
+    @IpsAttributes({ "MoneyAttributeWithEnum" })
+    @IpsAssociations({})
+    static class TestPolicyWithMoneyEnum implements IModelObject {
+
+        public static final String PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM = "MoneyAttributeWithEnum";
+
+        private Money moneyAttributeWithEnum;
+
+        private ValueSet<Money> setOfAllowedValuesMoneyAttributeWithEnum = new OrderedValueSet<>(true, null,
+                Money.euro(5), Money.euro(10));
+
+        @IpsAllowedValues(PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM)
+        public ValueSet<Money> getSetOfAllowedValuesForMoneyAttributeWithEnum() {
+            return setOfAllowedValuesMoneyAttributeWithEnum;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM)
+        public void setAllowedValuesForMoneyAttributeWithEnum(
+                ValueSet<Money> setOfAllowedValuesMoneyAttributeWithEnum) {
+            this.setOfAllowedValuesMoneyAttributeWithEnum = setOfAllowedValuesMoneyAttributeWithEnum;
+        }
+
+        @IpsAttribute(name = PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public Money getMoneyAttributeWithEnum() {
+            return moneyAttributeWithEnum;
+        }
+
+        @IpsAttributeSetter(PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM)
+        public void setMoneyAttributeWithEnum(Money newValue) {
+            moneyAttributeWithEnum = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithMoneyRange")
+    @IpsAttributes({ "MoneyAttributeWithRange" })
+    @IpsAssociations({})
+    static class TestPolicyWithMoneyRange implements IModelObject {
+
+        public static final String PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE = "MoneyAttributeWithRange";
+
+        private Money moneyAttributeWithRange;
+
+        private ValueSet<Money> setOfAllowedValuesMoneyAttributeWithRange = MoneyRange.valueOf(Money.euro(0),
+                Money.euro(10), Money.euro(1));
+
+        @IpsAllowedValues(PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE)
+        public ValueSet<Money> getSetOfAllowedValuesForMoneyAttributeWithRange() {
+            return setOfAllowedValuesMoneyAttributeWithRange;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE)
+        public void setAllowedValuesForMoneyAttributeWithRange(
+                ValueSet<Money> setOfAllowedValuesMoneyAttributeWithRange) {
+            this.setOfAllowedValuesMoneyAttributeWithRange = setOfAllowedValuesMoneyAttributeWithRange;
+        }
+
+        @IpsAttribute(name = PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        public Money getMoneyAttributeWithRange() {
+            return moneyAttributeWithRange;
+        }
+
+        @IpsAttributeSetter(PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE)
+        public void setMoneyAttributeWithRange(Money newValue) {
+            moneyAttributeWithRange = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithPrimitiveBoolean")
+    @IpsAttributes({ "booleanAttribute" })
+    static class TestPolicyWithPrimitiveBoolean implements IModelObject {
+
+        public static final String PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM = "booleanAttribute";
+
+        private boolean integerAttribute;
+
+        private ValueSet<Boolean> setOfAllowedValuesBooleanAttribute = new OrderedValueSet<>(true, null, true);
+
+        @IpsAllowedValues(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public ValueSet<Boolean> getSetOfAllowedValuesForBooleanAttribute() {
+            return setOfAllowedValuesBooleanAttribute;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public void setAllowedValuesForBooleanAttribute(
+                ValueSet<Boolean> setOfAllowedValuesBooleanAttribute) {
+            this.setOfAllowedValuesBooleanAttribute = setOfAllowedValuesBooleanAttribute;
+        }
+
+        @IpsAttribute(name = PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public boolean isBooleanAttribute() {
+            return integerAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
+        public void setBooleanAttribute(boolean newValue) {
+            integerAttribute = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
     }
 }
