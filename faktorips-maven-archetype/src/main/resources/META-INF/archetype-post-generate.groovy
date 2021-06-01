@@ -182,10 +182,10 @@ class FaktoripsMavenPluginSupport {
         </executions>$lineSeparator\
       </plugin>"""
     private final String PLUGIN_MANAGEMENT = """<plugin>$lineSeparator\
-          <groupId>org.faktorips</groupId>$lineSeparator\
-          <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
-          <version>$VERSION</version>$lineSeparator\
-        </plugin>"""
+                    <groupId>org.faktorips</groupId>$lineSeparator\
+                    <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
+                    <version>$VERSION</version>$lineSeparator\
+                </plugin>"""
 
     private final String POM = "pom.xml"
 
