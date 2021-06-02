@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.faktorips.values.Money;
 import org.junit.Test;
 
 public class OrderedValueSetTest {
@@ -73,6 +75,15 @@ public class OrderedValueSetTest {
                 Integer.valueOf(3));
         OrderedValueSet<Integer> valueSet = OrderedValueSet.of(values);
         assertThat(valueSet.getValues(), hasItems(values.toArray(new Integer[0])));
+        assertThat(valueSet.containsNull(), is(true));
+    }
+
+    @Test
+    public void testOf_Collection_WithNullObject() {
+        List<Money> values = Arrays.asList(Money.euro(1), Money.euro(2), Money.NULL, Money.euro(3));
+        OrderedValueSet<Money> valueSet = OrderedValueSet.of(values);
+        assertThat(valueSet.getValues(), hasItems(values.toArray(new Money[0])));
+        assertThat(valueSet.containsNull(), is(true));
     }
 
     @Test

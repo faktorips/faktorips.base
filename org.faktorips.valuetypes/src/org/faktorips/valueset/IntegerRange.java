@@ -22,6 +22,8 @@ public class IntegerRange extends DefaultRange<Integer> {
 
     private static final long serialVersionUID = 8454353227761904051L;
 
+    private static final IntegerRange EMPTY = new IntegerRange();
+
     /**
      * Creates a new empty {@link IntegerRange}.
      */
@@ -44,6 +46,13 @@ public class IntegerRange extends DefaultRange<Integer> {
 
     private IntegerRange(Integer lowerBound, Integer upperBound, Integer step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates an empty {@link IntegerRange}.
+     */
+    public static IntegerRange empty() {
+        return EMPTY;
     }
 
     /**

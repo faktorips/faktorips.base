@@ -3,6 +3,8 @@ package org.faktorips.runtime.validation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.Arrays;
+
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
@@ -422,7 +424,7 @@ public class RelevanceTest {
     }
 
     @Test
-    public void testAsValueSetFor_Mandatory_WithPreviousValueSet() {
+    public void testAsValueSetFor_Mandatory_WithValueSet() {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
         PolicyAttribute policyAttribute_Unrestricted = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
@@ -453,6 +455,32 @@ public class RelevanceTest {
                         LongRange.valueOf(2L, 5L, 1L, true)),
                 is(LongRange.valueOf(2L, 5L, 1L, false)));
 
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_WithValues() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        PolicyAttribute policyAttribute_Unrestricted = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        PolicyAttribute policyAttribute_Boolean = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_BOOLEAN_ATTRIBUTE);
+        PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_ENUM_ATTRIBUTE);
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Unrestricted,
+                        Arrays.asList(1, null, 2, 3)),
+                is(new OrderedValueSet<>(false, null, 1, 2, 3)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Boolean,
+                        Arrays.asList(null, Boolean.TRUE)),
+                is(new OrderedValueSet<>(false, null, Boolean.TRUE)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Enum,
+                        Arrays.asList(null, TestEnum.TEST_A, TestEnum.TEST_B)),
+                is(new OrderedValueSet<>(false, null, TestEnum.TEST_A, TestEnum.TEST_B)));
     }
 
     @Test

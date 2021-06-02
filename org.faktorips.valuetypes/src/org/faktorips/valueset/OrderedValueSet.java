@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.faktorips.values.NullObject;
+import org.faktorips.values.ObjectUtil;
+
 /**
  * Implementation of the {@link ValueSet} interface for ordered values.
  */
@@ -88,9 +91,9 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     /**
      * Creates a new instance of {@link OrderedValueSet}.
      * 
-     * @param values the values of this set. If these values contain {@code null}
-     *            {@link #containsNull()} will return {@code true}. If {@code values} is
-     *            {@code null} the created set does not contain any values.
+     * @param values the values of this set. If these values contain {@code null} or a
+     *            {@link NullObject} {@link #containsNull()} will return {@code true}. If
+     *            {@code values} is {@code null} the created set does not contain any values.
      * 
      * @throws IllegalArgumentException if the value collection contains duplicate entries
      */
@@ -100,9 +103,9 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
                 if (set.contains(e)) {
                     throw new IllegalArgumentException("The provided values Collection contains duplicate entries.");
                 }
-                if (e == null) {
+                if (ObjectUtil.isNull(e)) {
                     containsNull = true;
-                    nullValue = null;
+                    nullValue = e;
                 }
                 set.add(e);
             }
@@ -120,9 +123,9 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     /**
      * Returns a new instance of {@link OrderedValueSet} containing the passed values.
      *
-     * @param values the values of this set. If these values contain {@code null}
-     *            {@link #containsNull()} will return {@code true}. If {@code values} is
-     *            {@code null} the created set does not contain any values.
+     * @param values the values of this set. If these values contain {@code null} or a
+     *            {@link NullObject} {@link #containsNull()} will return {@code true}. If
+     *            {@code values} is {@code null} the created set does not contain any values.
      * 
      * @throws IllegalArgumentException if the values Collection contains duplicate entries
      */
@@ -133,8 +136,8 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     /**
      * Returns a new instance of {@link OrderedValueSet} containing the passed values.
      *
-     * @param values the values of this set. If these values contain {@code null}
-     *            {@link #containsNull()} will return {@code true}.
+     * @param values the values of this set. If these values contain {@code null} or a
+     *            {@link NullObject} {@link #containsNull()} will return {@code true}.
      * 
      * @throws IllegalArgumentException if the values Collection contains duplicate entries
      */

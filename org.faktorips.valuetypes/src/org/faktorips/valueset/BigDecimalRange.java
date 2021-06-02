@@ -25,6 +25,8 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
     private static final long serialVersionUID = -9040271817746215911L;
 
+    private static final BigDecimalRange EMPTY = new BigDecimalRange();
+
     /**
      * Creates a new empty {@link BigDecimalRange}.
      */
@@ -44,6 +46,13 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      */
     private BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound, BigDecimal step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates an empty {@link BigDecimalRange}.
+     */
+    public static BigDecimalRange empty() {
+        return EMPTY;
     }
 
     /**

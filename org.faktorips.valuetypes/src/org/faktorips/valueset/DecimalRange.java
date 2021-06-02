@@ -26,6 +26,8 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     private static final long serialVersionUID = 5007646029371664759L;
 
+    private static final DecimalRange EMPTY = new DecimalRange();
+
     /**
      * Creates a new empty {@link DecimalRange}.
      */
@@ -45,6 +47,13 @@ public class DecimalRange extends DefaultRange<Decimal> {
      */
     private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates an empty {@link DecimalRange}.
+     */
+    public static DecimalRange empty() {
+        return EMPTY;
     }
 
     /**
