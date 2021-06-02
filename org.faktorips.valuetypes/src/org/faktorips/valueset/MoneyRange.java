@@ -27,6 +27,8 @@ public class MoneyRange extends DefaultRange<Money> {
 
     private static final long serialVersionUID = 4750295893441094927L;
 
+    private static final MoneyRange EMPTY = new MoneyRange();
+
     /**
      * Creates a new empty {@link MoneyRange}.
      */
@@ -46,6 +48,13 @@ public class MoneyRange extends DefaultRange<Money> {
      */
     private MoneyRange(Money lowerBound, Money upperBound, Money step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates an empty {@link MoneyRange}.
+     */
+    public static MoneyRange empty() {
+        return EMPTY;
     }
 
     /**

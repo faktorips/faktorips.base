@@ -22,6 +22,8 @@ public class DoubleRange extends DefaultRange<Double> {
 
     private static final long serialVersionUID = 3093772484960108819L;
 
+    private static final DoubleRange EMPTY = new DoubleRange();
+
     /**
      * Creates a new empty {@link DoubleRange}.
      */
@@ -39,6 +41,13 @@ public class DoubleRange extends DefaultRange<Double> {
 
     public DoubleRange(Double lowerBound, Double upperBound) {
         this(lowerBound, upperBound, false);
+    }
+
+    /**
+     * Creates an empty {@link DoubleRange}.
+     */
+    public static DoubleRange empty() {
+        return EMPTY;
     }
 
     /**

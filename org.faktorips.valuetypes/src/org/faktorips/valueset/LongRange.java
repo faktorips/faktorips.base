@@ -22,6 +22,8 @@ public class LongRange extends DefaultRange<Long> {
 
     private static final long serialVersionUID = -785773839824461985L;
 
+    private static final LongRange EMPTY = new LongRange();
+
     /**
      * Creates a new empty {@link LongRange}.
      */
@@ -35,6 +37,13 @@ public class LongRange extends DefaultRange<Long> {
 
     private LongRange(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    /**
+     * Creates an empty {@link LongRange}.
+     */
+    public static LongRange empty() {
+        return EMPTY;
     }
 
     /**
