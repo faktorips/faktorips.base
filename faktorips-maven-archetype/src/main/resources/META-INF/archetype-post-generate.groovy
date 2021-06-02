@@ -170,17 +170,17 @@ class FaktoripsMavenPluginSupport {
     // Using the system specific line separators (Groovy uses LF only)
     // The indentation fits to the maven dependencies
     private final String PLUGIN_CONFIGURATION = """<plugin>$lineSeparator\
-        <groupId>org.faktorips</groupId>$lineSeparator\
-        <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
-        <executions>$lineSeparator\
-          <execution>$lineSeparator\
-            <goals>$lineSeparator\
-              <goal>faktorips-clean</goal>$lineSeparator\
-              <goal>faktorips-build</goal>$lineSeparator\
-            </goals>$lineSeparator\
-          </execution>$lineSeparator\
-        </executions>$lineSeparator\
-      </plugin>"""
+                <groupId>org.faktorips</groupId>$lineSeparator\
+                <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
+                <executions>$lineSeparator\
+                    <execution>$lineSeparator\
+                        <goals>$lineSeparator\
+                            <goal>faktorips-clean</goal>$lineSeparator\
+                            <goal>faktorips-build</goal>$lineSeparator\
+                        </goals>$lineSeparator\
+                    </execution>$lineSeparator\
+                </executions>$lineSeparator\
+            </plugin>"""
     private final String PLUGIN_MANAGEMENT = """<plugin>$lineSeparator\
                     <groupId>org.faktorips</groupId>$lineSeparator\
                     <artifactId>faktorips-maven-plugin</artifactId>$lineSeparator\
