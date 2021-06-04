@@ -1,0 +1,5 @@
+:jbake-type: index
+:jbake-status: published
+:jbake-order: 01
+
+== Faktor-IPS Dokumentation
