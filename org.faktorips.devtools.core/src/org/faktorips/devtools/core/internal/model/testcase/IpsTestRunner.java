@@ -86,6 +86,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     public static final String ID_IPSTEST_LAUNCH_CONFIGURATION_TYPE = "org.faktorips.devtools.core.ipsTestLaunchConfigurationType"; //$NON-NLS-1$
     public static final String ATTR_PACKAGEFRAGMENTROOT = IpsPlugin.PLUGIN_ID + ".ATTR_PACKAGEFRAGMENTROOT"; //$NON-NLS-1$
+    public static final String ATTR_PROJECT = IpsPlugin.PLUGIN_ID + ".ATTR_PROJECT"; //$NON-NLS-1$
     public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
     public static final String ATTR_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ATTR_MAX_HEAP_SIZE"; //$NON-NLS-1$
 
@@ -180,6 +181,16 @@ public class IpsTestRunner implements IIpsTestRunner {
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }
 
+    public static IIpsProject getIpsProject(String projectName) {
+        IIpsProject[] projects = IIpsModel.get().getIpsProjects();
+        for (IIpsProject project : projects) {
+            if (project.getName().equals(projectName)) {
+                return project;
+            }
+        }
+        return null;
+    }
+
     public static IIpsProject getIpsProjectFromTocPath(String tocPaths) {
         List<String> reps = AbstractIpsTestRunner.extractListFromString(tocPaths);
         if (!(reps.size() > 0)) {
@@ -252,7 +263,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (this.launch == null) {
             ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 
-            ILaunchConfiguration launchConfiguration = createConfiguration(classpathRepositories, this.testsuites,
+            ILaunchConfiguration launchConfiguration = createConfiguration(this.classpathRepositories, this.testsuites,
                     manager);
 
             this.launch = new Launch(launchConfiguration, mode, null);
@@ -478,6 +489,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, name);
         wc.setAttribute(ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
         wc.setAttribute(ATTR_TESTCASES, testsuites);
+        wc.setAttribute(ATTR_PROJECT, this.ipsProject.getName());
         wc.setAttribute(IDebugUIConstants.ATTR_PRIVATE, false);
         wc.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
         return wc;
