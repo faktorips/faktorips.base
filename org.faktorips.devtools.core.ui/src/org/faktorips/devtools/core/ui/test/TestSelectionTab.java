@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.test;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -81,8 +83,10 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
             String packageFragmentRoot = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
             String testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
             String maxHeapSize = configuration.getAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
+            String projectName = configuration.getAttribute(IpsTestRunner.ATTR_PROJECT, ""); //$NON-NLS-1$
 
-            project = IpsTestRunner.getIpsProjectFromTocPath(packageFragmentRoot);
+            project = Objects.requireNonNullElse(IpsTestRunner.getIpsProject(projectName),
+                    IpsTestRunner.getIpsProjectFromTocPath(packageFragmentRoot));
             if (project != null) {
                 projectText.setText(project.getName());
                 testSuiteSelectionComposite.initContent(project, packageFragmentRoot, testCases);
@@ -104,6 +108,7 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
                     testSuiteSelectionComposite.getPackageFragmentRootText());
             configuration.setAttribute(IpsTestRunner.ATTR_TESTCASES, testSuiteSelectionComposite.getTestCasesText());
             configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, parameterText.getText());
+            configuration.setAttribute(IpsTestRunner.ATTR_PROJECT, project.getName());
         }
     }
 
@@ -112,6 +117,9 @@ public class TestSelectionTab extends AbstractLaunchConfigurationTab implements 
         configuration.setAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
         configuration.setAttribute(IpsTestRunner.ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
+        if (project != null) {
+            configuration.setAttribute(IpsTestRunner.ATTR_PROJECT, project.getName());
+        }
     }
 
     @Override
