@@ -9,21 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import static org.faktorips.devtools.core.ui.editors.productcmpt.AttributeRelevanceTest.ValueSetMatchers.contains;
-import static org.faktorips.devtools.core.ui.editors.productcmpt.AttributeRelevanceTest.ValueSetMatchers.containsNull;
-import static org.faktorips.devtools.core.ui.editors.productcmpt.AttributeRelevanceTest.ValueSetMatchers.empty;
-import static org.faktorips.devtools.core.ui.editors.productcmpt.AttributeRelevanceTest.ValueSetMatchers.isRange;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.contains;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.containsNull;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.empty;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.isRange;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 
-import java.util.Arrays;
-
-import com.google.common.base.Objects;
-
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -37,11 +31,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
-import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -563,77 +553,4 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.getValueSet(), containsNull());
         assertThat(configuredValueSet.getValueSet(), contains(Boolean.TRUE.toString(), Boolean.FALSE.toString()));
     }
-
-    public static class ValueSetMatchers {
-
-        public static Matcher<IValueSet> empty() {
-            return new TypeSafeMatcher<>() {
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText("an empty value set");
-                }
-
-                @Override
-                protected boolean matchesSafely(IValueSet valueSet) {
-                    return valueSet.isEmpty();
-                }
-            };
-        }
-
-        public static Matcher<IValueSet> containsNull() {
-            return new TypeSafeMatcher<>() {
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText("a value set containing null");
-                }
-
-                @Override
-                protected boolean matchesSafely(IValueSet valueSet) {
-                    return valueSet.isContainsNull();
-                }
-            };
-        }
-
-        public static Matcher<IValueSet> isRange(String lower, String upper) {
-            return new TypeSafeMatcher<>() {
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText("a range value set from " + lower + " to " + upper);
-                }
-
-                @Override
-                protected boolean matchesSafely(IValueSet valueSet) {
-                    return valueSet.isRange()
-                            && Objects.equal(((IRangeValueSet)valueSet).getLowerBound(), lower)
-                            && Objects.equal(((IRangeValueSet)valueSet).getUpperBound(), upper);
-                }
-            };
-        }
-
-        public static Matcher<IValueSet> contains(String... values) {
-            return new TypeSafeMatcher<>() {
-
-                @Override
-                public void describeTo(Description description) {
-                    description.appendText("a value set containing " + String.join(", ", values));
-                }
-
-                @Override
-                protected boolean matchesSafely(IValueSet valueSet) {
-                    return Arrays.stream(values).allMatch(v -> {
-                        try {
-                            return valueSet.containsValue(v, valueSet.getIpsProject());
-                        } catch (CoreException e) {
-                            fail(e.getMessage());
-                            return false;
-                        }
-                    });
-                }
-            };
-        }
-    }
-
 }
