@@ -12,6 +12,8 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.contains;
+import static org.faktorips.abstracttest.matcher.ValueSetMatchers.empty;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -669,7 +671,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(true));
+        assertThat(enumValueSet, is(empty()));
     }
 
     @Test
@@ -682,11 +684,11 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(true));
+        assertThat(enumValueSet, is(empty()));
     }
 
     @Test
-    public void testConvertValueSetToEnumType_Unrestricted_ModelBoolean() throws CoreException {
+    public void testConvertValueSetToEnumType_Unrestricted_ModelBoolean() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         attribute.setValueSetType(ValueSetType.UNRESTRICTED);
@@ -695,14 +697,13 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(false));
-        assertThat(enumValueSet.containsValue("true", ipsProject), is(true));
-        assertThat(enumValueSet.containsValue("false", ipsProject), is(true));
+        assertThat(enumValueSet, is(not(empty())));
+        assertThat(enumValueSet, contains("true", "false", null));
         assertThat(enumValueSet.isContainsNull(), is(true));
     }
 
     @Test
-    public void testConvertValueSetToEnumType_Unrestricted_ModelPrimitiveBoolean() throws CoreException {
+    public void testConvertValueSetToEnumType_Unrestricted_ModelPrimitiveBoolean() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
         attribute.setValueSetType(ValueSetType.UNRESTRICTED);
@@ -711,9 +712,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(false));
-        assertThat(enumValueSet.containsValue("true", ipsProject), is(true));
-        assertThat(enumValueSet.containsValue("false", ipsProject), is(true));
+        assertThat(enumValueSet, is(not(empty())));
+        assertThat(enumValueSet, contains("true", "false"));
         assertThat(enumValueSet.isContainsNull(), is(false));
     }
 
@@ -727,11 +727,11 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(true));
+        assertThat(enumValueSet, is(empty()));
     }
 
     @Test
-    public void testConvertValueSetToEnumType_Derived_ModelEnum() throws CoreException {
+    public void testConvertValueSetToEnumType_Derived_ModelEnum() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.setValueSetType(ValueSetType.ENUM);
@@ -741,9 +741,9 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enumValueSet = configuredValueSet.convertValueSetToEnumType();
 
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
-        assertThat(enumValueSet.isEmpty(), is(false));
-        assertThat(enumValueSet.containsValue("1", ipsProject), is(true));
-        assertThat(enumValueSet.containsValue("2", ipsProject), is(true));
+        assertThat(enumValueSet, is(not(empty())));
+        assertThat(enumValueSet, contains("1", "2"));
+
     }
 
 }

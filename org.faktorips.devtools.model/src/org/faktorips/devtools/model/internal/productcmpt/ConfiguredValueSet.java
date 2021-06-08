@@ -221,12 +221,6 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                 if (!valueSetDatatype.isPrimitive()) {
                     newValueSet.addValue(null);
                 }
-            } else {
-                IValueSet modelValueSet = findModelValueSet();
-                if (modelValueSet != null && ValueSetType.ENUM.equals(modelValueSet.getValueSetType())) {
-                    List<String> values = ((IEnumValueSet)modelValueSet).getValuesAsList();
-                    newValueSet.addValues(values);
-                }
             }
             return newValueSet;
         }
