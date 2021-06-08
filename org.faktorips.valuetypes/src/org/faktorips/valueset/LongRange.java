@@ -72,11 +72,14 @@ public class LongRange extends DefaultRange<Long> {
 
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Long value, Long bound) {
+        if (getStep() == null) {
+            return true;
+        }
         if (getStep().longValue() == 0L) {
             throw new IllegalArgumentException(
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
-        BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
+        BigInteger diff = BigInteger.valueOf(Math.abs(bound - value));
         BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(getStep().longValue()));
         return divAndRemainder[1].longValue() == 0;
     }

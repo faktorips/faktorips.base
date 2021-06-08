@@ -171,4 +171,20 @@ public class LongRangeTest {
         TestUtil.testSerializable(LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10)));
     }
 
+    @Test
+    public void testContains() {
+
+        assertTrue(LongRange.valueOf(1L, null, 1L, true).contains(null));
+        assertTrue(LongRange.valueOf(1L, null, 1L, false).contains(42L));
+        assertTrue(LongRange.valueOf(1L, 10L, null, false).contains(3L));
+        assertFalse(LongRange.valueOf(1L, 10L, 3L, false).contains(3L));
+    }
+
+    @Test
+    public void testCheckIfValueCompliesToStepIncrement() {
+        assertTrue(LongRange.valueOf(1L, 10L, null, false).checkIfValueCompliesToStepIncrement(3L, 10L));
+        assertTrue(LongRange.valueOf(1L, 10L, 1L, false).checkIfValueCompliesToStepIncrement(3L, 10L));
+        assertFalse(LongRange.valueOf(1L, 10L, 3L, false).checkIfValueCompliesToStepIncrement(3L, 10L));
+    }
+
 }
