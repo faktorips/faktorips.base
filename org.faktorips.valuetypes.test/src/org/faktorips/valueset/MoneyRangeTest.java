@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -159,4 +161,21 @@ public class MoneyRangeTest {
         TestUtil.testSerializable(MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), true));
     }
 
+    @Test
+    public void testContains_DifferentCurrency() {
+        MoneyRange range = MoneyRange.valueOf(Money.euro(0, 0), Money.euro(100, 0), Money.euro(0, 1), false);
+        assertThat(range.contains(Money.usd(1, 0)), is(false));
+    }
+
+    @Test
+    public void testContains_DifferentCurrencyOpenRange() {
+        MoneyRange range = MoneyRange.valueOf(null, Money.euro(100), Money.euro(1));
+        assertThat(range.contains(Money.usd(1, 0)), is(false));
+    }
+
+    @Test
+    public void testContains_EmptyRange() {
+        MoneyRange range = MoneyRange.empty();
+        assertThat(range.contains(Money.usd(1, 0)), is(true));
+    }
 }

@@ -12,6 +12,7 @@ package org.faktorips.values;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
+import java.text.MessageFormat;
 import java.util.Currency;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -587,7 +588,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             return 1;
         }
         if (!getCurrency().equals(other.getCurrency())) {
-            throw new IllegalArgumentException("The currencys are different. The objects are not comparable ");
+            throw new IllegalArgumentException(MessageFormat.format("The currencies this:{0} and other:{1} are different. The objects are not comparable.", getCurrency(),
+                    other.getCurrency()));
         }
         return getAmount().compareTo(other.getAmount());
     }
