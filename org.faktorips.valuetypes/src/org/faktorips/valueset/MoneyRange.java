@@ -11,9 +11,12 @@
 package org.faktorips.valueset;
 
 import java.math.RoundingMode;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.faktorips.values.ObjectUtil;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -128,6 +131,28 @@ public class MoneyRange extends DefaultRange<Money> {
     @Override
     protected Money getNullValue() {
         return Money.NULL;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the currency of <code>value</code> does not match the currency in the range
+     * <code>false</code> is returned.
+     * 
+     */
+    @Override
+    public boolean contains(Money value) {
+        if (ObjectUtil.isNull(value) || isCurrencySameInRange(value)) {
+            return super.contains(value);
+        }
+        return false;
+    }
+
+    private boolean isCurrencySameInRange(Money value) {
+        return Stream.of(getLowerBound(), getUpperBound(), getStep())
+                .filter(Objects::nonNull)
+                .filter(Money::isNotNull)
+                .allMatch(m -> m.getCurrency().equals(value.getCurrency()));
     }
 
 }
