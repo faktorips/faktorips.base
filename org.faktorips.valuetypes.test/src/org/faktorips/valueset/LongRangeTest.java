@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -169,6 +171,21 @@ public class LongRangeTest {
     @Test
     public void testSerializable() throws Exception {
         TestUtil.testSerializable(LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10)));
+    }
+
+    @Test
+    public void testContains() {
+        assertThat(LongRange.valueOf(1L, null, 1L, true).contains(null), is(true));
+        assertThat(LongRange.valueOf(1L, null, 1L, false).contains(42L), is(true));
+        assertThat(LongRange.valueOf(1L, 10L, null, false).contains(3L), is(true));
+        assertThat(LongRange.valueOf(1L, 10L, 3L, false).contains(3L), is(false));
+    }
+
+    @Test
+    public void testCheckIfValueCompliesToStepIncrement() {
+        assertThat(LongRange.valueOf(1L, 10L, null, false).checkIfValueCompliesToStepIncrement(3L, 10L), is(true));
+        assertThat(LongRange.valueOf(1L, 10L, 1L, false).checkIfValueCompliesToStepIncrement(3L, 10L), is(true));
+        assertThat(LongRange.valueOf(1L, 10L, 3L, false).checkIfValueCompliesToStepIncrement(3L, 10L), is(false));
     }
 
 }
