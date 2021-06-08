@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * A range implementation where the upper and lower bounds are of the type {@link Money}.
@@ -116,6 +117,33 @@ public class MoneyRange extends DefaultRange<Money> {
     @Override
     protected Money getNullValue() {
         return Money.NULL;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the currency of <code>value</code> does not match the currency in the range
+     * <code>false</code> is returned.
+     * 
+     */
+    @Override
+    public boolean contains(Money value) {
+        if (ObjectUtil.isNull(value) || isCurrencySameInRange(value)) {
+            return super.contains(value);
+        }
+        return false;
+    }
+
+    private boolean isCurrencySameInRange(Money value) {
+        return isCurrencySame(value, getLowerBound()) && isCurrencySame(value, getUpperBound())
+                && isCurrencySame(value, getStep());
+    }
+
+    private boolean isCurrencySame(Money referenceValue, Money valueToCheck) {
+        if (ObjectUtil.isNull(valueToCheck)) {
+            return true;
+        }
+        return valueToCheck.getCurrency().equals(referenceValue.getCurrency());
     }
 
 }
