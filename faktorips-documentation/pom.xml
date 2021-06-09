@@ -85,6 +85,15 @@
                         -Ddoc.deployment.port=${doc.deployment.port}</arguments>
                 </configuration>
             </plugin>
+            <plugin>
+                <!-- currently default deployment is switched off. Deployment 
+                    is triggered using profiles or custom scripts -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
