@@ -69,30 +69,11 @@
                             <serverId>doc.faktorzehn.org</serverId>
                             <fromDir>${jade.outputDirectory}/html</fromDir>
                             <includes>**/*</includes>
-                            <url>scp://${doc.user}@doc.faktorzehn.org:2004</url>
+                            <url>scp://doc@doc.faktorzehn.org:2004</url>
                             <toDir>/var/www/doc.faktorzehn.org/faktor-ips/${project.version}/</toDir>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- pass properties needed in release:perform -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <arguments>-Ddoc.user=${doc.user}
-                        -Ddoc.deployment.url=${doc.deployment.url}
-                        -Ddoc.deployment.port=${doc.deployment.port}</arguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <!-- currently default deployment is switched off. Deployment 
-                    is triggered using profiles or custom scripts -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
