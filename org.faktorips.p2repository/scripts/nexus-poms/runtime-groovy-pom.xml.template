@@ -46,9 +46,9 @@
            <version>@version@</version>
         </dependency>
         <dependency>
-           <groupId>org.codehaus.groovy</groupId>
-           <artifactId>groovy-all</artifactId>
-           <version>1.7.4</version>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.7</version>
         </dependency>
     </dependencies>
 
