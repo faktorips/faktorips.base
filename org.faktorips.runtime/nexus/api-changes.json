@@ -17,10 +17,34 @@
           "old": "missing-class junit.framework.Test",
           "new": "missing-class junit.framework.Test",
           "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter"
+        },
+        {
+          "ignore": true,
+          "code": "java.missing.oldClass",
+          "old": "missing-class javax.xml.bind.JAXBContext",
+          "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "java.missing.oldClass",
+          "old": "missing-class javax.xml.bind.annotation.adapters.XmlAdapter",
+          "justification": "false positive"
         }
       ]
     }
-   }
+   }, 
+   {
+   "extension": "revapi.filter",
+      "configuration": {
+        "elements": {
+          "exclude": [
+            "(missing-class|class|interface|field|method .*) javax\\.xml\\.bind\\..*",
+            "(missing-class|class|interface|field|method .*) javax\\.activation\\..*",
+            "(missing-class|class|interface|field|method .*) org\\.faktorips\\.runtime\\.jaxb\\..*"
+          ]
+        }
+      }
+    }
   ],
   "19.12.0": [
   {
@@ -196,3 +220,4 @@
    }
   ]
 }
+
