@@ -45,6 +45,7 @@
                                 <dtitle>${documentation.dtitle}</dtitle>
                                 <faktorips-version>${faktorips-version}</faktorips-version>
                                 <logo>FaktorZehn_Logo.png</logo>
+                                <favicon>images/favicon.ico</favicon>
                             </properties>
                         </configuration>
                     </execution>
