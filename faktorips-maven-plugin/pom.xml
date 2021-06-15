@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -40,6 +37,7 @@
         <maven-source-plugin>3.2.1</maven-source-plugin>
         <maven-site-plugin-version>3.9.1</maven-site-plugin-version>
         <wagon-maven-plugin-version>2.0.2</wagon-maven-plugin-version>
+        <maven-surefire-plugin>3.0.0-M5</maven-surefire-plugin>
         <wagon-ssh-version>3.4.3</wagon-ssh-version>
         <checkstyle.version>8.36.2</checkstyle.version>
         <spotbugs.version>4.2.1</spotbugs.version>
@@ -67,6 +65,24 @@
             <artifactId>sisu-equinox-launching</artifactId>
             <version>${tycho-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -85,6 +101,14 @@
                 </includes>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -136,6 +160,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.1.2</version>
                     <dependencies>
@@ -151,8 +180,7 @@
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>4.2.0</version>
                     <dependencies>
-                        <!-- overwrite dependency on spotbugs if you want 
-                            to specify the version of spotbugs -->
+                        <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
                             <artifactId>spotbugs</artifactId>
@@ -227,8 +255,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <!-- currently default deployment is switched off. Deployment 
-                    is triggered using profiles or custom scripts -->
+                <!-- currently default deployment is switched off. Deployment is triggered using profiles or custom scripts -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>

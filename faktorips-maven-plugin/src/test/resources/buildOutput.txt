@@ -1,0 +1,408 @@
+import:
+     [echo] executing faktorips.import now
+[faktorips.configureJdk] ConfigureJdkTask: execution started
+[faktorips.configureJdk] Installed Faktor-IPS Features: [Feature: org.faktorips.feature, Version: 21.6.1.ci_20210610-1154]
+[faktorips.configureJdk] Found VM java-8-openjdk-amd64(036a0944-5cbf-4428-a697-4b9ae0d02e72)[/usr/lib/jvm/java-8-openjdk-amd64]
+[faktorips.configureJdk] ConfigureJdkTask: execution finished
+[faktorips.import] ProjectImportTask: execution started
+[faktorips.import] Installed Faktor-IPS Features: [Feature: org.faktorips.feature, Version: 21.6.1.ci_20210610-1154]
+[faktorips.import] importing: org.faktorips.integrationtest.withinterface
+[faktorips.import] !SESSION 2021-06-10 13:25:46.739 -----------------------------------------------
+[faktorips.import] eclipse.buildId=unknown
+[faktorips.import] java.version=11.0.11
+[faktorips.import] java.vendor=Ubuntu
+[faktorips.import] BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+[faktorips.import] Framework arguments:  -application org.eclipse.ant.core.antRunner -buildfile /data/build-space/workspace/FaktorIPS_21_6_Integrationtest/org.faktorips.integrationtest.withinterface/build/importProjects.xml import
+[faktorips.import] Command-line arguments:  -data /tmp/FaktorIPS_21_6_Integrationtest/faktorips-integrationtest-withinterface/data -consoleLog -application org.eclipse.ant.core.antRunner -buildfile /data/build-space/workspace/FaktorIPS_21_6_Integrationtest/org.faktorips.integrationtest.withinterface/build/importProjects.xml import
+[faktorips.import] ProjectImportTask: execution finished
+[faktorips.fullBuild] FullBuildTask: execution started
+[faktorips.fullBuild] Installed Faktor-IPS Features: [Feature: org.faktorips.feature, Version: 21.6.1.ci_20210610-1154]
+[faktorips.fullBuild] The following IPS-Projects are about to be built: 
+[faktorips.fullBuild] IPS-Project: org.faktorips.integrationtest.withinterface, IPS-Builder Set: org.faktorips.devtools.stdbuilder.ipsstdbuilderset, Version: 3.0.0
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter key2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter param2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter key2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter sepCont is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The resource is a duplicate of derived/keepme.txt and was not copied to the output folder
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The default value 1 is no member of the specified valueSet!
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The default value 1 is no member of the specified valueSet!
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. Consider using and external business process / workflow management system or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. Consider using and external business process / workflow management system or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. Consider using and external business process / workflow management system or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "abstractSupertypeEnum" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "enumWithValues" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "enumWithoutValues" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "extensibleEnumWithContent" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "extensibleEnumWithContentWithoutValues" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "extensibleEnumWithoutContent" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "extensibleEnumWithoutContentWithoutValues" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "multilingualEnum" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "multilingualSepEnum" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The name "subtypeMultilingualEnum" is discouraged.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The combination of Kind ID and Generation ID is not unique. Change the name or the Generation ID.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: BusinessFunctions are deprecated since Faktor-IPS 21.6 and will be removed in 22.6. You can use any object type as a value set to ValidationContext#setValue(String, Object) to control execution of your validation rules or contact us immediately at fips@faktorzehn.de to discuss alternatives.
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubPolicyType to SubPolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHomeCoverageType to HomeCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHomePolicyType to HomePolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsDeckungsTyp to ConstrainsDeckungsTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsP to ConstrainsP
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsSubDeckungsTyp to ConstrainsSubDeckungsTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsSubOnlyDeckungsTyp to ConstrainsSubOnlyDeckungsTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsSubOnlyP to ConstrainsSubOnlyP
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConstrainsSubP to ConstrainsSubP
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IBCBContractType to BCBContractType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IBCProduct to BCProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IGenContractType to GenContractType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IGenericContractType to GenericContractType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILegalContractType to LegalContractType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILegalProduct to LegalProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IAdditionalPersonType to AdditionalPersonType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHolderType2 to HolderType2
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHolderType to HolderType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHouseHolderType to HouseHolderType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHpProduct to HpProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IGroupType to GroupType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IConcreteEnumProduct to ConcreteEnumProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProduktFuerNotChangingOverTimeFormula to ProduktFuerNotChangingOverTimeFormula
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubFtCoverageType to SubFtCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProductNotChangingOverTime to SubProductNotChangingOverTime
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubSubConfigType to SubSubConfigType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubSubTypeConfig3 to SubSubTypeConfig3
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubTypeConfig3 to SubTypeConfig3
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubTypeConfig to SubTypeConfig
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IOverrideProductSub to OverrideProductSub
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IPncProduct to PncProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubStringLengthProduct to SubStringLengthProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: businessfunctions cannot be resolved to a type
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: businessfunctions cannot be resolved to a type
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: businessfunctions cannot be resolved to a type
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: businessfunctions cannot be resolved to a type
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ICpParentType to CpParentType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ICpSupParentType to CpSupParentType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IChildChildType to ChildChildType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IChildConfig to ChildConfig
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IDifferentSubchildConfig to DifferentSubchildConfig
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IRootConfig to RootConfig
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubchildConfig to SubchildConfig
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IGeneralTestMotorProduct to GeneralTestMotorProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHtMotorPolicyType to HtMotorPolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpecializedConfiguredPolicyWithRangesAndSetsType to SpecializedConfiguredPolicyWithRangesAndSetsType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter newParam is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p3 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.IPcWithSeparatedValidator.MSG_CODE_PRUEFESTRINGATTR is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.IPcWithSeparatedValidator.MSG_CODE_PRUEFESUB is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.IPcWithSeparatedValidator.RULE_PRUEFE_STRING_ATTR is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.IPcWithSeparatedValidator.RULE_PRUEFE_SUB is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.ISuperPcWithSeparatedValidator.MSG_CODE_PRUEFESUPER is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The import org.faktorips.integrationtest.rules.ISuperPcWithSeparatedValidator.MSG_CODE_PRUEFEINTATTRIBUTE is never used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the constructor TcPolicyAndCoverageTestCase(String)
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the constructor AssociationTest(String)
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the constructor AbstractSides(String)
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the constructor TcPolicyABCTestCaseType(String)
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILifeCoverageSpecialType to LifeCoverageSpecialType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILifeCoverageType to LifeCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILifePolicyType to LifePolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubPMethod to SubPMethod
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProductAllConfigured to ProductAllConfigured
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProduct to Product
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProductPart to ProductPart
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpecificProductPart to SpecificProductPart
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProduct to SubProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProductPart to SubProductPart
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISuperProduct to SuperProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISuperProductPart to SuperProductPart
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpartenDeckungsTyp to SpartenDeckungsTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpartenProdukt to SpartenProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpezialDeckungsTyp to SpezialDeckungsTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISpezialProdukt to SpezialProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProductTypeWithOverwrittenAbstractDatatypeAttribute to ProductTypeWithOverwrittenAbstractDatatypeAttribute
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from INamedProduct to NamedProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ITplProduct to TplProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubtype to Subtype
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProduct to SubProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IDiagnoseZuNaArt to DiagnoseZuNaArt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ILvbArt to LvbArt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IAddDentalCoverageType to AddDentalCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IBasicDentalCoverageType to BasicDentalCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHealthDentalTypeGroup to HealthDentalTypeGroup
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHealthPolicyType to HealthPolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHomeCoverageType to HomeCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHomePolicyType to HomePolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IContTestCollisionCoverageType to ContTestCollisionCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IContTestMotorProduct to ContTestMotorProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IContTestTplCoverageType to ContTestTplCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ICt4BaseCoverageType to Ct4BaseCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ICt4MotorCoverageType to Ct4MotorCoverageType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ICt4MotorProduct to Ct4MotorProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProduct to SubProduct
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProdTypeForConfiguringRules to ProdTypeForConfiguringRules
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHausratProdukt to HausratProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IHausratProduktTeil to HausratProduktTeil
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubHRProdukt to SubHRProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ITcPolicyType to TcPolicyType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from INaturalPersonType to NaturalPersonType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ITcPolicyBTyp to TcPolicyBTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ITcPolicyCTyp to TcPolicyCTyp
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IXmlConcreteChildType to XmlConcreteChildType
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IAllowedValuesProductSubclass to AllowedValuesProductSubclass
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from IProdukt to Produkt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubElementarProdukt to SubElementarProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubProdukt to SubProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Unnecessary cast from ISubSubProdukt to SubSubProdukt
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p3 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p4 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p3 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p4 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p1 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter p2 is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the parameter context is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Javadoc: Unexpected tag
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The resource is a duplicate of derived/keepme.txt and was not copied to the output folder
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method getActualRuntimeRepository() from the type IRuntimeRepositoryManager is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method equals(Object, Object) from the type ObjectUtil is deprecated
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method computePremium() from the type new SubtypeGen(){} is never used locally
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: Empty block should be documented
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the method suite() from type AllIpsTestSuiteTest
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The declared exception ParserConfigurationException is not actually thrown by the constructor AllIpsTestSuiteTest()
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The value of the field ClassloaderRepositoryConcurrencyTest.RunnableRepositoryRequesrt.index is not used
+[faktorips.fullBuild] Project: org.faktorips.integrationtest.withinterface, WARNING: The method getActualRuntimeRepository() from the type IRuntimeRepositoryManager is deprecated
+[faktorips.fullBuild] FullBuildTask: execution finished
+[faktorips.exportHtml] ExportHtmlTask: execution started
+[faktorips.exportHtml] Installed Faktor-IPS Features: [Feature: org.faktorips.feature, Version: 21.6.1.ci_20210610-1154]
+[faktorips.exportHtml] exporting HTML for project: org.faktorips.integrationtest.withinterface
+[faktorips.exportHtml] ExportHtmlTask: execution finished
+[faktorips.gitStatus] GitStatusPorcelainTask: execution started
+[faktorips.gitStatus] Installed Faktor-IPS Features: [Feature: org.faktorips.feature, Version: 21.6.1.ci_20210610-1154]
+[faktorips.gitStatus] SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+[faktorips.gitStatus] SLF4J: Defaulting to no-operation (NOP) logger implementation
+[faktorips.gitStatus] SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+[faktorips.gitStatus] 
+[faktorips.gitStatus] !ENTRY org.eclipse.egit.core 1 0 2021-06-10 13:28:35.209
+[faktorips.gitStatus] !MESSAGE Using Apache MINA sshd as ssh client.
+[faktorips.gitStatus] Your branch is up to date.
+[faktorips.gitStatus] GitStatusPorcelainTask: execution finished
+BUILD SUCCESSFUL
+
+BUILD SUCCESSFUL
+
+Some Other Exception that should remain in the log
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 0 2021-06-10 12:02:16.538
+!MESSAGE Unexpected error loading extension: org.eclipse.equinox.p2.updatesite.metadataRepository
+!STACK 0
+java.lang.ClassCastException: class org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager cannot be cast to class org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager (org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager is in unnamed module of loader org.eclipse.osgi.internal.loader.EquinoxClassLoader @3b5f37ac; org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager is in unnamed module of loader org.eclipse.osgi.internal.loader.EquinoxClassLoader @e48d0e7)
+	at org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository.setProperty(LocalMetadataRepository.java:301)
+	at org.eclipse.equinox.p2.repository.spi.AbstractRepository.setProperty(AbstractRepository.java:194)
+	at org.eclipse.equinox.internal.p2.updatesite.metadata.UpdateSiteMetadataRepositoryFactory.resetCache(UpdateSiteMetadataRepositoryFactory.java:84)
+	at org.eclipse.equinox.internal.p2.updatesite.metadata.UpdateSiteMetadataRepositoryFactory.load(UpdateSiteMetadataRepositoryFactory.java:63)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:63)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:775)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:676)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.loadRepository(MetadataRepositoryManager.java:110)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:63)
+	at org.eclipse.tycho.p2.remote.RemoteMetadataRepositoryManager.loadRepository(RemoteMetadataRepositoryManager.java:55)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.loadMetadataRepository(TargetPlatformFactoryImpl.java:304)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.gatherExternalInstallableUnits(TargetPlatformFactoryImpl.java:276)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:178)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:130)
+	at org.eclipse.tycho.p2.target.TargetPlatformFactoryImpl.createTargetPlatform(TargetPlatformFactoryImpl.java:1)
+	at org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo.createEclipseInstallation(EclipseRunMojo.java:307)
+	at org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo.execute(EclipseRunMojo.java:275)
+	at org.faktorips.maven.plugin.mojo.IpsBuildMojo.execute(IpsBuildMojo.java:617)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+	at org.apache.maven.lifecycle.internal.builder.multithreaded.MultiThreadedBuilder$1.call(MultiThreadedBuilder.java:190)
+	at org.apache.maven.lifecycle.internal.builder.multithreaded.MultiThreadedBuilder$1.call(MultiThreadedBuilder.java:186)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:515)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+
+

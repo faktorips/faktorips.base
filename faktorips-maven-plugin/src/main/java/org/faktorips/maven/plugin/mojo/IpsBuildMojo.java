@@ -54,7 +54,7 @@ import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
-import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
 import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.w3c.dom.Document;
@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
 @Mojo(name = "faktorips-build", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class IpsBuildMojo extends AbstractMojo {
 
-    private static Pattern MAJOR_MINOR_VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+).*");
+    private static final Pattern MAJOR_MINOR_VERSION_PATTERN = Pattern.compile("(\\d+)\\.(\\d+).*");
 
     /**
      * Whether to add default dependencies to bundles org.eclipse.equinox.launcher, org.eclipse.osgi
@@ -629,30 +629,39 @@ public class IpsBuildMojo extends AbstractMojo {
 
             copyMavenSettings();
 
-            // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
-            boolean clearWorkspaceBeforeLaunch = false;
+            exceutePlatform();
 
-            EclipseRunMojo eclipseRunMojo = new EclipseRunMojo(work,
-                    clearWorkspaceBeforeLaunch,
-                    project,
-                    dependencies,
-                    addDefaultDependencies,
-                    executionEnvironment,
-                    repositories,
-                    session,
-                    jvmArgs,
-                    skip,
-                    applicationsArgs,
-                    forkedProcessTimeoutInSeconds,
-                    environmentVariables,
-                    installationFactory,
-                    launcher,
-                    toolchainProvider,
-                    equinox,
-                    logger,
-                    toolchainManager);
-            eclipseRunMojo.execute();
         }
+    }
+
+    private void exceutePlatform() throws MojoExecutionException, MojoFailureException {
+
+        // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
+        boolean clearWorkspaceBeforeLaunch = false;
+
+        LoggingEclipseRunMojo eclipseRunMojo = new LoggingEclipseRunMojo(work,
+                clearWorkspaceBeforeLaunch,
+                project,
+                dependencies,
+                addDefaultDependencies,
+                executionEnvironment,
+                repositories,
+                session,
+                jvmArgs,
+                skip,
+                applicationsArgs,
+                forkedProcessTimeoutInSeconds,
+                environmentVariables,
+                installationFactory,
+                launcher,
+                toolchainProvider,
+                equinox,
+                logger,
+                toolchainManager,
+                getProjectName(),
+                getLog());
+
+        eclipseRunMojo.execute();
     }
 
     private boolean isGitStatusPorcelain() {
