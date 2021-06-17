@@ -217,5 +217,20 @@
       ]
     }
    }
+  ],
+  "21.6.1": [
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
+        {
+          "code": "java.method.added",
+          "new": "method <T> org.faktorips.valueset.ValueSet<T> org.faktorips.runtime.validation.Relevance::asValueSetFor(org.faktorips.runtime.IModelObject, java.lang.String, java.util.Collection<T>)",
+          "justification": "FIPS-7954"
+        }
+      ]
+    }
+  }
   ]
 }
