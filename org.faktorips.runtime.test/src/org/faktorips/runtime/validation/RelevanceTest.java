@@ -21,6 +21,7 @@ import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.runtime.model.type.ValueSetKind;
+import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
@@ -511,6 +512,18 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testAsValueSetFor_Mandatory_DatatypeEnum() {
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                        TestPolicyWithUnrestrictedEnum.PROPERTY_NON_IPS_ENUM_ATTRIBUTE),
+                is(new OrderedValueSet<>(false, null, TestEnum.values())));
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                        TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_ENUM_ATTRIBUTE),
+                is(new OrderedValueSet<>(false, null, TestConcreteJavaEnum.values())));
+    }
+
+    @Test
     public void testAsValueSetFor_Mandatory_ValueSetTypeRange() {
         assertThat(
                 Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerRange(),
@@ -803,6 +816,71 @@ public class RelevanceTest {
         @IpsAttributeSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
         public void setBooleanAttribute(boolean newValue) {
             integerAttribute = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithUnrestrictedEnum")
+    @IpsAttributes({ "NonIpsEnumAttribute", "IpsEnumAttribute" })
+    @IpsAssociations({})
+    static class TestPolicyWithUnrestrictedEnum implements IModelObject {
+
+        public static final String PROPERTY_NON_IPS_ENUM_ATTRIBUTE = "NonIpsEnumAttribute";
+        public static final String PROPERTY_IPS_ENUM_ATTRIBUTE = "IpsEnumAttribute";
+
+        private TestEnum nonIpsEnumAttribute;
+        private TestConcreteJavaEnum ipsEnumAttribute;
+
+        private ValueSet<TestEnum> setOfAllowedValuesNonIpsEnumAttribute = new OrderedValueSet<>(true, null,
+                TestEnum.values());
+
+        private ValueSet<TestConcreteJavaEnum> setOfAllowedValuesIpsEnumAttribute = new OrderedValueSet<>(true, null,
+                TestConcreteJavaEnum.values());
+
+        @IpsAllowedValues(PROPERTY_NON_IPS_ENUM_ATTRIBUTE)
+        public ValueSet<TestEnum> getSetOfAllowedValuesForNonIpsEnumAttribute() {
+            return setOfAllowedValuesNonIpsEnumAttribute;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_NON_IPS_ENUM_ATTRIBUTE)
+        public void setAllowedValuesForNonIpsEnumAttribute(
+                ValueSet<TestEnum> setOfAllowedValuesNonIpsEnumAttribute) {
+            this.setOfAllowedValuesNonIpsEnumAttribute = setOfAllowedValuesNonIpsEnumAttribute;
+        }
+
+        @IpsAttribute(name = PROPERTY_NON_IPS_ENUM_ATTRIBUTE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public TestEnum getNonIpsEnumAttribute() {
+            return nonIpsEnumAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_NON_IPS_ENUM_ATTRIBUTE)
+        public void setNonIpsEnumAttribute(TestEnum newValue) {
+            nonIpsEnumAttribute = newValue;
+        }
+
+        @IpsAllowedValues(PROPERTY_IPS_ENUM_ATTRIBUTE)
+        public ValueSet<TestConcreteJavaEnum> getSetOfAllowedValuesForIpsEnumAttribute() {
+            return setOfAllowedValuesIpsEnumAttribute;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_IPS_ENUM_ATTRIBUTE)
+        public void setAllowedValuesForIpsEnumAttribute(
+                ValueSet<TestConcreteJavaEnum> setOfAllowedValuesIpsEnumAttribute) {
+            this.setOfAllowedValuesIpsEnumAttribute = setOfAllowedValuesIpsEnumAttribute;
+        }
+
+        @IpsAttribute(name = PROPERTY_IPS_ENUM_ATTRIBUTE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public TestConcreteJavaEnum getIpsEnumAttribute() {
+            return ipsEnumAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_IPS_ENUM_ATTRIBUTE)
+        public void setIpsEnumAttribute(TestConcreteJavaEnum newValue) {
+            ipsEnumAttribute = newValue;
         }
 
         @Override

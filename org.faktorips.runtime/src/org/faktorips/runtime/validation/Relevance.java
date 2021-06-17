@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.runtime.validation;
 
+import static org.faktorips.runtime.model.IpsModel.isEnumType;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -113,7 +115,7 @@ public enum Relevance {
         if (isRange(valueSetKind, values)) {
             return asRange(datatype, containsNull, values);
         }
-        if (isEnum(valueSetKind, values)) {
+        if (isEnum(valueSetKind, values) || datatype.isEnum() || isEnumType(datatype)) {
             return asEnum(datatype, containsNull, values);
         }
         return new UnrestrictedValueSet<>(containsNull);
