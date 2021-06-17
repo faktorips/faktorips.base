@@ -314,8 +314,7 @@ public enum Relevance {
      *
      * @param modelObject a model object
      * @param policyAttribute an attribute present on the model object's {@link PolicyCmptType}
-     * @param values an optional {@link ValueSet}, which can limit the allowed values for the
-     *            returned value set
+     * @param values the allowed values for the returned value set
      */
     public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
             PolicyAttribute policyAttribute,
@@ -340,6 +339,23 @@ public enum Relevance {
             @CheckForNull ValueSet<T> values) {
         return this.asValueSetFor(modelObject, IpsModel.getPolicyCmptType(modelObject).getAttribute(property),
                 values);
+    }
+
+    /**
+     * Returns a {@link ValueSet} for the given model object's attribute that matches this
+     * {@link Relevance}. If a parent value set is given, the returned value set will be of the same
+     * type (if allowed by the attribute's {@link ValueSetKind}) and contain no values not allowed
+     * by that parent value set (with the exception of a null value if the value set is converted to
+     * {@link #OPTIONAL}).
+     *
+     * @param modelObject a model object
+     * @param property the name of an attribute present on the model object's {@link PolicyCmptType}
+     * @param values the allowed values for the returned value set
+     */
+    public <T> ValueSet<T> asValueSetFor(IModelObject modelObject,
+            String property,
+            @CheckForNull Collection<T> values) {
+        return asValueSetFor(modelObject, property, OrderedValueSet.of(values));
     }
 
     private static ValueSet<?> changeRangeRelevance(ValueSet<?> valueSet, boolean containsNull) {
