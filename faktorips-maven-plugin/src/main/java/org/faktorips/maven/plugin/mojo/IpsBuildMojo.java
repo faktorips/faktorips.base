@@ -168,6 +168,12 @@ public class IpsBuildMojo extends AbstractMojo {
     private List<String> jvmArgs = new ArrayList<>();
 
     /**
+     * Path to a local repository.
+     */
+    @Parameter(property = "maven.repo.local")
+    private String localRepository;
+
+    /**
      * List of applications arguments set on the command line.
      * <p>
      * Example:
@@ -623,6 +629,35 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     private void copyMavenSettings() {
+        String userSettingsPath = session.getRequest().getUserSettingsFile().getAbsolutePath();
+
+        // add path to localRepository to user settings if maven.repo.local is set
+        if (localRepository != null) {
+            String copyUserSettingsDir = work.getAbsolutePath() + "\\data\\.metadata\\.plugins";
+            String copyUserSettingsPath = copyUserSettingsDir + "\\settings.xml";
+            try {
+                FileUtils.forceMkdir(new File(copyUserSettingsDir));
+
+                String userSettings = FileUtils.fileRead(session.getRequest().getUserSettingsFile(), "UTF-8");
+                if (userSettings.contains("<localRepository>")) {
+                    userSettings = userSettings.replaceAll("<localRepository>.+<\\/localRepository>",
+                            "<localRepository>" + localRepository + "<\\/localRepository>");
+                } else {
+                    userSettings = userSettings.replaceAll("<settings>", "<settings>"
+                            + System.getProperty("line.separator")
+                            + "<localRepository>" + localRepository + "<\\/localRepository>");
+                }
+
+                Files.writeString(Paths.get(copyUserSettingsPath), userSettings, StandardOpenOption.CREATE,
+                        StandardOpenOption.WRITE);
+
+                userSettingsPath = copyUserSettingsPath;
+
+            } catch (IOException e) {
+                getLog().error("Can't create a copy of the user settings" + copyUserSettingsPath, e);
+            }
+        }
+
         try {
             File settingsDir = new File(work,
                     "data/.metadata/.plugins/org.eclipse.core.runtime/.settings")
@@ -630,7 +665,8 @@ public class IpsBuildMojo extends AbstractMojo {
             FileUtils.forceMkdir(settingsDir);
 
             Properties p = new Properties();
-            p.put("eclipse.m2.userSettingsFile", session.getRequest().getUserSettingsFile().getAbsolutePath());
+            p.put("eclipse.m2.userSettingsFile", userSettingsPath);
+            p.put("eclipse.m2.globalSettingsFile", session.getRequest().getGlobalSettingsFile().getAbsolutePath());
             p.put("eclipse.preferences.version", "1");
             try (FileOutputStream settings = new FileOutputStream(
                     new File(settingsDir, "org.eclipse.m2e.core.prefs"))) {
