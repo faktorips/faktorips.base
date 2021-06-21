@@ -4,6 +4,6 @@ defaultremote=origin
 host=gerrit.faktorzehn.de
 port=29418
 project=faktorips/faktorips.base
-defaultbranch=master
+defaultbranch=main
 track=true
 
