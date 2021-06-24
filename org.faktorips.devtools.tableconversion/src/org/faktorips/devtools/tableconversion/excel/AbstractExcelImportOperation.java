@@ -95,7 +95,8 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
     }
 
     private boolean isReserved(short dataFormatIndex) {
-        return BuiltinFormats.getBuiltinFormat(dataFormatIndex).startsWith("reserved"); //$NON-NLS-1$
+        String builtinFormat = BuiltinFormats.getBuiltinFormat(dataFormatIndex);
+        return builtinFormat != null && builtinFormat.startsWith("reserved"); //$NON-NLS-1$
     }
 
     /**

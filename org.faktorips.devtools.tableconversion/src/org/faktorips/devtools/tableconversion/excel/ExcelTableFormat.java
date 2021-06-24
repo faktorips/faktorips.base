@@ -212,20 +212,22 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                 break;
             }
             int numberOfCells = sheetRow.getLastCellNum();
-            String[] convertedLine = new String[numberOfCells];
-            for (int j = 0; j < numberOfCells; j++) {
-                Cell cell = sheetRow.getCell(j);
-                String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
-                convertedLine[j] = cellString;
-            }
+            if (numberOfCells > 0) {
+                String[] convertedLine = new String[numberOfCells];
+                for (int j = 0; j < numberOfCells; j++) {
+                    Cell cell = sheetRow.getCell(j);
+                    String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
+                    convertedLine[j] = cellString;
+                }
 
-            result.add(convertedLine);
+                result.add(convertedLine);
+            }
         }
 
         return result;
     }
 
-    // TODO rg: code duplication in AbstractExcelImportOperation
+    // TODO FIPS-7992: code duplication in AbstractExcelImportOperation
     private String readCell(Cell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
         if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell)) {

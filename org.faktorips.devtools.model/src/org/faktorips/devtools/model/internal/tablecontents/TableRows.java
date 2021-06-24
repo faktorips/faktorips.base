@@ -90,6 +90,14 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         return newRow;
     }
 
+    /**
+     * Public variant of {@link #objectHasChanged()} for mass operations like table import that use
+     * {@link #newRow(ITableStructure, Optional, List)}.
+     */
+    public void markAsChanged() {
+        objectHasChanged();
+    }
+
     protected ITableStructure findTableStructure() {
         try {
             return getTableContents().findTableStructure(getIpsProject());
