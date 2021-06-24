@@ -20,7 +20,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -97,6 +101,33 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         assertNotNull(id1);
         assertFalse(id0.equals(id1));
         assertEquals(1, row1.getRowNumber());
+    }
+
+    @Test
+    public void testNewRow_TableStructure() throws CoreException {
+        structure.newColumn();
+        structure.newColumn();
+        table.newColumn("", "");
+        table.newColumn("", "");
+        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        IRow row0 = tableRows.newRow(structure, Optional.of("id23"), Arrays.asList("a", "b"));
+        assertThat(row0.getId(), is("id23"));
+        assertThat(row0.getRowNumber(), is(0));
+        assertThat(row0.getValue(0), is("a"));
+        assertThat(row0.getValue(1), is("b"));
+        assertThat(table.getIpsSrcFile().isDirty(), is(false));
+        tableRows.markAsChanged();
+        assertThat(table.getIpsSrcFile().isDirty(), is(true));
+
+        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        assertThat(table.getIpsSrcFile().isDirty(), is(false));
+
+        IRow row1 = tableRows.newRow(structure, Optional.of("id42"), Arrays.asList("foo", "bar"));
+        assertThat(row1.getId(), is("id42"));
+        assertThat(row1.getRowNumber(), is(1));
+        assertThat(row1.getValue(0), is("foo"));
+        assertThat(row1.getValue(1), is("bar"));
+        assertThat(table.getIpsSrcFile().isDirty(), is(false));
     }
 
     @Test

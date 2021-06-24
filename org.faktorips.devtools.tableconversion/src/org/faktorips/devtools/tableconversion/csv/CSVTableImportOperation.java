@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
@@ -179,6 +180,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             tableRows.newRow(structure, Optional.empty(), Arrays.asList(values));
             ++rowNumber;
         }
+        ((TableRows)tableRows).markAsChanged();
         return msgList;
     }
 
