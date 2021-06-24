@@ -158,13 +158,12 @@ public class IpsBuildMojo extends AbstractMojo {
      * <pre>
      * {@code
      * <jvmArgs>
-     *   <args>-Xdebug</args>
-     *   <args>-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044</args>
+     *   <args>-javaagent:lombok.jar</args>
      * </jvmArgs>
      * }
      * </pre>
      */
-    // @Parameter
+    @Parameter
     private List<String> jvmArgs = new ArrayList<>();
 
     /**
