@@ -96,4 +96,15 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
         return (o instanceof UnrestrictedValueSet
                 && (this.containsNull() == ((UnrestrictedValueSet<?>)o).containsNull()));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isUnrestricted(boolean excludeNull) {
+        if (excludeNull) {
+            return true;
+        }
+        return containsNull();
+    }
 }

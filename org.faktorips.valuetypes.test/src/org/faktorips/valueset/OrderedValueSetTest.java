@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -30,14 +32,16 @@ public class OrderedValueSetTest {
     @Test
     public void testConstructor() {
         try {
-            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), Integer.valueOf(1));
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+                    Integer.valueOf(1));
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
 
         try {
-            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3), null);
+            new OrderedValueSet<Integer>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3),
+                    null);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -170,4 +174,35 @@ public class OrderedValueSetTest {
         assertEquals("[1, 2, 3]", valueSet.toString());
     }
 
+    @Test
+    public void testIsUnrestricted_WithoutNull_includesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_includesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithoutNull_excludesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_excludesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(true), is(false));
+    }
 }

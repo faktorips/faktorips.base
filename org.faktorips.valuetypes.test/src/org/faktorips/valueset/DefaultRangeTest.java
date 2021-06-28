@@ -1,8 +1,7 @@
 package org.faktorips.valueset;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 import org.junit.Test;
 
@@ -12,63 +11,63 @@ public class DefaultRangeTest {
     public void testIsDiscrete() {
         TestRange rangeWithStep = new TestRange(0, 10, 1);
 
-        assertTrue(rangeWithStep.isDiscrete());
+        assertThat(rangeWithStep.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_NoStep() {
         TestRange rangeWithoutStep = new TestRange(0, 10, null);
 
-        assertFalse(rangeWithoutStep.isDiscrete());
+        assertThat(rangeWithoutStep.isDiscrete(), is(false));
     }
 
     @Test
     public void testIsDiscrete_EmptyLegacy() {
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
 
-        assertTrue(emptyLegacyRangeWithStep.isDiscrete());
+        assertThat(emptyLegacyRangeWithStep.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_EmptyLegacyNoStep() {
         TestRange emptytLegacyRangeWithoutStep = new TestRange(10, 0, null);
 
-        assertTrue(emptytLegacyRangeWithoutStep.isDiscrete());
+        assertThat(emptytLegacyRangeWithoutStep.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_Empty() {
         TestRange emptytRange = new TestRange();
 
-        assertTrue(emptytRange.isDiscrete());
+        assertThat(emptytRange.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_Size1() {
         TestRange rangeWithStep = new TestRange(0, 0, 1);
 
-        assertTrue(rangeWithStep.isDiscrete());
+        assertThat(rangeWithStep.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_Size1NoStep() {
         TestRange rangeWithoutStep = new TestRange(0, 0, null);
 
-        assertTrue(rangeWithoutStep.isDiscrete());
+        assertThat(rangeWithoutStep.isDiscrete(), is(true));
     }
 
     @Test
     public void testIsDiscrete_NoBoundsAndNoStep() {
         TestRange rangeWithoutStep = new TestRange(null, null, null, true);
 
-        assertFalse(rangeWithoutStep.isDiscrete());
+        assertThat(rangeWithoutStep.isDiscrete(), is(false));
     }
 
     @Test
     public void testIsDiscrete_NoBounds() {
-        TestRange rangeWithoutStep = new TestRange(null, null, 10, true);
+        TestRange rangeWithStep = new TestRange(null, null, 10, true);
 
-        assertTrue(rangeWithoutStep.isDiscrete());
+        assertThat(rangeWithStep.isDiscrete(), is(true));
     }
 
     @Test
@@ -76,7 +75,7 @@ public class DefaultRangeTest {
         TestRange emptytRange = new TestRange();
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
 
-        assertEquals(emptyLegacyRangeWithStep, emptytRange);
+        assertThat(emptytRange, is(emptyLegacyRangeWithStep));
     }
 
     @Test
@@ -84,7 +83,77 @@ public class DefaultRangeTest {
         TestRange emptytRange = new TestRange();
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
 
-        assertEquals(emptyLegacyRangeWithStep.hashCode(), emptytRange.hashCode());
+        assertThat(emptytRange.hashCode(), is(emptyLegacyRangeWithStep.hashCode()));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithoutNull_includesNull() {
+        TestRange emptyRangeWithoutNull = new TestRange();
+
+        assertThat(emptyRangeWithoutNull.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithoutNull_excludesNull() {
+        TestRange emptyRangeWithoutNull = new TestRange();
+
+        assertThat(emptyRangeWithoutNull.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNull_includesNull() {
+        TestRange emptyWithNull = new TestRange(null, null, null, true);
+
+        assertThat(emptyWithNull.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNull_excludesNull() {
+        TestRange emptyWithNull = new TestRange(null, null, null, true);
+
+        assertThat(emptyWithNull.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithLower_includesNull() {
+        TestRange range = new TestRange(Integer.valueOf(1), null, null, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithLower_excludesNull() {
+        TestRange range = new TestRange(Integer.valueOf(1), null, null, true);
+
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithUpper_excludesNull() {
+        TestRange range = new TestRange(null, Integer.valueOf(10), null, true);
+
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithUpper_includesNull() {
+        TestRange range = new TestRange(null, Integer.valueOf(10), null, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithStep_includesNull() {
+        TestRange range = new TestRange(null, null, Integer.valueOf(10), true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithStep_excludesNull() {
+        TestRange range = new TestRange(null, null, Integer.valueOf(10), true);
+
+        assertThat(range.isUnrestricted(true), is(false));
     }
 
     private class TestRange extends DefaultRange<Integer> {

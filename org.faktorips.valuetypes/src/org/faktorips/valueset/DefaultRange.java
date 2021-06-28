@@ -388,4 +388,22 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return values;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Additionally a {@code DefaultRange} is considered restricted if either {@link #lowerBound},
+     * {@link #upperBound} or {@link #step} is not {@code null}.
+     * 
+     */
+    @Override
+    public boolean isUnrestricted(boolean excludeNull) {
+        if (getLowerBound() != null || getUpperBound() != null || getStep() != null) {
+            return false;
+        }
+        if (excludeNull) {
+            return true;
+        }
+        return containsNull();
+    }
+
 }

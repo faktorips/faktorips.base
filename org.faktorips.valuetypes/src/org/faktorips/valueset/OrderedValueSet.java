@@ -168,4 +168,13 @@ public class OrderedValueSet<E> implements ValueSet<E> {
         return set.size();
     }
 
+    /**
+     * An {@link OrderedValueSet} is always considered restricted, therefore this method always
+     * returns {@code false}.
+     */
+    @Override
+    public boolean isUnrestricted(boolean excludeNull) {
+        return false;
+    }
+
 }
