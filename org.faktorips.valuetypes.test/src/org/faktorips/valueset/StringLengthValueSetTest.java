@@ -11,6 +11,7 @@ public class StringLengthValueSetTest {
     @Test
     public void testDefaultConstructor() {
         StringLengthValueSet sl = new StringLengthValueSet();
+
         assertThat(sl.getMaximumLength(), is(nullValue()));
         assertThat(sl.containsNull(), is(true));
     }
@@ -18,6 +19,7 @@ public class StringLengthValueSetTest {
     @Test
     public void testContains() {
         StringLengthValueSet sl = new StringLengthValueSet(10, true);
+
         assertThat(sl.contains("within"), is(true));
         assertThat(sl.contains("tooLongForLimitOf10"), is(false));
     }
@@ -26,6 +28,7 @@ public class StringLengthValueSetTest {
     public void testContainsNull() {
         StringLengthValueSet sl1 = new StringLengthValueSet(10, true);
         StringLengthValueSet sl2 = new StringLengthValueSet(10, false);
+
         assertThat(sl1.containsNull(), is(true));
         assertThat(sl1.contains(null), is(true));
         assertThat(sl2.containsNull(), is(false));
@@ -76,6 +79,48 @@ public class StringLengthValueSetTest {
         StringLengthValueSet sl1 = new StringLengthValueSet(null, false);
 
         sl1.getValues(false).isEmpty();
+    }
+
+    @Test
+    public void testIsUnrestricted_WithoutNull_includesNull() {
+        StringLengthValueSet emptyWithoutNull = new StringLengthValueSet(null, false);
+
+        assertThat(emptyWithoutNull.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithoutNull_excludesNull() {
+        StringLengthValueSet emptyWithoutNull = new StringLengthValueSet(null, false);
+
+        assertThat(emptyWithoutNull.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_includesNull() {
+        StringLengthValueSet emptyWithNull = new StringLengthValueSet(null, true);
+
+        assertThat(emptyWithNull.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_excludesNull() {
+        StringLengthValueSet emptyWithNull = new StringLengthValueSet(null, false);
+
+        assertThat(emptyWithNull.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithMaxLen_includesNull() {
+        StringLengthValueSet withMaxLen = new StringLengthValueSet(Integer.valueOf(1), true);
+
+        assertThat(withMaxLen.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithMaxLen_excludesNull() {
+        StringLengthValueSet withMaxLen = new StringLengthValueSet(Integer.valueOf(1), true);
+
+        assertThat(withMaxLen.isUnrestricted(true), is(false));
     }
 
 }

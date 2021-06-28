@@ -220,4 +220,35 @@ public class OrderedValueSetTest {
         assertEquals("[1, 2, 3]", valueSet.toString());
     }
 
+    @Test
+    public void testIsUnrestricted_WithoutNull_includesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_includesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithoutNull_excludesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithNull_excludesNull() {
+        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+
+        // OrderedValueSet is never unrestricted
+        assertThat(range.isUnrestricted(true), is(false));
+    }
 }

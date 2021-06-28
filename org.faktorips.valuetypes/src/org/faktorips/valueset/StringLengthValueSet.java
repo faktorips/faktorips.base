@@ -105,4 +105,21 @@ public class StringLengthValueSet implements ValueSet<String> {
                 && (this.containsNull() == ((StringLengthValueSet)o).containsNull())
                 && (this.getMaximumLength().equals(((StringLengthValueSet)o).getMaximumLength())));
     }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * A {@link StringLengthValueSet} is considered restricted if the {@link #maximumLength} is not
+     * {@code null}.
+     */
+    @Override
+    public boolean isUnrestricted(boolean excludeNull) {
+        if (maximumLength != null) {
+            return false;
+        }
+        if (excludeNull) {
+            return true;
+        }
+        return containsNull();
+    }
 }

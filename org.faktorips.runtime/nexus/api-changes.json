@@ -233,6 +233,41 @@
       ]
     }
   }
+  ],
+  "21.12.0": [
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.runtime.CardinalityRange",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.valueset.IntegerRange",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.StringLengthValueSet::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.UnrestrictedValueSet<T>::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.faktorips.valueset.ValueSet<T>::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
+        }
+      ]
+    }
+   }
   ]
 }
 
