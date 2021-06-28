@@ -228,9 +228,34 @@
           "code": "java.method.added",
           "new": "method <T> org.faktorips.valueset.ValueSet<T> org.faktorips.runtime.validation.Relevance::asValueSetFor(org.faktorips.runtime.IModelObject, java.lang.String, java.util.Collection<T>)",
           "justification": "FIPS-7954"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.runtime.CardinalityRange",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.valueset.IntegerRange",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.StringLengthValueSet::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.added",
+          "new": "method boolean org.faktorips.valueset.UnrestrictedValueSet<T>::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.faktorips.valueset.ValueSet<T>::isUnrestricted(boolean)",
+          "justification": "FIPS-7980"
         }
       ]
     }
-  }
+   }
   ]
 }
