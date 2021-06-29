@@ -10,6 +10,7 @@
 
 package org.faktorips.valueset;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -55,15 +56,18 @@ public class StringLengthValueSet implements ValueSet<String> {
     }
 
     public Set<String> getValues(boolean excludeNull) {
-        throw new IllegalStateException();
+        if (isEmpty()) {
+            return Collections.emptySet();
+        }
+        throw new IllegalStateException("This method cannot be called for value sets that are not discrete.");
     }
 
     public boolean isDiscrete() {
-        return false;
+        return isEmpty();
     }
 
     public boolean isEmpty() {
-        return maximumLength == 0 && !containsNull;
+        return containsNull() ? false : maximumLength != null && maximumLength == 0;
     }
 
     public boolean isRange() {

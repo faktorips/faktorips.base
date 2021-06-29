@@ -40,10 +40,46 @@ public class StringLengthValueSetTest {
         StringLengthValueSet sl1 = new StringLengthValueSet(0, false);
         StringLengthValueSet sl2 = new StringLengthValueSet(10, false);
         StringLengthValueSet sl3 = new StringLengthValueSet(0, true);
+        StringLengthValueSet sl4 = new StringLengthValueSet(null, true);
+        StringLengthValueSet sl5 = new StringLengthValueSet(null, false);
 
         assertThat(sl1.isEmpty(), is(true));
         assertThat(sl2.isEmpty(), is(false));
         assertThat(sl3.isEmpty(), is(false));
+        assertThat(sl4.isEmpty(), is(false));
+        assertThat(sl5.isEmpty(), is(false));
+    }
+    
+    @Test
+    public void testIsDiscrete_empty() {
+        StringLengthValueSet sl1 = new StringLengthValueSet(0, false);
+
+        assertThat(sl1.isDiscrete(), is(true));
+    }
+
+    @Test
+    public void testIsDiscrete_notEmpty() {
+        StringLengthValueSet sl1 = new StringLengthValueSet(0, true);
+        StringLengthValueSet sl2 = new StringLengthValueSet(null, true);
+        StringLengthValueSet sl3 = new StringLengthValueSet(null, false);
+
+        assertThat(sl1.isDiscrete(), is(false));
+        assertThat(sl2.isDiscrete(), is(false));
+        assertThat(sl3.isDiscrete(), is(false));
+    }
+
+    @Test
+    public void testGetValues_empty() {
+        StringLengthValueSet sl1 = new StringLengthValueSet(0, false);
+
+        assertThat(sl1.getValues(false).isEmpty(), is(true));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetValues_notEmpty() {
+        StringLengthValueSet sl1 = new StringLengthValueSet(null, false);
+
+        sl1.getValues(false).isEmpty();
     }
 
     @Test
