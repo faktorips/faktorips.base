@@ -91,6 +91,10 @@ _Postprocessor_:
     1. Navigate to the generated Maven project
     2. Execute:	<br/>	
        ``mvn clean install``
+       
+#### Warning: Does not work in Eclipse
+
+Due to a [bug in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) the archetype can currently only be used from the command line. The created project can then be imported in Eclipse.
 
 ### German
 
@@ -155,3 +159,8 @@ _Postprozessor_:
     1. Navigieren in das generierte Maven-Projekt
     2. Ausführen:	<br/>
        ``mvn clean install``
+       
+#### Warnung: Funktioniert nicht in Eclipse
+
+Wegen eines [Bugs in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) kann der Archetyp derzeit nur von der Kommandozeile ausgeführt werden. Das erstellte Projekt kann dann in Eclipse importiert werden.
+       
