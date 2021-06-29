@@ -10,10 +10,6 @@
         <relativePath>../../org.faktorips.aggregator/nexus8/pom.xml</relativePath>
     </parent>
 
-    <properties>
-        <revapi.skip>true</revapi.skip>
-    </properties>
-
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-valuetypes</artifactId>
 
