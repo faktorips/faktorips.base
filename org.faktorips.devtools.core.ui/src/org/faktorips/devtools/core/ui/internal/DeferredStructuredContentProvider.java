@@ -103,7 +103,8 @@ public abstract class DeferredStructuredContentProvider implements IStructuredCo
             collector.cancel();
         }
         collector = new CollectorJob(newInput);
-        collector.addJobChangeListener(new JobDoneAdapter(viewer, Arrays.copyOf(elements, elements.length)));
+        collector.addJobChangeListener(
+                new JobDoneAdapter(viewer, elements == null ? EMPTY_ARRAY : Arrays.copyOf(elements, elements.length)));
         collector.schedule();
     }
 
