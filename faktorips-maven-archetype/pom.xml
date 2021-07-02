@@ -11,7 +11,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-maven-archetype</artifactId>
-    <version>21.6.1-SNAPSHOT</version>
+    <version>21.6.2-SNAPSHOT</version>
     <name>Faktor-IPS Archetype</name>
 
     <packaging>maven-archetype</packaging>
