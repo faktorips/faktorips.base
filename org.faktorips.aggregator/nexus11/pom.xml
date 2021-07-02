@@ -24,7 +24,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-nexus-base-11</artifactId>
-    <version>21.6.1-SNAPSHOT</version>
+    <version>21.6.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Library for Maven Java11</name>
