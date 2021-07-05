@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Groovy Runtime
 Bundle-SymbolicName: org.faktorips.runtime.groovy
-Bundle-Version: 21.6.2.qualifier
+Bundle-Version: 21.6.3.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.runtime,
