@@ -24,6 +24,10 @@
             </plugin>
 ```
 
+### buildIpsOnly
+With the parameter `buildIpsOnly` Faktor-IPS will only generate the source code, which is then compiled by the “maven-compile” plugin in the lifecycle phase compile. If this parameter is set to `false` the Faktor-IPS build will generate the source code and compile it in Eclipse just before the “maven-compiler” compiles it again.
+Therefore the default value is `true`.
+
 ### work
 The parameter `work` can be used to overwrite the location of the workspace used to compile the Faktor-IPS project.
 It must not be set to a directory inside the project's own directory, such as the project's target directory, as Eclipse can not import a project that contains the workspace directory.
@@ -59,6 +63,9 @@ Keep in mind that UI-libraries are required for the HTML export to work, so if y
 
 ### Debugging the build
 The parameter `debug` starts the build in debug mode and pauses it until a remote debugger has been connected. The default debug port is 8000 but a different port can be configured with the parameter `debugPort`.
+
+If Maven is started with the debug option (-X or --debug) Eclipse will be started with a platform debug tracing facility file. If for some reason the standard trace settings are not suitable, a separate tracing options file can be specified with the parameter `<debugLogOptions>/path/to/trace_file</debugLogOptions>`. For more information how to write your own trace file see: [FAQ How do I use the platform debug tracing facility](https://wiki.eclipse.org/FAQ_How_do_I_use_the_platform_debug_tracing_facility)
+
 
 ### antScriptPath
 To correctly import and build the Faktor-IPS project in Eclipse, the plugin uses a Ant script, performing the necessary steps. If no path is specified, a new script is generated based on the configuration.

@@ -8,6 +8,7 @@ A table of property names that can be added by -D execution, setting properties 
 |ant.target|antTarget|
 |faktorips.debug|debug|
 |faktorips.debug.port|debugPort|
+|faktorips.debuglog.options|debugLogOptions|
 |faktorips.repository.version|fipsRepositoryVersion|
 |faktorips.skip|skip|
 |jdk.dir|jdkDir|
