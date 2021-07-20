@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.internal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +51,7 @@ public class CustomValidationsResolver {
      */
     private CustomValidationsMap resolvedMap = new CustomValidationsMap();
 
-    private Set<Class<? extends IIpsObjectPartContainer>> resolvedTypes = new HashSet<>();
+    private Set<Class<? extends IIpsObjectPartContainer>> resolvedTypes = new LinkedHashSet<>();
 
     /**
      * Returns an unmodifiable set of custom validations for the given type.

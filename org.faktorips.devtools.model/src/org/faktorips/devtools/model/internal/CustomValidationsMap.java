@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.internal;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,7 +50,7 @@ public class CustomValidationsMap {
      * @return A list of instances of the given class
      */
     public <K extends IIpsObjectPartContainer> Set<ICustomValidation<?>> get(Class<K> key) {
-        return new HashSet<>(getInternal(key));
+        return new LinkedHashSet<>(getInternal(key));
     }
 
     /**
@@ -68,7 +68,7 @@ public class CustomValidationsMap {
      */
     private <K extends IIpsObjectPartContainer> Set<ICustomValidation<?>> getInternal(Class<K> key) {
         return internalMap.computeIfAbsent(key,
-                $ -> new HashSet<>());
+                $ -> new LinkedHashSet<>());
     }
 
     /**
@@ -146,7 +146,7 @@ public class CustomValidationsMap {
      * @return All values stored in this map in one collection.
      */
     private Set<ICustomValidation<? extends IIpsObjectPartContainer>> valuesInternal() {
-        Set<ICustomValidation<? extends IIpsObjectPartContainer>> result = new HashSet<>();
+        Set<ICustomValidation<? extends IIpsObjectPartContainer>> result = new LinkedHashSet<>();
         for (Set<ICustomValidation<? extends IIpsObjectPartContainer>> list : internalMap.values()) {
             result.addAll(list);
         }
