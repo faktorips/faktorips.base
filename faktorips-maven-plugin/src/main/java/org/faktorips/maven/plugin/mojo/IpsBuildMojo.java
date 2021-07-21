@@ -54,9 +54,9 @@ import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
-import org.faktorips.maven.plugin.mojo.internal.EclipseRunMojo;
+import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
-import org.faktorips.maven.plugin.mojo.internal.Repository;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
