@@ -66,7 +66,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
         return parent;
     }
 
-    private TableViewerColumn setupTableColumns(EditTableControlViewer viewer) {
+    private TableViewerColumn setupTableColumns(EditTableControlViewer<SingleValueViewItem> viewer) {
         TableViewerColumn errorColumn = new TableViewerColumn(viewer.getTableViewer(), SWT.LEFT);
         errorColumn.getColumn().setResizable(false);
         errorColumn.setLabelProvider(new ErrorCellLabelProvider<>(tableModel));
@@ -82,7 +82,7 @@ public class MultiValueDialog extends IpsPartEditDialog2 {
 
     private void createMultiValueTable(Composite parent) {
         String description = NLS.bind(Messages.MultiValueDialog_TableDescription, attributeValue.getAttribute());
-        EditTableControlViewer viewer = new EditTableControlViewer(parent);
+        EditTableControlViewer<SingleValueViewItem> viewer = new EditTableControlViewer<>(parent);
         viewer.setTableDescription(description);
 
         TableViewerColumn valueColumn = setupTableColumns(viewer);

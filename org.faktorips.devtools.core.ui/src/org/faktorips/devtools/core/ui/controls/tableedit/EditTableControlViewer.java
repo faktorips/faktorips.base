@@ -18,7 +18,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
-import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 
 /**
  * Replaces the {@link EditTableControl}.
@@ -29,11 +28,11 @@ import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
  * 
  * @author Stefan Widmaier
  */
-public class EditTableControlViewer {
+public class EditTableControlViewer<T> {
 
     private EditTableControlUIBuilder uiBuilder;
     private TableViewer tableViewer;
-    private MultiValueTableModel tableModel;
+    private IEditTableModel<T> tableModel;
 
     /**
      * Creates a {@link EditTableControlViewer} along with its UI.
@@ -67,13 +66,13 @@ public class EditTableControlViewer {
      * 
      * @param tabelModel the model containing the data to be displayed
      */
-    public void setTabelModel(MultiValueTableModel tabelModel) {
+    public void setTabelModel(IEditTableModel<T> tabelModel) {
         this.tableModel = tabelModel;
         getTableViewer().setInput(tabelModel);
         updateButtonsEnabledState();
     }
 
-    public MultiValueTableModel getTabelModel() {
+    public IEditTableModel<T> getTabelModel() {
         return tableModel;
     }
 
