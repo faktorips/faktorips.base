@@ -45,7 +45,6 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("restriction")
 public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot root;
