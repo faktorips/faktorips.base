@@ -91,11 +91,11 @@
                 <artifactId>wagon-ssh</artifactId>
                 <version>${wagon-ssh-version}</version>
             </extension>
-<!--             <extension>
+            <extension>
                 <groupId>org.faktorips</groupId>
                 <artifactId>org.faktorips.build.config</artifactId>
                 <version>1.2.2</version>
-            </extension> -->
+            </extension>
         </extensions>
         <pluginManagement>
             <plugins>
