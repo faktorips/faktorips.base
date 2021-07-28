@@ -78,6 +78,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
                 adaptedClass = classLoaderProvider.getClassLoader().loadClass(className);
                 listener = this::clearCacheAndRemoveListener;
                 classLoaderProvider.addClasspathChangeListener(listener);
+                // CSOFF: IllegalCatchCheck
             } catch (Throwable t) {
                 IpsLog.log(t);
                 /*
@@ -86,6 +87,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
                  */
                 adaptedClass = null;
             }
+            // CSON: IllegalCatchCheck
         }
         return adaptedClass;
     }
