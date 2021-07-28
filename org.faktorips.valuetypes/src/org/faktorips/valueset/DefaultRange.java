@@ -229,7 +229,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             return Integer.MAX_VALUE;
         }
 
-        if (getLowerBound().equals(getUpperBound())) {
+        if (lowerBoundEqualsUpperBound()) {
             return 1;
         }
         if (isDiscrete()) {
@@ -358,8 +358,11 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return isEmpty() || lowerBoundEqualsUpperBound() || !isStepNull();
     }
 
+    // a value of null for both bounds is not considered equal, as it represents negative/positive
+    // infinity, respectively
     private boolean lowerBoundEqualsUpperBound() {
-        return !isLowerBoundNull() && getLowerBound().equals(getUpperBound());
+        boolean noBoundNull = !isLowerBoundNull() && !isUpperBoundNull();
+        return noBoundNull && getLowerBound().compareTo(getUpperBound()) == 0;
     }
 
     @Override

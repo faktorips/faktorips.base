@@ -260,4 +260,16 @@ public class BigDecimalRangeTest {
         TestUtil.testSerializable(range);
     }
 
+    @Test
+    public void testGetValuesOfOfBigDecimalRangeWithoutStep() {
+        BigDecimalRange range = new BigDecimalRange(BigDecimal.valueOf(10), BigDecimal.valueOf(10));
+        assertTrue(range.getValues(true).contains(BigDecimal.valueOf(10)));
+    }
+
+    @Test
+    public void testSizeOfBigDecimalRangeWithEqualBoundariesHavingDifferentPrecision() {
+        BigDecimalRange range = new BigDecimalRange(new BigDecimal("10"), new BigDecimal("10.00"));
+        assertEquals(1, range.size());
+    }
+
 }

@@ -138,6 +138,12 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        if (getStep() == null) {
+            if (getLowerBound() == null || getUpperBound() == null) {
+                return Integer.MAX_VALUE;
+            }
+            return getLowerBound().compareTo(getUpperBound()) == 0 ? 1 : Integer.MAX_VALUE;
+        }
         BigDecimal size = getUpperBound().subtract(getLowerBound()).abs()
                 .divide(getStep(), 0, RoundingMode.UNNECESSARY).add(BigDecimal.ONE);
         if (size.longValue() > Integer.MAX_VALUE) {
