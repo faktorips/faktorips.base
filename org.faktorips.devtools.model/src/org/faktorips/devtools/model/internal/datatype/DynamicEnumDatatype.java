@@ -41,6 +41,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
                     + ", Class " + getAdaptedClassName() + " not found."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
+        datatype.setToStringMethodName(getToStringMethodName());
         datatype.setGetAllValuesMethodName(getAllValuesMethodName);
 
         return datatype.getAllValueIds(includeNull);
@@ -90,10 +91,12 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         datatype.setToStringMethodName(getToStringMethodName());
         try {
             return datatype.getValueName(id);
+            // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error getting name for enum value id " + id, e)); //$NON-NLS-1$
             return id;
         }
+        // CSON: IllegalCatchCheck
     }
 
     @Override
