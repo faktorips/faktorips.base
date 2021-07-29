@@ -239,6 +239,7 @@
       <command
             categoryId="org.faktorips.devtools.core.ui.category.navigate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.ShowInstanceHandler"
+            description="%ShowInstanceAction_descriptionForInstances"
             id="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances"
             name="%ShowInstanceAction_nameForInstances">
       </command>
@@ -1938,7 +1939,9 @@
                      operator="and">
                   <or>
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isMetaType">
+                       <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isIpsObjectType"
+                              value="ProductCmpt">
                        </test>
                      </adapt>
                   </or>
@@ -2740,8 +2743,10 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
-                       </test>
+                        <not>
+                           <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                           </test>
+                        </not>
                      </adapt>
                   </iterate>
                </with>
@@ -2759,7 +2764,7 @@
                      variable="selection">
                   <iterate
                         ifEmpty="false"
-                        operator="and">                        
+                        operator="and">
                      <test
                            property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
                      </test>
@@ -2781,8 +2786,10 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
-                       </test>
+                        <not>
+                            <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
+                            </test>
+                        </not>
                      </adapt>
                   </iterate>
                </with>
