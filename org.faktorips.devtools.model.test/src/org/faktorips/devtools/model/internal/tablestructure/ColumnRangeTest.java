@@ -46,7 +46,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         range = (ColumnRange)table.newRange();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test
@@ -258,7 +258,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setFromColumn("from");
         range.setToColumn("to");
 
-        table.getIpsSrcFile().save(true, null);
+        table.getIpsSrcFile().save(null);
 
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());

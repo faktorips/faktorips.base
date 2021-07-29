@@ -56,7 +56,7 @@ public class CopyProductCmptOperationTest extends AbstractIpsPluginTest {
         IIpsPackageFragment targetIpsPackageFragment = ipsProject.getIpsPackageFragmentRoots()[0]
                 .createPackageFragment("targetPackage", true, null);
 
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
 
         NewProductCmptPMO pmo = new NewProductCmptPMO();
         pmo.setIpsProject(ipsProject);

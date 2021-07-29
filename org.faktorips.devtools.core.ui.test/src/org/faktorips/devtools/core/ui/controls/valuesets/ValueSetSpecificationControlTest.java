@@ -58,7 +58,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 

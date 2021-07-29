@@ -257,6 +257,6 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     private void save(ProductCmpt prodCmpt) {
-        prodCmpt.getIpsSrcFile().save(false, null);
+        prodCmpt.getIpsSrcFile().save(null);
     }
 }

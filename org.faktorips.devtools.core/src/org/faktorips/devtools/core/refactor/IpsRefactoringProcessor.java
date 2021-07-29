@@ -201,7 +201,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm) {
         for (IpsSrcFileModification modification : modificationSet.getModifications()) {
             if (modification.getTargetIpsSrcFile().exists()) {
-                modification.getTargetIpsSrcFile().save(true, pm);
+                modification.getTargetIpsSrcFile().save(pm);
             }
         }
     }

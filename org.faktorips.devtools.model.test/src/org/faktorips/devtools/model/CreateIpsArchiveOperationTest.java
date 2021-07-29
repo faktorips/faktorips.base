@@ -84,7 +84,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -131,13 +131,13 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         IIpsSrcFile productSrcFile2 = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct2",
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType2 = (IProductCmptType)productSrcFile2.getIpsObject();
         prodType2.setInstancesIcon("test.gif");
-        productSrcFile2.save(true, new NullProgressMonitor());
+        productSrcFile2.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
@@ -165,7 +165,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test_doesNotExist.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];

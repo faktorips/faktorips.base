@@ -81,7 +81,7 @@ public class SetTestCaseTypeDialog extends EditDialog {
     protected void buttonPressed(int buttonId) {
         if (buttonId == OK) {
             testCase.setTestCaseType(getTestCaseType());
-            testCase.getIpsSrcFile().save(true, null);
+            testCase.getIpsSrcFile().save(null);
         }
         super.buttonPressed(buttonId);
     }

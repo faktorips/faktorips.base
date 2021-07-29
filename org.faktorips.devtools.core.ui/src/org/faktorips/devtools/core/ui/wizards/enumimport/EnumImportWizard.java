@@ -179,7 +179,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                         new ResultDisplayer(getShell(), Messages.EnumImportWizard_operationName, messageList));
             }
 
-            enumTypeOrContent.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
+            enumTypeOrContent.getIpsObject().getIpsSrcFile().save(new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);

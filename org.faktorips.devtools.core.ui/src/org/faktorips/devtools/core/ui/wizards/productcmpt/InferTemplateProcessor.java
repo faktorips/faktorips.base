@@ -148,7 +148,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
                 monitor, productCmpts.size());
         saveMonitor.beginTask(Messages.InferTemplateOperation_progress_save, srcFilesToSave.size() + 1);
         for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
-            ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         }
     }
 

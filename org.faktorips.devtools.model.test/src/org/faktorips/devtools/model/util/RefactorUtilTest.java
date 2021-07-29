@@ -44,7 +44,7 @@ public class RefactorUtilTest extends AbstractIpsPluginTest {
     public void testCopyIpsSrcFile() {
         IIpsPackageFragment targetIpsPackage = policyCmptType.getIpsPackageFragment();
         IIpsSrcFile fileToBeCopied = policyCmptType.getIpsSrcFile();
-        fileToBeCopied.save(true, null);
+        fileToBeCopied.save(null);
         IIpsSrcFile copiedSrcFile = RefactorUtil.copyIpsSrcFile(fileToBeCopied, targetIpsPackage, "Foo", null);
         assertTrue(copiedSrcFile.exists());
 

@@ -52,7 +52,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
             try {
                 for (IFixDifferencesToModelSupport element : sortedElements) {
                     element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
-                    element.getIpsSrcFile().save(true, null);
+                    element.getIpsSrcFile().save(null);
                     monitor.worked(1);
                 }
             } catch (IpsException e) {

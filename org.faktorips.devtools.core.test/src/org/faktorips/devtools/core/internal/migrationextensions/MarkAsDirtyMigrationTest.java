@@ -57,7 +57,7 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     public void testMigrate_SrcFilesAreDirty() throws Exception {
         setUpMigration();
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy1");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProduct");
         ITableStructure tableStructure = newTableStructure(ipsProject, "TestStructure");
         IEnumType enumType = newEnumType(ipsProject, "TestEnum");

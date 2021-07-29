@@ -68,7 +68,7 @@ public class LinkCreatorUtil {
                 return false;
             }
             if (result && haveToSave) {
-                ipsSrcFile.save(false, null);
+                ipsSrcFile.save(null);
             }
             return result;
         } catch (IpsException e) {

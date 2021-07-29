@@ -52,10 +52,10 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         type = newPolicyCmptType(archiveProject, "motor.Policy");
-        type.getIpsSrcFile().save(true, null);
+        type.getIpsSrcFile().save(null);
         newPolicyCmptTypeWithoutProductCmptType(archiveProject, "motor.collision.CollisionCoverage").getIpsSrcFile()
-                .save(true, null);
-        newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(true, null);
+                .save(null);
+        newProductCmpt(archiveProject, "motor.MotorProduct").getIpsSrcFile().save(null);
 
         project = newIpsProject();
         archiveFile = project.getProject().getFile("test.ipsar");

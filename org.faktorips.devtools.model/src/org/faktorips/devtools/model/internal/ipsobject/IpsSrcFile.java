@@ -89,7 +89,17 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public void save(boolean force, IProgressMonitor monitor) {
+    public void save(IProgressMonitor monitor) throws IpsException {
+        save(true, monitor);
+    }
+
+    /**
+     * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
+     *             {@code force} parameter is ignored anyways.
+     */
+    @Deprecated(forRemoval = true, since = "22.6")
+    @Override
+    public void save(boolean force, IProgressMonitor monitor) throws IpsException {
         if (!exists()) {
             throw new IpsException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
         }
@@ -100,7 +110,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
             preSaveProcessors.forEach(p -> p.process(ipsObject));
             content = ((AbstractIpsSrcFile)ipsObject.getIpsSrcFile()).getContent();
         }
-        content.save(force, monitor);
+        content.save(monitor);
     }
 
     /**

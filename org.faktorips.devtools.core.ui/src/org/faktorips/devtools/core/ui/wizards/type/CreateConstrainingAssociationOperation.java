@@ -186,7 +186,7 @@ public class CreateConstrainingAssociationOperation {
 
     private void saveIfNecessary(IType type, boolean wasDirty) {
         if (!wasDirty) {
-            type.getIpsSrcFile().save(true, null);
+            type.getIpsSrcFile().save(null);
         }
     }
 

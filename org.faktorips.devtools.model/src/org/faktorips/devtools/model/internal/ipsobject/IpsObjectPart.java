@@ -65,17 +65,25 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     @Override
     public void delete() {
+        deleteInternal();
+        ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
+        objectHasChanged(event);
+    }
+
+    private void deleteInternal() {
         if (isDeleted()) {
             throw new RuntimeException("Object has already been deleted!"); //$NON-NLS-1$
         }
 
-        deleted = true;
+        markAsDeleted();
+
         if (getContainer() != null) {
             getContainer().removePart(this);
         }
+    }
 
-        ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
-        objectHasChanged(event);
+    void markAsDeleted() {
+        deleted = true;
     }
 
     @Override

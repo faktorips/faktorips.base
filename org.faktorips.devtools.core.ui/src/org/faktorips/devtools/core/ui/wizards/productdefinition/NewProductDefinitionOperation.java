@@ -87,7 +87,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     @SuppressWarnings("deprecation")
     private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
-        ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+        ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
     }
 
     /**

@@ -23,7 +23,11 @@ import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IProductCmptPropertyReference}.
+ *
+ * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
+ *             instead.
  */
+@Deprecated(forRemoval = true, since = "22.6")
 public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {
 
     static final String XML_TAG_NAME = "ProductCmptPropertyReference"; //$NON-NLS-1$

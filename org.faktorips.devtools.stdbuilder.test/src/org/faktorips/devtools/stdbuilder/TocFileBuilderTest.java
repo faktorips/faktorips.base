@@ -146,8 +146,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
                 "motor.RateTable");
         table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
-        structure.getIpsSrcFile().save(true, null);
-        table.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
+        table.getIpsSrcFile().save(null);
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
 
@@ -173,7 +173,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IEnumValue enumValue = enumType.newEnumValue();
         enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
         enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
-        enumType.getIpsSrcFile().save(true, null);
+        enumType.getIpsSrcFile().save(null);
 
         TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
 
@@ -200,7 +200,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IEnumValue enumValue = enumType.newEnumValue();
         enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
         enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
-        enumType.getIpsSrcFile().save(true, null);
+        enumType.getIpsSrcFile().save(null);
 
         TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
 
@@ -229,7 +229,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IEnumValue enumValue = enumType.newEnumValue();
         enumValue.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("a"));
         enumValue.setEnumAttributeValue(nameAttribute, ValueFactory.createStringValue("A"));
-        enumType.getIpsSrcFile().save(true, null);
+        enumType.getIpsSrcFile().save(null);
 
         TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
 
@@ -253,8 +253,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
                 "motor.RateTable");
         table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
-        structure.getIpsSrcFile().save(true, null);
-        table.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
+        table.getIpsSrcFile().save(null);
 
         // create another table content based on the same structure => 5
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
@@ -263,14 +263,14 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
                 "motor.RateTable2");
         table2.newTableRows();
         table2.setTableStructure(structure2.getQualifiedName());
-        table2.getIpsSrcFile().save(true, null);
+        table2.getIpsSrcFile().save(null);
 
         // create a test case type and a test case => 6
         ITestCaseType testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "tests.PremiumCalcTest");
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "tests.PremiumCalcTestA");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
-        testCase.getIpsSrcFile().save(true, null);
+        testCase.getIpsSrcFile().save(null);
 
         // now build
         ipsProject.getProject().build(ABuildKind.FULL, null);
@@ -353,7 +353,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         tableContent.setTableStructure(tableStructure.getQualifiedName());
         tableContent.newColumn("", "");
         tableContent.newColumn("", "");
-        tableContent.getIpsSrcFile().save(true, null);
+        tableContent.getIpsSrcFile().save(null);
 
         // build
         ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);

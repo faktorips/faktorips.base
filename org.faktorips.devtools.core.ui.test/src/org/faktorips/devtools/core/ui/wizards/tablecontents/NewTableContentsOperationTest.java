@@ -63,7 +63,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
 
         tableContents = newTableContents(ipsProject, "TestTableContent");
-        tableContents.getIpsSrcFile().save(true, null);
+        tableContents.getIpsSrcFile().save(null);
     }
 
     @Override
@@ -203,7 +203,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
         newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
 
-        verify(tableUsage.getIpsSrcFile()).save(true, monitor);
+        verify(tableUsage.getIpsSrcFile()).save(monitor);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
         newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
 
-        verify(tableUsage.getIpsSrcFile(), never()).save(true, monitor);
+        verify(tableUsage.getIpsSrcFile(), never()).save(monitor);
     }
 
     @Test
@@ -225,7 +225,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
         newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
 
-        verify(tableUsage.getIpsSrcFile(), never()).save(true, monitor);
+        verify(tableUsage.getIpsSrcFile(), never()).save(monitor);
     }
 
     @Test(expected = IpsException.class)
@@ -233,7 +233,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         ITableContentUsage tableUsage = mockTableUsage(true);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.isDirty()).thenReturn(false);
-        doThrow(new IpsException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(true, monitor);
+        doThrow(new IpsException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(monitor);
         when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);

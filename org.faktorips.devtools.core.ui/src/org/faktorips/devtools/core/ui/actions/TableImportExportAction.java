@@ -120,7 +120,7 @@ public class TableImportExportAction extends IpsAction {
         }
         Runnable run = () -> {
             try {
-                tableContents.getIpsSrcFile().save(true, null);
+                tableContents.getIpsSrcFile().save(null);
             } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

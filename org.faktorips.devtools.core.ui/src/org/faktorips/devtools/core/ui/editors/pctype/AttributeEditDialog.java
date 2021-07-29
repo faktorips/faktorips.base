@@ -564,7 +564,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             attribute.setComputationMethodSignature(method.getSignatureString());
             if (!productCmptTypeDirtyBeforeDialog) {
                 try {
-                    file.save(true, null);
+                    file.save(null);
                 } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
@@ -670,6 +670,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                 attribute.setAttributeType(overwrittenAttribute.getAttributeType());
                                 attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
                                 attribute.setCategory(overwrittenAttribute.getCategory());
+                                attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
                                 return true;
                             }
                         });

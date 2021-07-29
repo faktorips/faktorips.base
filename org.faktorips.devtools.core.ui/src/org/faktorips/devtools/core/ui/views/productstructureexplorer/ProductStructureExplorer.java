@@ -1040,7 +1040,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
             changeCardinality();
 
             if (!dirty && ipsSrcFile.isDirty()) {
-                productCmptReference.getLink().getIpsSrcFile().save(false, new NullProgressMonitor());
+                productCmptReference.getLink().getIpsSrcFile().save(new NullProgressMonitor());
             }
             productStructureExplorer.refresh();
         }

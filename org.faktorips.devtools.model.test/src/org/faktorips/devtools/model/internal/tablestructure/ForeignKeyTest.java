@@ -36,7 +36,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         key = (ForeignKey)table.newForeignKey();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test

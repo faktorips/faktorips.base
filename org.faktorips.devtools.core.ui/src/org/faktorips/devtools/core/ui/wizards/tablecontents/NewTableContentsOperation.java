@@ -57,7 +57,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
             ITableContentUsage tableContentUsage = getPmo().getAddToTableUsage();
             tableContentUsage.setTableContentName(ipsSrcFile.getQualifiedNameType().getName());
             if (!dirty && getPmo().isAutoSaveAddToFile()) {
-                addToIpsSrcFile.save(true, monitor);
+                addToIpsSrcFile.save(monitor);
             }
         }
     }

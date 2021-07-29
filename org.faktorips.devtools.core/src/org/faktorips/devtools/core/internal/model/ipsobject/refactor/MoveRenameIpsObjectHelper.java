@@ -247,7 +247,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
          * during updateDependencies(...)
          */
         if (originalSrcFile.isDirty()) {
-            originalSrcFile.save(true, null);
+            originalSrcFile.save(null);
         }
 
         IIpsSrcFile targetSrcFile = null;

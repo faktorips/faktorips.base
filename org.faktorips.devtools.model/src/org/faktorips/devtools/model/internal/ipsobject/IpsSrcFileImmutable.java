@@ -89,7 +89,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * Does nothing
      */
     @Override
-    public void save(boolean force, IProgressMonitor monitor) {
+    public void save(IProgressMonitor monitor) {
         // No save
     }
 

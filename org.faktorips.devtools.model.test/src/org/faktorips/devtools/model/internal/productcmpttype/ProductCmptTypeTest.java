@@ -15,6 +15,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -68,7 +69,6 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -707,6 +707,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertNull(productCmptType.findProductCmptProperty(policyCmptTypeAttr.getName(), ipsProject));
     }
 
+    @Deprecated
     @Test
     public void testFindProductCmptProperty_ByReference() {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
@@ -722,21 +723,26 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         tsu.setRoleName("tsu");
         IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
 
-        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id1");
         policyAttributeReference.setReferencedProperty(policyAttribute);
 
-        IProductCmptPropertyReference validationRuleReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference validationRuleReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id2");
         validationRuleReference.setReferencedProperty(validationRule);
 
-        IProductCmptPropertyReference formulaReference = new ProductCmptPropertyReference(productCmptType, "id3");
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference formulaReference = new ProductCmptPropertyReference(
+                productCmptType, "id3");
         formulaReference.setReferencedProperty(formula);
 
-        IProductCmptPropertyReference tsuReference = new ProductCmptPropertyReference(productCmptType, "id4");
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference tsuReference = new ProductCmptPropertyReference(
+                productCmptType, "id4");
         tsuReference.setReferencedProperty(tsu);
 
-        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id5");
         productAttributeReference.setReferencedProperty(productAttribute);
 
@@ -747,12 +753,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(productAttribute, productCmptType.findProductCmptProperty(productAttributeReference, ipsProject));
     }
 
+    @Deprecated
     @Test
     public void testFindProductCmptProperty_ByReferencePolicyCmptTypeNotFound() {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
 
-        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id1");
         policyAttributeReference.setReferencedProperty(policyAttribute);
 
@@ -762,6 +770,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertNull(productCmptType.findProductCmptProperty(policyAttributeReference, ipsProject));
     }
 
+    @Deprecated
     @Test
     public void testFindProductCmptProperty_ByReferenceSameIdInPolicyTypeAndProductType() throws IpsException,
             SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
@@ -774,10 +783,12 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productAttribute.setName("productAttribute");
         setPartId(productAttribute, "foo");
 
-        IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference policyAttributeReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id1");
         policyAttributeReference.setReferencedProperty(policyAttribute);
-        IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(productCmptType,
+        org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference productAttributeReference = new ProductCmptPropertyReference(
+                productCmptType,
                 "id1");
         productAttributeReference.setReferencedProperty(productAttribute);
 
@@ -1155,22 +1166,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(c.getQualifiedName(), IpsObjectType.TABLE_STRUCTURE), DependencyType.REFERENCE)));
 
-    }
-
-    @Test
-    public void testGetPropertyReferences() {
-        IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
-        IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
-
-        // If no move has been performed, the references are empty
-        assertTrue(productCmptType.getPropertyReferences().isEmpty());
-
-        // As soon as a move is performed, the references are created
-        productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(p1, p2), false);
-        List<IProductCmptPropertyReference> propertyReferences = productCmptType.getPropertyReferences();
-        assertEquals(p2, propertyReferences.get(0).findProductCmptProperty(ipsProject));
-        assertEquals(p1, propertyReferences.get(1).findProductCmptProperty(ipsProject));
-        assertEquals(2, propertyReferences.size());
     }
 
     @Test
@@ -2211,8 +2206,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     /**
      * <strong>Scenario:</strong><br>
      * An {@link IProductCmptCategory} has some properties assigned. Then, a new
-     * {@link IProductCmptProperty} is created which is not yet in the
-     * {@link IProductCmptPropertyReference} list of the {@link IProductCmptType}.
+     * {@link IProductCmptProperty} is created which not yet has a
+     * {@link IProductCmptProperty#getCategoryPosition() position in its category}.
      * <p>
      * <strong>Expected Outcome:</strong><br>
      * The new {@link IProductCmptProperty} should be at the very end of the category's properties.
@@ -2605,68 +2600,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     /**
      * <strong>Scenario:</strong><br>
-     * An {@link IProductCmptPropertyReference} is moved up, but in-between the logically affected
-     * properties, an {@link IProductCmptProperty} of another {@link IProductCmptCategory} is
-     * located.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The move operation should skip the in-between {@link IProductCmptPropertyReference}, so that
-     * only properties belonging to an {@link IProductCmptCategory} are swapped with each other, and
-     * return true.
-     */
-    @Test
-    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() {
-        IProductCmptCategory category1 = productCmptType.newCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newCategory("category2");
-
-        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
-        property1.setCategory(category1.getName());
-        IProductCmptProperty inBetweenProperty = productCmptType.newProductCmptTypeAttribute("inBetweenProperty");
-        inBetweenProperty.setCategory(category2.getName());
-        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
-        property2.setCategory(category1.getName());
-
-        assertArrayEquals(new int[] { 0 },
-                productCmptType.movePropertyReferences(new int[] { 1 }, Arrays.asList(property1, property2), true));
-        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
-        assertEquals(property2, properties.get(0));
-        assertEquals(inBetweenProperty, properties.get(1));
-        assertEquals(property1, properties.get(2));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
-     * A {@link IProductCmptPropertyReference} is moved down, but in-between the logically affected
-     * properties, an {@link IProductCmptProperty} assigned to another {@link IProductCmptCategory}
-     * is located.
-     * <p>
-     * <strong>Expected Outcome:</strong><br>
-     * The move operation should skip the in-between {@link IProductCmptPropertyReference}, so that
-     * only properties belonging to an {@link IProductCmptCategory} are swapped with each other, and
-     * return true.
-     */
-    @Test
-    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown() {
-        IProductCmptCategory category1 = productCmptType.newCategory("category1");
-        IProductCmptCategory category2 = productCmptType.newCategory("category2");
-
-        IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
-        property1.setCategory(category1.getName());
-        IProductCmptProperty inBetweenProperty = productCmptType.newProductCmptTypeAttribute("inBetweenProperty");
-        inBetweenProperty.setCategory(category2.getName());
-        IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("property2");
-        property2.setCategory(category1.getName());
-
-        assertArrayEquals(new int[] { 1 },
-                productCmptType.movePropertyReferences(new int[] { 0 }, Arrays.asList(property1, property2), false));
-        List<IProductCmptProperty> properties = findProductCmptPropertiesInOrder(productCmptType, false, ipsProject);
-        assertEquals(property2, properties.get(0));
-        assertEquals(inBetweenProperty, properties.get(1));
-        assertEquals(property1, properties.get(2));
-    }
-
-    /**
-     * <strong>Scenario:</strong><br>
      * There exist multiple property references in an {@link IProductCmptType}. One reference is
      * moved.
      * <p>
@@ -2866,7 +2799,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         assertEquals("beforeCategory", policyProperty.getCategory());
 
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
         assertEquals("otherCategory", policyProperty.getCategory());
     }
 
@@ -2878,7 +2811,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.getIpsSrcFile().delete();
 
         productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, "otherCategory");
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
 
         assertEquals("beforeCategory", policyProperty.getCategory());
     }
@@ -2908,7 +2841,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
              * Delete the policy component type so that the source file becomes immutable, then
              * change the category of the policy property, and then undo the delete.
              */
-            policyCmptType.getIpsSrcFile().save(true, null);
+            policyCmptType.getIpsSrcFile().save(null);
             Change undoDeleteResourceChange = performDeleteResourceChange(policyCmptType.getIpsSrcFile(), null);
             productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, otherCategory.getName());
             undoDeleteResourceChange.perform(new NullProgressMonitor());
@@ -2916,12 +2849,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
             List<IProductCmptProperty> beforeCategoryProperties = beforeCategory.findProductCmptProperties(
                     productCmptType,
                     false, ipsProject);
-            assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
+            assertEquals(policyProperty.getName(), beforeCategoryProperties.get(0).getName());
             assertEquals(1, beforeCategoryProperties.size());
 
             List<IProductCmptProperty> otherCategoryProperties = otherCategory.findProductCmptProperties(
-                    productCmptType,
-                    false, ipsProject);
+                    productCmptType, false, ipsProject);
             assertTrue(otherCategoryProperties.isEmpty());
         }
     }
@@ -3024,15 +2956,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
              * Delete the policy component type so that the source file becomes immutable, then save
              * the product component type, and then undo the delete.
              */
-            policyCmptType.getIpsSrcFile().save(true, null);
+            policyCmptType.getIpsSrcFile().save(null);
             Change undoDeleteResourceChange = performDeleteResourceChange(policyCmptType.getIpsSrcFile(), null);
-            productCmptType.getIpsSrcFile().save(true, null);
+            productCmptType.getIpsSrcFile().save(null);
             undoDeleteResourceChange.perform(new NullProgressMonitor());
 
             List<IProductCmptProperty> beforeCategoryProperties = beforeCategory.findProductCmptProperties(
                     productCmptType,
                     false, ipsProject);
-            assertEquals(policyProperty.getId(), beforeCategoryProperties.get(0).getId());
+            assertEquals(policyProperty.getName(), beforeCategoryProperties.get(0).getName());
             assertEquals(1, beforeCategoryProperties.size());
 
             List<IProductCmptProperty> afterCategoryProperties = afterCategory.findProductCmptProperties(
@@ -3064,13 +2996,53 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
         productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, afterCategory.getName());
         policyCmptType.getIpsSrcFile().markAsDirty();
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
 
         // 1) the policy component type's source file must not have been saved
         assertTrue(policyCmptType.getIpsSrcFile().isDirty());
 
         // 2) the pending policy changes must still be pending
         assertEquals(afterCategory.getName(), policyProperty.getCategory());
+    }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * A policy attribute configured by a product component type is moved to another category and
+     * subsequently moved to a new position inside that category.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * The {@link IPolicyCmptType} should not be saved but the pending policy changes should be
+     * transferred to the policy properties. The product property previously on the policy
+     * property's new position on the other hand is already moved.
+     */
+    @Test
+    public void testChangeCategoryAndDeferPolicyChange_AndChangePosition() {
+
+        IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
+        IProductCmptCategory afterCategory = productCmptType.newCategory("afterCategory");
+        IProductCmptProperty productProperty1 = createProductAttributeProperty(productCmptType,
+                "productAttribute1");
+        productProperty1.setCategory("afterCategory");
+        productProperty1.setCategoryPosition(1);
+        IProductCmptProperty productProperty2 = createProductAttributeProperty(productCmptType,
+                "productAttribute2");
+        productProperty2.setCategory("afterCategory");
+        productProperty2.setCategoryPosition(2);
+        IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
+        policyProperty.setCategory(beforeCategory.getName());
+        policyProperty.setCategoryPosition(99);
+
+        productCmptType.changeCategoryAndDeferPolicyChange(policyProperty, afterCategory.getName());
+        afterCategory.moveProductCmptProperties(new int[] { 2 }, true, productCmptType);
+
+        assertThat(policyProperty.getCategory(), is(beforeCategory.getName()));
+        assertThat(productCmptType.getCategoryNameFor(policyProperty), is(afterCategory.getName()));
+        assertThat(policyProperty.getCategoryPosition(), is(99));
+        assertThat(productCmptType.getCategoryPositionFor(policyProperty), is(2));
+        assertThat(productProperty1.getCategoryPosition(), is(1));
+        assertThat(productCmptType.getCategoryPositionFor(productProperty1), is(1));
+        assertThat(productProperty2.getCategoryPosition(), is(3));
+        assertThat(productCmptType.getCategoryPositionFor(productProperty2), is(3));
     }
 
     @Test

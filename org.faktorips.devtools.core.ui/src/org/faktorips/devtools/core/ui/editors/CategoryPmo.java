@@ -49,7 +49,7 @@ public class CategoryPmo extends IpsObjectPartPmo {
     }
 
     private List<IProductCmptCategory> findCategories() {
-        List<IProductCmptCategory> categories = new ArrayList<>();
+        List<IProductCmptCategory> categoriesList = new ArrayList<>();
 
         IProductCmptType productCmptType = null;
         try {
@@ -61,14 +61,14 @@ public class CategoryPmo extends IpsObjectPartPmo {
 
         if (productCmptType != null) {
             try {
-                categories.addAll(productCmptType.findCategories(getProperty().getIpsProject()));
+                categoriesList.addAll(productCmptType.findCategories(getProperty().getIpsProject()));
             } catch (IpsException e) {
                 // Recover by not displaying any categories
                 IpsPlugin.log(e);
             }
         }
 
-        return categories;
+        return categoriesList;
     }
 
     /**

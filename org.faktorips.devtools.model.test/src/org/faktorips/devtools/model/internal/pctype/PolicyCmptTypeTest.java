@@ -810,7 +810,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         IPolicyCmptType subtype = newPolicyCmptType(ipsProject, "Subtype");
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
         subtype.setSupertype(supertype.getQualifiedName());
-        subtype.getIpsSrcFile().save(true, null);
+        subtype.getIpsSrcFile().save(null);
 
         supertype.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.ASSOCIATION);
         assertTrue(subtype.isAggregateRoot());

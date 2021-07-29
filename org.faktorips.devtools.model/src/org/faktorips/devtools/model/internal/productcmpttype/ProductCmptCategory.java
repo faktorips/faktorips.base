@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -564,9 +566,11 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     static class ProductCmptPropertyComparator implements Comparator<IProductCmptProperty> {
 
         private final IProductCmptType productCmptType;
+        private final List<String> categories;
 
         ProductCmptPropertyComparator(IProductCmptType productCmptType) {
             this.productCmptType = productCmptType;
+            categories = productCmptType.getCategories().stream().map(t -> t.getName()).collect(Collectors.toList());
         }
 
         @Override
@@ -642,8 +646,16 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 return 0;
             }
 
-            int index1 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property1);
-            int index2 = ((ProductCmptType)contextType).getReferencedPropertyIndex(property2);
+            String category1 = findCategory(property1, contextType);
+            String category2 = findCategory(property2, contextType);
+            if (!category1.equals(category2)) {
+                int categoryIndex1 = categories.indexOf(category1);
+                int categoryIndex2 = categories.indexOf(category2);
+                return categoryIndex1 - categoryIndex2;
+            }
+
+            int index1 = ((ProductCmptType)contextType).getCategoryPositionFor(property1);
+            int index2 = ((ProductCmptType)contextType).getCategoryPositionFor(property2);
 
             // If no reference exists for a property, it is sorted towards the end
             if (index1 == -1) {
@@ -653,13 +665,29 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 index2 = Integer.MAX_VALUE;
             }
 
-            if (index1 == index2) {
-                return 0;
-            } else if (index1 < index2) {
-                return -1;
-            } else {
-                return 1;
+            return index1 - index2;
+        }
+
+        private String findCategory(IProductCmptProperty property, IProductCmptType contextType) {
+            String category = ((ProductCmptType)contextType).getCategoryNameFor(property);
+            if (IpsStringUtils.isBlank(category)) {
+                IIpsProject ipsProject = contextType.getIpsProject();
+                switch (property.getProductCmptPropertyType()) {
+                    case FORMULA_SIGNATURE_DEFINITION:
+                        return contextType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).getName();
+                    case POLICY_CMPT_TYPE_ATTRIBUTE:
+                        return contextType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).getName();
+                    case PRODUCT_CMPT_TYPE_ATTRIBUTE:
+                        return contextType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).getName();
+                    case TABLE_STRUCTURE_USAGE:
+                        return contextType.findDefaultCategoryForTableStructureUsages(ipsProject).getName();
+                    case VALIDATION_RULE:
+                        return contextType.findDefaultCategoryForValidationRules(ipsProject).getName();
+                    default:
+                        return category;
+                }
             }
+            return category;
         }
 
     }

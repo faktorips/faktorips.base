@@ -77,7 +77,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
     }
 
     protected final void saveIpsSrcFile(IIpsObject ipsObject) {
-        ipsObject.getIpsSrcFile().save(true, null);
+        ipsObject.getIpsSrcFile().save(null);
     }
 
     protected final IEnumType createEnumType(String name,

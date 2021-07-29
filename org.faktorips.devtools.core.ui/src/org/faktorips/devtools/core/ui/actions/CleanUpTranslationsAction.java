@@ -187,7 +187,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                     for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
                         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                         cleanUp(ipsObject, supportedLocales);
-                        ipsSrcFile.save(true, null);
+                        ipsSrcFile.save(null);
                         monitor.worked(1);
                     }
                     monitor.done();

@@ -78,7 +78,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
 
         configuredDefaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 
@@ -105,13 +105,13 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
         // unknown data type
         attribute.setDatatype("HopefullyNoExistingDatatype");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
         ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
 
         // valid data type
         attribute.setDatatype("Decimal");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
         ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
     }
@@ -121,8 +121,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype("Money");
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         // value cannot be parsed -> expect error message
         configuredDefaultValue.setValue("1");
@@ -132,7 +132,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
         // make value parsable -> expect no error message
         attribute.setDatatype("Decimal");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
         ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml,
                 lacksMessageCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
@@ -166,8 +166,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype(enumType.getQualifiedName());
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         MessageList ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml,
@@ -219,8 +219,8 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         valueSet.setLowerBound("10");
         valueSet.setUpperBound("20");
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         MessageList ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET));

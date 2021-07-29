@@ -540,7 +540,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     @Override
     public void doSave(IProgressMonitor monitor) {
         try {
-            ipsSrcFile.save(true, monitor);
+            ipsSrcFile.save(monitor);
         } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }

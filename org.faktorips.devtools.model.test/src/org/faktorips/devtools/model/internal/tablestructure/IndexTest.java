@@ -49,7 +49,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         key = (Index)table.newIndex();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test

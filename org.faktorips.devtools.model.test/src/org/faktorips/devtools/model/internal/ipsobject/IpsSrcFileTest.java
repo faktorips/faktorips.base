@@ -104,7 +104,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
         lastModStatusEvent = null;
         resetLastContentChangeEvent();
-        parsableFile.save(true, null);
+        parsableFile.save(null);
         assertFalse(parsableFile.isDirty());
         assertNull(getLastContentChangeEvent());
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
@@ -121,7 +121,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
             policyCmptType.getDescription(Locale.GERMAN).setText("foo");
             assertTrue(parsableFile.isDirty());
 
-            parsableFile.save(true, null);
+            parsableFile.save(null);
             assertFalse(parsableFile.isDirty());
             assertThat(parsableFile.getIpsObject().getDescription(Locale.GERMAN).getText(), is("FOO"));
         }
@@ -137,7 +137,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
             policyCmptType.getDescription(Locale.GERMAN).setText("foo");
             assertTrue(parsableFile.isDirty());
 
-            parsableFile.save(true, null);
+            parsableFile.save(null);
             assertFalse(parsableFile.isDirty());
             assertThat(parsableFile.getIpsObject().getDescription(Locale.GERMAN).getText(), is("foo"));
         }

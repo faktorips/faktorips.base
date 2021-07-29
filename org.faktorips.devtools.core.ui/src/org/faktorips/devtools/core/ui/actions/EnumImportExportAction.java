@@ -122,7 +122,7 @@ public class EnumImportExportAction extends IpsAction {
         }
         Runnable run = () -> {
             try {
-                enumIpsObject.getIpsSrcFile().save(true, null);
+                enumIpsObject.getIpsSrcFile().save(null);
             } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }

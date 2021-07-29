@@ -29,11 +29,14 @@ import org.faktorips.devtools.model.type.IType;
  * unique across types, the {@link IpsObjectType} of the poperty's {@link IType} is stored as well.
  * 
  * @since 3.6
+ * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
+ *             instead.
  * 
  * @see IProductCmptProperty
  * @see IProductCmptCategory
  * @see IProductCmptType
  */
+@Deprecated(forRemoval = true, since = "22.6")
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     public static final String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$

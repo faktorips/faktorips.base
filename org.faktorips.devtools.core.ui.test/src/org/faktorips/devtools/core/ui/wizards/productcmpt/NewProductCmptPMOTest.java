@@ -223,7 +223,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
         IProductCmpt productCmptToCopy = newProductCmpt(productCmptType, "ProductToCopy");
         productCmptToCopy.setProductCmptType("notExistent");
-        productCmptToCopy.getIpsSrcFile().save(true, null);
+        productCmptToCopy.getIpsSrcFile().save(null);
 
         pmo.setIpsProject(ipsProject);
         pmo.setCopyProductCmpt(productCmptToCopy);

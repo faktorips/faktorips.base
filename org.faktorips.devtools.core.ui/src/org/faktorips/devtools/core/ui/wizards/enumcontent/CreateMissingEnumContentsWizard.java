@@ -524,7 +524,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                     IIpsSrcFile file = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, enumContentName, true, null);
                     IEnumContent enumContent = (IEnumContent)file.getIpsObject();
                     enumContent.setEnumType(currentEnumType.getQualifiedName());
-                    file.save(true, null);
+                    file.save(null);
                 }
                 monitor.worked(1);
             }

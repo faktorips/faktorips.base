@@ -103,7 +103,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         staticAssociation.setChangingOverTime(false);
         staticAssociation.setTarget(productCmptType.getQualifiedName());
 
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
 
         productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
@@ -126,8 +126,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
         gen.newAttributeValue(internationalStringAttribute);
 
-        productCmpt.getIpsSrcFile().save(true, null);
-        refTarget.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
+        refTarget.getIpsSrcFile().save(null);
 
         assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
     }
@@ -161,7 +161,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         // change the runtime id of product D and assert that the target runtime id in product C
         // was updated after rebuild
         productCmptD.setRuntimeId("newRuntimeId");
-        productCmptD.getIpsSrcFile().save(true, null);
+        productCmptD.getIpsSrcFile().save(null);
 
         incrementalBuild();
 
@@ -187,7 +187,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
 
         refTarget.setRuntimeId("CornelisMussDasCodeReviewMachen_hahahahahaaa!=)");
-        refTarget.getIpsSrcFile().save(true, null);
+        refTarget.getIpsSrcFile().save(null);
         incrementalBuild();
 
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
@@ -200,7 +200,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertNumberOfGenerations(productCmpt, 1);
 
         productCmptType.setChangingOverTime(false);
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
         incrementalBuild();
         assertNumberOfGenerations(productCmpt, 0);
     }
@@ -222,7 +222,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         staticLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        template.getIpsSrcFile().save(true, null);
+        template.getIpsSrcFile().save(null);
         incrementalBuild();
 
         AFile file = getXmlFile(productCmpt);
@@ -339,7 +339,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setValidateIpsSchema(true);
         productCmpt.getIpsSrcFile().markAsDirty();
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         ipsProject.setProperties(properties);
 
         fullBuild();

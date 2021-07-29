@@ -396,9 +396,9 @@ public class TypeTest extends AbstractIpsPluginTest {
         subsetOfUnion.setInverseAssociation(inverseSubsetOfUnion.getName());
         inverseSubsetOfUnion.setInverseAssociation(subsetOfUnion.getName());
 
-        source.getIpsSrcFile().save(true, null);
-        target.getIpsSrcFile().save(true, null);
-        subTarget.getIpsSrcFile().save(true, null);
+        source.getIpsSrcFile().save(null);
+        target.getIpsSrcFile().save(null);
+        subTarget.getIpsSrcFile().save(null);
 
         ml = source.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));

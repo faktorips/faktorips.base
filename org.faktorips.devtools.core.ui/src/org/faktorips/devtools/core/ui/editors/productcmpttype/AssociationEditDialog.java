@@ -269,8 +269,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             newConstrainedAssociation.setMatchingAssociationSource(association.getProductCmptType().getQualifiedName());
             if (needToSave) {
                 try {
-                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().save(false,
-                            new NullProgressMonitor());
+                    newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().save(new NullProgressMonitor());
                 } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
@@ -289,7 +288,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             oldMatchingAssociation.setMatchingAssociationSource(StringUtils.EMPTY);
             if (needToSave) {
                 try {
-                    oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().save(false, new NullProgressMonitor());
+                    oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().save(new NullProgressMonitor());
                 } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }

@@ -74,7 +74,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
             boolean wasDirty = timedIpsObject.getIpsSrcFile().isDirty();
             timedIpsObject.newGeneration(pmo.getValidFrom());
             if (!wasDirty) {
-                timedIpsObject.getIpsSrcFile().save(true, monitor);
+                timedIpsObject.getIpsSrcFile().save(monitor);
             }
 
             monitor.worked(1);

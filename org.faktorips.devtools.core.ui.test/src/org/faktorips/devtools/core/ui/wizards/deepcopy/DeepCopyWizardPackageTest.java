@@ -92,7 +92,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         IProductCmptGeneration gen = inside.getProductCmptGeneration(0);
         IProductCmptLink link = gen.newLink("RoleName");
         link.setTarget(middle.getQualifiedName());
-        inside.getIpsSrcFile().save(true, null);
+        inside.getIpsSrcFile().save(null);
 
         SourcePage page = getSourcePageFor(inside);
         assertEquals(middle.getIpsPackageFragment(), page.getTargetPackage());

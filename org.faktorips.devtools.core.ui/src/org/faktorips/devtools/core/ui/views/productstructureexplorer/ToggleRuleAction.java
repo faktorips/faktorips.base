@@ -52,7 +52,7 @@ public class ToggleRuleAction extends Action {
         vRuleConfig.setActive(!vRuleConfig.isActive());
         if (!srcFileDirty) {
             try {
-                vRuleConfig.getIpsSrcFile().save(false, new NullProgressMonitor());
+                vRuleConfig.getIpsSrcFile().save(new NullProgressMonitor());
             } catch (IpsException e) {
                 IpsPlugin.log(new IpsStatus("Could not save IpsSrcFile \"" + vRuleConfig.getIpsSrcFile() + "\"", e)); //$NON-NLS-1$ //$NON-NLS-2$
             }

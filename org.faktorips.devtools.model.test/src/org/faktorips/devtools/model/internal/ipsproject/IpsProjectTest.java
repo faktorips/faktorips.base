@@ -637,7 +637,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
 
         IPolicyCmptType pcType = newPolicyCmptType(ipsProject, "Policy");
-        pcType.getIpsSrcFile().save(true, null);
+        pcType.getIpsSrcFile().save(null);
         assertEquals(pcType, ipsProject.findDatatype("Policy"));
 
         assertEquals(Datatype.VOID, ipsProject.findDatatype("void"));
@@ -1191,9 +1191,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         product1.setProductCmptType("pack.ProductCmptType2");
         product2.setProductCmptType("pack.ProductCmptType0");
 
-        product0.getIpsSrcFile().save(true, null);
-        product1.getIpsSrcFile().save(true, null);
-        product2.getIpsSrcFile().save(true, null);
+        product0.getIpsSrcFile().save(null);
+        product1.getIpsSrcFile().save(null);
+        product2.getIpsSrcFile().save(null);
 
         assertNotNull(product0.findProductCmptType(product0.getIpsProject()));
         IIpsSrcFile[] result = ipsProject.findAllProductCmptSrcFiles(product0.findProductCmptType(ipsProject), true);
@@ -1221,7 +1221,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsSrcFile productFile10 = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Product10", true, null);
         IProductCmpt product10 = (IProductCmpt)productFile10.getIpsObject();
         product10.setProductCmptType("pack.ProductCmptType10");
-        product10.getIpsSrcFile().save(true, null);
+        product10.getIpsSrcFile().save(null);
 
         assertNotNull(product10.findProductCmptType(product10.getIpsProject()));
         result = ipsProject.findAllProductCmptSrcFiles(product10.findProductCmptType(product10.getIpsProject()), true);
@@ -1268,9 +1268,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         test1.setTestCaseType("pack.TestType1");
         test2.setTestCaseType("pack.TestType0");
 
-        test0.getIpsSrcFile().save(true, null);
-        test1.getIpsSrcFile().save(true, null);
-        test2.getIpsSrcFile().save(true, null);
+        test0.getIpsSrcFile().save(null);
+        test1.getIpsSrcFile().save(null);
+        test2.getIpsSrcFile().save(null);
 
         assertNotNull(test0.findTestCaseType((test0.getIpsProject())));
         IIpsSrcFile[] result = ipsProject.findAllTestCaseSrcFiles(test0.findTestCaseType(ipsProject));
@@ -1292,7 +1292,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsSrcFile testFileProj2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "testProj2", true, null);
         ITestCase testProj2 = (ITestCase)testFileProj2.getIpsObject();
         testProj2.setTestCaseType("pack.TestTypeProj2");
-        testProj2.getIpsSrcFile().save(true, null);
+        testProj2.getIpsSrcFile().save(null);
 
         assertNotNull(testProj2.findTestCaseType(testProj2.getIpsProject()));
         result = ipsProject.findAllTestCaseSrcFiles(testProj2.findTestCaseType(testProj2.getIpsProject()));
@@ -1348,9 +1348,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         enum1.setEnumType("pack.EnumType1");
         enum2.setEnumType("pack.EnumType0");
 
-        enum0.getIpsSrcFile().save(true, null);
-        enum1.getIpsSrcFile().save(true, null);
-        enum2.getIpsSrcFile().save(true, null);
+        enum0.getIpsSrcFile().save(null);
+        enum1.getIpsSrcFile().save(null);
+        enum2.getIpsSrcFile().save(null);
 
         assertNotNull(enum0.findEnumType((enum0.getIpsProject())));
         IIpsSrcFile[] result = ipsProject.findAllEnumContentSrcFiles(enum0.findEnumType(ipsProject), true);
@@ -1380,7 +1380,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsSrcFile enumFileProj2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enumProj2", true, null);
         IEnumContent enumProj2 = (IEnumContent)enumFileProj2.getIpsObject();
         enumProj2.setEnumType("pack.EnumTypeProj2");
-        enumProj2.getIpsSrcFile().save(true, null);
+        enumProj2.getIpsSrcFile().save(null);
 
         assertNotNull(enumProj2.findEnumType(enumProj2.getIpsProject()));
         result = ipsProject.findAllEnumContentSrcFiles(enumProj2.findEnumType(enumProj2.getIpsProject()), true);

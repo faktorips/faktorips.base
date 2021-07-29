@@ -57,7 +57,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         generation.newLink("");
 
         // save contents
-        product.getIpsSrcFile().save(true, null);
+        product.getIpsSrcFile().save(null);
 
         file = product.getIpsSrcFile().getCorrespondingFile();
         srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
@@ -130,7 +130,6 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         while (iterator1.hasNext()) {
             IProductCmptLink relation1 = (IProductCmptLink)iterator1.next();
             IProductCmptLink relation2 = (IProductCmptLink)iterator2.next();
-            assertEquals(relation1.getId(), relation2.getId());
             assertEquals(relation1.getTarget(), relation2.getTarget());
         }
     }
@@ -138,7 +137,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     @Test
     public void testSave() {
         productImmutable.newGeneration();
-        srcFileImmutable.save(true, null);
+        srcFileImmutable.save(null);
 
         // nothing was saved
         IProductCmpt prodImm2 = (IProductCmpt)new IpsSrcFileImmutable("ProdImm2.ipsproduct", file.getContents())

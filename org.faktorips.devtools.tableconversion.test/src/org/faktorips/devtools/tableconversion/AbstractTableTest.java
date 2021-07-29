@@ -94,7 +94,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row3.setValue(6, null);
         row3.setValue(7, null);
 
-        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(null);
 
         return contents;
     }
@@ -117,7 +117,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row1.setValue(6, "INVALID"); // MONEY
         row1.setValue(7, "invalid is impossible"); // STRING
 
-        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(null);
 
         return contents;
     }
@@ -141,7 +141,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             col.setName("col" + i);
             col.setDatatype(datatypes[i]);
         }
-        structure.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
 
         return structure;
     }

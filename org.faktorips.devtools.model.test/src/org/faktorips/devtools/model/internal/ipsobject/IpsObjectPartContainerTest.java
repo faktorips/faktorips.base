@@ -484,7 +484,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         generation.newLink("");
         // save contents
-        product.getIpsSrcFile().save(true, null);
+        product.getIpsSrcFile().save(null);
 
         // load data with immutable srcfile that should not be validated
         AFile file = product.getIpsSrcFile().getCorrespondingFile();
@@ -510,7 +510,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         generation.newLink("");
         // save contents
-        product.getIpsSrcFile().save(true, null);
+        product.getIpsSrcFile().save(null);
 
         // load data with off-root srcfile that should not be validated
         AFile file = product.getIpsSrcFile().getCorrespondingFile();

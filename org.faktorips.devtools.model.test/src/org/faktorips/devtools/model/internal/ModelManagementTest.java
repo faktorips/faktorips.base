@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -51,7 +53,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             folder.getFile("A.ipspct");
             type = newPolicyCmptType(project, "A");
             type.newPolicyCmptTypeAssociation();
-            type.getIpsSrcFile().save(true, null);
+            type.getIpsSrcFile().save(null);
         };
         Abstractions.getWorkspace().run(action, null);
     }
@@ -84,17 +86,17 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             System.out.println("===== Start testDirectChangesToTheCorrespondingFile() =====");
         }
         IIpsSrcFile ipsFile = type.getIpsSrcFile();
-        IDescription description = type.newDescription();
-        description.setLocale(Locale.GERMAN);
+        IDescription description = type.getDescription(Locale.GERMAN);
         description.setText("Blabla");
-        ipsFile.save(true, null);
+        ipsFile.save(null);
         String encoding = type.getIpsProject().getXmlFileCharset();
         AFile file = type.getIpsSrcFile().getCorrespondingFile();
         String content = StringUtil.readFromInputStream(file.getContents(), encoding);
         content = content.replaceAll("Blabla", "NewBlabla");
         file.setContents(StringUtil.getInputStreamForString(content, encoding), false, null);
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-        assertEquals("NewBlabla", description.getText());
+        assertThat(description.isDeleted(), is(true));
+        assertEquals("NewBlabla", type.getDescription(Locale.GERMAN).getText());
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Finished testDirectChangesToTheCorrespondingFile() =====");
         }
@@ -108,13 +110,13 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
                 System.out.println("===== Start testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");
             }
             IIpsSrcFile ipsFile = type.getIpsSrcFile();
-            IDescription description = type.newDescription();
-            description.setLocale(Locale.GERMAN);
+            IDescription description = type.getDescription(Locale.GERMAN);
             description.setText("Blabla");
-            ipsFile.save(true, null);
-            Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a
-            // different timestamp, otherwise refreshLocal won't refresh!
-            // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!
+            ipsFile.save(null);
+            Thread.sleep(2000);
+            // wait for 2 seconds, so that the file definitely has a different timestamp, otherwise
+            // refreshLocal won't refresh! File timestamps (at least under windows xp) only differ
+            // in seconds, not milliseconds!
             String encoding = type.getIpsProject().getXmlFileCharset();
             AFile file = type.getIpsSrcFile().getCorrespondingFile();
             String content = StringUtil.readFromInputStream(file.getContents(), encoding);
@@ -133,7 +135,8 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             file.refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
 
             type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-            assertEquals("NewBlabla", description.getText());
+            assertThat(description.isDeleted(), is(true));
+            assertEquals("NewBlabla", type.getDescription(Locale.GERMAN).getText());
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("===== Finished testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");
             }

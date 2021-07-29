@@ -447,7 +447,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         tableContentProj2.setTableStructure(tableStructureQName);
         // need to save to update cache
         tableContentProj2.newTableRows();
-        tableContentProj2.getIpsSrcFile().save(true, null);
+        tableContentProj2.getIpsSrcFile().save(null);
 
         resultList = tableStructure.searchMetaObjectSrcFiles(true);
         assertEquals(3, resultList.size());

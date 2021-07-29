@@ -356,7 +356,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
         IDescription description = attribute.getDescription(Locale.US);
         description.setText("blabla");
-        sourceFile.save(true, null);
+        sourceFile.save(null);
 
         AFile file = sourceFile.getCorrespondingFile();
         assertTrue(file.exists());
@@ -381,7 +381,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attribute = object.newPolicyCmptTypeAttribute();
         IDescription description = attribute.getDescription(Locale.US);
         description.setText("blabla");
-        sourceFile.save(true, null);
+        sourceFile.save(null);
 
         IPolicyCmptTypeAttribute newAttribute = object.newPolicyCmptTypeAttribute();
         newAttribute.setDatatype("String");
@@ -520,11 +520,11 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         ICoreRunnable action = monitor -> {
             typeADescription.setText("blabla");
             typeA.setSupertype(typeB.getQualifiedName());
-            typeA.getIpsSrcFile().save(true, monitor);
+            typeA.getIpsSrcFile().save(monitor);
             typeBDescription.setText("blabla");
-            typeB.getIpsSrcFile().save(true, monitor);
+            typeB.getIpsSrcFile().save(monitor);
             typeADescription.setText("New blabla");
-            typeA.getIpsSrcFile().save(true, monitor);
+            typeA.getIpsSrcFile().save(monitor);
         };
 
         TestContentsChangeListener listener = new TestContentsChangeListener();
@@ -550,7 +550,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         modifyListener.modifiedFiles.clear();
 
         typeADescription.setText("blublu");
-        typeA.getIpsSrcFile().save(true, null);
+        typeA.getIpsSrcFile().save(null);
 
         assertEquals(1, listener.changedFiles.size());
         assertEquals(typeA.getIpsSrcFile(), listener.changedFiles.get(0));
@@ -567,9 +567,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
         final IDescription typeADescription = typeA.newDescription();
-        typeADescription.setLocale(Locale.US);
+        typeADescription.setLocale(Locale.CHINESE);
         typeADescription.setText("foo");
-        typeA.getIpsSrcFile().save(true, null);
+        typeA.getIpsSrcFile().save(null);
         final List<IStatus> logs = new LinkedList<>();
         ALog log = IpsLog.get();
         ALogListener logListener = (status, plugin) -> logs.add(status);
@@ -582,7 +582,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
             model.runSafe(action, null, Collections.singleton(typeADescription.getIpsSrcFile()));
 
-            assertEquals("foo", typeADescription.getText());
+            assertEquals("foo", typeA.getDescription(Locale.CHINESE).getText());
             assertEquals(1, logs.size());
             assertEquals(Status.ERROR, logs.get(0).getSeverity());
             assertEquals("MyMessage", logs.get(0).getMessage());
@@ -630,7 +630,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
         IIpsProject project = newIpsProject("TestProject");
         IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
-        pcType.getIpsSrcFile().save(true, null);
+        pcType.getIpsSrcFile().save(null);
 
         pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
 

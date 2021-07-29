@@ -220,7 +220,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 String runtimeId = project.getProductCmptNamingStrategy().getUniqueRuntimeId(project,
                         productCmpt.getName());
                 productCmpt.setRuntimeId(runtimeId);
-                ipsSrcFile.save(force, monitor);
+                ipsSrcFile.save(monitor);
             } finally {
                 model.resumeBroadcastingChangesMadeByCurrentThread();
             }

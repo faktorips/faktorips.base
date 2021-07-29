@@ -55,7 +55,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         project = newIpsProject();
         type = newPolicyCmptType(project, "Policy");
         file = type.getIpsSrcFile();
-        file.save(true, null);
+        file.save(null);
 
         contentChangeListener = new TestContentChangeListener();
         statusChangeListener = new TestModificationStatusChangeListener();
@@ -88,7 +88,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     @Test
     public void testChangeIpsPartProperty() {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
-        file.save(true, null);
+        file.save(null);
 
         contentChangeListener.count = 0;
         statusChangeListener.count = 0;
@@ -128,7 +128,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     public void testDeletePart() {
         IPolicyCmptTypeAttribute attribute1 = type.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute attribute2 = type.newPolicyCmptTypeAttribute();
-        file.save(true, null);
+        file.save(null);
         contentChangeListener.count = 0;
         statusChangeListener.count = 0;
 
@@ -181,7 +181,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(file, contentChangeListener.lastEvent.getIpsSrcFile());
         assertNull(contentChangeListener.lastEvent.getPart());
         assertEquals(0, contentChangeListener.lastEvent.getMovedParts().length);
-        file.save(true, null);
+        file.save(null);
 
         IpsModel model = (IpsModel)file.getIpsModel();
         model.stopBroadcastingChangesMadeByCurrentThread();
@@ -192,7 +192,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         type.setSupertype("NewSuper");
         assertEquals(0, contentChangeListener.count);
         assertEquals(0, statusChangeListener.count);
-        file.save(true, null);
+        file.save(null);
 
         model.resumeBroadcastingChangesMadeByCurrentThread();
         contentChangeListener.count = 0;

@@ -173,7 +173,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
             importValidationMessages(pcType);
             getMonitor().worked(1);
             if (!dirtyState && ipsSrcFile.isDirty()) {
-                ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(getMonitor(), 1));
+                ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(getMonitor(), 1));
             }
         }
     }

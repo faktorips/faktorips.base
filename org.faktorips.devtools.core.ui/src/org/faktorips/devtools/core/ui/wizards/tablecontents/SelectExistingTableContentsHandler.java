@@ -39,7 +39,7 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
                 IIpsSrcFile selectedObject = (IIpsSrcFile)selectDialog.getSelectedObject();
                 setToUsage.setTableContentName(selectedObject.getQualifiedNameType().getName());
                 if (autoSave && !dirtyState) {
-                    setToUsage.getIpsSrcFile().save(true, null);
+                    setToUsage.getIpsSrcFile().save(null);
                 }
             }
         }

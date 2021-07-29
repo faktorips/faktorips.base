@@ -270,7 +270,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         if (Abstractions.isEclipseRunning()) {
             IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
             pcType.setSupertype("UnknownSupertype");
-            pcType.getIpsSrcFile().save(true, null);
+            pcType.getIpsSrcFile().save(null);
             MessageList msgList = pcType.validate(pcType.getIpsProject());
             int numOfMsg = msgList.size();
             assertTrue(numOfMsg > 0);
@@ -297,7 +297,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             // test if marker got's deleted if the problem is fixed.
             pcType.setSupertype("");
-            pcType.getIpsSrcFile().save(true, null);
+            pcType.getIpsSrcFile().save(null);
             msgList = pcType.validate(ipsProject);
             assertEquals(0, msgList.size());
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -329,7 +329,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             IProductCmptTypeAttribute bAttr = b.newProductCmptTypeAttribute("bAttr");
             bAttr.setDatatype("String");
-            b.getIpsSrcFile().save(true, null);
+            b.getIpsSrcFile().save(null);
 
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builtIpsObjects.contains(a));
@@ -359,9 +359,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             IFormula productFormula = aProductGeneration.newFormula(formula);
             productFormula.setExpression("pA.aAttr");
 
-            a.getIpsSrcFile().save(true, null);
-            aConfigType.getIpsSrcFile().save(true, null);
-            aProduct.getIpsSrcFile().save(true, null);
+            a.getIpsSrcFile().save(null);
+            aConfigType.getIpsSrcFile().save(null);
+            aProduct.getIpsSrcFile().save(null);
 
             final TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -400,7 +400,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             };
             ((IWorkspace)getIpsModel().getWorkspace().unwrap()).addResourceChangeListener(listener,
                     IResourceChangeEvent.POST_BUILD);
-            a.getIpsSrcFile().save(true, null);
+            a.getIpsSrcFile().save(null);
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
         }
     }
@@ -424,7 +424,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
-            c.getIpsSrcFile().save(true, null);
+            c.getIpsSrcFile().save(null);
 
             builder.getBuiltIpsObjects().clear();
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -456,7 +456,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
-            c.getIpsSrcFile().save(true, null);
+            c.getIpsSrcFile().save(null);
 
             builder.getBuiltIpsObjects().clear();
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -490,7 +490,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
-            c.getIpsSrcFile().save(true, null);
+            c.getIpsSrcFile().save(null);
 
             builder.getBuiltIpsObjects().clear();
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -750,7 +750,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             attrA.setName("AttrA");
             attrA.setAttributeType(AttributeType.CHANGEABLE);
             attrA.setDatatype("String");
-            a.getIpsSrcFile().save(true, null);
+            a.getIpsSrcFile().save(null);
 
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
@@ -771,7 +771,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             attrA.setName("attrB");
             attrA.setAttributeType(AttributeType.CHANGEABLE);
             attrA.setDatatype("String");
-            a.getIpsSrcFile().save(true, null);
+            a.getIpsSrcFile().save(null);
 
             ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(null);
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
@@ -885,7 +885,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             aProductTypeAttr.setName("aProductTypeAttr");
             aProductTypeAttr.setDatatype("Integer");
             aProductTypeAttr.setModifier(Modifier.PUBLIC);
-            aProductTypeAttr.getIpsSrcFile().save(true, null);
+            aProductTypeAttr.getIpsSrcFile().save(null);
 
             // build
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());

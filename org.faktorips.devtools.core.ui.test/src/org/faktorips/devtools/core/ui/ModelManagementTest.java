@@ -52,7 +52,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             type.newPolicyCmptTypeAssociation();
             IDescription description = type.newDescription();
             description.setLocale(Locale.US);
-            type.getIpsSrcFile().save(true, null);
+            type.getIpsSrcFile().save(null);
         };
         ResourcesPlugin.getWorkspace().run(action, null);
     }
@@ -68,7 +68,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         IpsUIPlugin.getDefault().openEditor(type);
         IIpsSrcFile ipsFile = type.getIpsSrcFile();
         type.setDescriptionText(Locale.US, "Blabla");
-        ipsFile.save(true, null);
+        ipsFile.save(null);
         Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a
         // different timestamp, otherwise refreshLocal won't refresh!
         // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!

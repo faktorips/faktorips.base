@@ -312,6 +312,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                         attribute.setMultiValueAttribute(overwrittenAttribute
                                                 .isMultiValueAttribute());
                                         attribute.setCategory(overwrittenAttribute.getCategory());
+                                        attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
                                         return true;
                                     }
                                 });

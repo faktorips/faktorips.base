@@ -40,7 +40,7 @@ public abstract class AbstractTemplatedValueOperation implements ICoreRunnable {
     void save(IProgressMonitor monitor) {
         for (IIpsSrcFile ipsSrcFile : filesToSave) {
             try {
-                ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
             } catch (IpsException e) {
                 IpsPlugin.log(e);
             }

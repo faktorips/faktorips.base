@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.pctype.ValidationRule;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -64,16 +65,9 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     public Migration_22_6_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
                 featureId,
-                getAffectedIpsObjectTypes(projectToMigrate),
+                Set.of(IIpsModel.get().getIpsObjectTypes()),
                 VERSION_22_6_0,
                 Messages.Migration_22_6_0_description);
-    }
-
-    private static Set<IpsObjectType> getAffectedIpsObjectTypes(IIpsProject ipsProject) {
-        if (ipsProject.getProperties().isValidateIpsSchema()) {
-            return Set.of(IIpsModel.get().getIpsObjectTypes());
-        }
-        return Set.of(IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.POLICY_CMPT_TYPE);
     }
 
     @Override
@@ -105,35 +99,46 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     @Override
     protected void migrate(IIpsSrcFile srcFile) {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
-            try {
-                boolean changed = false;
-                InputStream is = srcFile.getContentFromEnclosingResource();
-                Document document = XmlUtil.getDefaultDocumentBuilder().parse(is);
-                Element doc = document.getDocumentElement();
-                NodeList childNodes = doc.getChildNodes();
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    Node item = childNodes.item(i);
-                    if (ValidationRule.TAG_NAME.equals(item.getNodeName())) {
-                        changed = true;
-                        Element validationRuleDef = (Element)item;
-                        validationRuleDef.removeAttribute("appliedForAllBusinessFunctions"); //$NON-NLS-1$
-                        NodeList childNodes2 = validationRuleDef.getChildNodes();
-                        for (int j = 0; j < childNodes2.getLength(); j++) {
-                            Node child = childNodes2.item(j);
-                            if ("BusinessFunction".equals(child.getNodeName())) { //$NON-NLS-1$
-                                item.removeChild(child);
-                            }
+            migratePolicyCmptType(srcFile);
+        } else if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+            migrateProductCmptType(srcFile);
+        }
+        super.migrate(srcFile);
+    }
+
+    private void migratePolicyCmptType(IIpsSrcFile srcFile) {
+        try {
+            boolean changed = false;
+            InputStream is = srcFile.getContentFromEnclosingResource();
+            Document document = XmlUtil.getDefaultDocumentBuilder().parse(is);
+            Element doc = document.getDocumentElement();
+            NodeList childNodes = doc.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node item = childNodes.item(i);
+                if (ValidationRule.TAG_NAME.equals(item.getNodeName())) {
+                    changed = true;
+                    Element validationRuleDef = (Element)item;
+                    validationRuleDef.removeAttribute("appliedForAllBusinessFunctions"); //$NON-NLS-1$
+                    NodeList childNodes2 = validationRuleDef.getChildNodes();
+                    for (int j = 0; j < childNodes2.getLength(); j++) {
+                        Node child = childNodes2.item(j);
+                        if ("BusinessFunction".equals(child.getNodeName())) { //$NON-NLS-1$
+                            item.removeChild(child);
                         }
                     }
                 }
-                if (changed) {
-                    writeToFile(srcFile, doc);
-                }
-            } catch (SAXException | IOException e) {
-                throw new IpsException(new IpsStatus(e));
             }
+            if (changed) {
+                writeToFile(srcFile, doc);
+            }
+        } catch (SAXException | IOException e) {
+            throw new IpsException(new IpsStatus(e));
         }
-        super.migrate(srcFile);
+    }
+
+    @SuppressWarnings("removal")
+    private void migrateProductCmptType(IIpsSrcFile srcFile) {
+        ((ProductCmptType)srcFile.getIpsObject()).migrateReferences();
     }
 
     @Override

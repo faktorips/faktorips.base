@@ -179,8 +179,8 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
 
         runnable.execute(monitor);
 
-        verify(ipsSrcFile1, never()).save(true, monitor);
-        verify(ipsSrcFile2).save(true, monitor);
+        verify(ipsSrcFile1, never()).save(monitor);
+        verify(ipsSrcFile2).save(monitor);
     }
 
 }

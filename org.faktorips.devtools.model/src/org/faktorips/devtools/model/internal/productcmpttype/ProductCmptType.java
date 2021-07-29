@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -52,13 +53,11 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -83,6 +82,8 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * Implementation of IProductCmptType.
  * 
@@ -101,7 +102,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private final IpsObjectPartCollection<IProductCmptTypeMethod> methods;
     private final IpsObjectPartCollection<IProductCmptTypeAssociation> associations;
     private final IpsObjectPartCollection<IProductCmptCategory> categories;
-    private final IpsObjectPartCollection<IProductCmptPropertyReference> propertyReferences;
+    @Deprecated(forRemoval = true, since = "22.6")
+    private final IpsObjectPartCollection<org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference> propertyReferences;
 
     /**
      * A map that stores changes to category assignments of product component properties belonging
@@ -119,8 +121,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * meantime, finders must take this map into account to determine the correct
      * {@link IProductCmptCategory} of an {@link IProductCmptProperty}.
      */
-    private Map<IProductCmptProperty, String> pendingPolicyChanges = new HashMap<>();
+    private Map<IProductCmptProperty, Map<CategoryChange, String>> pendingPolicyChanges = new HashMap<>();
 
+    @SuppressWarnings("removal")
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
 
@@ -135,7 +138,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         categories = new IpsObjectPartCollection<>(this, ProductCmptCategory.class,
                 IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
         propertyReferences = new IpsObjectPartCollection<>(this,
-                ProductCmptPropertyReference.class, IProductCmptPropertyReference.class,
+                ProductCmptPropertyReference.class,
+                org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference.class,
                 ProductCmptPropertyReference.XML_TAG_NAME);
     }
 
@@ -237,14 +241,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     /**
      * Returns the {@link IProductCmptProperty} corresponding to the provided
-     * {@link IProductCmptPropertyReference} or null no such property is found.
+     * {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference} or
+     * {@code null} if no such property is found.
      * 
-     * @param reference the {@link IProductCmptPropertyReference} to search the corresponding
-     *            {@link IProductCmptProperty} for
+     * @param reference the
+     *            {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference}
+     *            to search the corresponding {@link IProductCmptProperty} for
      * 
      * @throws IpsException if an error occurs during the search
+     * @deprecated for removal since 22.6
      */
-    IProductCmptProperty findProductCmptProperty(IProductCmptPropertyReference reference, IIpsProject ipsProject) {
+    @CheckForNull
+    @Deprecated(forRemoval = true, since = "22.6")
+    IProductCmptProperty findProductCmptProperty(
+            org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference reference,
+            IIpsProject ipsProject) {
         for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
             if (reference.isReferencedProperty(property)) {
                 return property;
@@ -395,6 +406,41 @@ public class ProductCmptType extends Type implements IProductCmptType {
         super.initFromXml(element, id);
     }
 
+    /**
+     * This method is only intended for migration to Faktor-IPS 22.6 and will be removed again in a
+     * future release.
+     *
+     * @since 22.6
+     * @deprecated for removal
+     */
+    @Deprecated(forRemoval = true, since = "22.6")
+    public void migrateReferences() {
+        // to avoid collisions with existing positions, we start with a higher number
+        int n = getChildren().length;
+        for (int i = 0; i < propertyReferences.size(); i++) {
+            org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference part = propertyReferences
+                    .getPart(i);
+            IProductCmptProperty productCmptProperty = part.findProductCmptProperty(getIpsProject());
+            if (productCmptProperty != null) {
+                productCmptProperty.setCategoryPosition(i + n);
+            }
+        }
+        // now assign continuous numbers inside each category
+        IPolicyCmptType policyType = findPolicyCmptType(getIpsProject());
+        for (IProductCmptCategory category : findCategories(getIpsProject())) {
+            List<IProductCmptProperty> propertiesInCategory = category.findProductCmptProperties(this, true,
+                    getIpsProject());
+            int i = 0;
+            for (IProductCmptProperty property : propertiesInCategory) {
+                if (property.getParent() == this || property.getParent() == policyType) {
+                    property.setCategoryPosition(++i);
+                } else {
+                    i = property.getCategoryPosition();
+                }
+            }
+        }
+    }
+
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -435,10 +481,16 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (policySrcFile.isMutable()) {
             boolean isDirtyState = policySrcFile.isDirty();
             for (IProductCmptProperty property : pendingPolicyChanges.keySet()) {
-                property.setCategory(pendingPolicyChanges.get(property));
+                property.setCategory(pendingPolicyChanges.get(property).get(CategoryChange.NAME));
+                String stringPosition = pendingPolicyChanges.get(property).get(CategoryChange.POSITION);
+                int position = -1;
+                if (stringPosition != null) {
+                    position = Integer.valueOf(stringPosition);
+                }
+                property.setCategoryPosition(position);
             }
             if (!isDirtyState) {
-                policySrcFile.save(true, null);
+                policySrcFile.save(null);
             }
         }
         pendingPolicyChanges.clear();
@@ -564,7 +616,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
             IIpsProject ipsProject) {
-
         List<IMethod> candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = findSignaturesOfOverloadedFormulas(ipsProject);
         List<IMethod> result = new ArrayList<>(candidates.size());
@@ -672,7 +723,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList,
             IIpsProject ipsProject) {
-
         if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
         }
@@ -684,7 +734,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list) {
-
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj == null) {
             String text = MessageFormat.format(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
@@ -719,7 +768,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForFormulaSignatureDefinition(MessageList list, IIpsProject ipsProject) {
-
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy
@@ -731,7 +779,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject) {
-
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
@@ -742,7 +789,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject) {
-
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
@@ -753,7 +799,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject) {
-
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
@@ -764,7 +809,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject) {
-
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
@@ -999,7 +1043,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject) {
-
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
         defaultCategoryFinder.start(this);
@@ -1008,7 +1051,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject) {
-
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
         defaultCategoryFinder.start(this);
@@ -1017,7 +1059,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject) {
-
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
         defaultCategoryFinder.start(this);
@@ -1053,18 +1094,36 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Gets the name of the category for the given property.
      * <p>
      * In contrast to only asking the property for its category, this method considers pending
-     * policy changes. The result may be an empty String or <code>null</code> if no category is set.
+     * policy changes. The result may be an empty String or {@code null} if no category is set.
      * 
-     * @param property The property you want to get the name of the category for
-     * @return The name of the category in respect to pending changes. May be <code>null</code> or
-     *         empty String if no category is set.
+     * @param property the property you want to get the name of the category for
+     * @return The name of the category in respect to pending changes. May be {@code null} or empty
+     *         String if no category is set.
      */
     String getCategoryNameFor(IProductCmptProperty property) {
-        String pendingCategory = pendingPolicyChanges.get(property);
+        String pendingCategory = pendingPolicyChanges.getOrDefault(property, Map.of()).get(CategoryChange.NAME);
         if (pendingCategory != null) {
             return pendingCategory;
         }
         return property.getCategory();
+    }
+
+    /**
+     * Gets the position inside its category for the given property.
+     * <p>
+     * In contrast to only asking the property for its position, this method considers pending
+     * policy changes. The result may be {@code -1} if no explicit position is set.
+     * 
+     * @param property the property you want to get the position for
+     * @return The position inside the category in respect to pending changes. May be {@code -1} if
+     *         no position is set.
+     */
+    int getCategoryPositionFor(IProductCmptProperty property) {
+        String pendingPosition = pendingPolicyChanges.getOrDefault(property, Map.of()).get(CategoryChange.POSITION);
+        if (pendingPosition != null) {
+            return Integer.parseInt(pendingPosition);
+        }
+        return property.getCategoryPosition();
     }
 
     @Override
@@ -1154,7 +1213,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
                     @Override
                     protected boolean execute() {
-                        createProductCmptPropertyReferencesForNotReferencedProperties();
                         result = moveProductCmptPropertyReferencesInternal(movedIndices, contextProperties, up);
                         return true;
                     }
@@ -1166,57 +1224,35 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 });
     }
 
-    private IProductCmptPropertyReference newProductCmptPropertyReference(
-            final IProductCmptProperty productCmptProperty) {
-        IProductCmptPropertyReference reference = propertyReferences.newPart();
-        reference.setReferencedProperty(productCmptProperty);
-        return reference;
-    }
-
     private int[] moveProductCmptPropertyReferencesInternal(int[] movedIndices,
             List<IProductCmptProperty> contextProperties,
             boolean up) {
 
-        List<IProductCmptPropertyReference> contextReferences = getProductCmptPropertyReferences(contextProperties);
         IElementMover mover = new SubListElementMover<>(
-                propertyReferences.getBackingList(), contextReferences);
+                contextProperties, contextProperties);
         int[] newIndices = mover.move(movedIndices, up);
 
         if (!Arrays.equals(movedIndices, newIndices)) {
-            partsMoved(contextReferences.toArray(new IIpsObjectPart[contextReferences.size()]));
+            AtomicInteger i = new AtomicInteger(0);
+            contextProperties.forEach(p -> {
+                int incrementAndGet = i.incrementAndGet();
+                if (!p.isPolicyCmptTypeProperty()) {
+                    // Immediately change product component type properties
+                    p.setCategoryPosition(incrementAndGet);
+                } else {
+                    deferPolicyChange(p, getCategoryNameFor(p), incrementAndGet);
+                }
+            });
+            partsMoved(contextProperties.toArray(new IIpsObjectPart[contextProperties.size()]));
         }
         return newIndices;
     }
 
-    private List<IProductCmptPropertyReference> getProductCmptPropertyReferences(
-            List<IProductCmptProperty> properties) {
-        List<IProductCmptPropertyReference> references = new ArrayList<>(
-                properties.size());
-        for (IProductCmptProperty property : properties) {
-            for (IProductCmptPropertyReference reference : propertyReferences) {
-                if (reference.isReferencedProperty(property)) {
-                    references.add(reference);
-                    break;
-                }
-            }
-        }
-        return references;
-    }
-
+    @SuppressWarnings("removal")
     @Override
     protected boolean isPartSavedToXml(IIpsObjectPart part) {
-        if (part instanceof IProductCmptPropertyReference) {
-            IProductCmptPropertyReference reference = (IProductCmptPropertyReference)part;
-            try {
-                return reference.findProductCmptProperty(getIpsProject()) != null;
-            } catch (IpsException e) {
-                /*
-                 * If an error occurs during the search for the property, the property is not found
-                 * but we cannot be sure whether it is obsolete.
-                 */
-                IpsLog.log(e);
-                return true;
-            }
+        if (part instanceof org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference) {
+            return false;
         }
         return true;
     }
@@ -1231,25 +1267,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         CategoryCounter counter = new CategoryCounter(categoryName, ipsProject);
         counter.start(this);
         return counter.categoriesFound > 1;
-    }
-
-    private void createProductCmptPropertyReferencesForNotReferencedProperties() {
-        for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
-            if (getReferencedPropertyIndex(property) == -1) {
-                newProductCmptPropertyReference(property);
-            }
-        }
-    }
-
-    int getReferencedPropertyIndex(IProductCmptProperty property) {
-        int index = 0;
-        for (IProductCmptPropertyReference reference : propertyReferences) {
-            if (reference.isReferencedProperty(property)) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
     }
 
     /**
@@ -1270,29 +1287,21 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category) {
-        if (!property.isPolicyCmptTypeProperty()) {
+        if (property.isPolicyCmptTypeProperty()) {
+            deferPolicyChange(property, category, -1);
+        } else {
             // Immediately change product component type properties
             property.setCategory(category);
-        } else {
-            if (property.getType().getIpsSrcFile().isMutable()) {
-                pendingPolicyChanges.put(property, category);
-                objectHasChanged();
-            }
         }
     }
 
-    /**
-     * Returns a copy of the list containing the product component property references of this
-     * {@link IProductCmptType}.
-     * <p>
-     * An {@link IProductCmptProperty} is referenced by the corresponding {@link IProductCmptType}
-     * if the ordering of the properties has been changed by the client, using
-     * {@link #movePropertyReferences(int[], List, boolean)}. In this case, the
-     * {@link IProductCmptPropertyReference} parts are used to describe the ordering of the
-     * properties.
-     */
-    List<IProductCmptPropertyReference> getPropertyReferences() {
-        return new ArrayList<>(propertyReferences.getBackingList());
+    private void deferPolicyChange(IProductCmptProperty property, String category, int position) {
+        if (property.getType().getIpsSrcFile().isMutable()) {
+            pendingPolicyChanges.put(property, Map.of(
+                    CategoryChange.NAME, category,
+                    CategoryChange.POSITION, String.valueOf(position)));
+            objectHasChanged();
+        }
     }
 
     /**
@@ -1704,6 +1713,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
             }
             return true;
         }
+    }
+
+    private static enum CategoryChange {
+        NAME,
+        POSITION;
     }
 
 }

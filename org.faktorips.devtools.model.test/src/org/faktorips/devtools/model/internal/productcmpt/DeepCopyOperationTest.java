@@ -510,7 +510,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                 .newTableContentUsage();
         newTableContentUsage.setStructureUsage(TABLE_STRUCTURE);
         newTableContentUsage.setTableContentName(TABLE_CONTENT);
-        tableContent.getIpsSrcFile().save(true, progressMonitor);
+        tableContent.getIpsSrcFile().save(progressMonitor);
     }
 
     private void createProductCmptTypeAssociation(IProductCmptType source,

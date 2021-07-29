@@ -87,7 +87,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
         configuredValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
     }
 
@@ -158,7 +158,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         attribute.setDatatype("Decimal");
 
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
@@ -175,8 +175,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         configuredValueSet.setValueSetCopy(valueSet);
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         MessageList ml = configuredValueSet.validate(configuredValueSet.getIpsProject());
 
@@ -192,8 +192,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         valueSet.setLowerBound("0");
         valueSet.setUpperBound("100");
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         ml = configuredValueSet.validate(ipsProject);
         assertEquals(0, ml.size());
@@ -333,14 +333,14 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         IRangeValueSet valueSet2 = (IRangeValueSet)configuredValueSet.getValueSet();
         valueSet2.setUpperBound("20");
 
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmpt.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setUpperBound("20");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
         ml = configuredValueSet.validate(ipsProject);
         assertEquals(0, ml.size());

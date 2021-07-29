@@ -55,7 +55,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         productCmptType = newProductCmptType(project, "test.Product");
         tableStructureUsage = productCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("roleName");
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
 
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
     }

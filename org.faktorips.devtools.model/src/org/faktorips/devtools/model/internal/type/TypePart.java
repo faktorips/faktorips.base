@@ -16,6 +16,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypePart;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -29,6 +30,7 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     private Modifier modifier = Modifier.PUBLISHED;
 
     private String category = ""; //$NON-NLS-1$
+    private int categoryPosition = -1;
 
     protected TypePart(IType parent, String id) {
         super(parent, id);
@@ -96,6 +98,16 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
         return !category.isEmpty();
     }
 
+    public int getCategoryPosition() {
+        return categoryPosition;
+    }
+
+    public void setCategoryPosition(int categoryPosition) {
+        int oldValue = this.categoryPosition;
+        this.categoryPosition = categoryPosition;
+        valueChanged(oldValue, categoryPosition, PROPERTY_CATEGORY_POSITION);
+    }
+
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -113,6 +125,10 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     private void initCategoryFromXml(Element element) {
         String categoryAttribute = element.getAttribute(PROPERTY_CATEGORY);
         category = categoryAttribute != null ? categoryAttribute : ""; //$NON-NLS-1$
+        String categoryPositionAttribute = element.getAttribute(PROPERTY_CATEGORY_POSITION);
+        categoryPosition = IpsStringUtils.isNotBlank(categoryPositionAttribute)
+                ? Integer.parseInt(categoryPositionAttribute)
+                : -1;
     }
 
     @Override
@@ -120,6 +136,9 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
         element.setAttribute(PROPERTY_CATEGORY, category);
+        if (categoryPosition > 0) {
+            element.setAttribute(PROPERTY_CATEGORY_POSITION, Integer.toString(categoryPosition));
+        }
     }
 
 }

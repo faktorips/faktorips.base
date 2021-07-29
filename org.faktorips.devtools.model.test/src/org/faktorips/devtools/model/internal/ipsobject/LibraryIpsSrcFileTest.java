@@ -49,7 +49,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
         originalType = newPolicyCmptType(archiveProject, "motor.Policy");
         originalType.newPolicyCmptTypeAttribute();
-        originalType.getIpsSrcFile().save(true, null);
+        originalType.getIpsSrcFile().save(null);
 
         project = newIpsProject();
         AFile archiveFile = project.getProject().getFile("test.ipsar");

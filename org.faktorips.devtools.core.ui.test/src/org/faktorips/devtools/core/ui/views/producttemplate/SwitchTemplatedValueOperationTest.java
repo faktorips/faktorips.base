@@ -164,11 +164,11 @@ public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRun_SaveWhenNotDirty() throws Exception {
-        defProd1.getIpsSrcFile().save(true, null);
-        defProd2.getIpsSrcFile().save(true, null);
-        inhProd1.getIpsSrcFile().save(true, null);
-        inhProd2.getIpsSrcFile().save(true, null);
-        template.getIpsSrcFile().save(true, null);
+        defProd1.getIpsSrcFile().save(null);
+        defProd2.getIpsSrcFile().save(null);
+        inhProd1.getIpsSrcFile().save(null);
+        inhProd2.getIpsSrcFile().save(null);
+        template.getIpsSrcFile().save(null);
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
         SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 

@@ -598,7 +598,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             }
 
             if (saveTargetAutomatically) {
-                targetPolicyCmptType.getIpsSrcFile().save(true, null);
+                targetPolicyCmptType.getIpsSrcFile().save(null);
             }
 
             boolean saveProductCmptTypeAutomatically = true;
@@ -611,7 +611,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                             Messages.NewPcTypeAssociationWizard_dialogTitleProductComponentTypeIsDirty, msg);
                 }
                 if (saveProductCmptTypeAutomatically) {
-                    productCmptTypeAssociation.getIpsSrcFile().save(true, null);
+                    productCmptTypeAssociation.getIpsSrcFile().save(null);
                 }
             }
         } catch (IpsException e) {

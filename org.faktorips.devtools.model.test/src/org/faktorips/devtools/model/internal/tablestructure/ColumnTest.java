@@ -48,7 +48,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         column = table.newColumn();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test

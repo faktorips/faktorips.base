@@ -303,6 +303,8 @@ class CategoryComposite extends ViewerButtonComposite {
             CategorySection targetCategorySection = categorySection.getCategoryCompositionSection().getCategorySection(
                     selectedCategory);
             targetCategorySection.getViewerButtonComposite().setSelectedObject(selectedProperty);
+            refresh();
+            targetCategorySection.refresh();
 
             // Hand the focus to the target category section
             targetCategorySection.getViewerButtonComposite().setFocus();

@@ -53,7 +53,7 @@ public class ReferenceDeleteAction extends Action {
             IpsException exception = null;
             for (IIpsSrcFile srcFile : srcFilesToSave) {
                 try {
-                    srcFile.save(false, null);
+                    srcFile.save(null);
                 } catch (IpsException e) {
                     IpsPlugin.log(e);
                     exception = e;

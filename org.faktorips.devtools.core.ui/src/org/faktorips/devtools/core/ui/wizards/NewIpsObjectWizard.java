@@ -166,9 +166,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         } else {
             Set<IIpsObject> modifiedIpsObjects = new HashSet<>(0);
             page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
-            srcFile.save(true, SubMonitor.convert(monitor, 1));
+            srcFile.save(SubMonitor.convert(monitor, 1));
             for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
-                modifiedIpsObject.getIpsSrcFile().save(true, SubMonitor.convert(monitor, 1));
+                modifiedIpsObject.getIpsSrcFile().save(SubMonitor.convert(monitor, 1));
             }
         }
     }

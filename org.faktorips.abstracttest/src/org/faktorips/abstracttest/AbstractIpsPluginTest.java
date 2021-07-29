@@ -595,7 +595,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         EnumContent enumContent = (EnumContent)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.ENUM_CONTENT, qualifiedName);
         enumContent.setEnumType(type.getQualifiedName());
-        enumContent.getIpsSrcFile().save(true, null);
+        enumContent.getIpsSrcFile().save(null);
         return enumContent;
     }
 
@@ -825,7 +825,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             defaultCategory.setDefaultForValidationRules(true);
         }
 
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
     }
 
     /**
@@ -860,8 +860,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         productCmptType.setPolicyCmptType(policyCmptTypeName);
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType(productCmptTypeName);
-        policyCmptType.getIpsSrcFile().save(true, null);
-        productCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmptType.getIpsSrcFile().save(null);
         return (PolicyCmptType)policyCmptType;
     }
 
@@ -898,8 +898,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         detail2master.setInverseAssociation(master2detail.getName());
 
         if (save) {
-            from.getIpsSrcFile().save(true, null);
-            to.getIpsSrcFile().save(true, null);
+            from.getIpsSrcFile().save(null);
+            to.getIpsSrcFile().save(null);
         }
         return master2detail;
     }
@@ -920,8 +920,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         association.setMinCardinality(1);
         association.setMaxCardinality(Integer.MAX_VALUE);
 
-        from.getIpsSrcFile().save(true, null);
-        to.getIpsSrcFile().save(true, null);
+        from.getIpsSrcFile().save(null);
+        to.getIpsSrcFile().save(null);
         return association;
     }
 
@@ -970,8 +970,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         agg.setMinCardinality(1);
         agg.setMaxCardinality(Integer.MAX_VALUE);
         if (save) {
-            from.getIpsSrcFile().save(true, null);
-            to.getIpsSrcFile().save(true, null);
+            from.getIpsSrcFile().save(null);
+            to.getIpsSrcFile().save(null);
         }
         return agg;
     }
@@ -1003,7 +1003,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     private ProductCmpt setupProductCmpt(IProductCmpt productCmpt, IProductCmptType type) {
         productCmpt.setProductCmptType(type.getQualifiedName());
         productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 0, 0, 0));
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         return (ProductCmpt)productCmpt;
     }
 
@@ -1069,7 +1069,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
                 IpsObjectType.TABLE_CONTENTS, qualifiedName);
         tableContents.setTableStructure(ts0.getQualifiedName());
-        tableContents.getIpsSrcFile().save(true, null);
+        tableContents.getIpsSrcFile().save(null);
         return tableContents;
     }
 
@@ -1114,7 +1114,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TestCase testCase = (TestCase)newIpsObject(tCase.getIpsPackageFragment().getRoot(), IpsObjectType.TEST_CASE,
                 qualifiedName);
         testCase.setTestCaseType(tCase.getQualifiedName());
-        testCase.getIpsSrcFile().save(true, null);
+        testCase.getIpsSrcFile().save(null);
         return testCase;
     }
 

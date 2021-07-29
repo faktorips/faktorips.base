@@ -75,8 +75,17 @@ public interface IIpsSrcFile extends IIpsElement {
 
     /**
      * Saves the file's content to the file system.
+     * 
+     * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
+     *             {@code force} parameter is ignored anyways.
      */
+    @Deprecated(forRemoval = true, since = "22.6")
     public void save(boolean force, IProgressMonitor monitor) throws IpsException;
+
+    /**
+     * Saves the file's content to the file system.
+     */
+    public void save(IProgressMonitor monitor) throws IpsException;
 
     /**
      * Returns true if the content can be parsed and a IpsObject can be created based on the

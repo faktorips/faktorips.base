@@ -48,13 +48,13 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "PolicyType", "ProductType");
 
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
         productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
 
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         assertFalse(productCmpt.validate(ipsProject).containsErrorMsg());
 
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();

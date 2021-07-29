@@ -66,7 +66,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         table.newColumn("", "");
         table.newColumn("", "");
 
-        tableRows.getIpsSrcFile().save(true, null);
+        tableRows.getIpsSrcFile().save(null);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         structure.newColumn();
         table.newColumn("", "");
         table.newColumn("", "");
-        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        table.getIpsSrcFile().save(new NullProgressMonitor());
         IRow row0 = tableRows.newRow(structure, Optional.of("id23"), Arrays.asList("a", "b"));
         assertThat(row0.getId(), is("id23"));
         assertThat(row0.getRowNumber(), is(0));
@@ -118,7 +118,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         tableRows.markAsChanged();
         assertThat(table.getIpsSrcFile().isDirty(), is(true));
 
-        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        table.getIpsSrcFile().save(new NullProgressMonitor());
         assertThat(table.getIpsSrcFile().isDirty(), is(false));
 
         IRow row1 = tableRows.newRow(structure, Optional.of("id42"), Arrays.asList("foo", "bar"));
@@ -357,7 +357,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         column = structure.newColumn();
         column.setName("c");
         column.setDatatype("String");
-        structure.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("a");

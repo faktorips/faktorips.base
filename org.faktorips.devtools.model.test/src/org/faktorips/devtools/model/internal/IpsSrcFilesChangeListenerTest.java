@@ -65,7 +65,7 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     public void testIpsSrcFilesChanged() {
         if (Abstractions.isEclipseRunning()) {
             // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
-            pcType.getIpsSrcFile().save(true, null);
+            pcType.getIpsSrcFile().save(null);
             while (event == null) {
             }
             Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();

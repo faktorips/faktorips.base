@@ -68,7 +68,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         staticMethod.setChangingOverTime(false);
 
         assertFalse(type.validate(ipsProject).containsErrorMsg());
-        type.getIpsSrcFile().save(true, null);
+        type.getIpsSrcFile().save(null);
 
         productCmpt = newProductCmpt(productCmptType, "Product");
         productCmptGen = productCmpt.getLatestProductCmptGeneration();
@@ -79,7 +79,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         IFormula staticFormula = productCmpt.newPropertyValue(staticMethod, IFormula.class);
         staticFormula.setFormulaSignature("StaticAgeCalculation");
         staticFormula.setExpression("42");
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         assertFalse(productCmpt.validate(ipsProject).containsErrorMsg());
 
         IIpsArtefactBuilder[] builders = ipsProject.getIpsArtefactBuilderSet().getArtefactBuilders();
@@ -114,7 +114,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testBuildMissingType() {
         productCmpt.setProductCmptType("");
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromDerivedFolder();
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();

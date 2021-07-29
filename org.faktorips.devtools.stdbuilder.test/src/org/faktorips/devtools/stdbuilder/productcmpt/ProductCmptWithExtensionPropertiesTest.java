@@ -64,14 +64,14 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
             attribute.setDatatype(Datatype.STRING.getQualifiedName());
             attribute.setChangingOverTime(false);
             attribute.setValueSetConfiguredByProduct(true);
-            policyCmptType.getIpsSrcFile().save(true, null);
+            policyCmptType.getIpsSrcFile().save(null);
 
             IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
             productCmpt.setValidFrom(new GregorianCalendar(2021, Calendar.JANUARY, 1));
             IConfiguredDefault configuredDefault = productCmpt.newPropertyValue(attribute, IConfiguredDefault.class);
             configuredDefault.setValue(" test \t ");
             configuredDefault.setExtPropertyValue(extensionPropertyDefinition.getPropertyId(), true);
-            productCmpt.getIpsSrcFile().save(true, null);
+            productCmpt.getIpsSrcFile().save(null);
 
             String fileContent = getFileContent(productCmpt.getIpsSrcFile());
 

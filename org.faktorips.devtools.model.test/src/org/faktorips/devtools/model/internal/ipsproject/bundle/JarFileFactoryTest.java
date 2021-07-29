@@ -87,8 +87,11 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         Thread.sleep(1100);
 
         try {
-            openJar.entries();
-            fail("expected an exception");
+            int i = 0;
+            while (openJar.entries() != null && i++ < 10) {
+                Thread.sleep(500);
+            }
+            fail("expected an IllegalStateException because the jar should be closed");
         } catch (IllegalStateException e) {
             // is expected
         }

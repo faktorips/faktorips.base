@@ -562,7 +562,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         tempTc.getTableRows().newRow();
         tempTc.getTableRows().newRow();
         // save to file
-        tempTc.getIpsSrcFile().save(false, null);
+        tempTc.getIpsSrcFile().save(null);
 
         // create actual TableContents to test init with
         TableContents testTc = new TableContents(tempTc.getIpsSrcFile());

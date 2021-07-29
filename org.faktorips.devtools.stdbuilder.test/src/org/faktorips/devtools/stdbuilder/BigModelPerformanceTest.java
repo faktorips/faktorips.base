@@ -95,8 +95,8 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
-                basePolicyCmptTypes[i][j].getIpsSrcFile().save(true, null);
-                baseProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                basePolicyCmptTypes[i][j].getIpsSrcFile().save(null);
+                baseProductCmptTypes[i][j].getIpsSrcFile().save(null);
             }
         }
         IPolicyCmptType[][] lobPolicyCmptTypes = new IPolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
@@ -108,7 +108,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
                 lobPolicyCmptTypes[i][j].setSupertype(basePolicyCmptTypes[i][j].getQualifiedName());
                 lobProductCmptTypes[i][j] = lobPolicyCmptTypes[i][j].findProductCmptType(ipsProject);
                 lobProductCmptTypes[i][j].setSupertype(baseProductCmptTypes[i][j].getQualifiedName());
-                lobProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                lobProductCmptTypes[i][j].getIpsSrcFile().save(null);
                 for (int k = 0; k <= NUMBER_OF_ATTRIBUTES_PER_CMPTTYPE; k++) {
                     ValueDatatype datatype = ipsProject.getIpsModel().getPredefinedValueDatatypes()[k];
                     IPolicyCmptTypeAttribute policyAttribute = lobPolicyCmptTypes[i][j]
@@ -190,8 +190,8 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
-                lobPolicyCmptTypes[i][j].getIpsSrcFile().save(true, null);
-                lobProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                lobPolicyCmptTypes[i][j].getIpsSrcFile().save(null);
+                lobProductCmptTypes[i][j].getIpsSrcFile().save(null);
             }
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
@@ -227,7 +227,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
                             }
                         }
                     }
-                    gen.getIpsSrcFile().save(true, null);
+                    gen.getIpsSrcFile().save(null);
                 }
             }
         }

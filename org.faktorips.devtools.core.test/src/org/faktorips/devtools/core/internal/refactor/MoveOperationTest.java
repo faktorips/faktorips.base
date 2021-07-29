@@ -64,19 +64,19 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         staticAssociation.setTargetRoleSingular(COVERAGE_TYPE_NAME);
         staticAssociation.setChangingOverTime(false);
 
-        productCmptType1.getIpsSrcFile().save(true, null);
+        productCmptType1.getIpsSrcFile().save(null);
 
         coverage = newProductCmpt(productCmptType2, COVERAGE_QNAME);
 
         productA = newProductCmpt(productCmptType1, PRODUCT_A_QNAME);
         productAGen = productA.getProductCmptGeneration(0);
         productAGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
-        productA.getIpsSrcFile().save(true, null);
+        productA.getIpsSrcFile().save(null);
 
         productB = newProductCmpt(productCmptType1, PRODUCT_B_QNAME);
         productBGen = productB.getProductCmptGeneration(0);
         productBGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
-        productB.getIpsSrcFile().save(true, null);
+        productB.getIpsSrcFile().save(null);
 
         productC = newProductCmpt(productCmptType3, PRODUCT_C_QNAME);
 

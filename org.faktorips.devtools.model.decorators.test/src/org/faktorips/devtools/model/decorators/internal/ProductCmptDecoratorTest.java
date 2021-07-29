@@ -114,10 +114,10 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         IProductCmpt standardProductCmpt2 = newProductCmpt(productType, "a.StandardProduct2");
         IProductCmpt templatedProductCmpt1 = newProductCmpt(productType, "a.TemplatedProduct1");
         templatedProductCmpt1.setTemplate(template.getQualifiedName());
-        templatedProductCmpt1.getIpsSrcFile().save(true, null);
+        templatedProductCmpt1.getIpsSrcFile().save(null);
         IProductCmpt templatedProductCmpt2 = newProductCmpt(productType, "a.TemplatedProduct2");
         templatedProductCmpt2.setTemplate(template.getQualifiedName());
-        templatedProductCmpt2.getIpsSrcFile().save(true, null);
+        templatedProductCmpt2.getIpsSrcFile().save(null);
 
         IIpsElementDecorator decorator = IIpsDecorators.get(standardProductCmpt1.getClass());
         assertNotNull(decorator);

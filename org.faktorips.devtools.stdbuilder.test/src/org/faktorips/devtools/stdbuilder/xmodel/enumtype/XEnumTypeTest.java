@@ -55,7 +55,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
         IEnumAttribute superEnumAttribute = superEnumType.newEnumAttribute();
         superEnumAttribute.setName("superAttribute");
         superEnumAttribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        superEnumType.getIpsSrcFile().save(true, null);
+        superEnumType.getIpsSrcFile().save(null);
 
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setAbstract(true);

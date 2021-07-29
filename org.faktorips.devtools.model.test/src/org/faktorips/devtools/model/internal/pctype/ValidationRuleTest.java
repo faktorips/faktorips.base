@@ -62,7 +62,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         policyCmptType = newPolicyCmptType(ipsProject, "Policy");
         ipsSrcFile = policyCmptType.getIpsSrcFile();
         validationRule = policyCmptType.newRule();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test

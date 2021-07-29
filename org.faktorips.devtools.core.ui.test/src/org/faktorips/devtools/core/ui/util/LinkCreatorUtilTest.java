@@ -230,7 +230,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     public void testSaveFile() {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
         assertFalse(ipsSrcFile.isDirty());
 
         // test with cmpt reference target
@@ -244,7 +244,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // test with link target
         IProductCmptLink link = cmptA.getFirstGeneration().newLink(associationToC);
         link.setTarget(cmptC3.getQualifiedName());
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
         checkSaveFile(ipsSrcFile, structure.getRoot());
     }
 
@@ -271,7 +271,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // reset for next test
         links = cmptA.getFirstGeneration().getLinks();
         links[0].delete();
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
     }
 
     /**

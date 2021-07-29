@@ -191,7 +191,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         try {
             deleteUnselectedTestObjects();
             clearTestValues();
-            targetTestCase.getIpsSrcFile().save(true, null);
+            targetTestCase.getIpsSrcFile().save(null);
             IpsUIPlugin.getDefault().openEditor(targetTestCase);
         } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);

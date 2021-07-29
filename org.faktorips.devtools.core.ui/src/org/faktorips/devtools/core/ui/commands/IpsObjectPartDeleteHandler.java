@@ -63,7 +63,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
                 new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, "Save touched Ips-Src-Files"); //$NON-NLS-1$
                 for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
                     try {
-                        srcFileToSave.save(true, monitor);
+                        srcFileToSave.save(monitor);
                     } catch (IpsException e) {
                         result.add(e.getStatus());
                     }

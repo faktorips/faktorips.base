@@ -83,7 +83,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         iconFile.create(new ByteArrayInputStream("imageContent".getBytes()), new NullProgressMonitor());
         IProductCmptType prodType = motorPolicyType.findProductCmptType(project);
         prodType.setInstancesIcon("myTest.gif");
-        prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
+        prodType.getIpsSrcFile().save(new NullProgressMonitor());
 
         archiveFile = project.getProject().getFile("test124.ipsar");
         archivePath = archiveFile.getWorkspaceRelativePath();
@@ -426,7 +426,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
         IProductCmptType prodType = newProductCmptType(project, "motor.MotorProduct");
         prodType.setInstancesIcon("test.gif");
-        prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
+        prodType.getIpsSrcFile().save(new NullProgressMonitor());
 
         // as a custom icon test.gif is automatically included in the archive
         Path path = project.getProject().getFile("test.ipsar").getLocation();

@@ -113,7 +113,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         for (IIpsSrcFile element : files) {
             IIpsSrcFile file = (element);
             if (file.isDirty()) {
-                file.save(true, monitor);
+                file.save(monitor);
             }
             saveMonitor.worked(1);
         }

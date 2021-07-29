@@ -44,7 +44,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
-        testCaseType.getIpsSrcFile().save(true, null);
+        testCaseType.getIpsSrcFile().save(null);
 
         builder = new TestCaseBuilder(builderSet);
 
@@ -61,7 +61,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCase");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
-        testCase.getIpsSrcFile().save(true, null);
+        testCase.getIpsSrcFile().save(null);
         ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 

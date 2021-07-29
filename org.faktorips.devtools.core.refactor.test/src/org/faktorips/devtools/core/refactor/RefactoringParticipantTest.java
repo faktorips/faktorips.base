@@ -207,7 +207,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     }
 
     protected void saveIpsSrcFile(IIpsObject ipsObject) {
-        ipsObject.getIpsSrcFile().save(true, null);
+        ipsObject.getIpsSrcFile().save(null);
     }
 
 }

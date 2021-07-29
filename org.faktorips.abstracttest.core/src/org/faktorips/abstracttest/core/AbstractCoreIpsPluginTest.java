@@ -126,7 +126,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
         Set<IIpsElement> ipsElemets = new LinkedHashSet<>();
         for (IIpsObject ipsObject : ipsObjects) {
             printValidationResult(ipsObject);
-            ipsObject.getIpsSrcFile().save(true, null);
+            ipsObject.getIpsSrcFile().save(null);
             ipsElemets.add(ipsObject);
         }
 

@@ -592,10 +592,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     public void testMoveProductCmptProperties_DontMoveUpIfOneElementIsAtUpperLimit() {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
         property1.setCategory(CATEGORY_NAME);
+        property1.setCategoryPosition(1);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
         property2.setCategory(CATEGORY_NAME);
+        property2.setCategoryPosition(2);
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
         property3.setCategory(CATEGORY_NAME);
+        property3.setCategoryPosition(3);
 
         assertArrayEquals(new int[] { 0, 2 },
                 category.moveProductCmptProperties(new int[] { 0, 2 }, true, productType));
@@ -617,10 +620,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     public void testMoveProductCmptProperties_DontMoveDownIfOneElementIsAtLowerLimit() {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
         property1.setCategory(CATEGORY_NAME);
+        property1.setCategoryPosition(1);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
         property2.setCategory(CATEGORY_NAME);
+        property2.setCategoryPosition(2);
         IProductCmptProperty property3 = productType.newProductCmptTypeAttribute("p3");
         property3.setCategory(CATEGORY_NAME);
+        property3.setCategoryPosition(3);
 
         assertArrayEquals(new int[] { 0, 2 },
                 category.moveProductCmptProperties(new int[] { 0, 2 }, false, productType));
@@ -827,10 +833,10 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
          * The category should not change if another type of the hierarchy is saved which does not
          * configure the policy component type.
          */
-        superProductType.getIpsSrcFile().save(true, null);
+        superProductType.getIpsSrcFile().save(null);
         assertEquals("", policyProperty.getCategory());
 
-        productType.getIpsSrcFile().save(true, null);
+        productType.getIpsSrcFile().save(null);
         assertEquals(category.getName(), policyProperty.getCategory());
     }
 

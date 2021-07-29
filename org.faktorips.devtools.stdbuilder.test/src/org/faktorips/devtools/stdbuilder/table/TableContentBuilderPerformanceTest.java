@@ -38,7 +38,7 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
             column.setDatatype(Datatype.STRING.getQualifiedName());
             column.setName("C" + c);
         }
-        tableStructure.getIpsSrcFile().save(true, null);
+        tableStructure.getIpsSrcFile().save(null);
         ITableContents tableContents = newTableContents(tableStructure, "TC");
         for (int c = 0; c < COLUMNS; c++) {
             tableContents.newColumn("VD", "C" + c);
@@ -58,7 +58,7 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
                 row.setValue(c, "VV" + i + "/" + c);
             }
             long start = System.currentTimeMillis();
-            tableContents.getIpsSrcFile().save(true, null);
+            tableContents.getIpsSrcFile().save(null);
             fullBuild();
             long end = System.currentTimeMillis();
             System.out.println("Build took " + (end - start) + "ms");

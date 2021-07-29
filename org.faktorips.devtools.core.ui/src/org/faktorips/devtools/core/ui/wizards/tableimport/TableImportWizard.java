@@ -168,7 +168,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                         new ResultDisplayer(getShell(), Messages.TableImportWizard_operationName, messageList));
             }
 
-            contents.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
+            contents.getIpsObject().getIpsSrcFile().save(new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
         } catch (Exception e) {
             Throwable throwable = e;

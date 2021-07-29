@@ -202,9 +202,9 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertTrue(delta.isEmpty());
 
         association.delete();
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
         templateLink.delete();
-        template.getIpsSrcFile().save(true, null);
+        template.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
         assertFalse(delta.isEmpty());

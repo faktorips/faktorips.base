@@ -193,7 +193,7 @@ public class DeepCopyOperation implements ICoreRunnable {
         // save all ipsSource files
         for (IIpsObject iIpsObject : newIpsObjects) {
             IIpsSrcFile ipsSrcFile = (iIpsObject).getIpsSrcFile();
-            ipsSrcFile.save(true, monitor);
+            ipsSrcFile.save(monitor);
             monitor.worked(1);
         }
         if (newIpsObjects.size() == 0) {

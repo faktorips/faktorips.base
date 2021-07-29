@@ -56,7 +56,7 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
                 monitor.worked(1);
 
                 if (!wasDirty) {
-                    srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                    srcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
                 }
             }
         }
