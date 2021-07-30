@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.jdt.core.IType;
-import org.faktorips.devtools.model.IIpsMetaClass;
+import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
@@ -38,11 +38,9 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
  * <li>{@value #PROPERTY_IS_TYPE}: checks whether the object type is one derived from {@link IType}
  * ({@link IpsObjectType#POLICY_CMPT_TYPE} or {@link IpsObjectType#PRODUCT_CMPT_TYPE})</li>
  * <li>{@value #PROPERTY_IS_META_TYPE}: checks whether the object type is one derived from
- * {@link IIpsMetaClass}</li>
+ * {@link IIpsMetaObject}</li>
  * <li>{@value #PROPERTY_IS_MODEL_TYPE}: checks whether the object type is a model object type (not
  * a {@link IpsObjectType#isProductDefinitionType() product definition type})</li>
- * <li>{@value #PROPERTY_IS_PRODUCT_TYPE}: checks whether the object type is a
- * {@link IpsObjectType#isProductDefinitionType() product definition type}</li>
  * </ul>
  */
 public class IpsObjectTypeTester extends PropertyTester {
@@ -50,7 +48,6 @@ public class IpsObjectTypeTester extends PropertyTester {
     public static final String PROPERTY_IS_IPS_OBJECT_TYPE = "isIpsObjectType"; //$NON-NLS-1$
     public static final String PROPERTY_IS_TYPE = "isType"; //$NON-NLS-1$
     public static final String PROPERTY_IS_META_TYPE = "isMetaType"; //$NON-NLS-1$
-    public static final String PROPERTY_IS_PRODUCT_TYPE = "isProductType"; //$NON-NLS-1$
     public static final String PROPERTY_IS_MODEL_TYPE = "isModelType"; //$NON-NLS-1$
 
     @Override
@@ -62,8 +59,6 @@ public class IpsObjectTypeTester extends PropertyTester {
                 return ipsSrcFile.getIpsObjectType().getId().equalsIgnoreCase(expectedIpsObjectType);
             case PROPERTY_IS_TYPE:
                 return ipsSrcFile.getIpsObjectType().isEntityType();
-            case PROPERTY_IS_PRODUCT_TYPE:
-                return ipsSrcFile.getIpsObjectType().isProductDefinitionType();
             case PROPERTY_IS_MODEL_TYPE:
                 return !ipsSrcFile.getIpsObjectType().isProductDefinitionType();
             case PROPERTY_IS_META_TYPE:
@@ -76,4 +71,5 @@ public class IpsObjectTypeTester extends PropertyTester {
                 return false;
         }
     }
+
 }
