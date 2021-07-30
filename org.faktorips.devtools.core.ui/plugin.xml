@@ -2,10 +2,9 @@
 <?eclipse version="3.2"?>
 <plugin>
 <!--
-	Extension points
+    Extension points
   -->
    <extension-point id="extensionPropertyEditFieldFactory" name="Extension Property Edit Field Factory" schema="schema/extensionPropertyEditFieldFactory.exsd"/>
-   
    <extension-point id="adapterprovider" name="Adapter Provider" schema="schema/adapterprovider.exsd" />
    <extension-point id="valueDatatypeControlFactory" name="valueDatatypeControlFactory" schema="schema/valueDatatypeControlFactory.exsd"/>
    <extension-point id="extensionPropertySectionFactory" name="Extension Property Section Factory" schema="schema/extensionPropertySectionFactory.exsd"/>
@@ -15,8 +14,7 @@
    <extension-point id="deepCopyWizard" name="Deep Copy Wizard" schema="schema/deepCopyWizard.exsd"/>
    <extension-point id="modelStructureContentProvider" name="modelStructureContentProvider" schema="schema/modelStructureContentProvider.exsd"/>
    <extension-point id="inputFormat" name="Input Format" schema="schema/inputFormat.exsd"/>
-   
-<!-- 
+<!--
     Product Definition Perspective
   -->
    <extension
@@ -29,13 +27,11 @@
             name="%org.faktorips.devtools.core.productDefinitionPerspective">
       </perspective>
    </extension>
-
 <!--
-	Action sets
+    Action sets
 -->
    <extension
          point="org.eclipse.ui.actionSets">
-
       <actionSet
             id="org.faktorips.devtools.actions.ModelingActionSet"
             label="%org.faktorips.devtools.actions.ModellingActionSet"
@@ -46,7 +42,7 @@
                id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
                toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>               
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>
          <action
                label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
                icon="icons/NewTableStructureWizard.gif"
@@ -87,9 +83,7 @@
                toolbarPath="org.faktorips.devtools"
                id="org.faktorips.devtools.actions.OpenNewPcTypeWizardAction">
          </action>
-         
       </actionSet>
-
       <actionSet
             id="org.faktorips.devtools.actions.ProductDefinitionActionSet"
             label="%org.faktorips.devtools.actions.ProductDefinitionActionSet"
@@ -108,7 +102,7 @@
                id="org.faktorips.devtools.actions.OpenNewTestCaseWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.label"
                toolbarPath="org.faktorips.devtools"
-               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.tooltip"/>             
+               tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.tooltip"/>
          <action
                label="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.label"
                icon="icons/NewTableContentsWizard.gif"
@@ -170,14 +164,14 @@
                tooltip="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.tooltip">
          </action>
       </actionSet>
- 	  <actionSet
-            id="org.faktorips.devtools.actions.EditModeActionSet"   
+       <actionSet
+            id="org.faktorips.devtools.actions.EditModeActionSet"
             label="%org.faktorips.devtools.actions.EditModeActionSet"
             visible="false">
          <action
                style="toggle"
-			   retarget="true"
-			   allowLabelUpdate="true"
+               retarget="true"
+               allowLabelUpdate="true"
                icon="icons/obj16/write_obj.gif"
                disabledIcon="icons/obj16/write_obj_disabled.gif"
                id="org.faktorips.devtools.actions.ToggleWorkingModeAction"
@@ -187,7 +181,6 @@
          </action>
       </actionSet>
    </extension>
-   
    <extension
          point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation
@@ -201,7 +194,6 @@
          <part id="testCaseTypeEditor" />
       </actionSetPartAssociation>
    </extension>
-
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -413,11 +405,9 @@
             contextId="org.faktorips.devtools.core.ui.views.modelExplorer.context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F4">
-      </key>            
+      </key>
    </extension>
-   
-
-<!-- 
+<!--
     Extensions to the Java perspective
   -->
    <extension
@@ -712,10 +702,10 @@
                  menubarPath="faktorIPSMenu/cleanUpMenu/main"
                  tooltip="%createMissingEnumContentsAction.tooltip">
            </action>
-        </objectContribution>  
-    	<objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
+        </objectContribution>
+        <objectContribution id="fixDifferencesAction" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
-			    <separator name="faktorIpsGroup"/>
+                <separator name="faktorIpsGroup"/>
             </menu>
             <menu
                   id="cleanUpMenu"
@@ -725,40 +715,40 @@
                      name="main">
                </separator>
             </menu>
-	    	<action
+            <action
             class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
             enablesFor="*"
             icon="icons/FixDifferencesToModel.gif"
             id="fixDifferencesAction"
             label="%fixDifferencesAction"
             menubarPath="faktorIPSMenu/cleanUpMenu/main">
-	            <enablement>
-		             <or>
-			              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-			              <objectClass name="org.eclipse.core.resources.IResource"/>
-			              <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
-		             </or>
-	            </enablement> 
+                <enablement>
+                     <or>
+                          <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+                          <objectClass name="org.eclipse.core.resources.IResource"/>
+                          <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
+                     </or>
+                </enablement>
             </action>
-		      <visibility>
-	             <or>
-		              <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
-		              <objectClass name="org.eclipse.core.resources.IResource"/>
-		              <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
-	             </or>
-		      </visibility> 
-    	</objectContribution>
-		<objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
+              <visibility>
+                 <or>
+                      <objectClass name="org.eclipse.jdt.core.IJavaProject"/>
+                      <objectClass name="org.eclipse.core.resources.IResource"/>
+                      <objectClass name="org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport"/>
+                 </or>
+              </visibility>
+        </objectContribution>
+        <objectContribution id="addIpsNature" objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
-			    <separator name="faktorIpsGroup"/>
+                <separator name="faktorIpsGroup"/>
             </menu>
-			<action
-		    class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
-		    enablesFor="*"
-		    icon="icons/AddIpsNature.gif"
-		    id="addIpsNatureAction"
-		    label="%addIpsNatureAction"
-		    menubarPath="faktorIPSMenu/faktorIpsGroup"/>
+            <action
+            class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
+            enablesFor="*"
+            icon="icons/AddIpsNature.gif"
+            id="addIpsNatureAction"
+            label="%addIpsNatureAction"
+            menubarPath="faktorIPSMenu/faktorIpsGroup"/>
    <visibility>
       <or>
          <objectClass
@@ -769,13 +759,13 @@
          </objectClass>
       </or>
    </visibility>
-		  		<!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
-		</objectContribution>
+                  <!-- <filter name="nature" value="org.eclipse.emf.codegen.jet.IJETNature"/> -->
+        </objectContribution>
         <objectContribution id="migrateIpsProject"
             objectClass="org.eclipse.core.runtime.IAdaptable">
             <menu id="faktorIPSMenu" label="%faktorIPSMenu" path="additions">
-			    <separator name="faktorIpsGroup"/>
-            </menu>            
+                <separator name="faktorIpsGroup"/>
+            </menu>
             <action
             class="org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardAction"
             enablesFor="*"
@@ -794,20 +784,16 @@
                   </objectClass></or>
             </visibility>
         </objectContribution>
-
   </extension>
-
-   
-<!-- 
+<!--
     Views
   -->
-
-<!-- 
+<!--
     Editors
   -->
-	<extension
+    <extension
          point="org.eclipse.ui.editors">
-      	<editor
+          <editor
             class="org.faktorips.devtools.core.ui.editors.pctype.PolicyCmptTypeEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
@@ -815,8 +801,8 @@
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/PolicyCmptType.gif"
             id="policyCmptTypeEditor"
             name="%policyCmptTypeEditor">
-      	</editor>
-      	<editor
+          </editor>
+          <editor
             class="org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
@@ -824,7 +810,7 @@
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmptType.gif"
             id="productCmptTypeEditor"
             name="%productCmptTypeEditor">
-      	</editor>
+          </editor>
        <editor
              class="org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor"
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
@@ -833,17 +819,17 @@
              icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/EnumType.gif"
              id="enumTypeEditor"
              name="%enumTypeEditor">
-       </editor>   
-		<editor
-			class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
-			contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
-			default="true"
-			extensions="ipsbusinessfunction"
-			icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/BusinessFunction.gif"
-			id="org.faktorips.devtools.bf.ui.editor"
-			name="%businessFunctionEditor">
-		</editor>
-      	<editor
+       </editor>
+        <editor
+            class="org.faktorips.devtools.core.ui.bf.BusinessFunctionEditor"
+            contributorClass="org.faktorips.devtools.core.ui.bf.actions.BfActionBarContributor"
+            default="true"
+            extensions="ipsbusinessfunction"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/BusinessFunction.gif"
+            id="org.faktorips.devtools.bf.ui.editor"
+            name="%businessFunctionEditor">
+        </editor>
+          <editor
             class="org.faktorips.devtools.core.ui.editors.tablestructure.TableStructureEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
@@ -851,16 +837,16 @@
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableStructure.gif"
             id="tableStructureEditor"
             name="%tableStructureEditor">
-      	</editor>
-		<editor
-      		class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
+          </editor>
+        <editor
+              class="org.faktorips.devtools.core.ui.editors.testcasetype.TestCaseTypeEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcasetype"
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCaseType.gif"
             id="testCaseTypeEditor"
             name="%testCaseTypeEditor"/>
-      	<editor
+          <editor
              class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
@@ -868,8 +854,8 @@
              icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmpt.gif"
              id="productCmptEditor"
              name="%productCmptEditor">
-      	</editor>
-      	<editor
+          </editor>
+          <editor
              class="org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor"
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
@@ -877,7 +863,7 @@
              icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductTemplate.gif"
              id="productTemplateEditor"
              name="%productTemplateEditor">
-      	</editor>
+          </editor>
        <editor
              class="org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor"
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
@@ -887,7 +873,7 @@
              id="enumContentEditor"
              name="%enumContentEditor">
        </editor>
-      	<editor
+          <editor
             class="org.faktorips.devtools.core.ui.editors.tablecontents.TableContentsEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
@@ -895,8 +881,8 @@
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableContents.gif"
             id="tableContentsEditor"
             name="%tableContentsEditor">
-      	</editor>
-      	<editor
+          </editor>
+          <editor
             class="org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor"
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
@@ -905,35 +891,34 @@
             id="testCaseEditor"
             name="%testCaseEditor">
         </editor>
-	</extension>
-
-<!-- 
+    </extension>
+<!--
     Wizards
   -->
     <extension
         point = "org.eclipse.ui.newWizards">
-	    <category
-	        id = "org.faktorips.devtools"
-    	    name="%org.faktorips.devtools.newWizard.category">
-	    </category>
-     	<wizard
-	       id = "newPcTypeWizard"
+        <category
+            id = "org.faktorips.devtools"
+            name="%org.faktorips.devtools.newWizard.category">
+        </category>
+         <wizard
+           id = "newPcTypeWizard"
            name = "%NewPcTypeWizard.name"
-    	   class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
-    	   category="org.faktorips.devtools"
-    	   icon="icons/NewPolicyCmptTypeWizard.gif">
-    	   <description>%NewPcTypeWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
-     	<wizard
-	       id = "newProductCmptTypeWizard"
+           class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
+           category="org.faktorips.devtools"
+           icon="icons/NewPolicyCmptTypeWizard.gif">
+           <description>%NewPcTypeWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
+         <wizard
+           id = "newProductCmptTypeWizard"
            name = "%NewProductCmptTypeWizard.name"
-    	   class="org.faktorips.devtools.core.ui.wizards.productcmpttype.NewProductCmptTypeWizard"
-    	   category="org.faktorips.devtools"
-    	   icon="icons/NewProductCmptTypeWizard.gif">
-    	   <description>%NewProductCmptTypeWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           class="org.faktorips.devtools.core.ui.wizards.productcmpttype.NewProductCmptTypeWizard"
+           category="org.faktorips.devtools"
+           icon="icons/NewProductCmptTypeWizard.gif">
+           <description>%NewProductCmptTypeWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
   <wizard
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumtype.NewEnumTypeWizard"
@@ -947,19 +932,19 @@
            class="org.eclipse.core.resources.IResource">
      </selection>
   </wizard>
-		<wizard
-			category="org.faktorips.devtools"
-			class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
-			icon="icons/NewBusinessFunction.gif"
-			id="org.faktorips.devtools.bf.ui.wizard"
-			name="%NewBfWizard.name">
-			<selection
-				class="org.eclipse.core.resources.IResource">
-			</selection>
+        <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.bf.NewBFWizard"
+            icon="icons/NewBusinessFunction.gif"
+            id="org.faktorips.devtools.bf.ui.wizard"
+            name="%NewBfWizard.name">
+            <selection
+                class="org.eclipse.core.resources.IResource">
+            </selection>
    <description>
       %NewBfWizard.description
    </description>
-      	</wizard>
+          </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
@@ -997,70 +982,70 @@
             icon="icons/NewTableStructureWizard.gif"
             id="newTableStructureWizard"
             name="%NewTableStructureWizard.name">
-    	   <description>%NewTableStructureWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           <description>%NewTableStructureWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
             icon="icons/NewTestCaseType.gif"
             id="newTestCaseTypeWizard"
             name="%NewTestCaseTypeWizard.name">
-    	   <description>%NewTestCaseTypeWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           <description>%NewTestCaseTypeWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
             icon="icons/NewTableContentsWizard.gif"
             id="newTableContentsWizard"
             name="%NewTableContentsWizard.name">
-    	   <description>%NewTableContentsWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           <description>%NewTableContentsWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
             icon="icons/NewTestCase.gif"
             id="newTestCaseWizard"
             name="%NewTestCaseWizard.name">
-    	   <description>%NewTestCaseWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
-		<wizard
-			category="org.faktorips.devtools"
-			class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
-			icon="icons/NewIpsPackageFragment.gif"
-			id="newIpsPackageWizard"
-			name="%NewIpsPackageWizard.name">
-			<description>%NewIpsPackageWizard.description</description>
-			<selection class="org.eclipse.core.resources.IResource"/>
-		</wizard>
-	</extension>
+           <description>%NewTestCaseWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
+        <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
+            icon="icons/NewIpsPackageFragment.gif"
+            id="newIpsPackageWizard"
+            name="%NewIpsPackageWizard.name">
+            <description>%NewIpsPackageWizard.description</description>
+            <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
+    </extension>
     <extension
         point = "org.eclipse.ui.exportWizards">
        <category
              id="org.faktorips.devtools"
              name="%org.faktorips.devtools.exportWizard.category">
        </category>
-     	<wizard
+         <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
             icon="icons/ExportTableContents.gif"
             id="tableExportWizard"
             name="%TableExportWizard.name">
-    	   <description>%TableExportWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
-     	<wizard
+           <description>%TableExportWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
+         <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
             icon="icons/ExportIpsArchive.gif"
             id="ipsArchiveExportWizard"
             name="%IpsArchiveExportWizard.name">
-    	   <description>%IpsArchiveExportWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           <description>%IpsArchiveExportWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard"
@@ -1075,22 +1060,21 @@
          </selection>
       </wizard>
     </extension>
-
     <extension
           point="org.eclipse.ui.importWizards">
        <category
              id="org.faktorips.devtools"
              name="%org.faktorips.devtools.importWizard.category">
        </category>
-            	<wizard
+                <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
             icon="icons/ImportTableContents.gif"
             id="tableImportWizard"
             name="%TableImportWizard.name">
-    	   <description>%TableImportWizard.description</description>
-    	   <selection class="org.eclipse.core.resources.IResource"/>
-	    </wizard>
+           <description>%TableImportWizard.description</description>
+           <selection class="org.eclipse.core.resources.IResource"/>
+        </wizard>
   <wizard
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"
@@ -1112,26 +1096,22 @@
             name="%MessagesImportWizard">
       </wizard>
     </extension>
-
-<!-- 
+<!--
     Preference Pages
   -->
     <extension
         point = "org.eclipse.ui.preferencePages">
         <page id="FaktorIpsPage"
-        	  name="%FaktorIpsPage"
-        	  class="org.faktorips.devtools.core.ui.FaktorIpsPreferencePage">
+              name="%FaktorIpsPage"
+              class="org.faktorips.devtools.core.ui.FaktorIpsPreferencePage">
         </page>
     </extension>
-    
-<!-- 
+<!--
     Property Pages
-    
     Note that the project property page has to be registered for IProject as well as IJavaProject, because the Package Explorer
     shows IJavaProjects while the Resource Navigator shows IProjects.
-    
   -->
-   <extension point="org.eclipse.ui.propertyPages"> 
+   <extension point="org.eclipse.ui.propertyPages">
         <page
               class="org.faktorips.devtools.core.ui.preferencepages.IpsObjectPathPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.IpsObjectPathsPropertyPage"
@@ -1149,7 +1129,7 @@
         <page
               class="org.faktorips.devtools.core.ui.preferencepages.BuilderSetPropertyPage"
               id="org.faktorips.devtools.core.ui.propertyPages.BuilderSetPropertyPage"
-              name="%org.faktorips.ipsbuildersetpropertypage"> 
+              name="%org.faktorips.ipsbuildersetpropertypage">
          <filter
                name="nature"
                value="org.faktorips.devtools.model.ipsnature">
@@ -1160,16 +1140,13 @@
             </adapt>
          </enabledWhen>
         </page>
-    </extension> 
-    
-<!-- 
+    </extension>
+<!--
     Default Datatypes
   -->
-
-<!-- 
+<!--
   Markers
 -->
-
 <!--
     Problem View Filter (available since Eclipse 3.2)
 -->
@@ -1179,9 +1156,8 @@
                 scope="ON_ANY">
                 <selectedType markerId="org.faktorips.devtools.model.problemmarker"/>
       </problemFilter>
-   </extension>  
-
-<!-- 
+   </extension>
+<!--
   Product-Definition-Extensions
 -->
    <extension
@@ -1260,7 +1236,6 @@
             restorable="true">
       </view>
    </extension>
-   
    <extension
          point="org.eclipse.search.searchResultViewPages">
       <viewPage
@@ -1268,7 +1243,6 @@
             id="org.faktorips.devtools.core.ui.search.ReferenceSearchResultPage"
             searchResultClass="org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult"/>
    </extension>
-   
    <extension
          id="org.faktorips.devtools.core.ipsProblemsDecorator"
          name="IPS-Problemsdecorator"
@@ -1360,8 +1334,6 @@
             contentTypeId="org.faktorips.devtools.model.tableContents"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
    </extension>
-
-
 <!-- Extensions for running and debugging ips tests -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
@@ -1375,13 +1347,13 @@
          <contextualLaunch>
             <enablement>
                <with variable="selection">
-               		<iterate>
-                 		<or>
-                   			<test property="org.eclipse.debug.ui.matchesPattern" value="*.ipstestcase"/>
-                   			<test property="org.eclipse.debug.ui.matchesPattern" value="*.ipsproduct"/>
-                   			<adapt type="org.eclipse.core.resources.IResource"/>
-                 		</or>
-               		</iterate>
+                   <iterate>
+                       <or>
+                           <test property="org.eclipse.debug.ui.matchesPattern" value="*.ipstestcase"/>
+                           <test property="org.eclipse.debug.ui.matchesPattern" value="*.ipsproduct"/>
+                           <adapt type="org.eclipse.core.resources.IResource"/>
+                       </or>
+                   </iterate>
                </with>
             </enablement>
          </contextualLaunch>
@@ -1396,15 +1368,15 @@
             name="%org.faktorips.devtools.core.ipsTestLaunchConfigurationType"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
-      </launchConfigurationType> 
+      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-		<launchConfigurationTypeImage
+        <launchConfigurationTypeImage
             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCase.gif"
             configTypeID="org.faktorips.devtools.core.ipsTestLaunchConfigurationType"
             id="org.faktorips.devtools.core.ipsTestLaunchImage">
-		</launchConfigurationTypeImage>
+        </launchConfigurationTypeImage>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -1423,8 +1395,6 @@
          </launchMode>
       </launchConfigurationTabGroup>
     </extension>
-   
-   
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
       <propertyContributor
@@ -1594,7 +1564,7 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-				<adapt
+                   <adapt
                        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                  </adapt>
                </iterate>
@@ -1609,13 +1579,12 @@
                <iterate
                   ifEmpty="false"
                   operator="and">
-				<adapt
+                <adapt
                        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                     <test
                         property="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester.isPartEditableInEditor">
                   </test>
                  </adapt>
-                  
                </iterate>
             </with>
          </enabledWhen>
@@ -1690,7 +1659,6 @@
                class="org.faktorips.devtools.core.ui.commands.IpsDeleteHandler">
          </class>
       </handler>
-      
       <handler
             class="org.faktorips.devtools.core.ui.refactor.IpsRenameHandler"
             commandId="org.eclipse.ltk.ui.refactoring.commands.renameResource">
@@ -1800,15 +1768,15 @@
                      ifEmpty="false"
                      operator="and">
                   <and>
-	                  <adapt
-	                        type="org.faktorips.devtools.model.IIpsElement">
-	                  </adapt>
-	                  <not>
-		                  <adapt
-		                        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
-		                  </adapt>
-	                  </not>
-	              </and>
+                      <adapt
+                            type="org.faktorips.devtools.model.IIpsElement">
+                      </adapt>
+                      <not>
+                          <adapt
+                                type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
+                          </adapt>
+                      </not>
+                  </and>
                </iterate>
             </with>
          </activeWhen>
@@ -1939,9 +1907,7 @@
                      operator="and">
                   <or>
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                       <test
-                              property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isIpsObjectType"
-                              value="ProductCmpt">
+                       <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isProductType">
                        </test>
                      </adapt>
                   </or>
@@ -2004,7 +1970,7 @@
                   variable="selection">
                <iterate
                      ifEmpty="false"
-                     operator="and">                       
+                     operator="and">
                  <test
                        property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
                  </test>
@@ -2050,7 +2016,6 @@
                   </and>
                </iterate>
             </with>
-
                <and>
                   <with
                         variable="activeEditor">
@@ -2067,7 +2032,6 @@
                      </iterate>
                   </with>
                </and>
-               
                </or>
          </activeWhen>
       </handler>
@@ -2142,9 +2106,9 @@
                <iterate
                      ifEmpty="false">
                   <or>
-                  	<adapt
+                      <adapt
                          type="org.eclipse.core.resources.IFile">
-                  	</adapt>                        
+                      </adapt>
                      <test
                            property="org.faktorips.devtools.core.ui.commands.IpsObjectTester.isIpsObject">
                      </test>
@@ -2166,7 +2130,7 @@
                   variable="selection">
                <iterate
                      ifEmpty="false">
-                  <adapt 
+                  <adapt
                         type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
                   </adapt>
                </iterate>
@@ -2267,7 +2231,7 @@
                </iterate>
                <count
                      value="1">
-               </count> 
+               </count>
             </with>
          </enabledWhen>
       </handler>
@@ -2352,7 +2316,6 @@
             </with>
          </activeWhen>
       </handler>
-
       <handler
             commandId="org.eclipse.ui.edit.paste">
          <class
@@ -2409,7 +2372,6 @@
          </enabledWhen>
       </handler>
    </extension>
-
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
          <propertyTester
@@ -2420,7 +2382,7 @@
                type="org.faktorips.devtools.model.ipsobject.IIpsObject">
          </propertyTester>
       <propertyTester
-     	 namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
+          namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
        id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
        properties="isPartEditableInEditor,isPartEditable"
        type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart"
@@ -2465,7 +2427,7 @@
             class="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
             id="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
             namespace="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester"
-            properties="isIpsObjectType,isType,isMetaType,isModelType"
+            properties="isIpsObjectType,isType,isMetaType,isModelType,isProductType"
             type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
       </propertyTester>
       <propertyTester
@@ -2476,7 +2438,6 @@
             type="java.lang.Object">
       </propertyTester>
    </extension>
-   
       <extension
             point="org.eclipse.ui.menus">
       <menuContribution
@@ -2540,7 +2501,6 @@
                <visibleWhen
                   checkEnabled="true">
                </visibleWhen>
-               
          </command>
       </menuContribution>
       <menuContribution
@@ -2571,9 +2531,9 @@
                <with
                      variable="selection">
                   <iterate>
-	                  <instanceof
-	                        value="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
-	                  </instanceof>
+                      <instanceof
+                            value="org.faktorips.devtools.model.ipsobject.IIpsObjectPart">
+                      </instanceof>
                   </iterate>
                </with>
             </visibleWhen>
@@ -2625,18 +2585,18 @@
                      </with>
                   </visibleWhen>
                </dynamic>
-	           <separator
+               <separator
                  name="navigate"
                  visible="true">
-		         </separator>
-		         <command
+                 </separator>
+                 <command
                  commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
                  icon="icons/Reference.gif"
                  style="push">
               <visibleWhen
                     checkEnabled="true">
               </visibleWhen>
-		         </command>
+                 </command>
            <separator
                  name="refactoring"
                  visible="true">
@@ -2743,10 +2703,8 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                        <not>
-                           <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
-                           </test>
-                        </not>
+                         <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isProductType">
+                         </test>
                      </adapt>
                   </iterate>
                </with>
@@ -2786,10 +2744,8 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt type="org.faktorips.devtools.model.ipsobject.IIpsSrcFile">
-                        <not>
-                            <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isModelType">
-                            </test>
-                        </not>
+                         <test property="org.faktorips.devtools.core.ui.commands.IpsObjectTypeTester.isProductType">
+                         </test>
                      </adapt>
                   </iterate>
                </with>
@@ -3075,11 +3031,11 @@
                   checkEnabled="true">
                   <with
                         variable="selection">
-	                  <iterate>
-	                  	<adapt
-                          type="org.eclipse.core.resources.IResource">
-	                  	</adapt>
-	                  </iterate>
+                     <iterate>
+                       <adapt
+                           type="org.eclipse.core.resources.IResource">
+                       </adapt>
+                     </iterate>
                   </with>
             </visibleWhen>
          </command>
@@ -3124,11 +3080,9 @@
                class="org.faktorips.devtools.core.ui.controlfactories.MonthDayControlFactory">
          </ControlFactory>
       </extension>
-
-	<!-- Extension Points Model Search -->
-
-	<extension point="org.eclipse.search.searchPages">
-	   <page
+    <!-- Extension Points Model Search -->
+    <extension point="org.eclipse.search.searchPages">
+       <page
           canSearchEnclosingProjects="true"
           class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
           enabled="true"
@@ -3137,11 +3091,10 @@
           label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
           showScopeSection="true"
           sizeHint="460,160">
-		</page>
-	</extension>
-	
-	<extension point="org.eclipse.search.searchPages">
-	   <page
+        </page>
+    </extension>
+    <extension point="org.eclipse.search.searchPages">
+       <page
           canSearchEnclosingProjects="true"
           class="org.faktorips.devtools.core.ui.search.product.ProductSearchPage"
           icon="icons/ModelSearch.gif"
@@ -3149,16 +3102,15 @@
           label="%org.faktorips.devtools.core.ui.search.product.ProductSearchPage.label"
           showScopeSection="true"
           sizeHint="460,160">
-		</page>
-	</extension>
-
-	<extension point="org.eclipse.search.searchResultViewPages">
-		<viewPage
-			id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"
-			searchResultClass="org.faktorips.devtools.core.ui.search.IpsSearchResult"
-			class="org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage">
-		</viewPage>
-	</extension>
+        </page>
+    </extension>
+    <extension point="org.eclipse.search.searchResultViewPages">
+        <viewPage
+          id="org.faktorips.devtools.core.ui.search.model.ModelSearchResultPage"
+          searchResultClass="org.faktorips.devtools.core.ui.search.IpsSearchResult"
+          class="org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage">
+        </viewPage>
+    </extension>
  <extension
        point="org.eclipse.core.runtime.adapters">
     <factory
@@ -3203,9 +3155,7 @@
           label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureInheritAssociationsContentProvider_label">
     </contentprovider>
     <!--
-    
     Disabled in version 3.8 because it does not realy works correctly
-    
     <contentprovider
           class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider"
           label="%org.faktorips.devtools.core.ui.views.modelstructure.ModelStructureContentProvider_label">
@@ -3225,41 +3175,35 @@
          point="org.faktorips.devtools.core.ui.inputFormat">
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.DecimalNumberFormatFactory">
-	        <datatype class="org.faktorips.datatype.classtypes.DecimalDatatype" />
-	        <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
-	        <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.DecimalDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.DoubleDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.BigDecimalDatatype" />
         </inputformat>
-        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormatFactory">
-	        <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
-	        <datatype class="org.faktorips.datatype.classtypes.LongDatatype" />
-	        <datatype class="org.faktorips.datatype.PrimitiveIntegerDatatype" />
-	        <datatype class="org.faktorips.datatype.PrimitiveLongDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.IntegerDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.LongDatatype" />
+            <datatype class="org.faktorips.datatype.PrimitiveIntegerDatatype" />
+            <datatype class="org.faktorips.datatype.PrimitiveLongDatatype" />
         </inputformat>
-        
         <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.DateISOStringFormatFactory">
-	        <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
-	       	<datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
-	       	<datatype class="org.faktorips.datatype.joda.LocalDateDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.DateDatatype" />
+               <datatype class="org.faktorips.datatype.classtypes.GregorianCalendarDatatype" />
+               <datatype class="org.faktorips.datatype.joda.LocalDateDatatype" />
         </inputformat>
-        
         <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.DateTimeISOStringFormatFactory">
-	        <datatype class="org.faktorips.datatype.joda.LocalDateTimeDatatype" />
+            <datatype class="org.faktorips.datatype.joda.LocalDateTimeDatatype" />
         </inputformat>
-        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormatFactory">
-	        <datatype class="org.faktorips.datatype.joda.LocalTimeDatatype" />
+            <datatype class="org.faktorips.datatype.joda.LocalTimeDatatype" />
         </inputformat>
-        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.MoneyFormatFactory">
-	        <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
+            <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
         </inputformat>
-        
          <inputformat
                class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
             <datatype
@@ -3271,13 +3215,12 @@
             <datatype
                   class="org.faktorips.datatype.joda.MonthDayDatatype">
             </datatype>
-         </inputformat>     
-                  
+         </inputformat>
    </extension>
  <extension
        point="org.faktorips.devtools.model.workspaceInteractions">
     <workspaceInteractions
           class="org.faktorips.devtools.core.ui.EclipseIpsWorkspaceInteractions">
     </workspaceInteractions>
- </extension> 
+ </extension>
 </plugin>
