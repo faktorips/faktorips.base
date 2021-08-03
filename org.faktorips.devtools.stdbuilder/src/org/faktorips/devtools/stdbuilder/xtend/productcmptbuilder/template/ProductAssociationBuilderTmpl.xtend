@@ -128,7 +128,7 @@ class ProductAssociationBuilderTmpl {
         «IF isSuper» @Override «ENDIF»
         public «builder.implClassName» «IF withCardinality»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct", CardinalityRange, "cardinality" )»«ELSE»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct")»«ENDIF»{
             «IF isSuper»
-                super.«association.methodName»(targetProduct);
+                super.«association.methodName»(targetProduct«IF withCardinality», cardinality«ENDIF»);
             «ELSE»
                 «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetProduct«IF withCardinality», cardinality«ENDIF»);
             «ENDIF»
@@ -146,7 +146,7 @@ class ProductAssociationBuilderTmpl {
         «IF isSuper»@Override«ENDIF»
         public «returnType(builder, multi, true, it)» «association.methodName»(«targetBuilderType(multi, it)» targetBuilder«IF withCardinality», «CardinalityRange» cardinality«ENDIF») {
             «IF isSuper»
-                super.«association.methodName»(targetBuilder);
+                super.«association.methodName»(targetBuilder«IF withCardinality», cardinality«ENDIF»);
             «ELSE»
                 «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
             «ENDIF»
@@ -172,7 +172,7 @@ class ProductAssociationBuilderTmpl {
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod)» @Override «ENDIF»
         public «returnType(builder, multi, false, it)» «IF withCardinality»«association.method(association.methodName, "String", "productCmptId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName, "String", "productCmptId")»«ENDIF» {
             «IF isSuper»
-                super.«association.methodName»(productCmptId);
+                super.«association.methodName»(productCmptId«IF withCardinality», cardinality«ENDIF»);
                 return done();
             «ELSE»
                 «IF generatePublishedInterfaces»
@@ -193,7 +193,7 @@ class ProductAssociationBuilderTmpl {
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod)» @Override «ENDIF»
         public «returnType(builder, multi, false, it)» «IF withCardinality»«association.method(association.methodName,"String","id","String","kindId","String","versionId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName,"String","id","String","kindId","String","versionId")»«ENDIF»{
             «IF isSuper»
-                super.«association.methodName»(id, kindId, versionId);
+                super.«association.methodName»(id, kindId, versionId«IF withCardinality», cardinality«ENDIF»);
                 return done();
             «ELSE»
                 «IF generatePublishedInterfaces»
