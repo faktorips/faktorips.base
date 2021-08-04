@@ -255,9 +255,16 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
                                 .format(linkContainer.getValidFrom().getTime());
                         String generationName = IIpsModelExtensions.get().getModelPreferences()
                                 .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-                        String text = NLS.bind(
-                                Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
-                                new Object[] { productCmpt.getQualifiedName(), generationName, dateString });
+                        String text;
+                        if (productCmpt.findProductCmptType(getIpsProject()).isChangingOverTime()) {
+                            text = NLS.bind(
+                                    Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
+                                    new Object[] { productCmpt.getQualifiedName(), generationName, dateString });
+                        } else {
+                            text = NLS.bind(
+                                    Messages.ProductCmptGeneration_msgEffectiveDateInLinkedTargetAfterEffectiveDate,
+                                    new Object[] { productCmpt.getQualifiedName(), dateString });
+                        }
                         msgList.add(new Message(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE,
                                 text, Message.ERROR, link));
                     }

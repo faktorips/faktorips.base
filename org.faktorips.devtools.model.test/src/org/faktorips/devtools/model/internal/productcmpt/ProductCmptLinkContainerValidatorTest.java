@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
@@ -21,11 +22,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -50,14 +55,25 @@ public class ProductCmptLinkContainerValidatorTest {
     @Mock
     private IProductCmptLinkContainer linkContainer;
     @Mock
+    private IProductCmptLink prodCmptLink;
+    @Mock
     private IProductCmptType prodCmptType;
+    @Mock
+    private IProductCmpt prodCmpt;
     @Mock
     private IProductCmptTypeAssociation association;
 
     private ProductCmptLinkContainerValidator validator;
+    private String validFrom;
+    private String productCmptQualifiedName;
 
     @Before
     public void setUp() throws CoreException {
+        GregorianCalendar validFromDate = new GregorianCalendar(2021, 0, 1);
+        validFrom = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
+                .format(validFromDate.getTime());
+        productCmptQualifiedName = "prodCmpt";
+
         when(ipsProject.getReadOnlyProperties()).thenReturn(props);
         when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(false);
 
@@ -74,6 +90,12 @@ public class ProductCmptLinkContainerValidatorTest {
         when(association.getTargetRoleSingular()).thenReturn("targetRole");
         when(association.isDerivedUnion()).thenReturn(false);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
+
+        when(prodCmptLink.findTarget(any(IIpsProject.class))).thenReturn(prodCmpt);
+        when(linkContainer.getValidFrom()).thenReturn(validFromDate);
+        when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(null);
+        when(prodCmpt.getQualifiedName()).thenReturn(productCmptQualifiedName);
+        when(prodCmpt.findProductCmptType(any(IIpsProject.class))).thenReturn(prodCmptType);
 
         validator = new ProductCmptLinkContainerValidator(ipsProject, linkContainer);
     }
@@ -156,4 +178,31 @@ public class ProductCmptLinkContainerValidatorTest {
                 anyListOf(IProductCmptLink.class), any(MessageList.class));
     }
 
+    @Test
+    public void testVisitTargetNotValidOnValidFromDate_WithGenerations() {
+        String generationName = IIpsModelExtensions.get().getModelPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+        when(prodCmptType.isChangingOverTime()).thenReturn(true);
+
+        MessageList list = new MessageList();
+        validator.addMessageIfTargetNotValidOnValidFromDate(association, List.of(prodCmptLink), list);
+
+        String text = NLS.bind(
+                Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
+                new Object[] { productCmptQualifiedName, generationName, validFrom });
+        assertEquals(text, list.getFirstMessage(Severity.ERROR).getText());
+    }
+
+    @Test
+    public void testVisitTargetNotValidOnValidFromDate_WithoutGenerations() {
+        when(prodCmptType.isChangingOverTime()).thenReturn(false);
+
+        MessageList list = new MessageList();
+        validator.addMessageIfTargetNotValidOnValidFromDate(association, List.of(prodCmptLink), list);
+
+        String text = NLS.bind(
+                Messages.ProductCmptGeneration_msgEffectiveDateInLinkedTargetAfterEffectiveDate,
+                new Object[] { productCmptQualifiedName, validFrom });
+        assertEquals(text, list.getFirstMessage(Severity.ERROR).getText());
+    }
 }

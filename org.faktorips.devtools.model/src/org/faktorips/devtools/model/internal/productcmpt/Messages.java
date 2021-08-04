@@ -57,6 +57,7 @@ public class Messages extends NLS {
     public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound;
 
     public static String ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate;
+    public static String ProductCmptGeneration_msgEffectiveDateInLinkedTargetAfterEffectiveDate;
     public static String ProductCmptGeneration_msgTemplateNotFound;
     public static String ProductCmptGeneration_msgNotEnoughRelations;
     public static String ProductCmptGeneration_msgTooManyRelations;
