@@ -39,7 +39,7 @@ If that is not the case, the Maven-Jar-Plugin will build faulty JARs.
 ``mvn archetype:generate``:
 - **groupId**: <br/> 
   the Group-ID of the Maven project
-- **artifactID**: <br/> 
+- **artifactId**: <br/> 
   the Artifact-ID of the Maven project
 - **version**: <br/> 
   the version of the Maven project
@@ -107,7 +107,7 @@ Due to a [bug in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) th
 ``mvn:generate``:
 - **groupId**: <br/>
   die Group-ID des Maven-Projekts
-- **artifactID**: <br/>
+- **artifactId**: <br/>
   die Artifact-ID des Maven-Projekts
 - **version**: <br/>
   die Version des Maven-Projekts
