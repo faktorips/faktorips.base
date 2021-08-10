@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="Target for Faktor-IPS Base (2021-09)" sequenceNumber="1">
+<target name="Target for Faktor-IPS Base (2021-09)" sequenceNumber="2">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -11,7 +11,7 @@
       <unit id="org.apache.commons.codec" version="1.14.0.v20200818-1422"/>
       <unit id="org.apache.httpcomponents.httpcore" version="0.0.0"/>
       <unit id="org.apache.httpcomponents.httpclient" version="0.0.0"/>
-      <unit id="org.apache.sshd.osgi" version="0.0.0"/>
+      <unit id="org.apache.sshd.osgi" version="2.6.0.v20210201-2003"/>
       <unit id="org.apache.sshd.sftp" version="0.0.0"/>
       <unit id="org.bouncycastle.bcpg" version="0.0.0"/>
       <unit id="org.bouncycastle.bcprov" version="0.0.0"/>
