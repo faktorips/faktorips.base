@@ -73,9 +73,9 @@ public interface ValueSet<T> extends Serializable {
     public Set<T> getValues(boolean excludeNull);
 
     /**
-     * Determines it this set restricts the number of its values.
+     * Determines whether this set restricts the number of its values.
      * <p>
-     * For all valuesets the following table shows how the parameter {@code excludeNull} and the
+     * For all value sets the following table shows how the parameter {@code excludeNull} and the
      * field {@code containsNull} of a {@link ValueSet} influences the return value of this method.
      * <table border="1">
      * <caption>&nbsp;</caption> <tbody>
@@ -110,6 +110,7 @@ public interface ValueSet<T> extends Serializable {
      * @param excludeNull if {@code null} or a null representation value (e.g. {@code Decimal.NULL})
      *            should be considered
      * @return {@code true} if this set does not restrict the number of its values in any way.
+     * @since 21.12
      */
     boolean isUnrestricted(boolean excludeNull);
 
