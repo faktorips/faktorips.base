@@ -351,7 +351,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * Even if the datatype might be discrete in such a way that the range is discrete in theory,
      * this method only returns {@code true} if a step is explicitly defined. For example an
      * {@link IntegerRange} is not discrete if the step is {@code null} even though a step of 1
-     * could be assumed.
+     * could be assumed. The exception to this rule is when the upper bound and the lower bound are
+     * equal. Then the step does not have to be defined explicitly.
      */
     @Override
     public boolean isDiscrete() {
