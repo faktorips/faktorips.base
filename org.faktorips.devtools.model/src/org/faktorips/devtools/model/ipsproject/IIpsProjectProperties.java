@@ -753,7 +753,7 @@ public interface IIpsProjectProperties {
      * @see #isGenericValidationDefaultEnabled()
      */
     void setGenericValidationDefault(boolean enabled);
-   
+
     /**
      * Returns {@code true} if non-standard blanks should be escaped to their XML entity (e.g.
      * non-breaking space {@code U+00A0} to {@code &#160;}).
@@ -765,4 +765,15 @@ public interface IIpsProjectProperties {
      * @see #isEscapeNonStandardBlanks()
      */
     void setEscapeNonStandardBlanks(boolean enabled);
+
+    /**
+     * Whether Ips-Files should be validated against their XSD schema. When {@code true} set the
+     * xmlns header of the XML to the corresponding xsd schema of the ips object.
+     */
+    boolean isValidateIpsSchema();
+
+    /**
+     * @see #isValidateIpsSchema()
+     */
+    void setValidateIpsSchema(boolean validateIpsSchema);
 }

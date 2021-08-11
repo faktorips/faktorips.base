@@ -358,6 +358,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         // @formatter:on
         String version = Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version");
         properties.setMinRequiredVersionNumber("org.faktorips.feature", version); //$NON-NLS-1$
+        properties.setValidateIpsSchema(false);
         ipsProject.setProperties(properties);
     }
 

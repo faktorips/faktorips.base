@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.internal.ipsobject.Description;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.model.internal.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.model.internal.productcmpt.template.RemoveTemplateOperation;
@@ -73,6 +74,8 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Implementation of product component.
@@ -599,11 +602,28 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * For compatibility reasons we always keep one generation also if the type does not support
      * generations (is not changing over time). In the {@link #getChildrenThis()} method we hide
      * this dummy generation. Hence the toXml framework methods do not write it automatically.
+     * 
+     * Try to add the generation after the last {@link Description} element of this
+     * {@link ProductCmpt}.
      */
     private void writeDummyGeneration(Document doc, Element rootElement) {
         IProductCmptGeneration generation = getFirstGeneration();
         Element generationElement = generation.toXml(doc);
-        rootElement.appendChild(generationElement);
+
+        Node lastDescriptionOfProductCmpt = null;
+        NodeList childNodes = rootElement.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            if (Description.XML_TAG_NAME.equals(item.getNodeName())) {
+                lastDescriptionOfProductCmpt = item;
+            }
+        }
+        if (lastDescriptionOfProductCmpt != null) {
+            rootElement.insertBefore(generationElement, lastDescriptionOfProductCmpt.getNextSibling());
+        } else {
+            // if XSD validation is on, this will lead to a validation error
+            rootElement.appendChild(generationElement);
+        }
     }
 
     @Override

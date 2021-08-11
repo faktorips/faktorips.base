@@ -228,3 +228,7 @@ file_export_version=3.0
 @org.eclipse.ui=3.0.1
 @com.genuitec.eclipse.easie.jonas3=3.8.3
 /instance/com.genuitec.eclipse.wizards/html.template.1.label=Default HTML template
+/instance/org.eclipse.wst.xml.core/indentationChar=space
+/instance/org.eclipse.wst.xml.core/indentationSize=4
+/instance/org.eclipse.wst.xml.core/lineWidth=999
+/instance/org.eclipse.wst.xml.core/spaceBeforeEmptyCloseTag=true

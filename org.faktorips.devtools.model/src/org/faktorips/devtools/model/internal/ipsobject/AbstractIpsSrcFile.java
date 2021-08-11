@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import java.util.Set;
+import java.util.function.Function;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -162,5 +165,20 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     @Override
     public boolean isContainedInIpsRoot() {
         return getIpsPackageFragment().getRoot().exists();
+    }
+
+    @Override
+    public Set<String> getXsdValidationErrors() {
+        return getFromContentOrEmptySet(IpsSrcFileContent::getXsdValidationErrors);
+    }
+
+    @Override
+    public Set<String> getXsdValidationWarnings() {
+        return getFromContentOrEmptySet(IpsSrcFileContent::getXsdValidationWarnings);
+    }
+
+    private Set<String> getFromContentOrEmptySet(Function<IpsSrcFileContent, Set<String>> getter) {
+        IpsSrcFileContent content = getContent();
+        return content != null ? getter.apply(content) : Set.of();
     }
 }

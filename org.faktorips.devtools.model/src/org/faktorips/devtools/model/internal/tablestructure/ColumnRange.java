@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -206,8 +207,12 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_RANGE_TYPE, rangeType.getId());
-        element.setAttribute(PROPERTY_FROM_COLUMN, from);
-        element.setAttribute(PROPERTY_TO_COLUMN, to);
+        if (IpsStringUtils.isNotBlank(from)) {
+            element.setAttribute(PROPERTY_FROM_COLUMN, from);
+        }
+        if (IpsStringUtils.isNotBlank(to)) {
+            element.setAttribute(PROPERTY_TO_COLUMN, to);
+        }
         element.setAttribute(PROPERTY_PARAMETER_NAME, parameterName);
     }
 

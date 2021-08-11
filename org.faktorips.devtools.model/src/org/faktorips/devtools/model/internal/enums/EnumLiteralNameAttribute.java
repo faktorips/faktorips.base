@@ -20,6 +20,7 @@ import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,7 +78,9 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE, defaultValueProviderAttribute);
+        if (IpsStringUtils.isNotBlank(defaultValueProviderAttribute)) {
+            element.setAttribute(PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE, defaultValueProviderAttribute);
+        }
     }
 
     @Override

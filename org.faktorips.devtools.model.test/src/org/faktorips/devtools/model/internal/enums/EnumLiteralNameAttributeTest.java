@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -60,6 +63,17 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         loadedAttribute.initFromXml(xmlElement);
         assertEquals(IEnumLiteralNameAttribute.DEFAULT_NAME, loadedAttribute.getName());
         assertEquals("name", loadedAttribute.getDefaultValueProviderAttribute());
+    }
+
+    @Test
+    public void testNoWriteDefaultValueProviderAttributeWhenEmpty()
+            throws ParserConfigurationException {
+        literalNameAttribute.setDefaultValueProviderAttribute("");
+        Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
+        NamedNodeMap attributes = xmlElement.getAttributes();
+
+        assertThat(attributes.getNamedItem(IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE),
+                is(nullValue()));
     }
 
     @Test

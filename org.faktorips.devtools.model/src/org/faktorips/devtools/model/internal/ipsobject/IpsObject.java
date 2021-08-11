@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.resources.IResource;
@@ -194,6 +195,20 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     protected void propertiesToXml(Element element) {
         // @see FIPS-80 why we need to set this attribute
         element.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
+
+        if (getIpsProject().getReadOnlyProperties().isValidateIpsSchema()
+                && isNotBusinessFunction()) {
+            element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
+            element.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "xsi:schemaLocation", //$NON-NLS-1$
+                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " //$NON-NLS-1$
+                            + XmlUtil.getSchemaLocation(getIpsObjectType()));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private boolean isNotBusinessFunction() {
+        return !IpsObjectType.BUSINESS_FUNCTION.getXmlElementName().equals(getIpsObjectType().getXmlElementName());
     }
 
     @Override

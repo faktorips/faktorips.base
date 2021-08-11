@@ -720,11 +720,27 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             IProgressMonitor monitor) throws CoreException {
 
         if (!file.isContentParsable()) {
+            // in case of error clear the markers
+            file.getCorrespondingResource().deleteMarkers(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+
+            for (String xsdError : file.getXsdValidationErrors()) {
+                IMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
+                marker.setAttribute(IMarker.MESSAGE, xsdError);
+                marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            }
+
             IMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, Messages.IpsBuilder_ipsSrcFileNotParsable);
             marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
             return null;
         }
+
+        for (String xsdWarning : file.getXsdValidationWarnings()) {
+            IMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
+            marker.setAttribute(IMarker.MESSAGE, xsdWarning);
+            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+        }
+
         IIpsObject ipsObject = file.getIpsObject();
         MultiStatus newStatus = createInitialMultiStatus();
         applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);

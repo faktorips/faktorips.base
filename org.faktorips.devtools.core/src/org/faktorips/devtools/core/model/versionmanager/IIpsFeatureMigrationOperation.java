@@ -11,10 +11,13 @@
 package org.faktorips.devtools.core.model.versionmanager;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -68,9 +71,11 @@ public interface IIpsFeatureMigrationOperation {
      *                <code>OperationCanceledException</code>, which gets mapped to
      *                <code>InterruptedException</code> by the <code>run</code> method.
      */
+    // CSOFF: ThrowsCount
     abstract void execute(IProgressMonitor monitor)
             throws CoreException, InvocationTargetException,
             InterruptedException;
+    // CSON: ThrowsCount
 
     /**
      * Runs this operation. Progress should be reported to the given progress monitor. This method
@@ -90,5 +95,13 @@ public interface IIpsFeatureMigrationOperation {
      */
     public abstract void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException;
+
+    /**
+     * Returns the {@link IpsMigrationOption configuration options} for all included migration
+     * operations or an empty collection if no operation requires configuration.
+     */
+    public default Collection<IpsMigrationOption> getOptions() {
+        return Collections.emptyList();
+    }
 
 }

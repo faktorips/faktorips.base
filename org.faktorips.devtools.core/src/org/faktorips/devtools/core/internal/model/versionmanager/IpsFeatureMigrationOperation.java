@@ -13,8 +13,10 @@ package org.faktorips.devtools.core.internal.model.versionmanager;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +29,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
+import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 import org.osgi.framework.Version;
 
@@ -56,19 +59,16 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     @Override
-    protected final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    public final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
             InterruptedException {
-
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
-        }
+        IProgressMonitor theMonitor = monitor != null ? monitor : new NullProgressMonitor();
 
         String msg = NLS.bind(Messages.IpsContentMigrationOperation_labelMigrateProject, projectToMigrate.getName());
-        monitor.beginTask(msg, 1010 + operations.size() * 1000);
+        theMonitor.beginTask(msg, 1010 + operations.size() * 1000);
         try {
-            executeInternal(monitor);
+            executeInternal(theMonitor);
         } finally {
-            monitor.done();
+            theMonitor.done();
         }
     }
 
@@ -94,21 +94,23 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         } catch (InterruptedException e) {
             rollback();
             throw (e);
+            // CSOFF: IllegalCatch
         } catch (Throwable t) {
             rollback();
             throw new CoreException(new IpsStatus(t));
+            // CSON: IllegalCatch
         }
 
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
-        ArrayList<IIpsSrcFile> result = new ArrayList<>();
-        projectToMigrate.findAllIpsSrcFiles(result);
+        ArrayList<IIpsSrcFile> files = new ArrayList<>();
+        projectToMigrate.findAllIpsSrcFiles(files);
         IProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000);
-        saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, result.size());
+        saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, files.size());
 
         // at this point, we do not allow the user to cancel this operation any more because
         // we now start to save all the modifications - which has to be done atomically.
         monitor.setCanceled(false);
-        for (IIpsSrcFile element : result) {
+        for (IIpsSrcFile element : files) {
             IIpsSrcFile file = (element);
             if (file.isDirty()) {
                 file.save(true, monitor);
@@ -120,13 +122,13 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     private void rollback() {
-        ArrayList<IIpsSrcFile> result = new ArrayList<>();
+        ArrayList<IIpsSrcFile> files = new ArrayList<>();
         try {
-            projectToMigrate.findAllIpsSrcFiles(result);
+            projectToMigrate.findAllIpsSrcFiles(files);
         } catch (CoreException e) {
             IpsPlugin.log(new IpsStatus("Error during rollback of migration. Rollback might have failed", e)); //$NON-NLS-1$
         }
-        for (IIpsSrcFile element : result) {
+        for (IIpsSrcFile element : files) {
             IIpsSrcFile file = (element);
             if (file.isDirty()) {
                 file.discardChanges();
@@ -185,6 +187,14 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             empty = empty && operation.isEmpty();
         }
         return empty;
+    }
+
+    @Override
+    public Collection<IpsMigrationOption> getOptions() {
+        return operations.stream()
+                .map(AbstractIpsProjectMigrationOperation::getOptions)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
 }

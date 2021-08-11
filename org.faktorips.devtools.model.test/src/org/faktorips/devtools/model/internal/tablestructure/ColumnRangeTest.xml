@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Test data for ColumnRangeImplTest.java
+ Test data for ColumnRangeTest.java
 -->
-<Range id="42" columnRangeType="twoColumn" fromColumn="ageFrom" toColumn="ageTo"/>
+<test>
+  <Range id="42" columnRangeType="twoColumn" fromColumn="ageFrom" toColumn="ageTo"/>
+  <Range id="f" columnRangeType="oneColumnFrom" fromColumn="ageFrom" toColumn=""/>
+  <Range id="fnew" columnRangeType="oneColumnFrom" fromColumn="ageFrom" />
+  <Range id="t" columnRangeType="oneColumnTo" fromColumn="" toColumn="ageTo"/>
+  <Range id="tnew" columnRangeType="oneColumnTo" toColumn="ageTo"/>
+</test>

@@ -400,6 +400,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         when(ipsObjectType.newObject(ipsSrcFile)).thenReturn(ipsObject);
         when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
 
+        when(ipsObject.getIpsProject()).thenReturn(ipsProject);
+
         // prime the cache
         ipsModel.getIpsSrcFileContent(ipsSrcFile);
 

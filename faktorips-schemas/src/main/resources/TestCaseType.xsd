@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.faktorzehn.org">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation='http://www.w3.org/2009/01/xml.xsd' />
+    <xsd:include id="ips" schemaLocation='ips-global.xsd' />
+
+    <xsd:element name="TestCaseType">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />                <xsd:element ref="ValueParameter" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="PolicyCmptTypeParameter" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="RuleParameter" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute ref="xml:space" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInTestCaseType">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="ValueParameter">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="testParameterType" type="testType" use="required" />
+            <xsd:attribute name="valueDatatype" type="string" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInValueParameter">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="PolicyCmptTypeParameter">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element ref="TestAttribute" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="PolicyCmptTypeParameter" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="association" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="maxInstances" type="int" use="required" />
+            <xsd:attribute name="minInstances" type="int" use="required" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="policyCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="requiresProductCmpt" type="boolean" use="required" />
+            <xsd:attribute name="testParameterType" type="testType" use="required" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInPolicyCmptTypeParameter">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="RuleParameter">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="testParameterType" type="testType" use="required" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInRuleParameter">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:simpleType name="testType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="combined" />
+            <xsd:enumeration value="input" />
+            <xsd:enumeration value="expectedResult" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="TestAttribute">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="attribute" type="javaIdentifier" use="required" />
+            <xsd:attribute name="datatype" type="string" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="policyCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="testAttributeType" type="testType" use="required" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInTestAttribute">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+</xsd:schema>

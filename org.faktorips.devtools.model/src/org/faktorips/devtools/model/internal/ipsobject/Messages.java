@@ -35,6 +35,7 @@ public class Messages extends NLS {
 
     public static String IpsObjectGeneration_msgInvalidFromDate;
     public static String IpsObjectGeneration_msgInvalidFormatFromDate;
+    public static String IpsSrcFileContent_msgXsdValidationReferenzIsMissing;
 
     public static String Label_msgLocaleMissing;
     public static String Label_msgLocaleNotSupportedByProject;

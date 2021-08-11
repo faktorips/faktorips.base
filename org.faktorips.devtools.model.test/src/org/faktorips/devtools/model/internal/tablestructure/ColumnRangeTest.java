@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,8 +76,34 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testToXmlNoFrom() {
+        range = (ColumnRange)table.newRange();
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
+        range.setToColumn("ageTo");
+        Element element = range.toXml(newDocument());
+        assertEquals(range.getId(), element.getAttribute(IIpsObjectPart.PROPERTY_ID));
+        assertEquals(ColumnRange.TAG_NAME, element.getNodeName());
+        assertEquals("oneColumnTo", element.getAttribute(IColumnRange.PROPERTY_RANGE_TYPE));
+        assertEquals("", element.getAttribute(IColumnRange.PROPERTY_FROM_COLUMN));
+        assertEquals("ageTo", element.getAttribute(IColumnRange.PROPERTY_TO_COLUMN));
+    }
+
+    @Test
+    public void testToXmlNoTo() {
+        range = (ColumnRange)table.newRange();
+        range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
+        range.setFromColumn("ageFrom");
+        Element element = range.toXml(newDocument());
+        assertEquals(range.getId(), element.getAttribute(IIpsObjectPart.PROPERTY_ID));
+        assertEquals(ColumnRange.TAG_NAME, element.getNodeName());
+        assertEquals("oneColumnFrom", element.getAttribute(IColumnRange.PROPERTY_RANGE_TYPE));
+        assertEquals("ageFrom", element.getAttribute(IColumnRange.PROPERTY_FROM_COLUMN));
+        assertEquals("", element.getAttribute(IColumnRange.PROPERTY_TO_COLUMN));
+    }
+
+    @Test
     public void testInitFromXml() {
-        range.initFromXml(getTestDocument().getDocumentElement());
+        range.initFromXml(XmlUtil.getFirstElement(getTestDocument().getDocumentElement()));
         assertEquals("42", range.getId());
         assertEquals(ColumnRangeType.TWO_COLUMN_RANGE, range.getColumnRangeType());
         assertEquals("ageFrom", range.getFromColumn());
@@ -84,8 +111,44 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXmlEmptyFrom() {
+        range.initFromXml(XmlUtil.getElement(getTestDocument().getDocumentElement(), 1));
+        assertEquals("f", range.getId());
+        assertEquals(ColumnRangeType.ONE_COLUMN_RANGE_FROM, range.getColumnRangeType());
+        assertEquals("ageFrom", range.getFromColumn());
+        assertEquals("", range.getToColumn());
+    }
+
+    @Test
+    public void testInitFromXmlNoFrom() {
+        range.initFromXml(XmlUtil.getElement(getTestDocument().getDocumentElement(), 2));
+        assertEquals("fnew", range.getId());
+        assertEquals(ColumnRangeType.ONE_COLUMN_RANGE_FROM, range.getColumnRangeType());
+        assertEquals("ageFrom", range.getFromColumn());
+        assertEquals("", range.getToColumn());
+    }
+
+    @Test
+    public void testInitFromXmlEmptyTo() {
+        range.initFromXml(XmlUtil.getElement(getTestDocument().getDocumentElement(), 3));
+        assertEquals("t", range.getId());
+        assertEquals(ColumnRangeType.ONE_COLUMN_RANGE_TO, range.getColumnRangeType());
+        assertEquals("", range.getFromColumn());
+        assertEquals("ageTo", range.getToColumn());
+    }
+
+    @Test
+    public void testInitFromXmlNoTo() {
+        range.initFromXml(XmlUtil.getElement(getTestDocument().getDocumentElement(), 4));
+        assertEquals("tnew", range.getId());
+        assertEquals(ColumnRangeType.ONE_COLUMN_RANGE_TO, range.getColumnRangeType());
+        assertEquals("", range.getFromColumn());
+        assertEquals("ageTo", range.getToColumn());
+    }
+
+    @Test
     public void testGetDatatype() {
-        range.initFromXml(getTestDocument().getDocumentElement());
+        range.initFromXml(XmlUtil.getFirstElement(getTestDocument().getDocumentElement()));
         IColumn column = table.newColumn();
         column.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         column.setName("ageFrom");

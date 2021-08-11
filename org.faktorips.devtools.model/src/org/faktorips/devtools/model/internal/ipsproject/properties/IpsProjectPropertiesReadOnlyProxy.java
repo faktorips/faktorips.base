@@ -649,4 +649,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public void setEscapeNonStandardBlanks(boolean enabled) {
         throw new RuntimeException(ERROR_READ_ONLY);
     }
+
+    @Override
+    public boolean isValidateIpsSchema() {
+        return propertiesInternal.isValidateIpsSchema();
+    }
+
+    @Override
+    public void setValidateIpsSchema(boolean enabled) {
+        throw new RuntimeException(ERROR_READ_ONLY);
+    }
 }

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns="http://www.faktorzehn.org">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation='http://www.w3.org/2009/01/xml.xsd' />
+    <xsd:include id="ips" schemaLocation='ips-global.xsd' />
+
+    <xsd:element name="ProductCmpt">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element name="validTo" type="validTo" minOccurs="1" maxOccurs="1" />
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element ref="Generation" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="AttributeValue" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:sequence maxOccurs="unbounded">
+                    <xsd:element ref="ConfiguredValueSet" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="ConfiguredDefault" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+                <xsd:element ref="Formula" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="TableContentUsage" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="ValidationRuleConfig" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="productCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="runtimeId" type="string" use="required" />
+            <xsd:attribute name="template" type="qualifiedProductName" use="required" />
+            <xsd:attribute ref="xml:space" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInProductCmpt">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="Generation">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="AttributeValue" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:sequence maxOccurs="unbounded">
+                    <xsd:element ref="ConfiguredValueSet" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="ConfiguredDefault" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+                <xsd:element ref="Formula" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="TableContentUsage" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="ValidationRuleConfig" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="validFrom" type="dateType" use="required" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInGeneration">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="AttributeValue">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Value" type="Value" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="attribute" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInAttributeValue">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="ConfiguredValueSet">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="ValueSet" type="ValueSet" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="attribute" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInConfiguredValueSet">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="ConfiguredDefault">
+        <xsd:complexType mixed="true">
+            <xsd:sequence minOccurs="0" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="attribute" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="isNull" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Formula">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Expression" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="formulaSignature" type="string" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInFormula">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="TableContentUsage">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="TableContentName" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="structureUsage" type="string" use="required" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInTableContentUsage">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="ValidationRuleConfig">
+        <xsd:complexType>
+            <xsd:attribute name="active" type="boolean" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="ruleName" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Link">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="association" type="qualifiedName" use="required" />
+            <xsd:attribute name="defaultCardinality" type="int" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="cardinality" />
+            <xsd:attribute name="target" type="qualifiedProductName" use="required" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInLink">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:complexType name="Value" mixed="true">
+        <xsd:choice minOccurs="0" maxOccurs="1">
+            <xsd:element ref="InternationalString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="MultiValue" type="MultiValue" minOccurs="1" maxOccurs="1" />
+        </xsd:choice>
+        <xsd:attribute name="isNull" type="boolean" use="required" />
+        <xsd:attribute name="valueType" type="valueType" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="MultiValue">
+        <xsd:sequence minOccurs="0" maxOccurs="1">
+            <xsd:element name="Value" type="ValueWithoutMultiValue" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ValueWithoutMultiValue" mixed="true">
+        <xsd:choice minOccurs="0" maxOccurs="1">
+            <xsd:element ref="InternationalString" minOccurs="1" maxOccurs="1" />
+        </xsd:choice>
+        <xsd:attribute name="isNull" type="boolean" use="required" />
+        <xsd:attribute name="valueType" type="valueType" use="required" />
+    </xsd:complexType>
+
+    <xsd:simpleType name="valueType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SingleValue" />
+            <xsd:enumeration value="MultiValue" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dateType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{4}-\d{2}-\d{2}" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dateOrEmpty">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(\d{4}-\d{2}-\d{2})?" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="validTo">
+        <xsd:simpleContent>
+            <xsd:extension base="dateOrEmpty">
+                <xsd:attribute name="isNull" type="boolean" use="optional" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:attributeGroup name="templateValueStatus">
+        <xsd:attribute name="templateValueStatus" use="required">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="defined" />
+                    <xsd:enumeration value="inherited" />
+                    <xsd:enumeration value="undefined" />
+                    <xsd:whiteSpace value="collapse" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:attributeGroup>
+</xsd:schema>

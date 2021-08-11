@@ -16,21 +16,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -41,7 +46,9 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * 
@@ -50,6 +57,10 @@ import org.xml.sax.SAXException;
 public class IpsSrcFileContent {
 
     private final IpsObject ipsObject;
+
+    private final Set<String> xsdValidationErrors = new LinkedHashSet<>();
+
+    private final Set<String> xsdValidationWarnings = new LinkedHashSet<>();
 
     /** Map containing the root properties of the source file. */
     private Map<String, String> rootProperties = null;
@@ -194,7 +205,15 @@ public class IpsSrcFileContent {
         wholeContentChanged();
     }
 
+    private Document validateXMLSchema(InputStream is) throws Exception {
+        IpsObjectType type = getIpsSrcFile().getIpsObjectType();
+        DocumentBuilder validator = XmlUtil.getValidatingDocumentBuilder(type, new ValidatingErrorHandler());
+        return validator.parse(is);
+    }
+
     public void initContentFromFile() {
+        xsdValidationErrors.clear();
+        xsdValidationWarnings.clear();
         IIpsSrcFile file = getIpsSrcFile();
         InputStream is = null;
         try {
@@ -210,8 +229,18 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
-                Document doc = builder.parse(is);
+                Document doc;
+                if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
+                    doc = validateXMLSchema(is);
+                    if (!xsdValidationErrors.isEmpty()) {
+                        parsable = false;
+                        ipsObject.markAsFromUnparsableFile();
+                        return;
+                    }
+                } else {
+                    DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                    doc = builder.parse(is);
+                }
                 ipsObject.initFromXml(doc.getDocumentElement());
             }
             modificationStamp = file.getEnclosingResource().getModificationStamp();
@@ -223,7 +252,9 @@ public class IpsSrcFileContent {
                         + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
                         + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             parsable = false;
             IpsLog.log(new IpsStatus("Error reading file " + file, e)); //$NON-NLS-1$
             ipsObject.markAsFromUnparsableFile();
@@ -300,7 +331,9 @@ public class IpsSrcFileContent {
             // due to documentation this method should return null in case of property does not
             // exists.
             return null;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsLog.log(e);
             return null;
         }
@@ -317,8 +350,8 @@ public class IpsSrcFileContent {
                 }
                 Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
                 String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-                    String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding,
-                            ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
+                String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding,
+                        ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
                 IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                 EclipseIOUtil.writeToFile(file, is, force, true, monitor1);
@@ -333,7 +366,9 @@ public class IpsSrcFileContent {
                             + IpsSrcFileContent.this);
                 }
                 clearRootPropertyCache();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("IpsSrcFileContent.save() failed: " + IpsSrcFileContent.this); //$NON-NLS-1$
                 }
@@ -364,4 +399,50 @@ public class IpsSrcFileContent {
         return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$
     }
 
+    public Set<String> getXsdValidationErrors() {
+        return Set.copyOf(xsdValidationErrors);
+    }
+
+    public Set<String> getXsdValidationWarnings() {
+        return Set.copyOf(xsdValidationWarnings);
+    }
+
+    private final class ValidatingErrorHandler implements ErrorHandler {
+        @Override
+        public void warning(SAXParseException exception) throws SAXException {
+            String localizedMessage = exception.getLocalizedMessage();
+            IpsLog.log(new IpsStatus(IStatus.WARNING, createLogMessage(localizedMessage)));
+
+            if (isXsdSchemaMissingError(localizedMessage)) {
+                xsdValidationWarnings.add(Messages.IpsSrcFileContent_msgXsdValidationReferenzIsMissing);
+            } else {
+                xsdValidationWarnings.add(localizedMessage);
+            }
+        }
+
+        @Override
+        public void fatalError(SAXParseException exception) throws SAXException {
+            throw exception;
+        }
+
+        @Override
+        public void error(SAXParseException exception) throws SAXException {
+            String localizedMessage = exception.getLocalizedMessage();
+            if (isXsdSchemaMissingError(localizedMessage)) {
+                warning(exception);
+            } else {
+                IpsLog.log(new IpsStatus(IStatus.ERROR, createLogMessage(localizedMessage)));
+                xsdValidationErrors.add(localizedMessage);
+            }
+        }
+
+        private boolean isXsdSchemaMissingError(String localizedMessage) {
+            return StringUtils.startsWith(localizedMessage, "cvc-elt.1.a"); //$NON-NLS-1$
+        }
+
+        private String createLogMessage(String localizedMessage) {
+            return new StringBuilder().append("XSD validation: ").append(getIpsSrcFile().getCorrespondingFile()) //$NON-NLS-1$
+                    .append(" | ").append(localizedMessage).toString(); //$NON-NLS-1$
+        }
+    }
 }

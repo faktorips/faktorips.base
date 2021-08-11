@@ -56,6 +56,14 @@ public final class IpsStringUtils {
     }
 
     /**
+     * Returns {@code true} if {@code s} is neither {@code null}, the empty string nor a string that
+     * only contains whitespace, otherwise {@code false}.
+     */
+    public static final boolean isNotBlank(String s) {
+        return !isBlank(s);
+    }
+
+    /**
      * Joins the elements of the provided {@link Collection} into a single String containing the
      * provided elements with the given separator. No delimiter is added before or after the list.
      * 

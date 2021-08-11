@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
@@ -307,7 +308,6 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         Element internationalString = (Element)internationalStrings.item(0);
         assertThat(internationalString.getAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE),
                 is(defaultLocale.getLanguage()));
-
     }
 
     /**
@@ -333,11 +333,25 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         Element internationalString = (Element)internationalStrings.item(0);
         assertThat(internationalString.getAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE),
                 is(defaultLocale.getLanguage()));
-
     }
 
-    private Element parseProductCmptElement() throws SAXException, IOException, ParserConfigurationException,
-            CoreException {
+    @Test
+    public void testBuild_RemovesXmlNS() throws CoreException, IOException, SAXException, ParserConfigurationException {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setValidateIpsSchema(true);
+        productCmpt.getIpsSrcFile().markAsDirty();
+        productCmpt.getIpsSrcFile().save(true, null);
+        ipsProject.setProperties(properties);
+
+        fullBuild();
+
+        Element root = parseProductCmptElement();
+        assertThat(root.hasAttribute(XMLConstants.XMLNS_ATTRIBUTE), is(false));
+        assertThat(root.hasAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"), is(false));
+    }
+
+    private Element parseProductCmptElement()
+            throws SAXException, IOException, ParserConfigurationException, CoreException {
         IFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         return document.getDocumentElement();

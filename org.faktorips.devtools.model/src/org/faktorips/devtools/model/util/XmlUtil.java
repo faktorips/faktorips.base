@@ -20,7 +20,9 @@ import java.io.Writer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,9 +36,15 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,6 +63,7 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
+    public static final String XML_IPS_DEFAULT_NAMESPACE = "http://www.faktorzehn.org"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_SPACE_VALUE = "preserve"; //$NON-NLS-1$
 
@@ -92,6 +101,8 @@ public class XmlUtil {
     private static final String NARROW_NO_BREAK = "\u202F"; //$NON-NLS-1$
     private static final String NO_BREAK_ESC = "&#160;"; //$NON-NLS-1$
     private static final String NO_BREAK = "\u00A0"; //$NON-NLS-1$
+
+    private static final Map<IpsObjectType, ThreadLocal<DocumentBuilder>> VALIDATORS = new ConcurrentHashMap<>();
 
     /**
      * This is a thread local variable because the document builder is not thread safe.
@@ -379,6 +390,35 @@ public class XmlUtil {
     }
 
     /**
+     * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. Per default the
+     * document builder will log XSD errors and warnings and only throws an {@link RuntimeException}
+     * if an fatal errors occurs.
+     * 
+     * @param ipsObjectType The ips object type for loading the XSD schema file
+     * @return An document builder with validating support
+     */
+    public static final DocumentBuilder getValidatingDocumentBuilder(IpsObjectType ipsObjectType) {
+        return VALIDATORS.computeIfAbsent(ipsObjectType, ValidatingDocumentBuilderHolder::new).get();
+    }
+
+    /**
+     * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. The
+     * {@code customErrorHandler} will be used instead of the default one.
+     * <p>
+     * e.g. use an custom {@link ErrorHandler} that adds all warnings and errors to a list.
+     *
+     * @param ipsObjectType The ips object type for loading the XSD schema file
+     * @param customErrorHandler The error handler to use
+     * @return An document builder with validating support
+     */
+    public static final DocumentBuilder getValidatingDocumentBuilder(IpsObjectType ipsObjectType,
+            ErrorHandler customErrorHandler) {
+        DocumentBuilder documentBuilder = getValidatingDocumentBuilder(ipsObjectType);
+        documentBuilder.setErrorHandler(customErrorHandler);
+        return documentBuilder;
+    }
+
+    /**
      * Writes an XML document to a file.
      * <p>
      * See also the
@@ -610,7 +650,9 @@ public class XmlUtil {
      * 
      * @throws NullPointerException if parent or propertyName is <code>null</code> or the parent
      *             element does not contain an element with the given propertyName.
+     * @deprecated use {@link ValueToXmlHelper#getValueFromElement(Element, String)} instead
      */
+    @Deprecated
     public String getValueFromElement(Element parent, String propertyName) {
         Element propertyEl = XmlUtil.getFirstElement(parent, propertyName);
         if (propertyEl == null) {
@@ -627,6 +669,15 @@ public class XmlUtil {
                 return textNode.getNodeValue();
             }
         }
+    }
+
+    public static final String getSchemaLocation(IpsObjectType ipsObjectType) {
+
+        Version version = FrameworkUtil.getBundle(XmlUtil.class).getVersion();
+        String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
+                version.getMajor() + "." + version.getMinor(), //$NON-NLS-1$
+                ipsObjectType.getXmlElementName());
+        return schemaLocation;
     }
 
     private static final class DocBuilderHolder extends ThreadLocal<DocumentBuilder> {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.faktorzehn.org" xmlns:ts="http://www.faktorzehn.org">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation='http://www.w3.org/2009/01/xml.xsd' />
+    <xsd:include id="ips" schemaLocation='ips-global.xsd' />
+
+    <xsd:element name="TableContents">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element ref="ColumnTableReference" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Rows" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="numOfColumns" use="required" type="int" />
+            <xsd:attribute name="tableStructure" type="string" use="required"/>
+            <xsd:attribute ref="xml:space" />
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="ColumnTableReference">
+        <xsd:complexType>
+            <xsd:attribute name="name" type="string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Rows">
+        <xsd:complexType mixed="true">
+            <xsd:sequence>
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element ref="Row" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+            <xsd:attribute name="format" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="XML" />
+                        <xsd:enumeration value="CSV" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="Row">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element type="xsd:string" name="Value" minOccurs="0" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

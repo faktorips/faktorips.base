@@ -95,12 +95,14 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
                         break;
                     }
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 String text = "An error occured while migrating file " + member; //$NON-NLS-1$
                 System.err.println(text);
                 list.add(Message.newError("", text)); //$NON-NLS-1$
                 IpsPlugin.log(new IpsStatus(text, e));
             }
+            // CSON: IllegalCatch
             monitor.worked(1);
         }
         monitor.done();

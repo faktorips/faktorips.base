@@ -61,6 +61,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.util.DesignTimeSeverity;
+import org.faktorips.devtools.model.util.IpsProjectPropertiesForOldVersion;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
@@ -135,6 +136,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_ESCAPE_NON_STANDARD_BLANKS = "escapeNonStandardBlanks"; //$NON-NLS-1$
 
+    private static final String SETTING_VALIDATE_IPS_SCHEMA = "validateIpsSchema"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -198,6 +201,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean generateValidatorClassByDefault = false;
     private boolean genericValidationByDefault = false;
     private boolean escapeNonStandardBlanks = false;
+    private boolean validateIpsSchema = true;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
     private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
@@ -715,8 +719,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_GENERIC_VALIDATION_BY_DEFAULT,
                 isGenericValidationDefaultEnabled()));
+
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ESCAPE_NON_STANDARD_BLANKS,
                 isEscapeNonStandardBlanks()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_VALIDATE_IPS_SCHEMA,
+                isValidateIpsSchema()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -1026,6 +1034,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         NodeList nl = additionalSettingsEl.getElementsByTagName(SETTING_TAG_NAME);
         int length = nl.getLength();
+
+        IpsProjectPropertiesForOldVersion defaultForOld = new IpsProjectPropertiesForOldVersion();
+
+        defaultForOld.add(SETTING_VALIDATE_IPS_SCHEMA,
+                IpsProjectProperties::setValidateIpsSchema,
+                false);
+
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
             if (isInvalidSettingElement(child)) {
@@ -1038,7 +1053,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
             applySetting(name, enabled, value);
             initFunctionsLanguageLocale(name, value);
+
+            defaultForOld.checkIfFound(name);
         }
+
+        defaultForOld.applyNewValue(this);
+
         if (!markerEnumsConfiguredInIpsProjectFile) {
             setMarkerEnumsEnabled(false);
         }
@@ -1098,6 +1118,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.valueOf(value));
         } else if (name.contentEquals(SETTING_TABLE_CONTENT_FORMAT)) {
             setTableContentFormat(TableContentFormat.valueById(value));
+        } else if (name.contentEquals(SETTING_VALIDATE_IPS_SCHEMA)) {
+            setValidateIpsSchema(enabled);
         }
     }
 
@@ -1502,6 +1524,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + System.lineSeparator()
                 + "    <!-- Whether non-standard blanks such as the non-breaking space should be escaped as XML entities when writing XML files." + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ESCAPE_NON_STANDARD_BLANKS + "\" value=\"false\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + System.lineSeparator()
+                + "    <!-- Whether Ips-Files should be validated against their XSD schema." + System.lineSeparator() //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_VALIDATE_IPS_SCHEMA + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + System.lineSeparator()
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
@@ -1935,6 +1960,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setTableContentFormat(TableContentFormat tableContentFormat) {
         this.tableContentFormat = tableContentFormat;
+    }
+
+    @Override
+    public boolean isValidateIpsSchema() {
+        return validateIpsSchema;
+    }
+
+    @Override
+    public void setValidateIpsSchema(boolean validateIpsSchema) {
+        this.validateIpsSchema = validateIpsSchema;
     }
 
 }

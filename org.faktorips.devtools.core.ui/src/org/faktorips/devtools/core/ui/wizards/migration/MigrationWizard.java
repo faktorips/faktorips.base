@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.migration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -38,6 +40,8 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
     private ProjectSelectionPage projectSelectionPage;
 
     private List<IIpsProject> preSelected;
+
+    private MigrationPage migrationPage;
 
     public MigrationWizard(List<IIpsProject> preSelected) {
         setNeedsProgressMonitor(true);
@@ -52,7 +56,8 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         super.addPages();
         projectSelectionPage = new ProjectSelectionPage(preSelected);
         super.addPage(projectSelectionPage);
-        super.addPage(new MigrationPage(projectSelectionPage));
+        migrationPage = new MigrationPage(projectSelectionPage);
+        super.addPage(migrationPage);
     }
 
     @Override
@@ -96,6 +101,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                     try {
                         AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
                                 .getMigrationOperation(project);
+                        setSelectedMigrationOptions(migrationOperation);
                         migrationOperation.run(subMonitor);
                         messageList = migrationOperation.getMessageList();
                     } catch (CoreException e) {
@@ -105,6 +111,15 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
             } finally {
                 monitor.done();
             }
+        }
+
+        private void setSelectedMigrationOptions(AbstractIpsFeatureMigrationOperation migrationOperation) {
+            Map<String, IpsMigrationOption> options = migrationPage.getOptions();
+            migrationOperation.getOptions().forEach(o -> {
+                if (options.containsKey(o.getId())) {
+                    o.setActive(options.get(o.getId()).isActive());
+                }
+            });
         }
 
         public MessageList getMessageList() {

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.faktorzehn.org">
+
+    <xsd:group name="LabelsAndDescriptions">
+        <xsd:sequence>
+            <xsd:element name="Label" type="Label" minOccurs="1" maxOccurs="unbounded" />
+            <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:group>
+
+    <xsd:complexType name="Label">
+        <xsd:attribute name="id" type="uuid" />
+        <xsd:attribute name="locale" type="locale" use="required" />
+        <xsd:attribute name="pluralValue" type="string" use="required" />
+        <xsd:attribute name="value" use="required">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:minLength value="0" />
+                    <xsd:whiteSpace value="collapse" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:attributeGroup name="id">
+        <xsd:attribute name="id" type="uuid" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="name">
+        <xsd:attribute name="name" type="javaIdentifier" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="abstract">
+        <xsd:attribute name="abstract" type="boolean" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="changingOverTime">
+        <xsd:attribute name="changingOverTime" type="boolean" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="since">
+        <xsd:attribute name="since" type="string" use="optional" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="datatype">
+        <xsd:attribute name="datatype" type="string" use="optional" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="supertype">
+        <xsd:attribute name="supertype" type="qualifiedName" use="optional" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="category">
+        <xsd:attribute name="category" type="string" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="modifier">
+        <xsd:attribute name="modifier" type="modifier" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="constrain">
+        <xsd:attribute name="constrain" type="boolean" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="derivedUnion">
+        <xsd:attribute name="derivedUnion" type="boolean" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="subsettedDerivedUnion">
+        <xsd:attribute name="subsettedDerivedUnion" type="javaIdentifier" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="cardinality">
+        <xsd:attribute name="maxCardinality" type="cardinality" use="required" />
+        <xsd:attribute name="minCardinality" type="cardinality" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="matchingAssociation">
+        <xsd:attribute name="matchingAssociationName" type="javaIdentifier" use="required" />
+        <xsd:attribute name="matchingAssociationSource" type="qualifiedName" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:attributeGroup name="targetRole">
+        <xsd:attribute name="target" type="qualifiedName" use="required" />
+        <xsd:attribute name="targetRolePlural" type="string" use="required" />
+        <xsd:attribute name="targetRoleSingular" type="string" use="required" />
+    </xsd:attributeGroup>
+
+    <xsd:simpleType name="javaIdentifier">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="([\p{L}_\p{Sc}][\p{L}\p{N}_\p{Sc}]*)?" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="javaMethodIdentifier">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="([\p{L}_\p{Sc}][\p{L}\p{N}_\p{Sc}]*[\(\p{L}\p{N}_\p{Sc}, .\)]*)?" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="versionId">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="[0-9]{4}-[0-9]{2}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ipsResourceOrQualifiedProductName">
+        <xsd:union memberTypes="qualifiedProductName ipsResourcePath" />
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ipsResourcePath">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="(([^/]+/)*[^/]+(\.xml|\.ips\w+)|)" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="qualifiedName">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="([\p{L}_\p{Sc}][\p{L}\p{N}_\p{Sc}]*\.)*([\p{L}_\p{Sc}][\p{L}\p{N}_\p{Sc}]*)?" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="qualifiedProductName">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="([\p{L}_\p{Sc} -][\p{L}\p{N}_\p{Sc} -]*\.)*([\p{L}_\p{Sc} -][\p{L}\p{N}_\p{Sc} -]*(\s\d{4}-\d{2})*)?" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="uuid">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1" />
+            <!-- we generate IDs as UUIDs, but that is not a hard requirement and often not adhered to in older projects -->
+            <!-- <xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/> -->
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Description">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attributeGroup ref="id" />
+                <xsd:attribute name="locale" type="locale" use="required" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="locale">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="2" />
+            <xsd:whiteSpace value="collapse" />
+            <xsd:pattern value="[a-z][a-z]" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="InternationalString">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element name="LocalizedString" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:attribute name="locale" type="locale" use="required" />
+                        <xsd:attribute name="text" type="string" use="required" />
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="defaultLocale" type="locale" use="optional" />
+        </xsd:complexType>
+        <xsd:key name="LocalizedString-locale">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@locale" />
+        </xsd:key>
+        <xsd:keyref name="InternationalString-defaultLocale" refer="LocalizedString-locale">
+            <xsd:selector xpath="." />
+            <xsd:field xpath="@defaultLocale" />
+        </xsd:keyref>
+    </xsd:element>
+    <xsd:complexType name="DefaultValueAttribute">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="isNull" type="boolean" use="optional" />
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MethodParameter">
+        <xsd:attribute name="datatype" type="string" use="required" />
+        <xsd:attribute name="id" type="uuid" use="required" />
+        <xsd:attribute name="name" type="javaIdentifier" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ValueSet">
+        <xsd:choice minOccurs="1" maxOccurs="1">
+            <xsd:element name="Enum" type="EnumValueSet" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="AllValues" type="AllValuesValueSet" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Range" type="RangeValueSet" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Derived" minOccurs="1" maxOccurs="1" type="DerivedValueSet" />
+            <xsd:element name="StringLength" minOccurs="1" maxOccurs="1" type="StringLengthValueSet" />
+        </xsd:choice>
+        <xsd:attribute name="abstract" type="boolean" use="required" />
+        <xsd:attribute name="id" type="uuid" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="AllValuesValueSet">
+        <xsd:attribute name="containsNull" type="boolean" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="EnumValueSet">
+        <xsd:sequence>
+            <xsd:element name="Value" type="EnumValueType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="RangeValueSet">
+        <xsd:sequence minOccurs="1" maxOccurs="1">
+            <xsd:element name="LowerBound" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isNull" type="boolean" use="optional" />
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="UpperBound" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isNull" type="boolean" use="optional" />
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Step" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isNull" type="boolean" use="optional" />
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="containsNull" type="boolean" use="required" />
+        <xsd:attribute name="empty" type="boolean" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="StringLengthValueSet">
+        <xsd:sequence minOccurs="1" maxOccurs="1">
+            <xsd:element name="MaximumLength" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isNull" type="boolean" use="optional" />
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="containsNull" type="boolean" use="optional" />
+    </xsd:complexType>
+
+    <xsd:complexType name="EnumValueType">
+        <xsd:sequence minOccurs="1" maxOccurs="1">
+            <xsd:element name="Data" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:simpleContent>
+                        <xsd:extension base="xsd:string">
+                            <xsd:attribute name="isNull" type="boolean" use="optional" />
+                        </xsd:extension>
+                    </xsd:simpleContent>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="DerivedValueSet">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="0" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="cardinality">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="(\d+|\*)?" />
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="string">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="boolean">
+        <xsd:restriction base="xsd:boolean">
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="date">
+        <xsd:restriction base="xsd:date">
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="int">
+        <xsd:restriction base="xsd:int">
+            <xsd:whiteSpace value="collapse" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="modifier">
+        <xsd:restriction base="xsd:string">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:enumeration value="published" />
+            <xsd:enumeration value="public" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:element name="ExtensionProperties">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element name="Value" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:complexType mixed="true">
+                        <xsd:sequence>
+                            <xsd:any minOccurs="0" maxOccurs="unbounded" processContents="lax" />
+                        </xsd:sequence>
+                        <xsd:attribute name="id" type="string" use="required" />
+                        <xsd:attribute name="isNull" type="boolean" use="optional" />
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

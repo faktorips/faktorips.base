@@ -10,6 +10,14 @@
 
 package org.faktorips.devtools.core.ui.wizards.migration;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -19,7 +27,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureMigrationOperation;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 
 /**
  * @author Joerg Ortmann
@@ -29,12 +43,27 @@ public class MigrationPage extends WizardPage {
     private ProjectSelectionPage projectSelectionPage;
     private Composite overview;
     private Text description;
+    private Map<String, IpsMigrationOption> options = Collections.emptyMap();
 
     public MigrationPage(ProjectSelectionPage projectSelectionPage) {
         super(Messages.MigrationPage_titleMigrationOperations);
         this.projectSelectionPage = projectSelectionPage;
         setMessage(Messages.MigrationPage_msgShortDescription);
         setPageComplete(false);
+
+        options = Arrays.stream(IIpsModel.get().getIpsProjects())
+                .map(this::getMigrationOperation)
+                .flatMap(Optional::stream)
+                .map(IIpsFeatureMigrationOperation.class::cast)
+                .map(IIpsFeatureMigrationOperation::getOptions)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toMap(IpsMigrationOption::getId, Function.identity()));
+
+    }
+
+    public Map<String, IpsMigrationOption> getOptions() {
+        return options;
     }
 
     @Override
@@ -70,8 +99,25 @@ public class MigrationPage extends WizardPage {
         description = new Text(overview, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         description.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         description.setEditable(false);
+        if (!options.isEmpty()) {
+            UIToolkit toolkit = new UIToolkit(null);
+            BindingContext bindingContext = new BindingContext();
+            options.values().forEach(option -> {
+                Checkbox checkbox = toolkit.createCheckbox(overview, option.getText());
+                bindingContext.bindContent(checkbox, option, IpsMigrationOption.PROPERTY_ACTIVE);
+            });
+        }
 
         super.setControl(overview);
+    }
+
+    private Optional<? extends Object> getMigrationOperation(IIpsProject ipsProject) {
+        try {
+            return Optional.of(IpsPlugin.getDefault().getMigrationOperation(ipsProject));
+        } catch (CoreException e) {
+            // will be logged in the wizard
+            return Optional.empty();
+        }
     }
 
 }

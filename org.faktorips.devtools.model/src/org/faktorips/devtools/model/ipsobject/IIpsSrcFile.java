@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import java.io.InputStream;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -188,5 +189,19 @@ public interface IIpsSrcFile extends IIpsElement {
      */
     @Override
     public void delete() throws CoreException;
+
+    /**
+     * If {@code validateIpsSchema} is used this set may contain error from the XML parser.
+     * 
+     * @return A set with error messages
+     */
+    Set<String> getXsdValidationErrors();
+
+    /**
+     * If {@code validateIpsSchema} is used this set may contain warnings from the XML parser.
+     * 
+     * @return A set with warnings
+     */
+    Set<String> getXsdValidationWarnings();
 
 }
