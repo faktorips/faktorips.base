@@ -97,6 +97,7 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -515,6 +516,17 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt product = newProductCmpt(productCmptType, "otherpkg.Duplicate 2020");
 
         assertThat(product.validate(ipsProject), hasMessageCode(IProductCmpt.MSGCODE_DUPLICATE_KINDID_VERSIONID));
+    }
+
+    @Test
+    public void testValidate_DuplicateKindIDVersionID_duplicateInDifferentPackage_SeverityNone() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setDuplicateProductComponentSeverity(Severity.NONE);
+        ipsProject.setProperties(properties);
+        newProductCmpt(ipsProject, "somepkg.Duplicate 2020");
+        IProductCmpt product = newProductCmpt(productCmptType, "otherpkg.Duplicate 2020");
+
+        assertThat(product.validate(ipsProject), lacksMessageCode(IProductCmpt.MSGCODE_DUPLICATE_KINDID_VERSIONID));
     }
 
     @Test

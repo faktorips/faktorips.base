@@ -243,14 +243,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     private void validateUniqueVersionIdKindId(MessageList list, IIpsProject ipsProject) {
-        if (ipsProject.findProductCmptByUnqualifiedName(getName()).size() > 1) {
-            list.add(new Message(MSGCODE_DUPLICATE_KINDID_VERSIONID,
-                    NLS.bind(Messages.ProductCmpt_Error_IdsNotUnique,
-                            IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
-                                    .getVersionConceptNameSingular()),
-                    Severity.valueOf(
-                            ipsProject.getReadOnlyProperties().getDuplicateProductComponentSeverity().toString()),
-                    this));
+        Severity duplicateProductComponentSeverity = ipsProject.getReadOnlyProperties()
+                .getDuplicateProductComponentSeverity();
+        if (!Severity.NONE.equals(duplicateProductComponentSeverity)) {
+            if (ipsProject.findProductCmptByUnqualifiedName(getName()).size() > 1) {
+                list.add(new Message(MSGCODE_DUPLICATE_KINDID_VERSIONID,
+                        NLS.bind(Messages.ProductCmpt_Error_IdsNotUnique,
+                                IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
+                                        .getVersionConceptNameSingular()),
+                        duplicateProductComponentSeverity,
+                        this));
+            }
         }
     }
 

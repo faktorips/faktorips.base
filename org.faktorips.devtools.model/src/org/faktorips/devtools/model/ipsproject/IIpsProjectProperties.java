@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.values.Decimal;
 
@@ -696,23 +696,23 @@ public interface IIpsProjectProperties {
      * Returns the severity for validation messages when two product components have the same kindId
      * and versionId.
      */
-    DesignTimeSeverity getDuplicateProductComponentSeverity();
+    Severity getDuplicateProductComponentSeverity();
 
     /**
      * @see #getDuplicateProductComponentSeverity()
      */
-    void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
+    void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity);
 
     /**
      * Returns the severity for validation messages when model and persistence constraints don't
      * match
      */
-    DesignTimeSeverity getPersistenceColumnSizeChecksSeverity();
+    Severity getPersistenceColumnSizeChecksSeverity();
 
     /**
      * @see #getPersistenceColumnSizeChecksSeverity()
      */
-    void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity);
+    void setPersistenceColumnSizeChecksSeverity(Severity duplicateProductComponentSeverity);
 
     /**
      * Returns which format is used to save table contents.

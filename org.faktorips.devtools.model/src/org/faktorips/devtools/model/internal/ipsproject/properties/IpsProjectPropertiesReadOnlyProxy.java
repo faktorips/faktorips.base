@@ -31,8 +31,8 @@ import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.Decimal;
 
@@ -591,22 +591,22 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
+    public void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity) {
         throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
-    public DesignTimeSeverity getDuplicateProductComponentSeverity() {
+    public Severity getDuplicateProductComponentSeverity() {
         return propertiesInternal.getDuplicateProductComponentSeverity();
     }
 
     @Override
-    public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
+    public void setPersistenceColumnSizeChecksSeverity(Severity duplicateProductComponentSeverity) {
         throw new RuntimeException(ERROR_READ_ONLY);
     }
 
     @Override
-    public DesignTimeSeverity getPersistenceColumnSizeChecksSeverity() {
+    public Severity getPersistenceColumnSizeChecksSeverity() {
         return propertiesInternal.getPersistenceColumnSizeChecksSeverity();
     }
 

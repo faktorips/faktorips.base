@@ -60,7 +60,6 @@ import org.faktorips.devtools.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
-import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.devtools.model.util.IpsProjectPropertiesForOldVersion;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -68,6 +67,7 @@ import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -204,8 +204,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean validateIpsSchema = true;
     private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
     private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
-    private DesignTimeSeverity duplicateProductComponentSeverity = DesignTimeSeverity.WARNING;
-    private DesignTimeSeverity persistenceColumnSizeChecksSeverity = DesignTimeSeverity.WARNING;
+    private Severity duplicateProductComponentSeverity = Severity.WARNING;
+    private Severity persistenceColumnSizeChecksSeverity = Severity.WARNING;
     private TableContentFormat tableContentFormat = TableContentFormat.XML;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<>();
@@ -1113,9 +1113,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
             setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
         } else if (name.equals(SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY)) {
-            setDuplicateProductComponentSeverity(DesignTimeSeverity.valueOf(value));
+            setDuplicateProductComponentSeverity(Severity.valueOf(value));
         } else if (name.contentEquals(SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY)) {
-            setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity.valueOf(value));
+            setPersistenceColumnSizeChecksSeverity(Severity.valueOf(value));
         } else if (name.contentEquals(SETTING_TABLE_CONTENT_FORMAT)) {
             setTableContentFormat(TableContentFormat.valueById(value));
         } else if (name.contentEquals(SETTING_VALIDATE_IPS_SCHEMA)) {
@@ -1933,22 +1933,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public DesignTimeSeverity getDuplicateProductComponentSeverity() {
+    public Severity getDuplicateProductComponentSeverity() {
         return duplicateProductComponentSeverity;
     }
 
     @Override
-    public void setDuplicateProductComponentSeverity(DesignTimeSeverity duplicateProductComponentSeverity) {
+    public void setDuplicateProductComponentSeverity(Severity duplicateProductComponentSeverity) {
         this.duplicateProductComponentSeverity = duplicateProductComponentSeverity;
     }
 
     @Override
-    public DesignTimeSeverity getPersistenceColumnSizeChecksSeverity() {
+    public Severity getPersistenceColumnSizeChecksSeverity() {
         return persistenceColumnSizeChecksSeverity;
     }
 
     @Override
-    public void setPersistenceColumnSizeChecksSeverity(DesignTimeSeverity persistenceColumnSizeChecksSeverity) {
+    public void setPersistenceColumnSizeChecksSeverity(Severity persistenceColumnSizeChecksSeverity) {
         this.persistenceColumnSizeChecksSeverity = persistenceColumnSizeChecksSeverity;
     }
 

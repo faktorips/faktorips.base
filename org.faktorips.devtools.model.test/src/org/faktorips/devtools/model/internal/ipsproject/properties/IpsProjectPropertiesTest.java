@@ -43,9 +43,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.ipsproject.TableContentFormat;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.devtools.model.util.DesignTimeSeverity;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -673,13 +673,13 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void readDuplicateProductComponentSeverityFromAdditionalSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
-        assertEquals(DesignTimeSeverity.ERROR, props.getDuplicateProductComponentSeverity());
+        assertEquals(Severity.ERROR, props.getDuplicateProductComponentSeverity());
     }
 
     @Test
     public void readPersistenceColumnSizeChecksSeverityFromAdditionalSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
-        assertEquals(DesignTimeSeverity.ERROR, props.getPersistenceColumnSizeChecksSeverity());
+        assertEquals(Severity.ERROR, props.getPersistenceColumnSizeChecksSeverity());
     }
 
     @Test
