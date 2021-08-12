@@ -202,4 +202,9 @@ public class InternationalString implements IInternationalString {
         changes.removePropertyChangeListener(l);
     }
 
+    @Override
+    public boolean hasValueFor(Locale locale) {
+        return localizedStringMap != null && localizedStringMap.containsKey(locale);
+    }
+
 }

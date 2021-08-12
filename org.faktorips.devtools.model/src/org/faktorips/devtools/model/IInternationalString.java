@@ -54,6 +54,7 @@ public interface IInternationalString extends XmlSupport, Comparable<IInternatio
      * @param locale the locale of the text you want to get
      * @return return the text for the specified locale or an empty {@link LocalizedString} if no
      *         such text exists
+     * @see #hasValueFor(Locale)
      */
     LocalizedString get(Locale locale);
 
@@ -74,5 +75,13 @@ public interface IInternationalString extends XmlSupport, Comparable<IInternatio
      *         {@link IInternationalString}
      */
     Collection<LocalizedString> values();
+
+    /**
+     * Returns whether this {@link IInternationalString} contains a {@link LocalizedString} for the
+     * given {@link Locale}.
+     *
+     * @since 21.12
+     */
+    boolean hasValueFor(Locale locale);
 
 }

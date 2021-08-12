@@ -86,6 +86,22 @@ public class InternationalStringTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testHasValueFor() throws Exception {
+        InternationalString internationalString = new InternationalString();
+
+        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
+
+        LocalizedString localizedStringDe = new LocalizedString(Locale.GERMAN, "content");
+
+        internationalString.add(localizedStringEn);
+        internationalString.add(localizedStringDe);
+
+        assertTrue(internationalString.hasValueFor(Locale.ENGLISH));
+        assertTrue(internationalString.hasValueFor(Locale.GERMAN));
+        assertFalse(internationalString.hasValueFor(Locale.FRENCH));
+    }
+
+    @Test
     public void testInitFromXml() throws Exception {
         Document doc = getTestDocument();
         Element root = doc.getDocumentElement();
