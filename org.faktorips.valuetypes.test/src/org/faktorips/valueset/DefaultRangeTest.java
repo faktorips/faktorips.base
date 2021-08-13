@@ -98,17 +98,17 @@ public class DefaultRangeTest {
     }
 
     @Test
-    public void testIsUnrestricted_RangeWithoutNull_includesNull() {
+    public void testIsUnrestricted_EmptyRange_includesNull() {
         TestRange emptyRangeWithoutNull = new TestRange();
 
         assertThat(emptyRangeWithoutNull.isUnrestricted(false), is(false));
     }
 
     @Test
-    public void testIsUnrestricted_RangeWithoutNull_excludesNull() {
+    public void testIsUnrestricted_EmptyRange_excludesNull() {
         TestRange emptyRangeWithoutNull = new TestRange();
 
-        assertThat(emptyRangeWithoutNull.isUnrestricted(true), is(true));
+        assertThat(emptyRangeWithoutNull.isUnrestricted(true), is(false));
     }
 
     @Test

@@ -414,7 +414,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      */
     @Override
     public boolean isUnrestricted(boolean excludeNull) {
-        if (getLowerBound() != null || getUpperBound() != null || getStep() != null) {
+        if (isEmpty() || getLowerBound() != null || getUpperBound() != null || getStep() != null) {
             return false;
         }
         if (excludeNull) {

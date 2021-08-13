@@ -106,6 +106,8 @@ public interface ValueSet<T> extends Serializable {
      * </tr>
      * </tbody>
      * </table>
+     * <p>
+     * An {@link #isEmpty() empty} {@link ValueSet} is always considered to be restricted.
      *
      * @param excludeNull if {@code null} or a null representation value (e.g. {@code Decimal.NULL})
      *            should be considered

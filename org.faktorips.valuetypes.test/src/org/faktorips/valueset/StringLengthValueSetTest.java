@@ -133,4 +133,18 @@ public class StringLengthValueSetTest {
         assertThat(withMaxLen.isUnrestricted(true), is(false));
     }
 
+    @Test
+    public void testIsUnrestricted_Empty_includesNull() {
+        StringLengthValueSet empty = new StringLengthValueSet(0, false);
+
+        assertThat(empty.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_Empty_excludesNull() {
+        StringLengthValueSet empty = new StringLengthValueSet(0, false);
+
+        assertThat(empty.isUnrestricted(true), is(false));
+    }
+
 }

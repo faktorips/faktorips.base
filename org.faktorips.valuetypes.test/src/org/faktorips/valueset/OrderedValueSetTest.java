@@ -222,33 +222,49 @@ public class OrderedValueSetTest {
 
     @Test
     public void testIsUnrestricted_WithoutNull_includesNull() {
-        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+        OrderedValueSet<String> set = new OrderedValueSet<>(false, null, "1", "2", "3", "4");
 
         // OrderedValueSet is never unrestricted
-        assertThat(range.isUnrestricted(false), is(false));
+        assertThat(set.isUnrestricted(false), is(false));
     }
 
     @Test
     public void testIsUnrestricted_WithNull_includesNull() {
-        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+        OrderedValueSet<String> set = new OrderedValueSet<>(true, null, new String[0]);
 
         // OrderedValueSet is never unrestricted
-        assertThat(range.isUnrestricted(false), is(false));
+        assertThat(set.isUnrestricted(false), is(false));
     }
 
     @Test
     public void testIsUnrestricted_WithoutNull_excludesNull() {
-        OrderedValueSet<String> range = new OrderedValueSet<String>(false, null, "1", "2", "3", "4");
+        OrderedValueSet<String> set = new OrderedValueSet<>(false, null, "1", "2", "3", "4");
 
         // OrderedValueSet is never unrestricted
-        assertThat(range.isUnrestricted(true), is(false));
+        assertThat(set.isUnrestricted(true), is(false));
     }
 
     @Test
     public void testIsUnrestricted_WithNull_excludesNull() {
-        OrderedValueSet<String> range = new OrderedValueSet<String>(true, null, new String[0]);
+        OrderedValueSet<String> set = new OrderedValueSet<>(true, null, new String[0]);
 
         // OrderedValueSet is never unrestricted
-        assertThat(range.isUnrestricted(true), is(false));
+        assertThat(set.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_Empty_includesNull() {
+        OrderedValueSet<String> empty = OrderedValueSet.empty();
+
+        // OrderedValueSet is never unrestricted
+        assertThat(empty.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_Empty_excludesNull() {
+        OrderedValueSet<String> empty = OrderedValueSet.empty();
+
+        // OrderedValueSet is never unrestricted
+        assertThat(empty.isUnrestricted(true), is(false));
     }
 }
