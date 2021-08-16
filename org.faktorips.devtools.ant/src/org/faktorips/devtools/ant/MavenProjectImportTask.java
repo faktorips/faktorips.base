@@ -10,8 +10,10 @@
 package org.faktorips.devtools.ant;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -25,6 +27,7 @@ import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 public class MavenProjectImportTask extends AbstractIpsTask {
 
     private String projectDir;
+    private long timeout = 5 * 60 * 1000L;
 
     public MavenProjectImportTask() {
         super("MavenProjektImportTask");
@@ -48,12 +51,18 @@ public class MavenProjectImportTask extends AbstractIpsTask {
         return this.projectDir;
     }
 
+    /**
+     * Sets the timeout used to wait for the project import to finish. Defaults to 5 minutes.
+     */
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
     @Override
     protected void executeInternal() throws Exception {
         NullProgressMonitor monitor = new NullProgressMonitor();
 
         if (new File(getDir(), "pom.xml").exists()) {
-
             IProjectConfigurationManager projectConfigManager = MavenPlugin.getProjectConfigurationManager();
             LocalProjectScanner scanner = new LocalProjectScanner(
                     ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile(),
@@ -75,7 +84,6 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                     monitor);
 
             for (IMavenProjectImportResult result : importResults) {
-
                 if (result.getProject() != null) {
                     System.out.println("importing: " + result.getProject().getName());
                 } else {
@@ -83,6 +91,18 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                 }
             }
 
+            Set<String> mavenProjectNames = projectSet.stream()
+                    .map(p -> p.getModel().getArtifactId())
+                    .collect(Collectors.toSet());
+            long startTime = System.currentTimeMillis();
+            while (!mavenProjectNames.isEmpty() && startTime + timeout > System.currentTimeMillis()) {
+                System.out.println("Waiting for project(s) to be present in workspace: " + mavenProjectNames);
+                Set<String> projectNamesInWorkspace = Arrays
+                        .stream(ResourcesPlugin.getWorkspace().getRoot().getProjects())
+                        .map(p -> p.getName())
+                        .collect(Collectors.toSet());
+                mavenProjectNames.removeAll(projectNamesInWorkspace);
+            }
         }
     }
 }
