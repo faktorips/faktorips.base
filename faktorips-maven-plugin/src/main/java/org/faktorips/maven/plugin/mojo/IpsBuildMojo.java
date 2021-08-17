@@ -464,9 +464,9 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     public String getFipsRepositoryVersion() {
         if (StringUtils.isBlank(fipsRepositoryVersion)) {
-            PluginDescriptor pluginDescriptor = (PluginDescriptor)getPluginContext().get("pluginDescriptor");
-            if (pluginDescriptor != null) {
-                String version = pluginDescriptor.getVersion();
+            PluginDescriptor descriptor = (PluginDescriptor)getPluginContext().get("pluginDescriptor");
+            if (descriptor != null) {
+                String version = descriptor.getVersion();
                 Matcher versionMatcher = MAJOR_MINOR_VERSION_PATTERN.matcher(version);
                 if (versionMatcher.matches()) {
                     return "v" + versionMatcher.group(1) + "_" + versionMatcher.group(2) + "/" + version;
@@ -570,24 +570,7 @@ public class IpsBuildMojo extends AbstractMojo {
             }
             repositories.addAll(additionalRepositories);
 
-            // default values for parameter dependencies
-            addDependency("org.faktorips.devtools.core");
-            addDependency("org.faktorips.devtools.stdbuilder");
-            addDependency("org.faktorips.runtime.groovy");
-            addDependency("org.faktorips.valuetypes.joda");
-            addDependency("org.faktorips.devtools.ant");
-            if (exportHtml) {
-                addDependency("org.faktorips.devtools.htmlexport");
-            }
-            if (importAsMavenProject) {
-                addDependency("org.eclipse.m2e.core");
-                addDependency("org.eclipse.m2e.maven.runtime");
-                addDependency("org.faktorips.m2e");
-            }
-            if (isGitStatusPorcelain()) {
-                addDependency("org.eclipse.egit.core");
-            }
-            dependencies.addAll(additionalPlugins);
+            addDependencies();
 
             // default values for parameter applicationArgs
             applicationsArgs.add("-consoleLog");
@@ -632,6 +615,27 @@ public class IpsBuildMojo extends AbstractMojo {
             exceutePlatform();
 
         }
+    }
+
+    private void addDependencies() {
+        // default values for parameter dependencies
+        addDependency("org.faktorips.devtools.core");
+        addDependency("org.faktorips.devtools.stdbuilder");
+        addDependency("org.faktorips.runtime.groovy");
+        addDependency("org.faktorips.valuetypes.joda");
+        addDependency("org.faktorips.devtools.ant");
+        if (exportHtml) {
+            addDependency("org.faktorips.devtools.htmlexport");
+        }
+        if (importAsMavenProject) {
+            addDependency("org.eclipse.m2e.core");
+            addDependency("org.eclipse.m2e.maven.runtime");
+            addDependency("org.faktorips.m2e");
+        }
+        if (isGitStatusPorcelain()) {
+            addDependency("org.eclipse.egit.core");
+        }
+        dependencies.addAll(additionalPlugins);
     }
 
     private void exceutePlatform() throws MojoExecutionException, MojoFailureException {

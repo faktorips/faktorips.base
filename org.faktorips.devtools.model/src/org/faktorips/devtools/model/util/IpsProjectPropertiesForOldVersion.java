@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.devtools.model.util;
 
 import java.util.Map;
@@ -41,7 +42,7 @@ public class IpsProjectPropertiesForOldVersion {
      * @param newValue The value to set
      */
     public <T> void add(String propertyName, BiConsumer<IpsProjectProperties, T> setter, T newValue) {
-        properties.put(propertyName, new PropertiesHolder<T>(false, setter, newValue));
+        properties.put(propertyName, new PropertiesHolder<>(false, setter, newValue));
     }
 
     /**

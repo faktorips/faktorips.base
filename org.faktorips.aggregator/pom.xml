@@ -9,6 +9,7 @@
         <git.user>${user.name}</git.user>
         <java.version>11</java.version>
         <target-platform>eclipse-2019-03</target-platform>
+        <checkstyle.header.file>${project.basedir}/../org.faktorips.aggregator/checkstyle.java.header</checkstyle.header.file>
     </properties>
 
     <groupId>org.faktorips</groupId>
@@ -19,7 +20,7 @@
     <parent>
         <groupId>de.faktorzehn</groupId>
         <artifactId>faktorzehn-tycho-build</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
 
     <!-- These are all modules that are included in the Faktor-IPS build -->

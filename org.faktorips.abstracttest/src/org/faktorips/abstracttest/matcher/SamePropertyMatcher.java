@@ -1,8 +1,13 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH - www.faktorzehn.de
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
- * All Rights Reserved - Alle Rechte vorbehalten.
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.abstracttest.matcher;
 
 import java.util.Objects;

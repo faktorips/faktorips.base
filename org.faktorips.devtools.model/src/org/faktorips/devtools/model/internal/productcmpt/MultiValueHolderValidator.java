@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder.MSGCODE_CONTAINS_DUPLICATE_VALUE;

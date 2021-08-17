@@ -1,4 +1,5 @@
 // CSOFF: FileLengthCheck
+// CSOFF: RegexpHeaderCheck
 // CSOFF: InnerTypeLastCheck
 // TODO This class is a huge ugly moloch and needs to be completely rewritten scratch.
 /*******************************************************************************

@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder;
 
 import java.util.Collection;

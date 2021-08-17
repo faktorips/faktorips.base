@@ -1,5 +1,6 @@
 // CSOFF: FileLengthCheck
-// This class is a huge ugly moloch and needs to be completely rewritten scratch.
+// CSOFF: RegexpHeaderCheck
+// This class is a huge ugly moloch and needs to be completely rewritten from scratch.
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 

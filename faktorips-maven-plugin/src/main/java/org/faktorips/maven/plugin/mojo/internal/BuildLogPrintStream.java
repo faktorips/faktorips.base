@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.faktorips.maven.plugin.mojo.internal;
 
 import java.io.File;
@@ -21,8 +22,8 @@ import org.apache.commons.io.IOUtils;
 
 public class BuildLogPrintStream {
 
-    private final static String ANT_TASK_HEADER = "(?:\\[faktorips\\.[a-z]+\\] ?)?";
-    private final static List<String> EXCEPTIONS_TEXT = List.of(
+    private static final String ANT_TASK_HEADER = "(?:\\[faktorips\\.[a-z]+\\] ?)?";
+    private static final List<String> EXCEPTIONS_TEXT = List.of(
             "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)");
 
     private final File logFile;
@@ -61,6 +62,7 @@ public class BuildLogPrintStream {
      * @return the filtered output
      */
     protected String filter(String content) {
+        String filteredContent = content;
         for (String exceptionText : EXCEPTIONS_TEXT) {
             StringBuilder sb = new StringBuilder();
             // ECLIPSE ERROR HEADER
@@ -71,9 +73,9 @@ public class BuildLogPrintStream {
             // STACKTRACE
             sb.append("(?:").append(ANT_TASK_HEADER).append("\tat .*\\R)*");
 
-            content = content.replaceAll(sb.toString(), "");
+            filteredContent = filteredContent.replaceAll(sb.toString(), "");
         }
-        return content;
+        return filteredContent;
     }
 
     public void flush() {

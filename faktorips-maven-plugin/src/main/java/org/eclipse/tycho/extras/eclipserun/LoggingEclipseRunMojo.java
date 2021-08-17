@@ -7,6 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
 package org.eclipse.tycho.extras.eclipserun;
 
 import java.io.File;
@@ -45,6 +46,7 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
     private EquinoxLauncher launcher;
     private String projectName;
 
+    // CSOFF: ParameterNumber
     public LoggingEclipseRunMojo(File work, boolean clearWorkspaceBeforeLaunch, MavenProject project,
             List<Dependency> dependencies, boolean addDefaultDependencies, String executionEnvironment,
             List<Repository> repositories, MavenSession session, List<String> jvmArgs, boolean skip,
@@ -52,6 +54,7 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
             EquinoxInstallationFactory installationFactory, EquinoxLauncher launcher,
             ToolchainProvider toolchainProvider, EquinoxServiceFactory equinox, Logger logger,
             ToolchainManager toolchainManager, String projectName, Log mavenLog) {
+        // CSON: ParameterNumber
         super(work,
                 clearWorkspaceBeforeLaunch,
                 project,
@@ -109,10 +112,12 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
                             + ", see content of " + expectedLog + "for more details.");
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             log(logStream);
             throw new MojoExecutionException("Error while executing platform", e);
         }
+        // CSON: IllegalCatch
     }
 
     private void log(BuildLogPrintStream logger) {

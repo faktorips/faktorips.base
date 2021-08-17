@@ -1,5 +1,3 @@
-package org.faktorips.devtools.stdbuilder.util;
-
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
@@ -9,6 +7,8 @@ package org.faktorips.devtools.stdbuilder.util;
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+
+package org.faktorips.devtools.stdbuilder.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
