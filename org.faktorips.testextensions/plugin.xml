@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="TestExtensionForIConfiguredDefault"
+         name="TestExtension@IConfiguredDefault"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIConfiguredDefault"
+            extendedType="org.faktorips.devtools.model.productcmpt.IConfiguredDefault"
+            position="top"
+            retention="DEFINITION">
+      </property>
+   </extension>
+   <extension
+         name="TestExtension@IConfiguredDefault Field Factory"
+         point="org.faktorips.devtools.core.ui.extensionPropertyEditFieldFactory">
+      <factory
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIConfiguredDefault$BooleanExtensionPropertyEditFieldFactory"
+            propertyId="org.faktorips.testextensions.TestExtensionForIConfiguredDefault">
+      </factory>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIAttribute"
+         name="TestExtension@IAttribute"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAttribute"
+            extendedType="org.faktorips.devtools.model.type.IAttribute"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+   <extension
+         name="TestExtension@IAttribute Field Factory"
+         point="org.faktorips.devtools.core.ui.extensionPropertyEditFieldFactory">
+      <factory
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAttribute$BooleanExtensionPropertyEditFieldFactory"
+            propertyId="org.faktorips.testextensions.TestExtensionForIAttribute">
+      </factory>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIAssociation"
+         name="TestExtension@IAssociation"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAssociation"
+            extendedType="org.faktorips.devtools.model.type.IAssociation"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+   <extension
+         name="TestExtension@IAssociation Field Factory"
+         point="org.faktorips.devtools.core.ui.extensionPropertyEditFieldFactory">
+      <factory
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAssociation$BooleanExtensionPropertyEditFieldFactory"
+            propertyId="org.faktorips.testextensions.TestExtensionForIAssociation">
+      </factory>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIPolicyCmptType"
+         name="TestExtension@IPolicyCmptType"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIPolicyCmptType"
+            extendedType="org.faktorips.devtools.model.pctype.IPolicyCmptType"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIProductCmptType"
+         name="TestExtension@IProductCmptType"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.model.productcmpttype.IProductCmptType"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIProductCmpt"
+         name="TestExtension@IProductCmpt"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.model.productcmpt.IProductCmpt"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+   
+   <extension
+         id="TestExtensionForIProductCmptLink"
+         name="TestExtension@IProductCmptLink"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
+            extendedType="org.faktorips.devtools.model.productcmpt.IProductCmptLink"
+            position="top"
+            retention="RUNTIME">
+      </property>
+   </extension>
+
+</plugin>

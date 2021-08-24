@@ -3,6 +3,9 @@
    <feature url="features/org.faktorips.testdependencies_0.0.0.jar" id="org.faktorips.testdependencies" version="0.0.0">
       <category name="faktor_ips"/>
    </feature>
+   <bundle id="org.faktorips.testextensions">
+      <category name="faktor_ips"/>
+   </bundle>
    <category-def name="faktor_ips" label="Faktor-IPS Test">
       <description>
          In this category you get the Faktor-IPS test dependencies

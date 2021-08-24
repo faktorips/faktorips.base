@@ -35,6 +35,7 @@
         <module>../../org.faktorips.m2e.test</module>
         <module>../../org.faktorips.runtime.test</module>
         <module>../../org.faktorips.runtime.groovy.test</module>
+        <module>../../org.faktorips.testextensions</module>
         <module>../../org.faktorips.util.test</module>
         <module>../../org.faktorips.valuetypes.test</module>
         <module>../../org.faktorips.valuetypes.joda.test</module>
