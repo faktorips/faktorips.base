@@ -367,6 +367,8 @@
             <Setting name="tableContentFormat" value="XML"/>
             <!- - Default value for 'generate validation class' property on new PolicyCmptTypes.
             <Setting name="generateValidatorClassDefault" value="true"/>
+            <!- - Whether Ips-Files should be validated against their XSD schema.
+            <Setting name="validateIpsSchema" value="true"/>
         </AdditionalSettings>
     -->
  <AdditionalSettings>
@@ -385,6 +387,7 @@
   <Setting name="persistenceColumnSizeChecksSeverity" value="WARNING"/>
   <Setting name="tableContentFormat" value="XML"/>
   <Setting enabled="false" name="generateValidatorClassDefault"/>
+  <Setting enabled="true" name="validateIpsSchema"/>
  </AdditionalSettings>
 
  <!--
