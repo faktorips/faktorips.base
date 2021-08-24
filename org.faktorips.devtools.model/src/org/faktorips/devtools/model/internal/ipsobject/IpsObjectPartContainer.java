@@ -78,7 +78,7 @@ import org.w3c.dom.NodeList;
 public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer {
 
     /** Name of the XML element the containing the elements for the extension property values. */
-    protected static final String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
+    public static final String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
 
     /** Name of the XML element containing a property value. */
     protected static final String XML_VALUE_ELEMENT = ValueToXmlHelper.XML_TAG_VALUE;

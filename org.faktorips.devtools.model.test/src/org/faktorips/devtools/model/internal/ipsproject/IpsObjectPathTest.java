@@ -580,7 +580,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         InputStream resourceAsStream = path.getResourceAsStream("file.txt");
-        assertEquals("111", getFileContent(resourceAsStream));
+        assertEquals("111", getFirstLine(resourceAsStream));
     }
 
     @Test

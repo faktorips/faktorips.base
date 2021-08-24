@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -1326,13 +1327,41 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Reads the first line of a file's contents from the given {@link InputStream}.
      */
-    protected String getFileContent(InputStream aStream) throws IOException {
+    protected String getFirstLine(InputStream aStream) throws IOException {
         assertNotNull(aStream);
         BufferedReader aReader = new BufferedReader(new InputStreamReader(aStream));
         String aContent = aReader.readLine();
         aReader.close();
 
         return aContent;
+    }
+
+    /**
+     * Reads the file's contents from the given {@link IIpsSrcFile}.
+     */
+    protected String getFileContent(IIpsSrcFile ipsSrcFile) throws IOException {
+        assertNotNull(ipsSrcFile);
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(ipsSrcFile.getContentFromEnclosingResource()))) {
+            return reader.lines()
+                    .collect(Collectors.joining("\n"));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Reads the file's contents from the given {@link IIpsSrcFile}.
+     */
+    protected String getFileContent(IFile file) throws IOException {
+        assertNotNull(file);
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(file.getContents()))) {
+            return reader.lines()
+                    .collect(Collectors.joining("\n"));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**

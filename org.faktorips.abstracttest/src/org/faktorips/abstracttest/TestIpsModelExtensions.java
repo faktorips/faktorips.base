@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IVersionProviderFactory;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
@@ -59,6 +60,8 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
     private List<IIpsProjectConfigurator> ipsProjectConfigurators;
 
     private List<IIpsObjectPathContainerType> ipsObjectPathContainerTypes;
+
+    private Map<Class<?>, List<IExtensionPropertyDefinition>> extensionPropertyDefinitions;
 
     public TestIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -163,6 +166,17 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
 
     public void setIpsObjectPathContainerTypes(List<IIpsObjectPathContainerType> ipsObjectPathContainerTypes) {
         this.ipsObjectPathContainerTypes = ipsObjectPathContainerTypes;
+    }
+
+    @Override
+    public Map<Class<?>, List<IExtensionPropertyDefinition>> getExtensionPropertyDefinitions() {
+        return extensionPropertyDefinitions != null ? extensionPropertyDefinitions
+                : super.getExtensionPropertyDefinitions();
+    }
+
+    public void setExtensionPropertyDefinitions(
+            Map<Class<?>, List<IExtensionPropertyDefinition>> extensionPropertyDefinitions) {
+        this.extensionPropertyDefinitions = extensionPropertyDefinitions;
     }
 
     public TestIpsModelExtensions with(IIpsModelPreferences modelPreferences) {

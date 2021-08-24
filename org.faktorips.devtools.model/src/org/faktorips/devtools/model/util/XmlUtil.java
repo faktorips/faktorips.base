@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -66,6 +68,25 @@ public class XmlUtil {
     public static final String XML_IPS_DEFAULT_NAMESPACE = "http://www.faktorzehn.org"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_SPACE_VALUE = "preserve"; //$NON-NLS-1$
+
+    private static final Pattern XML_ELEMENT = Pattern.compile("(?<=[^?!/])>"); //$NON-NLS-1$
+    private static final String PRESERVE_SPACE = " " + XML_ATTRIBUTE_SPACE + "=\"" + XML_ATTRIBUTE_SPACE_VALUE + "\">"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private static final Pattern INDENTED_CDATA = Pattern.compile(">[\\n\\r\\s]+<!\\[CDATA"); //$NON-NLS-1$
+    private static final String INDENTED_CDATA_REPLACEMENT = "><![CDATA"; //$NON-NLS-1$
+    private static final Pattern INDENTED_AFTER_CDATA = Pattern.compile("]]>[\\n\\r\\s]+</"); //$NON-NLS-1$
+    private static final String INDENTED_AFTER_CDATA_REPLACEMENT = "]]></"; //$NON-NLS-1$
+    private static final Pattern MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_AND_LINE_BREAKS = Pattern
+            .compile("(?<=>)\\R([ \\t]+)([ \\t]+)([^<\\r\\n]+)\\R\\1\\R\\2(?=<" //$NON-NLS-1$
+                    + IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT
+                    + ">)"); //$NON-NLS-1$
+    private static final String MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_AND_LINE_BREAKS_REPLACEMENT = "$3"; //$NON-NLS-1$
+    private static final Pattern MIXED_CONTENT_WITH_EXTENSION_PROPERTIES = Pattern
+            .compile("(?<=>)\\R([ \\t]+)([^<\\r\\n]+)\\R\\1(?=<" //$NON-NLS-1$
+                    + IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT
+                    + ">)"); //$NON-NLS-1$
+    private static final String MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_REPLACEMENT = "$2"; //$NON-NLS-1$
+    private static final Pattern INDENTED_DATA = Pattern.compile("(?<=>)\\R(?: |\\t)+(\\R *)(?=<)"); //$NON-NLS-1$
+    private static final String INDENTED_DATA_REPLACEMENT = "$1"; //$NON-NLS-1$
 
     private static final String CARRIAGE_RETURN = "\r"; //$NON-NLS-1$
     private static final String DOUBLE_CARRIAGE_RETURN = "\r\r"; //$NON-NLS-1$
@@ -252,7 +273,11 @@ public class XmlUtil {
      * {@code ······LF
      * ···<DefaultValue isNull="true">LF}
      * </pre>
-     * 
+     * <p>
+     * The problem is even more pronounced for mixed content, for example a default value with an
+     * extension property. Here, we don't want any indentation around the value, as it might be a
+     * String with leading and/or trailing whitespace.
+     * </p>
      * 
      * @return the XML without spurious empty lines
      */
@@ -260,7 +285,12 @@ public class XmlUtil {
         // \R = carriage return and line feed pair, sole line feed, sole carriage return, vertical
         // tab, form feed, next line, line separator, paragraph separator; may backtrack into the
         // middle of a carriage return and line feed pair
-        return xml.replaceAll("(?<=>)\\R(?: |\\t)+(\\R *)(?=<)", "$1"); //$NON-NLS-1$//$NON-NLS-2$
+        return INDENTED_DATA.matcher(
+                MIXED_CONTENT_WITH_EXTENSION_PROPERTIES.matcher(
+                        MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_AND_LINE_BREAKS.matcher(xml)
+                                .replaceAll(MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_AND_LINE_BREAKS_REPLACEMENT))
+                        .replaceAll(MIXED_CONTENT_WITH_EXTENSION_PROPERTIES_REPLACEMENT))
+                .replaceAll(INDENTED_DATA_REPLACEMENT);
     }
 
     /**
@@ -344,8 +374,7 @@ public class XmlUtil {
      * @see XmlUtil#removePreserveSpace(Node)
      */
     private static String addPreserveSpace(String xml) {
-        return xml.replaceFirst("(?<=[^?!/])>", //$NON-NLS-1$
-                " " + XML_ATTRIBUTE_SPACE + "=\"" + XML_ATTRIBUTE_SPACE_VALUE + "\">"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        return XML_ELEMENT.matcher(xml).replaceFirst(PRESERVE_SPACE);
     }
 
     /**
@@ -353,8 +382,9 @@ public class XmlUtil {
      * with Java &le; 8.
      */
     private static String noIndentationAroundCDATA(String xml) {
-        return xml.replaceAll(">[\\n\\r\\s]+<!\\[CDATA", "><![CDATA") //$NON-NLS-1$//$NON-NLS-2$
-                .replaceAll("]]>[\\n\\r\\s]+</", "]]></"); //$NON-NLS-1$//$NON-NLS-2$
+        return INDENTED_AFTER_CDATA
+                .matcher(INDENTED_CDATA.matcher(xml).replaceAll(INDENTED_CDATA_REPLACEMENT))
+                .replaceAll(INDENTED_AFTER_CDATA_REPLACEMENT);
     }
 
     /**

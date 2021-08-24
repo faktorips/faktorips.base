@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -25,10 +25,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.GregorianCalendar;
+import java.util.function.BiConsumer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.junit.Test;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -188,12 +190,18 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // java9 transformer has empty lines
         assertThat(internalNodeToString(rootElement),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + "   " + LF
-                        + " <element>SOME_DATA</element>" + LF + " " + LF + "</root>" + LF));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<root>" + LF
+                        + "   " + LF
+                        + " <element>SOME_DATA</element>" + LF
+                        + " " + LF
+                        + "</root>" + LF));
         // java9 fix with regex, removes empty lines
         assertThat(XmlUtil.nodeToString(rootElement, UTF8),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + " <element>SOME_DATA</element>"
-                        + LF + "</root>" + LF));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<root>" + LF
+                        + " <element>SOME_DATA</element>" + LF
+                        + "</root>" + LF));
 
         if (!xmlFile.delete()) {
             xmlFile.deleteOnExit();
@@ -207,15 +215,64 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // TestDocument has Tabs on single empty lines
         assertThat(internalNodeToString(root),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<DocElement>" + LF + " \t" + LF
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<DocElement>" + LF
+                        + " \t" + LF
                         + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
-                        + " \t" + LF + " <DifferentElement/>" + LF + " \t" + LF + " <TestElement value=\"2\"/>" + LF
-                        + " " + LF + "</DocElement>" + LF));
+                        + " \t" + LF
+                        + " <DifferentElement/>" + LF
+                        + " \t" + LF
+                        + " <TestElement value=\"2\"/>" + LF
+                        + " " + LF
+                        + "</DocElement>" + LF));
         // TestDocument has no Tabs and no empty lines
         assertThat(XmlUtil.nodeToString(root, UTF8),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<DocElement>" + LF
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<DocElement>" + LF
                         + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
-                        + " <DifferentElement/>" + LF + " <TestElement value=\"2\"/>" + LF + "</DocElement>" + LF));
+                        + " <DifferentElement/>" + LF
+                        + " <TestElement value=\"2\"/>" + LF
+                        + "</DocElement>" + LF));
+    }
+
+    @Test
+    public void testJava9NoIndentationToXmlMixedContent() throws Exception {
+        File xmlFile = ceateXmlFileAndSaveWithIdent((d, e) -> {
+            e.appendChild(d.createTextNode(" SOME_DATA_WITH_LEADING_SPACE"));
+            Element extensionProperties = d.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
+            extensionProperties.appendChild(d.createElement("Value"));
+            e.appendChild(extensionProperties);
+        });
+        Document doc = XmlUtil.parseDocument(new FileInputStream(xmlFile));
+        Element rootElement = XmlUtil.getFirstElement(doc, "root"); //$NON-NLS-1$
+
+        // java9 transformer has empty lines
+        assertThat(internalNodeToString(rootElement),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + "   " + LF
+                        + " <element>" + LF
+                        + "       SOME_DATA_WITH_LEADING_SPACE" + LF
+                        + "    " + LF
+                        + "  <ExtensionProperties>" + LF
+                        + "         " + LF
+                        + "   <Value/>" + LF
+                        + "       " + LF
+                        + "  </ExtensionProperties>" + LF
+                        + "    " + LF
+                        + " </element>" + LF + " " + LF
+                        + "</root>" + LF));
+        // java9 fix with regex, removes empty lines
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<root>" + LF
+                        + " <element> SOME_DATA_WITH_LEADING_SPACE<ExtensionProperties>" + LF
+                        + "   <Value/>" + LF
+                        + "  </ExtensionProperties>" + LF
+                        + " </element>" + LF
+                        + "</root>" + LF));
+
+        if (!xmlFile.delete()) {
+            xmlFile.deleteOnExit();
+        }
     }
 
     private String internalNodeToString(Element rootElement) throws TransformerException {
@@ -225,17 +282,22 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     private File ceateXmlFileAndSaveWithIdent() throws IOException, TransformerException {
+        return ceateXmlFileAndSaveWithIdent((d, e) -> e.appendChild(d.createTextNode("SOME_DATA")));
+    }
+
+    private File ceateXmlFileAndSaveWithIdent(BiConsumer<Document, Element> elementEditor)
+            throws IOException, TransformerException {
         Document inputDoc = newDocument();
         Element root = inputDoc.createElement("root"); //$NON-NLS-1$
         Element element = inputDoc.createElement("element"); //$NON-NLS-1$
-        element.appendChild(inputDoc.createTextNode("SOME_DATA")); //$NON-NLS-1$
+        elementEditor.accept(inputDoc, element);
         root.appendChild(element);
         inputDoc.appendChild(root);
         File file = File.createTempFile("xmltest", ".xml"); //$NON-NLS-1$//$NON-NLS-2$
         XmlUtil.writeXMLtoFile(file, inputDoc, null, 2, UTF8);
         return file;
     }
-	
+
     @Test
     public void testEscapeSpacesToXml() throws TransformerException {
         Document doc = getTestDocument();

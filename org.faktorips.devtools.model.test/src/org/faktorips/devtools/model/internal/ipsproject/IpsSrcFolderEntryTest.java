@@ -315,7 +315,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     private String getFileContent(String rootName, String fileName) throws IOException {
         InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getResourceAsStream(fileName);
-        return getFileContent(aStream);
+        return getFirstLine(aStream);
     }
 
     @Test
