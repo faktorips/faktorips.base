@@ -2147,7 +2147,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testGetResourceAsStream() throws CoreException, IOException {
         IIpsPackageFragmentRoot rootOne = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
         createFileWithContent((IFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
-        assertEquals("111", getFileContent(ipsProject.getResourceAsStream("file.txt")));
+        assertEquals("111", getFirstLine(ipsProject.getResourceAsStream("file.txt")));
 
         IIpsProject referencedIpsProject = newIpsProject("referencedIpsProject");
         IIpsPackageFragmentRoot rootTwo = newIpsPackageFragmentRoot(referencedIpsProject, null, "rootTwo");
@@ -2157,7 +2157,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.setIpsObjectPath(path);
 
         // "anotherFile.txt" can be retrieved via the original ipsProject.
-        assertEquals("222", getFileContent(ipsProject.getResourceAsStream("anotherFile.txt")));
+        assertEquals("222", getFirstLine(ipsProject.getResourceAsStream("anotherFile.txt")));
     }
 
     @Test
