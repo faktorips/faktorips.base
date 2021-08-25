@@ -10160,3 +10160,6 @@ templated
 serializer
 ideographic
 em
+jakarta
+unproportionally
+eclipselink

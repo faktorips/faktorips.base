@@ -86,6 +86,7 @@
                <value value="EclipseLink 2.5" />
                <value value="Generic JPA 2.0" />
                <value value="Generic JPA 2.1" />
+               <value value="Jakarta Persistence 2.2" />
             </discreteValues>               
          </builderSetPropertyDef>         
          <builderSetPropertyDef

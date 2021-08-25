@@ -72,6 +72,7 @@ import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProv
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2_1PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.Jakarta2_2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -476,6 +477,8 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 new GenericJPA2PersistenceProvider());
         allSupportedPersistenceProvider.put(GenericJPA2_1PersistenceProvider.ID_GENERIC_JPA_2_1,
                 new GenericJPA2_1PersistenceProvider());
+        allSupportedPersistenceProvider.put(Jakarta2_2PersistenceProvider.ID_JAKARTA_PERSISTENCE_2_2,
+                new Jakarta2_2PersistenceProvider());
     }
 
     public LocalDateHelperVariant getLocalDateHelperVariant() {

@@ -48,6 +48,11 @@ public class PersistenceSupportNames {
      */
     public static final String ID_GENERIC_JPA_2_1 = "Generic JPA 2.1"; //$NON-NLS-1$
 
+    /**
+     * The ID for using Jakarta Persistence 2.2 for persistence support.
+     */
+    public static final String ID_JAKARTA_PERSISTENCE_2_2 = "Jakarta Persistence 2.2"; //$NON-NLS-1$
+
     private PersistenceSupportNames() {
         // Utility class
     }
