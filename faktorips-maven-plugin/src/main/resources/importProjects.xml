@@ -9,14 +9,14 @@
 
     <target name="import">
         <echo message="Building ${projectName}" />
-        <faktorips.configureJdk dir="${jdk.dir}" />
-        <faktorips.import dir="${sourcedir}" copy="false" />
-        <faktorips.mavenImport dir="${sourcedir}" />
-        <faktorips.mavenRefresh updateSnapshots="true" cleanProjects="${fullBuild}" />
-        <faktorips.build fullBuild="${fullBuild}" ipsOnly="${build.ipsOnly}">
+        <faktorips.configureJdk dir="${jdk.dir}" statusFile="${status.file}" />
+        <faktorips.import dir="${sourcedir}" copy="false" statusFile="${status.file}" />
+        <faktorips.mavenImport dir="${sourcedir}" statusFile="${status.file}" />
+        <faktorips.mavenRefresh updateSnapshots="true" cleanProjects="${fullBuild}"  statusFile="${status.file}"/>
+        <faktorips.build fullBuild="${fullBuild}" ipsOnly="${build.ipsOnly}" statusFile="${status.file}">
           <EclipseProject name="${projectName}" />           
         </faktorips.build>
-        <faktorips.gitStatus failBuild="${fail.build}" verbosity="${verbosity}" />
+        <faktorips.gitStatus failBuild="${fail.build}" verbosity="${verbosity}" statusFile="${status.file}" />
         <faktorips.exportHtml ipsProjectName="${projectName}" showValidationErrors="true" showInheritedObjectPartsInTable="true" locale="de" destination="${sourcedir}/target/html/" ipsObjectTypes="ALL" />
     </target>
 </project>

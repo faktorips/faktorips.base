@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -165,7 +164,7 @@ public class BuildTask extends AbstractIpsTask {
         }
 
         if (projectsWithErrors.size() > 0) {
-            throw new BuildException("Unable to complete the build. Errors occurred in the following projects: "
+            fail("Unable to complete the build. Errors occurred in the following projects: "
                     + getErroneousProjectsAsText(projectsWithErrors));
         }
     }

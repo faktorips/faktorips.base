@@ -40,11 +40,13 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
 
     private static final ConcurrentMap<String, Object> WORKSPACE_LOCKS = new ConcurrentHashMap<>();
 
-    private File work;
-    private boolean clearWorkspaceBeforeLaunch;
-    private int forkedProcessTimeoutInSeconds;
-    private EquinoxLauncher launcher;
-    private String projectName;
+    private final File work;
+    private final boolean clearWorkspaceBeforeLaunch;
+    private final int forkedProcessTimeoutInSeconds;
+    private final EquinoxLauncher launcher;
+    private final String projectName;
+
+    private final List<String> filter;
 
     // CSOFF: ParameterNumber
     public LoggingEclipseRunMojo(File work, boolean clearWorkspaceBeforeLaunch, MavenProject project,
@@ -53,7 +55,7 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
             List<String> applicationsArgs, int forkedProcessTimeoutInSeconds, Map<String, String> environmentVariables,
             EquinoxInstallationFactory installationFactory, EquinoxLauncher launcher,
             ToolchainProvider toolchainProvider, EquinoxServiceFactory equinox, Logger logger,
-            ToolchainManager toolchainManager, String projectName, Log mavenLog) {
+            ToolchainManager toolchainManager, String projectName, Log mavenLog, List<String> filter) {
         // CSON: ParameterNumber
         super(work,
                 clearWorkspaceBeforeLaunch,
@@ -80,11 +82,15 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
         this.launcher = launcher;
         this.projectName = projectName;
         super.setLog(mavenLog);
+        this.filter = filter;
     }
 
     @Override
     void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException, MojoFailureException {
         BuildLogPrintStream logStream = null;
+        PrintStream stdStream = null;
+        int returnCode;
+        File expectedLog;
         try {
             File workspace = new File(work, "data").getAbsoluteFile();
             synchronized (WORKSPACE_LOCKS.computeIfAbsent(workspace.getAbsolutePath(), k -> new Object())) {
@@ -92,32 +98,33 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
                     FileUtils.deleteDirectory(workspace);
                 }
                 LaunchConfiguration cli = createCommandLine(runtime);
-                File expectedLog = new File(workspace, ".metadata/.log");
+                expectedLog = new File(workspace, ".metadata/.log");
                 getLog().info("Expected eclipse log file: " + expectedLog.getCanonicalPath());
 
                 // set new print stream as system out
-                logStream = new BuildLogPrintStream(projectName);
-                PrintStream stdStream = System.out;
+                logStream = new BuildLogPrintStream(projectName, filter);
+                stdStream = System.out;
                 System.setOut(logStream.getPrintStream());
 
                 // launch eclipse
-                int returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
-
-                // set old system out
-                System.setOut(stdStream);
-                log(logStream);
-
-                if (returnCode != 0) {
-                    throw new MojoExecutionException("Error while executing platform: return code=" + returnCode
-                            + ", see content of " + expectedLog + "for more details.");
-                }
+                returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
             }
             // CSOFF: IllegalCatch
         } catch (Exception e) {
-            log(logStream);
             throw new MojoExecutionException("Error while executing platform", e);
+        } finally {
+            // set old system out
+            if (stdStream != null) {
+                System.setOut(stdStream);
+            }
+            log(logStream);
         }
         // CSON: IllegalCatch
+
+        if (returnCode != 0) {
+            throw new MojoExecutionException("Error while executing platform: return code=" + returnCode
+                    + ", see content of " + expectedLog + "for more details.");
+        }
     }
 
     private void log(BuildLogPrintStream logger) {
@@ -125,14 +132,19 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
             logger.flush();
             try {
                 for (String string : logger.getFilteredLogContent().split("\\R")) {
-                    getLog().info(logger.getProjectName() + ": " + string);
+                    if (string.contains("ERROR")) {
+                        getLog().error(logger.getProjectName() + ": " + string);
+                    } else {
+                        getLog().info(logger.getProjectName() + ": " + string);
+                    }
                 }
             } catch (IOException e) {
                 // if we read the log from the catch block, we want the original build exception
                 // to be thrown
                 getLog().error("Error while trying to read the eclipse build log: ", e);
+            } finally {
+                logger.cleanUp();
             }
-            logger.cleanUp();
         }
     }
 }

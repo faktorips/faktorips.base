@@ -10163,3 +10163,4 @@ em
 jakarta
 unproportionally
 eclipselink
+stacktrace

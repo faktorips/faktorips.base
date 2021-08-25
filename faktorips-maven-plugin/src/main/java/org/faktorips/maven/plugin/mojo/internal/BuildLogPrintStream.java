@@ -17,21 +17,25 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
 public class BuildLogPrintStream {
 
-    private static final String ANT_TASK_HEADER = "(?:\\[faktorips\\.[a-z]+\\] ?)?";
-    private static final List<String> EXCEPTIONS_TEXT = List.of(
-            "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)");
+    private static final String ANT_TASK_HEADER = "(\\[faktorips\\.\\w+\\] ?)?";
+    private static final String REPEAT_ANT_TASK_HEADER = "\\1";
+    private static final String ALL_LINE = ".+?\r?\n";
 
     private final File logFile;
     private final PrintStream printStream;
     private final String projectName;
+    private List<String> filters;
 
-    public BuildLogPrintStream(String projectName) throws IOException {
+    public BuildLogPrintStream(String projectName, List<String> filters) throws IOException {
         this.projectName = projectName;
+        this.filters = filters;
         this.logFile = File.createTempFile(projectName + "_", ".log");
         printStream = new PrintStream(logFile);
     }
@@ -49,12 +53,11 @@ public class BuildLogPrintStream {
      *
      * <pre>
      * [faktorips.import] !ENTRY org.eclipse.jdt.junit.core 4 4 2021-06-10 13:25:50.957
-     * ...
+     * [faktorips.import] !MESSAGE Unexpected error
      * [faktorips.import] !STACK 0
      * [faktorips.import] java.io.FileNotFoundException: org.eclipse.equinox.simpleconfigurator/bundles.info (No such file or directory)
      * [faktorips.import]  at java.base/java.io.FileInputStream.open0(Native Method)
-     * [faktorips.import]  at java.base/java.io.FileInputStream.open(FileInputStream.java:219)
-     * ...
+     * ... till last line of the stacktrace
      * [faktorips.import]  at org.eclipse.equinox.launcher.Main.main(Main.java:1449)
      * </pre>
      * 
@@ -63,19 +66,25 @@ public class BuildLogPrintStream {
      */
     protected String filter(String content) {
         String filteredContent = content;
-        for (String exceptionText : EXCEPTIONS_TEXT) {
-            StringBuilder sb = new StringBuilder();
-            // ECLIPSE ERROR HEADER
-            sb.append(ANT_TASK_HEADER).append("!ENTRY(?:.*\\R)*?");
-            sb.append(ANT_TASK_HEADER).append("!STACK.*\\R");
-            // EXCEPTION TEXT
-            sb.append(ANT_TASK_HEADER).append(exceptionText).append("\\R");
-            // STACKTRACE
-            sb.append("(?:").append(ANT_TASK_HEADER).append("\tat .*\\R)*");
-
-            filteredContent = filteredContent.replaceAll(sb.toString(), "");
+        for (Pattern pattern : compileRegexPatternForFilters()) {
+            filteredContent = pattern.matcher(filteredContent).replaceAll("");
         }
         return filteredContent;
+    }
+
+    private List<Pattern> compileRegexPatternForFilters() {
+        return filters.stream().map(exceptionText -> {
+            StringBuilder sb = new StringBuilder();
+            // ECLIPSE ERROR HEADER
+            sb.append(ANT_TASK_HEADER).append("!ENTRY").append(ALL_LINE);
+            sb.append(REPEAT_ANT_TASK_HEADER).append("!MESSAGE").append(ALL_LINE);
+            sb.append(REPEAT_ANT_TASK_HEADER).append("!STACK").append(ALL_LINE);
+            // EXCEPTION TEXT
+            sb.append(REPEAT_ANT_TASK_HEADER).append(exceptionText).append("\r?\n");
+            // STACKTRACE
+            sb.append("(?:").append(REPEAT_ANT_TASK_HEADER).append("\tat .*\r?\n)*");
+            return Pattern.compile(sb.toString());
+        }).collect(Collectors.toList());
     }
 
     public void flush() {

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Description;
@@ -34,7 +35,8 @@ public class BuildLogPrintStreamTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        stream = new BuildLogPrintStream("testLogger");
+        stream = new BuildLogPrintStream("testLogger", List.of(
+                "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)"));
     }
 
     @AfterEach

@@ -98,10 +98,10 @@ public class RecursiveCopy {
      * @param file new path
      */
     private void mkdirs(String file) {
-        file = file.replace('/', File.separatorChar);
-        int pos = file.lastIndexOf(File.separatorChar);
+        String fileName = file.replace('/', File.separatorChar);
+        int pos = fileName.lastIndexOf(File.separatorChar);
         if (pos != -1) {
-            String dir = file.substring(0, pos);
+            String dir = fileName.substring(0, pos);
             mkdir(dir);
         }
     }

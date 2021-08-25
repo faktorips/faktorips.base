@@ -149,6 +149,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * @param types
      * @param ignore
      */
+    // CSOFF: CyclomaticComplexity
     private static void searchJDK(File directory,
             List<File> found,
             List<IVMInstallType> types,
@@ -207,5 +208,6 @@ public class ConfigureJdkTask extends AbstractIpsTask {
         }
 
     }
+    // CSON: CyclomaticComplexity
 
 }

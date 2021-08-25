@@ -141,7 +141,7 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
             }
             if (failBuild) {
                 logNotQuiet("ERROR: There were changes!", Project.MSG_ERR);
-                throw new BuildException("ERROR: There were changes!");
+                fail("ERROR: There were changes!");
             } else {
                 logNotQuiet("WARNING: There were changes!", Project.MSG_WARN);
             }

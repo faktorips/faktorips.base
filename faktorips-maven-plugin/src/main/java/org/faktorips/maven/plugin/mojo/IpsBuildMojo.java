@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -54,9 +55,11 @@ import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
+import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
 import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
 import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
+import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -408,6 +411,42 @@ public class IpsBuildMojo extends AbstractMojo {
     @Parameter(defaultValue = "true")
     private boolean buildIpsOnly;
 
+    /**
+     * There are three different logging modes available for this plugin.
+     * <ul>
+     * <li>original</li>
+     * <li>perThread</li>
+     * <li>perThreadFiltered</li>
+     * </ul>
+     * Each mode will only affect the output of the Faktor-IPS build e.g. importing, creating java
+     * classes or do a HTML model export.
+     * <p>
+     * <strong>original:</strong> will redirect everything to STDOUT.
+     * <p>
+     * <strong>perThread:</strong> will redirect the STDOUT of every thread to it's own file, and
+     * output one file after the other.
+     * <p>
+     * <strong>perThreadFiltered:</strong> additionally to the {@code perThread} mode this mode will
+     * filter the thread's output for well known exceptions e.g. FileNotFoundException of the junit
+     * eclipse plugin.
+     * 
+     * <p>
+     * The fastest mode is obviously the {@code original} mode while the slowest is the
+     * {@code perThreadFiltered} one. The overhead added to the build time by the
+     * {@code perThreadFiltered} is about 5% but will produce a clean and continuous log output even
+     * in multi-threaded builds.
+     * <p>
+     * When maven is started with {@code -X} or {@code -debug}, extensive log output is created and
+     * therefore the {@code original} mode is chosen automatically.
+     */
+    @Parameter(defaultValue = "perThreadFiltered")
+    private LoggingMode loggingMode;
+
+    /**
+     * maybe a parameter in the future
+     */
+    private List<String> exceptionTexts;
+
     @Component
     private MavenProject project;
 
@@ -593,6 +632,7 @@ public class IpsBuildMojo extends AbstractMojo {
             boolean fullBuild = session.getGoals().contains("clean");
             jvmArgs.add("-DfullBuild=" + Boolean.toString(fullBuild));
             jvmArgs.add("-Dbuild.ipsOnly=" + Boolean.toString(buildIpsOnly));
+            String statusFile = createStatusFile();
 
             if (isGitStatusPorcelain()) {
                 jvmArgs.add("-Dfail.build=" + gitStatusPorcelain.getFailBuild());
@@ -604,7 +644,7 @@ public class IpsBuildMojo extends AbstractMojo {
                 jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
             }
 
-            if (session.getRequest().getLoggingLevel() == Logger.LEVEL_DEBUG || debugLogOptions != null) {
+            if (isInDebugMode()) {
                 jvmArgs.add("-Declipse.log.level=DEBUG");
                 applicationsArgs.add("-debug");
                 applicationsArgs.add(writeDebugLogSettings());
@@ -612,9 +652,48 @@ public class IpsBuildMojo extends AbstractMojo {
 
             copyMavenSettings();
 
-            exceutePlatform();
+            executePlatform();
 
+            failBuildforAntStatusError(statusFile);
         }
+    }
+
+    private String createStatusFile() {
+        String statusFile = null;
+        try {
+            statusFile = File.createTempFile("IpsBuild_", ".status").getPath();
+            jvmArgs.add("-Dstatus.file=" + statusFile);
+        } catch (IOException e) {
+            getLog().error("Could not create status file");
+            getLog().error(e);
+        }
+        return statusFile;
+    }
+
+    private void failBuildforAntStatusError(String statusFile) throws MojoFailureException {
+        if (StringUtils.isNotBlank(statusFile)) {
+            Path statusFilePath = Path.of(statusFile);
+            try {
+                String status = Files.readString(statusFilePath);
+                if (StringUtils.isNotBlank(status)) {
+                    throw new MojoFailureException(status);
+                }
+            } catch (IOException e) {
+                getLog().error("Could not read status file " + statusFile);
+                getLog().error(e);
+            } finally {
+                try {
+                    Files.deleteIfExists(statusFilePath);
+                } catch (IOException e) {
+                    getLog().error("Could not delete status file " + statusFile);
+                    getLog().error(e);
+                }
+            }
+        }
+    }
+
+    private boolean isInDebugMode() {
+        return session.getRequest().getLoggingLevel() == Logger.LEVEL_DEBUG || debugLogOptions != null;
     }
 
     private void addDependencies() {
@@ -638,12 +717,35 @@ public class IpsBuildMojo extends AbstractMojo {
         dependencies.addAll(additionalPlugins);
     }
 
-    private void exceutePlatform() throws MojoExecutionException, MojoFailureException {
+    private void executePlatform() throws MojoExecutionException, MojoFailureException {
 
         // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
         boolean clearWorkspaceBeforeLaunch = false;
+        EclipseRunMojo eclipseRunMojo = null;
 
-        LoggingEclipseRunMojo eclipseRunMojo = new LoggingEclipseRunMojo(work,
+        if (isInDebugMode() || LoggingMode.original == loggingMode) {
+            eclipseRunMojo = createOriginalEclipseRunMojo(clearWorkspaceBeforeLaunch);
+        } else {
+            eclipseRunMojo = createLoggingEclipseRunMojo(clearWorkspaceBeforeLaunch);
+        }
+
+        eclipseRunMojo.execute();
+    }
+
+    private EclipseRunMojo createLoggingEclipseRunMojo(boolean clearWorkspaceBeforeLaunch) {
+
+        getLog().info("Per thread output is active.");
+        if (LoggingMode.perThreadFiltered == loggingMode) {
+            getLog().info("Well known exceptions that do not affect the build are filtered.");
+
+            exceptionTexts = List.of(
+                    "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)");
+        } else {
+            // perThread
+            exceptionTexts = List.of();
+        }
+
+        return new LoggingEclipseRunMojo(work,
                 clearWorkspaceBeforeLaunch,
                 project,
                 dependencies,
@@ -663,9 +765,31 @@ public class IpsBuildMojo extends AbstractMojo {
                 logger,
                 toolchainManager,
                 getProjectName(),
-                getLog());
+                getLog(),
+                exceptionTexts);
+    }
 
-        eclipseRunMojo.execute();
+    private EclipseRunMojo createOriginalEclipseRunMojo(boolean clearWorkspaceBeforeLaunch) {
+        getLog().info("No log filtering or per thread output.");
+        return new EclipseRunMojo(work,
+                clearWorkspaceBeforeLaunch,
+                project,
+                dependencies,
+                addDefaultDependencies,
+                executionEnvironment,
+                repositories,
+                session,
+                jvmArgs,
+                skip,
+                applicationsArgs,
+                forkedProcessTimeoutInSeconds,
+                environmentVariables,
+                installationFactory,
+                launcher,
+                toolchainProvider,
+                equinox,
+                logger,
+                toolchainManager);
     }
 
     private boolean isGitStatusPorcelain() {
