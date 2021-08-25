@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -128,7 +129,14 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public String getCanonicalString() {
-        String limit = getMaximumLength() == null ? Messages.StringLength_unlimitedLength : getMaximumLength();
+        return getCanonicalString(getMaximumLength());
+    }
+
+    @Override
+    public String getCanonicalString(String maximumLength) {
+        String limit = IpsStringUtils.isBlank(maximumLength)
+                ? Messages.StringLength_unlimitedLength
+                : maximumLength;
         StringBuilder sb = new StringBuilder(NLS.bind(Messages.StringLength_canonicalDesc, limit));
         if (isContainsNull()) {
             sb.append(" (").append(NLS.bind(Messages.ValueSet_includingNull, //$NON-NLS-1$

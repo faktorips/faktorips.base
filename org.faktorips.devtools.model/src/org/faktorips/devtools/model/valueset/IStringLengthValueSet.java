@@ -28,5 +28,18 @@ public interface IStringLengthValueSet extends IValueSet {
 
     void setMaximumLength(String maximumLength);
 
+    /**
+     * Returns the maximum length of the String attribute parsed to an {@link Integer}.
+     */
     Integer getParsedMaximumLength();
+
+    /**
+     * Returns a String representation that always represents this value set in the same way
+     * independent from the datatype or project. It could be used to compare the content of two
+     * value sets for equality.
+     * 
+     * @param maximumLength the maximum length of the string attribute
+     * @return a canonical string representation of this value set
+     */
+    String getCanonicalString(String maximumLength);
 }
