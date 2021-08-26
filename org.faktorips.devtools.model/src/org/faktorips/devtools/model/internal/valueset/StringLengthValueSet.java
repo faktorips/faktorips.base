@@ -129,16 +129,15 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public String getCanonicalString() {
-        return getCanonicalString(getMaximumLength());
+        return getCanonicalString(getMaximumLength(), isContainsNull());
     }
 
-    @Override
-    public String getCanonicalString(String maximumLength) {
+    public static String getCanonicalString(String maximumLength, boolean containsNull) {
         String limit = IpsStringUtils.isBlank(maximumLength)
                 ? Messages.StringLength_unlimitedLength
                 : maximumLength;
         StringBuilder sb = new StringBuilder(NLS.bind(Messages.StringLength_canonicalDesc, limit));
-        if (isContainsNull()) {
+        if (containsNull) {
             sb.append(" (").append(NLS.bind(Messages.ValueSet_includingNull, //$NON-NLS-1$
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation())).append(")"); //$NON-NLS-1$
         }
