@@ -108,7 +108,7 @@
    <!--Enables the generation of visitor code-->
    <Property name="generateVisitorSupport" value="true"/>
 
-   <!--The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0' and 'Generic JPA 2.1'.-->
+   <!--The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0', 'Generic JPA 2.1' and 'Jakarta Persistence 2.2'.-->
    <Property name="persistenceProvider" value="$IPS-PersistenceDatabase$"/>
 
    <!--Enables the generation of a delta determining mechanism for model objects-->

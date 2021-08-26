@@ -50,6 +50,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
+import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.version.MavenVersionFormatter;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -149,7 +150,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_persistenceEclipseLink11() throws Exception {
         projectCreationProperties.setPersistentProject(true);
-        projectCreationProperties.setPersistenceSupport("EclipseLink 1.1");
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
                 .getMavenProject(new NullProgressMonitor());
@@ -165,7 +166,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_persistenceEclipseLink25() throws Exception {
         projectCreationProperties.setPersistentProject(true);
-        projectCreationProperties.setPersistenceSupport("EclipseLink 2.5");
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
                 .getMavenProject(new NullProgressMonitor());
@@ -181,7 +182,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_persistenceGenericJpa20() throws Exception {
         projectCreationProperties.setPersistentProject(true);
-        projectCreationProperties.setPersistenceSupport("Generic JPA 2.0");
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_GENERIC_JPA_2);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
                 .getMavenProject(new NullProgressMonitor());
@@ -197,7 +198,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_persistenceGenericJpa21() throws Exception {
         projectCreationProperties.setPersistentProject(true);
-        projectCreationProperties.setPersistenceSupport("Generic JPA 2.1");
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_GENERIC_JPA_2_1);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
                 .getMavenProject(new NullProgressMonitor());
@@ -208,6 +209,22 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(eclipseLink11.isPresent(), is(true));
         assertThat(eclipseLink11.get().getGroupId(), is("org.eclipse.persistence"));
         assertThat(eclipseLink11.get().getVersion(), is("2.1.0"));
+    }
+
+    @Test
+    public void testConfigureIpsProject_persistenceJakartaPersistence22() throws Exception {
+        projectCreationProperties.setPersistentProject(true);
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2);
+        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+                .getMavenProject(new NullProgressMonitor());
+
+        Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
+                .filter(dependency -> dependency.getArtifactId().equals("jakarta.persistence-api"))
+                .findAny();
+        assertThat(eclipseLink11.isPresent(), is(true));
+        assertThat(eclipseLink11.get().getGroupId(), is("jakarta.persistence"));
+        assertThat(eclipseLink11.get().getVersion(), is("2.2.3"));
     }
 
     @Test(expected = CoreException.class)

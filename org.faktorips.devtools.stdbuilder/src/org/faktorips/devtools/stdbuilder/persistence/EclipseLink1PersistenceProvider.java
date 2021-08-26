@@ -23,6 +23,10 @@ import org.faktorips.util.StringUtil;
  */
 public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
 
+    /**
+     * @deprecated Use {@link PersistenceSupportNames#ID_ECLIPSE_LINK_1_1} instead.
+     */
+    @Deprecated(forRemoval = true, since = "21.12")
     public static final String ID_ECLIPSE_LINK_1_1 = PersistenceSupportNames.ID_ECLIPSE_LINK_1_1;
 
     // orphanRemoval annotation constants

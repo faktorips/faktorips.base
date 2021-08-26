@@ -189,11 +189,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
         persistenceSupport = kit.createCombo(projectSelectionGroup.getComposite());
         persistenceSupport.setEnabled(false);
-        persistenceSupport.add(PersistenceSupportNames.ID_NONE);
-        persistenceSupport.add(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1);
-        persistenceSupport.add(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5);
-        persistenceSupport.add(PersistenceSupportNames.ID_GENERIC_JPA_2);
-        persistenceSupport.add(PersistenceSupportNames.ID_GENERIC_JPA_2_1);
+        PersistenceSupportNames.getAllPersistenceProviderOptions().forEach(persistenceSupport::add);
         persistenceSupport.select(0);
     }
 

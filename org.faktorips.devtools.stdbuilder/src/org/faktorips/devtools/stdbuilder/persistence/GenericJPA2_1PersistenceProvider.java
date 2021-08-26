@@ -20,6 +20,10 @@ import org.faktorips.devtools.model.util.PersistenceSupportNames;
  */
 public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProvider {
 
+    /**
+     * @deprecated Use {@link PersistenceSupportNames#ID_GENERIC_JPA_2_1} instead.
+     */
+    @Deprecated(forRemoval = true, since = "21.12")
     public static final String ID_GENERIC_JPA_2_1 = PersistenceSupportNames.ID_GENERIC_JPA_2_1;
 
     private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$

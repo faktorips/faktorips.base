@@ -13,14 +13,11 @@ package org.faktorips.devtools.stdbuilder.persistence;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
-import org.faktorips.devtools.model.util.PersistenceSupportNames;
 
 /**
  * Persistence provider for standard generic Jakarta Persistence 2.2 support
  */
 public class Jakarta2_2PersistenceProvider extends GenericJPA2PersistenceProvider {
-
-    public static final String ID_JAKARTA_PERSISTENCE_2_2 = PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2;
 
     private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$
 
