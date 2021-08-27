@@ -108,7 +108,7 @@
    <!--Generiert Unterstützung für das Visitor-Pattern in allen Vertragsklassen.-->
    <Property name="generateVisitorSupport" value="true"/>
 
-   <!--Der Persistence-Provider, der zur Generierung herstellerspezifischen Codes verwendet wird. Derzeit werden die Provider 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0' und 'Generic JPA 2.1' unterstützt.-->
+   <!--Der Persistence-Provider, der zur Generierung herstellerspezifischen Codes verwendet wird. Derzeit werden die Provider 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0', 'Generic JPA 2.1' und 'Jakarta Persistence 2.2' unterstützt.-->
    <Property name="persistenceProvider" value="$IPS-PersistenceDatabase$"/>
 
    <!--Generiert einen Mechanismus zur Ermittelung von Modell-Unterschieden.-->

@@ -21,6 +21,10 @@ import org.faktorips.devtools.model.util.PersistenceSupportNames;
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
+    /**
+     * @deprecated Use {@link PersistenceSupportNames#ID_GENERIC_JPA_2} instead.
+     */
+    @Deprecated(forRemoval = true, since = "21.12")
     public static final String ID_GENERIC_JPA_2 = PersistenceSupportNames.ID_GENERIC_JPA_2;
 
     @Override

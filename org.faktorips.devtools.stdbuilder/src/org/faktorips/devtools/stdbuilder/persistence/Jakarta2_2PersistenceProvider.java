@@ -13,18 +13,11 @@ package org.faktorips.devtools.stdbuilder.persistence;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
-import org.faktorips.devtools.model.util.PersistenceSupportNames;
 
 /**
- * Persistence provider for standard generic JPA 2.1 support
+ * Persistence provider for standard generic Jakarta Persistence 2.2 support
  */
-public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProvider {
-
-    /**
-     * @deprecated Use {@link PersistenceSupportNames#ID_GENERIC_JPA_2_1} instead.
-     */
-    @Deprecated(forRemoval = true, since = "21.12")
-    public static final String ID_GENERIC_JPA_2_1 = PersistenceSupportNames.ID_GENERIC_JPA_2_1;
+public class Jakarta2_2PersistenceProvider extends GenericJPA2PersistenceProvider {
 
     private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$
 
@@ -44,8 +37,9 @@ public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProv
 
     @Override
     public boolean isSupportingIndex() {
-        // of course, JPA 2.1 supports indices, but not with a simple annotation on the attribute as
-        // Eclipselink does. As this feature is only useable for simple indices and complex indices
+        // of course, Jakarta Persistence 2.2 supports indices, but not with a simple annotation on
+        // the attribute as
+        // Eclipselink does. As this feature is only usable for simple indices and complex indices
         // must be configured by hand anyways we choose to currently not support this feature, as it
         // would need unproportionally large refactorings
         return false;

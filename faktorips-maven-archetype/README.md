@@ -55,7 +55,7 @@ If that is not the case, the Maven-Jar-Plugin will build faulty JARs.
   _true_, if it is a model project, else _false_
 - **IPS-IsProductDefinitionProject**: <br/>
   _true_, if it es a product definition project, else _false_
-- **IPS-IsPersistenceSupport**: <br/>
+- **IPS-IsPersistentProject**: <br/>
   _true_, if persistence is supported, else _false_
 - **IPS-TocXML**: <br/> 
   the name of the repository-TOC excluding the file format, e.g. _faktorips-repository-toc_
@@ -74,8 +74,8 @@ If that is not the case, the Maven-Jar-Plugin will build faulty JARs.
 _Postprocessor_:
 - _(optional)_ **Persistence API** <br/>
   the used technology for implementing persistence support, 
-  e.g. _EclipseLink 2.5_, _Generic JPA 2.0_ or _Generic JPA 2.1_ 
-  (requires: _IPS-IsPersistenceSupport=true_)
+  e.g. _EclipseLink 2.5_, _Generic JPA 2.0_, _Generic JPA 2.1_ or _Jakarta Persistence 2.2_
+  (requires: _IPS-IsPersistentProject=true_)
 
 #### Execution: 
 
@@ -123,7 +123,7 @@ Due to a [bug in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) th
   _true_, wenn es ein Model-Projekt ist, sonst _false_
 - **IPS-IsProductDefinitionProject**: <br/>
   _true_, wenn es ein ProduKt-Definition-Projekt ist, sonst _false_
-- **IPS-IsPersistenceSupport**: <br/>
+- **IPS-IsPersistentProject**: <br/>
   _true_, wenn wenn Persistenz unterstützt werden soll, sonst _false_
 - **IPS-TocXML**: <br/>
   der Dateiname des Repository-TOC ohne Dateiendung, z.B. _faktorips-repository-toc_
@@ -142,8 +142,8 @@ Due to a [bug in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) th
 _Postprozessor_:
 - _(optional)_ **Persistenz API** <br/>
   die zu verwendende Technologie zur Umsetzung der Persistenz,
-  z.B. _EclipseLink 2.5_, _Generic JPA 2.0_ oder _Generic JPA 2.1_
-  (nur, wenn _IPS-IsPersistenceSupport=true_)
+  z.B. _EclipseLink 2.5_, _Generic JPA 2.0_ oder _Generic JPA 2.1_ oder _Jakarta Persistence 2.2_
+  (nur, wenn _IPS-IsPersistentProject=true_)
 
 #### Durchführung
 

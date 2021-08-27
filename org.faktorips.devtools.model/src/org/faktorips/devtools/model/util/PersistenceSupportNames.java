@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.util.List;
+
 /**
  * Provides all IDs required for configuring the persistence support using the standard builder.
  * 
@@ -48,8 +50,24 @@ public class PersistenceSupportNames {
      */
     public static final String ID_GENERIC_JPA_2_1 = "Generic JPA 2.1"; //$NON-NLS-1$
 
+    /**
+     * The ID for using Jakarta Persistence 2.2 for persistence support.
+     */
+    public static final String ID_JAKARTA_PERSISTENCE_2_2 = "Jakarta Persistence 2.2"; //$NON-NLS-1$
+
     private PersistenceSupportNames() {
         // Utility class
+    }
+
+    /**
+     * Returns all known persistence provider option IDs including {@value #ID_NONE} as the first
+     * option.
+     *
+     * @since 21.12
+     */
+    public static final List<String> getAllPersistenceProviderOptions() {
+        return List.of(ID_NONE, ID_ECLIPSE_LINK_1_1, ID_ECLIPSE_LINK_2_5, ID_GENERIC_JPA_2, ID_GENERIC_JPA_2_1,
+                ID_JAKARTA_PERSISTENCE_2_2);
     }
 
 }

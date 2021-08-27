@@ -285,6 +285,7 @@ class PersistenceSupport {
     private final String ECLIPSE_LINK_25 = "EclipseLink 2.5"
     private final String GENERIC_JPA_20 = "Generic JPA 2.0"
     private final String GENERIC_JPA_21 = "Generic JPA 2.1"
+    private final String JAKARTA_PERSISTENCE_2_2 = "Jakarta Persistence 2.2"
 
     // Templates to be replaced
     private final String IPS_PROJECT_TEMPLATE = '$IPS-PersistenceDatabase$'
@@ -306,6 +307,11 @@ class PersistenceSupport {
             <groupId>org.eclipse.persistence</groupId>$lineSeparator\
             <artifactId>javax.persistence</artifactId>$lineSeparator\
             <version>2.1.0</version>$lineSeparator\
+        </dependency>"""
+    private final String JAKARTA_22_DEPENDENCY = """<dependency>$lineSeparator\
+            <groupId>jakarta.persistence</groupId>$lineSeparator\
+            <artifactId>jakarta.persistence-api</artifactId>$lineSeparator\
+            <version>2.2.3</version>$lineSeparator\
         </dependency>"""
 
     private final Path projectPath
@@ -354,7 +360,8 @@ class PersistenceSupport {
         String possibilities = "Select index for choosing persistence support:" +
                 "$lineSeparator(1) $ECLIPSE_LINK_25," +
                 "$lineSeparator(2) $GENERIC_JPA_20," +
-                "$lineSeparator(3) $GENERIC_JPA_21:"
+                "$lineSeparator(3) $GENERIC_JPA_21," +
+                "$lineSeparator(4) $JAKARTA_PERSISTENCE_2_2:"
 
         LogUtil.printSeparator(2)
 
@@ -372,6 +379,9 @@ class PersistenceSupport {
                     break
                 case "3":
                     persistenceApi = new PersistenceApi(GENERIC_JPA_21, JPA_21_DEPENDENCY)
+                    break
+                case "4":
+                    persistenceApi = new PersistenceApi(JAKARTA_PERSISTENCE_2_2, JAKARTA_22_DEPENDENCY)
                     break
                 default:
                     LogUtil.printErrorMessage("Invalid index, please try again...")

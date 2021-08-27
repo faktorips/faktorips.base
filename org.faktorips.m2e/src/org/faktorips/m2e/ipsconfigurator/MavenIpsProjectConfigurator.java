@@ -349,6 +349,10 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             } else if (persistenceSupport.equals(PersistenceSupportNames.ID_GENERIC_JPA_2_1)) {
                 persistenceDependency.setArtifactId("javax.persistence");
                 persistenceDependency.setVersion("2.1.0");
+            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2)) {
+                persistenceDependency.setGroupId("jakarta.persistence");
+                persistenceDependency.setArtifactId("jakarta.persistence-api");
+                persistenceDependency.setVersion("2.2.3");
             } else {
                 throw new CoreException(new IpsStatus(
                         String.format("The selected persistence support \"%s\" is not supported.",
