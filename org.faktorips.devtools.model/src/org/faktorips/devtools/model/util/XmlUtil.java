@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -64,6 +65,22 @@ import org.xml.sax.SAXParseException;
  * @author Jan Ortmann
  */
 public class XmlUtil {
+
+    /**
+     * Used for the project org.faktorips.devtools.stdbuilder because it uses jaxb-api as
+     * dependency. Jaxb-api uses the same javax.xml package as {@link XMLConstants} from the JDK and
+     * therefore causes the error: The package javax.xml is accessible from more than one module:
+     * &lt;unnamed&gt;, java.xml
+     */
+    public static final String W3C_XML_SCHEMA_INSTANCE_NS_URI = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI;
+
+    /**
+     * Used for the project org.faktorips.devtools.stdbuilder because it uses jaxb-api as
+     * dependency. Jaxb-api uses the same javax.xml package as {@link XMLConstants} from the JDK and
+     * therefore causes the error: The package javax.xml is accessible from more than one module:
+     * &lt;unnamed&gt;, java.xml
+     */
+    public static final String XMLNS_ATTRIBUTE = XMLConstants.XMLNS_ATTRIBUTE;
 
     public static final String XML_IPS_DEFAULT_NAMESPACE = "http://www.faktorzehn.org"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_SPACE = "xml:space"; //$NON-NLS-1$

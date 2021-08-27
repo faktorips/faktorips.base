@@ -23,7 +23,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.core.resources.IFile;
@@ -44,6 +43,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -346,8 +346,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         fullBuild();
 
         Element root = parseProductCmptElement();
-        assertThat(root.hasAttribute(XMLConstants.XMLNS_ATTRIBUTE), is(false));
-        assertThat(root.hasAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"), is(false));
+        assertThat(root.hasAttribute(XmlUtil.XMLNS_ATTRIBUTE), is(false));
+        assertThat(root.hasAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"), is(false));
     }
 
     private Element parseProductCmptElement()

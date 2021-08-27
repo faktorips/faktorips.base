@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
@@ -88,8 +87,8 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         Document document = XmlUtil.getDefaultDocumentBuilder().newDocument();
         Element root = productCmpt.toXml(document);
 
-        root.removeAttribute(XMLConstants.XMLNS_ATTRIBUTE);
-        root.removeAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
+        root.removeAttribute(XmlUtil.XMLNS_ATTRIBUTE);
+        root.removeAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
         writeValidFrom(productCmpt, root);
         updateInternationalStringDefaultLocale(getDefaultLocale(productCmpt.getIpsProject()), root);
         updateLinks(productCmpt, root);
