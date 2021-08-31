@@ -10,17 +10,22 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ResourceTransfer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -30,6 +35,22 @@ import org.faktorips.util.StringUtil;
 public abstract class AbstractCopyPasteHandler extends AbstractHandler {
 
     protected static final String ARCHIVE_LINK = "ARCHIVE_LINK"; //$NON-NLS-1$
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The Faktor-Ips handlers should only handle the {@link ExecutionEvent ExecutionEvents} if they
+     * are called from a {@link Tree} e.g. package- , model- or project-explorer.
+     */
+    @Override
+    public boolean isHandled() {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            throw new CoreRuntimeException(
+                    MessageFormat.format("This {0} can only be called in a user-interface thread.", this.getClass())); //$NON-NLS-1$
+        }
+        return display.getFocusControl() instanceof Tree;
+    }
 
     /**
      * Extracted as protected method to get along with one suppress warnings annotation.
