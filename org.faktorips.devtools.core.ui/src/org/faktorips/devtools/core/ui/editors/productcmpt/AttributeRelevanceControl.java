@@ -17,7 +17,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
@@ -27,9 +26,8 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 /**
  * Control for {@link AttributeRelevance}.
  */
-public class AttributeRelevanceControl extends ControlComposite implements IDataChangeableReadWriteAccess {
+public class AttributeRelevanceControl extends ControlComposite {
 
-    private boolean changeable;
     private UIToolkit toolkit;
     private IPolicyCmptTypeAttribute attribute;
     private RadioButtonGroup<AttributeRelevance> radioButtonGroup;
@@ -67,17 +65,6 @@ public class AttributeRelevanceControl extends ControlComposite implements IData
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         radioButtonGroup.getComposite().setLayout(layout);
-    }
-
-    @Override
-    public boolean isDataChangeable() {
-        return changeable;
-    }
-
-    @Override
-    public void setDataChangeable(boolean changeable) {
-        this.changeable = changeable;
-        radioButtonGroup.getRadioButtons().forEach(b -> b.setEnabled(changeable));
     }
 
     public RadioButtonGroup<AttributeRelevance> getRadioButtonGroup() {
