@@ -10,15 +10,20 @@
 
 package org.faktorips.abstracttest;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
@@ -62,6 +67,8 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
     private List<IIpsObjectPathContainerType> ipsObjectPathContainerTypes;
 
     private Map<Class<?>, List<IExtensionPropertyDefinition>> extensionPropertyDefinitions;
+
+    private Map<IpsObjectType, List<IPreSaveProcessor>> preSaveProcessors;
 
     public TestIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -177,6 +184,32 @@ public class TestIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins 
     public void setExtensionPropertyDefinitions(
             Map<Class<?>, List<IExtensionPropertyDefinition>> extensionPropertyDefinitions) {
         this.extensionPropertyDefinitions = extensionPropertyDefinitions;
+    }
+
+    @Override
+    public List<IPreSaveProcessor> getPreSaveProcessors(IpsObjectType ipsObjectType) {
+        return preSaveProcessors != null ? preSaveProcessors.computeIfAbsent(ipsObjectType, super::getPreSaveProcessors)
+                : super.getPreSaveProcessors(ipsObjectType);
+    }
+
+    public void setPreSaveProcessors(Map<IpsObjectType, List<IPreSaveProcessor>> preSaveProcessors) {
+        this.preSaveProcessors = preSaveProcessors;
+    }
+
+    public void setPreSaveProcessor(IpsObjectType ipsObjectType, Consumer<IIpsObject> preSaveProcessor) {
+        this.preSaveProcessors = new HashMap<>(1);
+        preSaveProcessors.put(ipsObjectType, List.of(new IPreSaveProcessor() {
+
+            @Override
+            public void process(IIpsObject ipsObject) {
+                preSaveProcessor.accept(ipsObject);
+            }
+
+            @Override
+            public IpsObjectType getIpsObjectType() {
+                return ipsObjectType;
+            }
+        }));
     }
 
     public TestIpsModelExtensions with(IIpsModelPreferences modelPreferences) {

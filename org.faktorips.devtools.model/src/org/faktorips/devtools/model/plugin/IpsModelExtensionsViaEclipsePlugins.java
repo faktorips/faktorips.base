@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.plugin;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -21,11 +22,13 @@ import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
@@ -40,6 +43,7 @@ import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsEx
 import org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ModelPreferencesExtension;
+import org.faktorips.devtools.model.plugin.extensions.PreSaveProcessorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.VersionProviderFactoryExtensions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.util.SortorderSet;
@@ -77,6 +81,9 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     private final Supplier<List<IIpsObjectPathContainerType>> ipsObjectPathContainerTypes;
 
+    /** @since 21.12 */
+    private final Supplier<Map<IpsObjectType, List<IPreSaveProcessor>>> preSaveProcessors;
+
     private IpsModelExtensionsViaEclipsePlugins() {
         this(Platform.getExtensionRegistry());
     }
@@ -102,6 +109,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         extensionPropertyDefinitions = new ExtensionPropertyDefinitionExtensions(extensionPoints);
         versionProviderFactories = new VersionProviderFactoryExtensions(extensionPoints);
         ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
+        preSaveProcessors = new PreSaveProcessorExtensions(extensionPoints);
     }
 
     /**
@@ -190,6 +198,11 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     @Override
     public List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes() {
         return ipsObjectPathContainerTypes.get();
+    }
+
+    @Override
+    public List<IPreSaveProcessor> getPreSaveProcessors(IpsObjectType ipsObjectType) {
+        return preSaveProcessors.get().computeIfAbsent(ipsObjectType, $ -> Collections.emptyList());
     }
 
 }

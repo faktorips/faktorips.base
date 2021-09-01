@@ -10,25 +10,31 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
@@ -103,6 +109,39 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertFalse(parsableFile.isDirty());
         assertNull(getLastContentChangeEvent());
         assertEquals(parsableFile, lastModStatusEvent.getIpsSrcFile());
+    }
+
+    @Test
+    public void testSaveWithPreProcessor() throws CoreException {
+        try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
+            testIpsModelExtensions
+                    .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, (ipsObject) -> {
+                        IDescription description = ((IPolicyCmptType)ipsObject).getDescription(Locale.GERMAN);
+                        description.setText(description.getText().toUpperCase());
+                    });
+            policyCmptType.getDescription(Locale.GERMAN).setText("foo");
+            assertTrue(parsableFile.isDirty());
+
+            parsableFile.save(true, null);
+            assertFalse(parsableFile.isDirty());
+            assertThat(parsableFile.getIpsObject().getDescription(Locale.GERMAN).getText(), is("FOO"));
+        }
+    }
+
+    @Test
+    public void testSaveWithPreProcessorForDifferentIpsObjectType() throws CoreException {
+        try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
+            testIpsModelExtensions
+                    .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, (ipsObject) -> {
+                        fail("This PreSaveProcessor should never be called while saving a PolicyCmptType as it is registered for ProductCmpts");
+                    });
+            policyCmptType.getDescription(Locale.GERMAN).setText("foo");
+            assertTrue(parsableFile.isDirty());
+
+            parsableFile.save(true, null);
+            assertFalse(parsableFile.isDirty());
+            assertThat(parsableFile.getIpsObject().getDescription(Locale.GERMAN).getText(), is("foo"));
+        }
     }
 
     @Test

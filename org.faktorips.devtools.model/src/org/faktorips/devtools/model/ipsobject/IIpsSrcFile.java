@@ -203,5 +203,4 @@ public interface IIpsSrcFile extends IIpsElement {
      * @return A set with warnings
      */
     Set<String> getXsdValidationWarnings();
-
 }

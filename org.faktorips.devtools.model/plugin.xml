@@ -17,6 +17,7 @@
    <extension-point id="productComponentNamingStrategy" name="Product Component Naming Strategy" schema="schema/productComponentNamingStrategy.exsd"/>
    <extension-point id="ipsObjectPathContainerType" name="IPS Object Path Container Type" schema="schema/ipsObjectPathContainerType.exsd"/>
    <extension-point id="deepCopyOperation" name="Deep Copy Operation" schema="schema/deepCopyOperation.exsd"/>
+   <extension-point id="preSaveProcessor" name="Pre Save Processor" schema="schema/preSaveProcessor.exsd"/>
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
    <extension-point id="versionProvider" name="Version Provider" schema="schema/versionProvider.exsd"/>
    <extension-point id="ipsModelPreferences" name="Ips Model Preferences" schema="schema/ipsModelPreferences.exsd"/>

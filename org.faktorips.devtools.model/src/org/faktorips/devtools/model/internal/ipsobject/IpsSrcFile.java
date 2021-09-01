@@ -11,14 +11,18 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -86,7 +90,21 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
         if (!exists()) {
             throw new CoreException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
         }
-        getContent().save(force, monitor);
+        IpsSrcFileContent content = getContent();
+        List<IPreSaveProcessor> preSaveProcessors = getPreSaveProcessors();
+        if (!preSaveProcessors.isEmpty()) {
+            IIpsObject ipsObject = getIpsObject();
+            preSaveProcessors.forEach(p -> p.process(ipsObject));
+            content = ((AbstractIpsSrcFile)ipsObject.getIpsSrcFile()).getContent();
+        }
+        content.save(force, monitor);
+    }
+
+    /**
+     * @since 21.12
+     */
+    private List<IPreSaveProcessor> getPreSaveProcessors() {
+        return IIpsModelExtensions.get().getPreSaveProcessors(getIpsObjectType());
     }
 
     @Override

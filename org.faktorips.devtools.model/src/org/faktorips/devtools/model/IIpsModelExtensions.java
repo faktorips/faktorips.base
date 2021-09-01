@@ -22,6 +22,8 @@ import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.IpsObjectPathContainerFactory;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -152,6 +154,14 @@ public interface IIpsModelExtensions {
      * Returns a map of {@link IVersionProviderFactory version provider factories} by their IDs.
      */
     Map<String, IVersionProviderFactory> getVersionProviderFactories();
+
+    /**
+     * Returns the actions that should be executed before saving an {@link IIpsObject} of the given
+     * {@link IpsObjectType}.
+     *
+     * @since 21.12
+     */
+    List<IPreSaveProcessor> getPreSaveProcessors(IpsObjectType ipsObjectType);
 
     /**
      * Returns the {@link IVersionProvider} configured in the given {@link IIpsProject project}'s
