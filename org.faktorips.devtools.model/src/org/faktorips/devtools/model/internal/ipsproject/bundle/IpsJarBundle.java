@@ -124,4 +124,9 @@ public class IpsJarBundle extends AbstractIpsBundle {
     public boolean isFolder() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return getLocation().toString();
+    }
 }

@@ -10,7 +10,7 @@
    <extension-point id="pullUpParticipants" name="Pull Up Participants" schema="schema/pullUpParticipants.exsd"/>
    <extension-point id="teamOperationsFactory" name="Team Operations Factory" schema="schema/teamOperationsFactory.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
-   
+   <extension-point id="loadTocTreeFromDependencyManager" name="Load Toc Tree from Dependency Managers" schema="schema/loadTocTreeFromDependencyManager.exsd"/>
    
 <!-- 
     Extensions to the Java perspective

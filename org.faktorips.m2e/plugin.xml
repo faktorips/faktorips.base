@@ -26,5 +26,10 @@
             class="org.faktorips.m2e.ipsconfigurator.MavenIpsProjectConfigurator">
       </ipsProjectConfigurator>
    </extension>
-
+   <extension
+         point="org.faktorips.devtools.core.loadTocTreeFromDependencyManager">
+      <loadTocTree
+            class="org.faktorips.m2e.toctree.MavenTocTreeLoader">
+      </loadTocTree>
+   </extension>
 </plugin>

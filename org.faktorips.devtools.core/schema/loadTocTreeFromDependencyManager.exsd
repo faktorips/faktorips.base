@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.devtools.model" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.faktorips.devtools.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.model" id="newProductDefinitionOperation" name="New Product Definition Operation"/>
+         <meta.schema plugin="org.faktorips.devtools.core" id="loadTocTreeFromDependencyManager" name="Load TocTree from DependencyManager"/>
       </appInfo>
       <documentation>
-         A New Product Definition Operation is used by a New Product Definition Wizard to create an IPS source file.
+         Loads Faktor-IPS Toc files from external dependency managers e.g. Maven
       </documentation>
    </annotation>
 
@@ -17,8 +17,8 @@
          </appInfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="Participant"/>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="loadTocTree"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,20 +47,15 @@
       </complexType>
    </element>
 
-   <element name="Participant">
-      <annotation>
-         <documentation>
-            A New Product Definition Operation Participant will be called by a NewProductDefinitionOperation after it has finished creating an IIpsSrcFile to allow additional changes to the created object.
-         </documentation>
-      </annotation>
+   <element name="loadTocTree">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The fully qualified class name of the external repository loader.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -72,10 +67,34 @@
          <meta.section type="since"/>
       </appInfo>
       <documentation>
-         3.11
+         21.12.0
       </documentation>
    </annotation>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         For the F-IPS project &lt;strong&gt;Produkte&lt;/strong&gt; with the following dependency structure we would expect following result:
+
+&lt;pre&gt;
+     Produkte
+      /     \
+   Sparte   VO
+      \     /
+       Basis
+&lt;/pre&gt;
+
+List of TOC files with the dependency tree:
+&lt;ul&gt;
+&lt;li&gt;Sparte-toc.xml[&amp;lt;Base-toc.xml&amp;gt;]&lt;/li&gt;
+&lt;li&gt;VO-toc.xml[&amp;lt;Base-toc.xml&amp;gt;]&lt;/li&gt;
+&lt;/ul&gt;
+
+The classpath of the root project is added before this loader is used and therefore the TOC file of Produkt is not in the expected list.
+      </documentation>
+   </annotation>
 
 
 
@@ -84,9 +103,9 @@
          <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-                  Copyright (c) Faktor Zehn GmbH. &amp;gt;http://www.faktorzehn.org&amp;lt;
+         Copyright (c) Faktor Zehn GmbH. &gt;http://www.faktorzehn.org&lt;
 
-This source code is available under the terms of the AGPL Affero General Public License version 3. 
+This source code is available under the terms of the AGPL Affero General Public License version 3.
 
 Please see LICENSE.txt for full license terms, including the additional permissions and restrictions as well as the possibility of alternative license terms.
       </documentation>

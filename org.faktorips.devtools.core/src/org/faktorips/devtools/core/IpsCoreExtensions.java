@@ -18,8 +18,10 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.devtools.core.extensions.ExternalTableFormatExtensions;
 import org.faktorips.devtools.core.extensions.NewProductDefinitionOperationParticipantExtensions;
 import org.faktorips.devtools.core.extensions.TeamOperationsFactoryExtensions;
+import org.faktorips.devtools.core.extensions.TocTreeFromDependencyManagerExtension;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
+import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
@@ -30,6 +32,7 @@ public class IpsCoreExtensions {
     private final Supplier<Set<ITeamOperationsFactory>> teamOperationsFactories;
     private final Supplier<List<ITableFormat>> externalTableFormats;
     private final Supplier<List<INewProductDefinitionOperationParticipant>> newProductDefinitionOperationParticipants;
+    private final Supplier<List<ITocTreeFromDependencyManagerLoader>> tocTreeFromDependencyManagerLoader;
 
     public IpsCoreExtensions(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsPlugin.PLUGIN_ID);
@@ -37,6 +40,7 @@ public class IpsCoreExtensions {
         externalTableFormats = new ExternalTableFormatExtensions(extensionPoints);
         newProductDefinitionOperationParticipants = new NewProductDefinitionOperationParticipantExtensions(
                 extensionPoints);
+        tocTreeFromDependencyManagerLoader = new TocTreeFromDependencyManagerExtension(extensionPoints);
     }
 
     /**
@@ -61,4 +65,10 @@ public class IpsCoreExtensions {
         return newProductDefinitionOperationParticipants.get();
     }
 
+    /**
+     * Return a list of {@link ITocTreeFromDependencyManagerLoader} instances.
+     */
+    public List<ITocTreeFromDependencyManagerLoader> getTocTreeFromDependencyManagerLoader() {
+        return tocTreeFromDependencyManagerLoader.get();
+    }
 }

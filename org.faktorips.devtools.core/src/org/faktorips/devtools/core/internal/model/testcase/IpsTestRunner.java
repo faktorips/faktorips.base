@@ -62,6 +62,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.testcase.Messages;
@@ -811,6 +812,12 @@ public class IpsTestRunner implements IIpsTestRunner {
         List<IIpsProject> ipsProjects = ipsProject.getAllReferencedIpsProjects();
         for (IIpsProject ipsProject2 : ipsProjects) {
             getRepositoryPackages(ipsProject2, repositoryPackages);
+        }
+        for (ITocTreeFromDependencyManagerLoader extension : IpsPlugin.getDefault().getIpsCoreExtensions()
+                .getTocTreeFromDependencyManagerLoader()) {
+            if (extension.isResponsibleFor(ipsProject)) {
+                extension.loadTocTreeFromDependencyManager(ipsProject, repositoryPackages);
+            }
         }
         return repositoryPackages;
     }

@@ -13,7 +13,6 @@ package org.faktorips.runtime.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepository;
 
 /**
@@ -217,17 +216,9 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
         // project this repository is the same for all test cases which itself are searched in
         // different repositories (see below)
         List<String> runtimePackages = extractListFromString(additionalRepositoryPackages);
-        IRuntimeRepository additionalRepositories = null;
-        IRuntimeRepository currRepository = null;
-        for (String pckg : runtimePackages) {
-            IRuntimeRepository addRep = ClassloaderRuntimeRepository.create(pckg, getClassLoader());
-            if (currRepository != null) {
-                currRepository.addDirectlyReferencedRepository(addRep);
-            } else {
-                additionalRepositories = addRep;
-            }
-            currRepository = addRep;
-        }
+
+        IRuntimeRepository additionalRepositories = TocHierarchyCreator
+                .createRuntimeRepository(runtimePackages, getClassLoader());
 
         // creates the root suite which contains all tests,
         // necessary to show the correct hierarchy tree in the JUnit view

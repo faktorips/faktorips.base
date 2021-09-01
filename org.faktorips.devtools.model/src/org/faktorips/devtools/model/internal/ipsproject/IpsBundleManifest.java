@@ -198,7 +198,7 @@ public class IpsBundleManifest {
         return result;
     }
 
-    protected ManifestElement[] getObjectDirElements() {
+    public ManifestElement[] getObjectDirElements() {
         Attributes attributes = manifest.getMainAttributes();
         if (attributes == null) {
             return new ManifestElement[0];
@@ -230,7 +230,7 @@ public class IpsBundleManifest {
         }
     }
 
-    String getTocPath(ManifestElement objectDir) {
+    public String getTocPath(ManifestElement objectDir) {
         return objectDir.getAttribute(ATTRIBUTE_TOC);
     }
 

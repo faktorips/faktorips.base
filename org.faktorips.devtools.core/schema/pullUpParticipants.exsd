@@ -76,41 +76,21 @@
       </complexType>
    </element>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="since"/>
-      </appInfo>
-      <documentation>
-         [Enter the first release in which this extension point appears.]
-      </documentation>
-   </annotation>
+
+
+
 
    <annotation>
       <appInfo>
-         <meta.section type="examples"/>
+         <meta.section type="copyright"/>
       </appInfo>
       <documentation>
-         [Enter extension point usage example here.]
+                  Copyright (c) Faktor Zehn GmbH. &amp;gt;http://www.faktorzehn.org&amp;lt;
+
+This source code is available under the terms of the AGPL Affero General Public License version 3. 
+
+Please see LICENSE.txt for full license terms, including the additional permissions and restrictions as well as the possibility of alternative license terms.
       </documentation>
    </annotation>
-
-   <annotation>
-      <appInfo>
-         <meta.section type="apiinfo"/>
-      </appInfo>
-      <documentation>
-         [Enter API information here.]
-      </documentation>
-   </annotation>
-
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
-
 
 </schema>
