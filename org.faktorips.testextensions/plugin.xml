@@ -108,5 +108,11 @@
             retention="RUNTIME">
       </property>
    </extension>
+   <extension
+         point="org.faktorips.devtools.model.preSaveProcessor">
+      <PreSaveProcessor
+            class="org.faktorips.testextensions.TestPreSaveProcessor">
+      </PreSaveProcessor>
+   </extension>
 
 </plugin>
