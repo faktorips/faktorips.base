@@ -75,7 +75,7 @@
    <!--Generate the published interfaces (true) or only implementation classes (false)-->
    <Property name="generatePublishedInterfaces" value="false"/>
 
-   <!--Define the qualified names of annotations which are added for every generated method (for example java.lang.SuppressWarnings or javax.annotation.Generated("org.faktorips.devtools.stdbuilder")). Multiple annotations are separated by semicolon.-->
+   <!--Define the qualified names of annotations which are added for every generated method (for example org.faktorips.runtime.annotation.IpsGenerated (to mark generated code as ignored by SonarQube/JaCoCo) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Multiple annotations are separated by semicolon.-->
    <Property name="additionalAnnotations" value=""/>
 
    <!--Separate constant names for camel case properties with an underscore-->

@@ -19,6 +19,8 @@ import java.util.LinkedHashSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
@@ -52,9 +54,21 @@ public class Migration_21_12_0 extends MarkAsDirtyMigration {
         IIpsProject ipsProject = getIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setValidateIpsSchema(addSchemasOption.isActive());
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
+                .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
+        IIpsArtefactBuilderSetConfigModel builderSetConfig = properties.getBuilderSetConfig();
+        updateDescriptions(builderSetInfo, builderSetConfig);
         ipsProject.setProperties(properties);
 
         return super.migrate(monitor);
+    }
+
+    private static void updateDescriptions(IIpsArtefactBuilderSetInfo builderSetInfo,
+            IIpsArtefactBuilderSetConfigModel builderSetConfig) {
+        for (String property : builderSetConfig.getPropertyNames()) {
+            String newDescription = builderSetInfo.getPropertyDefinition(property).getDescription();
+            builderSetConfig.setPropertyValue(property, builderSetConfig.getPropertyValue(property), newDescription);
+        }
     }
 
     @Override
