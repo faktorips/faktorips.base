@@ -10,10 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -26,15 +25,18 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptVRuleReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
@@ -57,6 +59,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptTreeStructure structure;
     private ProductCmpt productCmptTarget2;
+    private IValidationRule validationRule;
 
     @Override
     @Before
@@ -70,6 +73,9 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
         ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
         tsu1.setRoleName("usage1");
         tsu1.addTableStructure("tableStructure1");
+
+        validationRule = policyCmptType.newRule();
+        validationRule.setName("rule1");
 
         IPolicyCmptType policyCmptTypeTarget = newPolicyAndProductCmptType(ipsProject, "TestTarget", "dummy2");
         IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(ipsProject);
@@ -114,7 +120,8 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     @Test
     public void testGetRoot() {
         IProductCmpt root = structure.getRoot().getProductCmpt();
-        assertSame(productCmpt, root);
+
+        assertThat(productCmpt, is(sameInstance(root)));
     }
 
     @Test
@@ -146,31 +153,31 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAssociationNotRelevant() throws Exception {
-        assertTrue(structure.getRoot().hasAssociationChildren());
+        assertThat(structure.getRoot().hasAssociationChildren(), is(true));
         association.setRelevant(false);
         structure.refresh();
-        assertFalse(structure.getRoot().hasAssociationChildren());
+        assertThat(structure.getRoot().hasAssociationChildren(), is(false));
     }
 
     @Test
     public void testTblContentUsageReferences() throws Exception {
         IProductCmptStructureTblUsageReference[] ptsus = structure
                 .getChildProductCmptStructureTblUsageReference(structure.getRoot());
-        assertEquals(1, ptsus.length);
+        assertThat(ptsus.length, is(1));
         ITableContentUsage tcu = ptsus[0].getTableContentUsage();
-        assertEquals("tableContent1", tcu.getTableContentName());
+        assertThat(tcu.getTableContentName(), is("tableContent1"));
 
         IProductCmptTreeStructure structureTarget = productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
         ptsus = structure.getChildProductCmptStructureTblUsageReference(structureTarget.getRoot());
-        assertEquals(1, ptsus.length);
+        assertThat(ptsus.length, is(1));
         tcu = ptsus[0].getTableContentUsage();
-        assertEquals("tableContent2", tcu.getTableContentName());
+        assertThat(tcu.getTableContentName(), is("tableContent2"));
     }
 
     @Test
     public void testToSet() throws Exception {
         Set<IProductCmptStructureReference> array = structure.toSet(true);
-        assertEquals(6, array.size());
+        assertThat(array.size(), is(6));
         // -> 3 table references: two different tables, with one in two different links
     }
 
@@ -178,16 +185,16 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     public void testReferencesProductCmpt() throws CoreException, CycleInProductStructureException {
         IProductCmpt unReferencedProductCmpt = newProductCmpt(productCmptType, "products.TestProductUnReferenced");
 
-        assertTrue(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()));
-        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()));
-        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()));
-        assertFalse(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()), is(true));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()), is(true));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()), is(true));
+        assertThat(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()), is(false));
 
         structure = productCmptTarget.getStructure(new GregorianCalendar(), ipsProject);
-        assertFalse(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()));
-        assertTrue(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()));
-        assertFalse(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()));
-        assertFalse(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()), is(false));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmptTarget.getQualifiedName()), is(true));
+        assertThat(structure.referencesProductCmptQualifiedName(productCmptTarget2.getQualifiedName()), is(false));
+        assertThat(structure.referencesProductCmptQualifiedName(unReferencedProductCmpt.getQualifiedName()), is(false));
     }
 
     @Test
@@ -196,19 +203,43 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
         List<IProductCmpt> cmpts = new ArrayList<>();
 
         result = structure.findReferencesFor(cmpts);
-        assertTrue(result.isEmpty());
+        assertThat(result.isEmpty(), is(true));
 
         cmpts.add(productCmpt);
         result = structure.findReferencesFor(cmpts);
-        assertEquals(1, result.size());
+        assertThat(result.size(), is(1));
 
         cmpts.add(productCmptTarget);
         cmpts.add(productCmptTarget2);
         result = structure.findReferencesFor(cmpts);
-        assertEquals(3, result.size());
+        assertThat(result.size(), is(3));
 
         cmpts.add(newProductCmpt(ipsProject, "dummy"));
         result = structure.findReferencesFor(cmpts);
-        assertEquals(3, result.size());
+        assertThat(result.size(), is(3));
+    }
+
+    @Test
+    public void testRulesFromGeneration() throws CycleInProductStructureException {
+        IValidationRuleConfig ruleConfig = productCmptGen.newValidationRuleConfig(validationRule);
+        structure.refresh();
+
+        IProductCmptVRuleReference[] rule = structure.getChildProductCmptVRuleReferences(structure.getRoot());
+
+        assertThat(rule.length, is(1));
+        assertThat(rule[0].getValidationRuleConfig(), is(ruleConfig));
+        assertThat(rule[0].getValidationRuleConfig().getParent(), is(productCmptGen));
+    }
+
+    @Test
+    public void testRulesFromProductCmpt() throws CycleInProductStructureException {
+        IValidationRuleConfig ruleConfig = productCmpt.newValidationRuleConfig(validationRule);
+        structure.refresh();
+
+        IProductCmptVRuleReference[] rule = structure.getChildProductCmptVRuleReferences(structure.getRoot());
+
+        assertThat(rule.length, is(1));
+        assertThat(rule[0].getValidationRuleConfig(), is(ruleConfig));
+        assertThat(rule[0].getValidationRuleConfig().getParent(), is(productCmpt));
     }
 }

@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.model.productcmpt.IValidationRuleConfigContainer;
 import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -99,6 +100,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         return result;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -145,6 +147,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         }
         return true;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public GregorianCalendar getValidAt() {
@@ -299,17 +302,24 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
             addAssociationsAsChildren(parent, children, cmpt, mapping);
 
-            List<IValidationRuleConfig> rules = activeGeneration.getValidationRuleConfigs();
-            for (IValidationRuleConfig rule : rules) {
-                ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, rule);
-                children.add(node);
-            }
+            addRules(parent, children, cmpt);
+            addRules(parent, children, activeGeneration);
             addTableContentUsages(parent, children, cmpt.getTableContentUsages());
             addTableContentUsages(parent, children, activeGeneration.getTableContentUsages());
         }
 
         ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
         return children.toArray(result);
+    }
+
+    private void addRules(ProductCmptStructureReference parent,
+            List<IProductCmptStructureReference> children,
+            IValidationRuleConfigContainer container) throws CycleInProductStructureException {
+
+        for (IValidationRuleConfig rule : container.getValidationRuleConfigs()) {
+            ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, rule);
+            children.add(node);
+        }
     }
 
     private void addTableContentUsages(ProductCmptStructureReference parent,
