@@ -59,6 +59,11 @@ def private static constantRuleName (XValidationRule it) '''
 
 def private static execRuleMethod (XValidationRule it, String modelObject) '''
     /**
+     «IF description.length > 0»
+     * «description»
+     * <p>
+     «ENDIF»
+     *
      * «localizedJDoc("EXEC_RULE", name)»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      *
