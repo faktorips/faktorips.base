@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -533,31 +534,111 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     public String getPathToAntScript() {
         if (antScriptPath == null) {
-            try {
-                antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
-                Files.deleteIfExists(Paths.get(antScriptPath));
-                FileUtils.forceMkdir(new File(project.getBuild().getDirectory()));
-                String script = IOUtils.toString(getClass().getResourceAsStream("/importProjects.xml"),
-                        StandardCharsets.UTF_8);
-
-                boolean usesCustomJdk = usesCustomJdk();
-
-                List<String> replaced = script.lines()
-                        .filter(line -> usesCustomJdk || !line.contains("faktorips.configureJdk"))
-                        .filter(line -> exportHtml || !line.contains("faktorips.exportHtml"))
-                        .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenRefresh"))
-                        .filter(line -> importAsMavenProject || !line.contains("faktorips.mavenImport"))
-                        .filter(line -> !importAsMavenProject || !line.contains("faktorips.import"))
-                        .filter(line -> isGitStatusPorcelain() || !line.contains("faktorips.gitStatus"))
-                        .collect(Collectors.toList());
-
-                Files.write(Paths.get(antScriptPath), replaced, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-            } catch (IOException e) {
-                getLog().error("Can't create ant script in " + antScriptPath, e);
-            }
+            createAntScript();
         }
         return antScriptPath;
 
+    }
+
+    private void createAntScript() {
+        try {
+            antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
+            Files.deleteIfExists(Paths.get(antScriptPath));
+            FileUtils.forceMkdir(new File(project.getBuild().getDirectory()));
+
+            List<String> lines = new ArrayList<>();
+
+            lines.add("<project name=\"importProjects\" default=\"import\">");
+            addTaskDefs(lines);
+
+            lines.add("  <target name=\"import\">");
+            lines.add("    <echo message=\"Building ${projectName}\" />");
+            addTasks(lines);
+            lines.add("  </target>");
+            lines.add("</project>");
+
+            Files.write(Paths.get(antScriptPath), lines, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        } catch (IOException e) {
+            getLog().error("Can't create ant script in " + antScriptPath, e);
+        }
+    }
+
+    private void addTaskDefs(List<String> lines) {
+        lines.add("  <taskdef name=\"faktorips.build\" classname=\"org.faktorips.devtools.ant.BuildTask\" />");
+        if (importAsMavenProject) {
+            lines.add(
+                    "  <taskdef name=\"faktorips.mavenImport\" classname=\"org.faktorips.devtools.ant.MavenProjectImportTask\" />");
+            lines.add(
+                    "  <taskdef name=\"faktorips.mavenRefresh\" classname=\"org.faktorips.devtools.ant.MavenProjectRefreshTask\" />");
+        } else {
+            lines.add(
+                    "  <taskdef name=\"faktorips.import\" classname=\"org.faktorips.devtools.ant.ProjectImportTask\" />");
+        }
+        if (usesCustomJdk()) {
+            lines.add(
+                    "  <taskdef name=\"faktorips.configureJdk\" classname=\"org.faktorips.devtools.ant.ConfigureJdkTask\" />");
+        }
+        if (exportHtml) {
+            lines.add(
+                    "  <taskdef name=\"faktorips.exportHtml\" classname=\"org.faktorips.devtools.ant.ExportHtmlTask\" />");
+        }
+        if (isGitStatusPorcelain()) {
+            lines.add(
+                    "  <taskdef name=\"faktorips.gitStatus\" classname=\"org.faktorips.devtools.ant.GitStatusPorcelainTask\" />");
+        }
+    }
+
+    private void addTasks(List<String> lines) {
+        if (usesCustomJdk()) {
+            lines.add("    <faktorips.configureJdk dir=\"${jdk.dir}\" statusFile=\"${status.file}\" />");
+        }
+        if (importAsMavenProject) {
+            importUpstreamProjects(lines);
+            lines.add("    <faktorips.mavenImport dir=\"${sourcedir}\" statusFile=\"${status.file}\" />");
+            lines.add(
+                    "    <faktorips.mavenRefresh updateSnapshots=\"true\" cleanProjects=\"${fullBuild}\"  statusFile=\"${status.file}\"/>");
+        } else {
+            lines.add("    <faktorips.import dir=\"${sourcedir}\" copy=\"false\" statusFile=\"${status.file}\" />");
+        }
+
+        lines.add(
+                "    <faktorips.build fullBuild=\"${fullBuild}\" ipsOnly=\"${build.ipsOnly}\" statusFile=\"${status.file}\">");
+        lines.add("      <EclipseProject name=\"${projectName}\" />");
+        lines.add("    </faktorips.build>");
+        if (exportHtml) {
+            lines.add(
+                    "    <faktorips.exportHtml ipsProjectName=\"${projectName}\" showValidationErrors=\"true\" showInheritedObjectPartsInTable=\"true\" locale=\"de\" destination=\"${sourcedir}/target/html/\" ipsObjectTypes=\"ALL\" />");
+        }
+        if (isGitStatusPorcelain()) {
+            lines.add(
+                    "    <faktorips.gitStatus failBuild=\"${fail.build}\" verbosity=\"${verbosity}\" statusFile=\"${status.file}\" />");
+        }
+    }
+
+    private void importUpstreamProjects(List<String> lines) {
+        List<MavenProject> upstreamIpsProjects = findUpstreamIpsProjectsNotInstalled();
+        if (!upstreamIpsProjects.isEmpty()) {
+            getLog().info("The project " + project
+                    + " is built without the 'install' goal but depends on the following upstream Faktor-IPS projects:"
+                    + upstreamIpsProjects.stream().map(MavenProject::toString)
+                            .collect(Collectors.joining("\n\t", "\t", "\n"))
+                    + "They will also be imported into the Faktor-IPS workspace.");
+        }
+        upstreamIpsProjects.forEach(p -> lines
+                .add("    <faktorips.mavenImport dir=\"" + p.getBasedir() + "\" statusFile=\"${status.file}\" />"));
+    }
+
+    private List<MavenProject> findUpstreamIpsProjectsNotInstalled() {
+        if (session.getRequest().getGoals().stream().noneMatch(Predicate.isEqual("install"))) {
+            List<MavenProject> upstreamProjects = session.getProjectDependencyGraph().getUpstreamProjects(
+                    project,
+                    true);
+            return upstreamProjects.stream()
+                    .filter(p -> p.getPackaging().equalsIgnoreCase("jar"))
+                    .filter(p -> new File(p.getBasedir().getAbsoluteFile(), ".ipsproject").exists())
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     private boolean usesCustomJdk() {
@@ -565,10 +646,10 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     /**
-     * Either returns the custom path to the jdk, the jdk with the {@link #jdkId} configured in the
+     * Either returns the custom path to the JDK, the JDK with the {@link #jdkId} configured in the
      * ~/.m2/toolchains.xml or {@code null} if nothing is found.
      * 
-     * @return the path to the jdk or {@code null}
+     * @return the path to the JDK or {@code null}
      * @throws MojoExecutionException - if the toolchains are misconfigured
      */
     public String getPathToJdk() throws MojoExecutionException {
@@ -632,6 +713,7 @@ public class IpsBuildMojo extends AbstractMojo {
             boolean fullBuild = session.getGoals().contains("clean");
             jvmArgs.add("-DfullBuild=" + Boolean.toString(fullBuild));
             jvmArgs.add("-Dbuild.ipsOnly=" + Boolean.toString(buildIpsOnly));
+
             String statusFile = createStatusFile();
 
             if (isGitStatusPorcelain()) {
@@ -897,5 +979,10 @@ public class IpsBuildMojo extends AbstractMojo {
         dependency.setArtifactId(artifactId);
         dependency.setType("eclipse-plugin");
         dependencies.add(dependency);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " building " + project;
     }
 }
