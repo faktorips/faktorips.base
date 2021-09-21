@@ -588,7 +588,9 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             return 1;
         }
         if (!getCurrency().equals(other.getCurrency())) {
-            throw new IllegalArgumentException(MessageFormat.format("The currencies this:{0} and other:{1} are different. The objects are not comparable.", getCurrency(),
+            throw new IllegalArgumentException(MessageFormat.format(
+                    "The currencies this:{0} and other:{1} are different. The objects are not comparable.",
+                    getCurrency(),
                     other.getCurrency()));
         }
         return getAmount().compareTo(other.getAmount());

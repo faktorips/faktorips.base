@@ -161,7 +161,8 @@ public class IpsObjectPathContainer {
                 refProjectsComposite);
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(ARCHIVE_IMAGE),
                 archiveComposite);
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order, (Image)resourceManager.get(OBJECT_PATH_IMAGE),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order,
+                (Image)resourceManager.get(OBJECT_PATH_IMAGE),
                 orderComposite);
 
         srcFolderComposite.init(ipsObjectPath);

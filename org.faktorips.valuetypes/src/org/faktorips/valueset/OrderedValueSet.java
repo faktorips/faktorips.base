@@ -246,7 +246,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     public int size() {
         return set.size();
     }
-  
+
     /**
      * An {@link OrderedValueSet} is always considered restricted, therefore this method always
      * returns {@code false}.
@@ -255,7 +255,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     public boolean isUnrestricted(boolean excludeNull) {
         return false;
     }
-  
+
     @Override
     public Iterator<E> iterator() {
         return set.iterator();

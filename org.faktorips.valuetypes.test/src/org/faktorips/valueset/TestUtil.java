@@ -24,7 +24,7 @@ import org.junit.Test;
 public abstract class TestUtil {
 
     @Test
-    public static final void testSerializable(Serializable serializableObject) throws AssertionError, IOException,
+    public static final void testSerializable(Serializable serializableObject) throws IOException,
             ClassNotFoundException {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
