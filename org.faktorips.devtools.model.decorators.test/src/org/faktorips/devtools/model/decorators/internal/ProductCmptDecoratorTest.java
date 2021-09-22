@@ -18,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -75,13 +76,14 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         IconDesc iconDesc = cmptDecorator.getProductCmptIconDesc(aSuperType);
         assertFalse(iconDesc instanceof PathIconDesc);
         // B: Custom Icon
-        iconDesc = cmptDecorator.getProductCmptIconDesc(bNormalType);
-        assertTrue(iconDesc instanceof PathIconDesc);
-        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
+        var iconDescB = cmptDecorator.getProductCmptIconDesc(bNormalType);
+        assertTrue(iconDescB instanceof PathIconDesc);
+        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDescB).getPathToImage());
         // C inherits B's Custom Icon
-        iconDesc = cmptDecorator.getProductCmptIconDesc(cSubType);
-        assertTrue(iconDesc instanceof PathIconDesc);
-        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
+        var iconDescC = cmptDecorator.getProductCmptIconDesc(cSubType);
+        assertTrue(iconDescC instanceof PathIconDesc);
+        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDescC).getPathToImage());
+        assertSame(iconDescB, iconDescC);
 
         cSubType.setInstancesIcon("subTypeImage.gif");
         // C: custom Icon overwrites inherited Icon
