@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.IIpsElement;
@@ -29,6 +32,8 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
     public static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.gif"; //$NON-NLS-1$
 
     private final String defaultImage;
+
+    private final Map<String, IconDesc> iconsByPath = new HashMap<>();
 
     ProductCmptDecorator() {
         this(PRODUCT_CMPT_BASE_IMAGE);
@@ -99,9 +104,8 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
     }
 
     IconDesc getProductCmptIconDesc(IProductCmptType type) {
-
         if (type != null && type.isUseCustomInstanceIcon()) {
-            return new PathIconDesc(type.getIpsProject(), type.getInstancesIcon());
+            return iconsByPath.computeIfAbsent(type.getInstancesIcon(), i -> new PathIconDesc(type.getIpsProject(), i));
         } else if (type != null && type.hasSupertype()) {
             IProductCmptType superType;
             superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
