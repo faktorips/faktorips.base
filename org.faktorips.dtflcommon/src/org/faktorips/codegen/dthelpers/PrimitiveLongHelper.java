@@ -10,6 +10,8 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import java.util.regex.Pattern;
+
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.PrimitiveLongDatatype;
@@ -18,6 +20,9 @@ import org.faktorips.datatype.PrimitiveLongDatatype;
  * {@link DatatypeHelper} for {@link PrimitiveLongDatatype}.
  */
 public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
+
+    private static final String L = "L"; //$NON-NLS-1$
+    private static final Pattern DIGITS = Pattern.compile("[0-9+-]+"); //$NON-NLS-1$
 
     /**
      * Constructs a new helper.
@@ -47,7 +52,26 @@ public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
 
     @Override
     public JavaCodeFragment newInstance(String value) {
-        return new JavaCodeFragment(value);
+        return new JavaCodeFragment(longLiteral(value));
+    }
+
+    /**
+     * Appends a trailing 'L' to the given value if it is a number larger than
+     * {@link Integer#MAX_VALUE}.
+     * <p>
+     * see {@link Long#parseLong(String, int)} for the length check.
+     */
+    protected static String longLiteral(String value) {
+        String longLiteral = value;
+        if (longLiteral != null && longLiteral.length() > 1) {
+            if (DIGITS.matcher(longLiteral).matches()) {
+                long longValue = Long.parseLong(longLiteral);
+                if (longValue > Integer.MAX_VALUE || longValue < Integer.MIN_VALUE) {
+                    longLiteral += L;
+                }
+            }
+        }
+        return longLiteral;
     }
 
     @Override
@@ -63,7 +87,7 @@ public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("Long.parseLong(" + expression + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment.append("Long.parseLong(" + longLiteral(expression) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         return fragment;
     }
 

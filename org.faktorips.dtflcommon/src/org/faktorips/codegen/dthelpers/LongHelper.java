@@ -10,6 +10,8 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import static org.faktorips.codegen.dthelpers.PrimitiveLongHelper.longLiteral;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -50,7 +52,7 @@ public class LongHelper extends AbstractDatatypeHelper {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Long.class);
         fragment.append(".valueOf("); //$NON-NLS-1$
-        fragment.append(value);
+        fragment.append(longLiteral(value));
         fragment.append(')');
         return fragment;
     }
