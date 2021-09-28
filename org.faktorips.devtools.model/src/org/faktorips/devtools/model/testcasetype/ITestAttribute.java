@@ -68,6 +68,12 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
             + "DerivedAttributesOnTheFlyNotSupported"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that abstract attributes are not supported.
+     */
+    public static final String MSGCODE_ABSTRACT_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX
+            + "AbstractAttributesNotSupported"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the attribute and the attribute type is already
      * given.<br>
      * E.g. The attribute "a" could be added as input and expected result but not as input twice.

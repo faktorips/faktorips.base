@@ -408,6 +408,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
+    @Override
+    protected void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) {
+        if (isProductRelevant()) {
+            super.validateAbstractDatatype(result, ipsProject);
+        }
+    }
+
     private String[] productRelevantProperties(String... otherProperties) {
         ArrayList<String> properties = new ArrayList<>();
         for (String property : otherProperties) {

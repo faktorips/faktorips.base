@@ -713,6 +713,50 @@ public class XPolicyAttributeTest {
         doReturn(superValueSet).when(superAttribute).getValueSet();
 
         assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(false));
+    }
 
+    @Test
+    public void testIsAbstract() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var abstractDatatype = mock(ValueDatatype.class);
+        when(abstractDatatype.isAbstract()).thenReturn(true);
+        when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        assertThat(xPolicyAttribute.isAbstract(), is(true));
+    }
+
+    @Test
+    public void testIsAbstract_NotProductRelevant() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var abstractDatatype = mock(ValueDatatype.class);
+        when(abstractDatatype.isAbstract()).thenReturn(true);
+        when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+
+        assertThat(xPolicyAttribute.isAbstract(), is(false));
+    }
+
+    @Test
+    public void testIsAbstract_NotProductRelevant_AbstractType() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var abstractDatatype = mock(ValueDatatype.class);
+        when(abstractDatatype.isAbstract()).thenReturn(true);
+        when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        when(policyClass.isAbstract()).thenReturn(true);
+
+        assertThat(xPolicyAttribute.isAbstract(), is(true));
+    }
+
+    @Test
+    public void testIsAbstract_Not() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var abstractDatatype = mock(ValueDatatype.class);
+        when(abstractDatatype.isAbstract()).thenReturn(false);
+        when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+
+        assertThat(xPolicyAttribute.isAbstract(), is(false));
     }
 }

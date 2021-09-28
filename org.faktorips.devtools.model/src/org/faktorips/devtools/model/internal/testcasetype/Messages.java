@@ -33,6 +33,7 @@ public class Messages extends NLS {
     public static String TestAttribute_Error_AttributeNotFound;
     public static String TestAttribute_Error_DuplicateName;
     public static String TestAttribute_ValidationError_DuplicateAttributeAndType;
+    public static String TestAttribute_ValidationError_AbstractAttribute;
 
     public static String TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct;
     public static String TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType;

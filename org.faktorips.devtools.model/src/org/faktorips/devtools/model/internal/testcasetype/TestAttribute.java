@@ -333,6 +333,17 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
                         this, PROPERTY_TEST_ATTRIBUTE_TYPE);
                 messageList.add(msg);
             }
+            // check that abstract attributes are not supported
+            if (isBasedOnModelAttribute()) {
+                ValueDatatype valueDatatype = findDatatype(getIpsProject());
+                if (valueDatatype != null && valueDatatype.isAbstract()) {
+                    String text = NLS.bind(Messages.TestAttribute_ValidationError_AbstractAttribute, attribute,
+                            valueDatatype);
+                    Message msg = new Message(MSGCODE_ABSTRACT_ATTRIBUTES_NOT_SUPPORTED, text, Message.ERROR,
+                            this);
+                    messageList.add(msg);
+                }
+            }
         }
 
         validateName(messageList, ipsProject);

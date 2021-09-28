@@ -14,6 +14,8 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1178,6 +1180,23 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         attr1.setName(ATTR1);
         attr1.setOverwrite(true);
         attr1.setDatatype(ABSTRACT_PARENT_ENUM);
+
+        MessageList list = policyCmptType.validate(ipsProject);
+
+        Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
+        assertThat(message, is(nullValue()));
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_overwrittenAbstractType_ProductRelevant() throws Exception {
+        IAttribute superAttr1 = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        IPolicyCmptTypeAttribute attr1 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        attr1.setValueSetConfiguredByProduct(true);
 
         MessageList list = policyCmptType.validate(ipsProject);
 

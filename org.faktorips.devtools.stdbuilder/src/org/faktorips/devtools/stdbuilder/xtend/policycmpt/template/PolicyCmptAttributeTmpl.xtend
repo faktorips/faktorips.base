@@ -108,7 +108,7 @@ class PolicyCmptAttributeTmpl {
               return «defaultValueCode»;
               // end-user-code
             «ELSEIF overwrite»
-              return super.«methodNameGetter»();
+              return «IF datatype!=overwrittenAttribute.datatype»(«javaClassName») «ENDIF»super.«methodNameGetter»();
             «ELSE»
               «IF changingOverTime»
                 «getPolicyCmptNode.productCmptGenerationNode.implClassName» productCmpt = «getPropertyValueContainer(false)»;
@@ -238,7 +238,7 @@ class PolicyCmptAttributeTmpl {
   '''
 
   def package static initFromXmlMethodCall(XPolicyAttribute it) '''
-    «IF (!overwrite || overwriteAbstract && !overwrittenAttribute.generateInitPropertiesFromXML) && generateInitPropertiesFromXML»
+    «IF (!overwrite || overwriteAbstract && !overwrittenAttribute.generateInitPropertiesFromXML) && generateInitPropertiesFromXML && !datatype.abstract»
       «IF datatypeExtensibleEnum»
         «methodNameDoInitFromXml»(propMap, productRepository);
       «ELSE»
@@ -248,7 +248,7 @@ class PolicyCmptAttributeTmpl {
   '''
 
   def package static initFromXmlMethod(XPolicyAttribute it) '''
-    «IF generateInitPropertiesFromXML && (!overwrite || overwriteAbstract)»
+    «IF generateInitPropertiesFromXML && (!overwrite || overwriteAbstract) && !datatype.abstract»
       /**
        * @generated
        */

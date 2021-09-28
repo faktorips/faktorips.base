@@ -456,6 +456,11 @@ public class XPolicyAttribute extends XAttribute {
         return hasExplicitValue && (cantUseMemberFromParent || overwritesAbstractAttribute) && !isAbstract();
     }
 
+    @Override
+    public boolean isAbstract() {
+        return super.isAbstract() && (isProductRelevant() || getPolicyCmptNode().isAbstract());
+    }
+
     protected boolean isDerivedByExplicitMethodCall() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
