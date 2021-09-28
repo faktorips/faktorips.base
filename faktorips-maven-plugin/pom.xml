@@ -275,13 +275,13 @@
     <distributionManagement>
         <repository>
             <id>releases</id>
-            <name>Faktor Zehn Releases</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/releases/</url>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
-            <name>Faktor Zehn Snapshots</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/snapshots/</url>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
