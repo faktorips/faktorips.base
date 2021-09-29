@@ -104,6 +104,10 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
         return oldCalendar;
     }
 
+    protected void setOldCalendar(GregorianCalendar oldCalendar) {
+        this.oldCalendar = oldCalendar;
+    }
+
     public AbstractDateFormat<String> getDateFormat() {
         return dateFormat;
     }

@@ -59,16 +59,20 @@ public class DateControl extends AbstractDateTimeControl {
 
         dateWidget.addMouseListener(new DateSelectionMouseAdapter(calendarShell));
         dateWidget.addFocusListener(new FocusAdapter() {
+
             @Override
             public void focusLost(FocusEvent e) {
                 closeCalendarShell(calendarShell);
             }
         });
+
         Point absoluteButtonLocation = getButtonControl().toDisplay(new Point(0, 0));
-        calendarShell.setBounds(absoluteButtonLocation.x - 155, absoluteButtonLocation.y + 25, 180, 170);
+        Point preferredSize = dateWidget.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+        calendarShell.setBounds(absoluteButtonLocation.x - preferredSize.x + 24, absoluteButtonLocation.y + 25,
+                preferredSize.x,
+                preferredSize.y);
         dateWidget.setVisible(true);
         calendarShell.setVisible(true);
-        calendarShell.setFocus();
     }
 
     private void setFieldValueToSelectedDate(final DateTime dateWidget) {
@@ -90,6 +94,7 @@ public class DateControl extends AbstractDateTimeControl {
                 // do nothing on double click to avoid closing too early
                 return;
             }
+
             GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
                     dateWidget.getDay());
             Calendar oldCalendar = getOldCalendar();
@@ -97,7 +102,7 @@ public class DateControl extends AbstractDateTimeControl {
                     .get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR))
                     && oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH)) {
                 // only month or year changed --> the user did not selected a date
-                oldCalendar = newCalendar;
+                setOldCalendar(newCalendar);
                 return;
             }
             setFieldValueToSelectedDate(dateWidget);
