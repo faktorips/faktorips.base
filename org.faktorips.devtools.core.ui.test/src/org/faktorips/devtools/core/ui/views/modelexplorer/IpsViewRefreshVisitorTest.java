@@ -10,18 +10,21 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -37,6 +40,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,314 +51,273 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot packRoot;
-    private IResourceChangeEvent event;
-    private IResourceChangeListener resourceChangeListener;
+    private List<IResourceChangeListener> listeners = new ArrayList<>();
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        resourceChangeListener = event -> IpsViewRefreshVisitorTest.this.event = event;
         ipsProject = newIpsProject();
         packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceChangeListener);
     }
 
     @Override
-    protected void tearDownExtension() {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
+    @After
+    public void tearDown() throws Exception {
+        // avoid NPEs by removing our listeners before calling super#tearDown
+        for (var iterator = listeners.iterator(); iterator.hasNext();) {
+            ResourcesPlugin.getWorkspace().removeResourceChangeListener(iterator.next());
+            iterator.remove();
+        }
+        super.tearDown();
     }
 
     @Test
     public void test_FlatLayout() throws Exception {
         // test case 1: new package "model.base" and new PolicyCmptType
+        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.FLAT);
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
         IIpsPackageFragment modelPack = basePack.getParentIpsPackageFragment();
-        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.FLAT);
         Set<Object> elementsToRefresh = visitor.getElementsToRefresh();
         Set<Object> elementsToUpdate = visitor.getElementsToUpdate();
 
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-
         // project must be updated, as for example team label decoration might have changed
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
+        assertThat(elementsToRefresh, doesNotHaveItems(ipsProject.getIpsModel(), ipsProject));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject));
 
         // root must be refreshed as a direct child (pack model) was added.
-        assertTrue(elementsToRefresh.contains(packRoot));
-        assertFalse(elementsToUpdate.contains(packRoot));
+        assertThat(elementsToRefresh, hasItem(packRoot));
+        assertThat(elementsToUpdate, doesNotHaveItem(packRoot));
 
         // all other children needn't be refreshed or updated as the root is refreshed!
-        assertFalse(elementsToRefresh.contains(modelPack));
-        assertFalse(elementsToUpdate.contains(modelPack));
-        assertFalse(elementsToRefresh.contains(basePack));
-        assertFalse(elementsToUpdate.contains(basePack));
-        assertFalse(elementsToRefresh.contains(policyType.getIpsSrcFile()));
-        assertFalse(elementsToUpdate.contains(policyType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, doesNotHaveItems(modelPack, basePack, policyType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, doesNotHaveItems(modelPack, basePack, policyType.getIpsSrcFile()));
 
         // test case 2: new PolicyCmptType but no new package
+        visitor = newVisitor(LayoutStyle.FLAT);
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "model.base.Coverage");
-        visitor = newVisitor(LayoutStyle.FLAT);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // all ips elements above the package containing the added type needn't be refresh, but
+        // all IPS elements above the package containing the added type needn't be refresh, but
         // must be updated
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
-        assertFalse(elementsToRefresh.contains(modelPack));
-        assertTrue(elementsToUpdate.contains(modelPack)); // model package is not a parent in the
-        // flay layout style, but gets updated anyways
+        assertThat(elementsToRefresh, doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack));
+        // model package is not a parent in the flat layout style, but gets updated anyways
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack));
 
-        // The package to that a new child was added must be refresh.
-        assertTrue(elementsToRefresh.contains(basePack));
-        assertFalse(elementsToUpdate.contains(basePack));
+        // The package to which a new child was added must be refreshed
+        assertThat(elementsToRefresh, hasItem(basePack));
+        assertThat(elementsToUpdate, doesNotHaveItems(basePack));
 
-        // No need to refreh the added child as the parent is refreshed.
-        assertFalse(elementsToRefresh.contains(coverageType.getIpsSrcFile()));
+        // No need to refresh the added child as the parent is refreshed.
+        assertThat(elementsToRefresh, doesNotHaveItems(coverageType.getIpsSrcFile()));
 
-        IPolicyCmptType personType = newPolicyCmptType(ipsProject, "model.Person");
         visitor = newVisitor(LayoutStyle.FLAT);
+        IPolicyCmptType personType = newPolicyCmptType(ipsProject, "model.Person");
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // test case 3: all ips elements above the package containg the added type needn't be
-        // refresh, but must be updated
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
+        // test case 3: all IPS elements above the package containing the added type needn't be
+        // refreshed, but must be updated
+        assertThat(elementsToRefresh,
+                doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, personType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, hasItem(modelPack));
 
-        assertTrue(elementsToRefresh.contains(modelPack));
-        assertFalse(elementsToUpdate.contains(modelPack));
-        assertFalse(elementsToRefresh.contains(personType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot));
+        assertThat(elementsToUpdate, doesNotHaveItem(modelPack));
 
         // test case 4: change an IpsSrcFile
-        policyType.getIpsSrcFile().getCorrespondingFile().touch(null);
         visitor = newVisitor(LayoutStyle.FLAT);
+        policyType.getIpsSrcFile().getCorrespondingFile().touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // => all parents must be updated but not refresh
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
-        // model pack is not a parent in the flat layout style! but gets updated anyways
-        assertFalse(elementsToRefresh.contains(basePack));
-        assertTrue(elementsToUpdate.contains(basePack));
+        // => all parents must be updated but not refreshed
+        // model pack is not a parent in the flat layout style but gets updated anyways
+        assertThat(elementsToRefresh, doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, basePack));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot, basePack));
+
         // the IpsSrcFile itself must be refreshed
-        assertTrue(elementsToRefresh.contains(policyType.getIpsSrcFile()));
-        assertFalse(elementsToUpdate.contains(policyType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, hasItems(policyType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, doesNotHaveItems(policyType.getIpsSrcFile()));
 
         // test case 4: new "normal" file inside package
+        visitor = newVisitor(LayoutStyle.FLAT);
         IFolder folder = (IFolder)basePack.getCorrespondingResource();
         IFile readme = folder.getFile("readme.txt");
         readme.create(new ByteArrayInputStream("hello".getBytes()), true, null);
-        visitor = newVisitor(LayoutStyle.FLAT);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertTrue(visitor.getElementsToRefresh().contains(basePack));
-        assertFalse(visitor.getElementsToUpdate().contains(basePack));
-        assertFalse(visitor.getElementsToRefresh().contains(readme));
-        assertFalse(visitor.getElementsToUpdate().contains(readme));
+
+        assertThat(elementsToRefresh, hasItem(basePack));
+        assertThat(elementsToRefresh, doesNotHaveItem(readme));
+        assertThat(elementsToUpdate, doesNotHaveItems(basePack, readme));
 
         // test case 5: change a "normal" file inside a package
-        readme.touch(null);
         visitor = newVisitor(LayoutStyle.FLAT);
+        readme.touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(basePack));
-        assertTrue(visitor.getElementsToUpdate().contains(basePack));
-        assertFalse(visitor.getElementsToRefresh().contains(readme));
-        assertTrue(visitor.getElementsToUpdate().contains(readme));
+
+        assertThat(elementsToRefresh, doesNotHaveItems(basePack, readme));
+        assertThat(elementsToUpdate, hasItems(basePack, readme));
 
         // test case 5: "normal" folder in IpsProject
+        visitor = newVisitor(LayoutStyle.FLAT);
         folder = ipsProject.getProject().getFolder("docs");
         folder.create(true, true, null);
-        visitor = newVisitor(LayoutStyle.FLAT);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertTrue(visitor.getElementsToRefresh().contains(ipsProject));
-        assertFalse(visitor.getElementsToUpdate().contains(folder));
+        assertThat(elementsToRefresh, hasItem(ipsProject));
+        assertThat(elementsToUpdate, doesNotHaveItem(folder));
 
         // test case 6: add a new "normal" file to a "normal" folder
+        visitor = newVisitor(LayoutStyle.FLAT);
         IFile doc1 = folder.getFile("doc1.txt");
         doc1.create(new ByteArrayInputStream("hello".getBytes()), true, null);
-        visitor = newVisitor(LayoutStyle.FLAT);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(ipsProject));
-        assertTrue(visitor.getElementsToUpdate().contains(ipsProject));
-        assertTrue(visitor.getElementsToRefresh().contains(folder));
-        assertFalse(visitor.getElementsToUpdate().contains(folder));
+
+        assertThat(elementsToRefresh, doesNotHaveItem(ipsProject));
+        assertThat(elementsToRefresh, hasItem(folder));
+
+        assertThat(elementsToUpdate, hasItem(ipsProject));
+        assertThat(elementsToUpdate, doesNotHaveItem(folder));
 
         // test case 7: change "normal" file in "normal" folder
-        doc1.touch(null);
         visitor = newVisitor(LayoutStyle.FLAT);
+        doc1.touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(folder));
-        assertTrue(visitor.getElementsToUpdate().contains(folder));
-        assertFalse(visitor.getElementsToRefresh().contains(doc1));
-        assertTrue(visitor.getElementsToUpdate().contains(doc1));
+
+        assertThat(elementsToRefresh, doesNotHaveItems(folder, doc1));
+        assertThat(elementsToUpdate, hasItems(folder, doc1));
     }
 
     @Test
     public void test_HierarchicalLayout() throws Exception {
         // test case 1: new package "model.base" and new PolicyCmptType
+        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.HIERACHICAL);
         IPolicyCmptType policyType = newPolicyCmptType(ipsProject, "model.base.Policy");
         IIpsPackageFragment basePack = policyType.getIpsPackageFragment();
         IIpsPackageFragment modelPack = basePack.getParentIpsPackageFragment();
-        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.HIERACHICAL);
         Set<Object> elementsToRefresh = visitor.getElementsToRefresh();
         Set<Object> elementsToUpdate = visitor.getElementsToUpdate();
 
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-
         // project must be updated, as for example team label decoration might have changed
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
+        assertThat(elementsToRefresh, doesNotHaveItems(ipsProject.getIpsModel(), ipsProject));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject));
 
-        // root needs to be refreshed as a direct child (pack model) was added.
-        assertTrue(elementsToRefresh.contains(packRoot));
-        assertFalse(elementsToUpdate.contains(packRoot));
+        // root needs to be refreshed as a direct child (pack model) was added
+        assertThat(elementsToRefresh, hasItem(packRoot));
+        assertThat(elementsToUpdate, doesNotHaveItem(packRoot));
 
         // all other children needn't be refreshed or updated as the root is refreshed!
-        assertFalse(elementsToRefresh.contains(modelPack));
-        assertFalse(elementsToUpdate.contains(modelPack));
-        assertFalse(elementsToRefresh.contains(basePack));
-        assertFalse(elementsToUpdate.contains(basePack));
-        assertFalse(elementsToRefresh.contains(policyType.getIpsSrcFile()));
-        assertFalse(elementsToUpdate.contains(policyType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, doesNotHaveItems(modelPack, basePack, policyType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, doesNotHaveItems(modelPack, basePack, policyType.getIpsSrcFile()));
 
         // test case 2: new PolicyCmptType but no new package
+        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         IPolicyCmptType coverageType = newPolicyCmptType(ipsProject, "model.base.Coverage");
-        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // all ips elements above the package containg the added type needn't be refresh, but
+        // all IPS elements above the package containing the added type needn't be refreshed, but
         // must be updated (including modelPack, see below)
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
-        assertFalse(elementsToRefresh.contains(modelPack));
-        assertTrue(elementsToUpdate.contains(modelPack)); // model package is the parent in the
-        // hierarchical layout style!
+        assertThat(elementsToRefresh, doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack));
 
-        // The package to that a new child was added must be refresh.
-        assertTrue(elementsToRefresh.contains(basePack));
-        assertFalse(elementsToUpdate.contains(basePack));
+        // model package is the parent in the hierarchical layout style!
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack));
 
-        // No need to refresh the added child as the parent is refreshed.
-        assertFalse(elementsToRefresh.contains(coverageType.getIpsSrcFile()));
+        // The package to which a new child was added must be refreshed
+        assertThat(elementsToRefresh, hasItem(basePack));
+        assertThat(elementsToUpdate, doesNotHaveItem(basePack));
 
-        // test case 3: all ips elements above the package containing the added type needn't be
-        // refresh, but
-        // must be updated
-        IPolicyCmptType personType = newPolicyCmptType(ipsProject, "model.Person");
+        // No need to refresh the added child as the parent is refreshed
+        assertThat(elementsToRefresh, doesNotHaveItem(coverageType.getIpsSrcFile()));
+
+        // test case 3: all IPS elements above the package containing the added type needn't be
+        // refreshed, but must be updated
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
+        IPolicyCmptType personType = newPolicyCmptType(ipsProject, "model.Person");
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
+        assertThat(elementsToRefresh,
+                doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, personType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, hasItem(modelPack));
 
-        assertTrue(elementsToRefresh.contains(modelPack));
-        assertFalse(elementsToUpdate.contains(modelPack));
-        assertFalse(elementsToRefresh.contains(personType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot));
+        assertThat(elementsToUpdate, doesNotHaveItem(modelPack));
 
         // test case 4: change an IpsSrcFile
-        policyType.getIpsSrcFile().getCorrespondingFile().touch(null);
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
+        policyType.getIpsSrcFile().getCorrespondingFile().touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
 
-        // => all parents must be updated but not refresh
-        assertFalse(elementsToRefresh.contains(ipsProject.getIpsModel()));
-        assertTrue(elementsToUpdate.contains(ipsProject.getIpsModel()));
-        assertFalse(elementsToRefresh.contains(ipsProject));
-        assertTrue(elementsToUpdate.contains(ipsProject));
-        assertFalse(elementsToRefresh.contains(packRoot));
-        assertTrue(elementsToUpdate.contains(packRoot));
-        assertFalse(elementsToRefresh.contains(modelPack));
-        assertTrue(elementsToUpdate.contains(modelPack));
-        assertFalse(elementsToRefresh.contains(basePack));
-        assertTrue(elementsToUpdate.contains(basePack));
+        // => all parents must be updated but not refreshed
+        assertThat(elementsToRefresh,
+                doesNotHaveItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack, basePack));
+        assertThat(elementsToUpdate, hasItems(ipsProject.getIpsModel(), ipsProject, packRoot, modelPack, basePack));
+
         // the IpsSrcFile itself must be refreshed
-        assertTrue(elementsToRefresh.contains(policyType.getIpsSrcFile()));
-        assertFalse(elementsToUpdate.contains(policyType.getIpsSrcFile()));
+        assertThat(elementsToRefresh, hasItem(policyType.getIpsSrcFile()));
+        assertThat(elementsToUpdate, doesNotHaveItem(policyType.getIpsSrcFile()));
 
         // test case 4: new "normal" file inside package
+        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         IFolder folder = (IFolder)basePack.getCorrespondingResource();
         IFile readme = folder.getFile("readme.txt");
         readme.create(new ByteArrayInputStream("hello".getBytes()), true, null);
-        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertTrue(visitor.getElementsToRefresh().contains(basePack));
-        assertFalse(visitor.getElementsToUpdate().contains(basePack));
-        assertFalse(visitor.getElementsToRefresh().contains(readme));
-        assertFalse(visitor.getElementsToUpdate().contains(readme));
+
+        assertThat(elementsToRefresh, hasItem(basePack));
+        assertThat(elementsToRefresh, doesNotHaveItem(readme));
+        assertThat(elementsToUpdate, doesNotHaveItems(basePack, readme));
 
         // test case 5: change a "normal" file inside a package
-        readme.touch(null);
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
+        readme.touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(basePack));
-        assertTrue(visitor.getElementsToUpdate().contains(basePack));
-        assertFalse(visitor.getElementsToRefresh().contains(readme));
-        assertTrue(visitor.getElementsToUpdate().contains(readme));
+
+        assertThat(elementsToRefresh, doesNotHaveItems(basePack, readme));
+        assertThat(elementsToUpdate, hasItems(basePack, readme));
 
         // test case 5: "normal" folder in IpsProject
+        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         folder = ipsProject.getProject().getFolder("docs");
         folder.create(true, true, null);
-        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertTrue(visitor.getElementsToRefresh().contains(ipsProject));
-        assertFalse(visitor.getElementsToUpdate().contains(folder));
+
+        assertThat(elementsToRefresh, hasItem(ipsProject));
+        assertThat(elementsToUpdate, doesNotHaveItem(folder));
 
         // test case 6: add a new "normal" file to a "normal" folder
+        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         IFile doc1 = folder.getFile("doc1.txt");
         doc1.create(new ByteArrayInputStream("hello".getBytes()), true, null);
-        visitor = newVisitor(LayoutStyle.HIERACHICAL);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(ipsProject));
-        assertTrue(visitor.getElementsToUpdate().contains(ipsProject));
-        assertTrue(visitor.getElementsToRefresh().contains(folder));
-        assertFalse(visitor.getElementsToUpdate().contains(folder));
+
+        assertThat(elementsToRefresh, doesNotHaveItem(ipsProject));
+        assertThat(elementsToRefresh, hasItem(folder));
+
+        assertThat(elementsToUpdate, hasItem(ipsProject));
+        assertThat(elementsToUpdate, doesNotHaveItem(folder));
 
         // test case 7: change "normal" file in "normal" folder
-        doc1.touch(null);
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
+        doc1.touch(null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
-        assertFalse(visitor.getElementsToRefresh().contains(folder));
-        assertTrue(visitor.getElementsToUpdate().contains(folder));
-        assertFalse(visitor.getElementsToRefresh().contains(doc1));
-        assertTrue(visitor.getElementsToUpdate().contains(doc1));
+
+        assertThat(elementsToRefresh, doesNotHaveItems(folder, doc1));
+        assertThat(elementsToUpdate, hasItems(folder, doc1));
     }
 
     // Test for FIPS-70
@@ -374,8 +340,8 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         visitor.visit(delta);
 
-        assertFalse(visitor.getElementsToRefresh().contains(ipsProject.getIpsModel()));
-        assertFalse(visitor.getElementsToUpdate().contains(ipsProject.getIpsModel()));
+        assertThat(visitor.getElementsToRefresh(), doesNotHaveItem(ipsProject.getIpsModel()));
+        assertThat(visitor.getElementsToUpdate(), doesNotHaveItem(ipsProject.getIpsModel()));
 
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.setUsingManifest(true);
@@ -384,39 +350,38 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
         visitor = new IpsViewRefreshVisitor(contentProvider);
         visitor.visit(delta);
 
-        assertTrue(visitor.getElementsToRefresh().contains(ipsProject.getIpsModel()));
-        assertFalse(visitor.getElementsToUpdate().contains(ipsProject.getIpsModel()));
-    }
-
-    private IpsViewRefreshVisitor newVisitor(LayoutStyle style) throws CoreException, InterruptedException {
-        ModelExplorerConfiguration config = new ModelExplorerConfiguration(
-                ipsProject.getIpsModel().getIpsObjectTypes());
-        ModelContentProvider contentProvider = new ModelContentProvider(config, style);
-        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
-        IResourceDelta delta = getTriggeredEvent().getDelta();
-        delta.accept(visitor);
-        return visitor;
-    }
-
-    private IResourceChangeEvent getTriggeredEvent() throws InterruptedException {
-        while (event == null) {
-            Thread.sleep(500);
-            Thread.yield();
-        }
-        IResourceChangeEvent recentEvent = event;
-        event = null;
-        return recentEvent;
+        assertThat(visitor.getElementsToRefresh(), hasItem(ipsProject.getIpsModel()));
+        assertThat(visitor.getElementsToUpdate(), doesNotHaveItem(ipsProject.getIpsModel()));
     }
 
     @Test
     public void testVisit_ipsAndJavaResource() throws Exception {
+        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.HIERACHICAL);
         addIpsRootAsSourceEntry();
         newPolicyCmptType(ipsProject, "model.base.Policy");
 
-        IpsViewRefreshVisitor visitor = newVisitor(LayoutStyle.HIERACHICAL);
-        Set<Object> elementsToRefresh = visitor.getElementsToRefresh();
+        assertThat(visitor.getElementsToRefresh(), hasItem(packRoot));
+    }
 
-        assertTrue(elementsToRefresh.contains(packRoot));
+    private IpsViewRefreshVisitor newVisitor(LayoutStyle style) {
+
+        ModelExplorerConfiguration config = new ModelExplorerConfiguration(
+                ipsProject.getIpsModel().getIpsObjectTypes());
+        ModelContentProvider contentProvider = new ModelContentProvider(config, style);
+        IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
+
+        IResourceChangeListener listner = event -> {
+            try {
+                event.getDelta().accept(visitor);
+            } catch (Exception e) {
+                fail(e.getLocalizedMessage());
+            }
+        };
+
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(listner);
+        listeners.add(listner);
+
+        return visitor;
     }
 
     private void addIpsRootAsSourceEntry() throws Exception {
@@ -433,4 +398,23 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
         javaProject.setRawClasspath(newEntries, null);
     }
 
+    private static <T> Matcher<Iterable<? super T>> doesNotHaveItem(T expected) {
+        return doesNotHaveItems(expected);
+    }
+
+    @SafeVarargs
+    private static <T> Matcher<Iterable<? super T>> doesNotHaveItems(T... expected) {
+        return new BaseMatcher<>() {
+
+            @Override
+            public boolean matches(Object actual) {
+                return !hasItems(expected).matches(actual);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Collection should not contain ").appendValue(expected);
+            }
+        };
+    }
 }
