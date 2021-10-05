@@ -76,6 +76,10 @@ public class Messages extends NLS {
 
     public static String ValueSetSpecificationControl_Msg_NullNotAllowed;
 
+    public static String ValueSetSpecificationControl_RelevanceMandatory;
+
+    public static String ValueSetSpecificationControl_RelevanceOptional;
+
     public static String TableStructureRefControl_title;
 
     public static String TableStructureRefControl_description;

@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
@@ -298,11 +299,13 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private void createContainsNullCheckbox(UIToolkit toolkit, Composite parent) {
         toolkit.createLabel(parent, NLS.bind(Messages.ValueSetSpecificationControl_containsNull,
                 IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
-        containsNullCheckbox = toolkit.createCheckbox(parent);
+        containsNullCheckbox = toolkit.createCheckbox(parent, valueSetPmo.getRelevanceText());
         containsNullField = new CheckboxField(containsNullCheckbox);
         bindingContext.bindContent(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
         bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL_ENABLED);
         bindingContext.bindProblemMarker(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+        bindingContext
+                .add(new ButtonTextBinding(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_RELEVANCE_TEXT));
     }
 
     @Override
@@ -439,6 +442,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
+        public static final String PROPERTY_RELEVANCE_TEXT = "relevanceText"; //$NON-NLS-1$
         private IValueSet sourceSet;
 
         public ValueSetPmo(IValueSetOwner valueSetOwner) {
@@ -508,6 +512,10 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         private void addContainsNullErrorMessage(MessageList messageList) {
             String text = Messages.ValueSetSpecificationControl_Msg_NullNotAllowed;
             messageList.newError(MSG_CODE_NULL_NOT_ALLOWED, text, this, PROPERTY_CONTAINS_NULL);
+        }
+
+        public String getRelevanceText() {
+            return isContainsNull() ? Messages.ValueSetSpecificationControl_RelevanceOptional : Messages.ValueSetSpecificationControl_RelevanceMandatory;
         }
     }
 
