@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>org.faktorips</groupId>
-    <artifactId>faktorips-runtime-groovy</artifactId>
+    <artifactId>faktorips-testsupport</artifactId>
     <version>@version@</version>
     <packaging>jar</packaging>
     
-    <name>Faktor-IPS Runtime -  Groovy Extension</name>
-    <description>Groovy Extension for Faktor-IPS Runtime</description>
+    <name>Faktor-IPS Test-Support</name>
+    <description>Utility classes for easier test of Faktor-IPS (generated) code</description>
     <url>http://faktorzehn.org</url>
 
     <organization>
@@ -46,9 +46,9 @@
            <version>@version@</version>
         </dependency>
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>3.0.7</version>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
         </dependency>
     </dependencies>
 

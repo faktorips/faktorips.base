@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-nexus-base-8</artifactId>
+        <version>21.12.0-SNAPSHOT</version>
+        <relativePath>../../org.faktorips.aggregator/nexus8/pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-testsupport</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Faktor-IPS Test-Support</name>
+    <description>Utility classes for easier test of Faktor-IPS (generated) code</description>
+
+    <build>
+        <sourceDirectory>../src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>../</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                    <include>agpl-3.0.txt</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>11</jvmVersion>
+                            <module>
+                                <moduleInfoSource>
+                                    module org.faktorips.testsupport {
+                                    requires transitive org.faktorips.runtime;
+                                    requires transitive org.hamcrest;
+                                    exports org.faktorips.testsupport;
+                                    exports org.faktorips.testsupport.matchers;
+                                    }
+                                </moduleInfoSource>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
+        </dependency>
+    </dependencies>
+
+</project>

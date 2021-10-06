@@ -89,6 +89,11 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
             <artifactId>faktorips-maven-archetype</artifactId>
             <version>${project.version}</version>
         </dependency>

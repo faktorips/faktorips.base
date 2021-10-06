@@ -1,0 +1,15 @@
+{
+  "all-versions": [
+    {
+      "extension": "revapi.filter",
+      "configuration": {
+        "elements": {
+          "exclude": [
+            "(missing-class|class|interface|enum|field|method .*) org\\.faktorips\\.runtime\\..*",
+            "(missing-class|class|interface|enum|field|method .*) org\\.hamcrest\\..*"
+          ]
+        }
+      }
+    }
+  ]
+}

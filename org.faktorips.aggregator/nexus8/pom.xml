@@ -36,6 +36,7 @@
         <module>../../org.faktorips.valuetypes/nexus</module>
         <module>../../org.faktorips.valuetypes.joda/nexus</module>
         <module>../../org.faktorips.runtime.groovy/nexus</module>
+        <module>../../org.faktorips.testsupport/nexus</module>
     </modules>
 
     <profiles>

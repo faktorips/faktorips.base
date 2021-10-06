@@ -10164,3 +10164,4 @@ jakarta
 unproportionally
 eclipselink
 stacktrace
+hamcrest

@@ -44,6 +44,7 @@
         <module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
         <module>../../org.faktorips.runtime</module>
         <module>../../org.faktorips.runtime.groovy</module>
+        <module>../../org.faktorips.testsupport</module>
         <module>../../org.faktorips.util</module>
         <module>../../org.faktorips.valuetypes</module>
         <module>../../org.faktorips.valuetypes.joda</module>
