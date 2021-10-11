@@ -225,7 +225,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private void initTemplateRow(UIToolkit toolkit) {
         createLabelOrHyperlink(toolkit, Messages.ComponentPropertiesSection_TemplateName,
-                () -> product.findTemplate(product.getIpsProject()));
+                () -> product.findTemplate(product.getIpsProject()), true);
 
         templateControl = new ProductCmptRefControl(product.getIpsProject(), rootPane, toolkit, true);
         templateControl.setProductCmptType(product.findProductCmptType(product.getIpsProject()), true);
@@ -245,8 +245,11 @@ public class ComponentPropertiesSection extends IpsSection {
         });
     }
 
-    private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {
-        if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+    private void createLabelOrHyperlink(UIToolkit toolkit,
+            String labelText,
+            final IpsObjectFinder ipsObjectFinder,
+            boolean navigationAllowed) {
+        if (navigationAllowed && ipsObjectFinder.findIpsObject() != null) {
             Hyperlink link = toolkit.createHyperlink(rootPane, labelText);
             link.addHyperlinkListener(new HyperlinkAdapter() {
                 @Override
@@ -260,6 +263,11 @@ public class ComponentPropertiesSection extends IpsSection {
         } else {
             toolkit.createLabel(rootPane, labelText);
         }
+    }
+
+    private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {
+        createLabelOrHyperlink(toolkit, labelText, ipsObjectFinder,
+                IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode());
     }
 
     private void initLayout(Composite client) {
