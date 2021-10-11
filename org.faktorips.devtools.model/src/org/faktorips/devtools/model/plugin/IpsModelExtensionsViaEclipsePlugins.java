@@ -29,7 +29,6 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
@@ -40,7 +39,6 @@ import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsExtension;
-import org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ModelPreferencesExtension;
 import org.faktorips.devtools.model.plugin.extensions.PreSaveProcessorExtensions;
@@ -65,7 +63,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     private final Supplier<SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>> flFunctionResolvers;
 
-    private final Supplier<List<IIpsLoggingFrameworkConnector>> loggingFrameworkConnectors;
+    @Deprecated(since = "21.12")
+    private final Supplier<List<org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector>> loggingFrameworkConnectors;
 
     private final Supplier<List<IIpsFeatureVersionManager>> featureVersionManagers;
 
@@ -94,6 +93,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
      * @see IpsModelExtensionsViaEclipsePlugins#get IpsModelExtensionsViaEclipsePlugins#get for the
      *      singleton instance initialized from the Eclipse {@link Platform}.
      */
+    @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaEclipsePlugins(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
         modelPreferences = new ModelPreferencesExtension(extensionPoints);
@@ -102,7 +102,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         classLoaderProviderFactory = new ClassLoaderProviderFactoryExtension(extensionPoints);
         registeredMigrationOperations = new MigrationOperationExtensions(extensionPoints);
         flFunctionResolvers = new FunctionResolverFactoryExtensions(extensionPoints);
-        loggingFrameworkConnectors = new LoggingFrameworkConnectorExtensions(extensionPoints);
+        loggingFrameworkConnectors = new org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions(
+                extensionPoints);
         featureVersionManagers = new FeatureVersionManagerExtensions(extensionPoints);
         identifierFilter = new IdentifierFilterExtensions(extensionPoints);
         deepCopyOperationFixups = new DeepCopyOperationFixupExtensions(extensionPoints);
@@ -139,8 +140,10 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     }
 
     @Override
-    public IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors() {
-        return loggingFrameworkConnectors.get().toArray(new IIpsLoggingFrameworkConnector[0]);
+    @Deprecated(since = "21.12")
+    public org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors() {
+        return loggingFrameworkConnectors.get()
+                .toArray(new org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector[0]);
     }
 
     @Override

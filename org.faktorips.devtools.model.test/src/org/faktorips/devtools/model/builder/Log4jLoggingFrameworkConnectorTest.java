@@ -19,6 +19,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.junit.Before;
 import org.junit.Test;
 
+@Deprecated(since = "21.12")
 public class Log4jLoggingFrameworkConnectorTest {
 
     private Log4jLoggingFrameworkConnector connector;

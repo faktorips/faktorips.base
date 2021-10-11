@@ -25,7 +25,9 @@ import java.util.List;
  * expression for a constant in java is a string including the quotation marks.
  * 
  * @author Peter Erzberger
+ * @deprecated since 21.12.
  */
+@Deprecated(since = "21.12")
 public interface IIpsLoggingFrameworkConnector {
 
     /**

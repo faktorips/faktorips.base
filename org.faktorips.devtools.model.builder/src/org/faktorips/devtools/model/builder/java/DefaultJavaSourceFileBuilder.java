@@ -28,7 +28,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.TypeSection;
-import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.util.LocalizedStringsSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -181,10 +180,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * To use the capabilities of the generation of logging code of this builder it must be provided
      * with a builder set that supports the configuration property
      * <code>CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR</code> of this builder.
+     * 
+     * @deprecated since 21.12.
      */
-    public IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
-        return (IIpsLoggingFrameworkConnector)getBuilderSet().getConfig()
-                .getPropertyValue(IIpsLoggingFrameworkConnector.CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
+    @Deprecated(since = "21.12")
+    public org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector() {
+        return (org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector)getBuilderSet().getConfig()
+                .getPropertyValue(
+                        org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.CONFIG_PROPERTY_LOGGING_FRAMEWORK_CONNECTOR);
     }
 
     /**
@@ -244,12 +247,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
     }
 
+    @Deprecated(since = "21.12")
     private void generateLoggerInstance(JavaCodeFragmentBuilder builder) throws CoreException {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
         List<String> usedClasses = new ArrayList<>();
-        IIpsLoggingFrameworkConnector connector = getIpsLoggingFrameworkConnector();
+        org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector connector = getIpsLoggingFrameworkConnector();
         JavaCodeFragment value = new JavaCodeFragment();
         value.append(connector.getLoggerInstanceStmt(getUnqualifiedClassName() + ".class.getName()", usedClasses)); //$NON-NLS-1$
         addLoggingConnectorImports(usedClasses, value);
@@ -264,6 +268,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         return "LOGGER"; //$NON-NLS-1$
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateLoggingStmtForMessageExpression(int level, JavaCodeFragment frag, String messageExp)
             throws CoreException {
         if (!checkLoggingGenerationConditions()) {
@@ -278,6 +283,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateLoggingStmtWithConditionForMessageExpression(int level,
             JavaCodeFragment frag,
             String messageExp) throws CoreException {
@@ -297,6 +303,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message) throws CoreException {
         if (!checkLoggingGenerationConditions()) {
             return;
@@ -310,6 +317,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateLoggingCondition(int level, JavaCodeFragment frag) throws CoreException {
         if (!checkLoggingGenerationConditions()) {
             return;
@@ -321,6 +329,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateLoggingStmtWithCondition(int level, JavaCodeFragment frag, String message)
             throws CoreException {
         if (!checkLoggingGenerationConditions()) {
@@ -338,6 +347,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         addLoggingConnectorImports(usedClasses, frag);
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateMethodEnteringLoggingStmt(JavaCodeFragment frag,
             String className,
             String methodName,
@@ -371,10 +381,12 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         } else {
             message.append("\""); //$NON-NLS-1$
         }
-        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
+        generateLoggingStmtWithConditionForMessageExpression(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
                 message.toString());
     }
 
+    @Deprecated(since = "21.12")
     protected final void generateMethodExitingLoggingStmt(JavaCodeFragment frag,
             String className,
             String methodName,
@@ -395,7 +407,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         message.append("\""); //$NON-NLS-1$
         message.append("+ "); //$NON-NLS-1$
         message.append(returnVariable);
-        generateLoggingStmtWithConditionForMessageExpression(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
+        generateLoggingStmtWithConditionForMessageExpression(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
                 message.toString());
     }
 
@@ -404,9 +417,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateDebugLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
-        generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
+        generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
+                message);
     }
 
     /**
@@ -414,9 +431,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * E.g. <code>getLogger("foo").isDebugEnabled()</code>
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateDebugLoggingCondition(JavaCodeFragment frag) throws CoreException {
-        generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag);
+        generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG,
+                frag);
     }
 
     /**
@@ -425,10 +446,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateDebugLoggingStmtWithCondition(JavaCodeFragment frag, String message)
             throws CoreException {
-        generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
+        generateLoggingStmtWithCondition(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
     }
 
     /**
@@ -436,9 +461,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateInfoLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
-        generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
+        generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO, frag,
+                message);
     }
 
     /**
@@ -446,9 +475,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * <code>getLogger("foo").isInfoEnabled()</code>
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateInfoLoggingCondition(JavaCodeFragment frag) throws CoreException {
-        generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag);
+        generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO,
+                frag);
     }
 
     /**
@@ -457,10 +490,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateInfoLoggingStmtWithCondition(JavaCodeFragment frag, String message)
             throws CoreException {
-        generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
+        generateLoggingStmtWithCondition(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
     }
 
     /**
@@ -468,9 +505,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateWarningLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
-        generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
+        generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag,
+                message);
     }
 
     /**
@@ -478,9 +519,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * E.g. <code>getLogger("foo").isWarningEnabled()</code>
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateWarningLoggingCondition(JavaCodeFragment frag) throws CoreException {
-        generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag);
+        generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING,
+                frag);
     }
 
     /**
@@ -489,10 +534,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateWarningLoggingStmtWithCondition(JavaCodeFragment frag, String message)
             throws CoreException {
-        generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
+        generateLoggingStmtWithCondition(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
     }
 
     /**
@@ -500,9 +549,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateErrorLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
-        generateLoggingStmt(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
+        generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag,
+                message);
     }
 
     /**
@@ -510,9 +563,13 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * E.g. <code>getLogger("foo").isErrorEnabled()</code>
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateErrorLoggingCondition(JavaCodeFragment frag) throws CoreException {
-        generateLoggingCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag);
+        generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR,
+                frag);
     }
 
     /**
@@ -521,10 +578,14 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @param frag the {@link JavaCodeFragment} where the code is written to
      * @param message the message text that will be logged
+     * 
+     * @deprecated since 21.12.
      */
+    @Deprecated(since = "21.12")
     protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message)
             throws CoreException {
-        generateLoggingStmtWithCondition(IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
+        generateLoggingStmtWithCondition(
+                org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
     }
 
     /**

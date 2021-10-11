@@ -19,7 +19,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
  * the Log4j logging framework.
  * 
  * @author Peter Erzberger
+ * @deprecated since 21.12
  */
+@Deprecated(since = "21.12")
 public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConnector {
 
     public static final String LOG4J_LEVEL_QNAME = "org.apache.log4j.Level"; //$NON-NLS-1$

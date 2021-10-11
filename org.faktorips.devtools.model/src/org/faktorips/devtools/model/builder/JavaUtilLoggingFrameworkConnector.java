@@ -22,7 +22,9 @@ import org.faktorips.util.ArgumentCheck;
  * the java.util.logging logging framework.
  * 
  * @author Peter Erzberger
+ * @deprecated since 21.12.
  */
+@Deprecated(since = "21.12")
 public class JavaUtilLoggingFrameworkConnector implements IIpsLoggingFrameworkConnector {
 
     private String id = ""; //$NON-NLS-1$

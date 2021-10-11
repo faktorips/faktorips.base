@@ -20,6 +20,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.junit.Before;
 import org.junit.Test;
 
+@Deprecated(since = "21.12")
 public class JavaStandardLoggingLogStmtBuilderTest {
 
     private JavaUtilLoggingFrameworkConnector loggingFrameworkConnector;

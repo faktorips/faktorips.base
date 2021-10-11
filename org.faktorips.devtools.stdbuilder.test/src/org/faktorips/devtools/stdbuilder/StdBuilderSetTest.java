@@ -29,7 +29,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
-import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -88,7 +87,8 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
 
         IIpsBuilderSetPropertyDef loggingConnectorPropertyDef = builderSetInfo
                 .getPropertyDefinition("loggingFrameworkConnector");
-        IIpsLoggingFrameworkConnector connector = (IIpsLoggingFrameworkConnector)loggingConnectorPropertyDef
+        @SuppressWarnings("deprecation")
+        org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector connector = (org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector)loggingConnectorPropertyDef
                 .parseValue(loggingConnectorPropertyDef.getDefaultValue(ipsProject));
         assertNull(connector);
     }

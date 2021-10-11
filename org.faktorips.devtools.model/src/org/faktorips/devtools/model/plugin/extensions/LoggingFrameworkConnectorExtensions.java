@@ -21,7 +21,10 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * {@link IIpsLoggingFrameworkConnector}-{@link List}-supplier for all implementations of the
  * extension point {@value #EXTENSION_POINT_ID_LOGGING_FRAMEWORK_CONNECTOR}.
+ * 
+ * @deprecated since 21.12.
  */
+@Deprecated(since = "21.12")
 public class LoggingFrameworkConnectorExtensions extends
         LazyCollectionExtension<IIpsLoggingFrameworkConnector, List<IIpsLoggingFrameworkConnector>> {
 

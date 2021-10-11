@@ -32,7 +32,9 @@ import org.faktorips.runtime.Message;
  * connector of the builder set.
  * 
  * @author Peter Erzberger
+ * @deprecated since 21.12.
  */
+@Deprecated(since = "21.12")
 public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetPropertyDef {
 
     @Override

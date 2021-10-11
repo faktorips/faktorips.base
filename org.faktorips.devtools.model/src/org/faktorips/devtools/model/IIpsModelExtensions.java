@@ -24,7 +24,6 @@ import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -75,17 +74,25 @@ public interface IIpsModelExtensions {
     /**
      * Returns the <code>IIpsLoggingFrameworkConnector</code> that are registered at the according
      * extension-point.
+     * 
+     * @deprecated since 21.12.
      */
-    IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors();
+    @Deprecated(since = "21.12")
+    org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector[] getIpsLoggingFrameworkConnectors();
 
     /**
      * Returns the <code>IIpsLoggingFrameworkConnector</code> for the provided id. If no
      * <code>IIpsLoggingFrameworkConnector</code> with the provided id is found <code>null</code>
      * will be returned.
+     * 
+     * @deprecated since 21.12.
      */
-    default IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector(String id) {
-        IIpsLoggingFrameworkConnector[] builders = IIpsModelExtensions.get().getIpsLoggingFrameworkConnectors();
-        for (IIpsLoggingFrameworkConnector builder : builders) {
+    @Deprecated(since = "21.12")
+    default org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector getIpsLoggingFrameworkConnector(
+            String id) {
+        org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector[] builders = IIpsModelExtensions.get()
+                .getIpsLoggingFrameworkConnectors();
+        for (org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector builder : builders) {
             if (id.equals(builder.getId())) {
                 return builder;
             }
