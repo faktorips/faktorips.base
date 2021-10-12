@@ -20,7 +20,7 @@
     <parent>
         <groupId>de.faktorzehn</groupId>
         <artifactId>faktorzehn-tycho-build</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
 
     <!-- These are all modules that are included in the Faktor-IPS build -->
@@ -36,6 +36,7 @@
         <module>../faktorips-maven-plugin</module>
         <module>../faktorips-documentation</module>
         <module>sites</module>
+        <module>../faktorips-coverage</module>
     </modules>
 
     <scm>
