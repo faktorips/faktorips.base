@@ -168,8 +168,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
         super.validateThis(result, ipsProject);
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME,
-                    Messages.Attribute_msg_InvalidAttributeName + name + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
+            String invalidName = (StringUtils.isNotEmpty(name)) ? " " + name : ""; //$NON-NLS-1$ //$NON-NLS-2$
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, NLS.bind(
+                    Messages.Attribute_msg_InvalidAttributeName, invalidName), Message.ERROR, this, PROPERTY_NAME)); // $NON-NLS-1$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$

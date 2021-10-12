@@ -362,6 +362,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
              */
             valueSetEditControl.setValueSetType(currentValueSetType);
         }
+        valueSetEditControl.setDataChangeable(true);
     }
 
     @Override

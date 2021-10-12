@@ -89,9 +89,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
-     * EnumValueSetEditControl or a RangeEditControl. the following general layout is used: the main
-     * layout is a gridlayout with one column. In the first row a composite with a 2 column
-     * gridlayout is created. In the second row a stacklayout is used to swap the
+     * {@link EnumValueSetEditControl} or a {@link RangeEditControl}. The following general layout
+     * is used: the main layout is a grid layout with one column. In the first row a composite with
+     * a 2 column grid layout is created. In the second row a stack layout is used to swap the
      * EnumValueSetEditControl and RangeEditControl dynamically.
      */
     public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext bindingContext,
@@ -461,7 +461,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public boolean isContainsNullEnabled() {
             boolean sourceSetAllowsNull = sourceSet == null || sourceSet.isContainsNull();
-            if (!getValueSet().isDerived() && getValueSet().isRange() && getValueSet().isEmpty()) {
+            if ((getValueSetOwner().findValueDatatype(getIpsProject()) == null) || (!getValueSet().isDerived()
+                    && getValueSet().isRange() && getValueSet().isEmpty())) {
                 return false;
             }
             return !getValueSet().isDerived() && sourceSetAllowsNull
@@ -515,7 +516,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public String getRelevanceText() {
-            return isContainsNull() ? Messages.ValueSetSpecificationControl_RelevanceOptional : Messages.ValueSetSpecificationControl_RelevanceMandatory;
+            return isContainsNull() ? Messages.ValueSetSpecificationControl_RelevanceOptional
+                    : Messages.ValueSetSpecificationControl_RelevanceMandatory;
         }
     }
 
