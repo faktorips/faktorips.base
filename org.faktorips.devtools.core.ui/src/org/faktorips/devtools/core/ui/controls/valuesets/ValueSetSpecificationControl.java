@@ -460,12 +460,16 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public boolean isContainsNullEnabled() {
-            boolean sourceSetAllowsNull = sourceSet == null || sourceSet.isContainsNull();
             if ((getValueSetOwner().findValueDatatype(getIpsProject()) == null) || (!getValueSet().isDerived()
                     && getValueSet().isRange() && getValueSet().isEmpty())) {
                 return false;
             }
-            return !getValueSet().isDerived() && sourceSetAllowsNull
+            // If the value set contains null the checkbox must remain enabled even if the source
+            // set no longer contains null so that the error can be corrected by deactivating the
+            // checkbox.
+            boolean sourceSetAllowsNullOrValueSetContainsNull = sourceSet == null || sourceSet.isContainsNull()
+                    || isContainsNull();
+            return !getValueSet().isDerived() && sourceSetAllowsNullOrValueSetContainsNull
                     && (!getValueDatatype().isPrimitive() || getValueSet().isEnum());
         }
 
