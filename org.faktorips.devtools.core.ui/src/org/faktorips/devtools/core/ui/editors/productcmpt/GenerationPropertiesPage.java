@@ -370,6 +370,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             refresh();
         }
         if (getProductCmpt().allowGenerations()) {
+            if (gotoNextGenerationAction == null || gotoPreviousGenerationAction == null) {
+                IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
+                createGotoPreviousNextGenerationAction(toolbarManager);
+            }
             gotoPreviousGenerationAction.update();
             gotoNextGenerationAction.update();
         }
