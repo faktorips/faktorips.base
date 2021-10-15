@@ -11,12 +11,16 @@
 package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.runtime.Message;
+import org.faktorips.testsupport.IpsMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link Message} contains the given text.
+ * 
+ * @deprecated since 21.12. Use {@link IpsMatchers#containsText(String)} instead.
  */
+@Deprecated
 public class MessageTextMatcher extends TypeSafeMatcher<Message> {
 
     private String text;

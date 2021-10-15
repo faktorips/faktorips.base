@@ -10,19 +10,17 @@
 
 package org.faktorips.testsupport.matchers;
 
-import java.util.Objects;
-
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
- * Matches a {@link Message} if it's {@link Message#getCode() message code} is the given
- * {@code messageCode}.
+ * Checks whether a {@link MessageList} contains a {@link Message} with a certain message code.
  */
-public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
+public class MessageListCodeMatcher extends TypeSafeMatcher<MessageList> {
 
     @CheckForNull
     private final String messageCode;
@@ -31,7 +29,7 @@ public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
     /**
      * @param messageCode the expected message code
      */
-    public MessageCodeMatcher(@CheckForNull String messageCode) {
+    public MessageListCodeMatcher(@CheckForNull String messageCode) {
         this.messageCode = messageCode;
         this.expectMessage = true;
     }
@@ -42,7 +40,7 @@ public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
      *            expected, <code>false</code> if no message with the given message code is expected
      *            (negates result).
      */
-    public MessageCodeMatcher(@CheckForNull String messageCode, boolean expectMessage) {
+    public MessageListCodeMatcher(@CheckForNull String messageCode, boolean expectMessage) {
         this.messageCode = messageCode;
         this.expectMessage = expectMessage;
     }
@@ -50,15 +48,14 @@ public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
     @Override
     public void describeTo(Description description) {
         if (expectMessage) {
-            description.appendText("a message with message code " + messageCode);
+            description.appendText("a messageList containing messages with code: " + messageCode);
         } else {
-            description.appendText("a message without message code: " + messageCode);
+            description.appendText("a messageList without message code: " + messageCode);
         }
     }
 
     @Override
-    protected boolean matchesSafely(Message m) {
-        return Objects.equals(messageCode, m.getCode()) == expectMessage;
+    public boolean matchesSafely(MessageList list) {
+        return list.getMessageByCode(messageCode) != null == expectMessage;
     }
-
 }

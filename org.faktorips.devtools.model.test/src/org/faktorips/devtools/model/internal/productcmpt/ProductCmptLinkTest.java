@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.faktorips.abstracttest.matcher.Matchers.containsMessages;
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.hasSize;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
-import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.containsMessages;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSize;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;

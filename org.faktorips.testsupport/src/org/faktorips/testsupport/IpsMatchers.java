@@ -22,6 +22,8 @@ import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
 import org.faktorips.testsupport.matchers.EmptyMessageListMatcher;
 import org.faktorips.testsupport.matchers.MessageCodeMatcher;
+import org.faktorips.testsupport.matchers.MessageInvalidObjectMatcher;
+import org.faktorips.testsupport.matchers.MessageListCodeMatcher;
 import org.faktorips.testsupport.matchers.MessageListMessageMatcher;
 import org.faktorips.testsupport.matchers.MessageListObjectPropertyMatcher;
 import org.faktorips.testsupport.matchers.MessageListSizeMatcher;
@@ -43,8 +45,16 @@ public class IpsMatchers {
      * Creates an {@link EmptyMessageListMatcher} that matches a {@link MessageList} if it
      * {@link MessageList#isEmpty() is empty}.
      */
-    public static EmptyMessageListMatcher emptyMessageList() {
+    public static EmptyMessageListMatcher isEmpty() {
         return new EmptyMessageListMatcher();
+    }
+
+    /**
+     * Creates a {@link Matcher} that matches a {@link MessageList} if it is not
+     * {@link MessageList#isEmpty() empty}.
+     */
+    public static Matcher<MessageList> containsMessages() {
+        return not(new EmptyMessageListMatcher());
     }
 
     /**
@@ -109,8 +119,18 @@ public class IpsMatchers {
      *
      * @param code the expected message code
      */
-    public static MessageListMessageMatcher hasMessage(String code) {
-        return new MessageListMessageMatcher(new MessageCodeMatcher(code));
+    public static Matcher<MessageList> hasMessageCode(String code) {
+        return new MessageListCodeMatcher(code);
+    }
+
+    /**
+     * Creates a {@link MessageListMessageMatcher} that matches a {@link MessageList} if it contains
+     * no {@link Message} with the given {@link Message#getCode() code}.
+     *
+     * @param code the message code
+     */
+    public static Matcher<MessageList> lacksMessageCode(String code) {
+        return new MessageListCodeMatcher(code, false);
     }
 
     /**
@@ -152,7 +172,7 @@ public class IpsMatchers {
      *
      * @param severity the expected {@link Severity}
      */
-    public static MessageListMessageMatcher hasMessage(Severity severity) {
+    public static MessageListMessageMatcher hasMessageWithSeverity(Severity severity) {
         return new MessageListMessageMatcher(new MessageSeverityMatcher(severity));
     }
 
@@ -183,6 +203,19 @@ public class IpsMatchers {
     }
 
     /**
+     * A {@link Matcher} that matches if, for every given {@link Matcher}, the checked
+     * {@link MessageList} contains a {@link Message} that is matched by that {@link Matcher}. This
+     * must be a different {@link Message} for every {@link Matcher Matchers}. The
+     * {@link MessageList} may contain additional {@link Message Messages} not matched by any
+     * {@link Matcher}. The order of the {@link Message Messages} and {@link Matcher Matchers} is
+     * irrelevant.
+     */
+    @SafeVarargs
+    public static Matcher<MessageList> hasMessages(Matcher<Message>... messageMatchers) {
+        return new MessageListMessageMatcher(messageMatchers);
+    }
+
+    /**
      * Creates a {@link Matcher} that matches if the {@link Message#getText() Message's text}
      * {@link String#contains(CharSequence) contains} the given text.
      * 
@@ -192,8 +225,20 @@ public class IpsMatchers {
         return hasFeature(Message::getText, containsString(text), "a message where the text is", "text");
     }
 
+    public static Matcher<Message> hasSeverity(Severity severity) {
+        return new MessageSeverityMatcher(severity);
+    }
+
     private static Matcher<Message> codeAndSeverity(String code, Severity severity) {
         return CombinableMatcher.both(new MessageCodeMatcher(code)).and(new MessageSeverityMatcher(severity));
+    }
+
+    public static Matcher<Message> hasInvalidObject(Object invalidObject) {
+        return new MessageInvalidObjectMatcher(invalidObject);
+    }
+
+    public static Matcher<Message> hasInvalidObject(Object invalidObject, String propertyName) {
+        return new MessageInvalidObjectMatcher(invalidObject, propertyName);
     }
 
     /**
@@ -221,5 +266,4 @@ public class IpsMatchers {
             }
         };
     }
-
 }

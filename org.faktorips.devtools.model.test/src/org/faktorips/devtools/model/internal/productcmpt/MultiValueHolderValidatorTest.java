@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;

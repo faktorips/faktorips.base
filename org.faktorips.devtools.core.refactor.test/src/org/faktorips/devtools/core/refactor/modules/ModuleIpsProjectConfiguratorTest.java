@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.refactor.modules;
 
 import static org.faktorips.abstracttest.matcher.FluentAssert.when;
-import static org.faktorips.abstracttest.matcher.Matchers.containsErrorMsg;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.faktorips.devtools.core.refactor.modules.RequiresTransitiveMatcher.requiresTransitive;
+import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -110,9 +110,9 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         when(() -> properties.setPersistenceSupport(PersistenceSupportNames.ID_GENERIC_JPA_2_1))
                 .assertThat(moduleIpsProjectConfigurator.validate(javaProject, properties), isEmpty());
         when(() -> properties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1))
-                .assertThat(moduleIpsProjectConfigurator.validate(javaProject, properties), containsErrorMsg());
+                .assertThat(moduleIpsProjectConfigurator.validate(javaProject, properties), containsErrorMessage());
         when(() -> properties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5))
-                .assertThat(moduleIpsProjectConfigurator.validate(javaProject, properties), containsErrorMsg());
+                .assertThat(moduleIpsProjectConfigurator.validate(javaProject, properties), containsErrorMessage());
     }
 
     @Test

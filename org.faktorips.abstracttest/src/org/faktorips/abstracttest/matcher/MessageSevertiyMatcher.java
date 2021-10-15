@@ -13,12 +13,16 @@ package org.faktorips.abstracttest.matcher;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.testsupport.matchers.MessageSeverityMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 /**
  * Checks whether a {@link MessageList} contains a message with a certain message code.
+ * 
+ * @deprecated since 21.12. Use {@link MessageSeverityMatcher} instead.
  */
+@Deprecated
 public class MessageSevertiyMatcher extends BaseMatcher<Message> {
 
     private final Severity severity;

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.testsupport.matchers.MessageListMessageMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -26,7 +27,10 @@ import org.hamcrest.TypeSafeMatcher;
  * be a different {@link Message} for every {@link Matcher Matchers}. The {@link MessageList} may
  * contain additional {@link Message Messages} not matched by any {@link Matcher}. The order of the
  * {@link Message Messages} and {@link Matcher Matchers} is irrelevant.
+ * 
+ * @deprecated since 21.12. Use {@link MessageListMessageMatcher} instead.
  */
+@Deprecated
 final class MessageListMessagesMatcher extends TypeSafeMatcher<MessageList> {
     private final Matcher<Message>[] messageMatchers;
     private Description mismatchDescription;

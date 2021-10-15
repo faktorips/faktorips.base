@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.internal.type;
 
 import static org.faktorips.abstracttest.matcher.Matchers.allOf;
-import static org.faktorips.abstracttest.matcher.Matchers.containsText;
-import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessages;
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasMessages;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 

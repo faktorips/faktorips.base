@@ -10,10 +10,14 @@
 
 package org.faktorips.testsupport.matchers;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
@@ -22,26 +26,53 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public class MessageListMessageMatcher extends TypeSafeMatcher<MessageList> {
 
-    private final Matcher<Message> messageMatcher;
+    private final Matcher<Message>[] messageMatchers;
+    private Description mismatchDescription;
 
-    public MessageListMessageMatcher(Matcher<Message> messageMatcher) {
-        this.messageMatcher = messageMatcher;
+    @SafeVarargs
+    public MessageListMessageMatcher(Matcher<Message>... messageMatchers) {
+        this.messageMatchers = messageMatchers;
+        mismatchDescription = new StringDescription();
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("a message list containing ");
-        messageMatcher.describeTo(description);
+        boolean first = true;
+        description.appendText("a " + MessageList.class.getSimpleName() + " containing ");
+        for (Matcher<Message> matcher : messageMatchers) {
+            if (!first) {
+                description.appendText("\n AND ");
+            } else {
+                first = false;
+            }
+            description.appendDescriptionOf(matcher);
+        }
     }
 
     @Override
-    protected boolean matchesSafely(MessageList ml) {
-        for (Message m : ml) {
-            if (messageMatcher.matches(m)) {
-                return true;
+    protected boolean matchesSafely(MessageList messageList) {
+        boolean allMatch = true;
+        Set<Message> messages = new LinkedHashSet<>(messageList.getMessages());
+        mismatchDescription = new StringDescription();
+        matchers: for (Matcher<Message> messageMatcher : messageMatchers) {
+            for (Message message : messages) {
+                if (messageMatcher.matches(message)) {
+                    messages.remove(message);
+                    continue matchers;
+                }
             }
+            if (!mismatchDescription.toString().isEmpty()) {
+                mismatchDescription.appendText("\n AND ");
+            }
+            messageMatcher.describeTo(mismatchDescription);
+            allMatch = false;
         }
-        return false;
+        return allMatch;
+    }
+
+    @Override
+    protected void describeMismatchSafely(MessageList item, Description mismatchDescription) {
+        mismatchDescription.appendText(this.mismatchDescription.toString());
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.function.Function;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.testsupport.IpsMatchers;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNot;
@@ -25,42 +26,82 @@ public class Matchers {
         // avoid default constructor for utility class
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasMessageCode(String)} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> hasMessageCode(final String msgCode) {
         return new MessageCodeMatcher(msgCode, true);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#lacksMessageCode(String)} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> lacksMessageCode(final String msgCode) {
         return new MessageCodeMatcher(msgCode, false);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasSize(int)} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> hasSize(int size) {
         return new MessageListSizeMatcher(size);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#isEmpty} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> isEmpty() {
         return new EmptyMessageListMatcher();
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#containsMessages} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> containsMessages() {
         return new IsNot<>(new EmptyMessageListMatcher());
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasInvalidObject(Object)} instead.
+     */
+    @Deprecated
     public static Matcher<Message> hasInvalidObject(Object invalidObject) {
         return new MessageInvalidObjectMatcher(invalidObject);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasInvalidObject(Object, String)} instead.
+     */
+    @Deprecated
     public static Matcher<Message> hasInvalidObject(Object invalidObject, String propertyName) {
         return new MessageInvalidObjectMatcher(invalidObject, propertyName);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasSeverity(Severity)} instead.
+     */
+    @Deprecated
     public static Matcher<Message> hasSeverity(Severity severity) {
         return new MessageSevertiyMatcher(severity);
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#containsErrorMessage} instead.
+     */
+    @Deprecated
     public static Matcher<MessageList> containsErrorMsg() {
         return new ContainsErrorMatcher();
     }
 
+    /**
+     * @deprecated since 21.12. Use {@link IpsMatchers#containsText(String)} instead.
+     */
+    @Deprecated
     public static Matcher<Message> containsText(String text) {
         return new MessageTextMatcher(text);
     }
@@ -120,8 +161,11 @@ public class Matchers {
      * {@link MessageList} may contain additional {@link Message Messages} not matched by any
      * {@link Matcher}. The order of the {@link Message Messages} and {@link Matcher Matchers} is
      * irrelevant.
+     * 
+     * @deprecated since 21.12. Use {@link IpsMatchers#hasMessages(Matcher...)} instead.
      */
     @SafeVarargs
+    @Deprecated
     public static Matcher<MessageList> hasMessages(Matcher<Message>... messageMatchers) {
         return new MessageListMessagesMatcher(messageMatchers);
     }

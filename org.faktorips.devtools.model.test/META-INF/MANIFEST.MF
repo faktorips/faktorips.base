@@ -21,5 +21,6 @@ Import-Package: org.junit;version="4.5.0",
  org.mockito.invocation,
  org.mockito.runners,
  org.mockito.stubbing,
- org.mockito.verification
+ org.mockito.verification,
+ org.faktorips.testsupport
 Export-Package: org.faktorips.devtools.model.internal.value

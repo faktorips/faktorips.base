@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.util;
 
 import static org.faktorips.abstracttest.matcher.FluentAssert.when;
-import static org.faktorips.abstracttest.matcher.Matchers.containsErrorMsg;
-import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -75,7 +75,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_BASE_PACKAGE_NAME));
@@ -87,7 +87,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_RUNTIME_ID_PREFIX));
@@ -99,7 +99,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_SOURCE_FOLDER_NAME));
@@ -112,7 +112,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_PERSISTENCE_SUPPORT));
@@ -134,7 +134,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_LOCALES));
@@ -146,7 +146,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_BASE_PACKAGE_NAME));
@@ -158,7 +158,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_RUNTIME_ID_PREFIX));
@@ -170,7 +170,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_SOURCE_FOLDER_NAME));
@@ -183,7 +183,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_PERSISTENCE_SUPPORT));
@@ -205,7 +205,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         MessageList messages = properties.validateRequiredProperties();
 
-        assertThat(messages, containsErrorMsg());
+        assertThat(messages, containsErrorMessage());
         assertThat(messages, hasMessageCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY));
         assertThat(messages.getMessageByCode(IpsProjectCreationProperties.MSG_CODE_MISSING_PROPERTY),
                 hasInvalidObject(properties, IpsProjectCreationProperties.PROPERTY_LOCALES));
@@ -258,7 +258,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
             when(configuratorsAre(nonApplicableIpsProjectConfigurator, standardJavaProjectConfigurator))
                     .assertThat(properties.validate(javaProject), isEmpty());
             when(configuratorsAre(standardJavaProjectConfigurator, validationErrorIpsProjectConfigurator))
-                    .assertThat(properties.validate(javaProject), containsErrorMsg());
+                    .assertThat(properties.validate(javaProject), containsErrorMessage());
         }
     }
 

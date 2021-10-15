@@ -642,7 +642,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         for (Object element : expected) {
             boolean found = false;
             for (ITestObject testObject : testObjects) {
-                if (testObject.equals(testObjects)) {
+                if (testObject.equals(element)) {
                     found = true;
                     break;
                 }

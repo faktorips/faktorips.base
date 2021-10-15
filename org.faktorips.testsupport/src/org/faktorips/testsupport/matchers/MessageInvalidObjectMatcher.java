@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.abstracttest.matcher;
+package org.faktorips.testsupport.matchers;
 
 import java.util.Optional;
 
@@ -19,21 +19,18 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link Message} contains the given invalid object.
- * 
- * @deprecated since 21.12. Use
- *             {@link org.faktorips.testsupport.matchers.MessageInvalidObjectMatcher} instead
  */
-@Deprecated
 public class MessageInvalidObjectMatcher extends TypeSafeMatcher<Message> {
 
     private Object invalidObject;
     private Optional<String> propertyName;
 
-    MessageInvalidObjectMatcher(Object invalidObject) {
-        this(invalidObject, null);
+    public MessageInvalidObjectMatcher(Object invalidObject) {
+        this.invalidObject = invalidObject;
+        this.propertyName = Optional.empty();
     }
 
-    MessageInvalidObjectMatcher(Object invalidObject, String propertyName) {
+    public MessageInvalidObjectMatcher(Object invalidObject, String propertyName) {
         this.invalidObject = invalidObject;
         this.propertyName = Optional.ofNullable(propertyName);
     }

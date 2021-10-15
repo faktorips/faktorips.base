@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 
-import static org.faktorips.abstracttest.matcher.Matchers.containsErrorMsg;
+import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -72,7 +72,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_IpsProject() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -86,7 +86,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_JavaProject() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -100,7 +100,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_IpsPackageFragmentRoot() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -114,7 +114,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_DefaultIpsPackageFragment() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -128,7 +128,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_PackageFragment() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -142,7 +142,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_PackageFragment_FirstLevel() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
@@ -157,7 +157,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_PackageFragment_SecondLevel_First() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
 
         IIpsPackageFragment ipsPackageFragment = root.getIpsPackageFragment("a.b");
@@ -171,7 +171,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_IpsSrcFile_SecondLevel_First() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
 
         openFixDifferencesToModelWizardAction.addElementToFix(ipsElementsToFix, productCmpt.getIpsSrcFile());
@@ -184,7 +184,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_PackageFragment_SecondLevel_Second() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
         IIpsPackageFragment ipsPackageFragment = root.getIpsPackageFragment("a.c");
@@ -198,7 +198,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_IpsSrcFile_SecondLevel_Second() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
         openFixDifferencesToModelWizardAction.addElementToFix(ipsElementsToFix, productCmpt2.getIpsSrcFile());
@@ -211,7 +211,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_ProductCmpt() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
 
         openFixDifferencesToModelWizardAction.addElementToFix(ipsElementsToFix, productCmpt);
@@ -236,7 +236,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     public void testAddElementToFix_IResource() throws CoreException {
         // check preconditions, because this test fails randomly
         assertThat("Only when the ipsProject is valid can the differences be added", ipsProject.validate(),
-                not(containsErrorMsg()));
+                not(containsErrorMessage()));
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 

@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
-import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +33,6 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
-import org.faktorips.abstracttest.matcher.Matchers;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.DependencyType;
@@ -1237,7 +1237,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
                         IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY));
         Message message = messageList
                 .getMessageByCode(IPolicyCmptType.MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY);
-        assertThat(message, Matchers.hasSeverity(Severity.ERROR));
+        assertThat(message, hasSeverity(Severity.ERROR));
         assertThat(message,
                 hasInvalidObject(superPolicyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS));
         assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));

@@ -11,5 +11,20 @@
         }
       }
     }
+  ],
+  "21.12.0": [
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [       
+          {
+            "code": "java.class.externalClassExposedInAPI",
+            "new": "interface org.faktorips.valueset.ValueSet<T>",
+            "justification": "FIPS-8175"
+          }      
+        ]
+      }
+    }
   ]
 }

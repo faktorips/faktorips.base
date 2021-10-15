@@ -11,12 +11,17 @@
 package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.runtime.MessageList;
+import org.faktorips.testsupport.matchers.MessageSeverityMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link MessageList} contains an error message.
+ * 
+ * @deprecated since 21.12. Use {@link MessageSeverityMatcher new MessageListMessageMatcher(new
+ *             MessageSeverityMatcher(Severity#ERROR)} instead.
  */
+@Deprecated
 public class ContainsErrorMatcher extends TypeSafeMatcher<MessageList> {
     @Override
     public void describeTo(Description description) {

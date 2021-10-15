@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
-import static org.faktorips.abstracttest.matcher.Matchers.hasSeverity;
-import static org.faktorips.abstracttest.matcher.Matchers.hasSize;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
+import static org.faktorips.testsupport.IpsMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

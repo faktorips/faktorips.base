@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
