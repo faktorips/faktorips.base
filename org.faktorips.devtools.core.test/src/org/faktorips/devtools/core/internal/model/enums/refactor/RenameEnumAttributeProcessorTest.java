@@ -64,7 +64,6 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     @Test
     public void testRenameEnumAttribute() throws CoreException {
         enumType.setAbstract(true);
-        enumType.getEnumLiteralNameAttribute().delete();
 
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setEnumContentName(enumType.getEnumContentName());

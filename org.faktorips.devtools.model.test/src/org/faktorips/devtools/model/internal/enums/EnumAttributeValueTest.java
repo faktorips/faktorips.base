@@ -299,13 +299,10 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
 
         paymentMode.setAbstract(true);
         validationMessageList = paymentMode.validate(ipsProject);
-        assertEquals(2, validationMessageList.size());
+        assertEquals(1, validationMessageList.size());
         assertFalse(
                 IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
                         .getMessage(0).getCode());
-        assertFalse(
-                IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY == validationMessageList
-                        .getMessage(1).getCode());
     }
 
     @Test

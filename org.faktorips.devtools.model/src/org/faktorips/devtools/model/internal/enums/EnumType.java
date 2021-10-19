@@ -117,6 +117,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     public void setAbstract(boolean isAbstract) {
         boolean oldIsAbstract = this.isAbstract;
         this.isAbstract = isAbstract;
+
+        if (isAbstract) {
+            removePartThis(getEnumLiteralNameAttribute());
+        }
+
         valueChanged(oldIsAbstract, isAbstract);
     }
 
