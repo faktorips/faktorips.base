@@ -19,12 +19,20 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Hamcrest {@link Matcher Matchers} for use in JUnit tests of Faktor-IPS {@link ValueSet value
+ * sets}.
+ */
 public class ValueSetMatchers {
 
     private ValueSetMatchers() {
         // util class
     }
 
+    /**
+     * Creates a {@link Matcher} that matches a {@link ValueSet} if it {@link ValueSet#isEmpty() is
+     * empty}.
+     */
     public static Matcher<ValueSet<?>> empty() {
         return new TypeSafeMatcher<ValueSet<?>>() {
 
@@ -40,6 +48,10 @@ public class ValueSetMatchers {
         };
     }
 
+    /**
+     * Creates a {@link Matcher} that matches a {@link ValueSet} if it
+     * {@link ValueSet#containsNull() contains null}.
+     */
     public static Matcher<ValueSet<?>> containsNull() {
         return new TypeSafeMatcher<ValueSet<?>>() {
 
@@ -55,6 +67,13 @@ public class ValueSetMatchers {
         };
     }
 
+    /**
+     * Creates a {@link Matcher} that matches a {@link ValueSet} if it {@link ValueSet#isRange() is
+     * a range} with the given lower and upper bound.
+     * 
+     * @param lower the expected lower bound
+     * @param upper the expected upper bound
+     */
     public static Matcher<ValueSet<?>> isRange(String lower, String upper) {
         return new TypeSafeMatcher<ValueSet<?>>() {
 
@@ -72,6 +91,13 @@ public class ValueSetMatchers {
         };
     }
 
+    /**
+     * Creates a {@link Matcher} that matches a {@link ValueSet} if it {@link ValueSet#contains
+     * contains} the given values.
+     * 
+     * @param <T> the object type to match
+     * @param values the expected values
+     */
     @SuppressWarnings("unchecked")
     public static <T> Matcher<ValueSet<T>> contains(T... values) {
         return new TypeSafeMatcher<ValueSet<T>>() {
