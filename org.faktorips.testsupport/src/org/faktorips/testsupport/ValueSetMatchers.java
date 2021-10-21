@@ -70,12 +70,13 @@ public class ValueSetMatchers {
     /**
      * Creates a {@link Matcher} that matches a {@link ValueSet} if it {@link ValueSet#isRange() is
      * a range} with the given lower and upper bound.
-     * 
+     *
+     * @param <T> the type of the range's bounds
      * @param lower the expected lower bound
      * @param upper the expected upper bound
      */
-    public static Matcher<ValueSet<?>> isRange(String lower, String upper) {
-        return new TypeSafeMatcher<ValueSet<?>>() {
+    public static <T extends Comparable<T>> Matcher<ValueSet<T>> isRange(T lower, T upper) {
+        return new TypeSafeMatcher<ValueSet<T>>() {
 
             @Override
             public void describeTo(Description description) {
@@ -83,10 +84,10 @@ public class ValueSetMatchers {
             }
 
             @Override
-            protected boolean matchesSafely(ValueSet<?> valueSet) {
+            protected boolean matchesSafely(ValueSet<T> valueSet) {
                 return valueSet.isRange()
-                        && Objects.equals(((Range<?>)valueSet).getLowerBound(), lower)
-                        && Objects.equals(((Range<?>)valueSet).getUpperBound(), upper);
+                        && Objects.equals(((Range<T>)valueSet).getLowerBound(), lower)
+                        && Objects.equals(((Range<T>)valueSet).getUpperBound(), upper);
             }
         };
     }
