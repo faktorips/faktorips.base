@@ -37,6 +37,8 @@ import org.faktorips.runtime.Message;
 @Deprecated(since = "21.12")
 public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetPropertyDef {
 
+    private static final String MSGCODE_DEPRECATED = IIpsBuilderSetPropertyDef.MSGCODE_PREFIX + "Deprecated"; //$NON-NLS-1$
+
     @Override
     public boolean isAvailable(IIpsProject ipsProject) {
         return true;
@@ -79,8 +81,13 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
             return null;
         }
         try {
-            parseValue(value);
-            return null;
+            if (null == parseValue(value)) {
+                return null;
+            } else {
+                return new Message(MSGCODE_DEPRECATED,
+                        Messages.IpsLoggingFrameworkConnectorPropertyDef_Deprecated,
+                        Message.WARNING);
+            }
         } catch (IllegalArgumentException e) {
             return getStandardValidationMessage(value);
         }
