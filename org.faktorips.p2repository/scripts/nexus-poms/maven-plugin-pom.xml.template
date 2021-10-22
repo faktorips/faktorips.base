@@ -40,8 +40,8 @@
     </licenses>
 
     <properties>
-        <tycho-version>2.2.0</tycho-version>
-        <tycho-extras-version>2.2.0</tycho-extras-version>
+        <tycho-version>2.4.0</tycho-version>
+        <tycho-extras-version>2.4.0</tycho-extras-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
     </properties>
