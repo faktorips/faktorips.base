@@ -719,7 +719,6 @@ public class XmlUtil {
     }
 
     public static final String getSchemaLocation(IpsObjectType ipsObjectType) {
-
         Version version = FrameworkUtil.getBundle(XmlUtil.class).getVersion();
         String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
                 version.getMajor() + "." + version.getMinor(), //$NON-NLS-1$

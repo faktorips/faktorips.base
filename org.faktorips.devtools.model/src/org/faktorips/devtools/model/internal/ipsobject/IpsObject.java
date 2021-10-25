@@ -197,13 +197,44 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         element.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
 
         if (getIpsProject().getReadOnlyProperties().isValidateIpsSchema()
-                && isNotBusinessFunction()) {
-            element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
+                && supportsXmlSchema()) {
+            String xmlNamespace = getXmlNamespace();
+            element.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, xmlNamespace);
             element.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                     "xsi:schemaLocation", //$NON-NLS-1$
-                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " //$NON-NLS-1$
-                            + XmlUtil.getSchemaLocation(getIpsObjectType()));
+                    xmlNamespace + " " //$NON-NLS-1$
+                            + getXmlSchemaLocation());
         }
+    }
+
+    /**
+     * Returns whether the XML for this {@link IpsObject} uses an XML schema.
+     * 
+     * <p>
+     * If this method returns {@code true}, {@link #getXmlNamespace()} and
+     * {@link #getXmlSchemaLocation()} must also be implemented.
+     * </p>
+     */
+    protected boolean supportsXmlSchema() {
+        return isNotBusinessFunction();
+    }
+
+    /**
+     * Returns the namespace of this object's XML schema.
+     *
+     * @see #supportsXmlSchema()
+     */
+    protected String getXmlNamespace() {
+        return XmlUtil.XML_IPS_DEFAULT_NAMESPACE;
+    }
+
+    /**
+     * Returns the location of this object's XML schema.
+     *
+     * @see #supportsXmlSchema()
+     */
+    protected String getXmlSchemaLocation() {
+        return XmlUtil.getSchemaLocation(getIpsObjectType());
     }
 
     @SuppressWarnings("deprecation")

@@ -10166,3 +10166,4 @@ eclipselink
 stacktrace
 hamcrest
 int
+namespace
