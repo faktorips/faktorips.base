@@ -72,7 +72,6 @@
     <xsd:element name="ValidationRuleDef">
         <xsd:complexType>
             <xsd:sequence minOccurs="1" maxOccurs="1">
-                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <!-- Deprecated BusinessFunction -->
                 <xsd:element name="BusinessFunction" minOccurs="0" maxOccurs="unbounded">
                     <xsd:complexType>
@@ -83,6 +82,7 @@
                 <xsd:element name="ValidatedAttribute" type="ValidatedAttribute" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element name="Markers" type="Markers" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="MessageText" type="MessageText" minOccurs="1" maxOccurs="1" />
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
             </xsd:sequence>
             <xsd:attribute name="activatedByDefault" type="boolean" use="required" />
