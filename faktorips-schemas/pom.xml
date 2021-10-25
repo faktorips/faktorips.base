@@ -93,6 +93,47 @@
                 <version>3.4.1</version>
             </extension>
         </extensions>
-
     </build>
+    <profiles>
+        <profile>
+            <id>CI</id>
+            <distributionManagement>
+                <repository>
+                    <id>releases</id>
+                    <name>Faktor-IPS Releases</name>
+                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>Faktor-IPS Snapshots</name>
+                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
