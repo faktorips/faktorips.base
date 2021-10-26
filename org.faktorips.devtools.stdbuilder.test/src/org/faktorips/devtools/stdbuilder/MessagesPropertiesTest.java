@@ -161,12 +161,12 @@ public class MessagesPropertiesTest {
 
         String propertyText = outputStream.toString();
 
-        assertThat(propertyText, is("aaa0=123\n"
-                + "aaa1=123\n"
-                + "abc=312\n"
-                + "bcd=312\n"
-                + "cde=312\n"
-                + "def=312\n"));
+        assertThat(propertyText, is("aaa0=123" + System.lineSeparator()
+                + "aaa1=123" + System.lineSeparator()
+                + "abc=312" + System.lineSeparator()
+                + "bcd=312" + System.lineSeparator()
+                + "cde=312" + System.lineSeparator()
+                + "def=312" + System.lineSeparator()));
     }
 
 }

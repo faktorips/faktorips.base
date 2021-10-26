@@ -56,7 +56,10 @@ public class IpsStatusTest {
         assertThat(status.isMultiStatus(), is(true));
         assertThat(status.getPlugin(), is(IpsModelActivator.PLUGIN_ID));
         assertThat(status.getSeverity(), is(IStatus.ERROR));
-        assertThat(status.getMessage(), is("Info\nWarn\nError\nOther"));
+        assertThat(status.getMessage(), is("Info" + System.lineSeparator()
+                + "Warn" + System.lineSeparator()
+                + "Error" + System.lineSeparator()
+                + "Other"));
         IStatus[] children = status.getChildren();
         assertThat(children.length, is(4));
         assertThat(children[0], is(instanceOf(IpsStatus.class)));
