@@ -94,21 +94,27 @@
             </extension>
         </extensions>
     </build>
+
+    <scm>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+    
     <profiles>
         <profile>
             <id>CI</id>
-            <distributionManagement>
-                <repository>
-                    <id>releases</id>
-                    <name>Faktor-IPS Releases</name>
-                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>snapshots</id>
-                    <name>Faktor-IPS Snapshots</name>
-                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
