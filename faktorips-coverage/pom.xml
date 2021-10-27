@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
-    <artifactId>faktorips-reports</artifactId>
+    <artifactId>faktorips-coverage</artifactId>
     <version>21.12.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -278,16 +278,6 @@
             <version>${project.version}</version>
         </dependency>
         <!-- Other -->
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId> org.faktorips.p2repository</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.p2repository.test</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-maven-plugin</artifactId>
