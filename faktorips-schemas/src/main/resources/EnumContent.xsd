@@ -8,9 +8,9 @@
         <xsd:complexType>
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
-                <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="Description" type="Description" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="EnumValue" minOccurs="0" maxOccurs="unbounded" />
-                <xsd:element name="EnumAttributeReference" type="EnumAttributeReference" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="EnumAttributeReference" type="EnumAttributeReference" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="enumType" type="qualifiedName" use="required" />
             <xsd:attribute ref="xml:space" />
