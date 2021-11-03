@@ -616,26 +616,26 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     private void importUpstreamProjects(List<String> lines) {
-        List<MavenProject> upstreamIpsProjects = findUpstreamIpsProjectsNotInstalled();
-        if (!upstreamIpsProjects.isEmpty()) {
+        List<MavenProject> upstreamMavenProjects = findUpstreamMavenProjectsNotInstalled();
+        if (!upstreamMavenProjects.isEmpty()) {
             getLog().info("The project " + project
-                    + " is built without the 'install' goal but depends on the following upstream Faktor-IPS projects:"
-                    + upstreamIpsProjects.stream().map(MavenProject::toString)
+                    + " is built without the 'install' goal but depends on the following upstream Maven-Projects:"
+                    + upstreamMavenProjects.stream().map(MavenProject::toString)
                             .collect(Collectors.joining("\n\t", "\t", "\n"))
                     + "They will also be imported into the Faktor-IPS workspace.");
         }
-        upstreamIpsProjects.forEach(p -> lines
+        upstreamMavenProjects.forEach(p -> lines
                 .add("    <faktorips.mavenImport dir=\"" + p.getBasedir() + "\" statusFile=\"${status.file}\" />"));
     }
 
-    private List<MavenProject> findUpstreamIpsProjectsNotInstalled() {
+    private List<MavenProject> findUpstreamMavenProjectsNotInstalled() {
         if (session.getRequest().getGoals().stream().noneMatch(Predicate.isEqual("install"))) {
-            List<MavenProject> upstreamProjects = session.getProjectDependencyGraph().getUpstreamProjects(
-                    project,
-                    true);
+            List<MavenProject> upstreamProjects = session.getProjectDependencyGraph()
+                    .getUpstreamProjects(project, true);
+
             return upstreamProjects.stream()
                     .filter(p -> p.getPackaging().equalsIgnoreCase("jar"))
-                    .filter(p -> new File(p.getBasedir().getAbsoluteFile(), ".ipsproject").exists())
+                    .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
