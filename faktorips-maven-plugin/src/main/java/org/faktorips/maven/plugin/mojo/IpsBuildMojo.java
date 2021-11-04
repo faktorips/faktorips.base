@@ -492,7 +492,7 @@ public class IpsBuildMojo extends AbstractMojo {
             }
         }
         if (importAsMavenProject) {
-            return project.getName();
+            return project.getArtifactId();
         }
         return project.getBasedir().getName();
     }
