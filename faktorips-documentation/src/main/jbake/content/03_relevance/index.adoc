@@ -1,7 +1,7 @@
 :jbake-title: Relevanzen
 :jbake-type: chapter
 :jbake-status: published
-:jbake-order: 10
+:jbake-order: 30
 :images-folder: {images}relevance/
 
 == Relevanzen

@@ -1,0 +1,6 @@
+:jbake-title: Release Notes
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 10
+
+== Release Notes

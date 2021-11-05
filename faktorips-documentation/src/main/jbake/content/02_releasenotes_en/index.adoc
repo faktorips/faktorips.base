@@ -1,0 +1,6 @@
+:jbake-title: Release Notes (English)
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 20
+
+== Release Notes (English)

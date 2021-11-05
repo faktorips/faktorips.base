@@ -10,4 +10,8 @@ Diese Seite befindet sich noch im Aufbau. +
 Die bisherige Dokumentation ist bis zu ihrer Migration weiterhin unter https://www.faktorzehn.org/dokumentation/[faktorzehn.org/dokumentation] zu finden. +
 Die Dokumentation zum Faktor-IPS Maven Plugin ist https://doc.faktorzehn.org/faktorips-maven-plugin/latest/[hier] zu finden.
 
-=== link:relevance/index.html[Relevanzen]
+=== link:01_releasenotes/index.html[Release Notes]
+
+=== link:02_releasenotes_en/index.html[Release Notes (English)]
+
+=== link:03_relevance/index.html[Relevanzen]
