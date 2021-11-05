@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.jdt.core.Signature;
@@ -35,5 +37,28 @@ public class MethodParameterTest {
         assertEquals("final testtype param", methodParameter.getDefinition());
         assertEquals("param", methodParameter.getName());
         assertEquals("testtype", methodParameter.getType());
+    }
+
+    @Test
+    public void testArrayOf() {
+        MethodParameter[] methodParameters = MethodParameter.arrayOf("String", "foo", "int", "bar");
+
+        assertThat(methodParameters.length, is(2));
+        assertThat(methodParameters[0].getType(), is("String"));
+        assertThat(methodParameters[0].getName(), is("foo"));
+        assertThat(methodParameters[1].getType(), is("int"));
+        assertThat(methodParameters[1].getName(), is("bar"));
+    }
+
+    @Test
+    public void testArrayOf_Empty() {
+        MethodParameter[] methodParameters = MethodParameter.arrayOf();
+
+        assertThat(methodParameters.length, is(0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testArrayOf_Odd() {
+        MethodParameter.arrayOf("String", "foo", "bar");
     }
 }

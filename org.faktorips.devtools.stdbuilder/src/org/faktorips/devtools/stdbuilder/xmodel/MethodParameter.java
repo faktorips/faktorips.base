@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jdt.core.Signature;
 
 /**
@@ -145,6 +148,19 @@ public class MethodParameter {
     @Override
     public String toString() {
         return "MethodParameter " + getDefinition();
+    }
+
+    public static final MethodParameter[] arrayOf(String... parameterTypesAndNames) {
+        if (parameterTypesAndNames.length % 2 == 0) {
+            List<MethodParameter> methodParameters = new ArrayList<>();
+            for (int i = 0; i < parameterTypesAndNames.length; i = i + 2) {
+                methodParameters.add(new MethodParameter(parameterTypesAndNames[i], parameterTypesAndNames[i + 1]));
+            }
+            return methodParameters.toArray(new MethodParameter[methodParameters.size()]);
+        } else {
+            throw new IllegalArgumentException(
+                    "Invalid number of parameters. The number of parameters has to be even.");
+        }
     }
 
 }

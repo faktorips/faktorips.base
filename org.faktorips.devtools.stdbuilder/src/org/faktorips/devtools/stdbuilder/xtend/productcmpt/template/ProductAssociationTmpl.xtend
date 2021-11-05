@@ -330,7 +330,7 @@ class ProductAssociationTmpl {
              * @generated
              */
              «overrideAnnotationForPublishedMethodImplementation»
-            public «CardinalityRange» «method(methodNameGetCardinalityFor, targetInterfaceName, "productCmpt")»
+            public «CardinalityRange» «matchingMethod(methodNameGetCardinalityFor, targetInterfaceName, "productCmpt")»
             «IF genInterface»;«ELSE»
                         {
                             if (productCmpt != null) {

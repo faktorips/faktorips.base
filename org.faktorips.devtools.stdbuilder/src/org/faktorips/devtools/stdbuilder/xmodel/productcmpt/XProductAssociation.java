@@ -16,6 +16,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.xmodel.MethodDefinition;
+import org.faktorips.devtools.stdbuilder.xmodel.MethodParameter;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XClass;
@@ -81,6 +83,13 @@ public class XProductAssociation extends XAssociation {
 
     public boolean hasMatchingAssociation() {
         return getAssociation().constrainsPolicyCmptTypeAssociation(getIpsProject());
+    }
+
+    public String matchingMethod(String methodName, String... parameterTypesAndNames) {
+        MethodDefinition methodSignature = new MethodDefinition(methodName,
+                MethodParameter.arrayOf(parameterTypesAndNames));
+        getContext().addGeneratedJavaElement(this.getMatchingAssociation(), methodSignature);
+        return super.method(methodName, parameterTypesAndNames);
     }
 
     /**

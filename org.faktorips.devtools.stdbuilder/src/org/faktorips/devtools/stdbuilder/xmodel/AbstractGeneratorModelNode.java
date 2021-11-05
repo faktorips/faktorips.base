@@ -601,16 +601,7 @@ public abstract class AbstractGeneratorModelNode {
      *         bar)</em>
      */
     public String method(String methodName, String... parameterTypesAndNames) {
-        if (parameterTypesAndNames.length % 2 == 0) {
-            List<MethodParameter> methodParameters = new ArrayList<>();
-            for (int i = 0; i < parameterTypesAndNames.length; i = i + 2) {
-                methodParameters.add(new MethodParameter(parameterTypesAndNames[i], parameterTypesAndNames[i + 1]));
-            }
-            return methodInternal(methodName, methodParameters.toArray(new MethodParameter[methodParameters.size()]));
-        } else {
-            throw new IllegalArgumentException(
-                    "Invalid number of parameters. The number of parameters has to be even.");
-        }
+        return methodInternal(methodName, MethodParameter.arrayOf(parameterTypesAndNames));
     }
 
     public String method(String methodName, List<MethodParameter> parameters) {

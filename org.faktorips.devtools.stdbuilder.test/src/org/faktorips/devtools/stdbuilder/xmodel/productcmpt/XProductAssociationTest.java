@@ -10,11 +10,15 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
@@ -23,11 +27,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.stdbuilder.xmodel.MethodDefinition;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -152,6 +159,25 @@ public class XProductAssociationTest {
 
         when(association.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(false);
         assertFalse(xProductAssociation.hasMatchingAssociation());
+    }
+
+    @Test
+    public void testMatchingMethod_RegistersGeneratedJavaElementForPolicyAndProductAssociation() {
+        IPolicyCmptTypeAssociation policyAssociation = mock(IPolicyCmptTypeAssociation.class);
+        when(association.findMatchingAssociation()).thenReturn(policyAssociation);
+        XPolicyAssociation xPolicyAssociation = new XPolicyAssociation(policyAssociation, modelContext, modelService);
+        when(modelService.getModelNode(policyAssociation, XPolicyAssociation.class, modelContext)).thenReturn(
+                xPolicyAssociation);
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+
+        String method = xProductAssociation.matchingMethod("foo", "String", "bar", "int", "baz");
+
+        assertThat(method, is("foo(String bar, int baz)"));
+        ArgumentCaptor<MethodDefinition> methodCaptor = ArgumentCaptor.forClass(MethodDefinition.class);
+        verify(modelContext).addGeneratedJavaElement(eq(xPolicyAssociation), methodCaptor.capture());
+        assertThat(methodCaptor.getValue().getName(), is("foo"));
+        verify(modelContext).addGeneratedJavaElement(eq(xProductAssociation), methodCaptor.capture());
+        assertThat(methodCaptor.getValue().getName(), is("foo"));
     }
 
 }
