@@ -61,6 +61,7 @@ import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
 import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
+import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -250,13 +251,11 @@ public class IpsBuildMojo extends AbstractMojo {
      * Kill the forked process after a certain number of seconds. If set to 0, wait forever for the
      * process, never timing out.
      */
-    // @Parameter(property = "eclipserun.timeout")
     private int forkedProcessTimeoutInSeconds;
 
     /**
      * Additional environments to set for the forked JVM.
      */
-    // @Parameter
     private Map<String, String> environmentVariables = Collections.emptyMap();
 
     /**
@@ -266,7 +265,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * <li><b>&lt;work&gt;/data</b>: The data ('workspace') area (<b>-data</b>)
      * </ul>
      */
-    @Parameter(defaultValue = "${java.io.tmpdir}/${project.name}/eclipserun-work")
+    @Parameter
     private File work;
 
     @Parameter(property = "session", readonly = true, required = true)
@@ -629,7 +628,8 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     private List<MavenProject> findUpstreamMavenProjectsNotInstalled() {
-        if (session.getRequest().getGoals().stream().noneMatch(Predicate.isEqual("install"))) {
+        if (session.getRequest().getGoals().stream()
+                .noneMatch(Predicate.isEqual("install").or(Predicate.isEqual("deploy")))) {
             List<MavenProject> upstreamProjects = session.getProjectDependencyGraph()
                     .getUpstreamProjects(project, true);
 
@@ -677,6 +677,10 @@ public class IpsBuildMojo extends AbstractMojo {
         if (skip) {
             getLog().info("skipping mojo execution");
             return;
+        }
+
+        if (work == null) {
+            work = WorkingDirectory.createFor(project);
         }
 
         @SuppressWarnings("unchecked")
@@ -736,7 +740,7 @@ public class IpsBuildMojo extends AbstractMojo {
 
             executePlatform();
 
-            failBuildforAntStatusError(statusFile);
+            failBuildForAntStatusError(statusFile);
         }
     }
 
@@ -752,7 +756,7 @@ public class IpsBuildMojo extends AbstractMojo {
         return statusFile;
     }
 
-    private void failBuildforAntStatusError(String statusFile) throws MojoFailureException {
+    private void failBuildForAntStatusError(String statusFile) throws MojoFailureException {
         if (StringUtils.isNotBlank(statusFile)) {
             Path statusFilePath = Path.of(statusFile);
             try {

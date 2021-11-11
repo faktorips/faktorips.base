@@ -20,8 +20,10 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
+import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
 
 /**
  * Cleans the {@link #work} directory of the Faktor-IPS project.
@@ -36,7 +38,7 @@ public class IpsCleanMojo extends AbstractMojo {
      * <li><b>&lt;work&gt;/data</b>: The data ('workspace') area (<b>-data</b>)
      * </ul>
      */
-    @Parameter(defaultValue = "${java.io.tmpdir}/${project.name}/eclipserun-work")
+    @Parameter
     private File work;
 
     /**
@@ -48,12 +50,20 @@ public class IpsCleanMojo extends AbstractMojo {
     @Component
     private Logger logger;
 
+    @Component
+    private MavenProject project;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
             getLog().info("skipping mojo execution");
             return;
         }
+
+        if (work == null) {
+            work = WorkingDirectory.createFor(project);
+        }
+
         File workDir = work.getAbsoluteFile();
         if (workDir.exists()) {
             try {
