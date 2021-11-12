@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -65,12 +66,15 @@ public class ExtensionPropertyValueTest {
     public void testAppendToXml_invalid_element() throws Exception {
         ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID,
                 valueElement, part);
-        when(document.importNode(valueElement, true)).thenReturn(importedElement);
+        when(valueElement.getTagName()).thenReturn("InvalidExt");
+        Element newElement = mock(Element.class);
+        when(document.createElement("InvalidExt")).thenReturn(newElement);
 
         extensionPropertyValue.appendToXml(extPropertiesEl);
 
         verify(part).getExtensionPropertyDefinition(ID);
-        verify(extPropertiesEl).appendChild(importedElement);
+        verify(extPropertiesEl).getOwnerDocument();
+        verify(extPropertiesEl).appendChild(newElement);
         verifyNoMoreInteractions(part);
     }
 

@@ -42,8 +42,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -325,6 +327,9 @@ public class ExtensionPropertyHandlerTest {
     public void testToXml_validThenInvalid() throws Exception {
         doReturn(Arrays.asList(extPropDef)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
         setUpXmlElementsForInit(MY_ID, false);
+        Element newElement = mock(Element.class);
+        when(xmlDocument.createElement("InvalidExt")).thenReturn(newElement);
+
         extensionPropertyHandler.initPropertyFromXml(xmlValueElement);
         extensionPropertyHandler.setExtPropertyValue(MY_ID, MY_VALUE);
         // (1) save for the first time
@@ -336,9 +341,16 @@ public class ExtensionPropertyHandlerTest {
         extensionPropertyHandler.toXml(xmlRootElement);
 
         verify(extPropDef).valueToXml(xmlValueElement, MY_VALUE);
-        verify(xmlExtPropElement, times(2)).appendChild(xmlValueElement);
+        verify(xmlExtPropElement, times(1)).appendChild(xmlValueElement);
         verify(xmlExtPropElement, times(2)).getOwnerDocument();
         verify(xmlExtPropElement, times(2)).hasChildNodes();
+        verify(xmlValueElement, times(1)).getTagName();
+        verify(xmlDocument, times(1)).createElement("InvalidExt");
+        verify(xmlValueElement, times(1)).getAttributes();
+        verify(xmlValueElement, times(1)).getChildNodes();
+        verify(xmlValueElement, times(1)).setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID, MY_ID);
+        verify(xmlValueElement, times(1)).setAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL, "" + false);
+        verify(xmlExtPropElement, times(1)).appendChild(newElement);
         verifyNoMoreInteractions(xmlExtPropElement);
     }
 
@@ -400,6 +412,18 @@ public class ExtensionPropertyHandlerTest {
         when(extPropNodeList.item(0)).thenReturn(xmlValueElement);
         when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID)).thenReturn(propId);
         when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL)).thenReturn("" + isNull);
+        when(xmlValueElement.getTagName()).thenReturn("InvalidExt");
+        NamedNodeMap namedNodeMap = mock(NamedNodeMap.class);
+        when(namedNodeMap.getLength()).thenReturn(2);
+        Attr attr1 = mock(Attr.class);
+        when(attr1.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
+        when(attr1.getValue()).thenReturn(propId);
+        when(namedNodeMap.item(0)).thenReturn(attr1);
+        Attr attr2 = mock(Attr.class);
+        when(attr2.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
+        when(attr2.getValue()).thenReturn("" + isNull);
+        when(namedNodeMap.item(1)).thenReturn(attr2);
+        when(xmlValueElement.getAttributes()).thenReturn(namedNodeMap);
     }
 
     @Test

@@ -16,9 +16,14 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.w3c.dom.Attr;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * This class is used to save invalid extension properties and makes sure they could be stored to
@@ -129,9 +134,49 @@ public abstract class ExtensionPropertyValue {
             if (valueElement == null) {
                 return null;
             } else {
-                Node importedNode = ownerDocument.importNode(valueElement, true);
-                return (Element)importedNode;
+                // ownerDocument.importNode(valueElement, true); creates xmlns=""
+                return clone(ownerDocument, valueElement);
             }
+        }
+
+        private Element clone(Document document, Element originalElement) {
+            Element newElement = document.createElement(originalElement.getTagName());
+            NamedNodeMap attributes = originalElement.getAttributes();
+            if (attributes != null) {
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    Attr originalAttribute = (Attr)attributes.item(i);
+                    newElement.setAttribute(originalAttribute.getName(), originalAttribute.getValue());
+                }
+            }
+            NodeList childNodes = originalElement.getChildNodes();
+            if (childNodes != null) {
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node childNode = childNodes.item(i);
+                    switch (childNode.getNodeType()) {
+                        case Node.ELEMENT_NODE:
+                            Element childElement = (Element)childNode;
+                            Element newChild = clone(document, childElement);
+                            newElement.appendChild(newChild);
+                            break;
+                        case Node.CDATA_SECTION_NODE:
+                            CDATASection cdataSection = (CDATASection)childNode;
+                            CDATASection newCDATASection = document.createCDATASection(cdataSection.getData());
+                            newElement.appendChild(newCDATASection);
+                            break;
+                        case Node.TEXT_NODE:
+                            Text text = (Text)childNode;
+                            Text newTextNode = document.createTextNode(text.getData());
+                            newElement.appendChild(newTextNode);
+                            break;
+                        default:
+                            IpsLog.get().log(new IpsStatus(IStatus.WARNING,
+                                    "Can't copy node of type " + childNode.getNodeType() + " to XML")); //$NON-NLS-1$//$NON-NLS-2$
+                            // we don't expect other elements
+                    }
+                }
+            }
+
+            return newElement;
         }
 
         @Override
