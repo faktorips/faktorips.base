@@ -12,14 +12,14 @@
                 <xsd:element ref="Rows" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="numOfColumns" use="required" type="int" />
-            <xsd:attribute name="tableStructure" type="string" use="required"/>
+            <xsd:attribute name="tableStructure" type="string" use="required" />
             <xsd:attribute ref="xml:space" />
         </xsd:complexType>
     </xsd:element>
 
     <xsd:element name="ColumnTableReference">
         <xsd:complexType>
-            <xsd:attribute name="name" type="string" use="required"/>
+            <xsd:attribute name="name" type="string" use="required" />
         </xsd:complexType>
     </xsd:element>
 
@@ -44,9 +44,11 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
-                <xsd:element type="xsd:string" name="Value" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element type="DefaultValueAttribute" name="Value" minOccurs="0" maxOccurs="unbounded"/>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
+
+
 
 </xsd:schema>
