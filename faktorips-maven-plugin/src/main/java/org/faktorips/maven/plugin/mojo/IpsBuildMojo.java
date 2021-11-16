@@ -92,9 +92,9 @@ public class IpsBuildMojo extends AbstractMojo {
 
     /**
      * Execution environment profile name used to resolve dependencies and run Faktor-IPS. Must be
-     * at least JavaSE-11.
+     * at least "JavaSE-11".
      */
-    @Parameter(defaultValue = "JavaSE-11")
+    @Parameter(property = "faktorips.executionEnvironment")
     private String executionEnvironment;
 
     /**
@@ -734,6 +734,10 @@ public class IpsBuildMojo extends AbstractMojo {
                 jvmArgs.add("-Declipse.log.level=DEBUG");
                 applicationsArgs.add("-debug");
                 applicationsArgs.add(writeDebugLogSettings());
+            }
+
+            if (StringUtils.isBlank(executionEnvironment)) {
+                executionEnvironment = "JavaSE-" + Runtime.version().feature();
             }
 
             copyMavenSettings();
