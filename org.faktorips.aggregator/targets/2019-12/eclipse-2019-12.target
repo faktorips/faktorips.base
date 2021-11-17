@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="Target for Faktor-IPS Base (2019-12)" sequenceNumber="12">
+<target name="Target for Faktor-IPS Base (2019-12)" sequenceNumber="13">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -49,7 +49,7 @@
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="de.faktorzehn.thirdparty.libs.feature.group" version="0.0.0"/>
-      <repository location="https://drone.faktorzehn.de/p2/thirdparty-1.6"/>
+      <repository location="https://drone.faktorzehn.de/p2/thirdparty-1.7"/>
     </location>
       <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
         <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>

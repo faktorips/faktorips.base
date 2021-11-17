@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="Target for Faktor-IPS Base (2021-09)" sequenceNumber="4">
+<target name="Target for Faktor-IPS Base (2021-09)" sequenceNumber="5">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -62,7 +62,7 @@
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="de.faktorzehn.thirdparty.libs.feature.group" version="0.0.0"/>
-      <repository location="https://drone.faktorzehn.de/p2/thirdparty-1.6"/>
+      <repository location="https://drone.faktorzehn.de/p2/thirdparty-1.7"/>
     </location>
       <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
         <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
@@ -70,11 +70,11 @@
         <unit id="org.eclipse.babel.nls_technology.egit_de.feature.group" version="0.0.0"/>
         <unit id="org.eclipse.babel.nls_technology.jgit_de.feature.group" version="0.0.0"/>
         <unit id="org.eclipse.babel.nls_tools.gef_de.feature.group" version="0.0.0"/>
-        <repository location="https://update.faktorzehn.org/p2repositories/babel/2021-03"/>
+        <repository location="https://update.faktorzehn.org/p2repositories/babel/2021-09"/>
       </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <repository location="https://download.eclipse.org/eclipse/updates/4.21-P-builds/"/>
-      <unit id="org.eclipse.jdt.java17patch.feature.group" version="1.2.200.v20210914-1442_BETA_JAVA17"/>
+      <unit id="org.eclipse.jdt.java17patch.feature.group" version="1.2.200.v20211026-0535_BETA_JAVA17"/>
       <unit id="org.eclipse.pde.java17patch.feature.group" version="1.2.200.v20210914-1447_BETA_JAVA17"/>
     </location>
   </locations>

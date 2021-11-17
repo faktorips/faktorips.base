@@ -7,9 +7,9 @@ Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.runtime,
  org.faktorips.valuetypes
-Import-Package: groovy.lang;version="3.0.7",
- org.codehaus.groovy.reflection;version="3.0.7",
- org.codehaus.groovy.runtime;version="3.0.7",
- org.codehaus.groovy.runtime.callsite;version="3.0.7"
+Import-Package: groovy.lang;version="3.0.9",
+ org.codehaus.groovy.reflection;version="3.0.9",
+ org.codehaus.groovy.runtime;version="3.0.9",
+ org.codehaus.groovy.runtime.callsite;version="3.0.9"
 Export-Package: org.faktorips.runtime.formula.groovy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
