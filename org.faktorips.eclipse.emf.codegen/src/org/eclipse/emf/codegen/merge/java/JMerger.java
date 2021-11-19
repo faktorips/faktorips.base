@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -170,9 +171,17 @@ public class JMerger {
         if (target instanceof JMethod) {
             List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
             for (ASTJNode<?> astjNode : annotations) {
-                getFacadeHelper().addChild(target, astjNode);
+                if (isNotExistingAnnotation(target, astjNode.getName())) {
+                    getFacadeHelper().addChild(target, astjNode);
+                }
             }
         }
+    }
+
+    private boolean isNotExistingAnnotation(JNode target, String annotationName) {
+        return target.getChildren().stream()
+                .filter(c -> c instanceof JAnnotation)
+                .noneMatch(a -> Objects.equals(a.getName(), annotationName));
     }
 
     private List<ASTJNode<?>> getAdditionalAnnotationsNodes() {
@@ -494,35 +503,9 @@ public class JMerger {
                 if (applySweepRules(node)) {
                     targetCompilationChanged = true;
                     sweptNodes.add(node);
-                } else {
-                    checkNodeNotSwept(node, parent);
                 }
             }
         }
-    }
-
-    /**
-     * This method is called if a sweep rule was NOT performed. If the node which was not swept is
-     * an annotation we might get in conflict with additional annotations. This might be the case if
-     * the user used &#64;customizedAnnotation tags. In case it is really an additional annotation
-     * which was not swept we must not generate a new one but keep the old one.
-     * 
-     */
-    private void checkNodeNotSwept(JNode annotationNode, JNode targetParentNode) {
-        if (annotationNode instanceof JAnnotation && isAdditionalAnnotation((JAnnotation)annotationNode)) {
-            // Additional annotation should not be generated to avoid duplicated annotations
-            removeAnnotatedNode(targetParentNode);
-        }
-    }
-
-    private boolean isAdditionalAnnotation(JAnnotation node) {
-        List<ASTJNode<?>> annotationsNodes = getAdditionalAnnotationsNodes();
-        for (JNode annotationNode : annotationsNodes) {
-            if (node.getName().equals(annotationNode.getName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -741,10 +724,6 @@ public class JMerger {
 
     private boolean addAnnotatedNode(JNode targetNode) {
         return additionallyAnnotatedMembers.add(targetNode);
-    }
-
-    private boolean removeAnnotatedNode(JNode targetNode) {
-        return additionallyAnnotatedMembers.remove(targetNode);
     }
 
     protected void applySortRules(JNode sourceNode) {
