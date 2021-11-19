@@ -34,6 +34,7 @@
         <module>../faktorips-maven-archetype</module>
         <module>../faktorips-maven-plugin</module>
         <module>sites</module>
+        <module>../faktorips-coverage</module>
     </modules>
 
     <scm>
