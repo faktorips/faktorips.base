@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Model Decorators
 Bundle-SymbolicName: org.faktorips.devtools.model.decorators;singleton:=true
-Bundle-Version: 21.6.4.qualifier
+Bundle-Version: 21.6.5.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
 Require-Bundle: 

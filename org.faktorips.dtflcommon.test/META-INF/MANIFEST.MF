@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor- IPS Common code for Devtools and Formula Language Tests
 Bundle-SymbolicName: org.faktorips.dtflcommon.test
-Bundle-Version: 21.6.4.qualifier
+Bundle-Version: 21.6.5.qualifier
 Fragment-Host: org.faktorips.dtflcommon;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
