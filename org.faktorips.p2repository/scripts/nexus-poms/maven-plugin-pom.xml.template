@@ -68,6 +68,11 @@
             <artifactId>sisu-equinox-launching</artifactId>
             <version>${tycho-version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
     </dependencies>
 
 </project>
