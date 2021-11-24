@@ -109,17 +109,20 @@ public class NewPcTypePage extends NewTypePage {
     @Override
     protected void supertypeChanged(TextButtonField supertypeField) throws CoreException {
         String qualifiedName = supertypeField.getValue();
-        IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(qualifiedName);
-        if (superPcType != null) {
-            if (superPcType.isConfigurableByProductCmptType()) {
-                configurableField.setValue(Boolean.TRUE);
-                configurableField.getCheckbox().setEnabled(false);
+        IIpsProject ipsProject = getIpsProject();
+        if (ipsProject != null) {
+            IPolicyCmptType superPcType = ipsProject.findPolicyCmptType(qualifiedName);
+            if (superPcType != null) {
+                if (superPcType.isConfigurableByProductCmptType()) {
+                    configurableField.setValue(Boolean.TRUE);
+                    configurableField.getCheckbox().setEnabled(false);
+                } else {
+                    configurableField.setValue(Boolean.FALSE);
+                    configurableField.getCheckbox().setEnabled(true);
+                }
             } else {
-                configurableField.setValue(Boolean.FALSE);
                 configurableField.getCheckbox().setEnabled(true);
             }
-        } else {
-            configurableField.getCheckbox().setEnabled(true);
         }
     }
 
