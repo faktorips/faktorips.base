@@ -227,6 +227,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, converterQualifiedClassName);
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
         if (!StringUtils.isBlank(tableColumnName)
@@ -237,8 +238,10 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         }
 
         validateWhitespaceInTableColumnName(msgList);
-        if (!isPersistentAttribute() || isTransient()
-                || !getPolicyComponentTypeAttribute().getPolicyCmptType().isPersistentEnabled()) {
+        if (!isPersistentAttribute()
+                || isTransient()
+                || !getPolicyComponentTypeAttribute().getPolicyCmptType().isPersistentEnabled()
+                || getPolicyComponentTypeAttribute().isOverwrite()) {
             return;
         }
 
@@ -253,7 +256,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         validateUsingPersistentOptions(msgList, ipsProject);
 
         /*
-         * to get the max length we use the ips project which belongs to this object not the given
+         * to get the max length we use the IPS project which belongs to this object not the given
          * project, therefore it is not possible to overwrite this settings by using a different
          * project
          */
@@ -268,6 +271,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
         super.validateThis(msgList, ipsProject);
     }
+    // CSON: CyclomaticComplexity
 
     private void validateWhitespaceInTableColumnName(MessageList msgList) {
 
