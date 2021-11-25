@@ -15,3 +15,7 @@ Die Dokumentation zum Faktor-IPS Maven Plugin ist https://doc.faktorzehn.org/fak
 === link:02_releasenotes_en/index.html[Release Notes (English)]
 
 === link:03_relevance/index.html[Relevanzen]
+
+=== link:04_archetype/index.html[Faktor-IPS Archetype]
+
+=== link:04_archetype_en/index.html[Faktor-IPS Archetype (English)]

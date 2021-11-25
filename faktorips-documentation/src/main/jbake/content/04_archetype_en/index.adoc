@@ -1,0 +1,56 @@
+:jbake-title: Faktor-IPS Archetype
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 40
+
+== Faktor-IPS Archetype
+
+=== Motivation
+
+Maven is a widely used tool for building and dependency management of projects. Faktor-IPS projects should therefore also be able to be created directly as Maven projects. This is possible using a Maven archetype for Faktor-IPS.
+
+=== Requirements
+- Installation of the latest version of Faktor-IPS (21.6 or later)
+- Installation of Maven (at least version 3.5.0)
+
+WARNING: *Does not work in Eclipse:* Due to a https://github.com/eclipse-m2e/m2e-core/issues/249[bug in Eclipse] the archetype can currently only be used from the command line. The created project can then be imported in Eclipse.
+
+=== Execution
+
+==== Generation of the Faktor-IPS project
+Execute in the command line:
+
+       mvn archetype:generate -DarchetypeGroupId=org.faktorips -DarchetypeArtifactId=faktorips-maven-archetype -DarchetypeVersion=<version>
+
+The required parameters are then queried. Most of the parameters are preset, but can be overwritten if necessary. Finally, a post-processor is automatically carried out, which makes adjustments and queries further parameters, if necessary. See <<parameters>>.
+
+==== Building the Faktor-IPS project
+Navigate to the generated project and execute maven in the command line:
+
+       mvn clean install
+
+[#parameters]
+=== Used parameters
+
+==== … for generating the project
+
+* *groupId*: the Group-ID of the Maven project
+* *artifactId*: the Artifact-ID of the Maven project
+* *version*: the version of the Maven project
+* *package*: the base package, e.g. _org.faktorips.example_
+* *JavaVersion*: the used Java version, e.g. _1.8_ or _11_
+* *IPS-Language*: the used language package (_en_ or _de_)
+* *IPS-NamingConvention*: the used naming convention, e.g. _FIPS_, _VAA_ or _PM_
+* *IPS-IsModelProject*: _true_, if it is a model project, else _false_
+* *IPS-IsProductDefinitionProject*: _true_, if it es a product definition project, else _false_
+* *IPS-IsPersistentProject*: _true_, if persistence is supported, else _false_
+* *IPS-TocXML*: the name of the repository-TOC excluding the file format, e.g. _faktorips-repository-toc_
+* *IPS-ValidationMessageBundle*: the name of the used Validation-Message-Bundle, e.g. _validation-message_
+* *IPS-SourceFolder*: the source folder, e.g.: _model_
+* *IPS-IsGroovySupport*: _true_, if Faktor-IPS Groovy should be supported, else _false_
+* *runtime-ID-prefix*: the used runtime-ID-prefix, e.g. _lineOfBusiness._ (*important*: do not forget the dot at the end)
+* *IPS-ConfigureIpsBuild*: _true_, if the faktorips-maven-plugin should be configured to build the project, else _false_
+
+==== … for automatic post-processing
+
+* _(optional)_ *Persistence API* the used technology for implementing persistence support, e.g. _EclipseLink 2.5_, _Generic JPA 2.0_, _Generic JPA 2.1_ or _Jakarta Persistence 2.2_ (requires: _IPS-IsPersistentProject=true_)

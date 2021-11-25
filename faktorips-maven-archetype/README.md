@@ -37,6 +37,7 @@ If that is not the case, the Maven-Jar-Plugin will build faulty JARs.
 #### Adjustable parameters for creating an archetype
 
 ``mvn archetype:generate``:
+
 - **groupId**: <br/> 
   the Group-ID of the Maven project
 - **artifactId**: <br/> 
@@ -104,7 +105,8 @@ Due to a [bug in Eclipse](https://github.com/eclipse-m2e/m2e-core/issues/249) th
 
 #### Setzbare Parameter bei der Erstellung eines Archetypes
 
-``mvn:generate``:
+``mvn archetype:generate``:
+
 - **groupId**: <br/>
   die Group-ID des Maven-Projekts
 - **artifactId**: <br/>
