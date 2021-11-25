@@ -241,6 +241,19 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC = "minimalJavadoc"; //$NON-NLS-1$
 
+    /**
+     * Configuration property for the unify value set methods option.
+     *
+     * <ul>
+     * <li>{@link UnifyValueSetMethods#NewMethods} unify them to getValueSetFor</li>
+     * <li>{@link UnifyValueSetMethods#OldMethods} keep the method names getSetOfAllowedValuesFor,
+     * getAllowedValuesFor or getRangeFor</li>
+     * <li>{@link UnifyValueSetMethods#Both} do both, but set the old methods deprecated, and let
+     * the new methods delegate to the old ones</li>
+     * </ul>
+     */
+    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "unifyValueSetMethods";
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
@@ -626,6 +639,24 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     public GeneratorModelContext getGeneratorModelContext() {
         return generatorModelContext;
+    }
+
+    public enum UnifyValueSetMethods {
+        NewMethods,
+        OldMethods,
+        Both;
+
+        public boolean isUnifyMethods() {
+            return this == NewMethods || this == Both;
+        }
+
+        public boolean isOldMethod() {
+            return this == OldMethods || this == Both;
+        }
+
+        public boolean isBoth() {
+            return this == Both;
+        }
     }
 
     public enum FormulaCompiling {

@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet.UnifyValueSetMethods;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
@@ -76,6 +77,23 @@ public class GeneratorConfig {
         } catch (IllegalArgumentException e) {
             // if the value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
+        }
+    }
+
+    /**
+     * Returns whether the method names should be unified ({@link UnifyValueSetMethods#NewMethods}),
+     * should reflect the type in their name ({@link UnifyValueSetMethods#OldMethods}) or both
+     * ({@link UnifyValueSetMethods#Both}).
+     * 
+     * @see StandardBuilderSet#CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS
+     */
+    public UnifyValueSetMethods getUnifyValueSetMethods() {
+        String kind = config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS);
+        try {
+            return UnifyValueSetMethods.valueOf(kind);
+        } catch (IllegalArgumentException e) {
+            // when in doubt use both
+            return UnifyValueSetMethods.Both;
         }
     }
 

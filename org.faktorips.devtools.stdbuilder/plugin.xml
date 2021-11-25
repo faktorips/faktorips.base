@@ -104,6 +104,20 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
+            defaultValue="NewMethods"
+            description="%unifyValueSetMethodsDescription"
+            disableValue="OldMethods"
+            label="%unifyValueSetMethodsLabel"
+            name="unifyValueSetMethods"
+            type="enum">
+            <discreteValues>
+            	<!-- @see org.faktorips.devtools.stdbuilder.StandardBuilderSet.UnifyValueSetMethods -->
+               <value value="NewMethods" />
+               <value value="OldMethods" />
+               <value value="Both" />
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
             defaultValue="true"
             description="%markNoneMergeableResourcesAsDerivedDescription"
             disableValue="true"
