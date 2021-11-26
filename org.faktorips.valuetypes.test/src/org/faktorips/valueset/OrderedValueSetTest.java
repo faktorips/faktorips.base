@@ -190,6 +190,10 @@ public class OrderedValueSetTest {
         OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(false, null, values);
 
         assertFalse(valueSet.equals(valueSet4));
+
+        NaturalOrderedValueSet<Integer> naturalOrderedValueSet = new NaturalOrderedValueSet<>(values);
+
+        assertFalse(valueSet4.equals(naturalOrderedValueSet));
     }
 
     @Test
@@ -211,6 +215,10 @@ public class OrderedValueSetTest {
         OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(false, null, values);
 
         assertFalse(valueSet.hashCode() == valueSet4.hashCode());
+
+        NaturalOrderedValueSet<Integer> naturalOrderedValueSet = new NaturalOrderedValueSet<>(values);
+
+        assertEquals(valueSet4.hashCode(), naturalOrderedValueSet.hashCode());
     }
 
     @Test

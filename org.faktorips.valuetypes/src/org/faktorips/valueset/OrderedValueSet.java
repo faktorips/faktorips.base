@@ -13,15 +13,20 @@ package org.faktorips.valueset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.faktorips.values.NullObject;
 import org.faktorips.values.ObjectUtil;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Implementation of the {@link ValueSet} interface for ordered values.
@@ -32,7 +37,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
 
     private boolean containsNull;
     private E nullValue;
-    private final LinkedHashSet<E> set = new LinkedHashSet<>();
+    private final Set<E> set = createSetInternal();
 
     private int hashCode;
 
@@ -146,6 +151,26 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
         return of(Arrays.asList(values));
     }
 
+    protected Set<E> createSetInternal() {
+        return new LinkedHashSet<>();
+    }
+
+    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings(value = "BC_BAD_CAST_TO_CONCRETE_COLLECTION", justification = "clone is only public in concrete collections, not the interfaces")
+    private Set<E> cloneSetInternal() {
+        if (set instanceof TreeSet) {
+            return (Set<E>)((TreeSet<E>)set).clone();
+        }
+        return (Set<E>)((HashSet<E>)set).clone();
+    }
+
+    private Set<E> unmodifiable(Set<E> set) {
+        if (set instanceof SortedSet) {
+            return Collections.unmodifiableSortedSet((SortedSet<E>)set);
+        }
+        return Collections.unmodifiableSet(set);
+    }
+
     private void initialize(boolean containsNull, E nullValue) {
         this.containsNull = containsNull;
         this.nullValue = nullValue;
@@ -174,14 +199,13 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * Returns all values of this set except a possible {@code null} or {@code null} representation
      * value.
      */
-    @SuppressWarnings("unchecked")
     private Set<E> getValuesWithoutNull() {
         if (containsNull) {
-            Set<E> set2 = (Set<E>)set.clone();
+            Set<E> set2 = cloneSetInternal();
             set2.remove(nullValue);
-            return Collections.unmodifiableSet(set2);
+            return unmodifiable(set2);
         }
-        return Collections.unmodifiableSet(set);
+        return unmodifiable(set);
     }
 
     @Override
@@ -194,7 +218,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * representation value.
      */
     public Set<E> getValues() {
-        return Collections.unmodifiableSet(set);
+        return unmodifiable(set);
     }
 
     @Override
@@ -205,7 +229,8 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
-        if (obj instanceof OrderedValueSet) {
+        if (obj instanceof OrderedValueSet
+                && (obj instanceof NaturalOrderedValueSet) == (this instanceof NaturalOrderedValueSet)) {
             OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
             return set.equals(other.set) && containsNull == other.containsNull
                     && (containsNull
