@@ -76,7 +76,7 @@
    <Property name="generatePublishedInterfaces" value="false"/>
 
    <!--Hier können die qualifizierten Namen für zusätzliche Annotationen eingestellt werden, die an alle generierten Methoden angehängt werden (z.B. org.faktorips.runtime.annotation.IpsGenerated (um generierten Code von der Analyse durch SonarQube/JaCoCo auszuschließen) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Mehrere Annotationen werden mit Strichpunkt getrennt.-->
-   <Property name="additionalAnnotations" value=""/>
+   <Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>
 
    <!--Konstantennamen für Camel-Case-Properties mit Unterstrich trennen.-->
    <Property name="camelCaseSeparated" value="true"/>

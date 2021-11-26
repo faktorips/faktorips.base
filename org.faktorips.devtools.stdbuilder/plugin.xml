@@ -152,7 +152,7 @@
             type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-            defaultValue=""
+            defaultValue="org.faktorips.runtime.annotation.IpsGenerated"
             description="%additionalAnnotationsDescription"
             disableValue=""
             label="%additionalAnnotationsLabel"
