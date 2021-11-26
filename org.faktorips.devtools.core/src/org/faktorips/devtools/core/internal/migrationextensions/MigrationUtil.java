@@ -66,4 +66,18 @@ public class MigrationUtil {
         }
     }
 
+    /**
+     * This migration refreshes the {@link IIpsArtefactBuilderSetConfigModel} section of the
+     * .ipsproject Property file with the default descriptions.
+     *
+     * @param builderSetInfo the configured IpsArtefactBuilderSetInfo for the project
+     * @param builderSetConfig the configured IpsArtefactBuilderSetConfigModel for the project
+     */
+    public static void updateAllIpsArtefactBuilderSetDescriptions(IIpsArtefactBuilderSetInfo builderSetInfo,
+            IIpsArtefactBuilderSetConfigModel builderSetConfig) {
+        for (String property : builderSetConfig.getPropertyNames()) {
+            String newDescription = builderSetInfo.getPropertyDefinition(property).getDescription();
+            builderSetConfig.setPropertyValue(property, builderSetConfig.getPropertyValue(property), newDescription);
+        }
+    }
 }

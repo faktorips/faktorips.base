@@ -244,7 +244,8 @@ Export-Package: org.faktorips.devtools.model,
  org.faktorips.devtools.model.util,
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
- org.faktorips.devtools.model.versionmanager
+ org.faktorips.devtools.model.versionmanager,
+ org.faktorips.devtools.model.versionmanager.options
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,

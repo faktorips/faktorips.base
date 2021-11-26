@@ -19,13 +19,12 @@ import java.util.LinkedHashSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsBooleanMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 public class Migration_21_12_0 extends MarkAsDirtyMigration {
@@ -33,8 +32,10 @@ public class Migration_21_12_0 extends MarkAsDirtyMigration {
     private static final String VERSION_21_12 = "21.12.0"; //$NON-NLS-1$
     private static final String MIGRATION_OPTION_ADD_SCHEMAS = "AddSchemas"; //$NON-NLS-1$
 
-    private final IpsMigrationOption addSchemasOption = new IpsMigrationOption(MIGRATION_OPTION_ADD_SCHEMAS,
-            Messages.Migration_21_12_0_AddSchemas, false);
+    private final IpsMigrationOption<Boolean> addSchemasOption = new IpsBooleanMigrationOption(
+            MIGRATION_OPTION_ADD_SCHEMAS,
+            Messages.Migration_21_12_0_AddSchemas,
+            false);
 
     public Migration_21_12_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
@@ -53,26 +54,19 @@ public class Migration_21_12_0 extends MarkAsDirtyMigration {
     public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
         IIpsProject ipsProject = getIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setValidateIpsSchema(addSchemasOption.isActive());
-        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
-                .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
-        IIpsArtefactBuilderSetConfigModel builderSetConfig = properties.getBuilderSetConfig();
-        updateDescriptions(builderSetInfo, builderSetConfig);
+        properties.setValidateIpsSchema(addSchemasOption.getSelectedValue());
+
+        MigrationUtil.updateAllIpsArtefactBuilderSetDescriptions(
+                ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(properties.getBuilderSetId()),
+                properties.getBuilderSetConfig());
+
         ipsProject.setProperties(properties);
 
         return super.migrate(monitor);
     }
 
-    private static void updateDescriptions(IIpsArtefactBuilderSetInfo builderSetInfo,
-            IIpsArtefactBuilderSetConfigModel builderSetConfig) {
-        for (String property : builderSetConfig.getPropertyNames()) {
-            String newDescription = builderSetInfo.getPropertyDefinition(property).getDescription();
-            builderSetConfig.setPropertyValue(property, builderSetConfig.getPropertyValue(property), newDescription);
-        }
-    }
-
     @Override
-    public Collection<IpsMigrationOption> getOptions() {
+    public Collection<IpsMigrationOption<?>> getOptions() {
         return Collections.singleton(addSchemasOption);
     }
 

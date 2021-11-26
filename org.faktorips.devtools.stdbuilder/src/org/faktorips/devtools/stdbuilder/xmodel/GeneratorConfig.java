@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
+import org.faktorips.devtools.model.builder.settings.UnifyValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -23,7 +24,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet.UnifyValueSetMethods;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;

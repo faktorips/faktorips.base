@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
-import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 import org.osgi.framework.Version;
 
@@ -190,7 +190,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     @Override
-    public Collection<IpsMigrationOption> getOptions() {
+    public Collection<IpsMigrationOption<?>> getOptions() {
         return operations.stream()
                 .map(AbstractIpsProjectMigrationOperation::getOptions)
                 .flatMap(Collection::stream)

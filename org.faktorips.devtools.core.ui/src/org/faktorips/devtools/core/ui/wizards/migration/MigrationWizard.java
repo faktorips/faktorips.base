@@ -27,7 +27,8 @@ import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrat
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -86,6 +87,14 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         // Nothing to do
     }
 
+    /**
+     * We blindly trust that the id of a migration is unique for a version.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> void setSelectedValue(IpsMigrationOption<T> option, Object value) {
+        option.setSelectedValue((T)value);
+    }
+
     class MigrateProjects implements IRunnableWithProgress {
 
         private MessageList messageList;
@@ -114,10 +123,17 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         }
 
         private void setSelectedMigrationOptions(AbstractIpsFeatureMigrationOperation migrationOperation) {
-            Map<String, IpsMigrationOption> options = migrationPage.getOptions();
+            Map<String, IpsMigrationOption<?>> optionsFromUI = migrationPage.getOptions();
             migrationOperation.getOptions().forEach(o -> {
-                if (options.containsKey(o.getId())) {
-                    o.setActive(options.get(o.getId()).isActive());
+                if (optionsFromUI.containsKey(o.getId())) {
+                    IpsMigrationOption<?> ipsMigrationOption = optionsFromUI.get(o.getId());
+                    if (o instanceof IpsEnumMigrationOption<?>) {
+                        IpsEnumMigrationOption<? extends Enum<?>> enumOption = (IpsEnumMigrationOption<?>)o;
+                        enumOption.setSelectedEnumValue((Enum<?>)ipsMigrationOption.getSelectedValue());
+                    } else {
+                        setSelectedValue(o, ipsMigrationOption.getSelectedValue());
+                    }
+
                 }
             });
         }
