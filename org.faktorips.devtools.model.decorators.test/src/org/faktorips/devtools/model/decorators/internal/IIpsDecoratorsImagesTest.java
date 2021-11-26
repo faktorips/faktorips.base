@@ -28,6 +28,8 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
 
 public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
 
@@ -40,6 +42,15 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         assertEquals(ImageDescriptor.createFromURL(url), descriptor);
     }
 
+    private static boolean eclipseUsesImageCache() {
+        // 3.24.0+ (Eclipse 2021-12) caches 300 images, see
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=577481
+        // for explanation.
+        // We don't need to tests this.
+        return FrameworkUtil.getBundle(LocalResourceManager.class).getVersion()
+                .compareTo(Version.valueOf("3.24.0")) >= 0;
+    }
+
     @Test
     public void testResourceHandling() {
         String name = "TestImage.gif";
@@ -48,7 +59,11 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         Image imageA = (Image)rmA.get(descriptor);
         assertFalse(imageA.isDisposed());
         rmA.dispose();
-        assertTrue(imageA.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(imageA.isDisposed());
+        } else {
+            // no assertion, as disposed state depends on how full the cache is
+        }
         rmA = new LocalResourceManager(JFaceResources.getResources());
 
         ResourceManager rmB = new LocalResourceManager(JFaceResources.getResources());
@@ -72,12 +87,14 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         assertEquals(imageA, imageP);
 
         IIpsDecorators.getImageHandling().disposeImage(descriptor);
-        assertTrue(imageB.isDisposed());
-        assertTrue(imageP.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(imageB.isDisposed());
+            assertTrue(imageP.isDisposed());
+        }
     }
 
     @Test
-    public void testDisabledgetImage() throws Exception {
+    public void testDisabledGetImage() throws Exception {
         IIpsElement ipsElement = newIpsProject();
         IIpsElement newIpsElement = newIpsProject("zwei");
 
@@ -94,7 +111,9 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         assertEquals(disabledImage, IIpsDecorators.getImageHandling().getDisabledImage(newIpsElement));
 
         IIpsDecorators.getImageHandling().disposeImage(disabledDescriptor);
-        assertTrue(disabledImage.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(disabledImage.isDisposed());
+        }
     }
 
     /**

@@ -27,6 +27,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.Version;
 
 public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
@@ -39,6 +41,13 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(ImageDescriptor.createFromURL(url), descriptor);
     }
 
+    private static boolean eclipseUsesImageCache() {
+        // 3.24.0+ (Eclipse 2021-12) caches 300 images, see
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=577481
+        return FrameworkUtil.getBundle(LocalResourceManager.class).getVersion()
+                .compareTo(Version.valueOf("3.24.0")) >= 0;
+    }
+
     @Test
     public void testRegisterAndDisposeImage() {
         String name = "TestImage.gif";
@@ -47,7 +56,11 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(expImage, IpsUIPlugin.getImageHandling().getImage(expDescriptor));
 
         IpsUIPlugin.getImageHandling().disposeImage(expDescriptor);
-        assertTrue(expImage.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(expImage.isDisposed());
+        } else {
+            // no assertion, as disposed state depends on how full the cache is
+        }
 
         // register the image as shared image
         ImageDescriptor sharedDesc = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(name, true);
@@ -112,7 +125,9 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         Image imageA = (Image)rmA.get(descriptor);
         assertFalse(imageA.isDisposed());
         rmA.dispose();
-        assertTrue(imageA.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(imageA.isDisposed());
+        }
         rmA = new LocalResourceManager(JFaceResources.getResources());
 
         ResourceManager rmB = new LocalResourceManager(JFaceResources.getResources());
@@ -136,8 +151,10 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         assertEquals(imageA, imageP);
 
         IpsUIPlugin.getImageHandling().disposeImage(descriptor);
-        assertTrue(imageB.isDisposed());
-        assertTrue(imageP.isDisposed());
+        if (!eclipseUsesImageCache()) {
+            assertTrue(imageB.isDisposed());
+            assertTrue(imageP.isDisposed());
+        }
     }
 
     /**

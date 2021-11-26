@@ -13,7 +13,7 @@
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
-    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest"/>
+    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest17"/>
     <mapAttribute key="org.eclipse.debug.core.environmentVariables">
         <mapEntry key="SWT_GTK3" value="0"/>
     </mapAttribute>
@@ -291,6 +291,8 @@
         <setEntry value="org.junit.platform.launcher@default:default"/>
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
+        <setEntry value="org.junit.platform.suite.commons@default:default"/>
+        <setEntry value="org.junit.platform.suite.engine@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
