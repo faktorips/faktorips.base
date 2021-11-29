@@ -1,0 +1,129 @@
+:jbake-title: Verwendung des Manifest
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 50
+
+[[manifest]]
+== Verwendung des Manifest für Faktor-IPS-Projekte
+
+=== Anpassungen
+Ob der „Faktor-IPS Build Path“ oder das Manifest verwendet wird, ist in der Datei .ipsproject einzustellen. Anstatt den „Faktor-IPS Build Path“ anzugeben, kann jetzt einfach auf das Manifest verwiesen werden. Dazu gibt man im Element IpsObjectPath das neue optionale Attribut useManifest an. Ist es auf den Wert „true“ gesetzt, werden die Pfadangaben aus dem Manifest gelesen. Weitere Elemente und Attribute sind dann im Element IpsObjectPath nicht mehr zulässig und werden ignoriert.
+
+Ist useManifest auf „false“ gesetzt oder fehlt das Attribut, verhält sich die Konfiguration wie bisher.
+
+=== Anpassungen der .ipsproject-Datei
+==== Bisher (Beispiel)
+[source, xml]
+----
+<IpsObjectPath basePackageDerived="org.faktorips.sample.model" basePackageMergable="org.faktorips.sample.model" outputDefinedPerSrcFolder="false" 
+                   outputFolderDerivedSources="derived" outputFolderMergableSources="src">
+    <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" sourceFolder="model" tocPath="faktorips-repository-toc.xml" 
+                   type="src" validationMessagesBundle="validation-messages"/>
+</IpsObjectPath>
+----
+==== Neu
+[source, xml]
+----
+<IpsObjectPath useManifest="true" />
+----
+
+=== META-INF/MANIFEST.MF
+Wurde die Option useManifest in der .ipsproject-Datei aktiviert, werden die Einstellungen zum „Faktor-IPS Build Path“ in der META-INF/MANIFEST.MF-Datei hinterlegt. Weitere Attribute und Subelemente sind dann im IpsObjectPath-Element nicht mehr zulässig und werden ignoriert.
+
+==== Einstellung von Abhängigkeiten im Manifest
+Für die Einstellungen im Manifest stehen folgende „Header“ zur Verfügung:
+
+[cols="1,1,2",options="header"]
+|=============================================================
+|Header |Entsprechung in .ipsproject |Bedeutung
+
+|Fips-BasePackage|
+Attribute basePackageMergable und basePackageDerived|
+Gibt das Base-Package für die generierten Java-Klassen an. Diese Angabe gilt für alle Source-Folder, außer wenn etwas anderes angegeben ist. Eine Unterscheidung zwischen basePackageMergable und basePackageDerived hat sich in der Praxis als irrelevant herausgestellt. Das eingestellte Package gilt daher für beide Einstellungen.
+
+|Fips-SourcecodeOutput|
+Attribut outputFolderMergableSources|
+Gibt den Java-Sourcecode-Folder an, in den Faktor-IPS die Java-Klassen generiert. Auch diese Angabe gilt generell, wenn sie nicht explizit überschrieben wird.
+
+|Fips-ResourceOutput|
+Attribut outputFolderDerivedSources|
+Gibt den Resourcen-Folder an, in den Faktor-IPS Ressourcen generiert. Auch diese Angabe gilt generell, wenn sie nicht explizit überschrieben wird.
+
+|Fips-GeneratorConfig|
+IpsArtefactBuilderSetConfig|
+Gibt Einstellungen für den Codegenearator an. Ohne diesen Eintrag werden die Einstellungen des referenzierenden Projekts verwendet, wenn dieses Projekt als Archiv eingebunden ist. Dies kann zu Problemen führen, wenn die Einstellungen abweichen.
+
+|Fips-ObjectDir|
+Element Entry mit Attributtype=„src“|
+Gibt Quellordner an, in denen Faktor-IPS-Objekte abgelegt sind. Hier können auch mehrere Ordner mit Komma getrennt angegeben werden.
+|=============================================================
+
+Das Fips-ObjectDir enthält als Entsprechung des Element Entry einige Attribute. Diese werden direkt hinter dem Namen des Modellordners mit Strichpunkt getrennt angegeben (siehe Beispiel weiter unten):
+[cols="1,1,2",options="header"]
+|=============================================================
+|Attribut |Entsprechung in .ipsproject |Bedeutung
+
+|toc|
+Attribut tocPath|
+Pfad zur TOC-Datei
+
+|validation-messages|
+Attribut validationMessagesBundle|
+Pfad zur Datei mit den Meldungen für die Validierungsregeln.
+|=============================================================
+
+Die Angaben des oben gezeigten IpsObjectPath können damit folgendermaßen im Manifest angegeben werden:
+
+[source, text]
+----
+Fips-BasePackage: org.faktorips.sample.model
+Fips-SourcecodeOutput: src
+Fips-ResourceOutput: derived
+Fips-ObjectDir: model;toc="faktorips-repository-toc.xml";validation-messages="validation-messages"
+----
+
+==== Zusätzliche Quellordner für Faktor-IPS-Objekte
+Sollen mehrere Ordner für Faktor-IPS-Objekte verwendet werden, fügt man diese dem Fips-ObjectDir hinzu:
+
+[source, text]
+----
+Fips-BasePackage: org.faktorips.sample.model
+Fips-SourcecodeOutput: src
+Fips-ResourceOutput: derived
+Fips-ObjectDir: model;toc="faktorips-repository-toc.xml";validation-messages="validation-messages.properties",
+ test;toc="faktorips-repository-test-toc.xml";validation-messages="validation-messages-test.properties"
+----
+
+Wichtig ist dabei nach einem Zeilenumbruch mindestens ein Leerzeichen am Anfang der Zeile zu schreiben.
+
+==== Abweichende Base-Packages und Output-Verzeichnisse
+Für die Quellordner können eigene Output-Verzeichnisse angegeben werden, die von den generell definierten Output-Verzeichnissen abweichen. Gleiches gilt für das Base-Package, in das Java-Klassen generiert werden.
+
+Um Testcode von produktivem Code zu trennen, werden zusätzliche Abschnitte für den jeweiligen Quellordner eingefügt. Darin werden die generellen Angaben überschrieben:
+
+[source, text]
+----
+Fips-BasePackage: org.faktorips.sample.model
+Fips-SourcecodeOutput: src
+Fips-ResourceOutput: derived
+Fips-ObjectDir: model;toc="faktorips-repository-toc.xml";validation-messages="validation-messages.properties",
+ test;toc="faktorips-repository-test-toc.xml";validation-messages="validation-messages-test.properties"
+
+Name: test
+Fips-SourcecodeOutput: test
+Fips-ResourceOutput: testDerived
+----
+
+Zwischen dem Hauptteil und der Deklaration der überschriebenen Einstellungen muss eine Leerzeile eingefügt sein. Mit der Anweisung Name wird festgelegt, zu welchem Ordner die Einstellungen überschrieben werden sollen. Danach können Sourcefolder, Resourcefolder und Base-Package überschrieben werden. Es müssen nicht alle Attribute definiert werden, fehlende Definitionen werden aus dem Hauptteil oben gelesen.
+
+==== Abweichende Einstellungen in referenzierten Projekten
+Um ein als Archiv referenziertes Projekt mit abweichenden Einstellungen korrekt verwenden zu können, müssen die abweichende Werte unter dem Header _Fips-GeneratorConfig_ aufgeführt werden. Insbesondere sollten die Werte `changesInTimeNamingConvention`, `generatePublishedInterfaces` und `generatorLocale` hier gepflegt werden, da diese sich auf die Namen und Pfade der generierten Klassen auswirken. Diese Einstellungen duplizieren derzeit die Einstellungen in der .ipsproject-Datei und müssen manuell synchronisiert werden!
+
+[source, text]
+----
+Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset;
+ changesInTimeNamingConvention="VAA";
+ generatePublishedInterfaces="true";
+ generatorLocale="en";
+ localDateDatatypeHelperVariant="joda"
+----

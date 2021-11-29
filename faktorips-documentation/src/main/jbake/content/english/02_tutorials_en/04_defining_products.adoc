@@ -1,0 +1,7 @@
+== Defining Products
+
+Business users create and maintain insurance products in user-friendly editors. The predefined models serve as basis.
+
+Faktor-IPS offers test support for the product definition, which comprises both defining and executing test cases. This tutorial illustrates the fundamental concepts. By way of an example, we will show you the features of the Faktor-IPS test tools and how you can use them.
+
+* https://www.faktorzehn.org/fips-documentation/faktorips-test-tutorial-en.pdf[Tutorial: Software Tests with Faktor-IPS (PDF)]

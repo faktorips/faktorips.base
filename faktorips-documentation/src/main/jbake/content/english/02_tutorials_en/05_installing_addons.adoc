@@ -1,0 +1,9 @@
+== Installing Add-ons
+
+Faktor-IPS is very flexible and easy to enhance thanks to the Eclipse-plugin mechanism. Various add-ons are already available for a number of different activities.
+
+In addition to developing your own, project-specific enhancements, you can use various helpful enhancements provided by Faktor Zehn (e.g. the https://www.faktorzehn.org/en/download/add-ons/#MultiEdit[MultiEdit Addon]).
+
+To learn more about developing your own enhancements see:
+
+* link:../../11_projektmigration/index.html[Building an Own Project Migration for Faktor-IPS] - german only

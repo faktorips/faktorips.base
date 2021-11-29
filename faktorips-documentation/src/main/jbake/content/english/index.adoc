@@ -1,0 +1,7 @@
+:jbake-type: chapter
+:jbake-title: English Documentation
+:jbake-status: published
+:jbake-order: 02
+
+[[english_documentation]]
+== Faktor-IPS Documentation

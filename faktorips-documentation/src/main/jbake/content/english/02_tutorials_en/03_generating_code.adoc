@@ -1,0 +1,5 @@
+== Java-Code generieren
+
+Upon saving a model class, Java code is generated incrementally. It is possible at any time to modify the Java code or modify and enhance the model. The generated artefacts are merged with the manual code. The uniform generation of the generated code increases the quality of the code.
+
+* <<modifying_code, Documentation for Modifying Generated Code>>

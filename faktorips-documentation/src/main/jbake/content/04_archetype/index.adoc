@@ -3,6 +3,7 @@
 :jbake-status: published
 :jbake-order: 40
 
+[[archetype]]
 == Faktor-IPS Archetype
 
 === Motivation

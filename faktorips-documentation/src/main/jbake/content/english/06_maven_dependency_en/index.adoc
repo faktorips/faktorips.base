@@ -1,0 +1,82 @@
+:jbake-title: Usage as Maven Dependencies
+:jbake-type: section
+:jbake-status: published
+:jbake-order: 60
+
+[[maven_en]]
+== Using Faktor-IPS Projects as Maven Dependencies
+
+=== Motivation
+
+In many Java projects, Maven is used as a build tool and for dependency management. Therefore, it also makes sense to use Maven to map the dependencies between Faktor-IPS projects.
+
+=== Settings
+
+First of all, you need to copy some settings from the `.ipsproject` file into the manifest (META-INF/MANIFEST.MF) in all Faktor-IPS projects that are to be referenced by Maven. The settings are described in the link:../../05_manifest_verwendung/index.html[Documentation on using the Manifest for Faktor-IPS projects](German only).
+
+Then in the .ipsproject file of all the referenced Faktor-IPS projects the `IpsObjectPath` should be adjusted. Instead of the previously referenced projects, an entry for the Maven-Classpath-Container has to be provided: +
+`<Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="false" type="container"/>`
+
+In addition, some settings in Maven are recommended, so that all the built JARs contain the required information.
+* The model or product folders should be added as resources unless they are in the usual Maven structure:
+[source, xml]
+----
+<resource>
+    <directory>model</directory>
+    <targetPath>model</targetPath>
+</resource>
+----
+
+* If the source code for the formulas is generated, then Maven must contain instruction to build it in the derived folder: 
+[source, xml]
+----
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+                <sources><source>${project.basedir}/derived</source></sources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+* The handwritten MANIFEST must be used by Maven: 
+[source, xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+                <goal>jar</goal>
+            </goals>
+            <configuration>
+            <archive>
+                <addMavenDescriptor>false</addMavenDescriptor>
+                <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+            </archive>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+=== Maven Version Provider
+It's useful to register the Maven Version Provider in the `.ipsproject`-file: `<Version versionProvider="org.faktorips.maven.mavenVersionProvider"/>`. +
+The version can then be read from the `pom.xml` and can be used e.g. for the @since annotation on new classes or attributes.
+
+
+=== Creating Faktor-IPS Projects as Maven Projects
+Since version 21.6, Faktor-IPS Projects can be directly created as Maven Projects using Maven Archetypes. More details can be found <<archetype_en, here>>.
+
+=== Faktor-IPS-Build with Maven
+If you would like to check the artifacts built by Faktor-IPS in Eclipse and use them in Maven bundles, and also run the Faktor-IPS-Build for example on a build server, you can use the https://doc.faktorzehn.org/faktorips-maven-plugin/latest/[Faktor-IPS Maven Plugin].

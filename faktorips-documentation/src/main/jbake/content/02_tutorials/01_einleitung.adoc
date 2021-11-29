@@ -1,0 +1,25 @@
+:jbake-title: Einleitung
+:jbake-type: section
+:jbake-status: published
+
+== Einleitung
+
+Faktor-IPS unterstützt als Werkzeug den Entwicklungsprozess von IT-Systemen im versicherungsfachlichen Kontext. Es dient als Modellierungstool zur modellgetriebenen Softwareentwicklung und bietet ein benutzerfreundliches Produktsystem. Durch seine hohe Flexibilität und Erweiterbarkeit sind der Vielfältigkeit der möglichen Anwendungen kaum Grenzen gesetzt.
+
+Zur Einführung haben wir zwei kurze Videos bereitgestellt, die einen Überblick über die Funktionsweise von Faktor-IPS geben:
+
+video::YwGRjzBTC2c[youtube]
+video::O0RGEFJhCCw[youtube]
+
+== Los gehts...
+
+Faktor-IPS ist als Eclipse-Plugin nahtlos in die bekannte Entwicklungsumgebung integriert. Für die Definition von Produkten gibt es Faktor-IPS auch als vereinfachte Anwendung für den Fachbereich.
+Um Faktor-IPS kennenzulernen eignet sich am besten eine normale Eclipse-Installation, in der sowohl mit Faktor-IPS die Modelle definiert werden als auch direkt der Java-Code generiert und editiert wird.
+Eine Anleitung zur Installation finden Sie unter https://www.faktorzehn.org/de/download/[Download].
+
+Wenn Sie Faktor-IPS erfolgreich installiert haben, empfehlen wir Ihnen unsere Einführungstutorials.
+
+* https://doc.faktorzehn.org/tutorial/latest/html/[Einführungstutorial Teil 1 + Teil 2] (Auch als https://doc.faktorzehn.org/tutorial/latest/documentation.pdf[PDF] verfügbar)
+* https://doc.faktorzehn.org/tutorial/latest/Faktor-IPS-Tutorial-Musterl%C3%B6sung.zip[Musterlösung der Tutorials als Eclipse-Projekte (ZIP)] +
+Die Musterlösung kann über den Import Wizard „Existing Projects into Workspace“ importiert werden.
+Wenn die Projekte noch nicht zur aktuellen Faktor-IPS-Version passen, kann über das Kontextmenü im Unterpunkt „Faktor-IPS“ die Migration angestoßen werden.

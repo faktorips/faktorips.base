@@ -1,0 +1,87 @@
+:jbake-title: Metamodell
+:jbake-type: section
+:jbake-status: published
+:jbake-order: 100
+
+== Faktor-IPS Metamodell: Model Information at Runtime
+
+For the implementation of generic functions, it is often required to have information about the model structure at runtime. This information can be obtained from the *Faktor-IPS Metamodel*.
+
+The *Faktor-IPS Metamodel* in Faktor-IPS is equivalent to Java’s Reflection API. It consists of classes that correspond to model elements and provide information related to model elements.
+
+.Meta-Model Classes
+[options="header"]
+|=============================================================
+|Modelelement |Allgemein |Vertragsteilklasse |Produktklasse
+  
+|*Type*|_Type_|_PolicyCmptType_|_ProductCmptType_
+|*Attribute*|_Attribute_|_PolicyAttribute_|_ProductAttribute_
+|*Association*|_Association_|_PolicyAssociation_|_ProductAssociation_
+|*Table Structure*|_TableStructure, TableColumn_| |_TableUsage_
+|*Enum-Type*|_EnumType, EnumAttribute_| | 
+|=============================================================
+
+The class _org.faktorips.runtime.model.IpsModel_ offers methods as an entry point, to determine a meta-model object from a model class or from a runtime object.
+
+.Example: Retrieve the meta-model for a model class or a runtime object
+[source, java]
+----
+PolicyCmptType householdContractTypeFromInstance= IpsModel.getPolicyCmptType(householdContract);
+PolicyCmptType householdContractTypeFromClass = IpsModel.getPolicyCmptType(HouseholdContract.class);
+----
+
+=== Type, Attribute and Association
+The meta-model is divided into the individual types of objects, as they can be created in Faktor-IPS.
+
+==== Type
+Type, PolicyType and ProductType provide general information about type, for example the supertype or whether a policy class(PolicyCmptType) is configured by a product component class.
+
+Furthermore, one can navigate to the attribute and association meta-models. Additionally, with ProductCmptType one can query TableUsage. In turn with these classes, one can access the methods of attributes, associations and tables.
+
+==== Attribute
+A policy/product attribute can get and set values of attributes of concrete classes like Vertragsobjekt(IModelObject) or Produkt(IproduktComponent).
+
+In addition, *policy attributes* can:
+* Retrieve the default value defined in the product
+* Fetch a set of values from a policy object
+
+==== Association
+Policy- and ProductAssociation allow one to get the information about a policy or product association, such as the cardinality, name or whether it is a derived union. Additionally, PolicyAssociation and ProductAssociation provide methods to get, remove and add target objects to the association of a concrete runtime object.
+
+==== TableUsage
+With a TableUsage it is possible to set table structure, navigate and get the table used for a ProductComponent.
+
+==== Example
+[source, java]
+----
+// Gets model information for household contract
+PolicyCmptType policyCmptTypeContract = IpsModel.getPolicyCmptType(householdContract);
+
+// Gets model information about the association of basic coverage
+PolicyAssociation associationBaseCoverage = policyCmptTypeVertrag.getAssociation("BaseCoverage");
+
+// Use the association to determine the coverage object referenced by the contract.
+IModelObject baseCoverage = associationBaseCoverage.getTargetObjects(householdContract).get(0);
+
+// Gets model information about the linked coverage
+PolicyCmptType policyCmptTypeCoverage = associationBaseCoverage.getTarget();
+
+// Determine model information for the attribute "sum insured"
+PolicyAttribute attributeSumInsured = policyCmptTypeDeckung.getAttribute("sum insured");
+
+// Determine current value, default value, and value of the sum insured for the basic covereage.
+Object value = attributeSumInsured.getValue(baseCoverage);
+Object defaultValue = attributeSumInsured.getDefaultValue(householdContract);
+ValueSet<?> valueSet = attributeSumInsured.getValueSet(baseCoverage, new ValidationContext());
+----
+
+==== Table Structure
+Similar to the type, TableStructure can be obtained from a Table object (or class) via `org.faktorips.runtime.model.IpsModel#getTableStructure`. In addition to general information about the table, it also provides information about the names and data types of the columns as well as generic access to the values of a specific table.
+
+==== Enumeration Type
+With an enumeration value or an enumeration class the method `org.faktorips.runtime.model.IpsModel#getEnumType` returns an enum type. Enum type can be created for both normal and extendable enum types. It provides information about the attributes for example the one used for identification or display and allows generic access to the corresponding values ​​of the enumeration.
+
+=== @Ips* Annotations for the Faktor-IPS Meta-model
+The meta-model gets its information from the generated code rather than from a separate file. This contains all the important information. Faktor-IPS generates additional annotations (@Ips…) to properly associate the methods. These annotations are read from the generated code and interpreted accordingly, while loading the meta-model. These annotations also improve the readability of the code, by indicating which artifact a method is generated for.
+
+Labels and descriptions are not written as annotations. For the translatable texts, a property file is generated for each language used.

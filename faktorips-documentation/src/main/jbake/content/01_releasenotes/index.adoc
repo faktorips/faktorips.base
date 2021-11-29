@@ -4,6 +4,7 @@
 :jbake-order: 10
 :images-folder: {images}releasenotes/
 
+[[release_notes]]
 == Release Notes
 
 === Version 21.12.0

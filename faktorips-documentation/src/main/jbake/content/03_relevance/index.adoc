@@ -4,11 +4,10 @@
 :jbake-order: 30
 :images-folder: {images}relevance/
 
+[[relevanzen]]
 == Relevanzen
 
-Informationen über die Relevanz eines Attributs sind nützlich, um es in einem User Interface sinnvoll darzustellen. 
-So können beispielsweise irrelevante Attribute ausgeblendet werden und Pflichtfelder als solche markiert werden. 
-Um die Faktor-IPS-Relevanzen in Linkki zu nutzen kann der `IpsPropertyDispatcher` eingesetzt werden (siehe https://doc.linkki-framework.org/1.4.0-vaadin8/09_extending_linkki/05_faktor-ips_extension.html#ips-property-dispatcher -> _Faktor-IPS Property Dispatcher_).
+Informationen über die Relevanz eines Attributs sind nützlich, um es in einem User Interface sinnvoll darzustellen. So können beispielsweise irrelevante Attribute ausgeblendet werden und Pflichtfelder als solche markiert werden. Um die Faktor-IPS-Relevanzen in Linkki zu nutzen kann der `IpsPropertyDispatcher` eingesetzt werden (siehe https://doc.linkki-framework.org/1.4.0-vaadin8/09_extending_linkki/05_faktor-ips_extension.html#ips-property-dispatcher -> _Faktor-IPS Property Dispatcher_).
 
 Die Relevanz von Vertragsattributen wird über ihre Wertebereiche dargestellt. +
 
@@ -28,8 +27,7 @@ image:{images-folder}relevance_options.png[width=796,height=168,align="center"]
 
 === Generische Validierung
 
-Um zu prüfen, ob der Wert eines Attributs zur eingestellten Relevanz passt, mussten bisher an jedem Attribut Validierungregeln mit individuellen Fehlermeldungen angelegt werden. 
-Durch die Aktivierung der generischen Validierung werden die Relevanzprüfungen mit einheitlichen Fehlermeldungen automatisch generiert. Die Checkbox zum Aktivieren befindet sich auf dem Validierungsregel-Tab des Attributs. +
+Um zu prüfen, ob der Wert eines Attributs zur eingestellten Relevanz passt, mussten bisher an jedem Attribut Validierungregeln mit individuellen Fehlermeldungen angelegt werden. Durch die Aktivierung der generischen Validierung werden die Relevanzprüfungen mit einheitlichen Fehlermeldungen automatisch generiert. Die Checkbox zum Aktivieren befindet sich auf dem Validierungsregel-Tab des Attributs. +
 
 image:{images-folder}enable_generic_validation.png[width=608,height=624,align="center"]
 
@@ -118,4 +116,3 @@ Die `DefaultGenericAttributeValidationConfiguration` generiert alle Message-Code
 * <ATTRIBUT>: Der Name des geprüften Attributs.
 
 Wenn beispielsweise die Validierung des Pflichtattributs "wohnflaeche" aus den obigen Screenshots fehlschlägt, weil kein Wert gesetzt wurde, dann wird die generierte Error-Message folgenden Message-Code enthalten: _MANDATORY.HausratVertrag.wohnflaeche_.
-

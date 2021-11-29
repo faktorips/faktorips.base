@@ -1,0 +1,116 @@
+:jbake-title: Generierten Code anpassen
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 80
+
+[[manuelle_anpassungen]]
+== Manuelle Anpassungen des generierten Codes
+
+=== Einführung
+Da es mit Faktor-IPS möglich sein soll den generierten Java-Code manuell zu verändern, verwendet der Codegenerator das Tool JMerge. Damit der Generator angepassten Code nicht mit generiertem Code überschreibt, sind verschiedene Einstellungen möglich. Diese werden über sogenannte „Java Doc Custom Tags“ gesteuert. Die Custom Tags sind Schlüsselwörter im Java-Doc, die mit dem Zeichen „@“ beginnen. Die folgende Tabelle gibt einen Überblick, welche Custom Tags derzeit in Faktor-IPS möglich sind. Unter der Tabelle wird deren Funktion beschrieben.
+
+[cols="1,2",options="header"]
+|=============================================================
+|Custom Tag |Bedeutung
+
+|@generated|
+Der folgende Code wird vom Generator überschrieben.
+
+|@generated NOT|
+Der folgende Code wird nicht vom Generator überschrieben.
+
+|@generated REDIRECT|
+Der Code dieser Methode wird nicht angefasst. Der generierte Code landet in einer ansonsten gleichnamigen Methode mit dem Suffix GeneratedRedirection.
+
+|@restrainedmodifiable|
+Teile des Codes sind vom Entwickler anzupassen.
+
+|@implements|
+Lässt die generierte Klasse zusätzlich das angegebene Interface implementieren (für generierte Interfaces kann auch @extends verwendet werden).
+
+|@customizedAnnotations [ALL]|
+Die Annotationen werden nicht vom Generator überschrieben. Der Zusatz ‚ALL‘ kann weggelassen werden.
+
+|@customizedAnnotations ADDED|
+Der Entwickler hat Annotationen hinzugefügt. Der Generator darf daher keine Annotationen mehr löschen.
+
+|@customizedAnnotations REMOVED|
+Der Entwickler hat generierte Annotationen entfernt. Der Generator darf daher keine neuen Annotationen hinzufügen.
+
+|@customizedAnnotations CONTENT-CHANGED|
+Der Entwickler hat die Attribute einer Annotation verändert. Der Generator darf den Inhalt nicht mehr überschreiben.
+|=============================================================
+
+=== Erläuterung der Custom Tags
+
+==== @generated
+Das Custom Tag @generated wird normalerweise vom Generator in das Java-Doc der generierten Elemente geschrieben. Solange dieses Tag unverändert bleibt, wird der Code bei jedem Generieren überschrieben.Änderungen vom Entwickler werden nicht berücksichtigt! Möchte der Entwickler den generierten Code verändern, muss er hinter das Custom Tag ein „NOT“ schreiben.
+
+Wichtig: Abgesehen von @restrainedmodifiable werden alle Custom Tags zusätzlich zum @generated angegeben. Diese zusätzlichen Tags müssen unbedingt nach @generated hinzugefügt werden. Auch selbst hinzugefügtes Java-Doc muss nach dem @generated Tag stehen. Der Generator überschreibt grundsätzlich das Java-Doc vor dem @generated Tag.
+
+==== @generated NOT
+Dieses Custom Tag ist eigentlich kein eigenes Tag sondern nur die Negation von @generated. Java-Elemente mit dieser Kennzeichnung werden vom Generator nicht mehr verändert. Der Entwickler kann damit eigenen Code einfügen. Achtung: der Code wird auch nicht verändert, wenn sich das Modell ändert oder das Element im Modell gelöscht wird!
+
+Konvention: Wenn gar kein Tag an einer Methode steht, wird sie ebenfalls vom Generator nicht überschrieben. Um auch noch später unterscheiden zu können, welche manuell angepassten Methoden ursprünglich generiert wurden und welche vom Benutzer selbst hinzugefügt wurden, sollte man @generated NOT nur verwenden, wenn bereits ein @generated vom Generator erzeugt wurde.Fügt man dagegen eine neue Methode ein, schreibt man gar kein Custom Tag in das Java-Doc.
+
+==== @generated REDIRECT
+Markiert eine generierte Methode, die der Benutzer überschreibt ohne auf den generierten Code verzichten zu wollen. Der generierte Code landet in einer ansonsten gleichnamigen Methode mit dem Suffix GeneratedRedirection (die man bei Einführung dieses Tags selbst erstellen muss).
+
+[source, java]
+----
+/**
+ * @generated REDIRECT
+ */
+@Override
+public void setPlz(String newValue) {
+  setPlzGeneratedRedirection(newValue);
+  notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_TARIFZONE, null, getTarifzone()));
+}
+
+/**
+ * @generated
+ */
+private void setPlzGeneratedRedirection(String newValue) {
+  String oldPlz = plz;
+  setPlzInternal(newValue);
+  notifyChangeListeners(new PropertyChangeEvent(this, PROPERTY_PLZ, oldPlz, plz));
+}
+----
+
+==== @restrainedmodifiable
+Dieses Custom Tag wird bei bestimmten Methoden (z.B. in generierten Testklassen oder Regeln) vom Generator anstatt @generated erzeugt und weist darauf hin, dass der Entwickler eigenen Code hinzufügen kann. Der Abschnitt, an dem der Code stehen darf, ist mit Kommentaren gekennzeichnet:
+[source, java]
+----
+/**
+ * Erzeugt eine neue Instanz des Testfalls.
+ * 
+ * @restrainedmodifiable
+ */
+public BeitragsberechnungHausratTest(String qualifiedName) throws ParserConfigurationException {
+    super(qualifiedName);
+    // begin-user-code
+        int i = 2;
+    // end-user-code
+}
+----
+
+@restrainedmodifiable kann nur verwendet werden, wenn es bereits vom Generator erzeugt wurde. Ein Ersetzen von @generated und Einfügen der entsprechenden Kommentarzeilen funktioniert nicht und wird vom Generator überschrieben.
+
+==== @implements
+Um in eine generierte Klasse ein zusätzliches Interface implementieren zu lassen, kann das Custom Tag @implements verwendet werden. Das zu implementierende Interface wird direkt hinter das Custom Tag geschrieben. Beim nächsten Generieren des Codes findet der Generator das zusätzliche Interface und fügt es automatisch hinzu. Der Entwickler hat jedoch für das eventuell notwendige Import-Statement zu sorgen! Da der Generator grundsätzlich das angepasste Java-Doc bis zum @generated Tag überschreibt, muss das @implements Tag nach dem @generated stehen! Handelt es sich nicht um eine generierte Klasse, sondern um ein generiertes Interface, kann analog auch @extends verwendet werden.
+
+Um Javadoc-/Checkstyle-Warnungen bei spitzen Klammern in Javadoc zu vermeiden, wenn Interfaces mit Generics implementiert werden sollen können ab Faktor-IPS 21.6 die Generics-Klammern(</>) durch eckige Klammern([/]) ersetzt werden.
+
+==== @customizedAnnotations[ALL]
+Normalerweise werden vom Generator sämtliche Annotationen überschrieben bzw. vom Entwickler hinzugefügte Annotationen werden gelöscht. Das ist notwendig, da der Generator nicht zwischen selbst generierten und vom Benutzer hinzugefügten Annotationen unterscheiden kann und andernfalls Annotationen, die durch eine Modelländerung nicht mehr benötigt werden, vom Generator nicht gelöscht werden. Muss der Entwickler die Annotationen von Hand anpassen, kann er das Custom Tag @customizedAnnotations verwenden. Der Generator schreibt oder verändert dann keine Annotationen mehr! Optional kann als Zusatz das Wort ‚ALL‘ angegeben werden, um es von den folgenden Einstellungen zu unterscheiden.
+
+Wichtig: @customizedAnnotations muss unbedingt nach @generated stehen, da es sonst vom Generator überschrieben wird.
+
+==== @customizedAnnotations ADDED
+Wenn der Entwickler eine Annotation hinzufügen muss, kann er per @customizedAnnotations ADDED den Generator anweisen keine Annotationen mehr zu löschen. Auch bisher generierte Annotationen werden dann nicht vom Generator gelöscht, wenn diese nicht mehr benötigt werden! Der Zusatz kann auch mit REMOVED oder CONTENT-CHANGED kombiniert werden, z.B. @customizedAnnotations ADDED REMOVED.
+
+==== @customizedAnnotations REMOVED
+Wenn der Entwickler eine generierte Annotation löschen möchte, muss dieses Custom Tag angegeben werden. Der Generator ist damit angewiesen keine neuen Annotationen mehr hinzuzufügen. Kann ebenfalls mit ADDED oder CONTENT-CHANGED kombiniert werden.
+
+==== @customizedAnnotations CONTENT-CHANGED
+Wenn die Attribute einer Annotation vom Entwickler verändert werden, wird mit diesem Custom Tag bestimmt, dass der Generator den Inhalt von Annotationen nicht mehr überschreibt. Auch dieses Custom Tag kann bei Bedarf mit ADDED oder REMOVED kombiniert werden.

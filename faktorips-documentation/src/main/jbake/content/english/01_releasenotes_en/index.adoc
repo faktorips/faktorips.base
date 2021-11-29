@@ -1,19 +1,17 @@
-:jbake-title: Release Notes (English)
-:jbake-type: chapter
+:jbake-title: Release Notes
+:jbake-type: section
 :jbake-status: published
-:jbake-order: 20
-:images-folder: {images}releasenotes/
+:jbake-order: 10
+:images-folder: ../{images}releasenotes/
 
-== Release Notes (English)
+== Release Notes
 
 === Version 21.12.0
 
 ==== New Features and Improvements
 
 ===== Schemas for IPS XML Files (https://jira.faktorzehn.de/browse/FIPS-7445[FIPS-7445])
-Faktor-IPS uses XML to persist all IPS objects in the workspace. As those files are written and read exclusively by Faktor-IPS a validation of their content against an XML schema was not necessary. 
-As more and more developers want to do small changes to some IPS objects outside of Faktor-IPS, for example with other IDEs or text editors, you can now activate the setting "validateIpsSchema" 
-in the .ipsproject configuration file to write a schema reference in every file and validate against that schema on reading and building those files. This setting can also be activated during the migration to Faktor-IPS 21.12.
+Faktor-IPS uses XML to persist all IPS objects in the workspace. As those files are written and read exclusively by Faktor-IPS a validation of their content against an XML schema was not necessary. As more and more developers want to do small changes to some IPS objects outside of Faktor-IPS, for example with other IDEs or text editors, you can now activate the setting "validateIpsSchema" in the .ipsproject configuration file to write a schema reference in every file and validate against that schema on reading and building those files. This setting can also be activated during the migration to Faktor-IPS 21.12.
 
 ===== New Maven Mojo features (https://jira.faktorzehn.de/browse/FIPS-7572[FIPS-7572], https://jira.faktorzehn.de/browse/FIPS-8014[FIPS-8014], https://jira.faktorzehn.de/browse/FIPS-7796[FIPS-7796], https://jira.faktorzehn.de/browse/FIPS-8026[FIPS-8026])
 The Maven plugin has been expanded with the <buildIpsOnly> option which is set to `true` by default. +
@@ -21,8 +19,7 @@ With this parameter the "faktorips-build" only generates the source code, which 
 
 In addition, the build mojo now is able to do incremental builds by omitting the `clean` phase. Therefore the working directory is no longer automatically deleted and re-imported.
 
-The logging of the "faktorips-build" was enhanced with the platform debug tracing facility from Eclipse and can be activated with the Maven option `-X`. If for some reason the standard trace settings are not suitable, 
-a separate tracing options file can be specified with the parameter `<debugLogOptions>`. Please refer toe: https://wiki.eclipse.org/FAQ_How_do_I_use_the_platform_debug_tracing_facility[FAQ How do I use the platform debug tracing facility]
+The logging of the "faktorips-build" was enhanced with the platform debug tracing facility from Eclipse and can be activated with the Maven option `-X`. If for some reason the standard trace settings are not suitable, a separate tracing options file can be specified with the parameter `<debugLogOptions>`. Please refer toe: https://wiki.eclipse.org/FAQ_How_do_I_use_the_platform_debug_tracing_facility[FAQ How do I use the platform debug tracing facility]
 
 ===== Enhancement of Ant tasks (https://jira.faktorzehn.de/browse/FIPS-8014[FIPS-8014])
 The Ant task _FullBuildTask_ has been renamed to _BuildTask_ and two options `ipsOnly` and `fullBuild` have been added. +
@@ -32,9 +29,7 @@ The _fullBuild_ option controls whether the build is started as a full or increm
 The tasks _MavenProjectImportTask_ and _ProjectImportTask_ no longer throw errors if the projects already exist.
 
 ===== Jakarta Persistence 2.2 (https://jira.faktorzehn.de/browse/FIPS-7741[FIPS-7741])
-Following Oracle's abandonment of Java EE the open source project Jakarta EE was founded. Due to naming rights for "Java" remaining with Oracle in a first step all artifacts were renamed to "Jakarta". 
-Because many projects, including for example Spring, switched their dependencies to these renamed artifacts, Faktor-IPS now offers "Jakarta Persistence 2.2" as an option for the persistence provider to be used when persisting Faktor-IPS policy objects in a database. 
-The generated annotations are identical to those of the "Generic JPA 2.1" persistence provider; only the dependencies created when creating a Maven project with the Faktor-IPS archetype or adding the IPS nature to an existing Maven project are changed to
+Following Oracle's abandonment of Java EE the open source project Jakarta EE was founded. Due to naming rights for "Java" remaining with Oracle in a first step all artifacts were renamed to "Jakarta". Because many projects, including for example Spring, switched their dependencies to these renamed artifacts, Faktor-IPS now offers "Jakarta Persistence 2.2" as an option for the persistence provider to be used when persisting Faktor-IPS policy objects in a database. The generated annotations are identical to those of the "Generic JPA 2.1" persistence provider; only the dependencies created when creating a Maven project with the Faktor-IPS archetype or adding the IPS nature to an existing Maven project are changed to
 
 [source, xml]
 ----
@@ -48,8 +43,7 @@ The generated annotations are identical to those of the "Generic JPA 2.1" persis
 With one of the following releases Faktor-IPS will support Jakarta Persistence 3, which is part of Jakarta EE 9 and changes the annotations' namespace from "javax.persistence" to "jakarta.persistence".
 
 ===== New Annotation @IpsGenerated (https://jira.faktorzehn.de/browse/FIPS-8109[FIPS-8109])
-Many developers use tools for the automated evaluation of code quality. Those tools should check their handwritten code, but not the code generated by Faktor-IPS. Many tools can be configured via comments or annotations. 
-Faktor-IPS now provides the annotation org.faktorips.runtime.annotation.IpsGenerated that can be automatically added to all generated methods through the setting +
+Many developers use tools for the automated evaluation of code quality. Those tools should check their handwritten code, but not the code generated by Faktor-IPS. Many tools can be configured via comments or annotations. Faktor-IPS now provides the annotation org.faktorips.runtime.annotation.IpsGenerated that can be automatically added to all generated methods through the setting +
 `<Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>` +
 to keep for example SonarQube/JaCoCo from analysing those methods.
 
@@ -68,8 +62,7 @@ Templates are visible and editable in the Productdefinition view, therefore they
 image:{images-folder}navigate_template_en.png[width=598,height=254,align="center"]
 
 ===== Matcher (https://jira.faktorzehn.de/browse/FIPS-8175[FIPS-8175])
-The matchers for the `org.faktorips.runtime.MessageList` in `de.faktorzehn.commons.ips.test.matcher.IpsMatchers` are now part of Faktor-IPS and available in `org.faktorips.testsupport.IpsMatchers` (some with a different name). 
-Additionaly there are matchers for `org.faktorips.valueset.ValueSet` in `org.faktorips.testsupport.ValueSetMatchers`. +
+The matchers for the `org.faktorips.runtime.MessageList` in `de.faktorzehn.commons.ips.test.matcher.IpsMatchers` are now part of Faktor-IPS and available in `org.faktorips.testsupport.IpsMatchers` (some with a different name). Additionaly there are matchers for `org.faktorips.valueset.ValueSet` in `org.faktorips.testsupport.ValueSetMatchers`. +
 Maven-Dependency:
 
 [source, xml]

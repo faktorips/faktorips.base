@@ -1,0 +1,86 @@
+:jbake-title: Verwendung als Maven-Dependencies
+:jbake-type: chapter
+:jbake-status: published
+:jbake-order: 60
+
+[[maven]]
+== Verwendung von Faktor-IPS-Projekten als Maven-Dependencies
+
+=== Motivation
+
+In vielen Java-Projekten wird Maven als Build-Tool und zum Dependency-Management eingesetzt. Darum liegt es nahe, auch die Abhängigkeiten zwischen Faktor-IPS-Projekten über Maven abzubilden.
+
+=== Einstellungen
+
+==== In den referenzierten Projekten
+* Zuerst müssen in allen Faktor-IPS-Projekten, die per Maven referenziert werden sollen, einige Einstellungen aus der .ipsproject-Datei im Manifest (META-INF/MANIFEST.MF) duplizieren. Die Einstellungen sind in unter <<manifest, Verwendung des Manifest für Faktor-IPS-Projekte>> beschrieben.
+
+* Das handgeschriebene Manifest muss von Maven übernommen werden: 
+
+[source, xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+                <goal>jar</goal>
+            </goals>
+            <configuration>
+                <archive>
+                    <addMavenDescriptor>false</addMavenDescriptor>
+                    <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+                </archive>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+* Die Modell- bzw. Produktordner sollten, sofern sie nicht in der Maven-üblichen Struktur liegen als Resource hinzugefügt werden: 
+
+[source, xml]
+----
+<resource>
+    <directory>model</directory>
+    <targetPath>model</targetPath>
+</resource>
+----
+
+* Sofern Source-Code für Formeln generiert wird, muss Maven angewiesen werden, diesen auch im derived-Ordner zu bauen:
+
+[source, xml]
+----
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+                <sources><source>${project.basedir}/derived</source></sources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+==== In den referenzierenden Projekten
+In den referenzierenden Faktor-IPS-Projekten muss dann in der Datei .ipsproject der IpsObjectPath angepasst werden. Anstelle der bisher referenzierten Projekte genügt ein Eintrag für den Maven-Classpath-Container:
+
+`<Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="false" type="container"/>`
+
+=== Maven Version Provider
+Es ist es sinnvoll in der `.ipsproject`-Datei den Maven Version Provider einzutragen: `<Version versionProvider="org.faktorips.maven.mavenVersionProvider"/>`. +
+Dadurch wird die Version aus der `pom.xml` ausgelesen und kann z.B für @since-Annotationen an neuen Klassen oder Attributen genutzt werden.
+
+=== Erstellung von Faktor-IPS Projekten als Maven-Projekte
+Faktor-IPS-Projekte können seit der Version 21.6 direkt als Maven-Projekte mittels Maven-Archetypes generiert werden. Genaueres dazu ist <<archetype, hier>> beschrieben.
+
+=== Faktor-IPS-Build mit Maven
+Wollen Sie nicht nur die von Faktor-IPS in Eclipse gebauten Artefakte einchecken und in Maven-Bundles verwenden sondern auch den Faktor-IPS-Build z.B. auf einem Buildserver laufen lassen, ist dies mittels des https://doc.faktorzehn.org/faktorips-maven-plugin/latest/[Faktor-IPS Maven Plugins] möglich.

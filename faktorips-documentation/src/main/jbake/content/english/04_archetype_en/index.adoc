@@ -1,8 +1,9 @@
-:jbake-title: Faktor-IPS Archetype (English)
-:jbake-type: chapter
+:jbake-title: Faktor-IPS Archetype
+:jbake-type: section
 :jbake-status: published
-:jbake-order: 50
+:jbake-order: 40
 
+[[archetype_en]]
 == Faktor-IPS Archetype
 
 === Motivation
