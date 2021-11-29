@@ -66,7 +66,7 @@ class ProductAttributeTmpl {
              * @generated
              */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface)»
-            «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
+            «IF (!genInterface && generatePublishedInterfaces) || overwrite»@Override«ENDIF»
             public «returnType» «method(methodNameGetter)»
             «IF genInterface»;«ELSE»
             {

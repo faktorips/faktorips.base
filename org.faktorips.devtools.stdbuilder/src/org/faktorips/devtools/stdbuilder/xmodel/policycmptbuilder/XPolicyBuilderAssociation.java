@@ -49,6 +49,10 @@ public class XPolicyBuilderAssociation extends XPolicyAssociation {
         }
     }
 
+    public boolean isTargetSameAsOverwrittenAssociationsTarget() {
+        return getAssociation().getTarget().equals(getSuperAssociationWithSameName().getAssociation().getTarget());
+    }
+
     public boolean isOverwrittenTargetNotAbstract() {
         return !getSuperAssociationWithSameName().isAbstractTarget();
     }

@@ -87,7 +87,7 @@ class PolicyAssociationBuilderTmpl{
     //    An association setter is only generated for associations that are not derived or inverse composition.
     //    If this is the case, an association setter with a generic subtype of the target class is always generated.
     //    This makes it possible to set a target that is known to the workspace.
-    //    If the target is in addition not abstract, a setter is generated to directly instanciate the target class.
+    //    If the target is in addition not abstract, a setter is generated to directly instantiate the target class.
 
 
     def private static associationEvaluation(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation it) '''
@@ -116,7 +116,7 @@ class PolicyAssociationBuilderTmpl{
         *
         * @generated
         */
-        «IF isSuper»@Override«ENDIF»
+        «IF isSuper || association.needOverrideForConstrainNewChildMethod && association.targetSameAsOverwrittenAssociationsTarget»@Override«ENDIF»
         public «builder.implClassName» «association.method(association.methodName, policyPublishedInterfaceName, "targetPolicy")»{
             «IF isSuper»
                 super.«association.methodName»(targetPolicy);
@@ -134,7 +134,7 @@ class PolicyAssociationBuilderTmpl{
         *
         * @generated
         */
-        «IF isSuper»@Override«ENDIF»
+        «IF isSuper || association.needOverrideForConstrainNewChildMethod && association.targetSameAsOverwrittenAssociationsTarget»@Override«ENDIF»
         public «returnType(sourceBuilder, multi, true, it)» «association.methodName»(«targetBuilderType(multi, it)» targetBuilder){
             «IF isSuper»
                 super.«association.methodName»(targetBuilder);

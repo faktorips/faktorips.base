@@ -125,7 +125,7 @@ class ProductAssociationBuilderTmpl {
         *
         * @generated
         */
-        «IF isSuper» @Override «ENDIF»
+        «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.getAssociation.target==association.getAssociation.findSuperAssociationWithSameName(association.ipsProject).target)» @Override «ENDIF»
         public «builder.implClassName» «IF withCardinality»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct", CardinalityRange, "cardinality" )»«ELSE»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct")»«ENDIF»{
             «IF isSuper»
                 super.«association.methodName»(targetProduct«IF withCardinality», cardinality«ENDIF»);
@@ -143,7 +143,7 @@ class ProductAssociationBuilderTmpl {
         *
         * @generated
         */
-        «IF isSuper»@Override«ENDIF»
+        «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.getAssociation.target==association.getAssociation.findSuperAssociationWithSameName(association.ipsProject).target)»@Override«ENDIF»
         public «returnType(builder, multi, true, it)» «association.methodName»(«targetBuilderType(multi, it)» targetBuilder«IF withCardinality», «CardinalityRange» cardinality«ENDIF») {
             «IF isSuper»
                 super.«association.methodName»(targetBuilder«IF withCardinality», cardinality«ENDIF»);

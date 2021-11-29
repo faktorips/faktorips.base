@@ -115,7 +115,7 @@ class PolicyBuilderTmpl {
             *
             * @generated
             */
-            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant && !overwrittenAttribute.datatype.abstract»@Override«ENDIF»
+            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
