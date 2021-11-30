@@ -50,7 +50,8 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
 
     @Override
     public boolean isResponsibleFor(IIpsProject ipsProject) {
-        return findMavenProjectFacade(ipsProject.getProject()).getMavenProject() != null
+        IMavenProjectFacade mavenProjectFacade = findMavenProjectFacade(ipsProject.getProject());
+        return mavenProjectFacade != null && mavenProjectFacade.getMavenProject() != null
                 && Arrays.stream(ipsProject.getIpsPackageFragmentRoots())
                         .anyMatch(LibraryIpsPackageFragmentRoot.class::isInstance);
     }
