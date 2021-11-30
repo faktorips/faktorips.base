@@ -81,53 +81,77 @@ Maven-Dependency:
 ----
 
 ===== Weitere Funktionen und Verbesserungen
-* https://jira.faktorzehn.de/browse/FIPS-7448[FIPS-7448]: MultiEdit in Core als Addon aufnehmen
-* https://jira.faktorzehn.de/browse/FIPS-7549[FIPS-7549]: Neuer Extension Point beim Speichern eines Produktkonfigurationsbausteines
-* https://jira.faktorzehn.de/browse/FIPS-7761[FIPS-7761]: Dokumentation zu Relevanzen
-* https://jira.faktorzehn.de/browse/FIPS-8196[FIPS-8196]: Produktdaten in DB schreiben - FIPS Tabellen
-* https://jira.faktorzehn.de/browse/FIPS-6359[FIPS-6359]: Lizenz für Runtime-Addon-JPA
-* https://jira.faktorzehn.de/browse/FIPS-6836[FIPS-6836]: Fehlermeldung beschreibt die Anpassungsstufe, obwohl es keine Anpassungsstufen gibt
-* https://jira.faktorzehn.de/browse/FIPS-6875[FIPS-6875]: Abstrakte Enums als Datentyp für reine Vertragsattribute an konkreten Vertragstypen
-* https://jira.faktorzehn.de/browse/FIPS-7129[FIPS-7129]: Attribut "beinhaltet " anders darstellen
-* https://jira.faktorzehn.de/browse/FIPS-7536[FIPS-7536]: Reihenfolge von Custom Validations soll der im ExtensionPoint: org.faktorips.devtools.core.customValidation entsprechen
-* https://jira.faktorzehn.de/browse/FIPS-7682[FIPS-7682]: Menü-Enablement sollte Ips-Objekte nicht unnötig instantiieren
-* https://jira.faktorzehn.de/browse/FIPS-7816[FIPS-7816]: Offizielle Eclipse-Update-Site als Default im Mojo nutzen
-* https://jira.faktorzehn.de/browse/FIPS-7921[FIPS-7921]: Tutorial umstellen auf Maven-Projekte
-* https://jira.faktorzehn.de/browse/FIPS-7922[FIPS-7922]: -Dmaven.repo.local auswerten und in Eclipse setzen
-* https://jira.faktorzehn.de/browse/FIPS-7968[FIPS-7968]: Versionsübergreifende Tests
-* https://jira.faktorzehn.de/browse/FIPS-7980[FIPS-7980]: Abfragemöglichkeit, ob ein ValueSet nicht eingeschränkt is
-* https://jira.faktorzehn.de/browse/FIPS-7981[FIPS-7981]: Faktor-IPS Maven Plugin und Lombok sollen in einem Projekt verwendet werden können
-* https://jira.faktorzehn.de/browse/FIPS-8168[FIPS-8168]: toString in PolicyCmptType-Subklassen sollte per default super aufrufen
+ * neuer Extension Point beim Speichern eines Produktkonfigurationsbausteines (https://jira.faktorzehn.de/browse/FIPS-7549[FIPS-7549])
+ * Dokumentation zu Relevanzen (https://jira.faktorzehn.de/browse/FIPS-7761[FIPS-7761])
+ * Abstrakte Enums als Datentyp für reine Vertragsattribute an konkreten Vertragstypen (https://jira.faktorzehn.de/browse/FIPS-6875[FIPS-6875])
+ * Attribut "beinhaltet <null>" anders darstellen (https://jira.faktorzehn.de/browse/FIPS-7129[FIPS-7129])
+ * Navigation zu Vorlagen sollte immer möglich sein (https://jira.faktorzehn.de/browse/FIPS-7398[FIPS-7398])
+ * Reihenfolge von Custom Validations soll der im ExtensionPoint: org.faktorips.devtools.core.customValidation entsprechen. (https://jira.faktorzehn.de/browse/FIPS-7536[FIPS-7536])
+ * Menü-Enablement sollte Ips-Objekte nicht unnötig instantiieren (https://jira.faktorzehn.de/browse/FIPS-7682[FIPS-7682])
+ * jakarta.persistence 2.2 als Persistence Provider (https://jira.faktorzehn.de/browse/FIPS-7741[FIPS-7741])
+ * Offizielle Eclipse-Update-Site als Default im Mojo nutzen (https://jira.faktorzehn.de/browse/FIPS-7816[FIPS-7816])
+ * Java 17-Unterstützung (https://jira.faktorzehn.de/browse/FIPS-7865[FIPS-7865])
+ * -Dmaven.repo.local auswerten und in Eclipse setzen (https://jira.faktorzehn.de/browse/FIPS-7922[FIPS-7922])
+ * Versionsübergreifende Tests (https://jira.faktorzehn.de/browse/FIPS-7968[FIPS-7968])
+ * Abfragemöglichkeit, ob ein ValueSet nicht eingeschränkt ist (https://jira.faktorzehn.de/browse/FIPS-7980[FIPS-7980])
+ * Faktor-IPS Maven Plugin und Lombok sollen in einem Projekt verwendet werden können (https://jira.faktorzehn.de/browse/FIPS-7981[FIPS-7981])
+ * Incremental IPS-Build (https://jira.faktorzehn.de/browse/FIPS-8014[FIPS-8014])
+ * Logging verbessern (https://jira.faktorzehn.de/browse/FIPS-8026[FIPS-8026])
+ * @Generated Annotation um generierten Code aus der CodeCoverage raus zu nehmen (https://jira.faktorzehn.de/browse/FIPS-8109[FIPS-8109])
+ * loggingFrameworkConnector deprecaten (https://jira.faktorzehn.de/browse/FIPS-8120[FIPS-8120])
+ * XML-Validierungs-Setting aktivieren (https://jira.faktorzehn.de/browse/FIPS-8143[FIPS-8143])
+ * toString in PolicyCmptType-Subklassen sollte per default super aufrufen (https://jira.faktorzehn.de/browse/FIPS-8168[FIPS-8168])
+ * Matchers aus f10-commons mit IPS veröffentlichen (https://jira.faktorzehn.de/browse/FIPS-8175[FIPS-8175])
+ * SingleInternationalString in testsupport aufnehmen (https://jira.faktorzehn.de/browse/FIPS-8366[FIPS-8366])
+ * Archetype für 21.12 anpassen (https://jira.faktorzehn.de/browse/FIPS-8389[FIPS-8389])
+ * @IpsGenerated als Default in neuen Projekten eintragen (https://jira.faktorzehn.de/browse/FIPS-8404[FIPS-8404])
+ * Schema für XMLs (https://jira.faktorzehn.de/browse/FIPS-7445[FIPS-7445])
 
 
 ==== Behobene Fehler
-* https://jira.faktorzehn.de/browse/FIPS-1602[FIPS-1602]: NPE beim Versuch eines Copy&Paste im Attribute Edit Dialog
-* https://jira.faktorzehn.de/browse/FIPS-6450[FIPS-6450]: Konkreter Enum kann nicht auf abstrakt umgestellt werden
-* https://jira.faktorzehn.de/browse/FIPS-6570[FIPS-6570]: Wertebereich lässt sich beim Anlegen eines Produktbausteintyp-Attributs nicht ändern
-* https://jira.faktorzehn.de/browse/FIPS-6683[FIPS-6683]: IPS-Test findet Abhängigkeiten aus Maven-Dependencies nicht
-* https://jira.faktorzehn.de/browse/FIPS-6701[FIPS-6701]: "Beinhaltet <null>" in Produkt-Editor kann nicht entfernt werden, wenn in Vertragsklasse <null> nicht zugelassen ist.
-* https://jira.faktorzehn.de/browse/FIPS-7749[FIPS-7749]: Radio Buttons für Relevanz bleiben bei Template Nutzung readonly
-* https://jira.faktorzehn.de/browse/FIPS-7759[FIPS-7759]: Copy&Paste in Dialogen
-* https://jira.faktorzehn.de/browse/FIPS-7884[FIPS-7884]: NullPointerException bei Prüfen eines Wertes eines Attributes vom Typ Long in einer LongRange
-* https://jira.faktorzehn.de/browse/FIPS-7885[FIPS-7885]: IllegalArgumentException bei Prüfen eines Wertes eines Attributes vom Typ Money in ValueSet mit unterschiedlicher Währung
-* https://jira.faktorzehn.de/browse/FIPS-7909[FIPS-7909]: ProductCmptBuilder: cardinality fehlt im super Aufruf
-* https://jira.faktorzehn.de/browse/FIPS-7969[FIPS-7969]: CSV Import an Tabelle anhängen speichert nicht auf Platte
-* https://jira.faktorzehn.de/browse/FIPS-7970[FIPS-7970]: Archetype funktioniert nicht in Eclipse
-* https://jira.faktorzehn.de/browse/FIPS-7971[FIPS-7971]: Leerzeile in generiertem Javadoc Kommentar bei Table Row Klassen
-* https://jira.faktorzehn.de/browse/FIPS-7973[FIPS-7973]: NullPointerException im ProduktStrukturExplorer
-* https://jira.faktorzehn.de/browse/FIPS-7979[FIPS-7979]: StringLengthValueSet: fehlerhafte Implementierung isEmpty() und isDiscrete()
-* https://jira.faktorzehn.de/browse/FIPS-8063[FIPS-8063]: "Struktur anzeigen" fehlt im Kontextmenü in Produktdefinitionsperspektive
-* https://jira.faktorzehn.de/browse/FIPS-8073[FIPS-8073]: Validierung für doppelte Kind-ID-Version-ID-Kombinationen nicht ausschaltbar
-* https://jira.faktorzehn.de/browse/FIPS-8081[FIPS-8081]: NPE when calling "getValues(true)" on a BigDecimalRange without a step (step = null)
-* https://jira.faktorzehn.de/browse/FIPS-8083[FIPS-8083]: Werte für DynamicEnumDatatype in TableContent nicht korrekt wählbar/dargestellt
-* https://jira.faktorzehn.de/browse/FIPS-8088[FIPS-8088]: Maven Build schlägt unregelmäßig fehl
-* https://jira.faktorzehn.de/browse/FIPS-8114[FIPS-8114]: DefaultRange.isUnrestricted(true) berücksichtigt empty Range nicht
-* https://jira.faktorzehn.de/browse/FIPS-8147[FIPS-8147]: Maven-Build hängt
-* https://jira.faktorzehn.de/browse/FIPS-8149[FIPS-8149]: Java 11 bricht XMLs mit Werten und Extension Properties um
-* https://jira.faktorzehn.de/browse/FIPS-8156[FIPS-8156]: NPE beim Unterschiede beheben
-* https://jira.faktorzehn.de/browse/FIPS-8198[FIPS-8198]: Produkt-Struktur-Explorer zeigt Regeln nicht an
-* https://jira.faktorzehn.de/browse/FIPS-8206[FIPS-8206]: Fehler im Tutorial
-* https://jira.faktorzehn.de/browse/FIPS-8219[FIPS-8219]: No more handles im DeepCopyWizard
-* https://jira.faktorzehn.de/browse/FIPS-8226[FIPS-8226]: Long-Attribute in FIPS-Enums erzeugen nicht kompilierbaren Code bei großen Werten
-* https://jira.faktorzehn.de/browse/FIPS-8230[FIPS-8230]: Datum-Picker in Eclipse 21.6
-
+ * Fehlermeldung beschreibt die Anpassungsstufe, obwohl es keine Anpassungsstufen gibt (https://jira.faktorzehn.de/browse/FIPS-6836[FIPS-6836])
+ * NPE beim Versuch eines Copy&Paste im Attribute Edit Dialog (https://jira.faktorzehn.de/browse/FIPS-1602[FIPS-1602])
+ * Reiter Persistenz muss bei überschriebenen Attributen disabled sein (https://jira.faktorzehn.de/browse/FIPS-5847[FIPS-5847])
+ * Konkreter Enum kann nicht auf abstrakt umgestellt werden (https://jira.faktorzehn.de/browse/FIPS-6450[FIPS-6450])
+ * Wertebereich lässt sich beim Anlegen eines Produktbausteintyp-Attributs nicht ändern (https://jira.faktorzehn.de/browse/FIPS-6570[FIPS-6570])
+ * IPS-Test findet Abhängigkeiten aus Maven-Dependencies nicht (https://jira.faktorzehn.de/browse/FIPS-6683[FIPS-6683])
+ * "Beinhaltet <null>" in Produkt-Editor kann nicht entfernt werden, wenn in Vertragsklasse <null> nicht zugelassen ist. (https://jira.faktorzehn.de/browse/FIPS-6701[FIPS-6701])
+ * NPE beim Anlegen eines Vertragsteiltyps (https://jira.faktorzehn.de/browse/FIPS-7062[FIPS-7062])
+ * NullPointerException beim Ändern auf Anpassungsstufen (https://jira.faktorzehn.de/browse/FIPS-7187[FIPS-7187])
+ * Aktive Attribut Eingabeelemente in Readonly Aufzählungstypen (https://jira.faktorzehn.de/browse/FIPS-7288[FIPS-7288])
+ * Radio Buttons für Relevanz bleiben bei Template Nutzung readonly (https://jira.faktorzehn.de/browse/FIPS-7749[FIPS-7749])
+ * Copy&Paste in Dialogen (https://jira.faktorzehn.de/browse/FIPS-7759[FIPS-7759])
+ * NullPointerException bei Prüfen eines Wertes eines Attributes vom Typ Long in einer LongRange (https://jira.faktorzehn.de/browse/FIPS-7884[FIPS-7884])
+ * IllegalArgumentException bei Prüfen eines Wertes eines Attributes vom Typ Money in ValueSet mit unterschiedlicher Währung (https://jira.faktorzehn.de/browse/FIPS-7885[FIPS-7885])
+ * ProductCmptBuilder: cardinality fehlt im super Aufruf  (https://jira.faktorzehn.de/browse/FIPS-7909[FIPS-7909])
+ * CSV Import an Tabelle anhängen speichert nicht auf Platte (https://jira.faktorzehn.de/browse/FIPS-7969[FIPS-7969])
+ * Archetype funktioniert nicht in Eclipse (https://jira.faktorzehn.de/browse/FIPS-7970[FIPS-7970])
+ * Leerzeile in generiertem Javadoc Kommentar bei Table Row Klassen (https://jira.faktorzehn.de/browse/FIPS-7971[FIPS-7971])
+ * NullPointerException im ProduktStrukturExplorer (https://jira.faktorzehn.de/browse/FIPS-7973[FIPS-7973])
+ * StringLengthValueSet: fehlerhafte Implementierung isEmpty() und isDiscrete() (https://jira.faktorzehn.de/browse/FIPS-7979[FIPS-7979])
+ * "Struktur anzeigen" fehlt im Kontextmenü in Produktdefinitionsperspektive (https://jira.faktorzehn.de/browse/FIPS-8063[FIPS-8063])
+ * Validierung für doppelte Kind-ID-Version-ID-Kombinationen nicht ausschaltbar (https://jira.faktorzehn.de/browse/FIPS-8073[FIPS-8073])
+ * NPE when calling "getValues(true)" on a BigDecimalRange without a step (step = null) (https://jira.faktorzehn.de/browse/FIPS-8081[FIPS-8081])
+ * Werte für DynamicEnumDatatype in TableContent nicht korrekt wählbar/dargestellt (https://jira.faktorzehn.de/browse/FIPS-8083[FIPS-8083])
+ * Maven Build schlägt unregelmäßig fehl (https://jira.faktorzehn.de/browse/FIPS-8088[FIPS-8088])
+ * DefaultRange.isUnrestricted(true) berücksichtigt empty Range nicht (https://jira.faktorzehn.de/browse/FIPS-8114[FIPS-8114])
+ * Maven-Build hängt (https://jira.faktorzehn.de/browse/FIPS-8147[FIPS-8147])
+ * Java 11 bricht XMLs mit Werten und Extension Properties um (https://jira.faktorzehn.de/browse/FIPS-8149[FIPS-8149])
+ * NPE beim Unterschiede beheben (https://jira.faktorzehn.de/browse/FIPS-8156[FIPS-8156])
+ * Produkt-Struktur-Explorer zeigt Regeln nicht an (https://jira.faktorzehn.de/browse/FIPS-8198[FIPS-8198])
+ * faktorips-maven-plugin schlägt bei Maven Release fehl (https://jira.faktorzehn.de/browse/FIPS-8202[FIPS-8202])
+ * No more handles im DeepCopyWizard (https://jira.faktorzehn.de/browse/FIPS-8219[FIPS-8219])
+ * Long-Attribute in FIPS-Enums erzeugen nicht kompilierbaren Code bei großen Werten (https://jira.faktorzehn.de/browse/FIPS-8226[FIPS-8226])
+ * Datum-Picker in Eclipse 21.6 (https://jira.faktorzehn.de/browse/FIPS-8230[FIPS-8230])
+ * Schema für PolicyCmptType funktioniert nicht mit Produktvarianten auf Regeln (https://jira.faktorzehn.de/browse/FIPS-8286[FIPS-8286])
+ * Systemunabhängige Line-Endings in Test-Klassen (https://jira.faktorzehn.de/browse/FIPS-8291[FIPS-8291])
+ * getCardinalityFor.. Methoden werden nicht refaktoriert (https://jira.faktorzehn.de/browse/FIPS-8315[FIPS-8315])
+ * Mojo sheitert beim Build eines Maven-Projekts mit gesetztem <name> (https://jira.faktorzehn.de/browse/FIPS-8321[FIPS-8321])
+ * faktorips-maven-plugin schlägt mit ".project is out of sync with the file system" fehl (https://jira.faktorzehn.de/browse/FIPS-8340[FIPS-8340])
+ * Schema für Tabellen fordert unnötiges format-Attribut (https://jira.faktorzehn.de/browse/FIPS-8346[FIPS-8346])
+ * XML von unbekannten ExtensionProperties wird bei Migration auf 21.12 um xmlns="" ergänzt (https://jira.faktorzehn.de/browse/FIPS-8349[FIPS-8349])
+ * XML-Schema fehlerhaft bei Tabellen mit null (https://jira.faktorzehn.de/browse/FIPS-8353[FIPS-8353])
+ * Bausteinnamen mit doppelten Leerzeichen führen zu Fehler (https://jira.faktorzehn.de/browse/FIPS-8362[FIPS-8362])
+ * executionEnvironment sollte als Default das laufende Java nehmen (https://jira.faktorzehn.de/browse/FIPS-8364[FIPS-8364])
+ * Annotation in additional and retain führt dazu dass keine neuen Annotations hinzugefügt werden (https://jira.faktorzehn.de/browse/FIPS-8377[FIPS-8377])
+ * @Override fehlt manchmal  (https://jira.faktorzehn.de/browse/FIPS-8411[FIPS-8411])
