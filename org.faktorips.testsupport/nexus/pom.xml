@@ -44,10 +44,10 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.testsupport {
-                                    requires transitive org.faktorips.runtime;
-                                    requires transitive org.hamcrest;
-                                    exports org.faktorips.testsupport;
-                                    exports org.faktorips.testsupport.matchers;
+                                        requires transitive org.faktorips.runtime;
+                                        requires transitive org.hamcrest;
+                                        exports org.faktorips.testsupport;
+                                        exports org.faktorips.testsupport.matchers;
                                     }
                                 </moduleInfoSource>
                             </module>

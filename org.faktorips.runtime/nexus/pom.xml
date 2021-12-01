@@ -58,6 +58,7 @@
                                         requires transitive java.xml;
                                         requires transitive java.xml.bind;
                                         exports org.faktorips.runtime;
+                                        exports org.faktorips.runtime.annotation;
                                         exports org.faktorips.runtime.caching;
                                         exports org.faktorips.runtime.formula;
                                         exports org.faktorips.runtime.internal;
