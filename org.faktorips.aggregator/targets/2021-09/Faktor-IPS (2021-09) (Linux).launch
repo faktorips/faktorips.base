@@ -179,7 +179,7 @@
         <setEntry value="org.eclipse.help@default:default"/>
         <setEntry value="org.eclipse.jdt.compiler.apt*1.4.50.v20210914-1429_BETA_JAVA17@default:false"/>
         <setEntry value="org.eclipse.jdt.compiler.tool@default:false"/>
-        <setEntry value="org.eclipse.jdt.core*3.27.50.v20210914-1429_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.jdt.core*3.27.50.v20211026-0535_BETA_JAVA17@default:default"/>
         <setEntry value="org.eclipse.jdt.core.manipulation*1.15.50.v20210914-1428_BETA_JAVA17@default:default"/>
         <setEntry value="org.eclipse.jdt.debug.ui*3.12.400.v20210816-1720_BETA_JAVA17@default:default"/>
         <setEntry value="org.eclipse.jdt.debug@default:default"/>
@@ -188,7 +188,7 @@
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
-        <setEntry value="org.eclipse.jdt.launching*3.19.350.v20210914-1442_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.jdt.launching*3.19.350.v20210915-0557_BETA_JAVA17@default:default"/>
         <setEntry value="org.eclipse.jdt.ui*3.24.50.v20210914-1428_BETA_JAVA17@default:default"/>
         <setEntry value="org.eclipse.jem.util@default:default"/>
         <setEntry value="org.eclipse.jface.databinding@default:default"/>

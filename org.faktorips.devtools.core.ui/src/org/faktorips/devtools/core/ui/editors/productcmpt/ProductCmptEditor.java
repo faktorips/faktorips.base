@@ -20,9 +20,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.part.IPage;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
@@ -96,7 +96,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     private GenerationPropertiesPage getGenerationPropertiesPage() {
-        if (generationPropertiesPage.getPartControl() == null
+        if (generationPropertiesPage == null || generationPropertiesPage.getPartControl() == null
                 || generationPropertiesPage.getPartControl().isDisposed()) {
             return null;
         }
@@ -157,7 +157,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
         if (isStructuralChangeEvent(event)) {
-            Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
+            Display display = PlatformUI.getWorkbench().getDisplay();
             display.syncExec(this::refreshIncludingStructuralChanges);
         }
     }
@@ -246,7 +246,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Current generation may be deleted in delta fix.
      */
     private void fixActiveGeneration() {
-        if (getActiveGeneration().isDeleted()) {
+        IIpsObjectGeneration activeGeneration = getActiveGeneration();
+        if (activeGeneration != null && activeGeneration.isDeleted()) {
             setActiveGeneration(getInitialGeneration());
         }
     }

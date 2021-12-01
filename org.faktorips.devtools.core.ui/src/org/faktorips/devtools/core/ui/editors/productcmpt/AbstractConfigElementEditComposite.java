@@ -50,10 +50,17 @@ public abstract class AbstractConfigElementEditComposite<V extends IConfigElemen
     }
 
     private int calcWidth() {
-        GC gc = new GC(this);
-        int widthDefault = gc.stringExtent(Messages.ConfigElementEditComposite_defaultValue).x;
-        int widthValueSet = gc.stringExtent(Messages.ConfigElementEditComposite_valueSet).x;
-        return Math.max(widthDefault, widthValueSet);
+        GC gc = null;
+        try {
+            gc = new GC(this);
+            int widthDefault = gc.stringExtent(Messages.ConfigElementEditComposite_defaultValue).x;
+            int widthValueSet = gc.stringExtent(Messages.ConfigElementEditComposite_valueSet).x;
+            return Math.max(widthDefault, widthValueSet);
+        } finally {
+            if (gc != null) {
+                gc.dispose();
+            }
+        }
     }
 
 }

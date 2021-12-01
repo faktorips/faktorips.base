@@ -168,7 +168,8 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         compositeDescription.setEnabled(true);
 
         appendNameAndDescription(typeValue);
-        IProductCmpt templateValue = templateListField.getValue().getProductCmpt();
+        ProductCmptViewItem productCmptViewItem = templateListField == null ? null : templateListField.getValue();
+        IProductCmpt templateValue = productCmptViewItem == null ? null : productCmptViewItem.getProductCmpt();
         if (templateValue == null) {
             // no template selected
             return;
