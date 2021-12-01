@@ -1,7 +1,7 @@
-:jbake-title: Faktor-IPS Archetype
+:jbake-title: Faktor-IPS Archetype (English)
 :jbake-type: chapter
 :jbake-status: published
-:jbake-order: 40
+:jbake-order: 50
 
 == Faktor-IPS Archetype
 
