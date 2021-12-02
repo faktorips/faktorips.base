@@ -9,6 +9,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class ValidationRuleTmpl {
 
@@ -88,7 +89,8 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
             // end-user-code
         «ELSE»
             «val attribute = checkedAttribute»
-            if (!«modelObject»«attribute.methodNameGetAllowedValuesFor»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
+            «val valueSetMethods = generatorConfig.valueSetMethods»
+            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetMethods.both ? ValueSetMethods.Unified : valueSetMethods)»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
 
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));

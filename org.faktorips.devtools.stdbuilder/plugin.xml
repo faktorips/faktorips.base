@@ -104,16 +104,16 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
-            defaultValue="NewMethods"
-            description="%unifyValueSetMethodsDescription"
-            disableValue="OldMethods"
-            label="%unifyValueSetMethodsLabel"
-            name="unifyValueSetMethods"
+            defaultValue="Unified"
+            description="%valueSetMethodsDescription"
+            disableValue="ByValueSetType"
+            label="%valueSetMethodsLabel"
+            name="valueSetMethods"
             type="enum">
             <discreteValues>
-            	<!-- @see org.faktorips.devtools.stdbuilder.StandardBuilderSet.UnifyValueSetMethods -->
-               <value value="NewMethods" />
-               <value value="OldMethods" />
+            	<!-- @see org.faktorips.devtools.model.builder.settings.ValueSetMethods -->
+               <value value="Unified" />
+               <value value="ByValueSetType" />
                <value value="Both" />
             </discreteValues>
          </builderSetPropertyDef>

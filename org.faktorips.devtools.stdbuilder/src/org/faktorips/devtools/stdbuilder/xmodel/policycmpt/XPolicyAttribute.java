@@ -19,6 +19,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -360,8 +361,7 @@ public class XPolicyAttribute extends XAttribute {
         }
         boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
                 .isGenerateGetAllowedValuesForAndGetDefaultValue()
-                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor()
-                        .equals(getMethodNameGetAllowedValuesFor());
+                && isMethodNameEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute());
         return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
     }
 
@@ -514,11 +514,46 @@ public class XPolicyAttribute extends XAttribute {
         return "old" + StringUtils.capitalize(getFieldName());
     }
 
-    public String getMethodNameGetAllowedValuesFor() {
+    public boolean isGetAllowedValuesMethodDeprecated(ValueSetMethods valueSetMethods) {
+        return valueSetMethods.isByValueSetType() && getGeneratorConfig().getValueSetMethods().isBoth()
+                && !getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
+                        .equals("getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName()));
+    }
+
+    private boolean isMethodNameEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten) {
+        ValueSetMethods setting = getGeneratorConfig().getValueSetMethods();
+        if (setting.isBoth()) {
+            return overwritten.getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
+                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType));
+        } else {
+            return overwritten.getMethodNameGetAllowedValuesFor(setting)
+                    .equals(getMethodNameGetAllowedValuesFor(setting));
+        }
+    }
+
+    public boolean isNotDuplicateMethodNameGetAllowedValues() {
+        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
+            return !getMethodNameGetAllowedValuesFor(ValueSetMethods.Unified)
+                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType));
+        }
+        return true;
+    }
+
+    public boolean isNotDuplicateMethodNameGetAllowedValuesWithOverride() {
+        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues() && isOverwrite()
+                && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
+
+            return !getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
+                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.Unified));
+        }
+        return true;
+    }
+
+    public String getMethodNameGetAllowedValuesFor(ValueSetMethods valueSetMethods) {
         String prefix;
-        if (isValueSetEnum()) {
+        if (isValueSetEnum() && valueSetMethods.isByValueSetType()) {
             prefix = "getAllowedValuesFor";
-        } else if (isValueSetRange()) {
+        } else if (isValueSetRange() && valueSetMethods.isByValueSetType()) {
             prefix = "getRangeFor";
         } else {
             prefix = "getSetOfAllowedValuesFor";

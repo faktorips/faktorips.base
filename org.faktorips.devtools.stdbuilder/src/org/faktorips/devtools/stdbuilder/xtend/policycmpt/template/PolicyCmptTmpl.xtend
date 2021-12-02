@@ -20,6 +20,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class PolicyCmptTmpl {
 
@@ -107,7 +108,12 @@ def static String body(XPolicyCmptClass it) '''
 
 
         «FOR it : attributesIncludingAbstract»
-            «allowedValuesMethod»
+            «IF generateUnifiedMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
+                «allowedValuesMethod(ValueSetMethods.Unified)»
+            «ENDIF»
+            «IF generateDifferentMethodsByValueSetType»
+                «allowedValuesMethod(ValueSetMethods.ByValueSetType)»
+            «ENDIF»
             «IF !it.isAbstract»
                 «getter»
                 «setter»

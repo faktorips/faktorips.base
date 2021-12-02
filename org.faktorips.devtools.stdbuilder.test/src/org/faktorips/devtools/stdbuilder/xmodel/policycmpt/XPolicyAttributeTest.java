@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
@@ -91,6 +92,8 @@ public class XPolicyAttributeTest {
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+
+        when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
     }

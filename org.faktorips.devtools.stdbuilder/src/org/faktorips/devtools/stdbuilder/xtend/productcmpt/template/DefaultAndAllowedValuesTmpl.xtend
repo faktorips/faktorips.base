@@ -10,6 +10,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNa
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -44,7 +45,12 @@ class DefaultAndAllowedValuesTmpl {
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «getterDefaultValue»
             «setterDefaultValue»
-            «getterAllowedValues»
+            «IF generateUnifiedMethodNameGetAllowedValues &&  notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
+                «getterAllowedValues(ValueSetMethods.Unified)»
+            «ENDIF»
+            «IF generateDifferentMethodsByValueSetType»
+                «getterAllowedValues((ValueSetMethods.ByValueSetType))»
+            «ENDIF»
             «setterAllowedValues»
         «ENDIF»
     '''
@@ -84,19 +90,20 @@ class DefaultAndAllowedValuesTmpl {
         «ENDIF»
     '''
 
-    def private static getterAllowedValues (XPolicyAttribute it) '''
+    def private static getterAllowedValues (XPolicyAttribute it, ValueSetMethods valueSetMethods) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
-         *
+         *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedJDoc("DEPRECATED_UNIFY_METHODS")»«ENDIF»
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
-        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext, "context")»
+        «IF isGetAllowedValuesMethodDeprecated(valueSetMethods)»@Deprecated«ENDIF»
+        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext, "context")»
         «IF genInterface || isAbstract»;«ELSE»
         {
-            return «fieldNameValueSet»;
+            return «IF valueSetMethods.unified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
         }
         «ENDIF»
     '''

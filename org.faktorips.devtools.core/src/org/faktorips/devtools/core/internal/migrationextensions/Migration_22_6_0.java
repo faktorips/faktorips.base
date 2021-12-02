@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.builder.settings.UnifyValueSetMethods;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -32,13 +32,13 @@ import org.faktorips.runtime.MessageList;
 public class Migration_22_6_0 extends MarkAsDirtyMigration {
 
     private static final String VERSION_22_6_0 = "22.6.0"; //$NON-NLS-1$
-    private static final String MIGRATION_OPTION_UNIFY_VALUE_SET = "unifyValueSetMethods"; //$NON-NLS-1$
+    private static final String MIGRATION_OPTION_UNIFY_VALUE_SET = "valueSetMethods"; //$NON-NLS-1$
 
-    private final IpsMigrationOption<UnifyValueSetMethods> unifyValueSetMethodsOption = new IpsEnumMigrationOption<>(
+    private final IpsMigrationOption<ValueSetMethods> valueSetMethodsOption = new IpsEnumMigrationOption<>(
             MIGRATION_OPTION_UNIFY_VALUE_SET,
             Messages.Migration_22_6_0_unifyValueSet,
-            UnifyValueSetMethods.OldMethods,
-            UnifyValueSetMethods.class);
+            ValueSetMethods.ByValueSetType,
+            ValueSetMethods.class);
 
     Migration_22_6_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
@@ -69,7 +69,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
                 .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
         IIpsArtefactBuilderSetConfigModel builderSetConfig = properties.getBuilderSetConfig();
 
-        UnifyValueSetMethods selectedValue = unifyValueSetMethodsOption.getSelectedValue();
+        ValueSetMethods selectedValue = valueSetMethodsOption.getSelectedValue();
         builderSetConfig.setPropertyValue(MIGRATION_OPTION_UNIFY_VALUE_SET,
                 selectedValue != null ? selectedValue.toString() : null,
                 Messages.Migration_Option_Unify_Value_Set_Description);
@@ -82,7 +82,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
 
     @Override
     public Collection<IpsMigrationOption<?>> getOptions() {
-        return Collections.singleton(unifyValueSetMethodsOption);
+        return Collections.singleton(valueSetMethodsOption);
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

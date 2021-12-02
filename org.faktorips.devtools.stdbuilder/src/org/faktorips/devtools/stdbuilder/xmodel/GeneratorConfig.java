@@ -14,7 +14,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
-import org.faktorips.devtools.model.builder.settings.UnifyValueSetMethods;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -81,20 +82,32 @@ public class GeneratorConfig {
     }
 
     /**
-     * Returns whether the method names should be unified ({@link UnifyValueSetMethods#NewMethods}),
-     * should reflect the type in their name ({@link UnifyValueSetMethods#OldMethods}) or both
-     * ({@link UnifyValueSetMethods#Both}).
+     * Returns whether the method names should be unified ({@link ValueSetMethods#Unified}), should
+     * reflect the {@link ValueSetType} in their name ({@link ValueSetMethods#ByValueSetType}) or
+     * both ({@link ValueSetMethods#Both}).
      * 
      * @see StandardBuilderSet#CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS
      */
-    public UnifyValueSetMethods getUnifyValueSetMethods() {
+    public ValueSetMethods getValueSetMethods() {
         String kind = config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS);
         try {
-            return UnifyValueSetMethods.valueOf(kind);
+            return ValueSetMethods.valueOf(kind);
         } catch (IllegalArgumentException e) {
             // when in doubt use both
-            return UnifyValueSetMethods.Both;
+            return ValueSetMethods.Both;
         }
+    }
+
+    public boolean isGenerateBothMethodsForAllowedValues() {
+        return getValueSetMethods().isBoth();
+    }
+
+    public boolean isGenerateUnifiedMethodsForAllValueSetTypes() {
+        return getValueSetMethods().isCompileUnifiedMethods();
+    }
+
+    public boolean isGenerateDifferentMethodsByValueSetType() {
+        return getValueSetMethods().isCompileDifferentMethodsByValueSetType();
     }
 
     /**

@@ -244,7 +244,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     /**
      * Configuration property for the unify value set methods option.
      */
-    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "unifyValueSetMethods";
+    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "valueSetMethods";
 
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
