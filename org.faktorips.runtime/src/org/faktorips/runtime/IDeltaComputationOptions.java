@@ -36,45 +36,59 @@ public interface IDeltaComputationOptions {
     /**
      * Returns if the delta computation computes child deltas per position/index or per object.
      * <p>
-     * 1. Example for a 1-many association:<br>
-     * A contract version A has three coverages c0, c1, and c2. A second version B of the same
-     * contract has a new coverage cNew inserted between coverage c0 and c1. The coverages c0,
-     * c1,and c2 are unchanged except for their position.
+     * <h3>1. Example for a 1-many association:</h3> A contract version A has three coverages c0,
+     * c1, and c2. A second version B of the same contract has a new coverage cNew inserted between
+     * coverage c0 and c1. The coverages c0, c1,and c2 are unchanged except for their position.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
-     * computed. position 0: version A:c0, version B:c0 ⇒ empty delta position 1: version A:c1,
-     * version B:cNew ⇒ changed position 2: version A:c2, version B:c1 ⇒ changed position 3: version
-     * A:none, version B:c2 ⇒ added
-     * <p>
+     * computed.
+     * <ul>
+     * <li>position 0: version A:c0, version B:c0 ⇒ empty delta</li>
+     * <li>position 1: version A:c1, version B:cNew ⇒ changed</li>
+     * <li>position 2: version A:c2, version B:c1 ⇒ changed</li>
+     * <li>position 3: version A:none, version B:c2 ⇒ added</li>
+     * </ul>
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
-     * computed. c0: version A:position 0, version B:position 0 ⇒ empty delta c1: version A:position
-     * 1, version B:position 2 ⇒ moved c2: version A:position 2, version B:position 3 ⇒ moved cNew:
-     * version A:position none, version B:position 1 ⇒ added
+     * computed.
+     * <ul>
+     * <li>c0: version A:position 0, version B:position 0 ⇒ empty delta</li>
+     * <li>c1: version A:position 1, version B:position 2 ⇒ moved</li>
+     * <li>c2: version A:position 2, version B:position 3 ⇒ moved</li>
+     * <li>cNew: version A:position none, version B:position 1 ⇒ added</li>
+     * </ul>
      * <p>
-     * &nbsp;
-     * <p>
-     * 2. Example for a 1-many association:<br>
-     * Same scenario as above, but now c1 is removed and no coverage is added.
+     * <h3>2. Example for a 1-many association:</h3> Same scenario as above, but now c1 is removed
+     * and no coverage is added.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
-     * computed. position 0: version A:c0, version B:c0 ⇒ empty delta position 1: version A:c1,
-     * version B:v2 ⇒ changed position 2: version A:c2, version B:none ⇒ removed
+     * computed.
+     * <ul>
+     * <li>position 0: version A:c0, version B:c0 ⇒ empty delta</li>
+     * <li>position 1: version A:c1, version B:v2 ⇒ changed</li>
+     * <li>position 2: version A:c2, version B:none ⇒ removed</li>
+     * </ul>
      * <p>
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
-     * computed. c0: version A:position 0, version B:position 0 ⇒ empty delta c1: version A:position
-     * 1, version B:position none ⇒ removed c2: version A:position 2, version B:position 1 ⇒ moved
-     * <p>
-     * &nbsp;
-     * <p>
-     * Example for a 1-1 association:<br>
-     * A contract version A has the insured person p0. A second contract version B has the insured
-     * person p1.
+     * computed.
+     * <ul>
+     * <li>c0: version A:position 0, version B:position 0 ⇒ empty delta</li>
+     * <li>c1: version A:position 1, version B:position none ⇒ removed</li>
+     * <li>c2: version A:position 2, version B:position 1 ⇒ moved</li>
+     * </ul>
+     * <h3>Example for a 1-1 association:</h3> A contract version A has the insured person p0. A
+     * second contract version B has the insured person p1.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following delta is
-     * computed. position 0: changed
-     * <p>
+     * computed.
+     * <ul>
+     * <li>position 0: changed</li>
+     * </ul>
      * If this method returns {@link ComputationMethod#BY_OBJECT}, the following deltas are
-     * computed. p1: removed p2: added
+     * computed.
+     * <ul>
+     * <li>p0: removed</li>
+     * <li>p1: added</li>
+     * </ul>
      */
     ComputationMethod getMethod(String association);
 
