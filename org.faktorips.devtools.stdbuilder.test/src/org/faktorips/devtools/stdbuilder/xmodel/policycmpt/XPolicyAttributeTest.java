@@ -111,7 +111,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(valueSet).isContainsNull();
         doReturn(valueSet).when(attribute).getValueSet();
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class XPolicyAttributeTest {
         doReturn(valueSet).when(attribute).getValueSet();
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -170,8 +170,10 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(valueSet).when(attribute).getValueSet();
 
-        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -242,7 +244,7 @@ public class XPolicyAttributeTest {
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
 
-        assertFalse(generatedMethod);
+        assertThat(generatedMethod, is(true));
     }
 
     @Test
@@ -546,6 +548,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -556,6 +559,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -566,6 +570,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -596,7 +601,7 @@ public class XPolicyAttributeTest {
         doReturn(valueSet).when(attribute).getValueSet();
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
 
-        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test
@@ -610,7 +615,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         doReturn(valueSet).when(attribute).getValueSet();
 
-        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test
@@ -662,7 +667,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
         doReturn(superValueSet).when(superAttribute).getValueSet();
 
-        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(false));
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -715,7 +720,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
         doReturn(superValueSet).when(superAttribute).getValueSet();
 
-        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(false));
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test

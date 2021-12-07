@@ -342,17 +342,10 @@ public class XPolicyAttribute extends XAttribute {
         } else {
             // CSOFF: BooleanExpressionComplexity
             return (isProductRelevant() && isChangeable())
-                    || !isValueSetUnrestricted()
-                    || isUnrestrictedButStillNeedsAllowedValues()
+                    || isValueSet()
                     || isNotConfiguredOverrideConfigured();
             // CSON: BooleanExpressionComplexity
         }
-    }
-
-    private boolean isUnrestrictedButStillNeedsAllowedValues() {
-        boolean doesNotContainNull = !isValueSetContainingNull() && !getDatatype().isPrimitive();
-        boolean overwritesDerivedValueSet = isOverwrite() && getOverwrittenAttribute().isValueSetDerived();
-        return isValueSetUnrestricted() && (doesNotContainNull || overwritesDerivedValueSet);
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
@@ -379,11 +372,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
-        // CSOFF: BooleanExpressionComplexity
-        boolean isGenerateForValueSetType = isValueSetRange() || isNonExtensibleEnumValueSet()
-                || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength()
+        // NonExtensibleEnumValueSet können nicht generiert werden da die Werte aus einem Repository
+        // geladen werden, das im statischen Kontext nicht bekannt ist. Siehe
+        // https://jira.faktorzehn.de/browse/FIPS-3981 dazu.
+        boolean isGenerateForValueSetType = !isValueSetEnum() || isNonExtensibleEnumValueSet()
                 || isNotConfiguredOverrideConfigured();
-        // CSON: BooleanExpressionComplexity
         return isConcreteOrNotProductRelevant() && isGenerateForValueSetType;
     }
 
@@ -398,6 +391,10 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isNonExtensibleEnumValueSet() {
         return isValueSetEnum() && !isDatatypeExtensibleEnum();
+    }
+
+    public boolean isValueSet() {
+        return getAttribute().getValueSet() != null;
     }
 
     public boolean isValueSetEnum() {
@@ -422,10 +419,6 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
         return getAttribute().getValueSet().getValueSetType() == valueSetType;
-    }
-
-    private boolean isValueSetContainingNull() {
-        return getAttribute().getValueSet().isContainsNull();
     }
 
     public boolean isAbstractValueSet() {
