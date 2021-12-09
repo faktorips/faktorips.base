@@ -43,7 +43,7 @@ public class PolicyCmptClassBuilderBuilder extends XtendTypeBuilder<XPolicyBuild
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         String configProperty = getBuilderSet().getConfig()
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
         if (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(configProperty)

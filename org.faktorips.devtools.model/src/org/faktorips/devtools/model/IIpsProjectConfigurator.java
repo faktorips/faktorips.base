@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
@@ -74,8 +74,8 @@ public interface IIpsProjectConfigurator {
      * @param ipsProject the existing {@link IIpsProject}
      * @param creationProperties the required {@link IpsProjectCreationProperties properties for
      *            creating a Faktor-IPS project}
-     * @throws CoreException if configuring the Faktor-IPS project failed
+     * @throws CoreRuntimeException if configuring the Faktor-IPS project failed
      */
     void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException;
+            throws CoreRuntimeException;
 }

@@ -78,7 +78,7 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
 
     @Override
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmpt currentProductCmpt = (IProductCmpt)ipsObject;
         IIpsSrcFile productCmptSrcFile = getVirtualIpsSrcFile(currentProductCmpt);
         String typeName = getUnqualifiedClassName(productCmptSrcFile);

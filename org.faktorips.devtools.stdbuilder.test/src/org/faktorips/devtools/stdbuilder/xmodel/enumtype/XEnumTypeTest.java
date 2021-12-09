@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
@@ -79,7 +79,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_inextensibleEnum() throws CoreException {
+    public void testGetNewInstanceCodeFragement_inextensibleEnum() throws CoreRuntimeException {
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
         enumType.newEnumLiteralNameAttribute();
         createEnumValue();
@@ -91,7 +91,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_extensibleEnum() throws CoreException {
+    public void testGetNewInstanceCodeFragement_extensibleEnum() throws CoreRuntimeException {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
         IEnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
@@ -108,7 +108,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_extensibleEnumWithoutContent() throws CoreException {
+    public void testGetNewInstanceCodeFragement_extensibleEnumWithoutContent() throws CoreRuntimeException {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
@@ -146,7 +146,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
                 xenumType.getMethodNameGetValueByIdentifier());
     }
 
-    private void createEnumValue() throws CoreException {
+    private void createEnumValue() throws CoreRuntimeException {
         IEnumValue enumValue = enumType.newEnumValue();
         enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
         enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue(DISPLAYNAME_NAME));

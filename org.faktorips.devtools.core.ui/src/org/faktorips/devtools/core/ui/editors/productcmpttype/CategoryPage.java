@@ -428,7 +428,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             }
         }
 
-        private Object obtainCategoryState() throws CoreException {
+        private Object obtainCategoryState() throws CoreRuntimeException {
             List<IProductCmptCategory> categories = getProductCmptType().findCategories(getIpsProject());
             List<CategoryState> categoryState = new ArrayList<>(categories.size());
             for (IProductCmptCategory category : categories) {

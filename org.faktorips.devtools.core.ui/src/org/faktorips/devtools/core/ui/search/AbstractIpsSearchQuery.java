@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -80,7 +81,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * <p>
      * The method should not be called by clients.
      */
-    protected abstract void searchDetails() throws CoreException;
+    protected abstract void searchDetails() throws CoreRuntimeException;
 
     /**
      * Returns true, if only the name of an {@link IIpsSrcFile} is part of the search.
@@ -96,7 +97,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * {@link IpsSrcFile}.
      * 
      */
-    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreRuntimeException {
         Set<IIpsSrcFile> searchedSrcFiles = getSelectedSrcFiles();
 
         if (StringUtils.isBlank(getSearchModel().getSrcFilePattern())) {
@@ -119,7 +120,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * Returns a Set with the selected {@link IIpsSrcFile IIpsSrcFiles}
      * 
      */
-    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreRuntimeException {
         Set<IIpsSrcFile> ipsSrcFilesInScope = getSearchModel().getSearchScope().getSelectedIpsSrcFiles();
 
         Set<IIpsSrcFile> selectedSrcFiles = new HashSet<>();

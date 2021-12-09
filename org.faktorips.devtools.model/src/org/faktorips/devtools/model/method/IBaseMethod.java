@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.method;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -57,10 +57,10 @@ public interface IBaseMethod extends IParameterContainer {
      * @param ipsProject The project which IPS object path is used to search. This is not
      *            necessarily the project this method belongs to.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws CoreRuntimeException If an error occurs while searching.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Checks whether the signature of the <code>otherMethod</code> is the same as the signature of

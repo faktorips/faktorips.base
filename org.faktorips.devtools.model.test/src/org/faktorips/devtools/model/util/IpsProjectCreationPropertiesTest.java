@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.util;
 
 import static org.faktorips.abstracttest.matcher.FluentAssert.when;
 import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
-import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -26,13 +26,13 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
@@ -287,7 +287,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 
@@ -312,7 +312,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 

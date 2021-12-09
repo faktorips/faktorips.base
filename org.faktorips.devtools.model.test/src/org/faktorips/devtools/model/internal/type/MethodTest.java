@@ -20,9 +20,9 @@ import static org.junit.Assert.fail;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.method.Method;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -75,7 +75,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindMethodBySignature() throws CoreException {
+    public void testFindMethodBySignature() throws CoreRuntimeException {
         assertNull(type.findMethod("calc()", ipsProject));
 
         method.setName("calc");
@@ -195,7 +195,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverrides() throws CoreException {
+    public void testOverrides() throws CoreRuntimeException {
         method.setName("calc");
         method.setDatatype("void");
         IParameter param0 = method.newParameter();
@@ -329,7 +329,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMultipleParameterNames() throws CoreException {
+    public void testValidateMultipleParameterNames() throws CoreRuntimeException {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
         method.setModifier(Modifier.PUBLIC);
@@ -352,7 +352,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverridingMethod() throws CoreException {
+    public void testFindOverridingMethod() throws CoreRuntimeException {
         IType superType = newPolicyCmptType(ipsProject, "superType");
         IType thisType = newPolicyCmptType(ipsProject, "thisType");
         thisType.setSupertype(superType.getQualifiedName());
@@ -377,7 +377,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverriddenMethod() throws CoreException {
+    public void testFindOverriddenMethod() throws CoreRuntimeException {
         IType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
         IType superType = newPolicyCmptType(ipsProject, "superType");
         superType.setSupertype(superSuperType.getQualifiedName());

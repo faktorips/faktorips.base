@@ -18,6 +18,8 @@ Require-Bundle: org.faktorips.fl;visibility:=reexport,
  org.eclipse.core.filesystem;bundle-version="1.7.300";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.model,
+ org.faktorips.devtools.model.abstraction,
+ org.faktorips.devtools.model.abstraction.mapping,
  org.faktorips.devtools.model.adapter,
  org.faktorips.devtools.model.bf,
  org.faktorips.devtools.model.builder,

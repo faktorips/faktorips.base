@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -31,9 +31,9 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * @param ipsProject The IPS project which IPS object path is used to search for IPS objects
      *            needed during the fix.
      * 
-     * @throws CoreException if an error occurs while checking.
+     * @throws CoreRuntimeException if an error occurs while checking.
      */
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException;
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Fixes all differences between this element and its corresponding model element. In most cases
@@ -45,9 +45,9 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * @param ipsProject The IPS project which IPS object path is used to search for IPS objects
      *            needed during the fix.
      * 
-     * @throws CoreException if an error occurs while fixing.
+     * @throws CoreRuntimeException if an error occurs while fixing.
      */
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException;
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns the IPS source file this object is stored in. Duplicated here for cleaner
@@ -63,9 +63,9 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * 
      * @param ipsProject The project which search path is used to search the type.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws CoreRuntimeException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException;
 
 }

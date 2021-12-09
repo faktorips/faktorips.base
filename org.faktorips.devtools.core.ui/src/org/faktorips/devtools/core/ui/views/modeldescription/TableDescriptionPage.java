@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -35,7 +35,7 @@ public class TableDescriptionPage extends DefaultModelDescriptionPage {
     }
 
     @Override
-    protected List<DescriptionItem> createDescriptions() throws CoreException {
+    protected List<DescriptionItem> createDescriptions() throws CoreRuntimeException {
         List<DescriptionItem> descriptions = new ArrayList<>();
         if (getIpsObject() != null) {
             String localizedDescription = IIpsModel.get().getMultiLanguageSupport()

@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -120,7 +121,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() throws CoreRuntimeException {
         if (getErrorMessage() != null) {
             return;
         }
@@ -139,7 +140,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
         createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
         return createdIpsSrcFile;
@@ -147,7 +148,7 @@ public class TableContentsPage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());

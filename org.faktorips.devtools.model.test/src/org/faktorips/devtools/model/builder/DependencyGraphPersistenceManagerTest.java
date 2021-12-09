@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.ABuildKind;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -36,7 +36,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IAssociation bToA = b.newAssociation();
         bToA.setTarget(a.getQualifiedName());
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         DependencyGraphPersistenceManager persistenceManager = IpsModelExtensionsViaEclipsePlugins.get()
                 .getDependencyGraphPersistenceManager();
         assertNull(persistenceManager.getDependencyGraph(ipsProject));

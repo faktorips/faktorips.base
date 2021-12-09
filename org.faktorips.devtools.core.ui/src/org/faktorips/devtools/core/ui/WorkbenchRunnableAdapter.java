@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -26,7 +26,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
- * An <code>IRunnableWithProgress</code> that adapts an <code>IWorkspaceRunnable</code> so that is
+ * An <code>IRunnableWithProgress</code> that adapts an <code>ICoreRunnable</code> so that is
  * can be executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code>
  * thrown by the adapted runnable are caught and re-thrown as a <code>InterruptedException</code>.
  * 
@@ -36,13 +36,13 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
  */
 public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
 
-    private IWorkspaceRunnable workspaceRunnable;
+    private ICoreRunnable workspaceRunnable;
     private ISchedulingRule rule;
 
     /**
      * Runs a workspace runnable with the workspace lock.
      */
-    public WorkbenchRunnableAdapter(IWorkspaceRunnable runnable) {
+    public WorkbenchRunnableAdapter(ICoreRunnable runnable) {
         this(runnable, ResourcesPlugin.getWorkspace().getRoot());
     }
 
@@ -50,7 +50,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
      * Runs a workspace runnable with the given lock or <code>null</code> to run with no lock at
      * all.
      */
-    public WorkbenchRunnableAdapter(IWorkspaceRunnable runnable, ISchedulingRule rule) {
+    public WorkbenchRunnableAdapter(ICoreRunnable runnable, ISchedulingRule rule) {
         workspaceRunnable = runnable;
         this.rule = rule;
     }

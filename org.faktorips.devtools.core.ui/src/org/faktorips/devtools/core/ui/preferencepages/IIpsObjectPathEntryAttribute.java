@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -87,5 +87,5 @@ public interface IIpsObjectPathEntryAttribute {
     /**
      * Validates the object path entry attribute and returns the result as list of messages.
      */
-    public MessageList validate() throws CoreException;
+    public MessageList validate() throws CoreRuntimeException;
 }

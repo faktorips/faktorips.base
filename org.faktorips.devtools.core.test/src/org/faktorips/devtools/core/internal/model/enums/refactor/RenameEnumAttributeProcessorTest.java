@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {
@@ -62,7 +63,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttribute() throws CoreException {
+    public void testRenameEnumAttribute() throws CoreRuntimeException {
         enumType.setAbstract(true);
 
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
@@ -88,7 +89,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeReferencedByEnumContent() throws CoreException {
+    public void testRenameEnumAttributeReferencedByEnumContent() throws CoreRuntimeException {
         String newAttributeName = "foo";
         performRenameRefactoring(enumAttribute, newAttributeName);
 
@@ -98,7 +99,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeUsedInLiteralName() throws CoreException {
+    public void testRenameEnumAttributeUsedInLiteralName() throws CoreRuntimeException {
         IEnumType modelEnumType = newEnumType(ipsProject, "ModelEnumType");
         modelEnumType.setExtensible(false);
 

@@ -11,13 +11,13 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -58,7 +58,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
         return findPcTypeAttribute(ipsProject);
     }
 
@@ -93,7 +93,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         IPolicyCmptTypeAttribute attribute = validateReferenceToAttribute(list, ipsProject);
@@ -119,13 +119,15 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         if (attribute == null) {
             IPolicyCmptType policyCmptType = getPropertyValueContainer().findPolicyCmptType(ipsProject);
             if (policyCmptType == null) {
-                String text = NLS.bind(Messages.ConfigElement_policyCmptTypeNotFound, getPolicyCmptTypeAttribute());
+                String text = MessageFormat.format(Messages.ConfigElement_policyCmptTypeNotFound,
+                        getPolicyCmptTypeAttribute());
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             } else {
                 String policyCmptTypeLabel = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedLabel(policyCmptType);
-                String text = NLS.bind(Messages.ConfigElement_msgAttrNotDefined, getPolicyCmptTypeAttribute(),
+                String text = MessageFormat.format(Messages.ConfigElement_msgAttrNotDefined,
+                        getPolicyCmptTypeAttribute(),
                         policyCmptTypeLabel);
                 list.add(new Message(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this,
                         IConfiguredDefault.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
@@ -139,14 +141,14 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         Object[] params = { attribute.getDatatype(), attribute.getName(), attribute.getPolicyCmptType().getName() };
 
         if (valueDatatype == null) {
-            String text = NLS.bind(Messages.ConfigElement_msgUndknownDatatype, params);
+            String text = MessageFormat.format(Messages.ConfigElement_msgUndknownDatatype, params);
             list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;
         }
 
         if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
-            String text = NLS.bind(Messages.ConfigElement_msgInvalidDatatype, params);
+            String text = MessageFormat.format(Messages.ConfigElement_msgInvalidDatatype, params);
             list.add(new Message(IConfiguredDefault.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;
@@ -165,7 +167,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     protected abstract void validateContent(MessageList list,
             IIpsProject ipsProject,
-            IPolicyCmptTypeAttribute attribute) throws CoreException;
+            IPolicyCmptTypeAttribute attribute) throws CoreRuntimeException;
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {

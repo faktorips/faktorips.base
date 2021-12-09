@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
@@ -40,7 +40,7 @@ public class MultiValueHolderValidator implements IValueHolderValidator {
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() throws CoreRuntimeException {
         MessageList messages = new MessageList();
         List<ISingleValueHolder> values = valueHolder.getValue();
         if (values == null) {

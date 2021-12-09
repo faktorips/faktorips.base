@@ -28,13 +28,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -322,7 +322,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
     // Test for FIPS-70
     @Test
-    public void testUpdateIfManifestIsChanged() throws CoreException {
+    public void testUpdateIfManifestIsChanged() throws CoreRuntimeException {
 
         ModelExplorerConfiguration config = new ModelExplorerConfiguration(
                 ipsProject.getIpsModel().getIpsObjectTypes());
@@ -391,7 +391,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
         IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
 
-        IPath srcPath = packRoot.getEnclosingResource().getFullPath();
+        IPath srcPath = packRoot.getEnclosingResource().getWorkspaceRelativePath();
         IClasspathEntry srcEntry = JavaCore.newSourceEntry(srcPath, null);
 
         newEntries[entries.length] = JavaCore.newSourceEntry(srcEntry.getPath());

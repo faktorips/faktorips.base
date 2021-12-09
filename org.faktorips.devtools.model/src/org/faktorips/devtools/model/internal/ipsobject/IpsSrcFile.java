@@ -13,13 +13,13 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.io.InputStream;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IPreSaveProcessor;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -37,16 +37,16 @@ import org.w3c.dom.Document;
  */
 public class IpsSrcFile extends AbstractIpsSrcFile {
 
-    private IFile correspondingFile;
+    private AFile correspondingFile;
 
     public IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
 
     @Override
-    public IFile getCorrespondingFile() {
+    public AFile getCorrespondingFile() {
         if (correspondingFile == null) {
-            IFolder folder = (IFolder)getParent().getCorrespondingResource();
+            AFolder folder = (AFolder)getParent().getCorrespondingResource();
             correspondingFile = folder.getFile(getName());
         }
         return correspondingFile;
@@ -86,9 +86,9 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public void save(boolean force, IProgressMonitor monitor) throws CoreException {
+    public void save(boolean force, IProgressMonitor monitor) throws CoreRuntimeException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
+            throw new CoreRuntimeException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
         }
         IpsSrcFileContent content = getContent();
         List<IPreSaveProcessor> preSaveProcessors = getPreSaveProcessors();
@@ -108,20 +108,20 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public InputStream getContentFromEnclosingResource() throws CoreException {
-        return getCorrespondingFile().getContents(true);
+    public InputStream getContentFromEnclosingResource() throws CoreRuntimeException {
+        return getCorrespondingFile().getContents();
     }
 
     @Override
-    public IIpsSrcFileMemento newMemento() throws CoreException {
+    public IIpsSrcFileMemento newMemento() throws CoreRuntimeException {
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
         return new IpsSrcFileMemento(this, getIpsObject().toXml(doc), isDirty());
     }
 
     @Override
-    public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
+    public void setMemento(IIpsSrcFileMemento memento) throws CoreRuntimeException {
         if (!memento.getIpsSrcFile().equals(this)) {
-            throw new CoreException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreRuntimeException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         getContent().updateState(memento.getState(), memento.isDirty());
     }
@@ -137,7 +137,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public boolean isMutable() {
-        IFile file = (IFile)getEnclosingResource();
+        AFile file = (AFile)getEnclosingResource();
         return file.exists() && !file.isReadOnly();
     }
 
@@ -147,22 +147,22 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts() throws CoreException {
+    public String getBasePackageNameForMergableArtefacts() throws CoreRuntimeException {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForMergableJavaClasses();
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts() throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts() throws CoreRuntimeException {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
     }
 
     @Override
-    public void delete() throws CoreException {
-        getCorrespondingResource().delete(true, null);
+    public void delete() throws CoreRuntimeException {
+        getCorrespondingResource().delete(null);
         ((IpsModel)getIpsModel()).removeIpsSrcFileContent(this);
     }
 

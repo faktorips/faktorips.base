@@ -56,7 +56,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof IEnumType) {
             IEnumType foundEnumType = (IEnumType)ipsObject;
@@ -115,7 +115,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private void createFileIfNotTher(IFile file) throws CoreException {
+    private void createFileIfNotTher(IFile file) throws CoreRuntimeException {
         if (!file.exists()) {
             file.create(new ByteArrayInputStream("".getBytes()), true, null);
             file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
@@ -131,7 +131,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile represents the file for which the property file will be returned
      * @param locale indicates the language of the property file
      */
-    IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreException {
+    IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreRuntimeException {
         if (ipsSrcFile != null) {
             IFolder artefactDestination = (IFolder)getArtefactDestination(ipsSrcFile).getResource();
             IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
@@ -145,7 +145,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.ENUM_TYPE.equals(ipsObjectType);
     }
@@ -161,7 +161,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             IFile propertyFile = getPropertyFile(ipsSrcFile, supportedLanguage.getLocale());

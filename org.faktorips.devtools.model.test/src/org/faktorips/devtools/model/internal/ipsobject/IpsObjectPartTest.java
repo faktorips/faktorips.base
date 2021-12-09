@@ -15,9 +15,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -60,7 +60,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
 
     @SuppressWarnings("unlikely-arg-type")
     @Test
-    public void testEquals() throws CoreException {
+    public void testEquals() throws CoreRuntimeException {
         assertFalse(part.equals(null));
         assertFalse(part.equals("abc"));
 

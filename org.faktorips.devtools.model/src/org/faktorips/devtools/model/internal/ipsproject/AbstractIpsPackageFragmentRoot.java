@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -75,7 +75,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     protected boolean isValidIpsPackageFragmentName(String name) {
         try {
             return !getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // nothing to do, will return false
         }
         return false;
@@ -84,7 +84,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     protected abstract IIpsPackageFragment newIpsPackageFragment(String name);
 
     @Override
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreRuntimeException {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
         if (file == null) {
             return null;
@@ -93,7 +93,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     }
 
     @Override
-    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreRuntimeException {
         IIpsObjectPathEntry entry = getIpsObjectPathEntry();
         if (entry == null) {
             return null;
@@ -102,13 +102,13 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
     }
 
     @Override
-    public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws CoreException {
+    public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws CoreRuntimeException {
         ArrayList<IIpsSrcFile> result = new ArrayList<>();
         findIpsSourceFiles(type, null, result);
         return result;
     }
 
     abstract void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            throws CoreException;
+            throws CoreRuntimeException;
 
 }

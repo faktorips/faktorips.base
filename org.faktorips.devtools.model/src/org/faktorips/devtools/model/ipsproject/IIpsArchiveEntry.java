@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.model.abstraction.AResourceDelta;
 
 /**
  * An object path entry for an IPS archive.
@@ -40,6 +40,6 @@ public interface IIpsArchiveEntry extends IIpsLibraryEntry {
      * Note: For changes of files outside the workspace which are referenced from the project in any
      * kind no IResourceDelta will be created.
      */
-    public boolean isAffectedBy(IResourceDelta delta);
+    public boolean isAffectedBy(AResourceDelta delta);
 
 }

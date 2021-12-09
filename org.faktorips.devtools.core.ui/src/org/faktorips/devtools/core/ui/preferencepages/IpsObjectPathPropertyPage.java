@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -75,7 +76,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         return label;
     }
 
-    private Control createForIpsProject(Composite parent, IIpsProject ipsProject) throws CoreException {
+    private Control createForIpsProject(Composite parent, IIpsProject ipsProject) throws CoreRuntimeException {
         objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX));
         objectPathsContainer.init(ipsProject);
         return objectPathsContainer.createControl(parent);

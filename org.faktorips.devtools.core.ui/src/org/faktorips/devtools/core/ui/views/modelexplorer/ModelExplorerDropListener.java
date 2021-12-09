@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -133,7 +134,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
     }
 
-    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreException {
+    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreRuntimeException {
         try {
             NonIPSMoveOperation moveOp = null;
             if (target instanceof IIpsPackageFragment) {
@@ -190,7 +191,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
 
         @Override
-        protected void execute(final IProgressMonitor monitor) throws CoreException, InterruptedException {
+        protected void execute(final IProgressMonitor monitor) throws CoreRuntimeException, InterruptedException {
             try {
                 move.run(monitor);
             } catch (InvocationTargetException e) {

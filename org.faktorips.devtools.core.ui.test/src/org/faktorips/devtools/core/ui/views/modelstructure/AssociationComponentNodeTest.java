@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testNewAssociationComponentNode_NullParentAllowed() throws CoreException {
+    public void testNewAssociationComponentNode_NullParentAllowed() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
@@ -36,7 +36,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNewAssociationComponentNode_NullProjectNotAllowed() throws CoreException {
+    public void testNewAssociationComponentNode_NullProjectNotAllowed() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
@@ -49,7 +49,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNewAssociationComponentNode_NullAssociationNotAllowed() throws CoreException {
+    public void testNewAssociationComponentNode_NullAssociationNotAllowed() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
@@ -62,7 +62,7 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValue_IsAssociationTargetValue() throws CoreException {
+    public void testGetValue_IsAssociationTargetValue() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");

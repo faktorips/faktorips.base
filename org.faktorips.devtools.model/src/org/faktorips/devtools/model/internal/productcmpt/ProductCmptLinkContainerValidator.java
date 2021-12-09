@@ -10,15 +10,13 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -132,7 +130,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
                     sumCardinality = Cardinality.CARDINALITY_MANY;
                 }
                 if (sumCardinality > maxType) {
-                    String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
+                    String text = MessageFormat.format(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
                             productCmptLink.getMaxCardinality(), Integer.toString(maxType));
                     list.add(
                             new Message(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR,
@@ -166,7 +164,8 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     }
 
     private void addTotalMinMessage(MessageList list, int minType, IProductCmptLink link) {
-        String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, link.getMinCardinality(),
+        String text = MessageFormat.format(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin,
+                link.getMinCardinality(),
                 Integer.toString(minType));
         list.newError(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, link,
                 IProductCmptLink.PROPERTY_MIN_CARDINALITY);
@@ -182,7 +181,8 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             if (!targets.add(target)) {
                 if (msg == null) {
                     String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
-                    msg = NLS.bind(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel, target);
+                    msg = MessageFormat.format(Messages.ProductCmptGeneration_msgDuplicateTarget, associationLabel,
+                            target);
                 }
                 messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET, msg,
                         Message.ERROR, association.getTargetRoleSingular()));
@@ -197,7 +197,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         if (maxCardinality < relations.size()) {
             String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
             Object[] params = { Integer.valueOf(relations.size()), "" + maxCardinality, associationLabel }; //$NON-NLS-1$
-            String msg = NLS.bind(Messages.ProductCmptGeneration_msgTooManyRelations, params);
+            String msg = MessageFormat.format(Messages.ProductCmptGeneration_msgTooManyRelations, params);
             ObjectProperty prop1 = new ObjectProperty(this, null);
             ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
             messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS, msg, Message.ERROR,
@@ -220,7 +220,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             int minCardinality) {
         String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
         Object[] params = { Integer.valueOf(relations.size()), associationLabel, Integer.valueOf(minCardinality) };
-        String msg = NLS.bind(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
+        String msg = MessageFormat.format(Messages.ProductCmptGeneration_msgNotEnoughRelations, params);
         ObjectProperty prop1 = new ObjectProperty(this, null);
         ObjectProperty prop2 = new ObjectProperty(association.getTargetRoleSingular(), null);
         messageList.add(new Message(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, msg, Message.ERROR,
@@ -246,43 +246,35 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
                 continue;
             }
             IProductCmpt productCmpt;
-            try {
-                productCmpt = link.findTarget(linkContainer.getIpsProject());
-                if (productCmpt != null) {
-                    if (linkContainer.getValidFrom() != null
-                            && productCmpt.getGenerationEffectiveOn(linkContainer.getValidFrom()) == null) {
-                        String dateString = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
-                                .format(linkContainer.getValidFrom().getTime());
-                        String generationName = IIpsModelExtensions.get().getModelPreferences()
-                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-                        String text;
-                        if (productCmpt.findProductCmptType(getIpsProject()).isChangingOverTime()) {
-                            text = NLS.bind(
-                                    Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
-                                    new Object[] { productCmpt.getQualifiedName(), generationName, dateString });
-                        } else {
-                            text = NLS.bind(
-                                    Messages.ProductCmptGeneration_msgEffectiveDateInLinkedTargetAfterEffectiveDate,
-                                    new Object[] { productCmpt.getQualifiedName(), dateString });
-                        }
-                        msgList.add(new Message(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE,
-                                text, Message.ERROR, link));
+            productCmpt = link.findTarget(linkContainer.getIpsProject());
+            if (productCmpt != null) {
+                if (linkContainer.getValidFrom() != null
+                        && productCmpt.getGenerationEffectiveOn(linkContainer.getValidFrom()) == null) {
+                    String dateString = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
+                            .format(linkContainer.getValidFrom().getTime());
+                    String generationName = IIpsModelExtensions.get().getModelPreferences()
+                            .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                    String text;
+                    if (productCmpt.findProductCmptType(getIpsProject()).isChangingOverTime()) {
+                        text = MessageFormat.format(
+                                Messages.ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate,
+                                productCmpt.getQualifiedName(), generationName, dateString);
+                    } else {
+                        text = MessageFormat.format(
+                                Messages.ProductCmptGeneration_msgEffectiveDateInLinkedTargetAfterEffectiveDate,
+                                productCmpt.getQualifiedName(), dateString);
                     }
+                    msgList.add(new Message(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE,
+                            text, Message.ERROR, link));
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
     }
 
     private MessageList getErrorMessagesFor(IAssociation association) {
-        try {
-            MessageList errorList = association.validate(getIpsProject());
-            errorList = errorList.getMessagesBySeverity(Severity.ERROR);
-            return errorList;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        MessageList errorList = association.validate(getIpsProject());
+        errorList = errorList.getMessagesBySeverity(Severity.ERROR);
+        return errorList;
     }
 
 }

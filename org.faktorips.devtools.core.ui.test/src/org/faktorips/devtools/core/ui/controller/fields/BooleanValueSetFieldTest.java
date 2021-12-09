@@ -19,10 +19,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
@@ -104,7 +104,7 @@ public class BooleanValueSetFieldTest {
     }
 
     @Test
-    public void testSetValue() throws CoreException {
+    public void testSetValue() throws CoreRuntimeException {
         when(enumValue.getIpsProject()).thenReturn(ipsProject);
         when(enumValue.containsValue(Boolean.TRUE.toString(), ipsProject)).thenReturn(true);
         when(enumValue.containsValue(Boolean.FALSE.toString(), ipsProject)).thenReturn(true);
@@ -118,7 +118,7 @@ public class BooleanValueSetFieldTest {
     }
 
     @Test
-    public void testSetValue_NullCheckboxIsNull() throws CoreException {
+    public void testSetValue_NullCheckboxIsNull() throws CoreRuntimeException {
         when(enumValue.getIpsProject()).thenReturn(ipsProject);
         when(enumValue.containsValue(Boolean.TRUE.toString(), ipsProject)).thenReturn(false);
         when(enumValue.containsValue(Boolean.FALSE.toString(), ipsProject)).thenReturn(true);

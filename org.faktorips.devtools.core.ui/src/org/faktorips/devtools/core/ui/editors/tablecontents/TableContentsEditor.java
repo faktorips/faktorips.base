@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IMessage;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -67,7 +67,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if (tableStructure != null) {
             return new TableDescriptionPage(tableStructure);
@@ -87,7 +87,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     /*
-     * @Override protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+     * @Override protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
      * contentsPage.updateToolbarActionsEnabledStates();
      * 
      * }

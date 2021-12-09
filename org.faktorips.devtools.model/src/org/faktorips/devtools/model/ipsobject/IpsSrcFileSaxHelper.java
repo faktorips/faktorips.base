@@ -19,7 +19,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -36,15 +36,15 @@ public abstract class IpsSrcFileSaxHelper {
     /**
      * Reads and returns all attributes of the first (root) node of the given source file.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
-    public static Map<String, String> getHeaderAttributes(IIpsSrcFile file) throws CoreException {
+    public static Map<String, String> getHeaderAttributes(IIpsSrcFile file) throws CoreRuntimeException {
         AttributeReadHandler handler = new AttributeReadHandler(file.getIpsObjectType().getXmlElementName());
         parseContent(file, handler);
         return handler.getAttributeValue();
     }
 
-    private static void parseContent(IIpsSrcFile ipsSrcFile, AttributeReadHandler handler) throws CoreException {
+    private static void parseContent(IIpsSrcFile ipsSrcFile, AttributeReadHandler handler) throws CoreRuntimeException {
         if (!ipsSrcFile.exists()) {
             return;
         }
@@ -55,7 +55,7 @@ public abstract class IpsSrcFileSaxHelper {
         } catch (SAXFinishedException ignored) {
             // nothing to do
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } finally {
             try {
                 if (is != null) {

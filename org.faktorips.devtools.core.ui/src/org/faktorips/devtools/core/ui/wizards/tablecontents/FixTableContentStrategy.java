@@ -50,7 +50,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
     }
 
     @Override
-    public void setContentType(String tableStructure) throws CoreException {
+    public void setContentType(String tableStructure) throws CoreRuntimeException {
         tableContents.setTableStructure(tableStructure);
     }
 

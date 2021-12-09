@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.internal.datatype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AJavaProject;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -92,7 +92,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         return adaptedClass;
     }
 
-    private void clearCacheAndRemoveListener(IJavaProject project) {
+    private void clearCacheAndRemoveListener(AJavaProject project) {
         clearCache();
         IIpsModel.get().getIpsProject(project.getProject())
                 .getClassLoaderProviderForJavaProject()

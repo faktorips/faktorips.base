@@ -10,12 +10,13 @@
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -229,7 +230,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
     // CSOFF: CyclomaticComplexity
     @Override
-    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreRuntimeException {
         if (!StringUtils.isBlank(tableColumnName)
                 && AttributeType.DERIVED_ON_THE_FLY.equals(getPolicyComponentTypeAttribute().getAttributeType())) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY,
@@ -264,7 +265,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
                 .getMaxColumnNameLenght();
         if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
             msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH,
-                    NLS.bind(Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength,
+                    MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength,
                             tableColumnName.length(), maxColumnNameLenght),
                     Message.ERROR, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
@@ -311,7 +312,8 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         IValueSet valueSet = policyComponentTypeAttribute.getValueSet();
         if (valueSet == null || valueSet.isUnrestricted()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_MODEL_CONTAINS_NO_LENGTH_RESTRICTION,
-                    NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeNotRestrictedInModel, getTableColumnSize()),
+                    MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnSizeNotRestrictedInModel,
+                            getTableColumnSize()),
                     Severity.valueOf(severityFromProperties), this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         } else if (valueSet.isStringLength()) {
@@ -319,7 +321,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
             if (sValueSet.getParsedMaximumLength() == null
                     || sValueSet.getParsedMaximumLength() > getTableColumnSize()) {
                 msgList.add(new Message(MSGCODE_PERSISTENCEATTR_MODEL_EXCEEDS_COLUMN_SIZE,
-                        NLS.bind(Messages.PersistentAttributeInfo_msgModelExceedsColumnSize,
+                        MessageFormat.format(Messages.PersistentAttributeInfo_msgModelExceedsColumnSize,
                                 sValueSet.getMaximumLength(), getTableColumnSize()),
                         Severity.valueOf(severityFromProperties),
                         new ObjectProperty(this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE),
@@ -338,19 +340,19 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         int maxTableColumnScale = pOpt.getMaxTableColumnScale();
 
         if (tableColumnSize < minTableColumnSize || tableColumnSize > maxTableColumnSize) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit,
+            String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit,
                     new Object[] { minTableColumnSize, maxTableColumnSize });
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         }
         if (tableColumnPrecision < minTableColumnPrecision || tableColumnPrecision > maxTableColumnPrecision) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit,
+            String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit,
                     new Object[] { minTableColumnPrecision, maxTableColumnPrecision });
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
         }
         if (tableColumnScale < minTableColumnScale || tableColumnScale > maxTableColumnScale) {
-            String text = NLS.bind(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit,
+            String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit,
                     new Object[] { minTableColumnScale, maxTableColumnScale });
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));

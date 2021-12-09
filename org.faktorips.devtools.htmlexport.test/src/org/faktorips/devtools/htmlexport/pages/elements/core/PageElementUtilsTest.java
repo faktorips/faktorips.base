@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
     private static final TargetType TARGET = TargetType.CONTENT;
 
     @Test
-    public void testCreateLinkPageElementAllTypesDocumented() throws CoreException {
+    public void testCreateLinkPageElementAllTypesDocumented() throws CoreRuntimeException {
         createMassivProjekt();
 
         context.setDocumentedIpsObjectTypes(ipsProject.getIpsModel().getIpsObjectTypes());
@@ -54,7 +54,7 @@ public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testCreateLinkPageElementSomeTypesDocumented() throws CoreException {
+    public void testCreateLinkPageElementSomeTypesDocumented() throws CoreRuntimeException {
         createMassivProjekt();
 
         IpsObjectType testedIpsObjectType = IpsObjectType.POLICY_CMPT_TYPE;

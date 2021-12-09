@@ -14,9 +14,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -64,7 +63,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
                 return false;
             }
             return entry.exists(getQualifiedNameType());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsLog.log(e);
             return false;
         }
@@ -84,7 +83,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return getCorrespondingFile();
     }
 
@@ -110,7 +109,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsElement[] getChildren() throws CoreRuntimeException {
         if (isContentParsable()) {
             return new IIpsElement[] { getIpsObject() };
         }
@@ -154,7 +153,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public boolean isContentParsable() throws CoreException {
+    public boolean isContentParsable() throws CoreRuntimeException {
         IpsSrcFileContent content = getContent();
         if (content == null) {
             return false;

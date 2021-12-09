@@ -17,6 +17,7 @@ import java.util.Properties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.context.IPluginResourceFacade;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -68,7 +69,7 @@ public class MockPluginResourcesFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public Properties getMessageProperties(String resourceName) throws CoreException {
+    public Properties getMessageProperties(String resourceName) throws CoreRuntimeException {
         Properties properties = messagesMap.get(resourceName);
         if (properties == null) {
             throw new CoreException(new IpsStatus(IStatus.WARNING, "Messages " + resourceName + " not found")); //$NON-NLS-1$ //$NON-NLS-2$

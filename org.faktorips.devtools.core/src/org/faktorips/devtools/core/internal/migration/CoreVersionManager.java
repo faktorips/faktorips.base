@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.internal.migration;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.QNameUtil;
@@ -83,7 +83,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 }
             }
             return true;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -99,7 +99,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreException {
+            throws CoreRuntimeException {
         String version = projectToMigrate.getReadOnlyProperties().getMinRequiredVersionNumber(getFeatureId());
         if (version == null) {
             // no version entry was found in the properties, therefore no migration operation will
@@ -111,7 +111,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     }
 
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
-            String versionToStart) throws CoreException {
+            String versionToStart) throws CoreRuntimeException {
         ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<>();
         String migrationClassName = null;
         try {
@@ -135,7 +135,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             // because maybe other migration managers fix this problem
             // If any migration is still missing, the validation should report the problem!
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
 
         return operations.toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);

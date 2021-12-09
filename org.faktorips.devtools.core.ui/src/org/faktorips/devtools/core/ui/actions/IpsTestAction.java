@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -75,7 +76,7 @@ public class IpsTestAction extends IpsAction {
      * Adds all test path elements depending on the given object
      */
     private IIpsPackageFragmentRoot addPathElementFromObject(List<String> pathElements, Object object)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IIpsPackageFragmentRoot root = null;
         if (object instanceof IIpsPackageFragmentRoot) {
@@ -273,7 +274,7 @@ public class IpsTestAction extends IpsAction {
     /**
      * Run the test.
      */
-    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) throws CoreException {
+    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) throws CoreRuntimeException {
         if (selectedPathElements.size() > 0) {
             String testRootsString = ""; //$NON-NLS-1$
             String testPackagesString = ""; //$NON-NLS-1$

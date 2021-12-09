@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -507,7 +506,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
@@ -536,11 +535,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         ValueDatatype[] datatypes = new ValueDatatype[columns.size()];
         int i = 0;
         for (IColumn column : columns) {
-            try {
-                datatypes[i++] = column.findValueDatatype(ipsProject);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            datatypes[i++] = column.findValueDatatype(ipsProject);
         }
         return datatypes;
     }

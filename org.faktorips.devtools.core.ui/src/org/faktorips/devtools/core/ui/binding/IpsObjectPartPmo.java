@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
@@ -101,7 +101,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
         if (getIpsObjectPartContainer() == null) {
             return new MessageList();
         } else {

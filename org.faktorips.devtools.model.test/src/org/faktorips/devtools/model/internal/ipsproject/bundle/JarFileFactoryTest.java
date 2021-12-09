@@ -10,12 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -40,13 +42,13 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
     public void testGetAbsolutePath_inWorkspace() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         IIpsObject newObject = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "anyName");
-        IResource resource = newObject.getEnclosingResource();
-        IPath path = resource.getFullPath();
+        AResource resource = newObject.getEnclosingResource();
+        IPath path = toEclipsePath(resource.getWorkspaceRelativePath());
         JarFileFactory jarFileFactory = new JarFileFactory(path);
 
         IPath absolutePath = jarFileFactory.getAbsolutePath(path);
 
-        assertEquals(resource.getLocation(), absolutePath);
+        assertEquals(resource.getLocation(), toJavaPath(absolutePath));
     }
 
 }

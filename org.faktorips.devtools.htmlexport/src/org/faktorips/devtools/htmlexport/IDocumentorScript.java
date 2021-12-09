@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.htmlexport;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * A Script for Documenting
@@ -27,5 +27,5 @@ public interface IDocumentorScript {
      * should only called by the {@link HtmlExportOperation}
      * 
      */
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException;
+    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreRuntimeException;
 }

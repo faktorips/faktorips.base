@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -74,7 +75,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 

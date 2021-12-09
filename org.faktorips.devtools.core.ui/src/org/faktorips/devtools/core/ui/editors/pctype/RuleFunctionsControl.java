@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectCompletionProcessor;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.runtime.MessageList;
@@ -147,7 +148,7 @@ public class RuleFunctionsControl extends EditTableControl {
         rule.setBusinessFunctions(index2, name1);
     }
 
-    private MessageList validate(Object element) throws CoreException {
+    private MessageList validate(Object element) throws CoreRuntimeException {
         IndexFctNameWrapper wrapper = (IndexFctNameWrapper)element;
         return rule.validate(rule.getIpsProject()).getMessagesFor(rule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS,
                 wrapper.index);
@@ -291,7 +292,7 @@ public class RuleFunctionsControl extends EditTableControl {
         }
 
         @Override
-        protected MessageList getMessagesFor(Object element) throws CoreException {
+        protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
             return validate(element);
         }
 

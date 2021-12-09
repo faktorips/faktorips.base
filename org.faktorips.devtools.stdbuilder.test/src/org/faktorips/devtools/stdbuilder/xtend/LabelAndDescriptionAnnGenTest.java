@@ -13,8 +13,8 @@ package org.faktorips.devtools.stdbuilder.xtend;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class LabelAndDescriptionAnnGenTest extends AbstractIpsPluginTest {
     private LabelAndDescriptionAnnGen annGen = new LabelAndDescriptionAnnGen();
 
     @Test
-    public void testCreateAnnotation() throws CoreException {
+    public void testCreateAnnotation() throws CoreRuntimeException {
 
         AbstractGeneratorModelNode modelNode = Mockito.mock(AbstractGeneratorModelNode.class);
 

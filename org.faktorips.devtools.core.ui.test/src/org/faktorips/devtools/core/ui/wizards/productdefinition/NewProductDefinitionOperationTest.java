@@ -22,13 +22,13 @@ import static org.mockito.Mockito.verify;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsCoreExtensions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -49,7 +49,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws CoreRuntimeException {
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
@@ -186,7 +186,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreRuntimeException {
             finishIpsSrcFileCalled = true;
             // simulate doing some stuff
             ipsSrcFile.markAsDirty();

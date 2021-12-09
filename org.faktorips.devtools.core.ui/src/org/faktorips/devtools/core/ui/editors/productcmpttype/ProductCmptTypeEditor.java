@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
@@ -45,7 +45,7 @@ public class ProductCmptTypeEditor extends TypeEditor implements IModelDescripti
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         return new ProductCmptTypeDescriptionPage((IProductCmptType)getIpsObject());
     }
 

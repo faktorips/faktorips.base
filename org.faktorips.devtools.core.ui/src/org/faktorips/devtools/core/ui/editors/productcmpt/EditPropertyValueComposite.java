@@ -232,9 +232,9 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * 
      * @param editFields the {@link List} to which each created {@link EditField} should be added to
      * 
-     * @throws CoreException if an error occurs while creating the edit fields
+     * @throws CoreRuntimeException if an error occurs while creating the edit fields
      */
-    protected abstract void createEditFields(List<EditField<?>> editFields) throws CoreException;
+    protected abstract void createEditFields(List<EditField<?>> editFields) throws CoreRuntimeException;
 
     /**
      * Adds a "S"-decoration to the editcomposite's field if the propertyValue is <em>not</em>

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.model.abstraction.AJavaProject;
 
 /**
  * A listener that listens to changes to classpath contents that is either a Jar file in the
@@ -24,6 +24,6 @@ public interface IClasspathContentsChangeListener {
     /**
      * Is called when the contents of the indicated project's classpath has changed.
      */
-    public void classpathContentsChanges(IJavaProject project);
+    public void classpathContentsChanges(AJavaProject project);
 
 }

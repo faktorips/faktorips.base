@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -135,7 +135,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
      * see TestPolicyCmpt.findProductCmptAttribute()
      */
     @Test
-    public void testValidateAttributeInSuperType() throws CoreException {
+    public void testValidateAttributeInSuperType() throws CoreRuntimeException {
         IPolicyCmptType pctSuper = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptType pct = newPolicyAndProductCmptType(ipsProject, "MotorPolicy", "MotorProduct");
         pct.setSupertype(pctSuper.getQualifiedName());
@@ -187,12 +187,12 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAttribiute() throws CoreException {
+    public void testFindAttribiute() throws CoreRuntimeException {
         testAttributeValue.findAttribute(ipsProject);
     }
 
     @Test
-    public void testTestAttributeNotBasedOnModelAttribute() throws CoreException {
+    public void testTestAttributeNotBasedOnModelAttribute() throws CoreRuntimeException {
         testAttributeValue.setValue("x");
         ITestAttribute testAttribute = testAttributeValue.findTestAttribute(ipsProject);
         MessageList ml = testAttributeValue.validate(ipsProject);

@@ -11,13 +11,13 @@
 package org.faktorips.devtools.core.ui.refactor;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -62,7 +62,7 @@ public class IpsCheckConditionsOperation {
                         conditionType);
     }
 
-    public void run(IProgressMonitor progressMonitor) throws CoreException {
+    public void run(IProgressMonitor progressMonitor) throws CoreRuntimeException {
         if (ensureEditorsSaved) {
             editorsSaved = IpsPlugin.getDefault().getWorkbench().saveAllEditors(true);
         }

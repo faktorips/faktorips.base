@@ -19,10 +19,10 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.InvocationTargetException;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -57,7 +57,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_SetProductCmptProperties() throws CoreException, InvocationTargetException,
+    public void testRun_SetProductCmptProperties() throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
@@ -82,7 +82,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_SetGenerationPropertiesIfNotInCopyMode() throws CoreException, InvocationTargetException,
+    public void testRun_SetGenerationPropertiesIfNotInCopyMode() throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
@@ -105,7 +105,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_CreatePropertyValuesWithDefaultsFromModelIfNotInCopyMode() throws CoreException,
+    public void testRun_CreatePropertyValuesWithDefaultsFromModelIfNotInCopyMode() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicyCmptType",
@@ -134,7 +134,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_SaveIfNotDirtyBefore() throws CoreException,
+    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_SaveIfNotDirtyBefore() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
@@ -160,7 +160,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_DoNotSaveIfDirtyBefore() throws CoreException,
+    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO_DoNotSaveIfDirtyBefore() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
@@ -187,7 +187,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_DoNotAddLinkToProductCmptGenerationIfValidatorFails() throws CoreException,
+    public void testRun_DoNotAddLinkToProductCmptGenerationIfValidatorFails() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");

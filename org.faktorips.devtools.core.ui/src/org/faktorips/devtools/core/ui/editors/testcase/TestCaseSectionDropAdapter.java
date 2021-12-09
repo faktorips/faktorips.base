@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -195,7 +195,7 @@ class DropToMoveHelper {
             int steps = posSource - posTarget;
             final boolean up = (steps >= 0);
             final int stepsToMove = Math.abs(steps);
-            IWorkspaceRunnable moveRunnable = $ -> {
+            ICoreRunnable moveRunnable = $ -> {
                 int currPos = posSource;
                 for (int i = 0; i < stepsToMove; i++) {
                     parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
@@ -319,7 +319,7 @@ class DropToLinkHelper {
             }
 
             private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreException {
+                    throws CoreRuntimeException {
 
                 if (testCaseTypeAssociation.isRoot()) {
                     return dropOnRootTestCaseTypeAssociation(testCaseTypeAssociation);
@@ -329,7 +329,7 @@ class DropToLinkHelper {
             }
 
             private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreException {
+                    throws CoreRuntimeException {
 
                 ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().getTestCase())
                         .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
@@ -338,7 +338,7 @@ class DropToLinkHelper {
                 return rootTestPolicyCmpt;
             }
 
-            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
                 ITestPolicyCmptTypeParameter targetToChildParameter = getTargetToChildParameter(productCmpt,
                         testPolicyCmpt);
                 ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(targetToChildParameter,

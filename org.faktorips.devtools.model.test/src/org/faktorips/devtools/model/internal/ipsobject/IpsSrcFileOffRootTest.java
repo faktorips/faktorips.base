@@ -18,11 +18,11 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -31,7 +31,7 @@ import org.junit.Test;
 public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
 
     private IpsSrcFileOffRoot srcFileOffRoot;
-    private IFile file;
+    private AFile file;
     private IIpsSrcFile ipsSrcFile;
 
     @Override
@@ -41,9 +41,9 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Test");
         ipsSrcFile = productCmptType.getIpsSrcFile();
-        IFolder folder = ipsProject.getProject().getFolder("test");
-        folder.create(true, true, null);
-        ipsSrcFile.getCorrespondingFile().copy(folder.getFullPath().append(ipsSrcFile.getName()), true, null);
+        AFolder folder = ipsProject.getProject().getFolder("test");
+        folder.create(null);
+        ipsSrcFile.getCorrespondingFile().copy(folder.getWorkspaceRelativePath().resolve(ipsSrcFile.getName()), null);
         file = folder.getFile(ipsSrcFile.getName());
         srcFileOffRoot = new IpsSrcFileOffRoot(file);
     }
@@ -56,7 +56,7 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCorrespondingFile() throws Exception {
         assertThat(srcFileOffRoot.getCorrespondingFile(), is(file));
-        assertThat(srcFileOffRoot.getCorrespondingResource(), is((IResource)file));
+        assertThat(srcFileOffRoot.getCorrespondingResource(), is((AResource)file));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
         assertThat(isEqualContent(), is(true));
     }
 
-    public boolean isEqualContent() throws CoreException, IOException {
+    public boolean isEqualContent() throws CoreRuntimeException, IOException {
         InputStream i1 = ipsSrcFile.getContentFromEnclosingResource();
         InputStream i2 = srcFileOffRoot.getContentFromEnclosingResource();
         byte[] buf1 = new byte[64 * 1024];

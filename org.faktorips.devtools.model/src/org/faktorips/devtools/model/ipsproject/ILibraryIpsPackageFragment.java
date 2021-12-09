@@ -12,17 +12,17 @@ package org.faktorips.devtools.model.ipsproject;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 public interface ILibraryIpsPackageFragment extends IIpsPackageFragment {
 
-    void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException;
+    void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreRuntimeException;
 
-    void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException;
+    void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreRuntimeException;
 
-    void findIpsObjects(List<IIpsObject> result) throws CoreException;
+    void findIpsObjects(List<IIpsObject> result) throws CoreRuntimeException;
 
 }

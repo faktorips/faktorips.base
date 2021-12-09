@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.PolicyCmtTypeDescriptionPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
 /**
@@ -60,7 +60,7 @@ public class PolicyCmptTypeEditor extends TypeEditor implements IModelDescriptio
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         return new PolicyCmtTypeDescriptionPage(getPolicyCmptType());
     }
 

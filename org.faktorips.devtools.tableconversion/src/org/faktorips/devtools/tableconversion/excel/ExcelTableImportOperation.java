@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -68,7 +69,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitorParameter) throws CoreException {
+    public void run(IProgressMonitor monitorParameter) throws CoreRuntimeException {
         IProgressMonitor monitor;
         if (monitorParameter == null) {
             monitor = new NullProgressMonitor();

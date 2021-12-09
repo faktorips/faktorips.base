@@ -219,7 +219,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         }
     }
 
-    private void propertyChanged() throws CoreException {
+    private void propertyChanged() throws CoreRuntimeException {
         /*
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.

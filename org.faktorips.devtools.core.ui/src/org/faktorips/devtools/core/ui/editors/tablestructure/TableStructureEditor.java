@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
@@ -38,7 +38,7 @@ public class TableStructureEditor extends IpsObjectEditor implements IModelDescr
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         return new TableDescriptionPage(getTableStructure());
     }
 }

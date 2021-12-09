@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.tablecontents;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.XmlSaxSupport;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -100,9 +100,9 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
      * Searches the table structure this contents is based on and returns it. Returns
      * <code>null</code> if the structure can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the table structure.
+     * @throws CoreRuntimeException if an exception occurs while searching for the table structure.
      */
-    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException;
+    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns the number of columns in the table contents. Note, that it is possible that this

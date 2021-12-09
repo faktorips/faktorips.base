@@ -12,13 +12,13 @@ package org.faktorips.devtools.model.internal.builder;
 
 import java.util.LinkedHashMap;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.abstraction.AFile;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.AbstractIdentifierResolver;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
@@ -63,12 +63,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
         return new EmptyParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
-    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreException {
+    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
         return null;
     }
 
@@ -99,7 +99,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
         return new LinkedHashMap<>();
     }
 

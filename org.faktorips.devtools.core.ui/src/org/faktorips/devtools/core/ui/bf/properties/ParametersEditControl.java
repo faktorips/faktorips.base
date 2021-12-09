@@ -50,6 +50,7 @@ import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IParameterBFE;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -102,7 +103,7 @@ public class ParametersEditControl extends Composite {
         createButtonComposite(this);
     }
 
-    private MessageList validate(IParameterBFE param) throws CoreException {
+    private MessageList validate(IParameterBFE param) throws CoreRuntimeException {
         MessageList result = paramContainer.validate(ipsProject);
         return result.getMessagesFor(param);
     }
@@ -157,7 +158,7 @@ public class ParametersEditControl extends Composite {
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 return validate((IParameterBFE)element);
             }
         };

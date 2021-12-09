@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestRule;
@@ -64,17 +64,17 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
         return Severity.NONE;
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
         return false;
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);
         return messageList;
@@ -85,7 +85,7 @@ public class TestCaseTypeRule implements IDummyTestCaseObject {
      * instances of the test policy component type parameter by validating the parent test policy
      * component
      */
-    private void validate(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validate(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         // delegate the validation to the test rules
         HashMap<String, Message> messages = new HashMap<>();
         ITestRule[] testRules = testCase.getTestRule(testRuleParameter.getName());

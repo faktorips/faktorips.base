@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.DatatypeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
@@ -68,7 +68,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private final IProductCmptLinkContainer linkContainer;
 
     public PropertyValueContainerToTypeDelta(IPropertyValueContainer propertyValueContainer,
-            IProductCmptLinkContainer linkContainer, IIpsProject ipsProject) throws CoreException {
+            IProductCmptLinkContainer linkContainer, IIpsProject ipsProject) throws CoreRuntimeException {
 
         this.linkContainer = linkContainer;
         ArgumentCheck.notNull(propertyValueContainer);
@@ -143,9 +143,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
      * Adding additional entries or children to this delta element. This method is called at the end
      * of the constructor.
      * 
-     * @throws CoreException May throw any core exception
+     * @throws CoreRuntimeException May throw any core exception
      */
-    protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
+    protected abstract void createAdditionalEntriesAndChildren() throws CoreRuntimeException;
 
     private void createEntriesForProperties() {
         Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)

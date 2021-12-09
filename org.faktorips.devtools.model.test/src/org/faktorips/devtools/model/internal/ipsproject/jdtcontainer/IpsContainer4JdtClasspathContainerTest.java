@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.model.abstraction.Wrappers;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer.JdtClasspathResolver;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
@@ -194,7 +196,7 @@ public class IpsContainer4JdtClasspathContainerTest {
     }
 
     private void mockProject() throws Exception {
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
         when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
     }
 

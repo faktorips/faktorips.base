@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -64,7 +65,8 @@ public abstract class EnumContentValidations {
 
         String enumTypeEnumContentName = enumType.getEnumContentName();
         if (!(enumContentName.equals(enumTypeEnumContentName))) {
-            String text = NLS.bind(Messages.EnumContent_EnumContentNameNotCorrect, enumType.getQualifiedName());
+            String text = MessageFormat.format(Messages.EnumContent_EnumContentNameNotCorrect,
+                    enumType.getQualifiedName());
             Message message;
             if (enumContent == null) {
                 message = new Message(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT, text, Message.ERROR);
@@ -95,7 +97,8 @@ public abstract class EnumContentValidations {
      *            <code>IEnumContent</code> is based upon.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreException If an error occurs while searching for the <code>IEnumType</code>.
+     * @throws CoreRuntimeException If an error occurs while searching for the
+     *             <code>IEnumType</code>.
      * @throws NullPointerException If <code>validationMessageList</code>,
      *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is
      *             <code>null</code>.
@@ -103,7 +106,7 @@ public abstract class EnumContentValidations {
     public static void validateEnumType(MessageList validationMessageList,
             IEnumContent enumContent,
             String enumTypeQualifiedName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName, ipsProject });
 
@@ -122,7 +125,7 @@ public abstract class EnumContentValidations {
         // EnumType exists?
         IIpsSrcFile enumSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, enumTypeQualifiedName);
         if (enumSrcFile == null) {
-            text = NLS.bind(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
+            text = MessageFormat.format(Messages.EnumContent_EnumTypeDoesNotExist, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST, text,
                     Message.ERROR, objectProperties));
             return;
@@ -131,14 +134,14 @@ public abstract class EnumContentValidations {
         // Values are part of model?
         IEnumType enumTypeRef = (IEnumType)enumSrcFile.getIpsObject();
         if (enumTypeRef.isInextensibleEnum()) {
-            text = NLS.bind(Messages.EnumContent_ValuesArePartOfType, enumTypeQualifiedName);
+            text = MessageFormat.format(Messages.EnumContent_ValuesArePartOfType, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE, text,
                     Message.ERROR, objectProperties));
         }
 
         // EnumType abstract?
         if (enumTypeRef.isAbstract()) {
-            text = NLS.bind(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
+            text = MessageFormat.format(Messages.EnumContent_EnumTypeIsAbstract, enumTypeQualifiedName);
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,
                     Message.ERROR, objectProperties));
         }

@@ -17,9 +17,9 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -59,10 +59,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * 
      * @param target The new location/name.
      * 
-     * @throws CoreException If the source does not exist or is modified or if the target already
-     *             exists.
+     * @throws CoreRuntimeException If the source does not exist or is modified or if the target
+     *             already exists.
      */
-    public NonIPSMoveOperation(Object[] sources, IIpsPackageFragment target) throws CoreException {
+    public NonIPSMoveOperation(Object[] sources, IIpsPackageFragment target) throws CoreRuntimeException {
         sourceObjects = prepare(sources);
         targetRoot = target.getRoot();
         targetNames = getTargetNames(sourceObjects, target);
@@ -78,7 +78,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * @param sources All sources which will be moved to the target
      * @param target The target absolute path
      */
-    public NonIPSMoveOperation(IProject targetProject, Object[] sources, String target) throws CoreException {
+    public NonIPSMoveOperation(IProject targetProject, Object[] sources, String target) throws CoreRuntimeException {
         sourceObjects = prepare(sources);
         this.targetProject = targetProject;
 
@@ -95,10 +95,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * Converts any contained IIpsSrcFiles to the objects contained within.
      * 
      * @param rawSources The IIpsElements to prepare.
-     * @throws CoreException If an IIpsSrcFile is contained which can not return the IIpsObject
-     *             stored within.
+     * @throws CoreRuntimeException If an IIpsSrcFile is contained which can not return the
+     *             IIpsObject stored within.
      */
-    private Object[] prepare(Object[] rawSources) throws CoreException {
+    private Object[] prepare(Object[] rawSources) throws CoreRuntimeException {
         Object[] result = new Object[rawSources.length];
 
         for (int i = 0; i < result.length; i++) {
@@ -147,10 +147,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
     /**
      * Check all sources to exist and to be saved. If not so, a CoreException will be thrown.
      */
-    private void checkSources(Object[] source) throws CoreException {
+    private void checkSources(Object[] source) throws CoreRuntimeException {
         IpsStatus status = checkSourcesForInvalidContent(source);
         if (status != null) {
-            throw new CoreException(status);
+            throw new CoreRuntimeException(status);
         }
     }
 
@@ -188,7 +188,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     @Override
     public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        IWorkspaceRunnable run = monitor1 -> {
+        ICoreRunnable run = monitor1 -> {
             IProgressMonitor pm = monitor1;
             if (monitor1 == null) {
                 pm = new NullProgressMonitor();
@@ -216,7 +216,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     private void moveNoneIpsElement(File file, String targetName, IProgressMonitor pm) {
         if (targetProject == null) {
-            targetProject = targetRoot.getIpsProject().getProject();
+            targetProject = targetRoot.getIpsProject().getProject().unwrap();
         }
         String fileName = file.getAbsolutePath();
         if (fileName.startsWith(targetProject.getLocation().toOSString())) {
@@ -249,7 +249,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     private IContainer getTargetContainer(String targetName) {
         if (targetProject == null) {
-            targetProject = targetRoot.getIpsProject().getProject();
+            targetProject = targetRoot.getIpsProject().getProject().unwrap();
         }
         String folderName = ""; //$NON-NLS-1$
         if (targetName.startsWith(targetProject.getLocation().toOSString())) {

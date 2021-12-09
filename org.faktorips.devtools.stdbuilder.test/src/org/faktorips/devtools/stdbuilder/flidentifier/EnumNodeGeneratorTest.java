@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.codegen.DatatypeHelper;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -107,7 +107,7 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
     }
 
     private IEnumAttribute newIdentifierAttribute(IEnumType enumType, String name, StringDatatype string)
-            throws CoreException {
+            throws CoreRuntimeException {
         IEnumAttribute identifierAttribute = enumType.newEnumAttribute();
         identifierAttribute.setName(name);
         identifierAttribute.setIdentifier(true);

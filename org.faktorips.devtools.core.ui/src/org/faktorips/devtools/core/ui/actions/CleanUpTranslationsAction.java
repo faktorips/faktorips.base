@@ -20,10 +20,10 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -163,10 +164,10 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
         }
 
-        private class CleanUpTranslationsWorkspaceRunnable implements IWorkspaceRunnable {
+        private class CleanUpTranslationsWorkspaceRunnable implements ICoreRunnable {
 
             @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
+            public void run(IProgressMonitor monitor) throws CoreRuntimeException {
                 for (IIpsProject ipsProject : ipsProjects) {
                     List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
                     IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();

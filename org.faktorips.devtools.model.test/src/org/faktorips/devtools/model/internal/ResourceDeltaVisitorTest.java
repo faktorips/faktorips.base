@@ -20,15 +20,15 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -57,31 +57,31 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeIpsProjectProperties() throws CoreException {
+    public void testChangeIpsProjectProperties() throws CoreRuntimeException {
         productCmptType.validate(ipsProject);
         assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        IFile projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
+        AFile projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
         projectPropertiesFile.touch(null);
 
         assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
     }
 
     @Test
-    public void testChangeManifest() throws CoreException {
+    public void testChangeManifest() throws CoreRuntimeException {
         productCmptType.validate(ipsProject);
         assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        IFile manifestFile = ipsProject.getProject().getFile(new Path(IpsBundleManifest.MANIFEST_NAME));
-        ((IFolder)manifestFile.getParent()).create(true, true, null);
-        manifestFile.create(new ByteArrayInputStream(new byte[0]), true, null);
+        AFile manifestFile = ipsProject.getProject().getFile(java.nio.file.Path.of(IpsBundleManifest.MANIFEST_NAME));
+        ((AFolder)manifestFile.getParent()).create(null);
+        manifestFile.create(new ByteArrayInputStream(new byte[0]), null);
         manifestFile.touch(null);
 
         assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
     }
 
     @Test
-    public void testChangeIpsSrcFile() throws CoreException {
+    public void testChangeIpsSrcFile() throws JavaModelException {
         productCmptType.getEnclosingResource().touch(null);
 
         waitForIndexer();
@@ -90,11 +90,11 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeIpsSrcFileOffRoot() throws CoreException {
-        IFolder folder = ipsProject.getProject().getFolder("test");
-        folder.create(true, true, null);
-        IResource file = productCmptType.getEnclosingResource();
-        file.copy(folder.getFullPath().append(file.getName()), true, null);
+    public void testChangeIpsSrcFileOffRoot() throws JavaModelException {
+        AFolder folder = ipsProject.getProject().getFolder("test");
+        folder.create(null);
+        AResource file = productCmptType.getEnclosingResource();
+        file.copy(folder.getWorkspaceRelativePath().resolve(file.getName()), null);
 
         waitForIndexer();
 

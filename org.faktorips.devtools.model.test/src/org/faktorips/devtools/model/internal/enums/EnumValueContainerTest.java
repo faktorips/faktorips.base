@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testNewEnumValue() throws CoreException {
+    public void testNewEnumValue() throws CoreRuntimeException {
         IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
         integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         integerAttribute.setName("integerAttribute");
@@ -69,7 +69,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testMoveEnumValuesUp() throws CoreException {
+    public void testMoveEnumValuesUp() throws CoreRuntimeException {
         try {
             genderEnumContent.moveEnumValues(null, true);
             fail();
@@ -108,7 +108,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testMoveEnumValuesDown() throws CoreException {
+    public void testMoveEnumValuesDown() throws CoreRuntimeException {
         try {
             genderEnumContent.moveEnumValues(null, false);
             fail();
@@ -145,7 +145,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetIndexOfEnumValue() throws CoreException {
+    public void testGetIndexOfEnumValue() throws CoreRuntimeException {
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
         assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
 
@@ -165,7 +165,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testUniqueIdentifierValidation() throws CoreException {
+    public void testUniqueIdentifierValidation() throws CoreRuntimeException {
         assertEquals(0, paymentMode.validate(ipsProject).size());
         IEnumValue testValue1 = paymentMode.getEnumValues().get(0);
         IEnumValue testValue2 = paymentMode.getEnumValues().get(1);
@@ -228,7 +228,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
     @Test
     @Ignore("Only performance messure, no real test")
-    public void testUniqueIdentifierValidationPerformance() throws CoreException {
+    public void testUniqueIdentifierValidationPerformance() throws CoreRuntimeException {
         IEnumType hugeEnumType = newEnumType(ipsProject, "HugeEnumType");
         hugeEnumType.setExtensible(false);
         IEnumLiteralNameAttribute literalNameAttribute = hugeEnumType.newEnumLiteralNameAttribute();
@@ -278,7 +278,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumValue() throws CoreException {
+    public void testFindEnumValue() throws CoreRuntimeException {
         assertNull(paymentMode.findEnumValue(null, ipsProject));
 
         assertNotNull(paymentMode.findEnumValue("P1", ipsProject));
@@ -293,7 +293,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumValue_idChanged() throws CoreException {
+    public void testFindEnumValue_idChanged() throws CoreRuntimeException {
         // verify cache is initialized
         assertNotNull(genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_MALE_ID, ipsProject));
 
@@ -304,14 +304,14 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumValue_ForContentInType() throws CoreException {
+    public void testFindEnumValue_ForContentInType() throws CoreRuntimeException {
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
         newEnumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("test1"));
         assertNotNull(genderEnumContent.findEnumValue("test1", ipsProject));
     }
 
     @Test
-    public void testFindEnumValueIdentifierUsedTwice() throws CoreException {
+    public void testFindEnumValueIdentifierUsedTwice() throws CoreRuntimeException {
         IEnumValue enumValue1 = paymentMode.getEnumValues().get(0);
         IEnumValue enumValue2 = paymentMode.getEnumValues().get(1);
         enumValue1.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("Identifier"));
@@ -324,7 +324,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumValueIdentifierChanged() throws CoreException {
+    public void testFindEnumValueIdentifierChanged() throws CoreRuntimeException {
         IEnumValue enumValue = paymentMode.getEnumValues().get(0);
 
         assertEquals(enumValue, paymentMode.findEnumValue("P1", ipsProject));
@@ -334,7 +334,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumValueIdentifierAttributeChanged() throws CoreException {
+    public void testFindEnumValueIdentifierAttributeChanged() throws CoreRuntimeException {
         IEnumAttribute id = paymentMode.getEnumAttribute("id");
         id.setIdentifier(false);
 

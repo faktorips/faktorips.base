@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -61,7 +61,7 @@ public class StringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultLocalizedContent() throws CoreException {
+    public void testGetDefaultLocalizedContent() throws CoreRuntimeException {
         assertEquals("Versicherung", new StringValue("Versicherung").getDefaultLocalizedContent(newIpsProject()));
     }
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
@@ -78,7 +78,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public IEnumAttributeValue newEnumAttributeValue() throws CoreException {
+    public IEnumAttributeValue newEnumAttributeValue() throws CoreRuntimeException {
         return createNewEnumAttributeValue(EnumAttributeValue.class);
     }
 
@@ -169,7 +169,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         IEnumValueContainer enumValueContainer = getEnumValueContainer();
@@ -222,13 +222,13 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
     }
 
     @Override
-    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws CoreException {
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws CoreRuntimeException {
         ArgumentCheck.notNull(enumAttribute);
         getEnumAttributeValue(enumAttribute).setValue(value);
     }
 
     @Override
-    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreException {
+    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreRuntimeException {
         ArgumentCheck.notNull(enumAttributeName);
         IEnumType enumType = findEnumType();
         IEnumAttribute enumAttribute = enumType.getEnumAttributeIncludeSupertypeCopies(enumAttributeName);
@@ -248,7 +248,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
 
     @Override
     public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(new Object[] { uniqueEnumAttributes, ipsProject });
         List<IEnumAttributeValue> uniqueAttributeValues = new ArrayList<>(

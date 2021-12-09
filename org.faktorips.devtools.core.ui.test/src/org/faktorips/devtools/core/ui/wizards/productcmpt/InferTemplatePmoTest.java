@@ -20,8 +20,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -30,7 +30,7 @@ import org.junit.Test;
 public class InferTemplatePmoTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetEarliestValidFrom() throws CoreException {
+    public void testGetEarliestValidFrom() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType type = newProductCmptType(ipsProject, "type");
         InferTemplatePmo pmo = new InferTemplatePmo();
@@ -51,7 +51,7 @@ public class InferTemplatePmoTest extends AbstractIpsPluginTest {
     }
 
     private IProductCmpt newProductCmpt(IProductCmptType type, String qName, int year, int month, int day)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmpt cmpt = newProductCmpt(type, qName);
         cmpt.setValidFrom(new GregorianCalendar(year, month, day));
         return cmpt;

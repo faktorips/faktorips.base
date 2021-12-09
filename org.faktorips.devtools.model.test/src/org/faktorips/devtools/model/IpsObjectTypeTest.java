@@ -12,8 +12,8 @@ package org.faktorips.devtools.model;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class IpsObjectTypeTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testNewObject() throws CoreException {
+    public void testNewObject() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IpsObjectType[] types = IIpsModel.get().getIpsObjectTypes();
         for (IpsObjectType type : types) {

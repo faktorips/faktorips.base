@@ -15,8 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -41,7 +41,7 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
 
     @Test
     public void testStoreXml() {
-        IProject project = ipsProject.getProject();
+        AProject project = ipsProject.getProject();
         IpsObjectPath path = new IpsObjectPath(ipsProject);
 
         // test case 1: output folder and base package defined per entry

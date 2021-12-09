@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.method;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -51,8 +51,8 @@ public interface IParameter extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException If an exception occurs while searching for the data type.
+     * @throws CoreRuntimeException If an exception occurs while searching for the data type.
      */
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException;
+    public Datatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException;
 
 }

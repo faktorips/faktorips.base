@@ -48,7 +48,7 @@ public class EnumTypeBuilder extends XtendBuilder<XEnumType> {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return IpsObjectType.ENUM_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 

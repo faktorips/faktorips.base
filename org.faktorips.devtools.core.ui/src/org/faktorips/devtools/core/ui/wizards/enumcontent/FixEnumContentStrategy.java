@@ -49,7 +49,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
     }
 
     @Override
-    public void setContentType(String enumType) throws CoreException {
+    public void setContentType(String enumType) throws CoreRuntimeException {
         enumContent.setEnumType(enumType);
     }
 

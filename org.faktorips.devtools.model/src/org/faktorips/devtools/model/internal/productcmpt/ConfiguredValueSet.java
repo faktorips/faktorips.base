@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -83,7 +82,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     @Override
     protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            throws CoreException {
+            throws CoreRuntimeException {
         IValueSet valueSetToValidate = getValueSet();
         IValueSet modelValueSet = attribute.getValueSet();
 
@@ -117,11 +116,11 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         String text;
         if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH;
-            text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] {
-                    modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName() });
+            text = MessageFormat.format(Messages.ConfigElement_msgTypeMismatch,
+                    modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName());
         } else if (!modelValueSet.containsValueSet(valueSetToValidate)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
-            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSetToValidate.toShortString(),
+            text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset, valueSetToValidate.toShortString(),
                     modelValueSet.toShortString());
         } else {
             // should never happen
@@ -153,19 +152,15 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
         for (int i = 0; i < values.length; i++) {
             String value = values[i];
-            try {
-                if (!stringLengthValueSet.containsValue(value, ipsProject)) {
-                    String msgCode = IConfiguredValueSet.MSGCODE_STRING_TOO_LONG;
-                    String text = NLS.bind(Messages.ConfigElement_stringTooLong, new String[] {
-                            value, String.valueOf(stringLengthValueSet.getParsedMaximumLength()) });
+            if (!stringLengthValueSet.containsValue(value, ipsProject)) {
+                String msgCode = IConfiguredValueSet.MSGCODE_STRING_TOO_LONG;
+                String text = MessageFormat.format(Messages.ConfigElement_stringTooLong,
+                        value, String.valueOf(stringLengthValueSet.getParsedMaximumLength()));
 
-                    messages.add(Message.newError(msgCode,
-                            text,
-                            new ObjectProperty(this, PROPERTY_VALUE_SET),
-                            new ObjectProperty(enumValueSet, IEnumValueSet.PROPERTY_VALUES, i)));
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                messages.add(Message.newError(msgCode,
+                        text,
+                        new ObjectProperty(this, PROPERTY_VALUE_SET),
+                        new ObjectProperty(enumValueSet, IEnumValueSet.PROPERTY_VALUES, i)));
             }
         }
 
@@ -183,7 +178,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         List<ValueSetType> types = new ArrayList<>();
         if (attribute == null) {
@@ -340,13 +335,13 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
-        return NLS.bind(Messages.ConfiguredValueSet_caption, getAttributeLabel(locale));
+    public String getCaption(Locale locale) throws CoreRuntimeException {
+        return MessageFormat.format(Messages.ConfiguredValueSet_caption, getAttributeLabel(locale));
     }
 
     @Override
     public String getLastResortCaption() {
-        return NLS.bind(Messages.ConfiguredValueSet_caption, getAttributeLabel(null));
+        return MessageFormat.format(Messages.ConfiguredValueSet_caption, getAttributeLabel(null));
     }
 
 }

@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -125,7 +126,7 @@ public class TestCaseStructurePage extends WizardPage {
 
         new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 MessageList result = new MessageList();
                 if (element instanceof IIpsObjectPartContainer) {
                     IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
@@ -203,7 +204,7 @@ public class TestCaseStructurePage extends WizardPage {
         });
     }
 
-    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
         ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
         changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
                 testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
@@ -235,7 +236,7 @@ public class TestCaseStructurePage extends WizardPage {
      */
     private void changeCandidatesInTable(IProductCmpt productCmptSelected,
             ITestPolicyCmptTypeParameter parameter,
-            IProductCmpt parentProductCmpt) throws CoreException {
+            IProductCmpt parentProductCmpt) throws CoreRuntimeException {
         checkedProductCmpt = null;
         if (productCmptSelected == null) {
             // parameter doens't need product cmpt, therefore clear table
@@ -361,7 +362,7 @@ public class TestCaseStructurePage extends WizardPage {
      * then this element will be ignored.
      */
     private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container)
-            throws CoreException {
+            throws CoreRuntimeException {
         boolean checked = treeViewer.getChecked(container);
         if (checked) {
             result.add(msgList.getMessagesFor(container));

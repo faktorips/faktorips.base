@@ -33,7 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -599,7 +599,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_changingOverTime() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_changingOverTime() throws CoreRuntimeException {
         when(productCmptType.isChangingOverTime()).thenReturn(true);
 
         when(type.hasSupertype()).thenReturn(false);
@@ -618,7 +618,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_notChangingOverTime() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_notChangingOverTime() throws CoreRuntimeException {
         when(productCmptType.isChangingOverTime()).thenReturn(false);
 
         when(type.hasSupertype()).thenReturn(false);
@@ -637,7 +637,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() throws CoreRuntimeException {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(type.hasSupertype()).thenReturn(false);
         when(type.isDependantType()).thenReturn(true);

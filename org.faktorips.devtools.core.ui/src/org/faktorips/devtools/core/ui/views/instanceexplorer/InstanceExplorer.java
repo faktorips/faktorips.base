@@ -62,6 +62,7 @@ import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -250,9 +251,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
      * Loads the element in the editor if it is supported.
      * 
      * @param element The element to load into the editor
-     * @throws CoreException if there is an exception with searching objects
+     * @throws CoreRuntimeException if there is an exception with searching objects
      */
-    public void showInstancesOf(IIpsObject element) throws CoreException {
+    public void showInstancesOf(IIpsObject element) throws CoreRuntimeException {
         if (element != null && !element.getEnclosingResource().isAccessible()) {
             setInputData(null);
         } else if (element instanceof IIpsMetaObject) {
@@ -379,7 +380,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         return false;
     }
 
-    private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreRuntimeException {
         Object[] elements = contentProvider.getElements(null);
         for (Object anElement : elements) {
             if (anElement instanceof InstanceIpsSrcFileViewItem) {
@@ -648,7 +649,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
 
         @Override
-        public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+        public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
             ArrayList<IIpsSrcFile> result = new ArrayList<>();
             result.add(metaObject.getIpsSrcFile());
             return result;

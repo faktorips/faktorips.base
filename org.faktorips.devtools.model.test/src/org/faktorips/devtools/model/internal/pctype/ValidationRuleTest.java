@@ -10,10 +10,6 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,10 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -174,7 +170,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml_ChangingOverTimeDefaultsToFalseIfNotConfiguredAndProductTypeNotChanging()
-            throws CoreException {
+            throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("Prod");
@@ -188,7 +184,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfNotConfiguredAndProductTypeChanging()
-            throws CoreException {
+            throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("Prod");
@@ -300,60 +296,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(1, messageList.size());
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void testValidateBusinessFunctions() throws CoreException {
-        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(true));
-        validationRule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertThat(msgList.size(), is(1));
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList
-                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        validationRule.addBusinessFunction("function");
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
-                isEmpty());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testValidateBusinessFunctions_DisabledInProject() throws CoreException {
-        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(false));
-        validationRule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList
-                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        validationRule.addBusinessFunction("function");
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
-                isEmpty());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-    }
-
-    @Test
-    public void testValidateMsgCodeShouldntBeNull() throws CoreException {
+    public void testValidateMsgCodeShouldntBeNull() throws CoreRuntimeException {
         validationRule.setMessageCode(null);
         MessageList list = validationRule.validate(ipsSrcFile.getIpsProject());
         assertNotNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
@@ -367,7 +311,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarker() throws CoreException {
+    public void testValidateMarker() throws CoreRuntimeException {
         validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setMarkerEnumsEnabled(true);
@@ -386,7 +330,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarker_InvalidMarkerEnum() throws CoreException {
+    public void testValidateMarker_InvalidMarkerEnum() throws CoreRuntimeException {
         validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
         MessageList msgList = validationRule.validate(ipsProject);
@@ -396,7 +340,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testConstantAttributesCantBeValidated() throws CoreException {
+    public void testConstantAttributesCantBeValidated() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute a = policyCmptType.newPolicyCmptTypeAttribute();
         a.setName("a1");
         a.setAttributeType(AttributeType.CONSTANT);
@@ -410,7 +354,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testConfigurableByProductCompt() throws CoreException {
+    public void testConfigurableByProductCompt() throws CoreRuntimeException {
         ProductCmptType prodType = newProductCmptType(ipsProject, "ProdType");
         policyCmptType.setProductCmptType(prodType.getQualifiedName());
 
@@ -436,7 +380,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreException {
+    public void testIsPropertyFor() throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -479,7 +423,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull()
+            throws CoreRuntimeException {
         IPolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "PolicyWithoutProductCmptType");
         policyWithoutProductCmptType.setConfigurableByProductCmptType(true);
@@ -494,7 +439,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_ValidationRuleIsNotConfigurable()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -510,7 +455,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsConfigurable()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -526,7 +471,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsNotConfigurable()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -542,7 +487,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("ProductType");
@@ -558,7 +503,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("ProductType");
@@ -581,7 +526,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangingOverTimeInitialValue_ProductNotChangingOverTime() throws CoreException {
+    public void testChangingOverTimeInitialValue_ProductNotChangingOverTime() throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("ProductType");
@@ -591,7 +536,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangingOverTimeInitialValue_ProductChangingOverTime() throws CoreException {
+    public void testChangingOverTimeInitialValue_ProductChangingOverTime() throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");

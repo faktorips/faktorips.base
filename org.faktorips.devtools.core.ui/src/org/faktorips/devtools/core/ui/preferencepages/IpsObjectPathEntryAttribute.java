@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -135,7 +135,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() throws CoreRuntimeException {
         MessageList result = new MessageList();
 
         if (isFolderForDerivedSources() || isFolderForMergableSources()) {

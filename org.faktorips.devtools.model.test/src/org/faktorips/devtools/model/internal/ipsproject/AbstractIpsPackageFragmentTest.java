@@ -20,8 +20,8 @@ import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -126,7 +126,7 @@ public class AbstractIpsPackageFragmentTest {
     }
 
     @Test
-    public void testGetParentIpsPackageFragment_SecondLevelPackage_SameType() throws CoreException {
+    public void testGetParentIpsPackageFragment_SecondLevelPackage_SameType() throws CoreRuntimeException {
         IIpsProjectNamingConventions namingConventions = mock(IIpsProjectNamingConventions.class);
         when(namingConventions.validateIpsPackageName(anyString())).thenReturn(new MessageList());
         IIpsProject ipsProject = mock(IIpsProject.class);

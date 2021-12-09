@@ -130,7 +130,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
     }
 
-    public void callBuildProcess(T propertyValueContainer, MultiStatus buildStatus) throws CoreException {
+    public void callBuildProcess(T propertyValueContainer, MultiStatus buildStatus) throws CoreRuntimeException {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyValueContainer);
         setPropertyValueContainer(propertyValueContainer);
         beforeBuild(ipsSrcFile, buildStatus);

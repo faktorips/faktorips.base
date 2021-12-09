@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -151,7 +151,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_ValidFromNull() throws CoreException {
+    public void testValidateThis_ValidFromNull() throws CoreRuntimeException {
         generation.setValidFrom(null);
 
         MessageList list = new MessageList();
@@ -162,7 +162,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_ValidFromAfterValidTo() throws CoreException {
+    public void testValidateThis_ValidFromAfterValidTo() throws CoreRuntimeException {
         timedObj.setValidTo(new GregorianCalendar(2005, 11, 1));
         generation.setValidFrom(new GregorianCalendar(2006, 1, 1));
 
@@ -174,7 +174,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_ValidFromDuplicateeGeneration() throws CoreException {
+    public void testValidateThis_ValidFromDuplicateeGeneration() throws CoreRuntimeException {
         IpsObjectGeneration gen1 = (IpsObjectGeneration)timedObj.newGeneration();
         IpsObjectGeneration gen2 = (IpsObjectGeneration)timedObj.newGeneration();
 

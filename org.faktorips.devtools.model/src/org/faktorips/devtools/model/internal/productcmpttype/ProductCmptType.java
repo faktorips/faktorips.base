@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,8 +28,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -243,10 +242,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param reference the {@link IProductCmptPropertyReference} to search the corresponding
      *            {@link IProductCmptProperty} for
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws CoreRuntimeException if an error occurs during the search
      */
     IProductCmptProperty findProductCmptProperty(IProductCmptPropertyReference reference, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
             if (reference.isReferencedProperty(property)) {
@@ -441,11 +440,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 property.setCategory(pendingPolicyChanges.get(property));
             }
             if (!isDirtyState) {
-                try {
-                    policySrcFile.save(true, null);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                policySrcFile.save(true, null);
             }
         }
         pendingPolicyChanges.clear();
@@ -570,7 +565,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         List<IMethod> candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = findSignaturesOfOverloadedFormulas(ipsProject);
@@ -585,7 +580,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
@@ -621,7 +616,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (isLayerSupertype() && hasSupertype()) {
             IProductCmptType supertype = findSupertype(ipsProject);
             if (supertype != null && !supertype.isLayerSupertype()) {
-                String text = NLS.bind(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
+                String text = MessageFormat.format(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
                         supertype.getName());
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE, text, Message.ERROR, this,
                         PROPERTY_LAYER_SUPERTYPE));
@@ -645,7 +640,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         for (IProductCmptTypeMethod overloadedMethod : overloadedSupertypeFormulaSignatures) {
             for (IProductCmptTypeMethod nonFormula : nonFormulas) {
                 if (nonFormula.isSameSignature(overloadedMethod)) {
-                    String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
+                    String text = MessageFormat.format(
+                            Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
                             overloadedMethod.getFormulaName());
                     msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR,
                             nonFormula, IIpsElement.PROPERTY_NAME));
@@ -654,7 +650,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+    private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreRuntimeException {
         if (isUseCustomInstanceIcon()) {
             InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
             if (stream == null) {
@@ -665,7 +661,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    throw new CoreException(new IpsStatus(e));
+                    throw new CoreRuntimeException(new IpsStatus(e));
                 }
             }
         }
@@ -677,7 +673,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
@@ -690,23 +686,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj == null) {
-            String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
+            String text = MessageFormat.format(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!policyCmptTypeObj.isConfigurableByProductCmptType()) {
-            String text = NLS.bind(Messages.ProductCmptType_notMarkedAsConfigurable, policyCmptType);
+            String text = MessageFormat.format(Messages.ProductCmptType_notMarkedAsConfigurable, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
-            String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType, policyCmptType);
+            String text = MessageFormat.format(Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType,
+                    policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
@@ -718,64 +715,68 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         if (!policyCmptTypeObj.isValid(policyCmptTypeObj.getIpsProject())) {
-            String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeNotValid, policyCmptType);
+            String text = MessageFormat.format(Messages.ProductCmptType_policyCmptTypeNotValid, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_VALID, text, Message.WARNING, this,
                     PROPERTY_POLICY_CMPT_TYPE));
         }
     }
 
     private void validateDefaultCategoryForFormulaSignatureDefinition(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy
                 && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
+            String text = MessageFormat.format(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions,
+                    getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this);
         }
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
+            String text = MessageFormat.format(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes,
+                    getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
         }
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
+            String text = MessageFormat.format(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes,
+                    getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this);
         }
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
+            String text = MessageFormat.format(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages,
+                    getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this);
         }
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
+            String text = MessageFormat.format(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this);
         }
     }
@@ -856,12 +857,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreRuntimeException {
         return searchMetaObjectSrcFiles(includeSubtypes);
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
@@ -888,7 +889,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) throws CoreRuntimeException {
         return Messages.ProductCmptType_caption;
     }
 
@@ -928,7 +929,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreRuntimeException {
         // Collect all categories from the supertype hierarchy
         final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<>(ipsProject) {
@@ -1000,13 +1001,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreException {
+    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreRuntimeException {
         return findCategory(name, ipsProject) != null;
     }
 
     @Override
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
@@ -1016,7 +1017,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
@@ -1026,7 +1027,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
@@ -1036,7 +1037,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
         defaultCategoryFinder.start(this);
@@ -1044,7 +1045,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject)
+            throws CoreRuntimeException {
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ProductCmptPropertyType.VALIDATION_RULE,
                 ipsProject);
         defaultCategoryFinder.start(this);
@@ -1052,7 +1054,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreRuntimeException {
 
         ProductCmptCategoryFinder visitor = new ProductCmptCategoryFinder(ipsProject, name);
         visitor.start(this);
@@ -1153,18 +1155,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @return the new indices within the context list
      * 
-     * @throws CoreException if an error occurs during the move
+     * @throws CoreRuntimeException if an error occurs during the move
      */
     int[] movePropertyReferences(final int[] movedIndices,
             final List<IProductCmptProperty> contextProperties,
-            final boolean up) throws CoreException {
+            final boolean up) throws CoreRuntimeException {
 
         return (int[])((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<>(getIpsSrcFile()) {
                     private Object result;
 
                     @Override
-                    protected boolean execute() throws CoreException {
+                    protected boolean execute() throws CoreRuntimeException {
                         createProductCmptPropertyReferencesForNotReferencedProperties();
                         result = moveProductCmptPropertyReferencesInternal(movedIndices, contextProperties, up);
                         return true;
@@ -1220,7 +1222,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             IProductCmptPropertyReference reference = (IProductCmptPropertyReference)part;
             try {
                 return reference.findProductCmptProperty(getIpsProject()) != null;
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 /*
                  * If an error occurs during the search for the property, the property is not found
                  * but we cannot be sure whether it is obsolete.
@@ -1236,10 +1238,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Returns whether at least two categories with the indicated name exist in the supertype
      * hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType} itself.
      * 
-     * @throws CoreException if an error occurs while searching the supertype hierarchy
+     * @throws CoreRuntimeException if an error occurs while searching the supertype hierarchy
      */
     boolean findIsCategoryNameUsedTwiceInSupertypeHierarchy(final String categoryName, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         CategoryCounter counter = new CategoryCounter(categoryName, ipsProject);
         counter.start(this);
         return counter.categoriesFound > 1;

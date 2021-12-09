@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.model.abstraction.AAdaptersFactory;
 
 /**
  * The kind of modifiers.
@@ -89,7 +89,7 @@ public enum Modifier implements IAdaptable {
 
     @Override
     public <T> T getAdapter(Class<T> adapter) {
-        return Platform.getAdapterManager().getAdapter(this, adapter);
+        return AAdaptersFactory.getAdapter(this, adapter);
     }
 
 }

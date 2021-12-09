@@ -57,7 +57,7 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
         }
     }
 
-    private String validateAndReturnErrorMessages(Validatable validatable) throws CoreException {
+    private String validateAndReturnErrorMessages(Validatable validatable) throws CoreRuntimeException {
         MessageList msgList = validatable.validate(validatable.getIpsProject());
         String text = msgList.getMessagesBySeverity(Severity.ERROR).getText();
         if (!StringUtils.isEmpty(text)) {

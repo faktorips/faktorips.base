@@ -23,11 +23,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builderpattern.ModelBuilder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -100,7 +100,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIs1To1_And_Is1ToMany() throws CoreException {
+    public void testIs1To1_And_Is1ToMany() throws CoreRuntimeException {
         IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IPolicyCmptTypeAssociation ass = type.newPolicyCmptTypeAssociation();
 
@@ -181,7 +181,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDerivedUnionCandidates() throws CoreException {
+    public void testFindDerivedUnionCandidates() throws CoreRuntimeException {
         IAssociation[] candidates = association.findDerivedUnionCandidates(ipsProject);
         assertEquals(0, candidates.length);
 
@@ -207,7 +207,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindSubsettedDerivedUnion() throws CoreException {
+    public void testFindSubsettedDerivedUnion() throws CoreRuntimeException {
         association.setTargetRoleSingular("myRole");
         assertNull(association.findSubsettedDerivedUnion(ipsProject));
 
@@ -245,7 +245,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsSubsetOfDerivedUnion_Union() throws CoreException {
+    public void testIsSubsetOfDerivedUnion_Union() throws CoreRuntimeException {
         assertFalse(association.isSubsetOfDerivedUnion(null, ipsProject));
 
         IAssociation union = this.productType.newAssociation();
@@ -266,7 +266,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetDoesNotExist() throws CoreException {
+    public void testValidate_TargetDoesNotExist() throws CoreRuntimeException {
         MessageList ml = new MessageList();
 
         association.setTarget("UnknownTarget");
@@ -279,7 +279,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetRoleSingularMustBeAValidJavaFieldName() throws CoreException {
+    public void testValidate_TargetRoleSingularMustBeAValidJavaFieldName() throws CoreRuntimeException {
         association.setTargetRoleSingular("invalid java field name");
 
         Message message = association.validate(ipsProject).getMessageByCode(
@@ -293,7 +293,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetRolePluralMustBeAValidJavaFieldName() throws CoreException {
+    public void testValidate_TargetRolePluralMustBeAValidJavaFieldName() throws CoreRuntimeException {
         association.setTargetRolePlural("invalid java field name");
 
         Message message = association.validate(ipsProject).getMessageByCode(
@@ -307,7 +307,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetRoleSingularMustBeSet() throws CoreException {
+    public void testValidate_TargetRoleSingularMustBeSet() throws CoreRuntimeException {
         association.setTargetRoleSingular("");
         MessageList ml = association.validate(association.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
@@ -318,7 +318,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetRolePluralMayBeEmptyIfCardinalityAllowsIt() throws CoreException {
+    public void testValidate_TargetRolePluralMayBeEmptyIfCardinalityAllowsIt() throws CoreRuntimeException {
         association.setMinCardinality(0);
         association.setMaxCardinality(1);
         association.setTargetRoleSingular("singular");
@@ -328,7 +328,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TargetRolePluralMustNotBeEmptyIfTheCardinalityDoesNotAllowIt() throws CoreException {
+    public void testValidate_TargetRolePluralMustNotBeEmptyIfTheCardinalityDoesNotAllowIt() throws CoreRuntimeException {
         association.setMinCardinality(0);
         association.setMaxCardinality(Integer.MAX_VALUE);
         association.setTargetRoleSingular("singular");
@@ -344,7 +344,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MaxCardinalityMustBeAtLeast1() throws CoreException {
+    public void testValidate_MaxCardinalityMustBeAtLeast1() throws CoreRuntimeException {
         association.setMaxCardinality(0);
         MessageList ml = association.validate(association.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
@@ -355,7 +355,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MaxCardinalityIsLessThanMin() throws CoreException {
+    public void testValidate_MaxCardinalityIsLessThanMin() throws CoreRuntimeException {
         association.setMinCardinality(3);
         association.setMaxCardinality(2);
         MessageList ml = association.validate(association.getIpsProject());
@@ -558,7 +558,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_SupertypeOfTargetIsNotInAssociationWithSupertypeOfThis() throws CoreException {
+    public void testValidateConstrain_SupertypeOfTargetIsNotInAssociationWithSupertypeOfThis() throws CoreRuntimeException {
         IPolicyCmptType sourceCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
         IPolicyCmptType targetCmpt = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)sourceCmpt.newAssociation();
@@ -593,7 +593,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_MatchingAssociationProductNotContrained() throws CoreException {
+    public void testValidateConstrain_MatchingAssociationProductNotContrained() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         constrains_subProductAssociation.setConstrain(false);
 
@@ -602,7 +602,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_MatchingAssociationPolicyNotContrained() throws CoreException {
+    public void testValidateConstrain_MatchingAssociationPolicyNotContrained() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         constrains_subAssociation.setConstrain(false);
 
@@ -611,7 +611,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_SuperAssociationsProductDoesNotMatch() throws CoreException {
+    public void testValidateConstrain_SuperAssociationsProductDoesNotMatch() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         // no matching association in super class
         constrains_sourceClass.setConfigurableByProductCmptType(false);
@@ -622,7 +622,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_SuperAssociationsPolicyDoesNotMatch() throws CoreException {
+    public void testValidateConstrain_SuperAssociationsPolicyDoesNotMatch() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         // no matching association in super class
         constrains_sourceClass.setConfigurableByProductCmptType(false);
@@ -633,7 +633,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_noMatchingAssociationsAtAll() throws CoreException {
+    public void testValidateConstrain_noMatchingAssociationsAtAll() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         constrains_sourceClass.setConfigurableByProductCmptType(false);
         constrains_targetClass.setConfigurableByProductCmptType(false);
@@ -651,7 +651,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_noMatchingAssociationInSubclasses() throws CoreException {
+    public void testValidateConstrain_noMatchingAssociationInSubclasses() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
         constrains_subSourceClass.setConfigurableByProductCmptType(false);
         constrains_subTargetClass.setConfigurableByProductCmptType(false);
@@ -665,7 +665,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_matchingAssociationsValid() throws CoreException {
+    public void testValidateConstrain_matchingAssociationsValid() throws CoreRuntimeException {
         setUpConstrainedMatchingAssociations();
 
         MessageList msgList = constrains_subProductAssociation.validate(ipsProject);
@@ -674,7 +674,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION));
     }
 
-    private void setUpConstrainedMatchingAssociations() throws CoreException {
+    private void setUpConstrainedMatchingAssociations() throws CoreRuntimeException {
         constrains_sourceClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldA");
         constrains_targetClass = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "oldB");
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)constrains_sourceClass.newAssociation();
@@ -725,7 +725,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_Cardinality_LargerMaximum() throws CoreException {
+    public void testValidateConstrain_Cardinality_LargerMaximum() throws CoreRuntimeException {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(0, 5).build();
         IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(0, 7).build();
 
@@ -738,7 +738,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_Cardinality_SmallerMinimum() throws CoreException {
+    public void testValidateConstrain_Cardinality_SmallerMinimum() throws CoreRuntimeException {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(5, 10).build();
         IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(3, 10).build();
 
@@ -751,7 +751,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_Cardinality_MultipleToSingle() throws CoreException {
+    public void testValidateConstrain_Cardinality_MultipleToSingle() throws CoreRuntimeException {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 2).build();
         IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(1, 1).build();
 
@@ -764,7 +764,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_Cardinality_SubSubAssociation() throws CoreException {
+    public void testValidateConstrain_Cardinality_SubSubAssociation() throws CoreRuntimeException {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
         IAssociation subAssociation = builder.constrain(association).from(SUB_A).withCardinality(2, 4).build();
         IAssociation subSubAssociation = builder.constrain(subAssociation).from(SUB_SUB_A).withCardinality(1, 5)
@@ -784,7 +784,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateConstrain_AssociationTypeNotEqualToSuperAssosiation() throws CoreException {
+    public void testValidateConstrain_AssociationTypeNotEqualToSuperAssosiation() throws CoreRuntimeException {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
         IAssociation subAssociation = builder.constrain(association).from(SUB_A)
                 .withCardinality(1, 5).build();
@@ -845,7 +845,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindTarget() throws CoreException {
+    public void testFindTarget() throws CoreRuntimeException {
         association.setTarget("");
         assertNull(association.findTarget(ipsProject));
 

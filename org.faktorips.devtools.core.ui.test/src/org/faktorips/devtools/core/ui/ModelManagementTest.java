@@ -19,8 +19,8 @@ import java.util.Locale;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IDescription;
@@ -44,7 +44,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IWorkspaceRunnable action = $ -> {
+        ICoreRunnable action = $ -> {
             IIpsProject project = newIpsProject("TestProject");
             IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
             folder.getFile("A.ipspct");

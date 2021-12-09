@@ -15,10 +15,11 @@ import java.io.InputStream;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.abstraction.AResourceDelta;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -62,12 +63,12 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * while running the platform.
      */
     @Override
-    public boolean isAffectedBy(IResourceDelta delta) {
+    public boolean isAffectedBy(AResourceDelta delta) {
         return false;
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreRuntimeException {
         String objectDir = getRootFolder(qnt.toPath()).toPortableString();
         return bundleManifest.getBasePackage(objectDir);
     }
@@ -86,7 +87,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * {@link #getBasePackageNameForMergableArtefacts(QualifiedNameType)}
      */
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreRuntimeException {
         return getBasePackageNameForMergableArtefacts(qnt);
     }
 
@@ -106,19 +107,19 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     }
 
     @Override
-    public String[] getNonEmptyPackages() throws CoreException {
+    public String[] getNonEmptyPackages() throws CoreRuntimeException {
         Set<String> nonEmptyPackagePaths = bundleContentIndex.getNonEmptyPackagePaths();
         String[] result = nonEmptyPackagePaths.toArray(new String[nonEmptyPackagePaths.size()]);
         return result;
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes() throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes() throws CoreRuntimeException {
         return bundleContentIndex.getQualifiedNameTypes();
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreRuntimeException {
         return bundleContentIndex.getQualifiedNameTypes(packName);
     }
 
@@ -171,7 +172,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * name this strategy cannot run into conflicts.
      */
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return getIpsProject().getProject().getFile(getLocation().lastSegment());
     }
 

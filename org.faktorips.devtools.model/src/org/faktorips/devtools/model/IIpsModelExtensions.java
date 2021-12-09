@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.model.abstraction.PlainJavaIpsModelExtensions;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IFlIdentifierFilterExtension;
@@ -42,7 +44,11 @@ import org.osgi.framework.Version;
 public interface IIpsModelExtensions {
 
     static IIpsModelExtensions get() {
-        return IpsModelExtensionsViaEclipsePlugins.get();
+        if (Abstractions.isEclipseRunning()) {
+            return IpsModelExtensionsViaEclipsePlugins.get();
+        } else {
+            return PlainJavaIpsModelExtensions.get();
+        }
     }
 
     /**

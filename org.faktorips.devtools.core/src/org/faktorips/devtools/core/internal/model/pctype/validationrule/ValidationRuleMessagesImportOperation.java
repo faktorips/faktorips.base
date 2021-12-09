@@ -17,8 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -26,6 +25,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
 
-public abstract class ValidationRuleMessagesImportOperation implements IWorkspaceRunnable {
+public abstract class ValidationRuleMessagesImportOperation implements ICoreRunnable {
 
     public static final int MSG_CODE_MISSING_MESSAGE = 1;
 
@@ -105,7 +105,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     @Override
-    public void run(IProgressMonitor progressMonitor) throws CoreException {
+    public void run(IProgressMonitor progressMonitor) throws CoreRuntimeException {
         if (progressMonitor != null) {
             this.setMonitor(progressMonitor);
         }
@@ -138,7 +138,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
         this.contentMap = keyValueMap;
     }
 
-    protected IStatus importContentMap() throws CoreException {
+    protected IStatus importContentMap() throws CoreRuntimeException {
         List<IIpsSrcFile> allPolicyCmptFiled = getPackageFragmentRoot().findAllIpsSrcFiles(
                 IpsObjectType.POLICY_CMPT_TYPE);
         try {
@@ -164,7 +164,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     @SuppressWarnings("deprecation")
-    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
+    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreRuntimeException {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
                 continue;

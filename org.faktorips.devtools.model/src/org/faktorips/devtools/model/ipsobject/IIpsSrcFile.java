@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.ipsobject;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -38,7 +38,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * source file is contained in an IPS archive or is constructed from an input stream (e.g. to
      * display an old revision/history in an editor).
      */
-    public IFile getCorrespondingFile();
+    public AFile getCorrespondingFile();
 
     /**
      * Returns <code>true</code> if the file contains unsaved changes to it's contents, otherwise
@@ -64,28 +64,28 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Returns a new memento with the file's content and dirty state.
      */
-    public IIpsSrcFileMemento newMemento() throws CoreException;
+    public IIpsSrcFileMemento newMemento() throws CoreRuntimeException;
 
     /**
      * Update the file's state with the information from the memento.
      * 
-     * @throws CoreException if the memento wasn't taken from this file.
+     * @throws CoreRuntimeException if the memento wasn't taken from this file.
      */
-    public void setMemento(IIpsSrcFileMemento memento) throws CoreException;
+    public void setMemento(IIpsSrcFileMemento memento) throws CoreRuntimeException;
 
     /**
      * Saves the file's content to the file system.
      */
-    public void save(boolean force, IProgressMonitor monitor) throws CoreException;
+    public void save(boolean force, IProgressMonitor monitor) throws CoreRuntimeException;
 
     /**
      * Returns true if the content can be parsed and a IpsObject can be created based on the
      * content. Returns false, if the contents can't be parsed (e.g. the XML isn't properly
      * formatted).
      * 
-     * @throws CoreException if an error occurs while reading the contents.
+     * @throws CoreRuntimeException if an error occurs while reading the contents.
      */
-    public boolean isContentParsable() throws CoreException;
+    public boolean isContentParsable() throws CoreRuntimeException;
 
     /**
      * Returns <code>true</code> if the file has been read from the resource history.
@@ -163,22 +163,22 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Reads the content from the enclosing resource.
      * 
-     * @throws CoreException if an error occurs while reading the contents.
+     * @throws CoreRuntimeException if an error occurs while reading the contents.
      */
-    public InputStream getContentFromEnclosingResource() throws CoreException;
+    public InputStream getContentFromEnclosingResource() throws CoreRuntimeException;
 
     /**
      * Returns the name of the base package for the generated artifacts that are mergable. All
      * generated, mergeable artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForMergableArtefacts() throws CoreException;
+    public String getBasePackageNameForMergableArtefacts() throws CoreRuntimeException;
 
     /**
      * Returns the name of the base package for the generated artifacts that are 100%derived/not
      * mergable. All generated, 100% derived artifacts are contained in this package or one of the
      * child packages.
      */
-    public String getBasePackageNameForDerivedArtefacts() throws CoreException;
+    public String getBasePackageNameForDerivedArtefacts() throws CoreRuntimeException;
 
     /**
      * Deletes this source file by deleting the corresponding resource.
@@ -188,7 +188,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * @throws UnsupportedOperationException If the source file is stored in an archive
      */
     @Override
-    public void delete() throws CoreException;
+    public void delete() throws CoreRuntimeException;
 
     /**
      * If {@code validateIpsSchema} is used this set may contain error from the XML parser.

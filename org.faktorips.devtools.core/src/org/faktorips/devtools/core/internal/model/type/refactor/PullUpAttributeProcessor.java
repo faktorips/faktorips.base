@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
@@ -78,7 +77,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
      * supertype can be found.
      */
     @Override
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
         if (!getType().hasSupertype()) {
             status.addFatalError(
                     NLS.bind(Messages.PullUpAttributeProcessor_msgTypeHasNoSupertype, getType().getName()));
@@ -102,7 +101,7 @@ public class PullUpAttributeProcessor extends IpsPullUpProcessor {
      * in the super type hierarchy of the target type.
      */
     @Override
-    public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    public void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
         super.validateUserInputThis(status, pm);
 
         if (!getType().isSubtypeOf(getTargetType(), getIpsProject())) {

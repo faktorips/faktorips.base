@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
@@ -44,7 +45,7 @@ public abstract class AbstractPropertiesGenerator {
         }
     }
 
-    void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages) throws CoreException {
+    void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages) throws CoreRuntimeException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -55,9 +56,9 @@ public abstract class AbstractPropertiesGenerator {
      * Saving the properties to the file adding the given comment. The file must already exists.
      * 
      * @return true if file was modified otherwise false
-     * @throws CoreException in case of any exception during writing to file
+     * @throws CoreRuntimeException in case of any exception during writing to file
      */
-    public boolean saveIfModified() throws CoreException {
+    public boolean saveIfModified() throws CoreRuntimeException {
         if (getLocalizedProperties().isModified()) {
             IFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
@@ -72,7 +73,7 @@ public abstract class AbstractPropertiesGenerator {
         }
     }
 
-    public void loadMessages() throws CoreException {
+    public void loadMessages() throws CoreRuntimeException {
         if (messagesPropertiesFile.exists()) {
             getLocalizedProperties().load(messagesPropertiesFile.getContents());
         } else {

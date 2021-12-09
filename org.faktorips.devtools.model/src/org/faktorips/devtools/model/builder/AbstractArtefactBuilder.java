@@ -14,14 +14,16 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.faktorips.devtools.model.abstraction.ABuildKind;
+import org.faktorips.devtools.model.abstraction.AContainer;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -59,22 +61,22 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
         // default implementation does nothing
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
         // default implementation does nothing
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException {
         // default implementation does nothing
     }
 
     @Override
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         // default implementation does nothing
     }
 
@@ -102,18 +104,17 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * 
      * @return true if the file needs to be created, false if the file already exists
      * 
-     * @throws CoreException if an Exception occurs during the creation procedure
+     * @throws CoreRuntimeException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided file parameter is <code>null</code>
      */
-    protected boolean createFileIfNotThere(IFile file) throws CoreException {
+    protected boolean createFileIfNotThere(AFile file) throws CoreRuntimeException {
         ArgumentCheck.notNull(file, this);
         if (!file.exists()) {
-            IContainer parent = file.getParent();
-
-            if (parent instanceof IFolder) {
-                createFolderIfNotThere((IFolder)parent);
+            AContainer parent = file.getParent();
+            if (parent instanceof AFolder) {
+                createFolderIfNotThere((AFolder)parent);
             }
-            file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
+            file.create(new ByteArrayInputStream("".getBytes()), null); //$NON-NLS-1$
             file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             return true;
         }
@@ -132,18 +133,18 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * 
      * @return true if the folder needs to be created, false if the folder already exists
      * 
-     * @throws CoreException if an Exception occurs during the creation procedure
+     * @throws CoreRuntimeException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided folder parameter is <code>null</code>
      */
-    protected boolean createFolderIfNotThere(IFolder folder) throws CoreException {
+    protected boolean createFolderIfNotThere(AFolder folder) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(folder, this);
         if (!folder.exists()) {
-            IContainer parent = folder.getParent();
-            if (parent instanceof IFolder) {
-                createFolderIfNotThere((IFolder)parent);
+            AContainer parent = folder.getParent();
+            if (parent instanceof AFolder) {
+                createFolderIfNotThere((AFolder)parent);
             }
-            folder.create(true, true, null);
+            folder.create(null);
             folder.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             return true;
         }
@@ -226,19 +227,20 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      * @param keepHistory setting keeping the history when writing to the file @see
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
-     * @throws CoreException in case of an error while setting the new content to the file @see
+     * @throws CoreRuntimeException in case of an error while setting the new content to the
+     *             file @see
      *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      */
     public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            throws CoreException {
+            throws CoreRuntimeException {
         EclipseIOUtil.writeToFile(file, inputStream, force, keepHistory, new NullProgressMonitor());
     }
 
     /**
      * Returns the artefact destination. The destination can either be the output folder for
-     * mergable artefacts or the one for derived artefacts.
+     * mergeable artefacts or the one for derived artefacts.
      */
-    protected IPackageFragmentRoot getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreException {
+    protected APackageFragmentRoot getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(buildsDerivedArtefacts());
     }
 

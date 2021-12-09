@@ -14,10 +14,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
@@ -41,7 +41,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateAnnotationForAbstractEnum() throws CoreException {
+    public void testCreateAnnotationForAbstractEnum() throws CoreRuntimeException {
         XEnumType xEnumtype = modelService.getModelNode(setUpEnumtype(), XEnumType.class, modelContext);
 
         JavaCodeFragment annotation = enumDeclClassAnnGen.createAnnotation(xEnumtype);
@@ -53,7 +53,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateAnnotation() throws CoreException {
+    public void testCreateAnnotation() throws CoreRuntimeException {
         IEnumType enumType = setUpEnumtype();
         enumType.newEnumLiteralNameAttribute();
         XEnumType xEnumtype = modelService.getModelNode(enumType, XEnumType.class, modelContext);
@@ -67,7 +67,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateAnnotationExtensible() throws CoreException {
+    public void testCreateAnnotationExtensible() throws CoreRuntimeException {
         IEnumType enumType = setUpEnumtype();
         enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
@@ -84,7 +84,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateAnnotation_abstractEnumWithAbstractParent() throws CoreException {
+    public void testCreateAnnotation_abstractEnumWithAbstractParent() throws CoreRuntimeException {
         IEnumType enumType = setUpEnumtype();
         enumType.setAbstract(true);
         IEnumType parentEnumType = newEnumType(ipsProject, "test.AbstractEnumType");
@@ -105,7 +105,7 @@ public class EnumDeclClassAnnGenTest extends AbstractStdBuilderTest {
                                 + System.lineSeparator())));
     }
 
-    private IEnumType setUpEnumtype() throws CoreException {
+    private IEnumType setUpEnumtype() throws CoreRuntimeException {
         IEnumType enumType = newEnumType(ipsProject, "test.EnumType");
         IEnumAttribute attribute2 = enumType.newEnumAttribute();
         attribute2.setName("A2");

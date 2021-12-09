@@ -125,12 +125,12 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE);
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException {
         super.beforeBuild(ipsSrcFile, status);
         inputPrefix = getLocalizedText(INPUT_PREFIX);
         expectedResultPrefix = getLocalizedText(EXPECTED_RESULT_PREFIX);
@@ -148,7 +148,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreRuntimeException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         mainSection.setUnqualifiedName(getUnqualifiedClassName());
@@ -176,10 +176,10 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /**
      * Generates the member variables.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
     private void buildMemberVariables(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+            throws CoreRuntimeException {
         buildMemberForTestRuleParameter(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getInputTestValueParameters(), inputPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getExpectedResultTestValueParameters(),
@@ -197,7 +197,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMemberForTestValueParameter(JavaCodeFragmentBuilder codeBuilder,
             ITestValueParameter[] testValueParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         for (ITestValueParameter testValueParam : testValueParams) {
             if (!testValueParam.isValid(getIpsProject())) {
                 continue;
@@ -216,7 +216,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMemberForTestRuleParameter(JavaCodeFragmentBuilder codeBuilder,
             ITestRuleParameter[] testRuleParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         if (testRuleParams.length == 0) {
             // only generate variables if rules exists
             return;
@@ -284,7 +284,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMemberForTestPolicyCmptParameter(JavaCodeFragmentBuilder codeBuilder,
             ITestPolicyCmptTypeParameter[] policyTypeParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         for (ITestPolicyCmptTypeParameter policyTypeParam : policyTypeParams) {
             if (!policyTypeParam.isValid(getIpsProject())) {
                 continue;
@@ -300,7 +300,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * parameter points to.
      */
     protected String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam)
-            throws CoreException {
+            throws CoreRuntimeException {
         IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType(getIpsProject());
         if (policyCmptType == null) {
             throw new CoreException(new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType()
@@ -316,7 +316,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * ClassloaderRuntimeRepository(this.getClass().getClassLoader(),
      * "org.faktorips.integrationtest.internal"); } </pre>
      */
-    private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) throws CoreRuntimeException {
         String className = getUnqualifiedClassName();
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
         String[] argNames = new String[] { "qualifiedName" };
@@ -336,7 +336,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the super method implenetations.
      */
     private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+            throws CoreRuntimeException {
         buildMethodExecuteBusinessLogic(codeBuilder);
         buildMethodExecuteAsserts(codeBuilder);
         buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
@@ -349,7 +349,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * initInputFromXml(Element element) { ... } </pre>
      */
     private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+            throws CoreRuntimeException {
         String javaDoc = getLocalizedText(INITINPUTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -365,7 +365,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * initExpectedResultFromXml(Element element) { Element inputElement; ... } </pre>
      */
     private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+            throws CoreRuntimeException {
         String javaDoc = getLocalizedText(INITEXPECTEDRESULTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -404,7 +404,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildInitForTestPolicyCmptParameter(JavaCodeFragment body,
             ITestPolicyCmptTypeParameter[] policyTypeParams,
             String variablePrefix,
-            boolean isInput) throws CoreException {
+            boolean isInput) throws CoreRuntimeException {
         String objectReferenceStoreName = "objectReferenceStore";
         if (policyTypeParams.length > 0) {
             body.appendClassName(IObjectReferenceStore.class);
@@ -482,7 +482,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             ITestPolicyCmptTypeParameter policyTypeParam,
             String variablePrefix,
             String objectReferenceStoreName,
-            String callbackClassName) throws CoreException {
+            String callbackClassName) throws CoreRuntimeException {
         String qualifiedPolicyCmptName = getQualifiedNameFromTestPolicyCmptParam(policyTypeParam);
         String variableName = variablePrefix + policyTypeParam.getName();
         body.appendln("try {");
@@ -512,7 +512,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildInitForTestValueParameter(JavaCodeFragment body,
             ITestValueParameter[] valueParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         if (valueParams.length > 0) {
             body.appendln("String value = null;");
         }
@@ -555,7 +555,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildInitForTestRuleParameter(JavaCodeFragment body,
             ITestRuleParameter[] ruleParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         for (ITestRuleParameter ruleParam : ruleParams) {
             if (!ruleParam.isValid(getIpsProject())) {
                 continue;
@@ -685,7 +685,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      */
     private void buildMethodsForAssertRules(JavaCodeFragmentBuilder codeBuilder,
             ITestRuleParameter[] ruleParams,
-            String variablePrefix) throws CoreException {
+            String variablePrefix) throws CoreRuntimeException {
         if (ruleParams.length == 0) {
             return;
         }
@@ -760,7 +760,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * one extension attribute.
      */
     private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType)
-            throws CoreException {
+            throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
         for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : testPolicyCmptTypeParameters) {
             if (!testPolicyCmptTypeParameter.isValid(getIpsProject())) {

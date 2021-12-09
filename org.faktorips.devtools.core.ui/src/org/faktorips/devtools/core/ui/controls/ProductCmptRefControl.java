@@ -63,7 +63,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
 
         Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {

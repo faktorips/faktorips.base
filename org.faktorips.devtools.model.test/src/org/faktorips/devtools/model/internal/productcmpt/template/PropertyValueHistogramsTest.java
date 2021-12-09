@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.internal.util.Histogram;
@@ -156,7 +156,7 @@ public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
         }
     }
 
-    private IProductCmpt createProductCmpt(String name) throws CoreException {
+    private IProductCmpt createProductCmpt(String name) throws CoreRuntimeException {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, name);
         IAttributeValue attributeValue = productCmpt.newPropertyValue(productCmptTypeAttribute, IAttributeValue.class);
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "polAttrValue"));
@@ -174,7 +174,7 @@ public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
         return productCmpt;
     }
 
-    private IProductCmpt createProductCmptWithGenerationProperties(String name) throws CoreException {
+    private IProductCmpt createProductCmptWithGenerationProperties(String name) throws CoreRuntimeException {
         IProductCmpt productCmpt = createProductCmpt(name);
         IProductCmptGeneration productCmptGeneration = productCmpt.getLatestProductCmptGeneration();
         IAttributeValue attributeValue = productCmptGeneration.newPropertyValue(productCmptTypeAttribute2,

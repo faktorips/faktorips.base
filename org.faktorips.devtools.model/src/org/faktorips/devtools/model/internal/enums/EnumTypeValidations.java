@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -70,7 +70,7 @@ public class EnumTypeValidations {
         // Super EnumType exists?
         IEnumType superEnumType = ipsProject.findEnumType(superEnumTypeQualifiedName);
         if (superEnumType == null) {
-            String text = NLS.bind(Messages.EnumType_SupertypeDoesNotExist, superEnumTypeQualifiedName);
+            String text = MessageFormat.format(Messages.EnumType_SupertypeDoesNotExist, superEnumTypeQualifiedName);
             Message message = new Message(
                     IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST,
                     text,
@@ -84,7 +84,8 @@ public class EnumTypeValidations {
 
         // Super EnumType abstract?
         if (!(superEnumType.isAbstract())) {
-            String text = NLS.bind(Messages.EnumType_SupertypeIsNotAbstract, superEnumType.getQualifiedName());
+            String text = MessageFormat.format(Messages.EnumType_SupertypeIsNotAbstract,
+                    superEnumType.getQualifiedName());
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT, text, Message.ERROR,
                     enumType, IEnumType.PROPERTY_SUPERTYPE);
             validationMessageList.add(message);
@@ -103,10 +104,10 @@ public class EnumTypeValidations {
      *            the <code>IpsProject</code> of the provided enumeration type is used within this
      *            method.
      * 
-     * @throws CoreException If an exception occurs during processing.
+     * @throws CoreRuntimeException If an exception occurs during processing.
      */
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ArgumentCheck.notNull(new Object[] { msgList, ipsProject });
 
@@ -117,7 +118,7 @@ public class EnumTypeValidations {
         SupertypeCollector collector = new SupertypeCollector(ipsProject);
         collector.start(superEnumType);
         if (collector.cycleDetected()) {
-            String msg = NLS.bind(Messages.EnumType_cycleDetected, enumType.getQualifiedName());
+            String msg = MessageFormat.format(Messages.EnumType_cycleDetected, enumType.getQualifiedName());
             msgList.add(new Message(IEnumType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY, msg, Message.ERROR, enumType,
                     IEnumType.PROPERTY_SUPERTYPE));
         } else {
@@ -127,7 +128,8 @@ public class EnumTypeValidations {
                     if (superResult.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST) != null
                             || superResult
                                     .getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT) != null) {
-                        String text = NLS.bind(Messages.EnumType_inconsistentHierarchy, enumType.getQualifiedName());
+                        String text = MessageFormat.format(Messages.EnumType_inconsistentHierarchy,
+                                enumType.getQualifiedName());
                         msgList.add(new Message(IEnumType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY, text, Message.ERROR,
                                 enumType, IEnumType.PROPERTY_SUPERTYPE));
                     }

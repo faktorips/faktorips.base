@@ -14,10 +14,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -36,7 +36,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
      * class.
      */
     @Override
-    protected IIpsElement[] findReferences() throws CoreException {
+    protected IIpsElement[] findReferences() throws CoreRuntimeException {
         Set<IIpsElement> result = new LinkedHashSet<>();
         IIpsProject[] referencingProjects = referenced.getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject referencingProject : referencingProjects) {
@@ -47,14 +47,14 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
 
     }
 
-    protected Set<IIpsElement> findReferencingIpsObjTypes(IIpsProject referencingIpsProject) throws CoreException {
+    protected Set<IIpsElement> findReferencingIpsObjTypes(IIpsProject referencingIpsProject) throws CoreRuntimeException {
         Set<IIpsElement> resultSet = new LinkedHashSet<>();
         List<IIpsSrcFile> ipsSrcFiles = referencingIpsProject.findAllIpsSrcFiles();
         return checkIIPsSrcFileDependencies(resultSet, ipsSrcFiles);
     }
 
     protected Set<IIpsElement> checkIIPsSrcFileDependencies(Set<IIpsElement> resultSet, List<IIpsSrcFile> ipsSrcFiles)
-            throws CoreException {
+            throws CoreRuntimeException {
         for (IIpsSrcFile iIpsSrcFile : ipsSrcFiles) {
             IIpsObject object = iIpsSrcFile.getIpsObject();
             IDependency[] dependencies = object.dependsOn();
@@ -69,13 +69,13 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
     }
 
     private void fillResultSet(Set<IIpsElement> resultSet, IIpsObject object, IDependency dependency)
-            throws CoreException {
+            throws CoreRuntimeException {
         addDependencyDetails(resultSet, object, dependency);
         resultSet.add(object);
     }
 
     protected void addDependencyDetails(Set<IIpsElement> set, IIpsObject object, IDependency dependency)
-            throws CoreException {
+            throws CoreRuntimeException {
         List<IDependencyDetail> dependencyDetails = object.getDependencyDetails(dependency);
 
         for (IDependencyDetail dependencyIPSObjPart : dependencyDetails) {
@@ -84,7 +84,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
     }
 
     @Override
-    protected Object[] getDataForResult(IIpsElement object) throws CoreException {
+    protected Object[] getDataForResult(IIpsElement object) throws CoreRuntimeException {
         return new Object[] { object };
     }
 }

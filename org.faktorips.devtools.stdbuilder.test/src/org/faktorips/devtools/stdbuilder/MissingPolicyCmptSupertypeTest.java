@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import org.junit.Test;
 public class MissingPolicyCmptSupertypeTest extends AbstractStdBuilderTest {
 
     @Test
-    public void test() throws CoreException {
+    public void test() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType type = newPolicyCmptType(project, "Type1");
         type.setSupertype("MissingSupertype");

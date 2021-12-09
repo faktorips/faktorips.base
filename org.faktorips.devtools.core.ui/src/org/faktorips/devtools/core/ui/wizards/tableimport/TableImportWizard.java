@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -163,7 +163,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
 
-            IWorkspaceRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
+            ICoreRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
                     getNullRepresentation(),
                     ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
             IIpsModel.get().runAndQueueChangeEvents(runnable, null);
@@ -241,7 +241,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * @return The table contents to import into.
      */
-    private ITableContents getTableContents() throws CoreException {
+    private ITableContents getTableContents() throws CoreRuntimeException {
         if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (ITableContents)selectContentsPage.getTargetForImport();
         }

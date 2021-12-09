@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IpsBuilder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -71,7 +72,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         return baseImage;
     }
 
-    private int findMaxProblemSeverity(Object element) throws CoreException {
+    private int findMaxProblemSeverity(Object element) throws CoreRuntimeException {
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement instanceof IIpsProject) {
@@ -129,7 +130,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * underlying java-project are interpreted as problems of the ips project and erroneously
      * displayed by the decorator.
      */
-    private int computeAdornmentFlagsProject(IIpsProject project) throws CoreException {
+    private int computeAdornmentFlagsProject(IIpsProject project) throws CoreRuntimeException {
         if (project.getProject().isAccessible()) {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             int result = 0;

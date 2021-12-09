@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -52,13 +52,13 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     @Override
-    protected void searchDetails() throws CoreException {
+    protected void searchDetails() throws CoreRuntimeException {
         Set<IType> searchedTypes = getTypes(getMatchingSrcFiles());
 
         addMatches(searchedTypes);
     }
 
-    private void addMatches(Set<IType> searchedTypes) throws CoreException {
+    private void addMatches(Set<IType> searchedTypes) throws CoreRuntimeException {
         WildcardMatcher stringMatcher = new WildcardMatcher(getSearchModel().getSearchTerm());
         ClassMatcher classMatcher = new ClassMatcher(getSearchModel().getSearchedClazzes());
         ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher);

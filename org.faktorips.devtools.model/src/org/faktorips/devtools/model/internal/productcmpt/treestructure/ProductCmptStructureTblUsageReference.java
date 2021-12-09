@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -68,7 +68,7 @@ public class ProductCmptStructureTblUsageReference extends ProductCmptStructureR
         try {
             tableContent = tableContentUsage.findTableContents(tableContentUsage.getIpsProject());
             return tableContent;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // will be handled as validation error
             IpsLog.log(e);
         }

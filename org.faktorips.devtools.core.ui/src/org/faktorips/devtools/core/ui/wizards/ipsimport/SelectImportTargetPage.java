@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsimport;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -157,9 +157,9 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     /**
      * Returns the type into which the external data will be imported.
      * 
-     * @throws CoreException If an exception occurs while searching for the target type.
+     * @throws CoreRuntimeException If an exception occurs while searching for the target type.
      */
-    public abstract IIpsObject getTargetForImport() throws CoreException;
+    public abstract IIpsObject getTargetForImport() throws CoreRuntimeException;
 
     /**
      * Saves the dialog settings to be able to restore them on future instances of this wizard page.

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.runtime.MessageList;
@@ -82,7 +82,7 @@ public class NoVersionIdProductCmptNamingStrategy extends AbstractProductCmptNam
     }
 
     @Override
-    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreRuntimeException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;
 

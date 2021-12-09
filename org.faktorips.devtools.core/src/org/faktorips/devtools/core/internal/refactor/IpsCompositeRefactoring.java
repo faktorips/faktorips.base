@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsCompositeRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -93,7 +94,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreRuntimeException {
 
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckInitialConditions);
@@ -118,16 +119,20 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     private void checkConditions(IIpsElement element, RefactoringStatus status, int checkConditionOperation)
-            throws CoreException {
+            throws CoreRuntimeException {
         IIpsRefactoring refactoring = createRefactoring(element);
         CheckConditionsOperation checkConditionsOperation = new CheckConditionsOperation(
                 refactoring.toLtkRefactoring(), checkConditionOperation);
-        checkConditionsOperation.run(new NullProgressMonitor());
+        try {
+            checkConditionsOperation.run(new NullProgressMonitor());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         status.merge(checkConditionsOperation.getStatus());
     }
 
     @Override
-    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException {
+    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreRuntimeException {
 
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskCheckFinalConditions);
@@ -153,7 +158,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException {
+    public final Change createChange(IProgressMonitor pm) throws CoreRuntimeException {
         pm.beginTask("", getNumberOfRefactorings()); //$NON-NLS-1$
         pm.setTaskName(Messages.IpsCompositeRefactoring_taskProcessElements);
 
@@ -178,7 +183,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
         return new NullChange();
     }
 
-    private void createChange(IIpsElement element) throws CoreException {
+    private void createChange(IIpsElement element) throws CoreRuntimeException {
         IIpsRefactoring refactoring = createRefactoring(element);
         /*
          * In fact we would not need to check the final conditions again at this point but the LTK
@@ -189,7 +194,11 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
          */
         PerformRefactoringOperation performRefactoringOperation = new PerformRefactoringOperation(
                 refactoring.toLtkRefactoring(), CheckConditionsOperation.FINAL_CONDITIONS);
-        performRefactoringOperation.run(new NullProgressMonitor());
+        try {
+            performRefactoringOperation.run(new NullProgressMonitor());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
 
         for (RefactoringStatusEntry entry : performRefactoringOperation.getConditionStatus().getEntries()) {
             if (entry.getSeverity() == RefactoringStatus.OK) {

@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import java.text.MessageFormat;
 import java.util.EnumSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -164,12 +164,12 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(result, ipsProject);
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             String invalidName = (StringUtils.isNotEmpty(name)) ? " " + name : ""; //$NON-NLS-1$ //$NON-NLS-2$
-            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, NLS.bind(
+            result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, MessageFormat.format(
                     Messages.Attribute_msg_InvalidAttributeName, invalidName), Message.ERROR, this, PROPERTY_NAME)); // $NON-NLS-1$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
@@ -178,7 +178,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
             validateDefaultValue(datatypeObject, result, ipsProject);
         } else {
             if (!StringUtils.isEmpty(defaultValue)) {
-                String text = NLS.bind(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype, defaultValue);
+                String text = MessageFormat.format(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype,
+                        defaultValue);
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                         PROPERTY_DEFAULT_VALUE));
             }
@@ -188,11 +189,11 @@ public abstract class Attribute extends TypePart implements IAttribute {
         validateAbstractDatatype(result, ipsProject);
     }
 
-    private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
         if (overwrites) {
             IAttribute superAttr = findOverwrittenAttribute(ipsProject);
             if (superAttr == null) {
-                String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
+                String text = MessageFormat.format(Messages.Attribute_msgNothingToOverwrite, getName());
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
                         PROPERTY_OVERWRITES, PROPERTY_NAME));
             } else {
@@ -204,7 +205,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     private void validateAgainstOverwrittenAttribute(MessageList result, IAttribute superAttr) {
         validateOverwrittenDatatype(superAttr, result);
         if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
-            String text = NLS.bind(Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute,
+            String text = MessageFormat.format(Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute,
                     getParent().getName() + '.' + getName(),
                     superAttr.getParent().getName() + '.' + superAttr.getName());
             String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
@@ -232,7 +233,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
     protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
         if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE,
-                    NLS.bind(Messages.Attribute_msg_Overwritten_type_incompatible, getName()), Message.ERROR, this,
+                    MessageFormat.format(Messages.Attribute_msg_Overwritten_type_incompatible, getName()),
+                    Message.ERROR, this,
                     PROPERTY_DATATYPE));
         }
     }
@@ -248,7 +250,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
-    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException {
+    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
         IType supertype = ((IType)getIpsObject()).findSupertype(ipsProject);
         if (supertype == null) {
             return null;
@@ -262,14 +264,14 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         validateDefaultValue(defaultValue, valueDatatype, result, ipsProject);
     }
 
     protected void validateDefaultValue(String defaultValueToValidate,
             ValueDatatype valueDatatype,
             MessageList result,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
         if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
         } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
@@ -281,7 +283,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return valueDatatype.isParsable(defaultValueToValidate);
     }
 
-    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) throws CoreException {
+    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject)
+            throws CoreRuntimeException {
         IValueSet valueSet = getValueSet();
         return valueSet == null || defaultValueToValidate == null
                 || valueSet.containsValue(defaultValueToValidate, ipsProject);
@@ -294,13 +297,14 @@ public abstract class Attribute extends TypePart implements IAttribute {
         } else if (StringUtils.isEmpty(defaultValueToValidate)) {
             defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
         }
-        String text = NLS.bind(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
+        String text = MessageFormat.format(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());
         result.newError(MSGCODE_VALUE_NOT_PARSABLE, text, this, PROPERTY_DEFAULT_VALUE);
     }
 
     private void addMessageDefaultValueNotInValueSet(String defaultValueToValidate, MessageList result) {
         result.add(new Message(MSGCODE_DEFAULT_NOT_IN_VALUESET,
-                NLS.bind(Messages.Attribute_msg_DefaultNotInValueset, defaultValueToValidate), Message.WARNING, this,
+                MessageFormat.format(Messages.Attribute_msg_DefaultNotInValueset, defaultValueToValidate),
+                Message.WARNING, this,
                 PROPERTY_DEFAULT_VALUE));
     }
 

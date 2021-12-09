@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.WritableValue;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -749,7 +749,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
         new TreeMessageHoverService(getTreeViewer()) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element instanceof Validatable) {
                     return ((Validatable)element).validate(ipsProject);
                 } else {
@@ -938,7 +938,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addRootTestPolicyCmptObject(final TestCaseTypeAssociation associationType,
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
 
-        final IWorkspaceRunnable runnable = $ -> {
+        final ICoreRunnable runnable = $ -> {
             ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)getTestCase())
                     .addRootTestPolicyCmpt(testPolicyCmptTypeParam);
             if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
@@ -1003,7 +1003,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private ITestPolicyCmptLink addNewLink(TestCaseTypeAssociation associationType,
             String productCmptQualifiedName,
             String policyCmptTypeQualifiedName,
-            String targetName) throws CoreException {
+            String targetName) throws CoreRuntimeException {
 
         ITestPolicyCmptLink newAssociation = associationType.getParentTestPolicyCmpt().addTestPcTypeLink(
                 associationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, policyCmptTypeQualifiedName,
@@ -1015,7 +1015,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return newAssociation;
     }
 
-    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter testTypeParam;
         try {
             testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
@@ -1056,7 +1056,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return true;
     }
 
-    private void changeProductCmpt() throws CoreException {
+    private void changeProductCmpt() throws CoreRuntimeException {
         ISelection selection = getTreeViewer().getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
@@ -1227,11 +1227,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Shows the select product component dialog and returns the selected product component
      * qualified names. Returns <code>null</code> if no selection or an unsupported type was chosen.
      * 
-     * @throws CoreException If an error occurs
+     * @throws CoreRuntimeException If an error occurs
      */
     private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent,
-            boolean multiSelectiion) throws CoreException {
+            boolean multiSelectiion) throws CoreRuntimeException {
 
         return selectIpsSrcFileDialog(multiSelectiion, getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent),
                 Messages.TestCaseSection_DialogSelectProductCmpt_Title,
@@ -1283,7 +1283,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
     }
 
-    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) throws CoreException {
+    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) throws CoreRuntimeException {
 
         IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(testTypeParam.getPolicyCmptType());
         if (policyCmptType == null) {
@@ -2566,7 +2566,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * nothing.
          */
         private TestCaseTypeAssociation selectTestCaseTypeAssociationByDialog(ITestPolicyCmpt parentTestPolicyCmpt)
-                throws CoreException {
+                throws CoreRuntimeException {
 
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                     new TestCaseTypeAssociationLabelProvider());
@@ -2624,7 +2624,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * Add a new link based an the given test case type association.
          */
-        private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreException {
+        private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreRuntimeException {
             String[] selectedTargetsQualifiedNames = null;
             boolean chooseProductCmpts = false;
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
@@ -2675,7 +2675,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // reduce the processing time
             final String[] finalSelectedTargetsQualifiedNames = selectedTargetsQualifiedNames;
             final boolean finalChooseProductCmpts = chooseProductCmpts;
-            final IWorkspaceRunnable runnable = monitor -> {
+            final ICoreRunnable runnable = monitor -> {
                 // add a new child based on the selected association
 
                 if (association.isAssoziation()) {
@@ -2772,7 +2772,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public void run() {
-            IWorkspaceRunnable runnable = monitor -> {
+            ICoreRunnable runnable = monitor -> {
                 if (getSelection() instanceof IStructuredSelection) {
                     Object nextItemToSelect = null;
                     for (Iterator<?> iterator = ((IStructuredSelection)getSelection()).iterator(); iterator

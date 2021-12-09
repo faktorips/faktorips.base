@@ -18,6 +18,8 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.abstraction.Wrappers;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
@@ -164,7 +166,7 @@ public class JdtClasspathEntryCreatorTest {
 
     private void mockProject() {
         when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getProject()).thenReturn(project);
+        when(ipsProject.getProject()).thenReturn(Wrappers.wrap(project).as(AProject.class));
     }
 
 }

@@ -41,7 +41,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         if (root == null) {
             setText(""); //$NON-NLS-1$
         } else {
-            String newText = root.getCorrespondingResource().getFullPath().toString().substring(1);
+            String newText = root.getCorrespondingResource().getWorkspaceRelativePath().toString().substring(1);
             setText(newText);
         }
     }

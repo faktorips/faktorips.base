@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -54,7 +54,7 @@ public interface IIpsElement extends IAdaptable {
      * 
      * @see #getEnclosingResource()
      */
-    public IResource getCorrespondingResource();
+    public AResource getCorrespondingResource();
 
     /**
      * Returns the resource this <code>IIpsElement</code> is stored in. In contrast to
@@ -64,7 +64,7 @@ public interface IIpsElement extends IAdaptable {
      * 
      * @see #getCorrespondingResource()
      */
-    public IResource getEnclosingResource();
+    public AResource getEnclosingResource();
 
     /**
      * Returns the parent <code>IIpsElement</code> or <code>null</code> if this element has no
@@ -76,10 +76,10 @@ public interface IIpsElement extends IAdaptable {
      * Returns the element's immediate children or an empty array, if this element hasn't got any
      * children.
      */
-    public IIpsElement[] getChildren() throws CoreException;
+    public IIpsElement[] getChildren() throws CoreRuntimeException;
 
     /** Returns <code>true</code> if this element has any children, otherwise <code>false</code>. */
-    public boolean hasChildren() throws CoreException;
+    public boolean hasChildren() throws CoreRuntimeException;
 
     /**
      * Returns <code>true</code> if this element is contained in an archive, <code>false</code>
@@ -95,9 +95,9 @@ public interface IIpsElement extends IAdaptable {
      * remove the element from it's parent or to delete the enclosing resource. Implementations
      * should document these details.
      * 
-     * @throws CoreException If an error occurs during deletion
+     * @throws CoreRuntimeException If an error occurs during deletion
      * @throws UnsupportedOperationException If the element cannot be deleted
      */
-    public void delete() throws CoreException;
+    public void delete() throws CoreRuntimeException;
 
 }

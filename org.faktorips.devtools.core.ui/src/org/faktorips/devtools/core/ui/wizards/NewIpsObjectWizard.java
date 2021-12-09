@@ -14,9 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -33,6 +32,7 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -118,7 +118,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     @Override
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
-        IWorkspaceRunnable op = monitor -> {
+        ICoreRunnable op = monitor -> {
             IWizardPage[] pages = getPages();
             if (pages.length > 1) {
                 monitor.beginTask(Messages.NewIpsObjectWizard_creatingObjects, pages.length * 4);
@@ -160,7 +160,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     }
 
     private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
         IIpsSrcFile srcFile = page.createIpsSrcFile(SubMonitor.convert(monitor, 2));
         if (srcFile == null) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(

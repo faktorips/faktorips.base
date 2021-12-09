@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpttype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -135,11 +135,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @param searchSupertypeHierarchy flag indicating whether assignments made in the supertype
      *            hierarchy shall be searched as well
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws CoreRuntimeException if an error occurs during the search
      */
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns whether this {@link IProductCmptCategory} contains the indicated
@@ -157,11 +157,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @param contextType the {@link IProductCmptType} to start the search from. Properties assigned
      *            by product component types below the context type are not considered
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws CoreRuntimeException if an error occurs during the search
      */
     public boolean findIsContainingProperty(IProductCmptProperty property,
             IProductCmptType contextType,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns whether this {@link IProductCmptCategory} is the corresponding default
@@ -322,11 +322,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @throws IndexOutOfBoundsException if not all provided indexes identify properties assigned to
      *             this {@link IProductCmptCategory} by the context type
      * 
-     * @throws CoreException if an error occurs while searching the supertype hierarchy or while
+     * @throws CoreRuntimeException if an error occurs while searching the supertype hierarchy or while
      *             searching for policy component types
      */
     public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Inserts the provided {@link IProductCmptProperty} into this {@link IProductCmptCategory} just
@@ -347,12 +347,12 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @return true if the operation was successful, false if not
      * 
-     * @throws CoreException if an error occurs while searching for the indices of the currently
+     * @throws CoreRuntimeException if an error occurs while searching for the indices of the currently
      *             assigned properties or while moving properties
      */
     public boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
-            boolean above) throws CoreException;
+            boolean above) throws CoreRuntimeException;
 
     /**
      * Defines the user interface position of an {@link IProductCmptCategory}.

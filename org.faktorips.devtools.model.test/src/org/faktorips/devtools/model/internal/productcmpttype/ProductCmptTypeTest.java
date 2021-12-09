@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -42,6 +43,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -136,7 +138,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateMustHaveSupertype() throws CoreException {
+    public void testValidateMustHaveSupertype() throws CoreRuntimeException {
         productCmptType.setSupertype("");
         MessageList result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_MUST_HAVE_SUPERTYPE));
@@ -147,7 +149,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {
+    public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreRuntimeException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
 
@@ -162,7 +164,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_PolicyCmptTypeNotMarkedAsConfigurable() throws CoreException {
+    public void testValidate_PolicyCmptTypeNotMarkedAsConfigurable() throws CoreRuntimeException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
 
@@ -172,7 +174,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreException {
+    public void testValidateMustHaveSameValueForConfigurationForPolicyCmptType() throws CoreRuntimeException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         superProductCmptType.setConfigurationForPolicyCmptType(true);
         MessageList result = productCmptType.validate(ipsProject);
@@ -201,7 +203,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateTypeHierarchyMismatch() throws CoreException {
+    public void testValidateTypeHierarchyMismatch() throws CoreRuntimeException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH));
 
@@ -227,7 +229,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateLayerSupertype() throws CoreException {
+    public void testValidateLayerSupertype() throws CoreRuntimeException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE));
 
@@ -248,7 +250,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertyMap() throws CoreException {
+    public void testFindProductCmptPropertyMap() throws CoreRuntimeException {
         // attributes
         IProductCmptTypeAttribute supertypeAttr = superProductCmptType.newProductCmptTypeAttribute();
         supertypeAttr.setName("attrInSupertype");
@@ -345,7 +347,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Create types
         IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
@@ -385,7 +387,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreNotProductRelevant_MultipleHierarchyLevels()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Create types
         IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
@@ -442,7 +444,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Create types
         IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
@@ -482,7 +484,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertyMap_ConsiderOverwrittenPolicyCmptTypeAttributesThatAreProductRelevant_MultipleHierarchyLevels()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Create types
         IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
@@ -539,7 +541,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertyMap_OverwrittenAttributeToProductRelevantPlusValidationRule()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Create types
         IPolicyCmptType policyTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyTypeA", "ProductTypeA");
@@ -707,7 +709,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperty_ByReference() throws CoreException {
+    public void testFindProductCmptProperty_ByReference() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
         IValidationRule validationRule = policyCmptType.newRule();
@@ -747,7 +749,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperty_ByReferencePolicyCmptTypeNotFound() throws CoreException {
+    public void testFindProductCmptProperty_ByReferencePolicyCmptTypeNotFound() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
 
@@ -762,7 +764,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperty_ByReferenceSameIdInPolicyTypeAndProductType() throws CoreException,
+    public void testFindProductCmptProperty_ByReferenceSameIdInPolicyTypeAndProductType() throws CoreRuntimeException,
             SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
@@ -811,7 +813,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidatePolicyCmptType() throws CoreException {
+    public void testValidatePolicyCmptType() throws CoreRuntimeException {
         MessageList ml = productCmptType.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST));
 
@@ -825,7 +827,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidatePolicyCmptTypeHasErrors() throws CoreException {
+    public void testValidatePolicyCmptTypeHasErrors() throws CoreRuntimeException {
         MessageList ml = productCmptType.validate(ipsProject);
         assertThat(ml, isEmpty());
 
@@ -1006,7 +1008,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOn() throws CoreException {
+    public void testDependsOn() throws CoreRuntimeException {
         IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptType(ipsProject, "B");
 
@@ -1112,7 +1114,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOn_Tables() throws CoreException {
+    public void testDependsOn_Tables() throws CoreRuntimeException {
         ITableStructure a = newTableStructure(ipsProject, "A");
         ITableStructure b = newTableStructure(ipsProject, "B");
         ITableStructure c = newTableStructure(ipsProject, "C");
@@ -1157,7 +1159,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetPropertyReferences() throws CoreException {
+    public void testGetPropertyReferences() throws CoreRuntimeException {
         IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
         IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
 
@@ -1206,7 +1208,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() throws CoreRuntimeException {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         productCmptType.newProductCmptTypeAttribute().setName("attr");
@@ -1230,7 +1232,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testSavePropertyReferencesToXml() throws CoreException {
+    public void testSavePropertyReferencesToXml() throws CoreRuntimeException {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
@@ -1248,7 +1250,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDoNotSaveObsoletePropertyReferencesToXml() throws CoreException {
+    public void testDoNotSaveObsoletePropertyReferencesToXml() throws CoreRuntimeException {
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("p1");
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
@@ -1273,7 +1275,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreException {
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreRuntimeException {
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
         IIpsProject b = newIpsProject("bProject");
@@ -1297,7 +1299,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreException {
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath2() throws CoreRuntimeException {
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptType(a, "faktorzehn.example.APolicy");
         IProductCmptType aProductTypeProjectB = newProductCmptType(a, "faktorzehn.example.APolicy");
@@ -1332,7 +1334,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForFormulaSignatureDefinitionsExistsButThereAlsoExistsNoFormulaSignatureDefinition()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1343,7 +1345,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForFormulaSignatureDefinitionsExistsEvenThoughAFormulaSignatureDefinitionExists()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1360,7 +1362,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForPolicyCmptTypeAttributesExistsButThereAlsoExistsNoProductRelevantPolicyCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1375,7 +1377,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForPolicyCmptTypeAttributesExistsEvenThoughAProductRelevantPolicyCmptTypeAttributeExists()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1394,7 +1396,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForProductCmptTypeAttributesExistsButThereAlsoExistsNoProductCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1405,7 +1407,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForProductCmptTypeAttributesExistsEvenThoughAProductCmptTypeAttributeExists()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1422,7 +1424,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForTableStructureUsagesExistsButThereAlsoExistsNoTableStructureUsage()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1433,7 +1435,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForTableStructureUsagesExistsEvenThoughATableStructureUsageExists()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForTableStructureUsages(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1452,7 +1454,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForValidationRulesExistsButThereAlsoExistsNoValidationRule()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1466,7 +1468,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_NoDefaultCategoryForValidationRulesExistsEvenThoughAConfigurableValidationRuleExsits()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         productCmptType.findDefaultCategoryForValidationRules(ipsProject).delete();
         policyCmptType.setSupertype("");
@@ -1484,7 +1486,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_To1ProductAssociationTargetSameAsSuperTypeName() throws CoreException {
+    public void testValidate_To1ProductAssociationTargetSameAsSuperTypeName() throws CoreRuntimeException {
         superProductCmptType.setChangingOverTime(true);
         productCmptType.setChangingOverTime(true);
 
@@ -1506,7 +1508,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ToNProductAssociationTargetSameAsSuperTypeName() throws CoreException {
+    public void testValidate_ToNProductAssociationTargetSameAsSuperTypeName() throws CoreRuntimeException {
         superProductCmptType.setChangingOverTime(true);
         productCmptType.setChangingOverTime(true);
 
@@ -1523,7 +1525,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ToNProductAssociationPluralTargetNameSameAsSuperTypeName() throws CoreException {
+    public void testValidate_ToNProductAssociationPluralTargetNameSameAsSuperTypeName() throws CoreRuntimeException {
         superProductCmptType.setChangingOverTime(true);
         productCmptType.setChangingOverTime(true);
 
@@ -1547,7 +1549,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_To1ProductAssociationTargetSameAsProductCmptTypeName_NotChangingOverTime()
-            throws CoreException {
+            throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1564,7 +1566,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_To1ProductAssociationTargetSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_To1ProductAssociationTargetSameAsProductCmptTypeName() throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1586,7 +1588,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ToNProductAssociationSingularTargetSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_ToNProductAssociationSingularTargetSameAsProductCmptTypeName()
+            throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1605,7 +1608,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_ToNProductAssociationSingularAndPluralTargetSameAsProductCmptTypeName()
-            throws CoreException {
+            throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1628,7 +1631,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ToNProductAssociationPluralTargetSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_ToNProductAssociationPluralTargetSameAsProductCmptTypeName() throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1652,7 +1655,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate_ToNProductAssociationPluralTargetSameAsProductCmptTypeName_NotChangingOverTime()
-            throws CoreException {
+            throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
         IProductCmptType target = newProductCmptType(ipsProject, "Target");
@@ -1670,7 +1673,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName() throws CoreException {
+    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName() throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
 
@@ -1689,7 +1692,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName_NotChangingOverTime() throws CoreException {
+    public void testValidate_ProductAttributeNameSameAsProductCmptTypeName_NotChangingOverTime()
+            throws CoreRuntimeException {
         productCmptType = newProductCmptType(ipsProject, "ProductCmptTypeName");
         productCmptType.setChangingOverTime(true);
 
@@ -1881,7 +1885,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertiesForCategory() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory() throws CoreRuntimeException {
         ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
@@ -1905,7 +1909,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * returned list.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_NotSearchingSupertypeHierarchy() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_NotSearchingSupertypeHierarchy() throws CoreRuntimeException {
         ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty superProperty = superProductCmptType.newProductCmptTypeAttribute("superProperty");
@@ -1931,7 +1935,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * {@link IProductCmptCategory}.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_DefaultCategory() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_DefaultCategory() throws CoreRuntimeException {
         ProductCmptCategory defaultAttributeCategory = (ProductCmptCategory)productCmptType
                 .findDefaultCategoryForProductCmptTypeAttributes(ipsProject);
         IProductCmptProperty attribute = productCmptType.newProductCmptTypeAttribute("foo");
@@ -1950,7 +1954,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesForPolicyCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType,
                 "overwrittenAttribute");
         IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)createPolicyAttributeProperty(policyCmptType,
@@ -1976,7 +1980,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesForProductCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptProperty superAttribute = createProductAttributeProperty(superProductCmptType,
                 "overwrittenAttribute");
         IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)createProductAttributeProperty(productCmptType,
@@ -2006,7 +2010,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategoriesForPolicyCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptProperty superAttribute = createPolicyAttributeProperty(superPolicyCmptType,
                 "overwrittenAttribute");
@@ -2040,7 +2044,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_FilterOverwrittenAttributesAcrossDifferentCategoriesForProductCmptTypeAttribute()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptProperty superAttribute = createProductAttributeProperty(superProductCmptType,
                 "overwrittenAttribute");
@@ -2069,7 +2073,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * The original {@link IProductCmptTypeMethod} should not be returned.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_FilterOverloadedFormulas() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_FilterOverloadedFormulas() throws CoreRuntimeException {
         IProductCmptProperty superFormula = createFormulaSignatureProperty(superProductCmptType, "overloadedFormula");
         IProductCmptTypeMethod formula = (IProductCmptTypeMethod)createFormulaSignatureProperty(productCmptType,
                 "overloadedFormula");
@@ -2098,7 +2102,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_FilterOverloadedFormulasAcrossDifferentCategories()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptProperty superFormula = createFormulaSignatureProperty(superProductCmptType, "overloadedFormula");
         IProductCmptTypeMethod formula = (IProductCmptTypeMethod)createFormulaSignatureProperty(productCmptType,
@@ -2128,7 +2132,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_DoNotAssignToDefaultIfPropertyInSubtypeCategory()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         deleteAllCategories(productCmptType, superProductCmptType);
 
@@ -2155,7 +2159,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * {@link IProductCmptCategory}.
      */
     @Test
-    public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyProperties() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyProperties() throws CoreRuntimeException {
         IProductCmptCategory oldCategory = productCmptType.newCategory("oldCategory");
         IProductCmptCategory newCategory = productCmptType.newCategory("newCategory");
 
@@ -2180,7 +2184,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_ConsiderChangedPolicyPropertiesFromSupertypes()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ProductCmptCategory oldCategory = (ProductCmptCategory)superProductCmptType.newCategory("oldCategory");
         ProductCmptCategory newCategory = (ProductCmptCategory)superProductCmptType.newCategory("newCategory");
@@ -2198,7 +2202,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertiesForCategory_SortPropertiesAccordingToReferenceList() throws CoreException {
+    public void testFindProductCmptPropertiesForCategory_SortPropertiesAccordingToReferenceList()
+            throws CoreRuntimeException {
         ProductCmptCategory category = (ProductCmptCategory)superProductCmptType.newCategory("category");
 
         IProductCmptProperty s1 = createProductAttributeProperty(superProductCmptType, "s1");
@@ -2238,7 +2243,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testFindProductCmptPropertiesForCategory_SortPropertiesThatAreNotYetInReferenceListTowardsTheEnd()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ProductCmptCategory category = (ProductCmptCategory)productCmptType.newCategory("myCategory");
 
@@ -2265,7 +2270,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertiesInOrder() throws CoreException {
+    public void testFindProductCmptPropertiesInOrder() throws CoreRuntimeException {
         IProductCmptProperty a1 = productCmptType.newProductCmptTypeAttribute("a1");
         IProductCmptProperty a2 = productCmptType.newProductCmptTypeAttribute("a2");
 
@@ -2277,7 +2282,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertiesInOrder_SuperTypeNotFound() throws CoreException {
+    public void testFindProductCmptPropertiesInOrder_SuperTypeNotFound() throws CoreRuntimeException {
         superProductCmptType.newProductCmptTypeAttribute("s");
         IProductCmptProperty a = productCmptType.newProductCmptTypeAttribute("a");
 
@@ -2289,7 +2294,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptPropertiesInOrder_ProductCmptTypeNotFoundFromPolicyCmptType() throws CoreException {
+    public void testFindProductCmptPropertiesInOrder_ProductCmptTypeNotFoundFromPolicyCmptType()
+            throws CoreRuntimeException {
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute("a1");
         a1.setValueSetConfiguredByProduct(true);
         IPolicyCmptTypeAttribute a2 = policyCmptType.newPolicyCmptTypeAttribute("a2");
@@ -2304,7 +2310,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptProperties_TwoProductCmptTypesConfigureSamePolicyCmptType() throws CoreException {
+    public void testFindProductCmptProperties_TwoProductCmptTypesConfigureSamePolicyCmptType()
+            throws CoreRuntimeException {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttribute.setValueSetConfiguredByProduct(true);
 
@@ -2343,7 +2350,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAllMetaObjects() throws CoreException {
+    public void testFindAllMetaObjects() throws CoreRuntimeException {
         String productCmptTypeQName = "pack.MyProductCmptType";
         String productCmptTypeProj2QName = "otherpack.MyProductCmptTypeProj2";
         String productCmpt1QName = "pack.MyProductCmpt1";
@@ -2454,7 +2461,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindCategories() throws CoreException {
+    public void testFindCategories() throws CoreRuntimeException {
         deleteAllCategories(superSuperProductCmptType);
         deleteAllCategories(superProductCmptType);
         deleteAllCategories(productCmptType);
@@ -2478,7 +2485,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindHasCategory() throws CoreException {
+    public void testFindHasCategory() throws CoreRuntimeException {
         superProductCmptType.newCategory("foo");
         assertTrue(productCmptType.findHasCategory("foo", ipsProject));
         assertFalse(productCmptType.findHasCategory("bar", ipsProject));
@@ -2541,7 +2548,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindDefaultCategoryForFormulaSignatureDefinitions() throws CoreException {
+    public void testFindDefaultCategoryForFormulaSignatureDefinitions() throws CoreRuntimeException {
         deleteAllCategories(productCmptType);
         deleteAllCategories(superProductCmptType);
 
@@ -2550,7 +2557,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindDefaultCategoryForPolicyCmptTypeAttributes() throws CoreException {
+    public void testFindDefaultCategoryForPolicyCmptTypeAttributes() throws CoreRuntimeException {
         deleteAllCategories(productCmptType);
         deleteAllCategories(superProductCmptType);
 
@@ -2559,7 +2566,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindDefaultCategoryForProductCmptTypeAttributes() throws CoreException {
+    public void testFindDefaultCategoryForProductCmptTypeAttributes() throws CoreRuntimeException {
         deleteAllCategories(productCmptType);
         deleteAllCategories(superProductCmptType);
 
@@ -2568,7 +2575,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindDefaultCategoryForTableStructureUsages() throws CoreException {
+    public void testFindDefaultCategoryForTableStructureUsages() throws CoreRuntimeException {
         deleteAllCategories(productCmptType);
         deleteAllCategories(superProductCmptType);
 
@@ -2577,7 +2584,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindDefaultCategoryForValidationRules() throws CoreException {
+    public void testFindDefaultCategoryForValidationRules() throws CoreRuntimeException {
         deleteAllCategories(productCmptType);
         deleteAllCategories(superProductCmptType);
 
@@ -2586,7 +2593,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testMoveProductCmptPropertyReferences_MoveUp() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_MoveUp() throws CoreRuntimeException {
         IProductCmptCategory category = productCmptType.newCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
@@ -2605,7 +2612,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testMoveProductCmptPropertyReferences_MoveDown() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_MoveDown() throws CoreRuntimeException {
         IProductCmptCategory category = productCmptType.newCategory("category");
 
         IProductCmptProperty property1 = productCmptType.newProductCmptTypeAttribute("property1");
@@ -2635,7 +2642,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * return true.
      */
     @Test
-    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveUp()
+            throws CoreRuntimeException {
         IProductCmptCategory category1 = productCmptType.newCategory("category1");
         IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
@@ -2667,7 +2675,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testMoveProductCmptPropertyReferences_PropertyOfOtherCategoryInBetweenOnMoveDown()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptCategory category1 = productCmptType.newCategory("category1");
         IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
@@ -2696,7 +2704,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * should be fired.
      */
     @Test
-    public void testMoveProductCmptPropertyReferences_FireOnlySingleChangeEvent() throws CoreException {
+    public void testMoveProductCmptPropertyReferences_FireOnlySingleChangeEvent() throws CoreRuntimeException {
         IProductCmptProperty p1 = createProductAttributeProperty(productCmptType, "p1");
         IProductCmptProperty p2 = createProductAttributeProperty(productCmptType, "p2");
         IProductCmptProperty p3 = createProductAttributeProperty(productCmptType, "p3");
@@ -2711,7 +2719,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy() throws CoreException {
+    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy() throws CoreRuntimeException {
         superProductCmptType.newCategory("foo");
         assertFalse(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
 
@@ -2721,14 +2729,14 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_OnceInTypeAndOnceInSupertype()
-            throws CoreException {
+            throws CoreRuntimeException {
         superProductCmptType.newCategory("foo");
         productCmptType.newCategory("foo");
         assertTrue(productCmptType.findIsCategoryNameUsedTwiceInSupertypeHierarchy("foo", ipsProject));
     }
 
     @Test
-    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_NoSupertype() throws CoreException {
+    public void testFindIsCategoryNameUsedTwiceInSupertypeHierarchy_NoSupertype() throws CoreRuntimeException {
         productCmptType.setSupertype("");
         productCmptType.newCategory("foo");
         productCmptType.newCategory("foo");
@@ -2880,7 +2888,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testChangeCategoryAndDeferPolicyChange_OnlyChangePolicyTypeUponProductTypeSave() throws CoreException {
+    public void testChangeCategoryAndDeferPolicyChange_OnlyChangePolicyTypeUponProductTypeSave()
+            throws CoreRuntimeException {
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
         policyProperty.setCategory("beforeCategory");
 
@@ -2894,7 +2903,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testChangeCategoryAndDeferPolicyChange_DoNotChangePolicyTypeUponProductTypeSaveIfThePolicySourceFileIsImmutable()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
         policyProperty.setCategory("beforeCategory");
@@ -2957,7 +2966,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponXmlInitialization()
-            throws CoreException, ParserConfigurationException {
+            throws CoreRuntimeException, ParserConfigurationException {
 
         IProductCmptCategory initialCategory = productCmptType.newCategory("initialCategory");
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
@@ -2996,7 +3005,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponSave()
-            throws ParserConfigurationException, CoreException {
+            throws ParserConfigurationException {
 
         IProductCmptCategory initialCategory = productCmptType.newCategory("initialCategory");
         IProductCmptProperty policyProperty = createPolicyAttributeProperty(policyCmptType, "policyAttribute");
@@ -3071,7 +3080,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      */
     @Test
     public void testChangeCategoryAndDeferPolicyChange_OnlySavePolicyUponProductSaveIfPolicyIsNotDirty()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptCategory beforeCategory = productCmptType.newCategory("beforeCategory");
         IProductCmptCategory afterCategory = productCmptType.newCategory("afterCategory");
@@ -3099,7 +3108,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testOverrideAttributes() throws CoreException {
+    public void testOverrideAttributes() throws CoreRuntimeException {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("override");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
@@ -3124,7 +3133,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindOverrideAttributeCandidates() throws CoreException {
+    public void testFindOverrideAttributeCandidates() throws CoreRuntimeException {
         IProductCmptType superPcType = newProductCmptType(ipsProject, "Super");
 
         // 1. Attribute
@@ -3162,7 +3171,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnEmptyListIfChangingOverTimeSettingsAreBothTrue()
-            throws CoreException {
+            throws CoreRuntimeException {
         productCmptType.setChangingOverTime(true);
         superProductCmptType.setChangingOverTime(true);
 
@@ -3172,8 +3181,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsAreDifferent()
-            throws CoreException {
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsAreDifferent() {
         productCmptType.setChangingOverTime(true);
         superProductCmptType.setChangingOverTime(false);
 
@@ -3188,7 +3196,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     private Change performDeleteResourceChange(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {
-        IPath resourcePath = ipsSrcFile.getCorrespondingResource().getFullPath();
+        IPath resourcePath = toEclipsePath(ipsSrcFile.getCorrespondingResource().getWorkspaceRelativePath());
         DeleteResourceChange deleteResourceChange = new DeleteResourceChange(resourcePath, true);
         return deleteResourceChange.perform(pm);
     }
@@ -3215,11 +3223,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * @param searchSupertypeHierarchy flag indicating whether to include product component
      *            properties defined in the supertype hierarchy
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws CoreRuntimeException if an error occurs during the search
      */
     private List<IProductCmptProperty> findProductCmptPropertiesInOrder(final ProductCmptType contextType,
             boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
 
         List<IProductCmptProperty> properties = contextType.findProductCmptProperties(searchSupertypeHierarchy,
                 ipsProject);

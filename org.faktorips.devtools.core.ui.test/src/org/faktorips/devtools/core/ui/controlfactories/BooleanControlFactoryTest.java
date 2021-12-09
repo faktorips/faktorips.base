@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -27,6 +26,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -86,7 +86,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDefaultValueButtonEnablement_TrueFalseNull() throws CoreException {
+    public void testDefaultValueButtonEnablement_TrueFalseNull() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         EnumValueSet valueSet = createBooleanAttribute(ipsProject, Boolean.TRUE, Boolean.FALSE, null);
 
@@ -101,7 +101,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDefaultValueButtonEnablement_TrueFalse() throws CoreException {
+    public void testDefaultValueButtonEnablement_TrueFalse() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         EnumValueSet valueSet = createBooleanAttribute(ipsProject, Boolean.TRUE, Boolean.FALSE);
 
@@ -116,7 +116,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDefaultValueButtonEnablement_TrueNull() throws CoreException {
+    public void testDefaultValueButtonEnablement_TrueNull() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         EnumValueSet valueSet = createBooleanAttribute(ipsProject, Boolean.TRUE, null);
 
@@ -131,7 +131,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDefaultValueButtonEnablement_False() throws CoreException {
+    public void testDefaultValueButtonEnablement_False() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         EnumValueSet valueSet = createBooleanAttribute(ipsProject, Boolean.FALSE, null);
 
@@ -160,7 +160,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
         };
     }
 
-    public EnumValueSet createBooleanAttribute(IIpsProject ipsProject, Boolean... allowedValues) throws CoreException {
+    public EnumValueSet createBooleanAttribute(IIpsProject ipsProject, Boolean... allowedValues) throws CoreRuntimeException {
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "V");
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setDatatype(Datatype.BOOLEAN.getQualifiedName());

@@ -22,8 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IExpression;
@@ -150,7 +150,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_InheritedValue() throws CoreException {
+    public void testToXml_InheritedValue() throws CoreRuntimeException {
         IFormula templateFormula = createTemplateFormula();
         IFormula formula = generation.newFormula(signature);
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
@@ -176,7 +176,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EmptyExpressionShouldBeAllowedForAnUndefinedValue() throws CoreException {
+    public void testValidate_EmptyExpressionShouldBeAllowedForAnUndefinedValue() throws CoreRuntimeException {
         IFormula templateFormula = createTemplateFormula();
         templateFormula.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         templateFormula.setExpression("");
@@ -186,7 +186,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EmptyExpressionShouldNotBeAllowedForAnInheritedValue() throws CoreException {
+    public void testValidate_EmptyExpressionShouldNotBeAllowedForAnInheritedValue() throws CoreRuntimeException {
         IFormula formula = generation.newFormula(signature);
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         formula.setExpression("");
@@ -201,7 +201,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetExpression_InheritedValue() throws CoreException {
+    public void testGetExpression_InheritedValue() throws CoreRuntimeException {
         IFormula templateFormula = createTemplateFormula();
         IFormula formula = generation.newFormula(signature);
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
@@ -223,7 +223,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertThat(formula.getExpression(), is("expression"));
     }
 
-    private IFormula createTemplateFormula() throws CoreException {
+    private IFormula createTemplateFormula() throws CoreRuntimeException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IFormula templateFormula = templateGen.newFormula(signature);

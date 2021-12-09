@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -47,7 +47,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testValidator_Generate_WithInterface() throws CoreException {
+    public void testValidator_Generate_WithInterface() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
         sourceType.setGenerateValidatorClass(true);
@@ -58,7 +58,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testValidator_Generate_WithoutInterface() throws CoreException {
+    public void testValidator_Generate_WithoutInterface() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IIpsProjectProperties properties = project.getProperties();
         properties.getBuilderSetConfig()
@@ -74,7 +74,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testValidator_Generate_false() throws CoreException {
+    public void testValidator_Generate_false() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
         sourceType.setGenerateValidatorClass(false);
@@ -86,7 +86,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testValidator_Delete() throws CoreException {
+    public void testValidator_Delete() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
         sourceType.setGenerateValidatorClass(true);
@@ -94,7 +94,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
         assertTrue(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
                 .exists());
 
-        sourceType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        sourceType.getIpsSrcFile().getCorrespondingFile().delete(null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
 
         assertFalse(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
@@ -102,7 +102,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testValidator_ExistingValidatorClassNotDeleted() throws CoreException {
+    public void testValidator_ExistingValidatorClassNotDeleted() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Cmpt");
         sourceType.setGenerateValidatorClass(true);

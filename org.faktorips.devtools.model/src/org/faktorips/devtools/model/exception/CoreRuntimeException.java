@@ -37,7 +37,7 @@ public class CoreRuntimeException extends RuntimeException {
      * unchecked exception.
      */
     public CoreRuntimeException(CoreException cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     /**
@@ -63,5 +63,9 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(String message) {
         super(message);
+    }
+
+    public CoreRuntimeException(String message, CoreRuntimeException cause) {
+        super(message, cause);
     }
 }

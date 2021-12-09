@@ -20,8 +20,8 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -174,7 +174,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_InheritedValue() throws CoreException {
+    public void testToXml_InheritedValue() throws CoreRuntimeException {
         ITableContentUsage templateContentUsage = addTemplateContentUsage();
         assertThat(contentUsage.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
@@ -193,7 +193,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreException {
+    public void testGetCaption() throws CoreRuntimeException {
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         structUsage.getLabel(Locale.GERMAN).setValue("foo");
 
@@ -201,13 +201,13 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaptionNotExistent() throws CoreException {
+    public void testGetCaptionNotExistent() throws CoreRuntimeException {
         contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         assertNull(contentUsage.getCaption(Locale.TAIWAN));
     }
 
     @Test
-    public void testGetCaptionNullPointer() throws CoreException {
+    public void testGetCaptionNullPointer() throws CoreRuntimeException {
         try {
             structUsage.getCaption(null);
             fail();
@@ -239,7 +239,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTableContentName_InheritedValue() throws CoreException {
+    public void testGetTableContentName_InheritedValue() throws CoreRuntimeException {
         ITableContentUsage templateContentUsage = addTemplateContentUsage();
         assertThat(contentUsage.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
@@ -249,7 +249,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertThat(contentUsage.getTableContentName(), is(content.getQualifiedName()));
     }
 
-    private ITableContentUsage addTemplateContentUsage() throws CoreException {
+    private ITableContentUsage addTemplateContentUsage() throws CoreRuntimeException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         ITableContentUsage templateContentUsage = templateGen.newTableContentUsage(structUsage);

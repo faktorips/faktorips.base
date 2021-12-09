@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.RemoveTemplateOperation.RemoveTemplateModification;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -99,7 +99,7 @@ public class RemoveTemplateOperationTest {
     }
 
     @Test
-    public void testOperation() throws CoreException {
+    public void testOperation() throws CoreRuntimeException {
         RemoveTemplateModification singleEventModificationExtension = new RemoveTemplateModification(prodCmpt);
         singleEventModificationExtension.execute();
 

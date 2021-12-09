@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
@@ -56,7 +57,7 @@ public abstract class MessageHoverService {
     /**
      * Returns the messages that for the given element.
      */
-    protected abstract MessageList getMessagesFor(Object element) throws CoreException;
+    protected abstract MessageList getMessagesFor(Object element) throws CoreRuntimeException;
 
     /**
      * Returns the Element of user-data represented by the control at the given position

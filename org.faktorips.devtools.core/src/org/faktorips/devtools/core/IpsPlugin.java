@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.bf.BFElementType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -119,9 +119,6 @@ public class IpsPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         preferences = new IpsPreferences(getPreferenceStore());
-
-        // ensure that this class is loaded in time
-        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getClass();
     }
 
     /**
@@ -252,7 +249,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * @param projectToMigrate The project the migration operation should be returned for.
      */
     public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
-            throws CoreException {
+            throws CoreRuntimeException {
         IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
 
         /*

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.bf;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
@@ -20,6 +19,7 @@ import org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType;
 import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IControlFlow;
 import org.faktorips.devtools.model.bf.Location;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 
 /**
@@ -39,7 +39,7 @@ public class BFPage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IBusinessFunction bf = (IBusinessFunction)newIpsObject;
         bf.newStart(new Location(200, 20));

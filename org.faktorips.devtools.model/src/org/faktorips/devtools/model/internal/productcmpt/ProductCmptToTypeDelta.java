@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InvalidGenerationsDeltaEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueWithoutPropertyEntry;
@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDel
 
 public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
 
-    public ProductCmptToTypeDelta(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreException {
+    public ProductCmptToTypeDelta(IProductCmpt productCmpt, IIpsProject ipsProject) throws CoreRuntimeException {
         super(productCmpt, productCmpt, ipsProject);
     }
 
@@ -36,7 +36,7 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
     }
 
     @Override
-    protected void createAdditionalEntriesAndChildren() throws CoreException {
+    protected void createAdditionalEntriesAndChildren() throws CoreRuntimeException {
         checkInvalidGenerations();
         for (IIpsObjectGeneration generation : getPropertyValueContainer().getGenerationsOrderedByValidDate()) {
             ProductCmptGeneration productCmptGen = (ProductCmptGeneration)generation;

@@ -17,9 +17,9 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
@@ -56,7 +56,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMovePolicyCmptType() throws CoreException {
+    public void testMovePolicyCmptType() throws CoreRuntimeException {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 ORIGINAL_PACKAGE_NAME + '.' + "Policy");
 
@@ -69,7 +69,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmptType() throws CoreException {
+    public void testMoveProductCmptType() throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         productCmptType.setConfigurationForPolicyCmptType(false);
 
@@ -82,7 +82,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmpt() throws CoreException {
+    public void testMoveProductCmpt() throws CoreRuntimeException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         saveIpsSrcFile(productCmptType);
         productCmptType.setConfigurationForPolicyCmptType(false);
@@ -106,7 +106,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveEnumType() throws CoreException {
+    public void testMoveEnumType() throws CoreRuntimeException {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
         enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
@@ -121,7 +121,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTableStructure() throws CoreException {
+    public void testMoveTableStructure() throws CoreRuntimeException {
         ITableStructure tableStructure = createTableStructure(ORIGINAL_PACKAGE_NAME + '.' + "TableStructure");
 
         saveIpsSrcFile(tableStructure);
@@ -134,7 +134,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTestCaseType() throws CoreException {
+    public void testMoveTestCaseType() throws CoreRuntimeException {
         ITestCaseType testCaseType = createTestCaseType(ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
 
         saveIpsSrcFile(testCaseType);
@@ -143,21 +143,6 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         performMoveRefactoring(testCaseType, targetIpsPackageFragment);
 
         checkJavaSourceFilesTestCaseType(ORIGINAL_PACKAGE_NAME, "TestCaseType", TARGET_PACKAGE_NAME, "TestCaseType");
-    }
-
-    @Test
-    public void testMoveBusinessFunction() throws CoreException {
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction(
-                ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performFullBuild(ipsProject);
-
-        performMoveRefactoring(businessFunction, targetIpsPackageFragment);
-
-        checkJavaSourceFilesBusinessFunction(ORIGINAL_PACKAGE_NAME, "BusinessFunction", TARGET_PACKAGE_NAME,
-                "BusinessFunction");
     }
 
 }

@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -22,6 +21,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.runtime.MessageList;
@@ -51,7 +51,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         renameMoveHelper.validateIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(),
                 validationMessageList);
     }
@@ -59,13 +59,13 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
     @Override
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
+            CheckConditionsContext context) throws CoreRuntimeException {
         MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(this, status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
         return renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), false, pm);
     }
 

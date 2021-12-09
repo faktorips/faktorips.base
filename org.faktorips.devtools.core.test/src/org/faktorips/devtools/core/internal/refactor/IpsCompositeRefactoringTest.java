@@ -33,6 +33,7 @@ import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -246,7 +247,7 @@ public class IpsCompositeRefactoringTest {
         }
 
         @Override
-        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException {
             return null;
         }
 

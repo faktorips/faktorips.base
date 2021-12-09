@@ -15,12 +15,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -103,7 +103,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisTargetEnumTypeNotASupertypeOfOriginalEnumType() throws CoreException {
+    public void testValidateUserInputThisTargetEnumTypeNotASupertypeOfOriginalEnumType() throws CoreRuntimeException {
         pullUpEnumAttributeProcessor.setTarget(enumType);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -113,7 +113,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisEnumAttributeAlreadyExistingInTargetEnumType() throws CoreException {
+    public void testValidateUserInputThisEnumAttributeAlreadyExistingInTargetEnumType() throws CoreRuntimeException {
         when(superEnumType.containsEnumAttributeIncludeSupertypeCopies(ENUM_ATTRIBUTE_NAME)).thenReturn(true);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -124,7 +124,7 @@ public class PullUpEnumAttributeProcessorTest {
 
     @Test
     public void testValidateUserInputThisEnumAttributeInheritedButBaseAttributeNotFoundInTargetSupertypeHierarchy()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         when(enumAttribute.isInherited()).thenReturn(true);
 
@@ -141,7 +141,7 @@ public class PullUpEnumAttributeProcessorTest {
 
     @Test
     public void testValidateUserInputThisEnumAttributeInheritedBaseAttributeFoundInTargetSupertypeHierarchy()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         when(enumAttribute.isInherited()).thenReturn(true);
 
@@ -160,7 +160,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisValid() throws CoreException {
+    public void testValidateUserInputThisValid() throws CoreRuntimeException {
         RefactoringStatus status = new RefactoringStatus();
         pullUpEnumAttributeProcessor.validateUserInputThis(status, progressMonitor);
 

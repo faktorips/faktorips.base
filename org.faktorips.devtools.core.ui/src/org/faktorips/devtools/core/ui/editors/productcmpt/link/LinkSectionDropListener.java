@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -160,7 +161,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
     }
 
-    private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
+    private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreRuntimeException {
         // should only return true if all dragged cmpts are valid
         IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
@@ -263,7 +264,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
 
         @Override
-        protected boolean execute() throws CoreException {
+        protected boolean execute() throws CoreRuntimeException {
             if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
                 return moveLinks();
             } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
@@ -341,7 +342,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             }
         }
 
-        private boolean createLinks() throws CoreException {
+        private boolean createLinks() throws CoreRuntimeException {
             List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
             /*
              * If you drop a set of components you expect them in the same order as they were
@@ -357,7 +358,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
 
         private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target)
-                throws CoreException {
+                throws CoreRuntimeException {
             if (!canCreateLinks(draggedCmpts, target)) {
                 return Collections.emptyList();
             }

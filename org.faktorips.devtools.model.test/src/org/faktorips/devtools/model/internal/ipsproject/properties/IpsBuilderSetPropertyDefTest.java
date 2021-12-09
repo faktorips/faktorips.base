@@ -34,6 +34,8 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.model.abstraction.Wrappers;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -307,6 +309,9 @@ public class IpsBuilderSetPropertyDefTest {
                     && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
                 return complianceLevel;
             }
+            if (method.getName().equals("hashCode")) {
+                return complianceLevel.hashCode();
+            }
             return null;
         };
         final IJavaProject javaProject = (IJavaProject)Proxy.newProxyInstance(IJavaProject.class.getClassLoader(),
@@ -314,7 +319,7 @@ public class IpsBuilderSetPropertyDefTest {
 
         InvocationHandler ipsProjectHandler = ($, method, $1) -> {
             if (method.getName().equals("getJavaProject")) {
-                return javaProject;
+                return Wrappers.wrap(javaProject).as(AJavaProject.class);
             }
             return null;
         };

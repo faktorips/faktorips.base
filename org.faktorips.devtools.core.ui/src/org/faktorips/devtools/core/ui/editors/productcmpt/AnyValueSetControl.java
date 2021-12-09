@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -122,7 +123,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         return configValueSet.getIpsProject();
     }
 
-    private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() throws CoreException {
+    private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = configValueSet.findPcTypeAttribute(getIpsProject());
         ValueDatatype datatype = getValueDatatype(attribute);
 

@@ -26,13 +26,13 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -79,8 +79,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         System.setErr(new PrintStream(new ByteArrayOutputStream()));
         unparsableFile = ipsFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE.getFileName("UnparsableFile"),
                 "blabla", true, null);
-        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, false,
-                null);
+        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), false, null);
 
         parsableFile.getIpsModel().addModifcationStatusChangeListener(this);
     }
@@ -99,7 +98,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSave() throws CoreException {
+    public void testSave() throws CoreRuntimeException {
         policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());
 
@@ -112,7 +111,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSaveWithPreProcessor() throws CoreException {
+    public void testSaveWithPreProcessor() throws CoreRuntimeException {
         try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, (ipsObject) -> {
@@ -129,7 +128,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSaveWithPreProcessorForDifferentIpsObjectType() throws CoreException {
+    public void testSaveWithPreProcessorForDifferentIpsObjectType() throws CoreRuntimeException {
         try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, (ipsObject) -> {
@@ -145,7 +144,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testIsContentParsable() throws CoreException {
+    public void testIsContentParsable() throws CoreRuntimeException {
         assertFalse(unparsableFile.isContentParsable());
         assertTrue(parsableFile.isContentParsable());
     }
@@ -172,20 +171,20 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
     @Test
     public void testGetCorrespondingResource() {
-        IResource resource = parsableFile.getCorrespondingResource();
+        AResource resource = parsableFile.getCorrespondingResource();
         assertTrue(resource.exists());
         assertEquals(parsableFile.getName(), resource.getName());
     }
 
     @Test
     public void testGetCorrespondingFile() {
-        IFile file = parsableFile.getCorrespondingFile();
+        AFile file = parsableFile.getCorrespondingFile();
         assertTrue(file.exists());
         assertEquals(parsableFile.getName(), file.getName());
     }
 
     @Test
-    public void testGetIpsObject() throws CoreException {
+    public void testGetIpsObject() throws CoreRuntimeException {
         IIpsObject ipsObject = parsableFile.getIpsObject();
         assertNotNull(ipsObject);
         assertTrue(ipsObject.isFromParsableFile());
@@ -198,13 +197,12 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
         // change from unparsable to parsable
         InputStream is = parsableFile.getCorrespondingFile().getContents();
-        unparsableFile.getCorrespondingFile().setContents(is, true, true, null);
+        unparsableFile.getCorrespondingFile().setContents(is, true, null);
         assertSame(ipsObject, unparsableFile.getIpsObject());
         assertTrue(ipsObject.isFromParsableFile());
 
         // otherway round
-        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, true,
-                null);
+        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, null);
         assertSame(ipsObject, unparsableFile.getIpsObject());
         assertFalse(ipsObject.isFromParsableFile());
     }
@@ -220,14 +218,14 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testGetChildren() throws CoreException {
+    public void testGetChildren() throws CoreRuntimeException {
         assertEquals(0, unparsableFile.getChildren().length);
         assertEquals(1, parsableFile.getChildren().length);
         assertEquals(parsableFile.getIpsObject(), parsableFile.getChildren()[0]);
     }
 
     @Test
-    public void testHasChildren() throws CoreException {
+    public void testHasChildren() throws CoreRuntimeException {
         assertFalse(unparsableFile.hasChildren());
         assertTrue(parsableFile.hasChildren());
     }
@@ -238,7 +236,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testNewMemento() throws CoreException {
+    public void testNewMemento() throws CoreRuntimeException {
         policyCmptType.newPolicyCmptTypeAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         assertEquals(true, memento.isDirty());
@@ -246,7 +244,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSetMemento() throws CoreException {
+    public void testSetMemento() throws CoreRuntimeException {
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         policyCmptType.newPolicyCmptTypeAttribute();
         parsableFile.setMemento(memento);
@@ -255,14 +253,14 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testDelete() throws CoreException {
+    public void testDelete() throws CoreRuntimeException {
         parsableFile.delete();
         assertFalse(parsableFile.exists());
         assertFalse(((IpsModel)parsableFile.getIpsModel()).isCached(parsableFile));
     }
 
     @Test
-    public void testDeleteSrcFileNotExisting() throws CoreException {
+    public void testDeleteSrcFileNotExisting() throws CoreRuntimeException {
         parsableFile.delete();
         parsableFile.delete();
         // Test successful if no exception occurs

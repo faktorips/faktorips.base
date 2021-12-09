@@ -23,10 +23,10 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -124,7 +124,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreException {
+    public void testIsPropertyFor() throws CoreRuntimeException {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newAttributeValue(productAttribute);
@@ -133,7 +133,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverwrittenAttribute() throws CoreException {
+    public void testFindOverwrittenAttribute() throws CoreRuntimeException {
         productAttribute.setName("a");
         IProductCmptType supertype = newProductCmptType(productCmptType, "Supertype");
         IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSupertype");
@@ -203,7 +203,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -217,7 +217,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -231,7 +231,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -245,7 +245,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNullContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -259,7 +259,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -273,7 +273,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -287,7 +287,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -301,7 +301,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -315,7 +315,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -331,7 +331,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -347,7 +347,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -363,7 +363,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(true);
@@ -379,7 +379,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -396,7 +396,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -413,7 +413,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullNotContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -430,7 +430,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNullContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullContained() throws CoreRuntimeException {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -480,7 +480,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMultiDefaultValue() throws CoreException {
+    public void testValidateMultiDefaultValue() throws CoreRuntimeException {
         MessageList list = new MessageList();
         StringDatatype data = new StringDatatype();
         productAttribute.setVisible(false);
@@ -492,7 +492,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreRuntimeException {
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(false);
 

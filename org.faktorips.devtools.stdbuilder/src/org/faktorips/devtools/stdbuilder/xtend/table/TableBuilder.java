@@ -34,7 +34,7 @@ public class TableBuilder extends XtendBuilder<XTable> {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType());
     }
 

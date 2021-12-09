@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -173,7 +173,8 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         if (separator.length() > 0) {
             int separatorCount = StringUtils.countMatches(name, separator);
             if (separatorCount == 0) {
-                String text = NLS.bind(Messages.AbstractProductCmptNamingStrategy_msgNoVersionSeparator, name);
+                String text = MessageFormat.format(Messages.AbstractProductCmptNamingStrategy_msgNoVersionSeparator,
+                        name);
                 Message msg = Message.newError(MSGCODE_MISSING_VERSION_SEPARATOR, text);
                 list.add(msg);
                 return list;
@@ -343,7 +344,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     public MessageList validateRuntimeId(String runtimeId) {
         MessageList result = new MessageList();
         if (StringUtils.isEmpty(runtimeId)) {
-            String text = NLS.bind(Messages.DefaultRuntimeIdStrategy_msgRuntimeIdNotValid, runtimeId);
+            String text = MessageFormat.format(Messages.DefaultRuntimeIdStrategy_msgRuntimeIdNotValid, runtimeId);
             result.add(new Message(MSGCODE_INVALID_RUNTIME_ID_FORMAT, text, Message.ERROR, this));
         }
         return result;

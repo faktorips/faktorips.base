@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -56,32 +56,32 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreRuntimeException {
         super.beforeBuildProcess(project, buildKind);
         productCmptCuBuilder.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreRuntimeException {
         super.afterBuildProcess(project, buildKind);
         productCmptCuBuilder.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException {
         super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (productCmpt.isValid(getIpsProject())) {
             if (requiresJavaCompilationUnit(productCmpt)) {
@@ -96,11 +96,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private void build(IProductCmpt productCmpt) throws CoreException {
+    private void build(IProductCmpt productCmpt) throws CoreRuntimeException {
         productCmptCuBuilder.callBuildProcess(productCmpt, buildStatus);
     }
 
-    private void build(IProductCmptGeneration generation) throws CoreException {
+    private void build(IProductCmptGeneration generation) throws CoreRuntimeException {
         generationBuilder.callBuildProcess(generation, buildStatus);
     }
 
@@ -127,7 +127,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile deletedFile) throws CoreException {
+    public void delete(IIpsSrcFile deletedFile) throws CoreRuntimeException {
         // the problem here, is that the file is deleted and so we can't access the generations.
         // so we can get the exact file names, as the generation's valid from is part of the file
         // name

@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.ipsobject;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
 public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
@@ -107,13 +107,13 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * 
      * @throws NullPointerException If the given dependency is <code>null</code>.
      */
-    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException;
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreRuntimeException;
 
     /**
      * Deletes the {@link IIpsSrcFile} this object is stored in.
      */
     @Override
-    public void delete() throws CoreException;
+    public void delete() throws CoreRuntimeException;
 
     /**
      * Creates a new IpsSrcFile based on a this IIpsObject. The filename is constructed by appending

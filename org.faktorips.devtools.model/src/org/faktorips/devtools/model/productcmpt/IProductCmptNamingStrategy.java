@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
@@ -207,11 +207,11 @@ public interface IProductCmptNamingStrategy {
      * @param project The project which will be used to evaluate the runtime id.
      * @param productCmptName The name of the new product component for which the runtime id will be
      *            returned.
-     * @throws CoreException if an error occurs during evaluation.
+     * @throws CoreRuntimeException if an error occurs during evaluation.
      * @throws IllegalArgumentException may throw an illegal argument exception if the name could
      *             not be divided in kind id and version id
      */
-    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException;
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreRuntimeException;
 
     /**
      * Compares the given runtime IDs. This method was introduced because a simple call to

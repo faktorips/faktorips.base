@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -109,7 +110,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
      * Creates a List of DescriptionItems
      * 
      */
-    protected abstract List<DescriptionItem> createDescriptions() throws CoreException;
+    protected abstract List<DescriptionItem> createDescriptions() throws CoreRuntimeException;
 
     /**
      * Creates DescriptionItems

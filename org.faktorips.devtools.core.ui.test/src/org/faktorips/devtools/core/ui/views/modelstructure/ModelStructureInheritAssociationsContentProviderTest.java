@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -34,7 +34,7 @@ import org.junit.Test;
 public class ModelStructureInheritAssociationsContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testCollectElements_FindCorrectRootElementInASingleProject() throws CoreException {
+    public void testCollectElements_FindCorrectRootElementInASingleProject() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(project, "Supertype");
@@ -61,7 +61,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      * TODO noschinski2 12.09.2012: Explain expected test outcome
      */
     @Test
-    public void testCollectElements_FindCorrectRootElementFromTwoProjects() throws CoreException {
+    public void testCollectElements_FindCorrectRootElementFromTwoProjects() throws CoreRuntimeException {
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Supertype");
@@ -100,7 +100,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      * TODO noschinski2 13.09.2012: Explain expected test outcome
      */
     @Test
-    public void testCollectElements_FindMultipleRootElementFromTwoProjectsOnSameSupertype() throws CoreException {
+    public void testCollectElements_FindMultipleRootElementFromTwoProjectsOnSameSupertype() throws CoreRuntimeException {
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Supertype");
@@ -143,7 +143,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      */
     @Test
     public void testCollectElements_FindMultipleRootElementFromTwoProjectsOnSameLevelButFromDifferentSupertypes()
-            throws CoreException {
+            throws CoreRuntimeException {
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Supertype");
@@ -187,7 +187,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testCollectElements_DoNotIncludeAssociatedElements() throws CoreException {
+    public void testCollectElements_DoNotIncludeAssociatedElements() throws CoreRuntimeException {
         // setup
         IIpsProject project1 = newIpsProject();
         IType externalElement = newPolicyCmptTypeWithoutProductCmptType(project1, "ExternalElement");
@@ -215,7 +215,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testCollectElements_RemoveRootNodesWhichAreAlreadyContainedInOtherBranches() throws CoreException {
+    public void testCollectElements_RemoveRootNodesWhichAreAlreadyContainedInOtherBranches() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType generalRootA = newPolicyCmptTypeWithoutProductCmptType(projectA, "GeneralRootA");
@@ -254,7 +254,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testCollectElements_findSingleRootElementAfterAssociations() throws CoreException {
+    public void testCollectElements_findSingleRootElementAfterAssociations() throws CoreRuntimeException {
         IIpsProject projectA = newIpsProject();
         IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
         IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.B");
@@ -282,7 +282,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testCollectElements_findRootElementsAfterAssociations() throws CoreException {
+    public void testCollectElements_findRootElementsAfterAssociations() throws CoreRuntimeException {
         IIpsProject projectA = newIpsProject();
         IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
         IType aB = newPolicyCmptTypeWithoutProductCmptType(projectA, "aB");
@@ -323,7 +323,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testGetChildren_AssociationChildrenHaveParent() throws CoreException {
+    public void testGetChildren_AssociationChildrenHaveParent() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
@@ -345,7 +345,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreException {
+    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
@@ -365,7 +365,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testGetChildren_InheritedAssociationChildrenHaveParent() throws CoreException {
+    public void testGetChildren_InheritedAssociationChildrenHaveParent() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "typeAA");
@@ -400,7 +400,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testGetChildren_FindsDerivedAssociations() throws CoreException {
+    public void testGetChildren_FindsDerivedAssociations() throws CoreRuntimeException {
 
         // setup
         IIpsProject baseProject = newIpsProject();
@@ -456,7 +456,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
     }
 
     @Test
-    public void testGetChildren_DoNoInheritDerivedUnionAssociations() throws CoreException {
+    public void testGetChildren_DoNoInheritDerivedUnionAssociations() throws CoreRuntimeException {
         // setup
         IIpsProject baseProject = newIpsProject();
         IType vertrag = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Vertrag");

@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.abstraction.Abstractions;
 
 public class IpsLog {
 
@@ -24,7 +25,7 @@ public class IpsLog {
     }
 
     public static ILog get() {
-        return IpsModelActivator.getLog();
+        return Abstractions.getLog();
     }
 
     /**

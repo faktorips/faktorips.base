@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -29,7 +29,7 @@ public class AssociationTargetDoesNotExistTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void test() throws CoreException {
+    public void test() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType sourceType = newPolicyCmptTypeWithoutProductCmptType(project, "Source");
         IPolicyCmptType targetType = newPolicyCmptTypeWithoutProductCmptType(project, "target");
@@ -46,7 +46,7 @@ public class AssociationTargetDoesNotExistTest extends AbstractStdBuilderTest {
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        targetType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        targetType.getIpsSrcFile().getCorrespondingFile().delete(null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
     }
 

@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumn;
@@ -73,7 +73,7 @@ public class Index extends Key implements IIndex {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         if (getNumOfKeyItems() == 0) {
             String text = Messages.Index_msgTooLessItems;
@@ -95,7 +95,7 @@ public class Index extends Key implements IIndex {
         if (range != null) {
             return;
         }
-        String text = NLS.bind(Messages.Index_msgKeyItemMismatch, item);
+        String text = MessageFormat.format(Messages.Index_msgKeyItemMismatch, item);
         list.add(new Message(IIndex.MSGCODE_KEY_ITEM_MISMATCH, text, Message.ERROR, new ObjectProperty(this,
                 IKey.PROPERTY_KEY_ITEMS, itemmIndex)));
     }

@@ -68,14 +68,14 @@ public class XPolicyBuilderAssociation extends XPolicyAssociation {
 
     // //For creatDefault
     //
-    // public boolean isTargetProductChangingOverTime() throws CoreException {
+    // public boolean isTargetProductChangingOverTime() throws CoreRuntimeException {
     // IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation = getAssociation()
     // .findMatchingProductCmptTypeAssociation(getIpsProject());
     // return (findMatchingProductCmptTypeAssociation != null)
     // && findMatchingProductCmptTypeAssociation.isChangingOverTime();
     // }
 
-    // public ProductCmptTypeAssociation getMatchingAssociation() throws CoreException {
+    // public ProductCmptTypeAssociation getMatchingAssociation() throws CoreRuntimeException {
     // return
     // (ProductCmptTypeAssociation)getAssociation().findMatchingProductCmptTypeAssociation(getIpsProject());
     // }

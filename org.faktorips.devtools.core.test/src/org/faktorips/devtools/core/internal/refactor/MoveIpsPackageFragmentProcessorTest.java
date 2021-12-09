@@ -19,11 +19,11 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -168,14 +168,14 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreException {
+    public void testValidateUserInputThis() throws CoreRuntimeException {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameFolder() throws CoreRuntimeException {
         processor.setTargetIpsPackageFragment(source);
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -184,7 +184,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameParentFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameParentFolder() throws CoreRuntimeException {
         processor.setTargetIpsPackageFragment(ipsRoot.getIpsPackageFragment("data"));
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -193,7 +193,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() throws CoreException {
+    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() throws CoreRuntimeException {
         processor = new MoveIpsPackageFragmentProcessor(ipsRoot.getIpsPackageFragment(""));
         processor.setTargetIpsPackageFragment(target);
         RefactoringStatus status = new RefactoringStatus();

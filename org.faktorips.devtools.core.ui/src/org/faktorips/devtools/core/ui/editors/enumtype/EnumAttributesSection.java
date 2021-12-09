@@ -279,7 +279,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * Opens a dialog enabling the user to inherit {@link IEnumAttribute}s from the super type
          * hierarchy in a comfortable way.
          */
-        private void inheritClicked() throws CoreException {
+        private void inheritClicked() throws CoreRuntimeException {
             InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(enumType, getShell());
             if (dialog.open() == Window.OK) {
                 enumType.inheritEnumAttributes(dialog.getSelectedParts());

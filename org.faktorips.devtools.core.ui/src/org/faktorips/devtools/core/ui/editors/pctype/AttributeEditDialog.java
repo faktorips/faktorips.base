@@ -585,7 +585,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         return productCmptType;
     }
 
-    private Control createValueSetPage(TabFolder folder) throws CoreException {
+    private Control createValueSetPage(TabFolder folder) throws CoreRuntimeException {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
         Composite valueSetWorkArea = getToolkit().createLabelEditColumnComposite(pageControl);
@@ -665,7 +665,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                             new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
                                 @Override
-                                protected boolean execute() throws CoreException {
+                                protected boolean execute() throws CoreRuntimeException {
                                     attribute.setDatatype(overwrittenAttribute.getDatatype());
                                     attribute.setModifier(overwrittenAttribute.getModifier());
                                     attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());

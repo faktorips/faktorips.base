@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -316,9 +317,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * 
      * @param e the event containing the changed field
      * 
-     * @throws CoreException in case of exception
+     * @throws CoreRuntimeException in case of exception
      */
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreRuntimeException {
         // may be override by subclasses
     }
 
@@ -329,7 +330,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * before the page get updated. This method is protected because subclasses might need to call
      * it within event scenarios implemented within the subclass.
      */
-    public final void validatePage() throws CoreException {
+    public final void validatePage() throws CoreRuntimeException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage((String)null);
         validateSourceRoot();
@@ -354,10 +355,10 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * This method is empty by default. Subclasses might override it to add specific validations.
      * This method is called by the validatePage() method before the page will be updated.
      * 
-     * @throws CoreException if these exceptions are thrown by subclasses they will be logged and
+     * @throws CoreRuntimeException if these exceptions are thrown by subclasses they will be logged and
      *             displayed in an error dialog
      */
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() throws CoreRuntimeException {
         // may be override by subclasses
     }
 
@@ -397,9 +398,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * Subclasses may extend this method to perform their own validation.
      * </p>
      * 
-     * @throws CoreException in case of exception
+     * @throws CoreRuntimeException in case of exception
      */
-    protected void validateName() throws CoreException {
+    protected void validateName() throws CoreRuntimeException {
         if (getIpsProject() == null) {
             return;
         }
@@ -455,7 +456,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
-    private IIpsSrcFile findExistingIpsSrcFile() throws CoreException {
+    private IIpsSrcFile findExistingIpsSrcFile() throws CoreRuntimeException {
         IIpsSrcFile[] ipsSrcFiles = getIpsPackageFragment().getIpsSrcFiles();
         IIpsSrcFile file = null;
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
@@ -479,7 +480,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
 
     @SuppressWarnings("deprecation")
     @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
                 new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
     }

@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.binding;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -35,7 +35,7 @@ public class ValidatablePMOTest {
     ValidatablePMO validatablePMO = new ValidatablePMO() {
 
         @Override
-        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
             return null;
         }
 

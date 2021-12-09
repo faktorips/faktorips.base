@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,8 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -83,7 +82,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     @Override
     public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<>();
 
         IPolicyCmptType sourcePolicyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
@@ -116,13 +115,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * @param foundAssociations The list of already found {@link IPolicyCmptTypeAssociation}
      * @param ipsProject the {@link IIpsProject} used as searching base project
      * @return true if there was at least one match
-     * @throws CoreException in case of a CoreException accessing the objects or resources
+     * @throws CoreRuntimeException in case of a CoreException accessing the objects or resources
      */
     private boolean collectPossibleMatchingAssociations(IPolicyCmptType sourcePolicyCmptType,
             String targetQName,
             Set<IPolicyCmptTypeAssociation> foundAssociations,
             IIpsProject ipsProject,
-            Set<IPolicyCmptType> alreadyVisit) throws CoreException {
+            Set<IPolicyCmptType> alreadyVisit) throws CoreRuntimeException {
         boolean result = false;
         List<IPolicyCmptTypeAssociation> policyAssociations = sourcePolicyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyAssociations) {
@@ -280,7 +279,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         validateMatchingAsoociation(list, ipsProject);
         validateDerivedUnionChangingOverTimeProperty(list, ipsProject);
@@ -298,37 +297,33 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      */
     protected void validateDerivedUnionChangingOverTimeProperty(MessageList list, IIpsProject ipsProject) {
         if (isSubsetOfADerivedUnion()) {
-            try {
-                IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(
-                        ipsProject);
-                if (derivedUnionAssociation != null
-                        && derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
-                    String messageText;
-                    if (isChangingOverTime()) {
-                        messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetChanging;
-                    } else {
-                        messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetStatic;
-                    }
-                    String boundMessageText = NLS.bind(messageText, derivedUnionAssociation.getName());
-                    Message message = new Message(
-                            IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH,
-                            boundMessageText, Message.ERROR,
-                            new ObjectProperty(this, IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME));
-                    list.add(message);
+            IProductCmptTypeAssociation derivedUnionAssociation = (IProductCmptTypeAssociation)findSubsettedDerivedUnion(
+                    ipsProject);
+            if (derivedUnionAssociation != null
+                    && derivedUnionAssociation.isChangingOverTime() != isChangingOverTime()) {
+                String messageText;
+                if (isChangingOverTime()) {
+                    messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetChanging;
+                } else {
+                    messageText = Messages.ProductCmptTypeAssociation_Msg_DeriveUnionChangingOverTimeMismatch_SubetStatic;
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                String boundMessageText = MessageFormat.format(messageText, derivedUnionAssociation.getName());
+                Message message = new Message(
+                        IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH,
+                        boundMessageText, Message.ERROR,
+                        new ObjectProperty(this, IProductCmptTypeAssociation.PROPERTY_CHANGING_OVER_TIME));
+                list.add(message);
             }
         }
     }
 
-    private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = findMatchingPolicyCmptTypeAssociation(
                 ipsProject);
         if (matchingPolicyCmptTypeAssociation == null) {
             if (isMatchingAssociationSourceAndNameNotEmpty()) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND,
-                        NLS.bind(Messages.ProductCmptTypeAssociation_error_matchingAssociationNotFound,
+                        MessageFormat.format(Messages.ProductCmptTypeAssociation_error_matchingAssociationNotFound,
                                 getMatchingAssociationName(), getMatchingAssociationSource()),
                         Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
@@ -336,7 +331,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
         if (!isRematchingAssociation(matchingPolicyCmptTypeAssociation, ipsProject)) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
-                    NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid,
+                    MessageFormat.format(Messages.ProductCmptTypeAssociation_error_MatchingAssociationInvalid,
                             getMatchingAssociationName(), getMatchingAssociationSource()),
                     Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
@@ -345,7 +340,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                 ipsProject);
         if (!possibleMatchingPolicyCmptTypeAssociations.contains(matchingPolicyCmptTypeAssociation)) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
-                    NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
+                    MessageFormat.format(
+                            Messages.ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis,
                             getMatchingAssociationName(), getMatchingAssociationSource()),
                     Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             return;
@@ -367,7 +363,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             }
             if (otherMatchingAssociation.equals(matchingPolicyCmptTypeAssociation)) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME,
-                        NLS.bind(Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName,
+                        MessageFormat.format(Messages.ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName,
                                 otherAssociation, getMatchingAssociationSource()),
                         Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
@@ -481,7 +477,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
         return getProductCmptType();
     }
 

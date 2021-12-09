@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
@@ -155,7 +156,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * This problem does not occur with <code>IResource</code>s.
      * </p>
      */
-    private Object[] getProjectContent(IIpsProject project) throws CoreException {
+    private Object[] getProjectContent(IIpsProject project) throws CoreRuntimeException {
         return projectChildrenProvider.getChildren(project);
     }
 
@@ -277,7 +278,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPackageFragmentRoot</code> is contained in the returned array if it contains files
      * (has children).
      */
-    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
+    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
         if (layoutStyle == LayoutStyle.FLAT) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             if (fragments.length == 1) {
@@ -315,9 +316,9 @@ public class ModelContentProvider implements ITreeContentProvider {
      * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained files
      * are returned.
      * 
-     * @throws CoreException
+     * @throws CoreRuntimeException
      */
-    private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) throws CoreException {
+    private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
         if (fragment.isDefaultPackage()) {
             return getFileContent(fragment);
         } else {
@@ -330,9 +331,9 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given packagefragments
      * underlying folder.
      * 
-     * @throws CoreException
+     * @throws CoreRuntimeException
      */
-    private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreException {
+    private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
         // in hierarchical layout display childpackagefragments as children
         if (layoutStyle == LayoutStyle.HIERACHICAL) {
             return fragment.getChildIpsPackageFragments();
@@ -345,7 +346,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Returns all files contained in the given <code>IpsPackageFragment</code>. This includes
      * IpsElements as well as general files.
      */
-    protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreException {
+    protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
         IIpsElement[] files = fragment.getChildren();
 
         List<IIpsElement> pcts = new ArrayList<>();

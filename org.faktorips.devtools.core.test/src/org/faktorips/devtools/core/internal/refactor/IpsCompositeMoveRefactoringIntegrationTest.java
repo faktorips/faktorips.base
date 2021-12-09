@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -39,7 +39,7 @@ public class IpsCompositeMoveRefactoringIntegrationTest extends AbstractCoreIpsP
     }
 
     @Test
-    public void testMoveTwoRelatedIpsObjects() throws CoreException {
+    public void testMoveTwoRelatedIpsObjects() throws CoreRuntimeException {
         // Create IPS project with packages
         IIpsPackageFragment originalIpsPackageFragment = ipsProject.getIpsPackageFragmentRoots()[0]
                 .createPackageFragment("pack1", true, null);

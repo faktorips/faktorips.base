@@ -302,7 +302,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreRuntimeException {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -330,7 +330,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
         if (exprCompiler instanceof ExtendedExprCompiler) {
             return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
         } else {
@@ -346,14 +346,14 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreRuntimeException {
         modelService = new ModelService();
         generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
         super.initialize(config);
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
         // create policy component type builders
         LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,

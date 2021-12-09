@@ -31,13 +31,13 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -113,7 +113,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         spyBuilder.build(ipsSrcFile);
     }
 
-    private IFile getFile(String name, boolean derived) throws CoreException {
+    private IFile getFile(String name, boolean derived) throws CoreRuntimeException {
         IPackageFragmentRoot artefactDestination = ipsProject.getIpsPackageFragmentRoots()[0]
                 .getArtefactDestination(derived);
         IFolder folder = (IFolder)artefactDestination.getResource();
@@ -191,7 +191,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetQualifiedClassName() throws CoreException {
+    public void testGetQualifiedClassName() throws CoreRuntimeException {
         builder = new StubJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(),
                 new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
         IIpsProject ipsProject = mock(IIpsProject.class);
@@ -210,7 +210,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetQualifiedClassName_noPublishedInterfaces() throws CoreException {
+    public void testGetQualifiedClassName_noPublishedInterfaces() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet standardBuilderSetSpy = spy(new TestIpsArtefactBuilderSet());
         doReturn(false).when(standardBuilderSetSpy).isGeneratePublishedInterfaces();
         builder = new StubJavaSourceFileBuilder(standardBuilderSetSpy,
@@ -231,7 +231,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAdditionalAnnotations() throws CoreException {
+    public void testAdditionalAnnotations() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredAdditionalAnnotations() {
@@ -244,7 +244,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -273,7 +273,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotations() throws CoreException {
+    public void testRetainedAnnotations() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -287,7 +287,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -334,7 +334,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsWithAt() throws CoreException {
+    public void testRetainedAnnotationsWithAt() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -348,7 +348,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -395,7 +395,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsQualified() throws CoreException {
+    public void testRetainedAnnotationsQualified() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -409,7 +409,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -456,7 +456,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsQualifiedVsUnqualified() throws CoreException {
+    public void testRetainedAnnotationsQualifiedVsUnqualified() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -470,7 +470,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -517,7 +517,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testLinebreaks_NewFile_Windows() throws CoreException {
+    public void testLinebreaks_NewFile_Windows() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
         builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
@@ -526,7 +526,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -556,7 +556,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testLinebreaks_NewFile_Linux() throws CoreException {
+    public void testLinebreaks_NewFile_Linux() throws CoreRuntimeException {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
         builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
@@ -565,7 +565,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() throws CoreRuntimeException {
                 //@formatter:off
                 return "/**\r\n" +
                         " * @generated\r\n" +
@@ -614,12 +614,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
             return this.ipsSrcFile.equals(ipsSrcFile);
         }
 
         @Override
-        protected String generate() throws CoreException {
+        protected String generate() throws CoreRuntimeException {
             return "";
         }
 
@@ -649,7 +649,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected boolean createFileIfNotThere(IFile file) throws CoreException {
+        protected boolean createFileIfNotThere(IFile file) throws CoreRuntimeException {
             return super.createFileIfNotThere(file);
         }
 

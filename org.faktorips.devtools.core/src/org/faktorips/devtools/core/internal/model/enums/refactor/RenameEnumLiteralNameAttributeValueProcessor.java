@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
@@ -43,7 +42,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         validationMessageList.add(getEnumLiteralNameAttributeValue().validate(getIpsProject()));
     }
 

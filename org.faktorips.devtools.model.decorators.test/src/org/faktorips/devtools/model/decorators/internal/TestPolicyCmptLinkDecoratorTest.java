@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -88,7 +89,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindTestPolicyCmptTypeParameterFails() throws CoreException {
+    public void testGetImageDescriptor_FindTestPolicyCmptTypeParameterFails() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -105,7 +106,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Composition() throws CoreException {
+    public void testGetImageDescriptor_Composition() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -125,7 +126,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_CompositionAssociationNotFound() throws CoreException {
+    public void testGetImageDescriptor_CompositionAssociationNotFound() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         ITestPolicyCmptLink testPolicyCmptLink = mock(ITestPolicyCmptLink.class);
         when(testPolicyCmptLink.isAssociation()).thenReturn(false);

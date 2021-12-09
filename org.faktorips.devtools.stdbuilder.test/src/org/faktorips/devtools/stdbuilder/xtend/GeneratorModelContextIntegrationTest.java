@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
@@ -48,7 +49,7 @@ import org.junit.Test;
 public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testGetGeneratorConfig_IpsObject_FromLibrary() throws CoreException, IOException {
+    public void testGetGeneratorConfig_IpsObject_FromLibrary() throws CoreRuntimeException, IOException {
         IIpsProject libIpsProject = newIpsProject("lib");
         newPolicyCmptTypeWithoutProductCmptType(libIpsProject, "lib.Policy");
         createManifest(libIpsProject);
@@ -112,7 +113,7 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
         return ipsBundleEntry;
     }
 
-    private void addEntry(IpsObjectPath ipsObjectPath, IpsBundleEntry ipsBundleEntry) throws CoreException {
+    private void addEntry(IpsObjectPath ipsObjectPath, IpsBundleEntry ipsBundleEntry) throws CoreRuntimeException {
         List<IIpsObjectPathEntry> entries = new LinkedList<>(
                 Arrays.asList(ipsObjectPath.getEntries()));
         entries.add(ipsBundleEntry);

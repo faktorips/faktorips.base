@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.versionmanager;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -88,11 +88,11 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param projectToMigrate The IpsProject to migrate to the current version.
      * 
-     * @throws CoreException If an error occurs during evaluation or instantiation of the migration
+     * @throws CoreRuntimeException If an error occurs during evaluation or instantiation of the migration
      *             operations.
      */
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Defines whether a feature version must be required by all projects in the workspace when this

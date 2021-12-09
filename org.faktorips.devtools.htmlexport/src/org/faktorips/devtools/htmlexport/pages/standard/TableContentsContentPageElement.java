@@ -28,6 +28,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -125,13 +126,13 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
         private ValueDatatype[] datatypes;
 
-        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreException {
+        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreRuntimeException {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
             this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 
-        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreException {
+        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreRuntimeException {
             datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());

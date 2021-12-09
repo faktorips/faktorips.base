@@ -31,6 +31,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -82,7 +83,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      */
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context)
-            throws CoreException {
+            throws CoreRuntimeException {
         super(context);
         this.productCmpt = productCmpt;
         this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
@@ -473,7 +474,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
     }
 
-    private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreException {
+    private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreRuntimeException {
         IProductCmpt target;
         target = productCmptLink.findTarget(productCmpt.getIpsProject());
 

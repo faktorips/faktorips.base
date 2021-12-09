@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -95,12 +96,12 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreRuntimeException {
         return findTestValueParameter(ipsProject);
     }
 
     @Override
-    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreException {
+    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreRuntimeException {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;
         }
@@ -129,7 +130,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    public void setDefaultValue() throws CoreException {
+    public void setDefaultValue() throws CoreRuntimeException {
         ITestValueParameter parameter = findTestValueParameter(getIpsProject());
         if (parameter == null) {
             return;
@@ -147,11 +148,12 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         ITestValueParameter param = findTestValueParameter(ipsProject);
         if (param == null) {
-            String text = NLS.bind(Messages.TestValue_ValidateError_TestValueParamNotFound, getTestValueParameter());
+            String text = MessageFormat.format(Messages.TestValue_ValidateError_TestValueParamNotFound,
+                    getTestValueParameter());
             Message msg = new Message(MSGCODE_TEST_VALUE_PARAM_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             list.add(msg);
         } else {
@@ -160,7 +162,8 @@ public class TestValue extends TestObject implements ITestValue {
             // validate the test datatype value
             ValueDatatype datatype = param.findValueDatatype(ipsProject);
             if (datatype == null) {
-                String text = NLS.bind(Messages.TestValue_ValidateError_DatatypeNotFound, param.getValueDatatype());
+                String text = MessageFormat.format(Messages.TestValue_ValidateError_DatatypeNotFound,
+                        param.getValueDatatype());
                 Message msg = new Message(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.WARNING,
                         this, PROPERTY_VALUE);
                 list.add(msg);
@@ -170,7 +173,7 @@ public class TestValue extends TestObject implements ITestValue {
 
             // validate the correct type of the test value parameter
             if (param.isCombinedParameter() || (!isInput() && !isExpectedResult())) {
-                String text = NLS.bind(Messages.TestValue_ErrorWrongType, param.getName());
+                String text = MessageFormat.format(Messages.TestValue_ErrorWrongType, param.getName());
                 Message msg = new Message(ITestValueParameter.MSGCODE_WRONG_TYPE, text, Message.WARNING, this,
                         ITestParameter.PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);

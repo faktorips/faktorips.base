@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -52,17 +52,17 @@ public final class RefactorUtil {
     public static final IIpsSrcFile copyIpsSrcFile(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
             String copyName,
-            IProgressMonitor progressMonitor) throws CoreException {
+            IProgressMonitor progressMonitor) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(new Object[] { toBeCopied, targetIpsPackageFragment, copyName });
         ArgumentCheck.isTrue(!toBeCopied.isDirty());
 
-        IPath destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getFullPath();
+        Path destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getWorkspaceRelativePath();
 
         String targetSrcFileName = getTargetFileName(toBeCopied, copyName);
-        IPath destinationPath = destinationFolder.append(targetSrcFileName);
+        Path destinationPath = destinationFolder.resolve(targetSrcFileName);
 
-        toBeCopied.getCorrespondingResource().copy(destinationPath, true, progressMonitor);
+        toBeCopied.getCorrespondingResource().copy(destinationPath, progressMonitor);
         return targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
     }
 
@@ -87,7 +87,7 @@ public final class RefactorUtil {
     public static final IIpsSrcFile copyIpsSrcFileToTemporary(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
             String copyName,
-            IProgressMonitor progressMonitor) throws CoreException {
+            IProgressMonitor progressMonitor) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(new Object[] { toBeCopied, targetIpsPackageFragment, copyName });
 
@@ -113,7 +113,7 @@ public final class RefactorUtil {
     public static IIpsSrcFile moveIpsSrcFile(IIpsSrcFile originalSrcFile,
             IIpsPackageFragment targetIpsPackageFragment,
             String newName,
-            IProgressMonitor pm) throws CoreException {
+            IProgressMonitor pm) throws CoreRuntimeException {
         // we need to copy and delete the file because at least the subclipse svn adapter get some
         // problems when we moving the files there and back again twice
         IIpsSrcFile targetSrcFile;

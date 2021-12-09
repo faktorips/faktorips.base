@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
@@ -142,7 +141,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
                 }
             }
             return affectedProductCmptsGenerations;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }
@@ -183,17 +182,13 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private boolean isTestCaseUsingValidationRule(ITestCase testCase) {
-        try {
-            IValidationRule foundValidationRule = testCase.findValidationRule(getValidationRule().getName(),
-                    testCase.getIpsProject());
-            return foundValidationRule != null && foundValidationRule.equals(getValidationRule());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IValidationRule foundValidationRule = testCase.findValidationRule(getValidationRule().getName(),
+                testCase.getIpsProject());
+        return foundValidationRule != null && foundValidationRule.equals(getValidationRule());
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         validationMessageList.add(getValidationRule().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
     }

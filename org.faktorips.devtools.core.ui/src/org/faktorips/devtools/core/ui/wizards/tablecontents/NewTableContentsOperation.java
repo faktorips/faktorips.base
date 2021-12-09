@@ -30,7 +30,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
     }
 
     @Override
-    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreRuntimeException {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof ITableContents) {
             ITableContents table = (ITableContents)ipsObject;

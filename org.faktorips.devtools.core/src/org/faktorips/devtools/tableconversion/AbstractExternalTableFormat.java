@@ -15,10 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
@@ -161,7 +161,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return datatypes;
     }
 
-    protected Datatype[] getDatatypes(IEnumType structure) throws CoreException {
+    protected Datatype[] getDatatypes(IEnumType structure) throws CoreRuntimeException {
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
         Datatype[] datatypes = new Datatype[enumAttributes.size()];
         for (int i = 0; i < datatypes.length; i++) {

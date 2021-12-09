@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -47,9 +48,13 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         }
 
         try {
-            IResource enclosingResource = ipsElement.getEnclosingResource();
+            AResource enclosingResource = ipsElement.getEnclosingResource();
             if (adapterType.isInstance(enclosingResource)) {
                 return (T)enclosingResource;
+            }
+            IResource eclipseResource = enclosingResource.unwrap();
+            if (adapterType.isInstance(eclipseResource)) {
+                return (T)eclipseResource;
             }
             if (adapterType.equals(ResourceMapping.class)) {
                 return (T)new IpsElementResourceMapping(ipsElement);
@@ -89,7 +94,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         @Override
         public IProject[] getProjects() {
             IIpsProject ipsProject = ipsElement.getIpsProject();
-            return new IProject[] { ipsProject.getProject() };
+            return new IProject[] { ipsProject.getProject().unwrap() };
         }
 
         @Override

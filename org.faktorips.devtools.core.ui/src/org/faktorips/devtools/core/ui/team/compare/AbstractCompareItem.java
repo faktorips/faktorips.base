@@ -23,7 +23,6 @@ import org.eclipse.compare.contentmergeviewer.IDocumentRange;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -223,7 +223,7 @@ public abstract class AbstractCompareItem
      * need to implement {@link IStreamContentAccessor} and return a non null value here.
      */
     @Override
-    public InputStream getContents() throws CoreException {
+    public InputStream getContents() throws CoreRuntimeException {
         return new ByteArrayInputStream(new byte[0]);
     }
 

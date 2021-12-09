@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -46,7 +47,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
 
     @SuppressWarnings("deprecation")
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException {
         MessageList messages = new MessageList();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
@@ -67,7 +68,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return messages;
     }
 
-    private int countPackages() throws CoreException {
+    private int countPackages() throws CoreRuntimeException {
         int packs = 0;
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -76,9 +77,15 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return packs;
     }
 
-    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor) throws CoreException {
+    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor)
+            throws CoreRuntimeException {
         IFolder folder = (IFolder)pack.getCorrespondingResource();
-        IResource[] members = folder.members();
+        IResource[] members;
+        try {
+            members = folder.members();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
         monitor.beginTask("Migrate package " + pack.getName(), members.length); //$NON-NLS-1$
         for (IResource member : members) {
             try {
@@ -116,9 +123,9 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
-     * @throws CoreException in case of any exception throw a {@link CoreException}
+     * @throws CoreRuntimeException in case of any exception throw a {@link CoreException}
      */
-    protected boolean migrate(IFile file) throws CoreException {
+    protected boolean migrate(IFile file) throws CoreRuntimeException {
         // default do nothing
         return false;
     }
@@ -138,14 +145,14 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      */
-    protected abstract void migrate(IIpsSrcFile srcFile) throws CoreException;
+    protected abstract void migrate(IIpsSrcFile srcFile) throws CoreRuntimeException;
 
     /**
      * Hook method for subclasses to do stuff that is done once before any file is migrated.
      * 
-     * @throws CoreException This method may throw this exception at any time.
+     * @throws CoreRuntimeException This method may throw this exception at any time.
      */
-    protected void beforeFileMigration() throws CoreException {
+    protected void beforeFileMigration() throws CoreRuntimeException {
         // Empty default implementation
     }
 }

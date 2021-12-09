@@ -38,7 +38,7 @@ public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        IProject project = ipsProject.getProject();
+        IProject project = ipsProject.getProject().unwrap();
         folderSource = project.getFolder("source");
         folderTarget = project.getFolder("target");
         folderSource.create(true, true, null);
@@ -74,8 +74,8 @@ public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(source01.exists());
 
         // test move to project
-        operation = new NonIPSMoveOperation(ipsProject.getProject(), new Object[] { source01 }, ipsProject.getProject()
-                .getLocation().toOSString());
+        operation = new NonIPSMoveOperation(ipsProject.getProject().unwrap(), new Object[] { source01 },
+                ipsProject.getProject().getLocation().toString());
         operation.run(null);
         assertTrue(((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1") == null);
         assertTrue(ipsProject.getProject().findMember("file1").exists());

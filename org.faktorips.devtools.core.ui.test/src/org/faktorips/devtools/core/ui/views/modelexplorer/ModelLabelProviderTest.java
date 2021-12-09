@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -141,7 +141,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetText() throws CoreException {
+    public void testGetText() throws CoreRuntimeException {
         String fragmentName;
         // packagefragment Labels
         // hierarchical Layout

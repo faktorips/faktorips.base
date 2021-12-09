@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
@@ -39,7 +39,7 @@ import org.junit.Test;
 public class MultiValueHolderValidatorTest {
 
     @Test
-    public void testValidate_NullValueList() throws CoreException {
+    public void testValidate_NullValueList() throws CoreRuntimeException {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -53,7 +53,7 @@ public class MultiValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_EmptyValueList() throws CoreException {
+    public void testValidate_EmptyValueList() throws CoreRuntimeException {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -67,7 +67,7 @@ public class MultiValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_OneValue() throws CoreException {
+    public void testValidate_OneValue() throws CoreRuntimeException {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -98,7 +98,7 @@ public class MultiValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_multiValues() throws CoreException {
+    public void testValidate_multiValues() throws CoreRuntimeException {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -145,7 +145,7 @@ public class MultiValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_DuplicateValues() throws CoreException {
+    public void testValidate_DuplicateValues() throws CoreRuntimeException {
         IIpsProject project = mock(IIpsProject.class);
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         MultiValueHolder multiValueHolder = spy(new MultiValueHolder(attributeValue));

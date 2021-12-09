@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -47,7 +48,7 @@ public class PluginResourceFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public Properties getMessageProperties(String resourceName) throws CoreException {
+    public Properties getMessageProperties(String resourceName) throws CoreRuntimeException {
         Properties messages = new Properties();
 
         try {

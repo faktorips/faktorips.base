@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -41,7 +41,7 @@ public class JavaPackageStructureTest {
     private IIpsPackageFragment packageFragment;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() throws CoreRuntimeException {
         MockitoAnnotations.initMocks(this);
         packageStructure = new JavaPackageStructure();
 

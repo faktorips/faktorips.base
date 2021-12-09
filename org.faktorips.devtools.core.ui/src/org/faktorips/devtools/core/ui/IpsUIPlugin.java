@@ -31,11 +31,11 @@ import java.util.concurrent.RunnableFuture;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -118,6 +118,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -360,7 +361,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return datatypeInputFormat.getDatatypeInputFormat(datatype, ipsProject);
     }
 
-    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreException {
+    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreRuntimeException {
         List<ValueDatatypeControlFactory> factories = new ArrayList<>();
 
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
@@ -548,10 +549,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return A Factory class which can be used to create the controls for configuring the custom
      *         properties, or <code>null</code> if the table format has no custom properties.
      * 
-     * @throws CoreException if the factory class could not be created.
+     * @throws CoreRuntimeException if the factory class could not be created.
      */
     public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ArgumentCheck.notNull(tableFormat);
 
@@ -789,7 +790,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      *            will be returned.
      */
     public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId)
-            throws CoreException {
+            throws CoreRuntimeException {
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (extensionPropertyEditFieldFactoryMap == null) {
             extensionPropertyEditFieldFactoryMap = new HashMap<>();
@@ -827,7 +828,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @param propertyId the id that identifies an extension property for which the section factory
      *            will be returned.
      */
-    public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId) throws CoreException {
+    public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId) throws CoreRuntimeException {
 
         if (extensionPropertySectionFactoriesMap == null) {
             // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
@@ -1182,7 +1183,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * This method calls
-     * {@link IpsModel#runAndQueueChangeEvents(IWorkspaceRunnable, IProgressMonitor)} to perform
+     * {@link IpsModel#runAndQueueChangeEvents(ICoreRunnable, IProgressMonitor)} to perform
      * multiple change operations and queue all change events. In addition it shows a busy indicator
      * and starts a progress dialog if the operation takes too long.
      * 
@@ -1196,9 +1197,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * You cannot call this method from another modal dialog like a wizard because the wizard has
      * its own progress and this one will wait until the dialog is finished.
      * 
-     * @param action The {@link IWorkspaceRunnable} that should be startet-
+     * @param action The {@link ICoreRunnable} that should be startet-
      */
-    public void runWorkspaceModification(final IWorkspaceRunnable action) {
+    public void runWorkspaceModification(final ICoreRunnable action) {
         IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
             ps.busyCursorWhile(monitor -> IIpsModel.get().runAndQueueChangeEvents(action, monitor));
@@ -1349,7 +1350,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * editors status bar to inform the user about using the text editor instead of the IPS
          * object editor.
          */
-        private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreException {
+        private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreRuntimeException {
             String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
             IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
 

@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 
@@ -27,9 +28,9 @@ public interface IIpsTestRunner {
     /**
      * Terminates the currently launched test run process.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
-    public void terminate() throws CoreException;
+    public void terminate() throws CoreRuntimeException;
 
     /**
      * Adds the given IPS test run listener to the collection of listeners
@@ -62,7 +63,7 @@ public interface IIpsTestRunner {
      * @param classpathRepository the repository where the test are selected from
      * @param testPackage the package including the tests
      * 
-     * @throws CoreException if an error occurred.
+     * @throws CoreRuntimeException if an error occurred.
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
 
@@ -75,7 +76,7 @@ public interface IIpsTestRunner {
      *            org.eclipse.debug.core.ILaunchManager#DEBUG_MODE/RUN_MODE
      * @param launch An existing launch to run/debug the test runner with
      * 
-     * @throws CoreException if an error occurred.
+     * @throws CoreRuntimeException if an error occurred.
      */
     public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch)
             throws CoreException;

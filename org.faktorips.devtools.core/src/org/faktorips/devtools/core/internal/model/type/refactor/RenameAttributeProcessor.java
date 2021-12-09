@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
@@ -62,43 +61,38 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<>();
-        try {
-            result.add(getIpsSrcFile());
-            productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT,
-                    IpsObjectType.PRODUCT_TEMPLATE);
-            for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+        result.add(getIpsSrcFile());
+        productCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.PRODUCT_CMPT,
+                IpsObjectType.PRODUCT_TEMPLATE);
+        for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
+            result.add(ipsSrcFile);
+        }
+        typeSrcFiles = findReferencingIpsSrcFiles(getAttribute().getIpsObject().getIpsObjectType());
+        for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
+            result.add(ipsSrcFile);
+        }
+        if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
+            testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
+            for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
                 result.add(ipsSrcFile);
             }
-            typeSrcFiles = findReferencingIpsSrcFiles(getAttribute().getIpsObject().getIpsObjectType());
-            for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
-                result.add(ipsSrcFile);
-            }
-            if (getAttribute() instanceof IPolicyCmptTypeAttribute) {
-                testCaseTypeCmptSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE);
-                for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
-                    result.add(ipsSrcFile);
-                }
-            }
-            // Collect source files for overwritten attributes
-            List<IAttribute> overwrittenAttributes = getAllOverwrittenAttributes();
-            for (IAttribute overwrittenAttribute : overwrittenAttributes) {
-                result.add(overwrittenAttribute.getIpsSrcFile());
-            }
-
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        }
+        // Collect source files for overwritten attributes
+        List<IAttribute> overwrittenAttributes = getAllOverwrittenAttributes();
+        for (IAttribute overwrittenAttribute : overwrittenAttributes) {
+            result.add(overwrittenAttribute.getIpsSrcFile());
         }
         return result;
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         validationMessageList.add(getAttribute().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         try {
             addAffectedSrcFiles(modificationSet);
@@ -112,9 +106,6 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateSuperHierarchyAttributes();
             updateSubHierarchyAttributes();
             updateAttributeName();
-        } catch (CoreException e) {
-            modificationSet.undo();
-            throw e;
         } catch (CoreRuntimeException e) {
             modificationSet.undo();
             throw e;
@@ -150,7 +141,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwritten attributes of
      * the super type hierarchy.
      */
-    private void updateSuperHierarchyAttributes() throws CoreException {
+    private void updateSuperHierarchyAttributes() throws CoreRuntimeException {
         List<IAttribute> attributesToRename = getAllOverwrittenAttributes();
 
         /*
@@ -162,7 +153,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    private List<IAttribute> getAllOverwrittenAttributes() throws CoreException {
+    private List<IAttribute> getAllOverwrittenAttributes() throws CoreRuntimeException {
         List<IAttribute> attributesToRename = new ArrayList<>(1);
 
         // Collect overwritten attributes

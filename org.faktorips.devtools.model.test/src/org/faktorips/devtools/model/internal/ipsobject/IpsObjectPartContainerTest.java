@@ -34,13 +34,13 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -412,7 +412,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXmlVersion() throws CoreException {
+    public void testInitFromXmlVersion() throws CoreRuntimeException {
         Element docEl = getTestDocument().getDocumentElement();
         IIpsProjectProperties properties = ipsProject.getProperties();
         ipsProject.setProperties(properties);
@@ -430,7 +430,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetState() throws CoreException {
+    public void testSetState() throws CoreRuntimeException {
         germanDescription.setText("blabla");
         Memento memento = container.newMemento();
         germanDescription.setText("newDescription");
@@ -456,7 +456,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() throws CoreRuntimeException {
         // create srcfile with contents
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
@@ -478,7 +478,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
      * {@link IIpsSrcFile}.
      */
     @Test
-    public void testValidate_NotValidateIpsSrcFileImmutable() throws CoreException {
+    public void testValidate_NotValidateIpsSrcFileImmutable() throws CoreRuntimeException {
         // create srcfile with contents
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
@@ -488,7 +488,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         product.getIpsSrcFile().save(true, null);
 
         // load data with immutable srcfile that should not be validated
-        IFile file = product.getIpsSrcFile().getCorrespondingFile();
+        AFile file = product.getIpsSrcFile().getCorrespondingFile();
         IpsSrcFileImmutable srcFileImmutable = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct",
                 file.getContents());
 
@@ -504,7 +504,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
      * {@link IIpsSrcFile}.
      */
     @Test
-    public void testValidate_NotValidateIpsSrcFileOffRoot() throws CoreException {
+    public void testValidate_NotValidateIpsSrcFileOffRoot() throws CoreRuntimeException {
         // create srcfile with contents
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmpt product = newProductCmpt(root, "TestProductCmpt");
@@ -514,7 +514,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         product.getIpsSrcFile().save(true, null);
 
         // load data with off-root srcfile that should not be validated
-        IFile file = product.getIpsSrcFile().getCorrespondingFile();
+        AFile file = product.getIpsSrcFile().getCorrespondingFile();
         IpsSrcFileOffRoot srcFile = new IpsSrcFileOffRoot(file);
 
         MessageList messagesImmutable = srcFile.getIpsObject().validate(ipsProject);
@@ -523,13 +523,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDescriptionCountOk() throws CoreException {
+    public void testValidateDescriptionCountOk() throws CoreRuntimeException {
         MessageList validationMessageList = container.validate(ipsProject);
         assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT));
     }
 
     @Test
-    public void testValidateDescriptionCountTooFewDescriptions() throws CoreException {
+    public void testValidateDescriptionCountTooFewDescriptions() throws CoreRuntimeException {
         usDescription.delete();
         MessageList validationMessageList = container.validate(ipsProject);
 
@@ -541,7 +541,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDescriptionCountTooManyDescriptions() throws CoreException {
+    public void testValidateDescriptionCountTooManyDescriptions() throws CoreRuntimeException {
         container.newDescription();
         MessageList validationMessageList = container.validate(ipsProject);
 
@@ -553,7 +553,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDescriptionCount_UsingOwnProject() throws CoreException {
+    public void testValidateDescriptionCount_UsingOwnProject() throws CoreRuntimeException {
         IpsProject superProject = mock(IpsProject.class);
 
         container.validate(superProject);
@@ -562,13 +562,13 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLabelCountOk() throws CoreException {
+    public void testValidateLabelCountOk() throws CoreRuntimeException {
         MessageList validationMessageList = container.validate(ipsProject);
         assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT));
     }
 
     @Test
-    public void testValidateLabelCountTooFewLabels() throws CoreException {
+    public void testValidateLabelCountTooFewLabels() throws CoreRuntimeException {
         usLabel.delete();
         MessageList validationMessageList = container.validate(ipsProject);
 
@@ -580,7 +580,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLabelCountTooManyLabels() throws CoreException {
+    public void testValidateLabelCountTooManyLabels() throws CoreRuntimeException {
         container.newLabel();
         MessageList validationMessageList = container.validate(ipsProject);
 
@@ -592,7 +592,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLabelCount_UsingOwnProject() throws CoreException {
+    public void testValidateLabelCount_UsingOwnProject() throws CoreRuntimeException {
         IpsProject superProject = mock(IpsProject.class);
 
         container.validate(superProject);
@@ -847,7 +847,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPart() throws CoreException {
+    public void testNewPart() throws CoreRuntimeException {
         TestUnlabeledIpsObjectPartContainer unlabeledContainer = new TestUnlabeledIpsObjectPartContainer(
                 newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Parent2"));
 
@@ -874,7 +874,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDescriptions() throws CoreException {
+    public void testGetDescriptions() throws CoreRuntimeException {
         changeSupportedLanguagesOrder();
         List<IDescription> descriptionList = container.getDescriptions();
         assertEquals(descriptionList.get(0), usDescription);
@@ -890,14 +890,14 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLabels() throws CoreException {
+    public void testGetLabels() throws CoreRuntimeException {
         changeSupportedLanguagesOrder();
         List<ILabel> labelList = container.getLabels();
         assertEquals(labelList.get(0), usLabel);
         assertEquals(labelList.get(1), germanLabel);
     }
 
-    private void changeSupportedLanguagesOrder() throws CoreException {
+    private void changeSupportedLanguagesOrder() throws CoreRuntimeException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
         ISupportedLanguage[] languageArray = supportedLanguages
@@ -918,7 +918,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreException {
+    public void testGetCaption() throws CoreRuntimeException {
         assertEquals("", container.getCaption(Locale.US));
         try {
             container.getCaption(null);
@@ -928,7 +928,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetPluralCaption() throws CoreException {
+    public void testGetPluralCaption() throws CoreRuntimeException {
         assertEquals("", container.getPluralCaption(Locale.US));
         try {
             container.getPluralCaption(null);
@@ -948,7 +948,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyFrom() throws CoreException {
+    public void testCopyFrom() throws CoreRuntimeException {
         TestIpsObjectPartContainer source = new TestIpsObjectPartContainer(
                 newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SourceParent"));
 
@@ -1084,12 +1084,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public IResource getCorrespondingResource() {
+        public AResource getCorrespondingResource() {
             return null;
         }
 
         @Override
-        public void delete() throws CoreException {
+        public void delete() throws CoreRuntimeException {
 
         }
 
@@ -1102,12 +1102,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
             return false;
         }
 
         @Override
-        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
             return Severity.NONE;
         }
 
@@ -1245,12 +1245,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public IResource getCorrespondingResource() {
+        public AResource getCorrespondingResource() {
             return null;
         }
 
         @Override
-        public void delete() throws CoreException {
+        public void delete() throws CoreRuntimeException {
 
         }
 
@@ -1263,12 +1263,12 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isValid(IIpsProject ipsProject) throws CoreException {
+        public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
             return false;
         }
 
         @Override
-        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+        public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
             return Severity.NONE;
         }
 

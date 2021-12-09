@@ -12,14 +12,14 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class RenameEnumLiteralNameAttributeValueProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
-    public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
+    public void testRenameEnumLiteralNameAttributeValue() throws CoreRuntimeException {
         performRenameRefactoring(enumLiteralNameAttributeValue, "bar");
         assertEquals("bar", enumLiteralNameAttributeValue.getStringValue());
     }

@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -61,7 +62,8 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException {
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject)
+            throws CoreRuntimeException {
         if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
         }
@@ -191,7 +193,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         return ((ITestPolicyCmpt)getParent()).getTestCase();
     }
 
-    public void validateGroup(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+    public void validateGroup(MessageList messageList, IIpsProject ipsProject) throws CoreRuntimeException {
         // check all messages only once, thus if the same test link is used more than one
         // only one message are added to the list of validation errors
 
@@ -199,7 +201,8 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         ITestPolicyCmptTypeParameter testCaseTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
         if (messageList.getMessageByCode(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND) == null) {
             if (testCaseTypeParam == null) {
-                String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound,
+                String text = MessageFormat.format(
+                        Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeParamNotFound,
                         getName());
                 Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this,
                         PROPERTY_POLICYCMPTTYPE);
@@ -215,7 +218,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         if (messageList.getMessageByCode(MSGCODE_MODEL_LINK_NOT_FOUND) == null) {
             IPolicyCmptTypeAssociation modelLink = testCaseTypeParam.findAssociation(ipsProject);
             if (modelLink == null) {
-                String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_ModelAssociationNotFound,
+                String text = MessageFormat.format(Messages.TestPolicyCmptLink_ValidationError_ModelAssociationNotFound,
                         testCaseTypeParam.getAssociation());
                 Message msg = new Message(MSGCODE_MODEL_LINK_NOT_FOUND, text, Message.ERROR, this,
                         ITestPolicyCmptTypeParameter.PROPERTY_POLICYCMPTTYPE);
@@ -229,13 +232,13 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         ITestPolicyCmptTypeParameter param = null;
         try {
             param = findTestPolicyCmptTypeParameter(ipsProject);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // ignore exception, the param will be used to indicate errors
         }
 
         // check if the corresponding test parameter exists
         if (param == null) {
-            String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeNotFound,
+            String text = MessageFormat.format(Messages.TestPolicyCmptLink_ValidationError_TestCaseTypeNotFound,
                     getTestPolicyCmptTypeParameter());
             Message msg = new Message(MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND, text, Message.ERROR, this,
                     PROPERTY_POLICYCMPTTYPE);
@@ -245,7 +248,8 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         // for assoziations check if the target is in the test case
         if (isAssociation()) {
             if (getTestCase().findTestPolicyCmpt(getTarget()) == null) {
-                String text = NLS.bind(Messages.TestPolicyCmptLink_ValidationError_AssoziationNotFound, getTarget());
+                String text = MessageFormat.format(Messages.TestPolicyCmptLink_ValidationError_AssoziationNotFound,
+                        getTarget());
                 Message msg = new Message(MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE, text, Message.ERROR, this,
                         PROPERTY_POLICYCMPTTYPE);
                 messageList.add(msg);
@@ -254,7 +258,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         validateGroup(list, ipsProject);
         validateSingle(list, ipsProject);

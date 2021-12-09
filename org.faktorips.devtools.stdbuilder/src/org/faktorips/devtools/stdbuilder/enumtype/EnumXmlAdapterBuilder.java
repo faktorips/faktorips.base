@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -84,7 +84,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
@@ -100,7 +100,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE) && ipsSrcFile.exists()) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
             return enumType.isExtensible() && !enumType.isAbstract();
@@ -109,7 +109,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreRuntimeException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.getJavaDocForTypeBuilder()
                 .javaDoc(getLocalizedText("CLASS_JAVADOC", getEnumType().getQualifiedName()),
@@ -160,7 +160,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      }
      * </pre>
      */
-    private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreRuntimeException {
         builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$

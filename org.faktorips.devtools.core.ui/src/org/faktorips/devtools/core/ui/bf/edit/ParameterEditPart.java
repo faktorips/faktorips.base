@@ -35,8 +35,8 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.bf.IBusinessFunction;
 import org.faktorips.devtools.model.bf.IParameterBFE;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.bf.Size;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * The edit part for the parameter business function element. Since there is only one figure that
@@ -148,7 +148,7 @@ public class ParameterEditPart extends AbstractGraphicalEditPart implements Cont
         }
     }
 
-    private void updateParameters() throws CoreException {
+    private void updateParameters() throws CoreRuntimeException {
         List<IParameterBFE> parameters = getBusinessFunction().getParameterBFEs();
         lowerRectangle.removeAll();
         for (IParameterBFE parameterBFE : parameters) {

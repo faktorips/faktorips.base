@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -61,7 +60,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
 
     @Override
     protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         properties.setBuilderSetId(StandardBuilderSet.ID);
     }
@@ -101,17 +100,13 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
             boolean derivedSource,
             String javaTypeName) {
 
-        try {
-            IPackageFragmentRoot javaRoot = ipsObject.getIpsPackageFragment().getRoot()
-                    .getArtefactDestination(derivedSource);
-            String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), !published, !derivedSource);
-            IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
-            ICompilationUnit javaCompilationUnit = javaPackage
-                    .getCompilationUnit(javaTypeName + JavaClassNaming.JAVA_EXTENSION);
-            return javaCompilationUnit.getType(javaTypeName);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        IPackageFragmentRoot javaRoot = ipsObject.getIpsPackageFragment().getRoot()
+                .getArtefactDestination(derivedSource).unwrap();
+        String packageName = builderSet.getPackageName(ipsObject.getIpsSrcFile(), !published, !derivedSource);
+        IPackageFragment javaPackage = javaRoot.getPackageFragment(packageName);
+        ICompilationUnit javaCompilationUnit = javaPackage
+                .getCompilationUnit(javaTypeName + JavaClassNaming.JAVA_EXTENSION);
+        return javaCompilationUnit.getType(javaTypeName);
     }
 
     /**
@@ -157,13 +152,9 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
         builderConfig.setPropertyValue(key, value, null);
-        try {
-            ipsProject.setProperties(properties);
-            ipsProject.reinitializeIpsArtefactBuilderSet();
-            builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        ipsProject.setProperties(properties);
+        ipsProject.reinitializeIpsArtefactBuilderSet();
+        builderSet = (StandardBuilderSet)ipsProject.getIpsArtefactBuilderSet();
     }
 
 }

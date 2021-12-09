@@ -16,15 +16,16 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
@@ -33,7 +34,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
  * @author dicker
  * 
  */
-public class HtmlExportOperation implements IWorkspaceRunnable {
+public class HtmlExportOperation implements ICoreRunnable {
 
     private static final Set<Class<? extends NLS>> MESSAGE_CLAZZES = new HashSet<>();
     private DocumentationContext context;
@@ -68,7 +69,7 @@ public class HtmlExportOperation implements IWorkspaceRunnable {
      */
     @SuppressWarnings("deprecation")
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
 
         int monitorScriptFaktor = 9;

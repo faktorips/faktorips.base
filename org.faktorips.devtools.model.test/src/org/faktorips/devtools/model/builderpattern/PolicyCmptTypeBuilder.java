@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.builderpattern;
 
 import static java.util.Objects.requireNonNull;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -65,7 +65,7 @@ public class PolicyCmptTypeBuilder {
 
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-        IWorkspaceRunnable runnable = $ -> {
+        ICoreRunnable runnable = $ -> {
             IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
             if (!pack.exists()) {
                 pack = root.createPackageFragment(packName, true, null);

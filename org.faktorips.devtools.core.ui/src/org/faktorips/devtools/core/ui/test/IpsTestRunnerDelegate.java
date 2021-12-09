@@ -28,6 +28,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Launch configuration delegate to delegate the launch to the ips test runner.
@@ -49,7 +50,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration configuration,
             final String mode,
             final ILaunch launch,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) throws CoreRuntimeException {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -91,7 +92,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
      * Delegate the test start to the ips test runner
      */
     private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch)
-            throws CoreException {
+            throws CoreRuntimeException {
         String packageFragment = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
         String testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
 

@@ -23,11 +23,11 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.junit.Before;
@@ -108,9 +108,9 @@ public class IpsBundleManifestTest {
     }
 
     public void mockProject() {
-        IProject project = mock(IProject.class);
+        AProject project = mock(AProject.class);
         when(ipsProject.getProject()).thenReturn(project);
-        IFolder folder = mock(IFolder.class);
+        AFolder folder = mock(AFolder.class);
         when(project.getFolder(anyString())).thenReturn(folder);
     }
 

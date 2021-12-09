@@ -26,6 +26,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -57,7 +58,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     }
 
     public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProgressMonitor theMonitor = monitor;
         if (theMonitor == null) {
             theMonitor = new NullProgressMonitor();
@@ -86,7 +87,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     private TreeSet<GregorianCalendar> collectValidFromDates(IProductCmpt productCmpt,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) throws CoreRuntimeException {
 
         TreeSet<GregorianCalendar> result = new TreeSet<>(Comparator.comparing(GregorianCalendar::getTime).reversed());
         if (productCmpt == null) {
@@ -110,7 +111,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             GregorianCalendar smallestValidFrom,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) throws CoreRuntimeException {
         GregorianCalendar theSmallestValidFrom = smallestValidFrom;
         Set<GregorianCalendar> result = new HashSet<>();
         if (monitor.isCanceled()) {

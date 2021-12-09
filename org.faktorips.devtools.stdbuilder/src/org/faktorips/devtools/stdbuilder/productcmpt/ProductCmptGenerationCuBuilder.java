@@ -90,7 +90,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
 
     @Override
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmpt productCmpt = (IProductCmpt)ipsObject;
         for (IIpsObjectGeneration currentGeneration : productCmpt.getGenerations()) {
             IIpsSrcFile generationSrcFile = getVirtualIpsSrcFile((IProductCmptGeneration)currentGeneration);

@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabel;
@@ -116,7 +116,7 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         if (locale == null) {
             validateLocaleMissing(list);
         } else {
@@ -136,7 +136,7 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         IIpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(getIpsProject());
         boolean localeSupported = properties.isSupportedLanguage(locale);
         if (!(localeSupported)) {
-            String text = NLS.bind(Messages.Label_msgLocaleNotSupportedByProject, locale.getLanguage());
+            String text = MessageFormat.format(Messages.Label_msgLocaleNotSupportedByProject, locale.getLanguage());
             Message msg = new Message(ILabel.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.WARNING, this,
                     ILabel.PROPERTY_LOCALE);
             list.add(msg);

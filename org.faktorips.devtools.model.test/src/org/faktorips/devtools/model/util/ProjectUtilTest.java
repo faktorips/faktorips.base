@@ -42,7 +42,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -98,7 +100,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddIpsNature_And_hasIpsNature() throws CoreException {
+    public void testAddIpsNature_And_hasIpsNature() throws CoreRuntimeException {
         assertFalse(ProjectUtil.hasIpsNature(javaProject));
         ProjectUtil.addIpsNature(javaProject.getProject());
         assertTrue(ProjectUtil.hasIpsNature(javaProject));
@@ -195,7 +197,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     private void createIpsProjectCheckRequiredFolders(IIpsProject ipsProject) {
-        IProject project = ipsProject.getProject();
+        AProject project = ipsProject.getProject();
         assertThat(project.getFolder("src").exists(), is(true));
         assertThat(project.getFolder(creationProperties.getSourceFolderName()).exists(), is(true));
     }

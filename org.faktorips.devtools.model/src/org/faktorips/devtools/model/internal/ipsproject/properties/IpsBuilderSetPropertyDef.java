@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
@@ -129,7 +128,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
 
     @Override
     public boolean isAvailable(IIpsProject ipsProject) {
-        String optionValue = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        String optionValue = ipsProject.getJavaProject().getSourceVersion().toString();
         return supportedJdkVersions.isEmpty() || supportedJdkVersions.contains(optionValue);
     }
 

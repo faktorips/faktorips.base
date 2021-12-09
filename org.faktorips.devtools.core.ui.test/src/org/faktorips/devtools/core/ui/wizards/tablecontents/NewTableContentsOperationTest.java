@@ -75,7 +75,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFinishIpsSrcFile_setsTableStructure() throws CoreException {
+    public void testFinishIpsSrcFile_setsTableStructure() throws CoreRuntimeException {
         pmo.setSelectedStructure(newTableStructure(ipsProject, "TestTableStructure"));
         pmo.setEffectiveDate(new GregorianCalendar(2013, 0, 1));
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -87,7 +87,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFinishIpsSrcFile_createsColumnsForTableStructureColumns() throws CoreException {
+    public void testFinishIpsSrcFile_createsColumnsForTableStructureColumns() throws CoreRuntimeException {
         TableStructure tableStructure = newTableStructure(ipsProject, "TestTableStructure");
         pmo.setSelectedStructure(tableStructure);
         tableStructure.newColumn();
@@ -102,7 +102,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFinishIpsSrcFile_setsValidFromForFirstGeneration() throws CoreException {
+    public void testFinishIpsSrcFile_setsValidFromForFirstGeneration() throws CoreRuntimeException {
         pmo.setSelectedStructure(newTableStructure(ipsProject, "TestTableStructure"));
         pmo.setEffectiveDate(new GregorianCalendar(2013, 0, 1));
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -114,7 +114,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFinishIpsSrcFile_createsNewRowIfOpenEditorIsSet() throws CoreException {
+    public void testFinishIpsSrcFile_createsNewRowIfOpenEditorIsSet() throws CoreRuntimeException {
         TableStructure tableStructure = newTableStructure(ipsProject, "TestTableStructure");
         pmo.setSelectedStructure(tableStructure);
         pmo.setEffectiveDate(new GregorianCalendar(2013, 0, 1));
@@ -129,7 +129,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFinishIpsSrcFile_createsNoNewRowIfOpenEditorIsNotSet() throws CoreException {
+    public void testFinishIpsSrcFile_createsNoNewRowIfOpenEditorIsNotSet() throws CoreRuntimeException {
         TableStructure tableStructure = newTableStructure(ipsProject, "TestTableStructure");
         pmo.setSelectedStructure(tableStructure);
         pmo.setEffectiveDate(new GregorianCalendar(2013, 0, 1));
@@ -153,7 +153,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_doesNothingIfTableUsageNotEditable() throws CoreException {
+    public void testPostProcess_doesNothingIfTableUsageNotEditable() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(false);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -165,7 +165,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_setsTableContentNameOnProductCmptGeneration() throws CoreException {
+    public void testPostProcess_setsTableContentNameOnProductCmptGeneration() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(false);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -176,7 +176,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_setsTableContentNameOnProductCmpt() throws CoreException {
+    public void testPostProcess_setsTableContentNameOnProductCmpt() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mock(ITableContentUsage.class);
         IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
         when(tableUsage.getPropertyValueContainer()).thenReturn(propertyValueContainer);
@@ -191,13 +191,13 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         verify(tableUsage).setTableContentName("TestTableContent");
     }
 
-    private IProductCmpt newProductCmpt() throws CoreException {
+    private IProductCmpt newProductCmpt() throws CoreRuntimeException {
         IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProductCmptNoGeneration");
         return productCmpt;
     }
 
     @Test
-    public void testPostProcess_savesTableUsageIfNotDirtyAndAutosafeSet() throws CoreException {
+    public void testPostProcess_savesTableUsageIfNotDirtyAndAutosafeSet() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(false);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -208,7 +208,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_doesNotSaveTableUsageIfNotDirtyAndAutosafeNotSet() throws CoreException {
+    public void testPostProcess_doesNotSaveTableUsageIfNotDirtyAndAutosafeNotSet() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(false);
         pmo = mockPMO(tableUsage, false);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -219,7 +219,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_doesNotSaveTableUsageIfDirty() throws CoreException {
+    public void testPostProcess_doesNotSaveTableUsageIfDirty() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(true);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
@@ -230,7 +230,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = CoreRuntimeException.class)
-    public void testPostProcess_throwsCoreRuntimeExceptionIfSavingThrowsCoreException() throws CoreException {
+    public void testPostProcess_throwsCoreRuntimeExceptionIfSavingThrowsCoreException() throws CoreRuntimeException {
         ITableContentUsage tableUsage = mockTableUsage(true);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.isDirty()).thenReturn(false);
@@ -242,7 +242,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
     }
 
-    private IProductCmptGeneration newProductCmptGeneration() throws CoreException {
+    private IProductCmptGeneration newProductCmptGeneration() throws CoreRuntimeException {
         IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProductCmpt");
         IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmpt
                 .newGeneration(new GregorianCalendar(2013, 0, 1));
@@ -256,7 +256,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         return mockPmo;
     }
 
-    private ITableContentUsage mockTableUsage(boolean dirty) throws CoreException {
+    private ITableContentUsage mockTableUsage(boolean dirty) throws CoreRuntimeException {
         ITableContentUsage tableUsage = mock(ITableContentUsage.class);
         IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
         when(tableUsage.getPropertyValueContainer()).thenReturn(propertyValueContainer);

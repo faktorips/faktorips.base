@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.util.IoUtil;
@@ -38,7 +39,7 @@ public class EclipseIOUtil {
      * forwards the status to the progress monitor.
      * <p>
      * Use this method instead of directly calling
-     * {@link IFile#setContents(InputStream, boolean, boolean, IProgressMonitor)} to get ridge of a
+     * {@link IFile#setContents(InputStream, boolean, boolean, IProgressMonitor)} to get rid of a
      * possibly defense locking version control system (VCS). This methods calls the
      * {@link IWorkspace#validateEdit(IFile[], Object)} method before writing to the file and gives
      * a VCS the possibility to react for example by checking out the requested file.
@@ -52,7 +53,7 @@ public class EclipseIOUtil {
      * @param force whether you want to force the write
      * @param keepHistory keep the file history
      * @param progressMonitor the progress monitor to visualize the file writing status
-     * @throws CoreException In case of a core exception while writing to the file
+     * @throws CoreRuntimeException In case of a core exception while writing to the file
      * 
      * @see IFile#setContents(InputStream, boolean, boolean, IProgressMonitor)
      */
@@ -60,7 +61,7 @@ public class EclipseIOUtil {
             InputStream inputStream,
             boolean force,
             boolean keepHistory,
-            IProgressMonitor progressMonitor) throws CoreException {
+            IProgressMonitor progressMonitor) throws CoreRuntimeException {
         try {
             if (!file.isReadOnly()
                     || file.getWorkspace().validateEdit(new IFile[] { file }, IWorkspace.VALIDATE_PROMPT).isOK()) {
@@ -69,6 +70,8 @@ public class EclipseIOUtil {
                 IpsLog.log(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID,
                         "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
             }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         } finally {
             IoUtil.close(inputStream);
         }

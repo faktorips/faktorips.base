@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -120,7 +121,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return SUPPORTED_TYPES.contains(type) || ipsObjectTypeToTocEntryBuilderMap.containsKey(type);
     }
@@ -132,7 +133,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     @Override
-    public void beforeBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
+    public void beforeBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreRuntimeException {
         if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
             tocFileMap.clear();
         }
@@ -159,7 +160,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     @Override
-    public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreException {
+    public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreRuntimeException {
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
@@ -173,9 +174,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * Saves the repository's table of contents to a file. The table of contents file is needed by
      * the FaktorIPS runtime to load the product components and table data.
      * 
-     * @throws CoreException if an error occurs while writing the toc to the file.
+     * @throws CoreRuntimeException if an error occurs while writing the toc to the file.
      */
-    private void saveToc(IIpsPackageFragmentRoot root) throws CoreException {
+    private void saveToc(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
         IFile tocFile = getBuilderSet().getRuntimeRepositoryTocFile(root);
         if (tocFile == null) {
             return;
@@ -210,7 +211,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     private void replaceTocFileIfContentHasChanged(IIpsProject ipsProject, IFile tocFile, String newContents)
-            throws CoreException {
+            throws CoreRuntimeException {
         String oldContents = null;
         String charset = ipsProject.getXmlFileCharset();
         try {
@@ -233,7 +234,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         writeToFile(tocFile, is, true, true);
     }
 
-    private TableOfContent getToc(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private TableOfContent getToc(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsObject().getIpsPackageFragment().getRoot();
         return getToc(root);
     }
@@ -242,9 +243,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * Returns the product component registry's table of contents for the indicated ips package
      * fragment root.
      * 
-     * @throws CoreException if an error occurs while accessing the toc file.
+     * @throws CoreRuntimeException if an error occurs while accessing the toc file.
      */
-    public TableOfContent getToc(IIpsPackageFragmentRoot root) throws CoreException {
+    public TableOfContent getToc(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         IFile tocFile = builderSet.getRuntimeRepositoryTocFile(root);
         TableOfContent toc = tocFileMap.get(tocFile);
@@ -280,7 +281,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IIpsObject object = null;
         try {
             List<TocEntryObject> entries = new ArrayList<>();
@@ -327,7 +328,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) throws CoreException {
+    public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) throws CoreRuntimeException {
         if (productCmpt.getNumOfGenerations() == 0) {
             return null;
         }
@@ -379,7 +380,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         entry.setGenerationEntries(genEntries);
     }
 
-    public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
+    public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreRuntimeException {
         ITableStructure tableStructure = tableContents.findTableStructure(getIpsProject());
         if (tableStructure == null) {
             return null;
@@ -397,7 +398,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Creates a toc entry for the given test case.
      */
-    public TocEntryObject createTocEntry(ITestCase testCase) throws CoreException {
+    public TocEntryObject createTocEntry(ITestCase testCase) throws CoreRuntimeException {
         ITestCaseType type = testCase.findTestCaseType(getIpsProject());
         if (type == null) {
             return null;
@@ -488,7 +489,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         TableOfContent toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
         toc.removeEntry(ipsSrcFile.getQualifiedNameType());
     }

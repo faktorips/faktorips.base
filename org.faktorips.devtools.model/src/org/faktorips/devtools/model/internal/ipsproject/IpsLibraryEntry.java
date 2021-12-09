@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsLibraryEntry;
@@ -35,7 +35,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     protected abstract IIpsStorage getIpsStorage();
 
-    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;
+    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreRuntimeException;
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
@@ -58,7 +58,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
+    public void initFromXml(Element element, AProject project) {
         super.initFromXml(element, project);
         String path = element.getAttribute(getXmlAttributePathName());
         try {

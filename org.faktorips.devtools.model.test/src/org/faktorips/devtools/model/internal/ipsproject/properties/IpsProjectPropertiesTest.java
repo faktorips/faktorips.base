@@ -10,9 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -26,11 +23,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -72,7 +69,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptNamingStrategy() throws CoreException {
+    public void testValidate_ProductCmptNamingStrategy() throws CoreRuntimeException {
         ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
         MessageList result = properties.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
@@ -95,7 +92,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RequiredFeatures() throws CoreException {
+    public void testValidate_RequiredFeatures() throws CoreRuntimeException {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
@@ -123,7 +120,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DefinedDatatypes() throws CoreException {
+    public void testValidate_DefinedDatatypes() throws CoreRuntimeException {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -138,7 +135,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_PredefinedDatatypes() throws CoreException {
+    public void testValidate_PredefinedDatatypes() throws CoreRuntimeException {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -155,7 +152,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
+    public void testValidate_SupportedLanguagesIsoConformity() throws CoreRuntimeException {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -173,7 +170,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
+    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreRuntimeException {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -191,21 +188,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         list = props.validate(ipsProject);
         assertEquals(numOfMessages + 1, list.size());
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testValidate_DeprecatedBusinessFunctions() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setBusinessFunctionsForValidationRules(false);
-        MessageList list = props.validate(ipsProject);
-        assertThat(list,
-                not(hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED)));
-
-        props.setBusinessFunctionsForValidationRules(true);
-        list = props.validate(ipsProject);
-        assertThat(list,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
     }
 
     @Test

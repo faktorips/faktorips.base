@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.model.testcase;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.IRuntimeRepository;
 
@@ -54,7 +54,7 @@ public interface ITocTreeFromDependencyManagerLoader {
      *
      * @param ipsProject the project to load the dependencies from
      * @param repositoryPackages the result as serialized tree a described above
-     * @throws CoreException from e.g. m2e eclipse plugin or gradle buildship plugin
+     * @throws CoreRuntimeException from e.g. m2e eclipse plugin or gradle buildship plugin
      */
-    void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages) throws CoreException;
+    void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages) throws CoreRuntimeException;
 }

@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -45,7 +45,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     @Override
     public boolean performFinish() {
         final Set<IFixDifferencesToModelSupport> elementsToFix = elementSelectionPage.getElementsToFix();
-        final IWorkspaceRunnable op = monitor -> {
+        final ICoreRunnable op = monitor -> {
             monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.size() + 1);
             Set<IFixDifferencesToModelSupport> sortedElements = SortedByDependency.sortByInstanceOf(elementsToFix);
             monitor.worked(1);

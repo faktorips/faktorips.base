@@ -22,6 +22,7 @@ import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
@@ -29,7 +30,7 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
     private IoHandler fileHandler = new FileHandler();
 
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreRuntimeException {
         writeProjectOverviewPage(context);
 
         // TODO HIER WEITERMACHEN!!!;

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.builder;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,12 +19,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.model.abstraction.ABuildKind;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.naming.JavaPackageStructure;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -59,7 +62,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     private List<String> retainedAnnotations = new ArrayList<>();
 
     @Override
-    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
+    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         if (root == null) {
             return null;
         }
@@ -70,26 +73,26 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         String basePackInternal = javaPackageStructure.getBasePackageName(entry, true, false);
         IPath path = QNameUtil.toPath(basePackInternal);
         path = path.append(entry.getBasePackageRelativeTocPath());
-        IFolder tocFileLocation = getTocFileLocation(root);
+        AFolder tocFileLocation = getTocFileLocation(root);
         if (tocFileLocation == null) {
             return null;
         }
-        return tocFileLocation.getFile(path);
+        return tocFileLocation.getFile(toJavaPath(path));
     }
 
-    private IFolder getTocFileLocation(IIpsPackageFragmentRoot root) {
+    private AFolder getTocFileLocation(IIpsPackageFragmentRoot root) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getOutputFolderForDerivedJavaFiles();
     }
 
     @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
-        IFile tocFile = getRuntimeRepositoryTocFile(root);
+        AFile tocFile = getRuntimeRepositoryTocFile(root);
         if (tocFile == null) {
             return null;
         }
-        IFolder tocFileLocation = getTocFileLocation(root);
-        return tocFile.getFullPath().removeFirstSegments(tocFileLocation.getFullPath().segmentCount()).toString();
+        AFolder tocFileLocation = getTocFileLocation(root);
+        return tocFileLocation.getWorkspaceRelativePath().relativize(tocFile.getWorkspaceRelativePath()).toString();
     }
 
     @Override
@@ -115,7 +118,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) throws CoreRuntimeException {
 
         return null;
     }
@@ -127,7 +130,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
         return null;
     }
 
@@ -147,7 +150,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public void beforeBuildProcess(int buildKind) throws CoreException {
+    public void beforeBuildProcess(ABuildKind buildKind) throws CoreRuntimeException {
         super.beforeBuildProcess(buildKind);
         initAdditionalAnnotationsAndImports();
         retainedAnnotations = initRetainedAnnotations();

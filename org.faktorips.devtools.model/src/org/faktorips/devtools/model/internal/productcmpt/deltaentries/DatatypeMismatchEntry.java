@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,8 +21,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -70,8 +69,8 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @Override
     public String getDescription() {
-
-        return NLS.bind(Messages.DatatypeMismatchEntry_datatypeMissmatchDescription, String.join(", ", oldValues), //$NON-NLS-1$
+        return MessageFormat.format(Messages.DatatypeMismatchEntry_datatypeMissmatchDescription,
+                String.join(", ", oldValues), //$NON-NLS-1$
                 String.join(", ", convertedValues())); //$NON-NLS-1$
     }
 
@@ -114,21 +113,17 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         try {
             return attributeValue.validate(attributeValue.getIpsProject()).getMessageByCode(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE) != null;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // conversion doesn't make sense in exception case
             return false;
         }
     }
 
     private static ValueDatatype findDatatype(IPropertyValue attributeValue) {
-        try {
-            IIpsProject ipsProject = attributeValue.getIpsProject();
-            IProductCmptProperty property = attributeValue.findProperty(ipsProject);
-            String datatype = property.getPropertyDatatype();
-            return ipsProject.findValueDatatype(datatype);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject ipsProject = attributeValue.getIpsProject();
+        IProductCmptProperty property = attributeValue.findProperty(ipsProject);
+        String datatype = property.getPropertyDatatype();
+        return ipsProject.findValueDatatype(datatype);
     }
 
     @SuppressWarnings("unchecked")

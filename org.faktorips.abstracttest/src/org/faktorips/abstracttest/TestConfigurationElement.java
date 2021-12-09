@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * A test implementation of the IConfigurationElement to test extension point loading code without
@@ -59,7 +59,7 @@ public class TestConfigurationElement
     }
 
     @Override
-    public Object createExecutableExtension(String propertyName) throws CoreException {
+    public Object createExecutableExtension(String propertyName) throws CoreRuntimeException {
         return executableExtensionMap.get(propertyName);
     }
 

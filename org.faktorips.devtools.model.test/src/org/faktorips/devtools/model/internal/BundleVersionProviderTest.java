@@ -22,10 +22,9 @@ import java.io.InputStream;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IVersion;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,10 +46,10 @@ public class BundleVersionProviderTest {
     private IIpsProject ipsProject;
 
     @Mock
-    private IProject project;
+    private AProject project;
 
     @Mock
-    private IFile file;
+    private AFile file;
 
     @Mock
     private Attributes attributes;
@@ -59,7 +58,7 @@ public class BundleVersionProviderTest {
     private InputStream inputStream;
 
     @Before
-    public void setUp() throws IOException, CoreException {
+    public void setUp() throws IOException {
         doReturn(project).when(ipsProject).getProject();
         when(project.getFile(JarFile.MANIFEST_NAME)).thenReturn(file);
         doReturn(inputStream).when(file).getContents();

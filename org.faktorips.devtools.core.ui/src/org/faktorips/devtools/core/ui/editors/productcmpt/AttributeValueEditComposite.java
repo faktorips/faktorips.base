@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
@@ -69,7 +69,7 @@ public class AttributeValueEditComposite
     }
 
     @Override
-    protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
+    protected void createEditFields(List<EditField<?>> editFields) throws CoreRuntimeException {
         createValueEditField(editFields);
         createEditFieldsForExtensionProperties();
     }

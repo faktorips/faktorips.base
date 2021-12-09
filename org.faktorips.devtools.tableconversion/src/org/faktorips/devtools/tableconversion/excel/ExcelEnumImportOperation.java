@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.Messages;
@@ -76,7 +77,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         IProgressMonitor progressMonitor;
         if (monitor == null) {
             progressMonitor = new NullProgressMonitor();
@@ -119,7 +120,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     }
 
     private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());

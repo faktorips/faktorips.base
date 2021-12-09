@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -73,7 +73,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) throws CoreRuntimeException {
         super.setDefaults(selectedResource);
         IIpsObject obj = getSelectedIpsObject();
         if (obj instanceof ITestCaseType) {
@@ -84,7 +84,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() throws CoreRuntimeException {
         if (getErrorMessage() != null) {
             return;
         }
@@ -95,7 +95,7 @@ public class TestCasePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;
@@ -108,7 +108,7 @@ public class TestCasePage extends IpsObjectPage {
      * Generate the default content for the given test case. All test value parameter will be
      * created, because for this kind of parameter there is no add functionality.
      */
-    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreException {
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreRuntimeException {
         for (ITestParameter element : parameter) {
             if (element instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();

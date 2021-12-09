@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
@@ -53,9 +53,9 @@ public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
     @Override
     public String getDescription() {
         if (attribute.isMultiValueAttribute()) {
-            return NLS.bind(Messages.ValueMismatchEntry_convertSingleToMultiValue, getPropertyName());
+            return MessageFormat.format(Messages.ValueMismatchEntry_convertSingleToMultiValue, getPropertyName());
         } else {
-            return NLS.bind(Messages.ValueMismatchEntry_convertMultiToSingleValue, getPropertyName());
+            return MessageFormat.format(Messages.ValueMismatchEntry_convertMultiToSingleValue, getPropertyName());
         }
     }
 

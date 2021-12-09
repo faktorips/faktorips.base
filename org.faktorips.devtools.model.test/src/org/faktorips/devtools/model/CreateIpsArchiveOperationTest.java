@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,12 +20,11 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.ABuildKind;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchive;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -44,13 +44,13 @@ import org.junit.Test;
 public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testRun() throws CoreException {
+    public void testRun() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorCoverage", "mycompany.motor.MotorCoverageType");
         newPolicyAndProductCmptType(project, "mycompany.home.HomePolicy", "mycompany.home.HomeProduct");
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
-        archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
+        archiveFile.getWorkspace().build(ABuildKind.FULL_BUILD, null);
 
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
@@ -61,7 +61,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
+        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(2, packs.length);
         assertEquals("mycompany.home", packs[0]);
@@ -76,7 +76,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithIconFile() throws CoreException {
+    public void testRunWithIconFile() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -89,12 +89,12 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test123.ipsar");
+        AFile archiveFile = project.getProject().getFile("test123.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -102,7 +102,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
+        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor", packs[0]);
@@ -122,7 +122,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
      * The same icon is used in two product component types
      */
     @Test
-    public void testRun_withDoubledIconFile() throws CoreException {
+    public void testRun_withDoubledIconFile() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy2", "mycompany.motor.MotorProduct2");
@@ -142,12 +142,12 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test123.ipsar");
+        AFile archiveFile = project.getProject().getFile("test123.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -157,7 +157,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithErroneousIconFile() throws CoreException {
+    public void testRunWithErroneousIconFile() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -170,12 +170,12 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -183,7 +183,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
+        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor", packs[0]);

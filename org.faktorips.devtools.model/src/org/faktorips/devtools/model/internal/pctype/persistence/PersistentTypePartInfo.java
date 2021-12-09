@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -89,7 +90,7 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         validateIndexName(list);
     }
@@ -97,7 +98,7 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
     private void validateIndexName(MessageList msgList) {
         if (isIndexNameDefined()) {
             if (!PersistenceUtil.isValidDatabaseIdentifier(indexName)) {
-                String text = NLS.bind(Messages.PersistentInfo_msgIndexNameIsInvalid, indexName);
+                String text = MessageFormat.format(Messages.PersistentInfo_msgIndexNameIsInvalid, indexName);
                 msgList.add(Message.newError(MSGCODE_INDEX_NAME_INVALID, text, this, PROPERTY_INDEX_NAME));
             }
         }

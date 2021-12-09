@@ -26,6 +26,7 @@ import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
@@ -77,12 +78,12 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() throws CoreRuntimeException {
         assertEquals(0, literalNameAttribute.validate(ipsProject).size());
     }
 
     @Test
-    public void testValidateIsNeeded() throws CoreException {
+    public void testValidateIsNeeded() throws CoreRuntimeException {
         paymentMode.setAbstract(true);
         assertOneValidationMessage(literalNameAttribute);
         assertTrue(hasLiteralNameNotNeededMessage(literalNameAttribute));
@@ -98,12 +99,12 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(hasLiteralNameNotNeededMessage(literalNameAttribute));
     }
 
-    private void assertOneValidationMessage(IEnumLiteralNameAttribute literalNameAttribute2) throws CoreException {
+    private void assertOneValidationMessage(IEnumLiteralNameAttribute literalNameAttribute2) throws CoreRuntimeException {
         assertOneValidationMessage(literalNameAttribute2.validate(ipsProject));
     }
 
     private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2)
-            throws CoreException {
+            throws CoreRuntimeException {
         MessageList validationMessageList = literalNameAttribute2.validate(ipsProject);
         Message notNeededMessage = validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED);
@@ -111,14 +112,14 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributePassValidationIfAttributeNotSpecified() throws CoreException {
+    public void testValidateDefaultValueProviderAttributePassValidationIfAttributeNotSpecified() throws CoreRuntimeException {
         literalNameAttribute.setDefaultValueProviderAttribute("");
         assertTrue(literalNameAttribute.isValid(ipsProject));
 
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeNotExistingProviderAttribute() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeNotExistingProviderAttribute() throws CoreRuntimeException {
         literalNameAttribute.setDefaultValueProviderAttribute("foo");
         getIpsModel().clearValidationCache();
         MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
@@ -130,7 +131,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeProviderAttributeNotString() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeProviderAttributeNotString() throws CoreRuntimeException {
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("invalidProviderAttribute");
         invalidProviderAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -146,7 +147,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeUniquePossible() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeUniquePossible() throws CoreRuntimeException {
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("notUniqueProviderAttribute");
         invalidProviderAttribute.setUnique(false);

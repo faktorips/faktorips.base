@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -257,9 +258,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
      * 
-     * @throws CoreException if the contents of the resource can't be parsed.
+     * @throws CoreRuntimeException if the contents of the resource can't be parsed.
      */
-    public IIpsObject getSelectedIpsObject() throws CoreException {
+    public IIpsObject getSelectedIpsObject() throws CoreRuntimeException {
         if (selectedResource == null) {
             return null;
         }
@@ -292,7 +293,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Validates the page and generates error messages if needed. Can be overridden in subclasses to
      * add specific validation logic.s
      */
-    protected void validatePage() throws CoreException {
+    protected void validatePage() throws CoreRuntimeException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         IIpsProject project = getIpsProject();

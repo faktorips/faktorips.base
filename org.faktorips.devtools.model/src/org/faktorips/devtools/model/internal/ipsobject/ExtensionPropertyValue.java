@@ -169,7 +169,7 @@ public abstract class ExtensionPropertyValue {
                             newElement.appendChild(newTextNode);
                             break;
                         default:
-                            IpsLog.get().log(new IpsStatus(IStatus.WARNING,
+                            IpsLog.log(new IpsStatus(IStatus.WARNING,
                                     "Can't copy node of type " + childNode.getNodeType() + " to XML")); //$NON-NLS-1$//$NON-NLS-2$
                             // we don't expect other elements
                     }

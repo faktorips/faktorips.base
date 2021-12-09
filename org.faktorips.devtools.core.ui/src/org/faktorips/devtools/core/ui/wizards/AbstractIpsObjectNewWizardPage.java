@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -101,7 +102,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) throws CoreRuntimeException {
         setDefaultsExtension(selectedResource);
         if (selectedResource == null) {
             setIpsPackageFragmentRoot(null);
@@ -134,9 +135,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * Subclasses may override to set default values based upon the user selection.
      * 
      * @param selectedResource the selected resource
-     * @throws CoreException in any case of exception
+     * @throws CoreRuntimeException in any case of exception
      */
-    protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+    protected void setDefaultsExtension(IResource selectedResource) throws CoreRuntimeException {
         // subclasses may override
     }
 
@@ -144,9 +145,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
      * 
-     * @throws CoreException if the contents of the resource can't be parsed.
+     * @throws CoreRuntimeException if the contents of the resource can't be parsed.
      */
-    public IIpsObject getSelectedIpsObject() throws CoreException {
+    public IIpsObject getSelectedIpsObject() throws CoreRuntimeException {
         if (selectedResource == null) {
             return null;
         }
@@ -182,9 +183,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * This method is called when the page is entered. By default it calls the setDefaultFocus()
      * method.
      * 
-     * @throws CoreException in any case of exception
+     * @throws CoreRuntimeException in any case of exception
      */
-    protected void pageEntered() throws CoreException {
+    protected void pageEntered() throws CoreRuntimeException {
         setDefaultFocus();
     }
 
@@ -221,9 +222,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * 
      * @param monitor the wizards progress monitor
      * @return the new {@link IIpsSrcFile}
-     * @throws CoreException when an exception ocurrs during creation
+     * @throws CoreRuntimeException when an exception ocurrs during creation
      */
-    protected abstract IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException;
+    protected abstract IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException;
 
     /**
      * Implementations must provide an {@link IIpsPackageFragment} for the wizard by this method.
@@ -243,10 +244,10 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      *            of the new {@link IIpsObject} need to be registered in this set so that the wizard
      *            can also save the changed state of these objects.
      * 
-     * @throws CoreException if an exception occurs during finishing
+     * @throws CoreRuntimeException if an exception occurs during finishing
      */
     public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
     }
@@ -260,10 +261,10 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      *            finishing of the new {@link IIpsObject} need to be registered in this set so that
      *            the wizard can also save the changed state of these objects.
      * 
-     * @throws CoreException if an exception occurs during finishing
+     * @throws CoreRuntimeException if an exception occurs during finishing
      */
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         // Empty default implementation, subclasses may override
     }

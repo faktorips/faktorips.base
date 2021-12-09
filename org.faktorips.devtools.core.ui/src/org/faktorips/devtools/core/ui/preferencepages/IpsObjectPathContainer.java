@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
@@ -101,9 +102,9 @@ public class IpsObjectPathContainer {
      * 
      * @param parent control
      * @return IPS objectpath control
-     * @throws CoreException if the control could not be created
+     * @throws CoreRuntimeException if the control could not be created
      */
-    public Control createControl(final Composite parent) throws CoreException {
+    public Control createControl(final Composite parent) throws CoreRuntimeException {
         final UIToolkit toolkit = new UIToolkit(null);
         ipsObjectPathContainerPmo.addPropertyChangeListener(pce -> {
             if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {

@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * The Faktor-IPS editor to edit <code>IEnumType</code> objects with.
@@ -45,7 +46,7 @@ public class EnumTypeEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         return new EnumsDescriptionPage(getEnumType());
     }
 

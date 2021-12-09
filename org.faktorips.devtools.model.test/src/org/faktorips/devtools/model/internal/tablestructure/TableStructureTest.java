@@ -25,13 +25,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -394,7 +394,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllMetaObjects() throws CoreException {
+    public void testFindAllMetaObjects() throws CoreRuntimeException {
         String tableStructureQName = "pack.MyTableStructure";
         String tableStructureProj2QName = "otherpack.MyTableStructureProj2";
         String tableContent1QName = "pack.MyTableContent1";

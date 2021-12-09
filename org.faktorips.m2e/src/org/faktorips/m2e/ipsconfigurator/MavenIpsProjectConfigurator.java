@@ -88,7 +88,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProject project = ipsProject.getProject();
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
 
@@ -143,9 +143,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Adds all properties to the .ipsproject file which are required for using Maven.
      * 
      * @param ipsProject The created {@link IIpsProject}
-     * @throws CoreException If setting the properties failed
+     * @throws CoreRuntimeException If setting the properties failed
      */
-    private void addIpsProjectProperties(IIpsProject ipsProject) throws CoreException {
+    private void addIpsProjectProperties(IIpsProject ipsProject) throws CoreRuntimeException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setVersionProviderId("org.faktorips.maven.mavenVersionProvider");
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
@@ -165,10 +165,10 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @param ipsProject The created {@link IIpsProject}
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
      *            creating a Faktor-IPS project
-     * @throws CoreException If creating the manifest file failed
+     * @throws CoreRuntimeException If creating the manifest file failed
      */
     private void createManifestFile(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
+            throws CoreRuntimeException {
         IProject project = ipsProject.getProject();
         IFolder metaInfFolder = project.getFolder(META_INF_FOLDER);
         if (!metaInfFolder.exists()) {
@@ -230,10 +230,10 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @param resourcesPath The path to the resources folder
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
      *            creating a Faktor-IPS project
-     * @throws CoreException If configuring the project failed
+     * @throws CoreRuntimeException If configuring the project failed
      */
     private void configureMaven(IProject project, String resourcesPath, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
+            throws CoreRuntimeException {
         IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
         if (facade == null) {
             String message = String.format("The project \"%s\" is not a Maven project", project.getName());
@@ -274,9 +274,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      *           does not update the POM file itself.
      * 
      * @param mavenModel The model to be written to the POM file
-     * @throws CoreException If updating the POM file failed
+     * @throws CoreRuntimeException If updating the POM file failed
      */
-    private void writePom(Model mavenModel) throws CoreException {
+    private void writePom(Model mavenModel) throws CoreRuntimeException {
         try (FileOutputStream fileOutputStream = new FileOutputStream(mavenModel.getPomFile())) {
             MavenPlugin.getMaven().writeModel(mavenModel, fileOutputStream);
         } catch (IOException e) {
@@ -306,7 +306,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      *            about the required dependencies
      */
     private void addMavenDependencies(Model mavenModel, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
+            throws CoreRuntimeException {
         String ipsVersion = String.format("${%s}", MAVEN_PROPERTY_IPS_VERSION);
 
         Set<String> dependencies = mavenModel.getDependencies().stream()

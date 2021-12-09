@@ -12,12 +12,12 @@ package org.faktorips.devtools.model.internal.ipsproject.jdtcontainer;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
@@ -150,7 +150,7 @@ public class JdtClasspathEntryCreator {
         }
 
         public IIpsProject getIpsProject(IPath path) {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
+            AProject project = Abstractions.getWorkspace().getRoot().getProject(path.lastSegment());
             IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
             return ipsProject;
         }

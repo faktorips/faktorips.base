@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -71,7 +71,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
         return findTableStructureUsage(ipsProject);
     }
 
@@ -145,12 +145,12 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException {
+    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreRuntimeException {
         return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, getTableContentName());
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         String tableContentNameToValidate = getTableContentName();
         IProductCmptType type = getProductCmptType(ipsProject);
@@ -161,7 +161,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
 
         ITableStructureUsage tsu = type.findTableStructureUsage(structureUsage, ipsProject);
         if (tsu == null) {
-            String text = NLS.bind(Messages.TableContentUsage_msgUnknownStructureUsage, structureUsage);
+            String text = MessageFormat.format(Messages.TableContentUsage_msgUnknownStructureUsage, structureUsage);
             list.add(new Message(MSGCODE_UNKNOWN_STRUCTURE_USAGE, text, Message.ERROR, this, PROPERTY_STRUCTURE_USAGE));
             return;
         }
@@ -172,15 +172,16 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
         }
         if (content == null) {
             if (!isNullContentAllowed(tsu)) {
-                String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentNameToValidate);
+                String text = MessageFormat.format(Messages.TableContentUsage_msgUnknownTableContent,
+                        tableContentNameToValidate);
                 list.add(new Message(MSGCODE_UNKNOWN_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
             }
             return;
         }
         String usedStructure = content.getTableStructure();
         if (!tsu.isUsed(usedStructure)) {
-            String[] params = { tableContentNameToValidate, usedStructure, structureUsage };
-            String text = NLS.bind(Messages.TableContentUsage_msgInvalidTableContent, params);
+            String text = MessageFormat.format(Messages.TableContentUsage_msgInvalidTableContent,
+                    tableContentNameToValidate, usedStructure, structureUsage);
             list.add(new Message(MSGCODE_INVALID_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
         }
     }
@@ -210,7 +211,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreException {
+    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreRuntimeException {
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {
             return null;
@@ -219,7 +220,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) throws CoreRuntimeException {
         ArgumentCheck.notNull(locale);
 
         ITableStructureUsage currentStructureUsage = findTableStructureUsage(getIpsProject());

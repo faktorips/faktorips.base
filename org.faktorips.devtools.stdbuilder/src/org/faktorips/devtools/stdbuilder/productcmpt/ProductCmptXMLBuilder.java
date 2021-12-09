@@ -247,7 +247,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     @Override
     public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            throws CoreException {
+            throws CoreRuntimeException {
         super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
     }
 

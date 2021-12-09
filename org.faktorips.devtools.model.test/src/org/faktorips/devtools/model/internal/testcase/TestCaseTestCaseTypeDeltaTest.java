@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -54,7 +54,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsEmpty() throws CoreException {
+    public void testIsEmpty() throws CoreRuntimeException {
         ITestCaseTestCaseTypeDelta delta = testCase.computeDeltaToModel(ipsProject);
         assertTrue(delta.isEmpty());
         assertDeltaContainer(delta, 0, 0, 0, 0, 0, 0, 0);
@@ -76,7 +76,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestValuesWithMissingTestValueParam() throws CoreException {
+    public void testGetTestValuesWithMissingTestValueParam() throws CoreRuntimeException {
         ITestValue value = testCase.newTestValue();
         value.setTestValueParameter("TestValueParam1");
 
@@ -88,7 +88,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestRulesWithMissingTestValueParam() throws CoreException {
+    public void testGetTestRulesWithMissingTestValueParam() throws CoreRuntimeException {
         ITestRule rule = testCase.newTestRule();
         rule.setTestRuleParameter("TestRuleParam1");
 
@@ -110,7 +110,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestPolicyCmptsWithMissingTypeParam() throws CoreException {
+    public void testGetTestPolicyCmptsWithMissingTypeParam() throws CoreRuntimeException {
         ITestPolicyCmpt cmpt = testCase.newTestPolicyCmpt();
         cmpt.setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
 
@@ -122,7 +122,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestPolicyCmptAssociationsWithMissingTypeParam() throws CoreException {
+    public void testGetTestPolicyCmptAssociationsWithMissingTypeParam() throws CoreRuntimeException {
         addNewPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
         ITestPolicyCmpt cmpt = testCase.newTestPolicyCmpt();
         cmpt.setTestPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
@@ -137,7 +137,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestAttributeValuesWithMissingTestAttribute() throws CoreException {
+    public void testGetTestAttributeValuesWithMissingTestAttribute() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param = addNewPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
         ITestAttribute attribute = param.newInputTestAttribute();
         attribute.setName("Attribute1");
@@ -165,7 +165,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestValueParametersWithMissingTestValue() throws CoreException {
+    public void testGetTestValueParametersWithMissingTestValue() throws CoreRuntimeException {
         ITestValueParameter testValueParam1 = testCaseType.newInputTestValueParameter();
         testValueParam1.setName("TestValueParam1");
         testValueParam1.setDatatype("String");
@@ -185,7 +185,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt() throws CoreException {
+    public void testGetTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param = addNewPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
         ITestAttribute testAttribute1 = param.newInputTestAttribute();
         testAttribute1.setName("TestAttribute1");
@@ -209,7 +209,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTestAttributesWithMissingTestAttributeValue() throws CoreException {
+    public void testGetTestAttributesWithMissingTestAttributeValue() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param = addNewPolicyCmptTypeParameter("TestPolicyCmptTypeParam1");
         ITestAttribute testAttribute1 = param.newInputTestAttribute();
         testAttribute1.setName("Attribute1");
@@ -239,7 +239,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
      * Test with complex content of test case type and test case
      */
     @Test
-    public void testComplex() throws CoreException {
+    public void testComplex() throws CoreRuntimeException {
         assertDeltaContainer(testCase.computeDeltaToModel(ipsProject), 0, 0, 0, 0, 0, 0, 0);
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("TestParam1");
         param1.setTestParameterType(TestParameterType.COMBINED);
@@ -346,7 +346,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderTestPolicyCmpt() throws CoreException {
+    public void testDifferentSortOrderTestPolicyCmpt() throws CoreRuntimeException {
         addNewPolicyCmptTypeParameter("a1");
         addNewPolicyCmptTypeParameter("a2");
         addNewPolicyCmptTypeParameter("a3");
@@ -360,7 +360,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderTestValue() throws CoreException {
+    public void testDifferentSortOrderTestValue() throws CoreRuntimeException {
         ITestValueParameter parameter = testCaseType.newInputTestValueParameter();
         parameter.setName("a1");
         parameter.setDatatype("String");
@@ -382,7 +382,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderTestRule() throws CoreException {
+    public void testDifferentSortOrderTestRule() throws CoreRuntimeException {
         testCaseType.newExpectedResultRuleParameter().setName("a1");
         testCaseType.newExpectedResultRuleParameter().setName("a2");
         testCaseType.newExpectedResultRuleParameter().setName("a3");
@@ -396,7 +396,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSameSortOrderTestRule() throws CoreException {
+    public void testSameSortOrderTestRule() throws CoreRuntimeException {
         testCaseType.newExpectedResultRuleParameter().setName("a1");
         testCaseType.newExpectedResultRuleParameter().setName("a2");
         testCaseType.newExpectedResultRuleParameter().setName("a3");
@@ -410,7 +410,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderTestRuleSameRuleParam() throws CoreException {
+    public void testDifferentSortOrderTestRuleSameRuleParam() throws CoreRuntimeException {
         ITestValueParameter parameter = testCaseType.newInputTestValueParameter();
         parameter.setName("Value1");
         parameter.setDatatype("String");
@@ -436,7 +436,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderMixed() throws CoreException {
+    public void testDifferentSortOrderMixed() throws CoreRuntimeException {
         testCaseType.newExpectedResultRuleParameter().setName("a0");
         ITestValueParameter parameter = testCaseType.newInputTestValueParameter();
         parameter.setName("a1");
@@ -474,7 +474,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEqualSortOrderChilds() throws CoreException {
+    public void testEqualSortOrderChilds() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("Param1");
         param1.setTestParameterType(TestParameterType.COMBINED);
         IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
@@ -522,7 +522,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderChilds() throws CoreException {
+    public void testDifferentSortOrderChilds() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("Param1");
         param1.setTestParameterType(TestParameterType.COMBINED);
         IPolicyCmptType policyCmptType = param1.findPolicyCmptType(ipsProject);
@@ -570,7 +570,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderChildOfChilds() throws CoreException {
+    public void testDifferentSortOrderChildOfChilds() throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param1 = addNewPolicyCmptTypeParameter("Param1");
         param1.setTestParameterType(TestParameterType.COMBINED);
 
@@ -664,7 +664,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
      * created for each instance
      */
     @Test
-    public void testNewAttributeForEqualInstances() throws CoreException {
+    public void testNewAttributeForEqualInstances() throws CoreRuntimeException {
         // test case type side
         IPolicyCmptType childPolicyCmptType = newPolicyCmptType(ipsProject, "Child");
         childPolicyCmptType.newPolicyCmptTypeAttribute().setName("TestAttribute1");
@@ -754,7 +754,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
      * Fixes the delta and assert that there is no new delta between the test case and test case
      * type.
      */
-    private void fixAndAssert(ITestCaseTestCaseTypeDelta delta) throws CoreException {
+    private void fixAndAssert(ITestCaseTestCaseTypeDelta delta) throws CoreRuntimeException {
         testCase.fixDifferences(delta);
         ITestCaseTestCaseTypeDelta newDelta = testCase.computeDeltaToModel(ipsProject);
         assertFalse(newDelta.isDifferentTestParameterOrder());
@@ -763,7 +763,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDifferentSortOrderAttributes() throws CoreException {
+    public void testDifferentSortOrderAttributes() throws CoreRuntimeException {
         newPolicyCmptType(ipsProject, "policyCmpt");
         ITestPolicyCmptTypeParameter param1 = testCaseType.newExpectedResultPolicyCmptTypeParameter();
         param1.setName("policyCmpt");
@@ -799,7 +799,7 @@ public class TestCaseTestCaseTypeDeltaTest extends AbstractIpsPluginTest {
         fixAndAssert(delta);
     }
 
-    private ITestPolicyCmptTypeParameter addNewPolicyCmptTypeParameter(String name) throws CoreException {
+    private ITestPolicyCmptTypeParameter addNewPolicyCmptTypeParameter(String name) throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param = testCaseType.newInputTestPolicyCmptTypeParameter();
         param.setName(name);
         IPolicyCmptType testPolicyCmptType = newPolicyCmptType(ipsProject, name);

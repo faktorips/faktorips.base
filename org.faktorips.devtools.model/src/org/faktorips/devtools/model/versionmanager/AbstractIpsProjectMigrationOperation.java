@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
@@ -88,7 +88,7 @@ public abstract class AbstractIpsProjectMigrationOperation {
      * @param monitor Progress monitor to report progress to, can be <code>null</code>.
      */
     // CSOFF: ThrowsCount
-    public abstract MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    public abstract MessageList migrate(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
             InterruptedException;
     // CSON: ThrowsCount
 

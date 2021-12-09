@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AFile.AEclipseFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -58,7 +59,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException {
         String minRequiredVersionNumber = getIpsProject().getProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
         int majorVersion = Integer
@@ -83,7 +84,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     private void updatePluginId(String fileName, IProgressMonitor monitor) {
-        IFile file = getIpsProject().getProject().getFile(fileName);
+        IFile file = ((AEclipseFile)getIpsProject().getProject().getFile(fileName)).unwrap();
         update(file, c -> c.replace(IpsPlugin.PLUGIN_ID, IpsModelActivator.PLUGIN_ID), monitor);
     }
 

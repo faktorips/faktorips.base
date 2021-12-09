@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -250,9 +249,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching for the target.
+     * @throws CoreRuntimeException If an error occurs while searching for the target.
      */
-    public IType findTarget(IIpsProject ipsProject) throws CoreException;
+    public IType findTarget(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Sets the qualified name of the target type.
@@ -432,9 +431,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching for the derived union.
+     * @throws CoreRuntimeException If an error occurs while searching for the derived union.
      */
-    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws CoreException;
+    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Searches the derived union association and returns it, if it exists. Returns
@@ -446,9 +445,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws CoreRuntimeException If an error occurs while searching.
      */
-    public IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws CoreException;
+    public IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Searches for derived union associations in the type's hierarchy (of the type this association
@@ -458,9 +457,9 @@ public interface IAssociation extends ITypePart {
      * <p>
      * Returns an empty array if no such associations exist.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws CoreRuntimeException If an error occurs while searching.
      */
-    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException;
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * This method looks for an association with the same name in the super type hierarchy. It

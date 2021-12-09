@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -113,7 +114,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * <p>
      * Returns true if valid, false otherwise.
      */
-    private final boolean validateUserInput() throws CoreException {
+    private final boolean validateUserInput() throws CoreRuntimeException {
         resetPageMessages();
 
         RefactoringStatus status = new RefactoringStatus();
@@ -128,7 +129,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * 
      * @param status {@link RefactoringStatus} to add messages to
      */
-    protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreException;
+    protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreRuntimeException;
 
     /**
      * Evaluates the given {@link RefactoringStatus} by setting appropriate page messages.

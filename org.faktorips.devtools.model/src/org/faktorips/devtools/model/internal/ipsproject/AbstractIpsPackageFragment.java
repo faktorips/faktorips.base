@@ -14,10 +14,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -50,7 +50,7 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsElement[] getChildren() throws CoreRuntimeException {
         return getIpsSrcFiles();
     }
 
@@ -121,16 +121,16 @@ public abstract class AbstractIpsPackageFragment extends IpsElement implements I
     /**
      * Searches all objects of the given type and adds them to the result.
      * 
-     * @throws CoreException if an error occurs while searching
+     * @throws CoreRuntimeException if an error occurs while searching
      */
-    public abstract void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException;
+    public abstract void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreRuntimeException;
 
     /**
      * Searches all IPS source files of the given type and adds them to the result.
      * 
-     * @throws CoreException if an error occurs while searching
+     * @throws CoreRuntimeException if an error occurs while searching
      */
-    public abstract void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException;
+    public abstract void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreRuntimeException;
 
     private static class AlphaNumericSimpleNameComparator implements Comparator<IIpsElement>, Serializable {
 

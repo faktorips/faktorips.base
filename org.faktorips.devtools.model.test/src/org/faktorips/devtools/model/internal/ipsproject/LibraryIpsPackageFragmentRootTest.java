@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,14 +19,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -44,7 +45,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IpsArchiveEntry entry;
-    private IFile archiveFile;
+    private AFile archiveFile;
     private LibraryIpsPackageFragmentRoot root;
     private IPolicyCmptType type;
 
@@ -65,28 +66,28 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getFullPath());
+        entry = (IpsArchiveEntry)path.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
         project.setIpsObjectPath(path);
         root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
 
     @Test
-    public void testExists_ArchiveInSameProject() throws CoreException {
+    public void testExists_ArchiveInSameProject() throws CoreRuntimeException {
         assertTrue(root.exists());
-        archiveFile.delete(true, null);
+        archiveFile.delete(null);
         assertFalse(root.exists());
     }
 
     @Test
-    public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreException {
+    public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreRuntimeException {
         IIpsProject project2 = newIpsProject("Project2");
         IIpsObjectPath path2 = project2.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getFullPath());
+        entry = (IpsArchiveEntry)path2.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
         project2.setIpsObjectPath(path2);
         root = (LibraryIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
 
         assertTrue(root.exists());
-        archiveFile.delete(true, null);
+        archiveFile.delete(null);
         assertFalse(root.exists());
     }
 
@@ -121,7 +122,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsPackageFragments() throws CoreException {
+    public void testGetIpsPackageFragments() throws CoreRuntimeException {
         IIpsPackageFragment[] packs = root.getIpsPackageFragments();
         assertEquals(2, packs.length);
         assertEquals("motor", packs[0].getName());
@@ -129,8 +130,8 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetNonIpsResources() throws CoreException {
-        IResource[] res = root.getNonIpsResources();
+    public void testGetNonIpsResources() throws CoreRuntimeException {
+        AResource[] res = root.getNonIpsResources();
         assertEquals(0, res.length);
     }
 
@@ -145,7 +146,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSourceFiles() throws CoreException {
+    public void testFindIpsSourceFiles() throws CoreRuntimeException {
         List<IIpsSrcFile> result = new ArrayList<>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);
         assertEquals(2, result.size());
@@ -167,7 +168,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreException {
+    public void testDelete() throws CoreRuntimeException {
         root.delete();
     }
 
@@ -188,8 +189,9 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
 
         IIpsProject otherProject = newIpsProject();
         IIpsObjectPath path = otherProject.getIpsObjectPath();
-        IFile otherArchiveFile = otherProject.getProject().getFile("test.ipsar");
-        IpsArchiveEntry otherEntry = (IpsArchiveEntry)path.newArchiveEntry(otherArchiveFile.getFullPath());
+        AFile otherArchiveFile = otherProject.getProject().getFile("test.ipsar");
+        IpsArchiveEntry otherEntry = (IpsArchiveEntry)path
+                .newArchiveEntry(toEclipsePath(otherArchiveFile.getWorkspaceRelativePath()));
         otherProject.setIpsObjectPath(path);
 
         LibraryIpsPackageFragmentRoot otherProjectRoot = new LibraryIpsPackageFragmentRoot(otherProject,

@@ -16,8 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -103,7 +103,7 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValidateTypeDoesNotAcceptChangingOverTime_ProductCmptTypeIsNull() throws CoreException {
+    public void testValidateTypeDoesNotAcceptChangingOverTime_ProductCmptTypeIsNull() throws CoreRuntimeException {
         IPolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "PolicyWithoutProductCmptType");
         policyWithoutProductCmptType.setConfigurableByProductCmptType(true);

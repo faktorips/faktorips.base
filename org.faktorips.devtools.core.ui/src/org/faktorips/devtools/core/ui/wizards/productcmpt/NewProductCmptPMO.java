@@ -179,7 +179,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         }
     }
 
-    private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreException {
+    private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreRuntimeException {
         Set<IIpsSrcFile> superTypes = new HashSet<>();
         for (IIpsSrcFile ipsSrcFile : types) {
             if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {

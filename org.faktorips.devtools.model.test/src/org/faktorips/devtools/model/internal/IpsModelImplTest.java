@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -31,7 +31,7 @@ public class IpsModelImplTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObjectPath() throws CoreException {
+    public void testGetIpsObjectPath() throws CoreRuntimeException {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("newpackage");
         ipsProject.setIpsObjectPath(path);

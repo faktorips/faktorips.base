@@ -18,11 +18,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -43,7 +43,7 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
         markerEnumUtil = new MarkerEnumUtil(ipsProject);
     }
 
-    private void setupMarkerDefinition() throws CoreException {
+    private void setupMarkerDefinition() throws CoreRuntimeException {
         markerDefinition = newEnumType(ipsProject, "qualified.markerEnum");
         IEnumAttribute idAttribute = markerDefinition.newEnumAttribute();
         idAttribute.setIdentifier(true);
@@ -60,7 +60,7 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
         initMarkerEnumInProjectSettings();
     }
 
-    private void initMarkerEnumInProjectSettings() throws CoreException {
+    private void initMarkerEnumInProjectSettings() throws CoreRuntimeException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.addMarkerEnum("qualified.markerEnum");
         ipsProject.setProperties(properties);
@@ -73,7 +73,7 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefinedMarkerIds_defaultValues() throws CoreException {
+    public void testGetDefinedMarkerIds_defaultValues() throws CoreRuntimeException {
         setupMarkerDefinition();
         markerEnumUtil = new MarkerEnumUtil(ipsProject);
 

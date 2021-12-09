@@ -10,15 +10,14 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.lang.Runtime.Version;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -134,7 +133,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         validateName(list, ipsProject);
@@ -151,7 +150,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     private void validateAllowedAsIdentifier(MessageList list) {
         if (isIdentifier() && isMultilingual()) {
-            list.add(new Message(MSGCODE_MULTILINGUAL_ATTRIBUTES_CANNOT_BE_IDENTIFIERS, NLS.bind(
+            list.add(new Message(MSGCODE_MULTILINGUAL_ATTRIBUTES_CANNOT_BE_IDENTIFIERS, MessageFormat.format(
                     Messages.EnumAttribute_MultilingualCannotBeIdentifier, getName()), Message.ERROR, this,
                     PROPERTY_MULTILINGUAL, PROPERTY_IDENTIFIER));
         }
@@ -189,11 +188,10 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         // Check for valid java field name.
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        IStatus status = JavaConventions.validateFieldName(name, sourceLevel, complianceLevel);
+        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        IStatus status = JavaConventions.validateFieldName(name, sourceVersion.toString(), sourceVersion.toString());
         if (!(status.isOK())) {
-            text = NLS.bind(Messages.EnumAttribute_NameNotAValidFieldName, name);
+            text = MessageFormat.format(Messages.EnumAttribute_NameNotAValidFieldName, name);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME, text, Message.ERROR,
                     this, PROPERTY_NAME);
             list.add(validationMessage);
@@ -207,7 +205,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 numberEnumAttributesThisName++;
             }
             if (numberEnumAttributesThisName > 1) {
-                text = NLS.bind(Messages.EnumAttribute_DuplicateName, name);
+                text = MessageFormat.format(Messages.EnumAttribute_DuplicateName, name);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
                 list.add(validationMessage);
@@ -223,7 +221,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 numberEnumAttributesThisName++;
             }
             if (numberEnumAttributesThisName > 1) {
-                text = NLS.bind(Messages.EnumAttribute_DuplicateNameInSupertypeHierarchy, name);
+                text = MessageFormat.format(Messages.EnumAttribute_DuplicateNameInSupertypeHierarchy, name);
                 validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY, text,
                         Message.ERROR, this, PROPERTY_NAME);
                 list.add(validationMessage);
@@ -250,7 +248,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // The data type must exist.
         if (ipsDatatype == null) {
-            text = NLS.bind(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
+            text = MessageFormat.format(Messages.EnumAttribute_DatatypeDoesNotExist, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
@@ -267,7 +265,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // The data type may not be abstract.
         if (ipsDatatype.isAbstract()) {
-            text = NLS.bind(Messages.EnumAttribute_DatatypeIsAbstract, datatype);
+            text = MessageFormat.format(Messages.EnumAttribute_DatatypeIsAbstract, datatype);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT, text, Message.ERROR, this,
                     PROPERTY_DATATYPE);
             list.add(validationMessage);
@@ -296,7 +294,8 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             EnumTypeDatatypeAdapter enumDatatypeAdapter = (EnumTypeDatatypeAdapter)ipsDatatype;
             IEnumType enumDatatype = enumDatatypeAdapter.getEnumType();
             if (enumType.isInextensibleEnum() && !(enumDatatype.isInextensibleEnum())) {
-                text = NLS.bind(Messages.EnumAttribute_EnumDatatypeDoesNotContainValuesButParentEnumTypeDoes,
+                text = MessageFormat.format(
+                        Messages.EnumAttribute_EnumDatatypeDoesNotContainValuesButParentEnumTypeDoes,
                         enumDatatype.getQualifiedName());
                 validationMessage = new Message(
                         MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES, text,
@@ -318,7 +317,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         if (getEnumType().hasExistingSuperEnumType(ipsProject)) {
             if (findSuperEnumAttribute(ipsProject) == null) {
-                String text = NLS.bind(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
+                String text = MessageFormat.format(Messages.EnumAttribute_NoSuchAttributeInSupertypeHierarchy, name);
                 Message validationMessage = new Message(
                         MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY, text, Message.ERROR, this,
                         PROPERTY_NAME, PROPERTY_INHERITED);
@@ -370,15 +369,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     @Override
     public boolean isMultilingualSupported() {
-        try {
-            return Datatype.STRING.equals(findDatatype(getIpsProject()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return Datatype.STRING.equals(findDatatype(getIpsProject()));
     }
 
     @Override
-    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreException {
+    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
@@ -392,7 +387,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreException {
+    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreRuntimeException {
         ValueDatatype foundDatatype = findDatatype(ipsProject);
         if (DatatypeUtil.isExtensibleEnumType(foundDatatype)) {
             EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)foundDatatype;
@@ -413,7 +408,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreException {
+    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreRuntimeException {
         Set<IEnumType> subclassingEnumTypes = getEnumType().searchSubclassingEnumTypes();
         List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<>(subclassingEnumTypes.size());
         for (IEnumType subclassingEnumType : subclassingEnumTypes) {
@@ -438,7 +433,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public boolean findIsUnique(IIpsProject ipsProject) throws CoreException {
+    public boolean findIsUnique(IIpsProject ipsProject) throws CoreRuntimeException {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {

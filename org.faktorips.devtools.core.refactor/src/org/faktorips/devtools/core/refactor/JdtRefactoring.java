@@ -10,14 +10,15 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * A Java refactoring that encapsulates a JDT Java refactoring.
@@ -33,15 +34,19 @@ public final class JdtRefactoring extends JavaRefactoring {
     }
 
     @Override
-    public RefactoringStatus checkAllConditions(IProgressMonitor pm) throws CoreException {
-        return jdtRefactoring.checkAllConditions(pm);
+    public RefactoringStatus checkAllConditions(IProgressMonitor pm) throws CoreRuntimeException {
+        try {
+            return jdtRefactoring.checkAllConditions(pm);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
-    public void perform(final IProgressMonitor pm) throws CoreException {
-        IWorkspaceRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
+    public void perform(final IProgressMonitor pm) throws CoreRuntimeException {
+        ICoreRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
                 CheckConditionsOperation.FINAL_CONDITIONS);
-        ResourcesPlugin.getWorkspace().run(operation, pm);
+        Abstractions.getWorkspace().run(operation, pm);
     }
 
 }

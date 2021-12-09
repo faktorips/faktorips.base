@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -42,7 +42,7 @@ public class RefactorUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyIpsSrcFile() throws CoreException {
+    public void testCopyIpsSrcFile() throws CoreRuntimeException {
         IIpsPackageFragment targetIpsPackage = policyCmptType.getIpsPackageFragment();
         IIpsSrcFile fileToBeCopied = policyCmptType.getIpsSrcFile();
         fileToBeCopied.save(true, null);

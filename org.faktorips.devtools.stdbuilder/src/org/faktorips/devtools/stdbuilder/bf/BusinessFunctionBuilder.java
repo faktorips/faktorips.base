@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.model.bf.IDecisionBFE;
 import org.faktorips.devtools.model.bf.IParameterBFE;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -57,7 +57,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public final boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public final boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         if (ipsSrcFile.getIpsObjectType().equals(BusinessFunctionIpsObjectType.getInstance())) {
             return true;
         }
@@ -65,7 +65,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() throws CoreRuntimeException {
         TypeSection mainSection = getMainTypeSection();
         mainSection.setUnqualifiedName(getBusinessFunction().getName());
         mainSection.setClassModifier(Modifier.PUBLIC);
@@ -105,7 +105,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return StringUtils.uncapitalize(action.getName());
     }
 
-    private void generateCodeForInlineActions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateCodeForInlineActions(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         for (IBFElement element : bfElements) {
             if (element.getType().equals(BFElementType.ACTION_INLINE) && element.isValid(getIpsProject())) {
@@ -116,7 +116,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateMethodCallMethodAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodCallMethodAction(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<>();
         for (IBFElement element : bfElements) {
@@ -150,7 +150,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMemberVariableForCallBusinessFunctionAction(JavaCodeFragmentBuilder memberVarBuilder)
-            throws CoreException {
+            throws CoreRuntimeException {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<>();
         for (IBFElement element : bfElements) {
@@ -173,7 +173,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return StringUtils.uncapitalize(actionBFE.getReferencedBfUnqualifedName());
     }
 
-    private void generateMethodCallBusinessFunctionAction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodCallBusinessFunctionAction(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> bfElements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<>();
         for (IBFElement element : bfElements) {
@@ -219,7 +219,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return "execute";
     }
 
-    private void generateMethodExecute(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodExecute(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         JavaCodeFragment body = new JavaCodeFragment();
         body.append(getMethodNameStart());
         body.appendln("();");
@@ -230,7 +230,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
                 "Executes this business function.", ANNOTATION_GENERATED);
     }
 
-    private void generateMethodForMerges(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodForMerges(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> merges = getBusinessFunction().getBFElements();
         for (IBFElement merge : merges) {
             if (merge.getType().equals(BFElementType.MERGE) && merge.isValid(getIpsProject())) {
@@ -239,14 +239,14 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateMethodForMerge(IBFElement merge, JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodForMerge(IBFElement merge, JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, merge, methodBuilder);
         methodBuilder.method(Modifier.PRIVATE, Void.TYPE, getMethodNameMerge(merge), new String[0], new Class[0], body,
                 "", ANNOTATION_GENERATED);
     }
 
-    private void generateCodeForDecisions(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateCodeForDecisions(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> decisions = getBusinessFunction().getBFElements();
         Set<String> alreadyGenerated = new HashSet<>();
         for (IBFElement element : decisions) {
@@ -320,7 +320,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateControlFlowMethodBody(JavaCodeFragment body,
             IBFElement inputElement,
-            JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+            JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         if (inputElement == null || !inputElement.isValid(getIpsProject())) {
             body.appendln();
             return;
@@ -395,7 +395,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateMethodGetConditionValue(JavaCodeFragmentBuilder methodBuilder,
             IDecisionBFE decision,
-            Set<String> alreadyGenerated) throws CoreException {
+            Set<String> alreadyGenerated) throws CoreRuntimeException {
         if (BFElementType.DECISION_METHODCALL == decision.getType()
                 && alreadyGenerated.contains(getKeyForMethodCallDecision(decision))) {
             return;
@@ -424,7 +424,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateSingleControlFlowMethodBody(JavaCodeFragmentBuilder methodBuilder,
             JavaCodeFragment body,
-            IControlFlow controlFlow) throws CoreException {
+            IControlFlow controlFlow) throws CoreRuntimeException {
         IBFElement element = controlFlow.getTarget();
         if (!element.isValid(getIpsProject())) {
             return;
@@ -441,7 +441,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateMethodForDecision(IDecisionBFE decision, JavaCodeFragmentBuilder methodBuilder)
-            throws CoreException {
+            throws CoreRuntimeException {
         JavaCodeFragment body = new JavaCodeFragment();
         generateControlFlowMethodBody(body, decision, methodBuilder);
         String description = getDescriptionInGeneratorLanguage(decision);
@@ -458,7 +458,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void generateCodeForParameters(JavaCodeFragmentBuilder memberBuilder, JavaCodeFragmentBuilder methodBuilder)
-            throws CoreException {
+            throws CoreRuntimeException {
         List<IParameterBFE> parameters = getBusinessFunction().getParameterBFEs();
         for (IParameterBFE parameter : parameters) {
             if (!parameter.isValid(getIpsProject())) {
@@ -488,7 +488,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         return "create" + StringUtils.capitalize(action.getReferencedBfUnqualifedName());
     }
 
-    private void generateMethodCreateCallBusinessFunction(JavaCodeFragmentBuilder methodBuilder) throws CoreException {
+    private void generateMethodCreateCallBusinessFunction(JavaCodeFragmentBuilder methodBuilder) throws CoreRuntimeException {
         List<IBFElement> elements = getBusinessFunction().getBFElements();
         List<String> alreadyGenerated = new ArrayList<>();
         for (IBFElement element : elements) {
@@ -522,7 +522,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreException {
+    private void generateConstructor(JavaCodeFragmentBuilder constructorBuilder) throws CoreRuntimeException {
         ArrayList<String> parameterNames = new ArrayList<>();
         ArrayList<String> parameterTypes = new ArrayList<>();
 

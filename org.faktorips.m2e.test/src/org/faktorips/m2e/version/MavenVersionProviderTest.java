@@ -17,11 +17,11 @@ import java.io.ByteArrayInputStream;
 
 import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +54,11 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
         addMavenNature();
     }
 
-    private void newPom(String pomContent) throws CoreException {
+    private void newPom(String pomContent) throws CoreRuntimeException {
         project.getFile(POM_XML).create(new ByteArrayInputStream(pomContent.getBytes()), true, null);
     }
 
-    private void addMavenNature() throws CoreException {
+    private void addMavenNature() throws CoreRuntimeException {
         MavenPlugin.getProjectConfigurationManager().enableMavenNature(project, new ResolverConfiguration(),
                 new NullProgressMonitor());
     }
@@ -71,7 +71,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProjectVersion_NoMavenNature() throws CoreException {
+    public void testGetProjectVersion_NoMavenNature() throws CoreRuntimeException {
         ipsProject = newIpsProject();
         project = ipsProject.getProject();
         newPom(POM_CONTENT);
@@ -82,7 +82,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProjectVersion_afterMavenUpdate() throws CoreException {
+    public void testGetProjectVersion_afterMavenUpdate() throws CoreRuntimeException {
         MavenVersionProvider mavenVersionProvider = new MavenVersionProvider(ipsProject);
 
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(project)

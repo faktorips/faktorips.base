@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -59,9 +59,9 @@ public interface IIpsProjectNamingConventions {
      * @see #NAME_IS_MISSING
      * 
      * @throws NullPointerException if type is <code>null</code>
-     * @throws CoreException if an error occurs while validating the name.
+     * @throws CoreRuntimeException if an error occurs while validating the name.
      */
-    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException;
+    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreRuntimeException;
 
     /**
      * Returns a message list containing errors if the given unqualified name is missing or invalid
@@ -77,23 +77,23 @@ public interface IIpsProjectNamingConventions {
      * @see #NAME_IS_QUALIFIED
      * 
      * @throws NullPointerException if type is <code>null</code>
-     * @throws CoreException if an error occurs while validating the name.
+     * @throws CoreRuntimeException if an error occurs while validating the name.
      */
-    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException;
+    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreRuntimeException;
 
     /**
      * Validates if the given name is valid for IPS packages.
      * 
-     * @throws CoreException if an error occurs while validating the name.
+     * @throws CoreRuntimeException if an error occurs while validating the name.
      */
-    public MessageList validateIpsPackageName(String name) throws CoreException;
+    public MessageList validateIpsPackageName(String name) throws CoreRuntimeException;
 
     /**
      * Validates if the given name is valid for IPS package roots.
      * 
-     * @throws CoreException if an error occurs while validating the name.
+     * @throws CoreRuntimeException if an error occurs while validating the name.
      */
-    public MessageList validateIpsPackageRootName(String name) throws CoreException;
+    public MessageList validateIpsPackageRootName(String name) throws CoreRuntimeException;
 
     /**
      * Returns a Message object if the provided name doesn't comply to the java naming conventions.
@@ -109,12 +109,12 @@ public interface IIpsProjectNamingConventions {
      * 
      * @return <code>null</code> if the name is valid and a standard message if not
      * 
-     * @throws CoreException if an error occurs while validating the name.
+     * @throws CoreRuntimeException if an error occurs while validating the name.
      */
     public Message validateIfValidJavaIdentifier(String name,
             String text,
             Object validatedObject,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Validates if the given name is valid java type name.

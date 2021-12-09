@@ -498,7 +498,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         @Override
-        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
             MessageList messageList = super.validate(ipsProject);
             addContainsNullMessagesIfApplicable(messageList);
             return messageList;

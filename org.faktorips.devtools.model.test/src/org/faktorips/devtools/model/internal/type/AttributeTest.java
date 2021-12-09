@@ -19,12 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
@@ -226,7 +226,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueStringEmpty() throws CoreException {
+    public void testValidateDefaultValueStringEmpty() throws CoreRuntimeException {
         MessageList list = new MessageList();
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
@@ -237,7 +237,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverwrittenAttribute_nullIcompatible() throws CoreException {
+    public void testOverwrittenAttribute_nullIcompatible() throws CoreRuntimeException {
         String superTypeQName = "SuperPCType";
         PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
         PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");

@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -191,7 +191,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveTestAttribute() throws CoreException {
+    public void testRemoveTestAttribute() throws CoreRuntimeException {
         ITestAttribute testAttribute1 = policyCmptTypeParameterInput.newInputTestAttribute();
         ITestAttribute testAttribute2 = policyCmptTypeParameterInput.newInputTestAttribute();
         ITestAttribute testAttribute3 = policyCmptTypeParameterInput.newExpectedResultTestAttribute();
@@ -231,7 +231,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidationWrongPolicyCmptTypeOfAssociation() throws CoreException {
+    public void testValidationWrongPolicyCmptTypeOfAssociation() throws CoreRuntimeException {
         IPolicyCmptType targetPolicyCmptTypeSuperSuper = newPolicyCmptType(project, "targetPolicyCmptSuperSuper");
         IPolicyCmptType targetPolicyCmptTypeSuper = newPolicyCmptType(project, "targetPolicyCmptSuper");
         IPolicyCmptType targetPolicyCmptType = newPolicyCmptType(project, "targetPolicyCmpt");
@@ -499,7 +499,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllowedProductCmptDependingTarget() throws CoreException {
+    public void testGetAllowedProductCmptDependingTarget() throws CoreRuntimeException {
         // two testPolicyCmptTypeParameter uses same associations (base class)
         // but different targets (subclass of base class).
         // This test case type make sense if the subclasses defines different
@@ -548,7 +548,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllowedProductCmpt() throws CoreException {
+    public void testGetAllowedProductCmpt() throws CoreRuntimeException {
         TestContent testContent = new TestContent();
         testContent.init(project);
 
@@ -633,7 +633,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         private ITestPolicyCmptTypeParameter parameter;
         private ITestPolicyCmptTypeParameter childParameter;
 
-        public void init(IIpsProject project) throws CoreException {
+        public void init(IIpsProject project) throws CoreRuntimeException {
             policy = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
             IProductCmptType productCmptTypePolicy = policy.findProductCmptType(project);
 

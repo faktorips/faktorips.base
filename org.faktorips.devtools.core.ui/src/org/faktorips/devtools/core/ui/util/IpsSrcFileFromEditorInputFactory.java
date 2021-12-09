@@ -116,7 +116,7 @@ public class IpsSrcFileFromEditorInputFactory {
         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)IIpsModel.get().getIpsElement(file);
 
         if (ipsSrcFile instanceof IpsSrcFileOffRoot) {
-            IPath projectPath = ipsSrcFile.getCorrespondingFile().getFullPath();
+            IPath projectPath = ipsSrcFile.getCorrespondingFile().getWorkspaceRelativePath();
             int position = calculateExternalProjectPosition(projectPath);
 
             // Checks whether there is an existing, corresponding IPS project within the workspace

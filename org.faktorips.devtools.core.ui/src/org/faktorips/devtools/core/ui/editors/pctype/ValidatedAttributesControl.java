@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.runtime.MessageList;
 
@@ -260,7 +261,7 @@ public class ValidatedAttributesControl extends EditTableControl {
         }
 
         @Override
-        protected MessageList getMessagesFor(Object element) throws CoreException {
+        protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
             return validate(element);
         }
     }

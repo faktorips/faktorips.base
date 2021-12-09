@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.runtime.MessageList;
@@ -39,7 +39,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
         super.checkInitialConditionsThis(status, pm);
         moveRenameHelper.checkInitialConditions(status);
     }
@@ -47,7 +47,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     @Override
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
+            CheckConditionsContext context) throws CoreRuntimeException {
         super.checkFinalConditionsThis(status, pm, context);
         IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
                 getNewName());
@@ -55,7 +55,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
         super.validateUserInputThis(status, pm);
         IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
                 getNewName());
@@ -63,7 +63,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
         return moveRenameHelper.renamePackageFragment(getNewName(), pm);
     }
 
@@ -73,7 +73,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         // nichts zu tun
     }
 

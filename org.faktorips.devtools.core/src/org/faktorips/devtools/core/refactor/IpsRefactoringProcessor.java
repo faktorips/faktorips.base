@@ -15,8 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -27,6 +25,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -69,7 +68,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreRuntimeException {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
@@ -90,9 +89,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param status The {@link RefactoringStatus} to add messages to
      * @param pm The {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreException May be thrown at any time
+     * @throws CoreRuntimeException May be thrown at any time
      */
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
+            throws CoreRuntimeException {
         // Empty base implementation that may be overwritten by subclasses.
     }
 
@@ -107,15 +107,15 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
 
         for (IIpsSrcFile ipsSrcFile : getAffectedIpsSrcFiles()) {
-            if (!(ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ZERO))) {
+            if (!(ipsSrcFile.getEnclosingResource().isSynchronized(AResourceTreeTraversalDepth.RESOURCE_ONLY))) {
                 status.addFatalError(NLS.bind(Messages.IpsRefactoringProcessor_errorIpsSrcFileOutOfSync, ipsSrcFile
-                        .getCorrespondingResource().getFullPath()));
+                        .getCorrespondingResource().getWorkspaceRelativePath()));
             }
         }
 
@@ -135,11 +135,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param pm The {@link IProgressMonitor} to report progress to
      * @param context Condition checking context to collect shared condition checks
      * 
-     * @throws CoreException May be thrown at any time
+     * @throws CoreRuntimeException May be thrown at any time
      */
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
+            CheckConditionsContext context) throws CoreRuntimeException {
 
         // Empty base implementation that may be overwritten by subclasses.
     }
@@ -184,7 +184,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException {
+    public final Change createChange(IProgressMonitor pm) throws CoreRuntimeException {
         IpsRefactoringModificationSet modificationSet = refactorIpsModel(pm);
         saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();
@@ -196,12 +196,12 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param pm {@link IProgressMonitor} to report progress to if necessary
      * 
-     * @throws CoreException Subclasses may throw this kind of exception any time
+     * @throws CoreRuntimeException Subclasses may throw this kind of exception any time
      */
-    public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException;
+    public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException;
 
     private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm)
-            throws CoreException {
+            throws CoreRuntimeException {
         for (IpsSrcFileModification modification : modificationSet.getModifications()) {
             if (modification.getTargetIpsSrcFile().exists()) {
                 modification.getTargetIpsSrcFile().save(true, pm);
@@ -249,7 +249,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * This implementation always returns true, may be overwritten by subclasses if necessary.
      */
     @Override
-    public boolean isApplicable() throws CoreException {
+    public boolean isApplicable() throws CoreRuntimeException {
         return true;
     }
 
@@ -277,28 +277,24 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         IIpsElement element = ipsElement;
         if (element instanceof IIpsObjectPartContainer) {
             IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
-            try {
-                while (!(ipsObjectPartContainer instanceof IIpsObject)) {
-                    ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
-                    ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
-                }
-                ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
-                for (String id : ids) {
-                    for (IIpsElement child : ipsObjectPartContainer.getChildren()) {
-                        IIpsObjectPart childIpsObjectPart = (IIpsObjectPart)child;
-                        if (childIpsObjectPart.getId().equals(id)) {
-                            ipsObjectPartContainer = childIpsObjectPart;
-                            break;
-                        }
-                    }
-                    if (!(ipsObjectPartContainer instanceof IIpsObjectPart)
-                            || !((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
-                        throw new RuntimeException(
-                                "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
+            while (!(ipsObjectPartContainer instanceof IIpsObject)) {
+                ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
+                ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
+            }
+            ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
+            for (String id : ids) {
+                for (IIpsElement child : ipsObjectPartContainer.getChildren()) {
+                    IIpsObjectPart childIpsObjectPart = (IIpsObjectPart)child;
+                    if (childIpsObjectPart.getId().equals(id)) {
+                        ipsObjectPartContainer = childIpsObjectPart;
+                        break;
                     }
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                if (!(ipsObjectPartContainer instanceof IIpsObjectPart)
+                        || !((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
+                    throw new RuntimeException(
+                            "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
+                }
             }
             return ipsObjectPartContainer;
         } else {
@@ -313,10 +309,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param ipsObjectType Only {@link IIpsSrcFile IpsSrcFiles} with one of these
      *            {@link IpsObjectType types} are searched
      * 
-     * @throws CoreException If an error occurs while searching for the source files
+     * @throws CoreRuntimeException If an error occurs while searching for the source files
      * @throws NullPointerException If the parameter is null
      */
-    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType) throws CoreException {
+    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType)
+            throws CoreRuntimeException {
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<>(25);
@@ -337,9 +334,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param pm The {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreException If an error occurs while validating the user input
+     * @throws CoreRuntimeException If an error occurs while validating the user input
      */
-    public final RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+    public final RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException {
         RefactoringStatus status = new RefactoringStatus();
         MessageList validationMessageList = new MessageList();
         validateUserInputThis(status, pm);
@@ -355,9 +352,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param validationMessageList Message list to report validation errors to
      * 
-     * @throws CoreException If an error occurs while validating the IPS model
+     * @throws CoreRuntimeException If an error occurs while validating the IPS model
      */
-    protected abstract void validateIpsModel(MessageList validationMessageList) throws CoreException;
+    protected abstract void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException;
 
     /**
      * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
@@ -366,9 +363,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param status {@link RefactoringStatus} to report messages to
      * @param pm {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreException May be thrown at any time
+     * @throws CoreRuntimeException May be thrown at any time
      */
-    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException;
+    protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm)
+            throws CoreRuntimeException;
 
     /**
      * Returns whether this refactoring processor requires that all IPS source files are saved

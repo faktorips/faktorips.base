@@ -13,12 +13,11 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNonNull;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
+import java.text.MessageFormat;
 import java.util.Objects;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -162,7 +161,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
+    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (!(datatype instanceof NumericDatatype)) {
             return false;
@@ -239,15 +238,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
-        try {
-            if (!isValid(contextProject)) {
-                return false;
-            }
-            if (!(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
-                return false;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (!isValid(contextProject)) {
+            return false;
+        }
+        if (!(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
+            return false;
         }
         return true;
     }
@@ -365,7 +360,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         RangeValueSetValidator validator = createValidator(getValueSetOwner(), findValueDatatype(ipsProject));
         list.add(validator.validate());
@@ -444,7 +439,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
         sb.append(RANGE_VALUESET_END);
         if (isContainsNull()) {
-            sb.append(" (").append(NLS.bind(Messages.ValueSet_includingNull, //$NON-NLS-1$
+            sb.append(" (").append(MessageFormat.format(Messages.ValueSet_includingNull, //$NON-NLS-1$
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation())).append(")"); //$NON-NLS-1$
         }
         return sb.toString();

@@ -18,10 +18,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -56,14 +56,14 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
                 return false;
             }
             return storage.containsPackage(getName());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsLog.log(e);
             return false;
         }
     }
 
     @Override
-    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
+    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreRuntimeException {
 
         List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
 
@@ -71,7 +71,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    public IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
         ILibraryIpsPackageFragmentRoot root = (ILibraryIpsPackageFragmentRoot)getParent();
         IIpsStorage archive = root.getIpsStorage();
         if (archive == null) {
@@ -87,8 +87,8 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public IResource[] getNonIpsResources() throws CoreException {
-        return new IResource[0];
+    public AResource[] getNonIpsResources() throws CoreRuntimeException {
+        return new AResource[0];
     }
 
     @Override
@@ -98,46 +98,46 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
 
     @Override
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
         try {
             if (source != null) {
                 source.close();
             }
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus("Unable to close contents.", e)); //$NON-NLS-1$
+            throw new CoreRuntimeException(new IpsStatus("Unable to close contents.", e)); //$NON-NLS-1$
         }
         throw newCantModifyPackageStoredInArchive();
     }
 
     @Override
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
         throw newCantModifyPackageStoredInArchive();
     }
 
     @Override
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+            throws CoreRuntimeException {
         throw newCantModifyPackageStoredInArchive();
     }
 
     @Override
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
-            throws CoreException {
-        throw new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
+            throws CoreRuntimeException {
+        throw new CoreRuntimeException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
 
-    private CoreException newCantModifyPackageStoredInArchive() {
-        return new CoreException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
+    private CoreRuntimeException newCantModifyPackageStoredInArchive() {
+        return new CoreRuntimeException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return null;
     }
 
     @Override
-    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreRuntimeException {
         ArrayList<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
         findIpsSourceFiles(type, ipsSrcFiles);
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
@@ -146,11 +146,11 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
+    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreRuntimeException {
         findIpsSourceFilesInternal(type, result);
     }
 
-    private void findIpsSourceFilesInternal(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
+    private void findIpsSourceFilesInternal(IpsObjectType type, List<IIpsSrcFile> result) throws CoreRuntimeException {
         Set<QualifiedNameType> set = getQualifiedNames();
         for (QualifiedNameType qnt : set) {
             if (qnt.getIpsObjectType() == type) {
@@ -160,7 +160,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
         }
     }
 
-    private Set<QualifiedNameType> getQualifiedNames() throws CoreException {
+    private Set<QualifiedNameType> getQualifiedNames() throws CoreRuntimeException {
         ILibraryIpsPackageFragmentRoot root = (ILibraryIpsPackageFragmentRoot)getParent();
         IIpsStorage archive = root.getIpsStorage();
         if (archive == null) {
@@ -171,7 +171,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
+    public void findIpsObjects(List<IIpsObject> result) throws CoreRuntimeException {
         Set<QualifiedNameType> set = getQualifiedNames();
         for (QualifiedNameType qnt : set) {
             result.add(getIpsSrcFile(qnt.getFileName()).getIpsObject());
@@ -187,7 +187,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     /**
      * Get all children of type IIpsPackageFragment.
      */
-    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreRuntimeException {
         LibraryIpsPackageFragmentRoot root = (LibraryIpsPackageFragmentRoot)getParent();
         String[] packNames = root.getIpsStorage().getNonEmptySubpackages(getName());
 
@@ -201,7 +201,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public boolean hasChildIpsPackageFragments() throws CoreException {
+    public boolean hasChildIpsPackageFragments() throws CoreRuntimeException {
         ILibraryIpsPackageFragmentRoot root = (ILibraryIpsPackageFragmentRoot)getParent();
         String[] packNames = root.getIpsStorage().getNonEmptySubpackages(getName());
 
@@ -209,7 +209,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() throws CoreRuntimeException {
         throw new UnsupportedOperationException("Archived IPS Packages cannot be deleted."); //$NON-NLS-1$
     }
 

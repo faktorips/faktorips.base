@@ -13,15 +13,14 @@ package org.faktorips.devtools.model;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.abstraction.AWorkspace;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -58,7 +57,7 @@ public interface IIpsModel extends IIpsElement {
     }
 
     /** Returns the workspace. */
-    IWorkspace getWorkspace();
+    AWorkspace getWorkspace();
 
     /**
      * Returns the object that gives access to custom model extensions.
@@ -74,28 +73,10 @@ public interface IIpsModel extends IIpsElement {
      * Note: To get a busy indicator and progress dialog better call
      * IpsUIPlugin#runWorkspaceModification
      * 
-     * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
+     * @see IWorkspace#run(org.eclipse.core.runtime.ICoreRunnable,
      *      org.eclipse.core.runtime.IProgressMonitor)
      */
-    void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor);
-
-    /**
-     * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
-     * method in IWorkspace. All IPS source file change events are queued until the action is
-     * finished and then broadcasted. If an IPS source file is change more than one, only one change
-     * event is sent.
-     * 
-     * Note: To get a busy indicator and progress dialog better call
-     * IpsUIPlugin#runWorkspaceModification
-     * 
-     * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
-     *      org.eclipse.core.runtime.jobs.ISchedulingRule, int,
-     *      org.eclipse.core.runtime.IProgressMonitor)
-     */
-    void runAndQueueChangeEvents(IWorkspaceRunnable action,
-            ISchedulingRule rule,
-            int flags,
-            IProgressMonitor monitor);
+    void runAndQueueChangeEvents(ICoreRunnable action, IProgressMonitor monitor);
 
     /**
      * Creates an ID for a new {@link IIpsObjectPart} in an {@link IIpsObjectPartContainer}. The
@@ -109,13 +90,13 @@ public interface IIpsModel extends IIpsElement {
     String getNextPartId(IIpsObjectPartContainer parentPart);
 
     /**
-     * Creates an IpsProject for the given Java project by adding the IPS nature and creating (an
-     * empty) .ipsproject file.
+     * Creates an IpsProject for the given project by adding the IPS nature and creating (an empty)
+     * .ipsproject file.
      * 
-     * @throws NullPointerException if javaProjecct is <code>null</code>.
-     * @throws CoreException if an error occurs while creating the IPS project.
+     * @throws NullPointerException if project is <code>null</code>.
+     * @throws CoreRuntimeException if an error occurs while creating the IPS project.
      */
-    IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException;
+    IIpsProject createIpsProject(AProject project) throws CoreRuntimeException;
 
     /** Returns all IPS projects opened in the workspace or an empty array if none. */
     IIpsProject[] getIpsProjects();
@@ -124,13 +105,13 @@ public interface IIpsModel extends IIpsElement {
      * Returns all IPS projects opened in the workspace that contain a model definition or an empty
      * array if none.
      */
-    IIpsProject[] getIpsModelProjects() throws CoreException;
+    IIpsProject[] getIpsModelProjects() throws CoreRuntimeException;
 
     /**
      * Returns all IPS projects opened in the workspace that contain a product definition or an
      * empty array if none.
      */
-    IIpsProject[] getIpsProductDefinitionProjects() throws CoreException;
+    IIpsProject[] getIpsProductDefinitionProjects() throws CoreRuntimeException;
 
     /** Returns the IPS project with the indicated name. */
     IIpsProject getIpsProject(String name);
@@ -140,15 +121,15 @@ public interface IIpsModel extends IIpsElement {
      * 
      * @throws NullPointerException if project is null.
      */
-    IIpsProject getIpsProject(IProject project);
+    IIpsProject getIpsProject(AProject project);
 
     /**
-     * Returns all <code>IProject</code>s in the workspace, that do not have an IpsProject nature.
-     * Ignores closed projects.
+     * Returns all {@link AProject projects} in the workspace, that do not have an IpsProject
+     * nature. Ignores closed projects.
      * 
-     * @throws CoreException if an exception occurs while accessing project-natures.
+     * @throws CoreRuntimeException if an exception occurs while accessing project-natures.
      */
-    IResource[] getNonIpsProjects() throws CoreException;
+    Set<AProject> getNonIpsProjects() throws CoreRuntimeException;
 
     /**
      * Returns the IpsElement that corresponds to the indicated resource. The IpsElement may not be
@@ -176,14 +157,14 @@ public interface IIpsModel extends IIpsElement {
      * Resource: HomeInsurance/root &rarr; Returns <code>null</code> as "root" is not a source
      * folder representing an IpsPackageFragmentRoot in the project HomeInsurance!
      */
-    IIpsElement getIpsElement(IResource resource);
+    IIpsElement getIpsElement(AResource resource);
 
     /**
      * Returns the IpsElement that corresponds to the indicated resource, if such a valid element
      * exists for that resource. Returns <code>null</code> if no corresponding element is found or
      * the resource is not inside a valid context.
      */
-    IIpsElement findIpsElement(IResource resource);
+    IIpsElement findIpsElement(AResource resource);
 
     /**
      * <p>
@@ -222,7 +203,7 @@ public interface IIpsModel extends IIpsElement {
      * Returns all package fragment roots containing source files or an empty array if none is
      * found.
      */
-    IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException;
+    IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreRuntimeException;
 
     /**
      * Returns a view on the extension properties for the given class.

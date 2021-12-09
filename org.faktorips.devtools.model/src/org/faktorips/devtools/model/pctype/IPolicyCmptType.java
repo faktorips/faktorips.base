@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.pctype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -329,14 +329,14 @@ public interface IPolicyCmptType extends IType {
      * A policy component type is considered an aggregate root if it and it's super types havn't got
      * a reverse composite relation.
      * 
-     * @throws CoreException if an error occurs while searching the super type hierarchy.
+     * @throws CoreRuntimeException if an error occurs while searching the super type hierarchy.
      */
-    public boolean isAggregateRoot() throws CoreException;
+    public boolean isAggregateRoot() throws CoreRuntimeException;
 
     /**
      * Returns <code>true</code> if this not an aggregate root, otherwise <code>false</code>.
      */
-    public boolean isDependantType() throws CoreException;
+    public boolean isDependantType() throws CoreRuntimeException;
 
     /**
      * Returns the type's relations.
@@ -374,16 +374,16 @@ public interface IPolicyCmptType extends IType {
      * Creates a new sub type hierarchy for the type and returns it.
      */
     @Override
-    public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
+    public ITypeHierarchy getSubtypeHierarchy() throws CoreRuntimeException;
 
     /**
      * Initializes the persistence metadata (like table, column and discriminator information) with
      * suitable defaults.
      * 
-     * @throws CoreException if the corresponding IPS Project does not have persistence support
+     * @throws CoreRuntimeException if the corresponding IPS Project does not have persistence support
      *             enabled.
      */
-    public void initPersistentTypeInfo() throws CoreException;
+    public void initPersistentTypeInfo() throws CoreRuntimeException;
 
     /**
      * Returns the information about how to persist this policy component type into a relational

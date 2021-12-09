@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
@@ -31,6 +30,7 @@ import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
@@ -118,7 +118,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject() throws Exception {
         IIpsProject ipsProject = newIpsProject("p");
-        IJavaProject javaProject = ipsProject.getJavaProject();
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         convertToModuleProject(javaProject);
         IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
         properties.setGroovySupport(false);
@@ -134,7 +134,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     public void testConfigureIpsProject_Standard() throws Exception {
         try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             IIpsProject ipsProject = newIpsProject("p");
-            IJavaProject javaProject = ipsProject.getJavaProject();
+            IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
             convertToModuleProject(javaProject);
             IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
             properties.setGroovySupport(false);
@@ -157,7 +157,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_Groovy() throws Exception {
         IIpsProject ipsProject = newIpsProject("p");
-        IJavaProject javaProject = ipsProject.getJavaProject();
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         convertToModuleProject(javaProject);
         IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
         properties.setGroovySupport(true);
@@ -173,7 +173,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_JPA() throws Exception {
         IIpsProject ipsProject = newIpsProject("p");
-        IJavaProject javaProject = ipsProject.getJavaProject();
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         convertToModuleProject(javaProject);
         IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
         properties.setGroovySupport(false);
@@ -205,7 +205,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 
@@ -225,7 +225,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 
@@ -245,7 +245,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 

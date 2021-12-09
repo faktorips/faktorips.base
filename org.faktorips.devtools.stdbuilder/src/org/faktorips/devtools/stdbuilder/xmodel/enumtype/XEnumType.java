@@ -239,13 +239,13 @@ public class XEnumType extends XClass {
      * repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
      * 
-     * @throws CoreException If an exception occurs while processing.
+     * @throws CoreRuntimeException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
      *             <code>null</code>.
      */
     public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
             String value,
-            ExtendedExprCompiler exprCompiler) throws CoreException {
+            ExtendedExprCompiler exprCompiler) throws CoreRuntimeException {
 
         ArgumentCheck.notNull(enumTypeAdapter, this);
 

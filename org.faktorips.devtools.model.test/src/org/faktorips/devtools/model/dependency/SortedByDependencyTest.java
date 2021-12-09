@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -36,7 +36,7 @@ import org.junit.Test;
 public class SortedByDependencyTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testSortByInstanceOf_SingleCmpt() throws CoreException {
+    public void testSortByInstanceOf_SingleCmpt() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmpt productCmpt = newProductCmpt(ipsProject, "a.A");
 
@@ -47,7 +47,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSortByInstanceOf_SomeIndependantCmpt() throws CoreException {
+    public void testSortByInstanceOf_SomeIndependantCmpt() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmpt productCmpt1 = newProductCmpt(ipsProject, "a.A1");
         ProductCmpt productCmpt2 = newProductCmpt(ipsProject, "a.A2");
@@ -60,7 +60,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSortByInstanceOf_SomeModelTypesAndDependencies() throws CoreException {
+    public void testSortByInstanceOf_SomeModelTypesAndDependencies() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         PolicyCmptType pcType = newPolicyAndProductCmptType(ipsProject, "m.AP", "m.AT");
         ProductCmptType childType = newProductCmptType(ipsProject, "m.CP", "m.CT");
@@ -81,7 +81,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSortByInstanceOf_SameProject() throws CoreException {
+    public void testSortByInstanceOf_SameProject() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         {
             ProductCmpt template1 = newProductTemplate(ipsProject, "t.A1");
@@ -115,7 +115,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSortByInstanceOf_Partly_DifferentProjects() throws CoreException {
+    public void testSortByInstanceOf_Partly_DifferentProjects() throws CoreRuntimeException {
         IIpsProject ipsProject1 = newIpsProject();
         IIpsProject ipsProject2 = newIpsProject();
         IIpsProject ipsProject3 = newIpsProject();
@@ -161,7 +161,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
      * Both templates should be in the output in no specific order.
      */
     @Test
-    public void testSortByInstanceOf_Cycle() throws CoreException {
+    public void testSortByInstanceOf_Cycle() throws CoreRuntimeException {
         IIpsProject ipsProject1 = newIpsProject();
 
         ProductCmpt productCmpt = newProductCmpt(ipsProject1, "p.P");
@@ -195,7 +195,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
      */
     @Ignore
     @Test
-    public void testSortByInstanceOf_WithDependencyToCycle() throws CoreException {
+    public void testSortByInstanceOf_WithDependencyToCycle() throws CoreRuntimeException {
         IIpsProject ipsProject1 = newIpsProject();
 
         ProductCmpt template1 = newProductTemplate(ipsProject1, "t.A1");
@@ -223,7 +223,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
      */
     @Ignore
     @Test
-    public void testSortByInstanceOf_PerformanceHint() throws CoreException {
+    public void testSortByInstanceOf_PerformanceHint() throws CoreRuntimeException {
         int size = 10000;
 
         IIpsProject ipsProject = newIpsProject();

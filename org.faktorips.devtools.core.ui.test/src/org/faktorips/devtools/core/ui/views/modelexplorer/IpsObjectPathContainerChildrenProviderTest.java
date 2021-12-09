@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
@@ -59,7 +59,7 @@ public class IpsObjectPathContainerChildrenProviderTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreException {
+    public void testGetChildren() throws CoreRuntimeException {
 
         Object[] children = childrenProvider.getChildren(container);
 

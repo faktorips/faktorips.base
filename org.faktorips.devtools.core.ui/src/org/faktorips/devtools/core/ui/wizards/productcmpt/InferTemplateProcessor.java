@@ -18,8 +18,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
-public class InferTemplateProcessor implements IWorkspaceRunnable {
+public class InferTemplateProcessor implements ICoreRunnable {
 
     private static final Function<IProductCmpt, IProductCmptGeneration> LATEST_GENERATION = productCmpt -> productCmpt == null
             ? null
@@ -92,7 +92,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         if (monitor == null) {
             this.monitor = new NullProgressMonitor();
         } else {

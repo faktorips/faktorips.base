@@ -13,10 +13,11 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.faktorips.devtools.model.productcmpt.IAttributeValue.MSGCODE_INVALID_VALUE_TYPE;
 import static org.faktorips.devtools.model.productcmpt.IAttributeValue.MSGCODE_VALUE_NOT_IN_SET;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -47,7 +48,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() throws CoreRuntimeException {
 
         MessageList messages = new MessageList();
 
@@ -67,23 +68,24 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
 
         if (ValueType.STRING.equals(valueHolder.getValueType())) {
             if (attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_MultiLingual, parent.getAttribute());
+                String text = MessageFormat.format(Messages.AttributeValue_MultiLingual, parent.getAttribute());
                 messages.newError(MSGCODE_INVALID_VALUE_TYPE, text, invalidObjectProperties);
             }
             if (!attribute.getValueSet().containsValue(((StringValue)value).getContentAsString(), ipsProject)) {
                 String text;
                 String formattedValue = getFormattedValue(value, datatype);
                 if (attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, formattedValue,
+                    text = MessageFormat.format(Messages.AttributeValue_AllowedValuesAre, formattedValue,
                             attribute.getValueSet().toShortString());
                 } else {
-                    text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, formattedValue, parent.getName());
+                    text = MessageFormat.format(Messages.AttributeValue_ValueNotAllowed, formattedValue,
+                            parent.getName());
                 }
                 messages.newError(MSGCODE_VALUE_NOT_IN_SET, text, invalidObjectProperties);
             }
         } else if (ValueType.INTERNATIONAL_STRING.equals(valueHolder.getValueType())) {
             if (!attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_NotMultiLingual, parent.getAttribute());
+                String text = MessageFormat.format(Messages.AttributeValue_NotMultiLingual, parent.getAttribute());
                 messages.newError(MSGCODE_INVALID_VALUE_TYPE, text, invalidObjectProperties);
             }
         }

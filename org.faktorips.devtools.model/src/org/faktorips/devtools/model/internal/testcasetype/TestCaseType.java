@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,11 +21,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -192,7 +192,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException {
+    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreRuntimeException {
         ITestValueParameter[] parameters = getTestParameters(TestParameterType.INPUT, TestValueParameter.class,
                 inputTestValueParameter).toArray(new ITestValueParameter[0]);
         if (parameters.length == 0) {
@@ -203,13 +203,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOneValueParamWithTypeAndName,
-                TestParameterType.INPUT, inputTestValueParameter)));
+        throw new CoreRuntimeException(
+                new IpsStatus(MessageFormat.format(Messages.TestCaseType_Error_MoreThanOneValueParamWithTypeAndName,
+                        TestParameterType.INPUT, inputTestValueParameter)));
     }
 
     @Override
     public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.INPUT,
                 TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter)
@@ -223,13 +224,13 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(
-                new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
+        throw new CoreRuntimeException(
+                new IpsStatus(MessageFormat.format(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
                         TestParameterType.INPUT, inputTestPolicyCmptTypeParameter)));
     }
 
     @Override
-    public ITestParameter getTestParameterByName(String testParameterName) throws CoreException {
+    public ITestParameter getTestParameterByName(String testParameterName) throws CoreRuntimeException {
         List<TestParameter> foundTestParameter = getTestParameters(null, null, testParameterName);
         if (foundTestParameter.size() == 0) {
             return null;
@@ -271,7 +272,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
-            throws CoreException {
+            throws CoreRuntimeException {
         ITestValueParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
                 TestValueParameter.class, expResultTestValueParameter).toArray(new ITestValueParameter[0]);
         if (parameters.length == 0) {
@@ -282,13 +283,14 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOneParamWithTypeAndName,
-                TestParameterType.INPUT, expResultTestValueParameter)));
+        throw new CoreRuntimeException(
+                new IpsStatus(MessageFormat.format(Messages.TestCaseType_Error_MoreThanOneParamWithTypeAndName,
+                        TestParameterType.INPUT, expResultTestValueParameter)));
     }
 
     @Override
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(
-            String expResultTestPolicyCmptTypeParameter) throws CoreException {
+            String expResultTestPolicyCmptTypeParameter) throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
                 TestPolicyCmptTypeParameter.class, expResultTestPolicyCmptTypeParameter)
                         .toArray(new ITestPolicyCmptTypeParameter[0]);
@@ -301,8 +303,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             return parameters[0];
         }
 
-        throw new CoreException(
-                new IpsStatus(NLS.bind(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
+        throw new CoreRuntimeException(
+                new IpsStatus(MessageFormat.format(Messages.TestCaseType_Error_MoreThanOnePolicyParamWithTypeAndName,
                         TestParameterType.INPUT, expResultTestPolicyCmptTypeParameter)));
     }
 
@@ -472,14 +474,15 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException {
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreRuntimeException {
         List<IValidationRule> validationRules = new ArrayList<>();
         getValidationRules(getTestPolicyCmptTypeParameters(), validationRules, ipsProject);
         return validationRules.toArray(new IValidationRule[0]);
     }
 
     @Override
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException {
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject)
+            throws CoreRuntimeException {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.getName().equals(validationRuleName)) {
@@ -494,7 +497,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
      */
     private void getValidationRules(ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters,
             List<IValidationRule> validationRules,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
 
         for (ITestPolicyCmptTypeParameter parameter : testPolicyCmptTypeParameters) {
             IPolicyCmptType policyCmptType = parameter.findPolicyCmptType(ipsProject);
@@ -509,7 +512,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     /**
      * Returns all test parameters inside the test case type.
      */
-    public ITestParameter[] getAllTestParameter() throws CoreException {
+    public ITestParameter[] getAllTestParameter() throws CoreRuntimeException {
         List<ITestParameter> allParameters = new ArrayList<>();
         ITestParameter[] parameters = getTestParameters();
         for (ITestParameter parameter : parameters) {
@@ -519,7 +522,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     private void getAllChildTestParameter(ITestParameter testParameter, List<ITestParameter> allParameters)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         allParameters.add(testParameter);
         IIpsElement[] elems = testParameter.getChildren();
@@ -531,7 +534,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {

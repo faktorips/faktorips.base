@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.faktorips.devtools.model.ICustomModelExtensions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -58,12 +59,15 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     private void initProductCmptNamingStrategies() {
-        ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
-        List<IProductCmptNamingStrategyFactory> strategyFactories = extensionPoints.createExecutableExtensions(
-                ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY, ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
-                "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$
-        for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
-            productCmptNamingStrategies.put(factory.getExtensionId(), factory);
+        if (Abstractions.isEclipseRunning()) {
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
+            List<IProductCmptNamingStrategyFactory> strategyFactories = extensionPoints.createExecutableExtensions(
+                    ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
+                    ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
+                    "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$
+            for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
+                productCmptNamingStrategies.put(factory.getExtensionId(), factory);
+            }
         }
     }
 

@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StyledString;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -30,7 +30,7 @@ import org.junit.Test;
 public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetStyledLabel_NonTemplatedLink() throws CoreException {
+    public void testGetStyledLabel_NonTemplatedLink() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(project, "PolicyType", "ProductType");
@@ -55,7 +55,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetStyledLabel_NonConfiguredLink() throws CoreException {
+    public void testGetStyledLabel_NonConfiguredLink() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(project, "PolicyType", "ProductType");
@@ -76,7 +76,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetStyledLabel_TemplatedNonConfiguredLink() throws CoreException {
+    public void testGetStyledLabel_TemplatedNonConfiguredLink() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(project, "PolicyType", "ProductType");
@@ -105,7 +105,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetStyledLabel_TemplatedLinkInherited() throws CoreException {
+    public void testGetStyledLabel_TemplatedLinkInherited() throws CoreRuntimeException {
         IProductCmptLink productLink = createTemplatedLink();
 
         // The link inherits its cardinality, only the template's cardinality is displayed
@@ -116,7 +116,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetStyledLabel_TemplatedLinkDefinedOther() throws CoreException {
+    public void testGetStyledLabel_TemplatedLinkDefinedOther() throws CoreRuntimeException {
         IProductCmptLink productLink = createTemplatedLink();
 
         // The link overrides the template's cardinality, both the link's cardinality and the
@@ -129,7 +129,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetStyledLabel_TemplatedLinkDefinedSame() throws CoreException {
+    public void testGetStyledLabel_TemplatedLinkDefinedSame() throws CoreRuntimeException {
         IProductCmptLink productLink = createTemplatedLink();
 
         // The link overrides the template's cardinality, both the link's cardinality and the
@@ -142,7 +142,7 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
                 + LinkViewItemLabelStyler.OVERWRITE_EQUAL_SIGN));
     }
 
-    protected IProductCmptLink createTemplatedLink() throws CoreException {
+    protected IProductCmptLink createTemplatedLink() throws CoreRuntimeException {
         IIpsProject project = newIpsProject();
 
         IPolicyCmptType policyType = newPolicyAndProductCmptType(project, "PolicyType", "ProductType");

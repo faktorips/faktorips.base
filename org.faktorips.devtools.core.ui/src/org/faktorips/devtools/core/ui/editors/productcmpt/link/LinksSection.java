@@ -310,7 +310,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     private TreeMessageHoverService createTreeMessageHoverService(final LinksMessageCueLabelProvider labelProvider) {
         return new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 return labelProvider.getMessages(element);
             }
         };

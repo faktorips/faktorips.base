@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.IntegerHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
@@ -23,6 +22,7 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.datatype.joda.MonthDayDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class StandardBuilderSetTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testGetDatatypeHelper_DefaultHelper() throws CoreException {
+    public void testGetDatatypeHelper_DefaultHelper() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         StandardBuilderSet builderSet = new StandardBuilderSet();
         builderSet.setIpsProject(ipsProject);
@@ -50,7 +50,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() throws CoreException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
 
@@ -65,7 +65,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() throws CoreException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT,
                 LocalDateHelperVariant.JAVA8.toString().toLowerCase());

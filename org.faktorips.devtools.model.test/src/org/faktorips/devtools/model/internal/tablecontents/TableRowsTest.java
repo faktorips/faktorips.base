@@ -23,10 +23,10 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -104,7 +104,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewRow_TableStructure() throws CoreException {
+    public void testNewRow_TableStructure() throws CoreRuntimeException {
         structure.newColumn();
         structure.newColumn();
         table.newColumn("", "");
@@ -187,7 +187,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_RoundtripWithCVS() throws CoreException {
+    public void testToXml_RoundtripWithCVS() throws CoreRuntimeException {
         setFormatToCsv();
         IRow row1 = newRow("A", "1", "\"ä,;\"");
         IRow row2 = newRow("", null, "|");
@@ -206,7 +206,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         assertThat(tableRows.getRow(1).getValue(2), is("|"));
     }
 
-    private void setFormatToCsv() throws CoreException {
+    private void setFormatToCsv() throws CoreRuntimeException {
         IIpsProjectProperties properties = project.getProperties();
         properties.setTableContentFormat(TableContentFormat.CSV);
         project.setProperties(properties);
@@ -284,7 +284,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsUniqueKeyValidatedAutomatically() throws CoreException {
+    public void testIsUniqueKeyValidatedAutomatically() throws CoreRuntimeException {
         createColumnsWithRangeKey();
         for (int i = 0; i < 5000;) {
             newRow(Integer.toString(i++), Integer.toString(i));
@@ -301,7 +301,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPropertiesToXml_SetsCsvFormatProperty() throws CoreException {
+    public void testPropertiesToXml_SetsCsvFormatProperty() throws CoreRuntimeException {
         setFormatToCsv();
         Document document = newDocument();
         Element element = document.createElement(ITableRows.TAG_NAME);
@@ -312,7 +312,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPropertiesToXml_SetsNoFormatPropertyForXmlFormat() throws CoreException {
+    public void testPropertiesToXml_SetsNoFormatPropertyForXmlFormat() throws CoreRuntimeException {
         IIpsProjectProperties properties = project.getProperties();
         properties.setTableContentFormat(TableContentFormat.XML);
         project.setProperties(properties);
@@ -325,7 +325,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPartsToXml_writesCsv() throws CoreException {
+    public void testPartsToXml_writesCsv() throws CoreRuntimeException {
         setFormatToCsv();
         Document document = newDocument();
         Element element = document.createElement(ITableRows.TAG_NAME);
@@ -348,7 +348,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         return row;
     }
 
-    private void createColumnsWithRangeKey() throws CoreException {
+    private void createColumnsWithRangeKey() throws CoreRuntimeException {
         IColumn column = structure.newColumn();
         column.setName("a");
         column.setDatatype("int");

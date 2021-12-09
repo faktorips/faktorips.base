@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -206,7 +206,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
                 @SuppressWarnings("deprecation")
                 @Override
-                protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
+                protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
                     final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
                             .getHandles(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1), toCopy);

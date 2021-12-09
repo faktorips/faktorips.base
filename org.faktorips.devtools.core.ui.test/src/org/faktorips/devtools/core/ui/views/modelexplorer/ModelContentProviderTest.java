@@ -22,12 +22,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -136,14 +136,14 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
 
     }
 
-    private void setModelProjectProperty(IIpsProject project, boolean b) throws CoreException {
+    private void setModelProjectProperty(IIpsProject project, boolean b) throws CoreRuntimeException {
         IIpsProjectProperties props = project.getProperties();
         props.setModelProject(b);
         project.setProperties(props);
     }
 
     @Test
-    public void testGetChildren() throws CoreException {
+    public void testGetChildren() throws CoreRuntimeException {
         List<Object> list;
         // --- Tests for hierarchical layout style ---
         // Proj contains only the packageFragmentRoot and a folder,
@@ -376,8 +376,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements() throws CoreException {
-        IWorkspaceRunnable runnable = $ -> {
+    public void testGetElements() throws CoreRuntimeException {
+        ICoreRunnable runnable = $ -> {
             IProject project = newPlatformProject("TestJavaProject");
             addJavaCapabilities(project);
             IProject project2 = newPlatformProject("TestJavaProject2");

@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
@@ -35,7 +35,7 @@ public class TestCaseDescriptionPage extends DefaultModelDescriptionPage {
     }
 
     @Override
-    protected List<DescriptionItem> createDescriptions() throws CoreException {
+    protected List<DescriptionItem> createDescriptions() throws CoreRuntimeException {
         List<DescriptionItem> descriptions = new ArrayList<>();
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = getIpsObject().getTestPolicyCmptTypeParameters();
         for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : testPolicyCmptTypeParameters) {

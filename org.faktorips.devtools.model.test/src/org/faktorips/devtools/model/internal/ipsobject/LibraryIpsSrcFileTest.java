@@ -10,16 +10,17 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -52,8 +53,8 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
         originalType.getIpsSrcFile().save(true, null);
 
         project = newIpsProject();
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
-        IPath archivePath = archiveFile.getFullPath();
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
+        IPath archivePath = toEclipsePath(archiveFile.getWorkspaceRelativePath());
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
@@ -102,7 +103,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContentFromEnclosingResource() throws CoreException {
+    public void testGetContentFromEnclosingResource() throws CoreRuntimeException {
         assertNotNull(srcFile.getContentFromEnclosingResource());
     }
 
@@ -112,7 +113,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreException {
+    public void testDelete() throws CoreRuntimeException {
         srcFile.delete();
     }
 

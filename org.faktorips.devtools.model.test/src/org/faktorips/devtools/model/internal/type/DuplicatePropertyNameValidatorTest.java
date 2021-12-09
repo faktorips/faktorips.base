@@ -15,9 +15,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -237,7 +237,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPolicyAndProductAttributes_ProdCmptType() throws CoreException {
+    public void testAddPolicyAndProductAttributes_ProdCmptType() throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType", policyCmptTypeA);
         productCmptType.newProductCmptTypeAttribute(ID);
         policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
@@ -283,7 +283,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateMessage_SameITypeAndDifferentObjectPartContainer_ProdCmptValidator() throws CoreException {
+    public void testCreateMessage_SameITypeAndDifferentObjectPartContainer_ProdCmptValidator() throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
         ITableStructureUsage tableUsage = productCmptType.newTableStructureUsage();
@@ -302,7 +302,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testcreateMessage_DifferentITypesAndDifferentObjectPartContainer_ProdCmptValidator()
-            throws CoreException {
+            throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
         productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
@@ -320,7 +320,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testcreateMessage_PolicyAttrHasSameNameAsProdCmptType() throws CoreException {
+    public void testcreateMessage_PolicyAttrHasSameNameAsProdCmptType() throws CoreRuntimeException {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
         productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
         IAttribute attribute = policyCmptTypeA.newAttribute();

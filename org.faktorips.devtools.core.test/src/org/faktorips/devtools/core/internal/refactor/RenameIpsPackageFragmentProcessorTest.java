@@ -19,11 +19,11 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -149,14 +149,14 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreException {
+    public void testValidateUserInputThis() throws CoreRuntimeException {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_RenameToSameFolder() throws CoreException {
+    public void testValidateUserInputThis_RenameToSameFolder() throws CoreRuntimeException {
         processor.setNewName("data.products");
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -165,7 +165,7 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValidateUserInputThis_RenameToNotValidFolder() throws CoreException {
+    public void testValidateUserInputThis_RenameToNotValidFolder() throws CoreRuntimeException {
         processor.setNewName("data.");
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());

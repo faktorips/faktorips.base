@@ -923,7 +923,7 @@ public class CodeGenUtil {
         public static IContainer findOrCreateContainer(IPath path,
                 boolean forceRefresh,
                 IPath localLocation,
-                IProgressMonitor progressMonitor) throws CoreException {
+                IProgressMonitor progressMonitor) throws CoreRuntimeException {
             String projectName = path.segment(0);
             IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
             projectDescription.setLocation(localLocation);
@@ -934,7 +934,7 @@ public class CodeGenUtil {
         public static IContainer findOrCreateContainer(IPath path,
                 boolean forceRefresh,
                 IProjectDescription projectDescription,
-                IProgressMonitor progressMonitor) throws CoreException {
+                IProgressMonitor progressMonitor) throws CoreRuntimeException {
             try {
                 String projectName = path.segment(0);
                 progressMonitor.beginTask("", path.segmentCount() + 3);

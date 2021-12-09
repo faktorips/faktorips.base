@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.eclipse.core.resources.IFile;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AFile;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 
 /**
@@ -20,9 +20,9 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
  */
 public class IpsSrcFileOffRoot extends IpsSrcFileExternal {
 
-    private IFile file;
+    private AFile file;
 
-    public IpsSrcFileOffRoot(IFile file) {
+    public IpsSrcFileOffRoot(AFile file) {
         super(IIpsModel.get().getIpsProject("IpsSrcFileImmutableIpsProject") //$NON-NLS-1$
                 .getIpsPackageFragmentRoot("immutablePackageFragmentRoot").getDefaultIpsPackageFragment(), //$NON-NLS-1$
                 file.getName());
@@ -30,7 +30,7 @@ public class IpsSrcFileOffRoot extends IpsSrcFileExternal {
     }
 
     @Override
-    public IFile getCorrespondingFile() {
+    public AFile getCorrespondingFile() {
         return file;
     }
 

@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -51,7 +51,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testTransient() throws CoreException {
+    public void testTransient() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         String invalidColumnName = StringUtils.repeat("a", maxColumnNameLenght + 1);
@@ -88,7 +88,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() throws CoreRuntimeException {
         IPersistentAttributeInfo persistenceAttributeInfo = pcAttribute.getPersistenceAttributeInfo();
         persistenceAttributeInfo.setTableColumnName("TEST_COLUMN");
         persistenceAttributeInfo.setTableColumnNullable(true);
@@ -124,7 +124,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateSizeScalePrecision() throws CoreException {
+    public void testValidateSizeScalePrecision() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         MessageList ml = null;
 
@@ -163,7 +163,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
     }
 
-    private void setPersistenceOptionSizeScalePrecision(int size, int scale, int precision) throws CoreException {
+    private void setPersistenceOptionSizeScalePrecision(int size, int scale, int precision) throws CoreRuntimeException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         IPersistenceOptions persistenceOptions = properties.getPersistenceOptions();
         persistenceOptions.setMaxTableColumnSize(size);
@@ -173,7 +173,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateMaxColumnNameLength() throws CoreException {
+    public void testValidateMaxColumnNameLength() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
         String columnName = StringUtils.repeat("a", maxColumnNameLenght);
@@ -189,7 +189,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateWhitespaceInTableColumnName() throws CoreException {
+    public void testValidateWhitespaceInTableColumnName() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
 
         pAttInfo.setTableColumnName("Invalid ColumnName");
@@ -208,7 +208,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
                         IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
     }
 
-    private void assertMessagePresent(IPersistentAttributeInfo pAttInfo) throws CoreException {
+    private void assertMessagePresent(IPersistentAttributeInfo pAttInfo) throws CoreRuntimeException {
         MessageList ml = pAttInfo.validate(ipsProject);
         assertNotNull(ml
                 .getMessageByCode(
@@ -216,7 +216,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testvalidateTableColumnNullableMatchesValueSet() throws CoreException {
+    public void testvalidateTableColumnNullableMatchesValueSet() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("nullableAtt");
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         attribute.getValueSet().setContainsNull(true);
@@ -231,7 +231,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateStringLengthRestrictionsInModel_Unrestricted() throws CoreException {
+    public void testValidateStringLengthRestrictionsInModel_Unrestricted() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
         IPersistentAttributeInfo persAttrInfo = attribute.getPersistenceAttributeInfo();
@@ -244,7 +244,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateStringLengthRestrictionsInModel_LimitExceeded() throws CoreException {
+    public void testValidateStringLengthRestrictionsInModel_LimitExceeded() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
         StringLengthValueSet valueSet = new StringLengthValueSet(attribute, "partId", "300", false);
@@ -261,7 +261,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateStringLengthRestrictionsInModel_LimitExceededUnlimited() throws CoreException {
+    public void testValidateStringLengthRestrictionsInModel_LimitExceededUnlimited() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("stringAtt");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
         StringLengthValueSet valueSet = new StringLengthValueSet(attribute, "partId", null, false);
@@ -278,7 +278,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testEmptyTableName() throws CoreException {
+    public void testEmptyTableName() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         pAttInfo.setTableColumnName("a");
         MessageList ml = pAttInfo.validate(ipsProject);
@@ -290,7 +290,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testColumnNameMustBeEmpty() throws CoreException {
+    public void testColumnNameMustBeEmpty() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         pAttInfo.setTransient(false);
 
@@ -315,7 +315,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testColumnNameIfOverwrittenAttribute() throws CoreException {
+    public void testColumnNameIfOverwrittenAttribute() throws CoreRuntimeException {
         MessageList ml;
         PolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "SubPolicy");
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
@@ -335,7 +335,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateIndexName() throws CoreException {
+    public void testValidateIndexName() throws CoreRuntimeException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         pAttInfo.setIndexName("");
 

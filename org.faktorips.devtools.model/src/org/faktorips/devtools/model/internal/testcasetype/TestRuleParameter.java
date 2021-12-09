@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -85,12 +86,12 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         // check if the validation rule has the expected result type
         if (!isExpextedResultOrCombinedParameter()) {
-            String text = NLS.bind(Messages.TestRuleParameter_ValidationError_WrongParameterType, name);
+            String text = MessageFormat.format(Messages.TestRuleParameter_ValidationError_WrongParameterType, name);
             Message msg = new Message(MSGCODE_NOT_EXPECTED_RESULT, text, Message.ERROR, this,
                     PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);

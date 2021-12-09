@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -60,7 +61,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindIsUniqueFails() throws CoreException {
+    public void testGetImageDescriptor_FindIsUniqueFails() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -74,7 +75,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Unique() throws CoreException {
+    public void testGetImageDescriptor_Unique() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -98,7 +99,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_OverrideUnique() throws CoreException {
+    public void testGetImageDescriptor_OverrideUnique() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -128,7 +129,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_FindDatatypeFails() throws CoreException {
+    public void testGetLabel_FindDatatypeFails() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
@@ -142,7 +143,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetLabel() throws CoreException {
+    public void testGetLabel() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         ValueDatatype datatype = mock(ValueDatatype.class);

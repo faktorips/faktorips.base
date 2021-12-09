@@ -16,8 +16,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -155,7 +155,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TableStructureNotFound() throws CoreException {
+    public void testValidate_TableStructureNotFound() throws CoreRuntimeException {
         MessageList ml = tableStructureUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
 
@@ -170,7 +170,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_InvalidRoleName() throws CoreException {
+    public void testValidate_InvalidRoleName() throws CoreRuntimeException {
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
@@ -185,7 +185,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreException {
+    public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreRuntimeException {
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
 
@@ -196,7 +196,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateRoleNameInSupertypeHierarchy() throws CoreException {
+    public void testValidateRoleNameInSupertypeHierarchy() throws CoreRuntimeException {
         IProductCmptType a = newProductCmptType(project, "a");
         ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
         aStructureUsage.setRoleName("usage");
@@ -220,7 +220,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_typeDoesNotAcceptChangingOverTime() throws CoreException {
+    public void testValidate_typeDoesNotAcceptChangingOverTime() throws CoreRuntimeException {
         productCmptType.setChangingOverTime(true);
         tableStructureUsage.setChangingOverTime(false);
 
@@ -256,7 +256,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreException {
+    public void testIsPropertyFor() throws CoreRuntimeException {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newTableContentUsage(tableStructureUsage);

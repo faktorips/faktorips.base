@@ -44,7 +44,7 @@ public class ProductCmptClassBuilderBuilder extends XtendTypeBuilder<XProductBui
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         String configProperty = getBuilderSet().getConfig()
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
 

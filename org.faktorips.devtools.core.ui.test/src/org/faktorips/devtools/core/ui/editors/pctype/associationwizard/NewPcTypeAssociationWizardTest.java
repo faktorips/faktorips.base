@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -154,7 +154,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
      * Test if the last pages for creating the product cmpt type association are available or not.
      */
     @Test
-    public void testIsProductCmptTypeAvailable() throws CoreException {
+    public void testIsProductCmptTypeAvailable() throws CoreRuntimeException {
         PolicyCmptType sourcePolicyCmptType = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
         PolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(project, "Coverage", "CoverageType");
 

@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -185,7 +185,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException {
         if (StringUtils.isEmpty(association)) {
             return null;
         }
@@ -429,7 +429,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         if (isRoot() || productCmpt == null) {
             IPolicyCmptType allowedPolicyCmptType = findPolicyCmptType(ipsProjectToSearch);
@@ -497,13 +497,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         // check if the policy component type exists
         IPolicyCmptType policyCmptTypeFound = findPolicyCmptType(ipsProject);
         if (policyCmptTypeFound == null) {
-            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists,
+            String text = MessageFormat.format(
+                    Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptTypeNotExists,
                     policyCmptType);
             Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS, text, Message.ERROR, this,
                     PROPERTY_POLICYCMPTTYPE);
@@ -512,14 +513,14 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
         // check min and max instances
         if (minInstances > maxInstances) {
-            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax,
+            String text = MessageFormat.format(Messages.TestPolicyCmptTypeParameter_ValidationError_MinGreaterThanMax,
                     "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$
             Message msg = new Message(MSGCODE_MIN_INSTANCES_IS_GREATER_THAN_MAX, text, Message.ERROR, this,
                     PROPERTY_MIN_INSTANCES);
             list.add(msg);
         }
         if (maxInstances < minInstances) {
-            String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin,
+            String text = MessageFormat.format(Messages.TestPolicyCmptTypeParameter_ValidationError_MaxLessThanMin,
                     "" + minInstances, "" + maxInstances); //$NON-NLS-1$//$NON-NLS-2$
             Message msg = new Message(MSGCODE_MAX_INSTANCES_IS_LESS_THAN_MIN, text, Message.ERROR, this,
                     PROPERTY_MAX_INSTANCES);
@@ -530,7 +531,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         if (!isRoot()) {
             TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
             if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed,
+                String text = MessageFormat.format(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed,
                         type.getName(), parentType.getName());
                 Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_TYPE);
@@ -542,7 +543,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         if (!isRoot()) {
             IPolicyCmptTypeAssociation associationFound = findAssociation(ipsProject);
             if (associationFound == null) {
-                String text = NLS.bind(Messages.TestPolicyCmptTypeParameter_ValidationError_AssociationNotExists,
+                String text = MessageFormat.format(
+                        Messages.TestPolicyCmptTypeParameter_ValidationError_AssociationNotExists,
                         association);
                 Message msg = new Message(MSGCODE_ASSOCIATION_NOT_EXISTS, text, Message.ERROR, this,
                         PROPERTY_ASSOCIATION);
@@ -552,7 +554,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                 // that the policy cmpt type is a possible target of the association
                 IPolicyCmptType targetOfAssociation = associationFound.findTargetPolicyCmptType(ipsProject);
                 if (targetOfAssociation == null) {
-                    String text = NLS.bind(
+                    String text = MessageFormat.format(
                             Messages.TestPolicyCmptTypeParameter_ValidationError_TargetOfAssociationNotExists,
                             associationFound.getTarget(), association);
                     Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS, text, Message.WARNING, this,
@@ -560,7 +562,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     list.add(msg);
                 } else {
                     if (!policyCmptTypeFound.isSubtypeOrSameType(targetOfAssociation, ipsProject)) {
-                        String text = NLS.bind(
+                        String text = MessageFormat.format(
                                 Messages.TestPolicyCmptTypeParameter_ValidationError_PolicyCmptNotAllowedForAssociation,
                                 policyCmptType, association);
                         Message msg = new Message(MSGCODE_WRONG_POLICY_CMPT_TYPE_OF_ASSOCIATION, text, Message.ERROR,
@@ -598,7 +600,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                         }
                     }
                     if (targetOfAssoziationInTestCaseType == null) {
-                        String text = NLS.bind(
+                        String text = MessageFormat.format(
                                 Messages.TestPolicyCmptTypeParameter_ValidationWarning_AccosiationTargetNotInTestCaseType,
                                 policyCmptType, association);
                         Message msg = new Message(MSGCODE_TARGET_OF_ASSOCIATION_NOT_EXISTS_IN_TESTCASETYPE, text,
@@ -618,7 +620,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
          */
         if (isRoot() && policyCmptTypeFound != null) {
             if (!isRequiresProductCmpt() && policyCmptTypeFound.isAbstract()) {
-                String text = NLS.bind(
+                String text = MessageFormat.format(
                         Messages.TestPolicyCmptTypeParameter_ValidationError_MustRequireProdCmptIfRootAndAbstract,
                         policyCmptType);
                 Message msg = new Message(MSGCODE_MUST_REQUIRE_PROD_IF_ROOT_AND_ABSTRACT, text, Message.ERROR, this,
@@ -633,7 +635,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
          */
         if (policyCmptTypeFound != null && requiresProductCmpt
                 && !policyCmptTypeFound.isConfigurableByProductCmptType()) {
-            String text = NLS.bind(
+            String text = MessageFormat.format(
                     Messages.TestPolicyCmptTypeParameter_ValidationError_FlagRequiresIsTrueButPolicyCmptTypeIsNotConfByProduct,
                     policyCmptType);
             Message msg = new Message(MSGCODE_REQUIRES_PROD_BUT_POLICY_CMPT_TYPE_IS_NOT_CONF_BY_PROD, text,

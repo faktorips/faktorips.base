@@ -11,12 +11,12 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.abstraction.AResourceDelta;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -85,7 +85,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) throws CoreRuntimeException {
         if (archive == null || qnt == null) {
             return false;
         }
@@ -108,13 +108,13 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     public MessageList validate() {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null
+            String text = MessageFormat.format(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null
                     : archive
                             .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         } else if (archive != null && !archive.isValid()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null
+            String text = MessageFormat.format(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null
                     : archive
                             .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_INVALID_ARCHVE, text, Message.ERROR, this);
@@ -129,7 +129,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public boolean isAffectedBy(IResourceDelta delta) {
+    public boolean isAffectedBy(AResourceDelta delta) {
         return archive.isAffectedBy(delta);
     }
 

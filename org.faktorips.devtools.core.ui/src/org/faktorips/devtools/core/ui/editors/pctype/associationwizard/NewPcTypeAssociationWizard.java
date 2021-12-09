@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -540,7 +541,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Create a new inverse association, i.e. create a new association on the target policy
      * component type object.
      */
-    private void createNewInverseAssociation() throws CoreException {
+    private void createNewInverseAssociation() throws CoreRuntimeException {
         if (targetPolicyCmptType == null) {
             return;
         }
@@ -620,7 +621,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         return true;
     }
 
-    private void checkAndPerformLastStateChange() throws CoreException {
+    private void checkAndPerformLastStateChange() throws CoreRuntimeException {
         if (inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION) {
             handleInverseAssociationSelectionState();
         }
@@ -632,7 +633,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
     }
 
-    private void initPersistentAssociationInfo() throws CoreException {
+    private void initPersistentAssociationInfo() throws CoreRuntimeException {
         association.getPersistenceAssociatonInfo().initDefaults();
         IPolicyCmptTypeAssociation findInverseAssociation = association.findInverseAssociation(ipsProject);
         if (findInverseAssociation == null) {

@@ -39,6 +39,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListP
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -60,7 +61,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreRuntimeException {
         List<IIpsSrcFile> srcFiles = new ArrayList<>(context.getDocumentedSourceFiles());
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
         IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();

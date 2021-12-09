@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -98,7 +98,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     public abstract void setTestParameterType(TestParameterType testParameterType);
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         // check for duplicate test parameter names
@@ -120,7 +120,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         if (testParameters != null) {
             for (ITestParameter testParameter : testParameters) {
                 if (testParameter != this && testParameter.getName().equals(name)) {
-                    String text = NLS.bind(Messages.TestParameter_ValidationError_DuplicateName, name);
+                    String text = MessageFormat.format(Messages.TestParameter_ValidationError_DuplicateName, name);
                     Message msg = new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME);
                     list.add(msg);
                     break;
@@ -131,7 +131,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         // check the correct name format
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            String text = NLS.bind(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
+            String text = MessageFormat.format(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
             Message msg = new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME);
             list.add(msg);
         }

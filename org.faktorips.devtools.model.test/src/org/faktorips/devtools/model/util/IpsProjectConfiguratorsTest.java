@@ -23,13 +23,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
@@ -93,7 +93,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 
@@ -113,7 +113,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 
@@ -133,7 +133,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                throws CoreRuntimeException {
             fail("should never be called");
         }
 

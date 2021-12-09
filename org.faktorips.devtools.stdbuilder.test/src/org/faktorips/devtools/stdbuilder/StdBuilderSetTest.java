@@ -22,11 +22,11 @@ import java.util.Date;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -45,7 +45,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
      * #bug 1460
      */
     @Test
-    public void testBasePackageNamesWithUpperCaseLetters() throws CoreException {
+    public void testBasePackageNamesWithUpperCaseLetters() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
@@ -58,7 +58,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testStdBuilderSetPropertyDefinitions() throws CoreException {
+    public void testStdBuilderSetPropertyDefinitions() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSetInfo builderSetInfo = IIpsModel.get()
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
@@ -98,7 +98,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
      */
     @Ignore
     @Test
-    public void testBuildPerformanceLongRun() throws CoreException {
+    public void testBuildPerformanceLongRun() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
@@ -134,7 +134,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCleanBuildNonDerivedFiles() throws CoreException {
+    public void testCleanBuildNonDerivedFiles() throws CoreRuntimeException {
         // need to set marking derived resources true because we want the clean build to remove all
         // derived files
 

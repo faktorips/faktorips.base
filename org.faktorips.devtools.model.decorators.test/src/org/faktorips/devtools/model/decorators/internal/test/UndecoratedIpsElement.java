@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.decorators.internal.test;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 
 public class UndecoratedIpsElement extends IpsElement {
@@ -23,7 +23,7 @@ public class UndecoratedIpsElement extends IpsElement {
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() throws CoreRuntimeException {
         // nothing to do
     }
 

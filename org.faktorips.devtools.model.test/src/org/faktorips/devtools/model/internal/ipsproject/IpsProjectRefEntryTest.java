@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -101,7 +101,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() throws CoreRuntimeException {
         IIpsProjectProperties props = ipsProject.getProperties();
         path = (IpsObjectPath)props.getIpsObjectPath();
         IIpsProject refProject = this.newIpsProject("TestProject2");

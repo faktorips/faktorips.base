@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.versionmanager;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 
@@ -50,7 +50,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreException {
+            throws CoreRuntimeException {
         return emptyOps;
     }
 

@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -98,7 +99,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetImageDescriptor_FindAssociationFails() throws CoreException {
+    public void testGetImageDescriptor_FindAssociationFails() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -116,7 +117,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetImageDescriptor_Association() throws CoreException {
+    public void testGetImageDescriptor_Association() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
@@ -172,7 +172,7 @@ public class CustomValidationsResolverTest {
         }
 
         @Override
-        public MessageList validate(Attribute objectToValidate, IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(Attribute objectToValidate, IIpsProject ipsProject) throws CoreRuntimeException {
             return null;
         }
 
@@ -186,7 +186,7 @@ public class CustomValidationsResolverTest {
         }
 
         @Override
-        public MessageList validate(IAttribute objectToValidate, IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(IAttribute objectToValidate, IIpsProject ipsProject) throws CoreRuntimeException {
             return null;
         }
 
@@ -201,7 +201,7 @@ public class CustomValidationsResolverTest {
 
         @Override
         public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                throws CoreException {
+                throws CoreRuntimeException {
             return null;
         }
 
@@ -216,7 +216,7 @@ public class CustomValidationsResolverTest {
 
         @Override
         public MessageList validate(IPolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                throws CoreException {
+                throws CoreRuntimeException {
             return null;
         }
 

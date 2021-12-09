@@ -17,13 +17,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -204,14 +204,14 @@ public class EnumValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_ReturnTrueIfOnlyEnumValeSetTypeIsAllowed() throws CoreException {
+    public void testIsResponsibleFor_ReturnTrueIfOnlyEnumValeSetTypeIsAllowed() throws CoreRuntimeException {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
 
         assertTrue(enumVSFormat.isResponsibleFor("test | test1"));
     }
 
     @Test
-    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum() throws CoreException {
+    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum() throws CoreRuntimeException {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
@@ -220,7 +220,7 @@ public class EnumValueSetFormatTest {
 
     @Test
     public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum_EmptyString()
-            throws CoreException {
+            throws CoreRuntimeException {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 

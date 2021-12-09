@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsMetaClass;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -163,7 +163,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
     /**
      * @return The IEnumContent referencing this EnumType.
      */
-    public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreException;
+    public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Sets the qualified name a referencing <code>IEnumContent</code> must have.
@@ -234,9 +234,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
     /**
      * Searches and returns all enumeration types that subclass this enumeration type.
      * 
-     * @throws CoreException If an error occurs while searching for sub classing enumeration types.
+     * @throws CoreRuntimeException If an error occurs while searching for sub classing enumeration types.
      */
-    public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException;
+    public Set<IEnumType> searchSubclassingEnumTypes() throws CoreRuntimeException;
 
     /**
      * Sets the abstract property for this <code>IEnumType</code>.
@@ -441,9 +441,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <p>
      * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
-     * @throws CoreException If an error occurs while creating the new <code>IEnumAttribute</code>.
+     * @throws CoreRuntimeException If an error occurs while creating the new <code>IEnumAttribute</code>.
      */
-    public IEnumAttribute newEnumAttribute() throws CoreException;
+    public IEnumAttribute newEnumAttribute() throws CoreRuntimeException;
 
     /**
      * Creates a new <code>IEnumLiteralNameAttribute</code> and returns a reference to it. The
@@ -454,10 +454,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <p>
      * Fires a <code>WHOLE_CONTENT_CHANGED</code> event.
      * 
-     * @throws CoreException If an error occurs while creating the new
+     * @throws CoreRuntimeException If an error occurs while creating the new
      *             <code>IEnumLiteralNameAttribute</code>.
      */
-    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException;
+    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreRuntimeException;
 
     /**
      * Returns how many <code>IEnumAttribute</code>s are currently part of this
@@ -501,12 +501,12 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param up Flag indicating whether to move up (<code>true</code>) or down
      *            (<code>false</code>).
      * 
-     * @throws CoreException If an error occurs while moving the <code>IEnumAttribute</code>.
+     * @throws CoreRuntimeException If an error occurs while moving the <code>IEnumAttribute</code>.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      * @throws NoSuchElementException If the given <code>IEnumAttribute</code> is not a part of this
      *             <code>IEnumType</code>.
      */
-    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreException;
+    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws CoreRuntimeException;
 
     /** Returns whether this <code>IEnumType</code> has a super enumeration type. */
     public boolean hasSuperEnumType();
@@ -558,11 +558,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            enumeration types. This is not necessarily the project this
      *            <code>IEnumAttribute</code> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the super type hierarchy for the not
+     * @throws CoreRuntimeException If an error occurs while searching the super type hierarchy for the not
      *             inherited <code>IEnumAttribute</code>s.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException;
+    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s that are unique. Attributes
@@ -575,11 +575,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            not</em>).
      * @param ipsProject The IPS project which IPS object path is used for the search.
      * 
-     * @throws CoreException If an error occurs while searching the super type hierarchy.
+     * @throws CoreRuntimeException If an error occurs while searching the super type hierarchy.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Creates and returns new <code>IEnumAttribute</code>s in this <code>IEnumType</code>
@@ -591,11 +591,11 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param superEnumAttributes The <code>IEnumAttribute</code>s from the super type hierarchy to
      *            inherit by this <code>IEnumType</code>.
      * 
-     * @throws CoreException If an error occurs while searching the super type hierarchy.
+     * @throws CoreRuntimeException If an error occurs while searching the super type hierarchy.
      * @throws IllegalArgumentException If any of the given <code>IEnumAttribute</code>s is not part
      *             of the supertype hierarchy of this <code>IEnumType</code>.
      */
-    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException;
+    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreRuntimeException;
 
     /**
      * Returns whether an <code>IEnumAttribute</code> with the given name exists in this

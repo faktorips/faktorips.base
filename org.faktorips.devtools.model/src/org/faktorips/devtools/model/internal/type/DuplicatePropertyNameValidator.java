@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -65,7 +65,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
     }
 
     private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
-        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
+        return MessageFormat.format(Messages.DuplicatePropertyNameValidator_msg, propertyName,
                 createMoreSpecificErrorText(invalidObjProperties[0], invalidObjProperties[1]));
     }
 
@@ -106,13 +106,13 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
     }
 
     private String createTextForDiffITypes(IpsObjectPartContainer ipsObjectContainer2) {
-        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+        return MessageFormat.format(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                 getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
     }
 
     private String createTextForDiffIpsObjPartContainer(ObjectProperty invalidObjProperty1,
             ObjectProperty invalidObjProperty2) {
-        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+        return MessageFormat.format(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 StringUtils.capitalize(getObjectKindNamePlural(invalidObjProperty1)),
                 getObjectKindNamePlural(invalidObjProperty2));
     }
@@ -282,7 +282,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                         return false;
                     }
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsLog.log(e);
                 return false;
             }
@@ -292,7 +292,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         return true;
     }
 
-    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) throws CoreException {
+    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) throws CoreRuntimeException {
         return !association.isInverseOfDerivedUnion() && !association.isSharedAssociation();
     }
 

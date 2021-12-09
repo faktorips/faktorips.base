@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -173,7 +173,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
 
-            IWorkspaceRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
+            ICoreRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
                     new Path(startingPage.getFilename()),
                     startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
                     messageList, startingPage.isImportIntoExisting());
@@ -249,7 +249,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     /**
      * Returns the enumeration type or enumeration content as a target for import.
      */
-    private IEnumValueContainer getEnumValueContainer() throws CoreException {
+    private IEnumValueContainer getEnumValueContainer() throws CoreRuntimeException {
         if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (IEnumValueContainer)selectContentsPage.getTargetForImport();
         }

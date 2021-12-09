@@ -51,6 +51,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.method.IParameterContainer;
@@ -164,7 +165,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         uiToolkit.setDataChangeable(this, paramContainer != null);
     }
 
-    private MessageList validate(IParameter param) throws CoreException {
+    private MessageList validate(IParameter param) throws CoreRuntimeException {
         MessageList result = paramContainer.validate(ipsProject);
         return result.getMessagesFor(param);
     }
@@ -222,7 +223,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 return validate((IParameter)element);
             }
         };

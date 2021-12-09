@@ -11,9 +11,9 @@
 package org.faktorips.devtools.core.internal.refactor;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -114,13 +114,13 @@ public abstract class MoveOperation {
                     return false;
                 }
                 if (representsFolder(target)) {
-                    IFolder sourceFolder = (IFolder)((IIpsElement)source).getCorrespondingResource();
-                    IResource targetResource = ((IIpsElement)target).getCorrespondingResource();
-                    if (!(targetResource instanceof IFolder)) {
+                    AFolder sourceFolder = (AFolder)((IIpsElement)source).getCorrespondingResource();
+                    AResource targetResource = ((IIpsElement)target).getCorrespondingResource();
+                    if (!(targetResource instanceof AFolder)) {
                         return false;
                     }
-                    IFolder targetFolder = (IFolder)targetResource;
-                    if (sourceFolder.getFullPath().isPrefixOf(targetFolder.getFullPath())) {
+                    AFolder targetFolder = (AFolder)targetResource;
+                    if (sourceFolder.getWorkspaceRelativePath().isPrefixOf(targetFolder.getWorkspaceRelativePath())) {
                         return false;
                     }
                 }

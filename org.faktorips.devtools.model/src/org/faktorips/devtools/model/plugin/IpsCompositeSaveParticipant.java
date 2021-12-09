@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * A save participant that contains multiple "real" save participants and delegates all method calls
@@ -50,7 +50,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
     }
 
     @Override
-    public void prepareToSave(ISaveContext context) throws CoreException {
+    public void prepareToSave(ISaveContext context) throws CoreRuntimeException {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.prepareToSave(context);
@@ -72,7 +72,7 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
     }
 
     @Override
-    public void saving(ISaveContext context) throws CoreException {
+    public void saving(ISaveContext context) throws CoreRuntimeException {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.saving(context);

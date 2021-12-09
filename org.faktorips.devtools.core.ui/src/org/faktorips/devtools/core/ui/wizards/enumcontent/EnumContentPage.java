@@ -38,6 +38,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContentValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -126,7 +127,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+    protected void setDefaultsExtension(IResource selectedResource) throws CoreRuntimeException {
         if (selectedResource == null) {
             return;
         }
@@ -163,7 +164,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
         IEnumType enumType = getEnumType();
         if (enumType != null) {
             IIpsPackageFragment packageFrag = getIpsPackageFragment();
@@ -189,7 +190,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
         newEnumContent.setEnumType(enumTypeField.getText());
@@ -202,7 +203,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      * Validates the page and generates error messages that are displayed in the message area of the
      * wizard container.
      */
-    public final void validatePage() throws CoreException {
+    public final void validatePage() throws CoreRuntimeException {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage((String)null);
         validateSourceRoot();
@@ -215,7 +216,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         updatePageComplete();
     }
 
-    private void validatePageInternal() throws CoreException {
+    private void validatePageInternal() throws CoreRuntimeException {
         String enumTypeFieldText = enumTypeField.getText();
         if (StringUtils.isEmpty(enumTypeFieldText)) {
             setErrorMessage(Messages.EnumContentPage_msgEnumTypeMissing);

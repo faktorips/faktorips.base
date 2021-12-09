@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
+import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -69,7 +72,8 @@ public class ResourceAdapterFactory extends AbstractIpsAdapterFactory {
     }
 
     private IIpsElement adaptToIpsElement(Object adaptableObject) {
-        IIpsElement ipsElement = IIpsModel.get().getIpsElement((IResource)adaptableObject);
+        IIpsElement ipsElement = IIpsModel.get()
+                .getIpsElement(wrap(adaptableObject).as(AResource.class));
         if (ipsElement == null || !ipsElement.exists()) {
             return null;
         }

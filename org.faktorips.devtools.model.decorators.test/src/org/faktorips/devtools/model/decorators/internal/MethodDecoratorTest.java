@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -72,7 +73,7 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Overwrite() throws CoreException {
+    public void testGetImageDescriptor_Overwrite() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwrittenMethod = mock(IMethod.class);
         IMethod overwritingMethod = mock(IMethod.class);
@@ -86,7 +87,7 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindOverwrittenFails() throws CoreException {
+    public void testGetImageDescriptor_FindOverwrittenFails() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwritingMethod = mock(IMethod.class);
         when(overwritingMethod.getIpsProject()).thenReturn(ipsProject);
@@ -100,7 +101,7 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_AbstractOverwrite() throws CoreException {
+    public void testGetImageDescriptor_AbstractOverwrite() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwrittenMethod = mock(IMethod.class);
         IMethod overwritingMethod = mock(IMethod.class);

@@ -401,7 +401,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         new TableMessageHoverService(tableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element != null) {
                     return ((IRow)element).validate(((IRow)element).getIpsProject());
                 }

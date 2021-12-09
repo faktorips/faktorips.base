@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.pctype.persistence;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
@@ -199,7 +199,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * 
      * @see #isDefinesDiscriminatorColumn
      */
-    public IPolicyCmptType findRootEntity() throws CoreException;
+    public IPolicyCmptType findRootEntity() throws CoreRuntimeException;
 
     /**
      * Returns the name of database table. Returns an empty string if the table name has not been

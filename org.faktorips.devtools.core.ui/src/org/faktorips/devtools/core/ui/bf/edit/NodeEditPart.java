@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.bf.IBFElement;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.bf.Size;
 import org.faktorips.runtime.MessageList;
 

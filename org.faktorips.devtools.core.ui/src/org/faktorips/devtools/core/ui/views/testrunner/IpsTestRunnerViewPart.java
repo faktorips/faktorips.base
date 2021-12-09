@@ -60,6 +60,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.model.testcase.TestRuleViolationType;
 import org.faktorips.util.StringUtil;
@@ -180,7 +181,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /*
      * Runs the last runned test.
      */
-    private void rerunTestRun() throws CoreException {
+    private void rerunTestRun() throws CoreRuntimeException {
         IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
     }
 

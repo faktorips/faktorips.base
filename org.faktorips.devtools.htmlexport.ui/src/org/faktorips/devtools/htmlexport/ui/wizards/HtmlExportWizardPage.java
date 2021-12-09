@@ -358,7 +358,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
         if (firstElement == null) {
             return ""; //$NON-NLS-1$
         }
-        return firstElement.getProject().getLocation().toOSString() + File.separator + "html"; //$NON-NLS-1$
+        return firstElement.getProject().getLocation().toString() + File.separator + "html"; //$NON-NLS-1$
     }
 
     public boolean isIncludingReferencedProjects() {

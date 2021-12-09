@@ -246,7 +246,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     /**
      * Returns all ips source files that can be chosen by the user.
      */
-    protected abstract IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
+    protected abstract IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException;
 
     /**
      * Returns an Array of {@link IIpsSrcFile}, that contains all {@link IIpsSrcFile source files}
@@ -255,7 +255,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses to search the source files in all given projects.
      */
-    protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreException {
+    protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreRuntimeException {
         Set<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(ipsProject.findIpsSrcFiles(type)));
@@ -286,9 +286,9 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * 
      * @param qualifiedName The qualified name to be checked for uniqueness
      * @return True whether the qualified name is unique, else false
-     * @throws CoreException If getting the required {@link IIpsSrcFile}s failed
+     * @throws CoreRuntimeException If getting the required {@link IIpsSrcFile}s failed
      */
-    public boolean checkIpsObjectUniqueness(String qualifiedName) throws CoreException {
+    public boolean checkIpsObjectUniqueness(String qualifiedName) throws CoreRuntimeException {
         List<IIpsSrcFile> srcFiles = Arrays.asList(getIpsSrcFiles());
         if (srcFiles.isEmpty()) {
             return true;

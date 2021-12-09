@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.type;
 
 import static java.util.Objects.requireNonNull;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +21,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -71,7 +71,7 @@ public class TypeValidations {
      * @param ipsProject The IPS project.
      * @param ipsObject The model object of the type that is to validate.
      * 
-     * @throws CoreException Any raised exceptions are delegated by this method.
+     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
      * @deprecated since 21.6; use {@link #validateUniqueQualifiedName(IIpsObject)} or
      *             {@link #validateUniqueQualifiedName(IpsObjectType, String, IIpsProject)} instead.
      */
@@ -79,18 +79,20 @@ public class TypeValidations {
     public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
             String qualifiedName,
             IIpsProject ipsProject,
-            IIpsObject ipsObject) throws CoreException {
+            IIpsObject ipsObject) throws CoreRuntimeException {
         IIpsSrcFile file = ipsProject.findIpsSrcFile(otherIpsObjectType, qualifiedName);
         if (file != null) {
             if (ipsProject.equals(file.getIpsProject())) {
-                return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
+                return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, MessageFormat.format(
                         Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getDisplayName()),
                         Message.ERROR, ipsObject != null ? new ObjectProperty[] { new ObjectProperty(ipsObject, null) }
                                 : new ObjectProperty[0]);
             }
-            return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
-                    Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
-                    new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
+            return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS,
+                    MessageFormat.format(
+                            Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
+                            new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }),
+                    Message.WARNING,
                     ipsObject != null ? new ObjectProperty[] { new ObjectProperty(ipsObject, IIpsObject.PROPERTY_NAME) }
                             : new ObjectProperty[0]);
 
@@ -107,9 +109,9 @@ public class TypeValidations {
      * 
      * @param ipsObject the model object that is to be validated
      * 
-     * @throws CoreException Any raised exceptions are delegated by this method.
+     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
      */
-    public static MessageList validateUniqueQualifiedName(IIpsObject ipsObject) throws CoreException {
+    public static MessageList validateUniqueQualifiedName(IIpsObject ipsObject) throws CoreRuntimeException {
         requireNonNull(ipsObject, "ipsObject must not be null"); //$NON-NLS-1$
         return validateUniqueQualifiedName(ipsObject, ipsObject.getIpsObjectType(), ipsObject.getQualifiedName(),
                 ipsObject.getIpsProject());
@@ -126,11 +128,11 @@ public class TypeValidations {
      * @param qualifiedName the qualified name of the type that is to be validated
      * @param ipsProject the IPS project
      * 
-     * @throws CoreException Any raised exceptions are delegated by this method.
+     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
      */
     public static MessageList validateUniqueQualifiedName(IpsObjectType ipsObjectType,
             String qualifiedName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
         return validateUniqueQualifiedName(null, ipsObjectType, qualifiedName, ipsProject);
     }
 
@@ -147,12 +149,12 @@ public class TypeValidations {
      * @param qualifiedName the qualified name of the type that is to be validated
      * @param ipsProject the IPS project
      * 
-     * @throws CoreException Any raised exceptions are delegated by this method.
+     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
      */
     private static MessageList validateUniqueQualifiedName(@CheckForNull IIpsObject ipsObject,
             IpsObjectType ipsObjectType,
             String qualifiedName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
         requireNonNull(ipsObjectType, "ipsObjectType must not be null"); //$NON-NLS-1$
         requireNonNull(qualifiedName, "qualifiedName must not be null"); //$NON-NLS-1$
         requireNonNull(ipsProject, "ipsProject must not be null"); //$NON-NLS-1$
@@ -174,12 +176,12 @@ public class TypeValidations {
                 ? new ObjectProperty[] { new ObjectProperty(ipsObject, IIpsObject.PROPERTY_NAME) }
                 : new ObjectProperty[0];
         if (ipsProject.equals(file.getIpsProject())) {
-            return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
+            return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, MessageFormat.format(
                     Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getDisplayName()),
                     Message.ERROR,
                     invalidObjectProperties);
         }
-        return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
+        return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, MessageFormat.format(
                 Messages.Type_msgOtherTypeWithSameQNameInDependentProject, otherIpsObjectType.getId(),
                 file.getIpsProject()), Message.WARNING,
                 invalidObjectProperties);
@@ -197,7 +199,7 @@ public class TypeValidations {
         }
         IType superType = type.findSupertype(ipsProject);
         if (superType == null) {
-            String text = NLS.bind(Messages.Type_msg_supertypeNotFound, type.getSupertype());
+            String text = MessageFormat.format(Messages.Type_msg_supertypeNotFound, type.getSupertype());
             return new Message(IType.MSGCODE_SUPERTYPE_NOT_FOUND, text, Message.ERROR, type, IType.PROPERTY_SUPERTYPE);
         }
 

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +20,12 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -113,7 +113,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return null;
     }
 
@@ -139,12 +139,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
         return validate(ipsProject).getSeverity();
     }
 
@@ -154,7 +154,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreException {
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreRuntimeException {
         if (dependency == null) {
             throw new NullPointerException("Can not get dependency details for null as dependency."); //$NON-NLS-1$
         }
@@ -216,7 +216,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * </p>
      */
     protected boolean supportsXmlSchema() {
-        return isNotBusinessFunction();
+        return true;
     }
 
     /**
@@ -235,11 +235,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     protected String getXmlSchemaLocation() {
         return XmlUtil.getSchemaLocation(getIpsObjectType());
-    }
-
-    @SuppressWarnings("deprecation")
-    private boolean isNotBusinessFunction() {
-        return !IpsObjectType.BUSINESS_FUNCTION.getXmlElementName().equals(getIpsObjectType().getXmlElementName());
     }
 
     @Override
@@ -268,7 +263,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @see #validateNamingConventions(MessageList, String, String)
      */
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         validateNamingConventions(list, getName(), PROPERTY_NAME);
@@ -281,7 +276,8 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
         if (ipsProject.findDuplicateIpsSrcFile(getQualifiedNameType())) {
             list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD,
-                    NLS.bind(Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING,
+                    MessageFormat.format(Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()),
+                    Message.WARNING,
                     this));
         }
     }
@@ -295,7 +291,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      *            property.
      */
     protected void validateNamingConventions(MessageList list, String nameToValidate, String property)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         MessageList mlForNameValidation = new MessageList();
         mlForNameValidation.add(getIpsProject().getNamingConventions()
@@ -307,7 +303,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() throws CoreRuntimeException {
         getIpsSrcFile().delete();
     }
 
@@ -328,8 +324,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             String contents = XmlUtil.nodeToString(element, encoding);
             ipsSrcFile = targetFragment.createIpsFile(filename, contents, force, monitor);
         } catch (TransformerException e) {
-            throw new RuntimeException(e);
-        } catch (CoreException e) {
             throw new RuntimeException(e);
         }
 

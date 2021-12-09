@@ -230,7 +230,7 @@ public class SourcePage extends WizardPage {
         createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[2]);
 
         createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot, rootProductCmpt
-                .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1),
+                .getIpsPackageFragment().getRoot().getCorrespondingResource().getWorkspaceRelativePath().toString().substring(1),
                 height[3]);
 
         createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage,

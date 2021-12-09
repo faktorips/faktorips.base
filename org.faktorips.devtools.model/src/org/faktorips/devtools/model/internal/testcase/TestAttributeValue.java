@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -81,7 +82,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException {
+    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
         if (StringUtils.isEmpty(testAttribute)) {
             return null;
         }
@@ -94,7 +95,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
+    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
             return null;
@@ -128,7 +129,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public void setDefaultValue() throws CoreException {
+    public void setDefaultValue() throws CoreRuntimeException {
         IAttribute modelAttribute = findAttribute(getIpsProject());
         if (modelAttribute == null) {
             return;
@@ -203,7 +204,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                 return true;
             }
             // CSOFF: Empty Statement
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // ignore exceptions
         }
         // CSON: Empty Statement
@@ -211,7 +212,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public void updateDefaultTestAttributeValue() throws CoreException {
+    public void updateDefaultTestAttributeValue() throws CoreRuntimeException {
         IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration(getParent()
                 .getIpsProject());
         setDefaultTestAttributeValueInternal(generation);
@@ -222,7 +223,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
      * product cmpt or if no product cmpt is available or the attribute isn't configurated by
      * product then from the policy cmpt. Don't update the value if not default is specified.
      */
-    void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreException {
+    void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreRuntimeException {
         IIpsProject ipsProject = getIpsProject();
         ITestAttribute attribute = findTestAttribute(ipsProject);
         if (attribute == null) {
@@ -263,11 +264,12 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(messageList, ipsProject);
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
-            String text = NLS.bind(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound, getTestAttribute());
+            String text = MessageFormat.format(Messages.TestAttributeValue_ValidateError_TestAttributeNotFound,
+                    getTestAttribute());
             Message msg = new Message(MSGCODE_TESTATTRIBUTE_NOT_FOUND, text, Message.ERROR, this, PROPERTY_VALUE);
             messageList.add(msg);
         } else {
@@ -281,7 +283,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                  * for other policy cmpts which defines this subclass attribute
                  */
                 if (attribute == null && !StringUtils.isEmpty(value)) {
-                    String text = NLS.bind(Messages.TestAttributeValue_ValidateError_AttributeNotFound,
+                    String text = MessageFormat.format(Messages.TestAttributeValue_ValidateError_AttributeNotFound,
                             testAttr.getAttribute());
                     Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,
                             PROPERTY_VALUE);
@@ -300,7 +302,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
             // check the correct type
             if (!testAttr.isInputAttribute() && !testAttr.isExpextedResultAttribute()) {
-                String text = NLS.bind(Messages.TestAttributeValue_Error_WrongType, testAttr.getName());
+                String text = MessageFormat.format(Messages.TestAttributeValue_Error_WrongType, testAttr.getName());
                 Message msg = new Message(ITestAttribute.MSGCODE_WRONG_TYPE, text, Message.WARNING, this,
                         PROPERTY_VALUE);
                 messageList.add(msg);

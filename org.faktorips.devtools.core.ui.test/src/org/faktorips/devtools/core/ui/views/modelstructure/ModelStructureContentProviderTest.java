@@ -19,10 +19,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ShowTypeState;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -36,7 +36,7 @@ import org.junit.Test;
 public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testHasChildren_NoChildren() throws CoreException {
+    public void testHasChildren_NoChildren() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -49,7 +49,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren_CyclicNodeIsRepeatedOnlyOnce() throws CoreException {
+    public void testHasChildren_CyclicNodeIsRepeatedOnlyOnce() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
@@ -66,7 +66,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_PolicyChildrenEmpty() throws CoreException {
+    public void testGetChildren_PolicyChildrenEmpty() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
@@ -82,7 +82,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_ProductChildrenEmpty() throws CoreException {
+    public void testGetChildren_ProductChildrenEmpty() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
@@ -98,7 +98,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_DetectOneElementCycle() throws CoreException {
+    public void testGetChildren_DetectOneElementCycle() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IPolicyCmptType selfReferencingVertrag = newPolicyCmptTypeWithoutProductCmptType(project,
@@ -124,7 +124,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_DetectMultiElementCycle() throws CoreException {
+    public void testGetChildren_DetectMultiElementCycle() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
@@ -157,7 +157,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreException {
+    public void testGetChildren_SubtypeChildrenHaveParent() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
@@ -177,7 +177,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_HasInheritedAssociations() throws CoreException {
+    public void testGetChildren_HasInheritedAssociations() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
@@ -206,7 +206,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_HasNoInheritedAssociations() throws CoreException {
+    public void testGetChildren_HasNoInheritedAssociations() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType typeAA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");
@@ -231,7 +231,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_AssociationChildrenHaveParent() throws CoreException {
+    public void testGetChildren_AssociationChildrenHaveParent() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "typeA");
@@ -253,7 +253,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren_PolicyHasSubtypeChildren() throws CoreException {
+    public void testHasChildren_PolicyHasSubtypeChildren() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -269,7 +269,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_FindAssociationRootElements() throws CoreException {
+    public void testCollectElements_FindAssociationRootElements() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on associations
         IIpsProject project = newIpsProject();
@@ -295,7 +295,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_FindSupertypeRootElements() throws CoreException {
+    public void testCollectElements_FindSupertypeRootElements() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -318,7 +318,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren_HasAssociationChildren() throws CoreException {
+    public void testHasChildren_HasAssociationChildren() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -336,7 +336,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren_HasAssociationAndSubtypeChildren() throws CoreException {
+    public void testHasChildren_HasAssociationAndSubtypeChildren() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
         provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
@@ -374,7 +374,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * 
      */
     @Test
-    public void testGetChildren_NoSupertypeAssociations() throws CoreException {
+    public void testGetChildren_NoSupertypeAssociations() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -420,7 +420,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren_ComponentNodeChildrenOrder() throws CoreException {
+    public void testGetChildren_ComponentNodeChildrenOrder() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -448,7 +448,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_InputInstanceofIType() throws CoreException {
+    public void testCollectElements_InputInstanceofIType() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -482,7 +482,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * 
      */
     @Test
-    public void testCollectElements_OmitSupertypeNode() throws CoreException {
+    public void testCollectElements_OmitSupertypeNode() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         ProductCmptType leafPolicy = newProductCmptType(project, "Leaf Node");
@@ -516,7 +516,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * 
      */
     @Test
-    public void testCollectElements_ConsiderSupertypeAssociation() throws CoreException {
+    public void testCollectElements_ConsiderSupertypeAssociation() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -547,7 +547,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * The element is also the root element
      */
     @Test
-    public void testCollectElements_SingleElementIsItsOwnRoot() throws CoreException {
+    public void testCollectElements_SingleElementIsItsOwnRoot() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -569,7 +569,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
      * Only the topmost element should be root.
      */
     @Test
-    public void testCollectElements_OnlyOneRootInASingleHierarchyPath() throws CoreException {
+    public void testCollectElements_OnlyOneRootInASingleHierarchyPath() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         ProductCmptType produkt = newProductCmptType(project, "Produkt");
@@ -600,7 +600,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_ElementIsItsOwnRootInPureSupertypeHierarchy() throws CoreException {
+    public void testCollectElements_ElementIsItsOwnRootInPureSupertypeHierarchy() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType leafPolicy = newPolicyCmptTypeWithoutProductCmptType(project, "Leave Node");
@@ -619,7 +619,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_OnIType_DetectCycleOnSelfreferencingELement() throws CoreException {
+    public void testCollectElements_OnIType_DetectCycleOnSelfreferencingELement() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
@@ -637,7 +637,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_OnIType_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
+    public void testCollectElements_OnIType_DetectCycleOnIndirectSelfreferencingELement() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
@@ -665,7 +665,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_OnIIpsProject_DetectCycleOnSelfreferencingELement() throws CoreException {
+    public void testCollectElements_OnIIpsProject_DetectCycleOnSelfreferencingELement() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
@@ -683,7 +683,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCollectElements_OnIIpsProject_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
+    public void testCollectElements_OnIIpsProject_DetectCycleOnIndirectSelfreferencingELement() throws CoreRuntimeException {
         // setup
         ModelStructureContentProvider provider = new ModelStructureContentProvider();
 
@@ -711,7 +711,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetComponentNodeCompositeChild_IsNull() throws CoreException {
+    public void testGetComponentNodeCompositeChild_IsNull() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -724,7 +724,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetComponentNodeCompositeChild_NotNull() throws CoreException {
+    public void testGetComponentNodeCompositeChild_NotNull() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -746,7 +746,7 @@ public class ModelStructureContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetComponentNodeSubtypeChildren_NotNull() throws CoreException {
+    public void testGetComponentNodeSubtypeChildren_NotNull() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,16 +33,17 @@ import java.util.jar.JarFile;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.model.abstraction.AResourceDelta;
+import org.faktorips.devtools.model.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.AbstractIpsStorage;
@@ -82,23 +85,23 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         if (archivePath == null) {
             return null;
         }
-        IResource resource = getCorrespondingResource();
+        AResource resource = getCorrespondingResource();
         if (resource != null) {
-            return resource.getLocation();
+            return Path.fromOSString(resource.getLocation().toString());
         }
         File extFile = archivePath.toFile();
         return Path.fromOSString(extFile.getAbsolutePath());
     }
 
     @Override
-    public boolean isAffectedBy(IResourceDelta delta) {
-        IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-        IFile file = wsRoot.getFileForLocation(getLocation());
+    public boolean isAffectedBy(AResourceDelta delta) {
+        AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
+        AFile file = wsRoot.getFileForLocation(toJavaPath(getLocation()));
         if (file == null) {
             // file is outside the workspace
             return false;
         }
-        if (delta.findMember(file.getProjectRelativePath()) != null) {
+        if (delta.findMember(Path.fromOSString(file.getProjectRelativePath().toString())) != null) {
             return true;
         }
         return false;
@@ -111,7 +114,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
     @Override
     public boolean exists() {
-        IResource resource = getCorrespondingResource();
+        AResource resource = getCorrespondingResource();
         if (resource == null) {
             // its a file outside the workspace
             File extFile = archivePath.toFile();
@@ -134,7 +137,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public String[] getNonEmptyPackages() throws CoreException {
+    public String[] getNonEmptyPackages() throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         String[] packNames = new String[packs.size()];
         int i = 0;
@@ -152,7 +155,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes() throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes() throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         TreeSet<QualifiedNameType> qualifiedNameTypes = new TreeSet<>();
         for (IPath path : paths.keySet()) {
@@ -165,7 +168,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         Set<QualifiedNameType> qnts = packs.get(packName);
         if (qnts == null) {
@@ -206,7 +209,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     private long getActualFileModificationStamp() {
-        IResource resource = getCorrespondingResource();
+        AResource resource = getCorrespondingResource();
         if (resource == null) {
             return getFileFromPath().lastModified();
         } else {
@@ -282,13 +285,13 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
     private File getFileFromPath() {
         // accessing the file on local file system is tricky in eclipse. At least we have to refresh
-        IResource resource = getCorrespondingResource();
+        AResource resource = getCorrespondingResource();
         if (resource != null) {
             try {
-                resource.refreshLocal(IResource.DEPTH_ZERO, null);
+                resource.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
                 // this part is copied from org.eclipse.jdt.internal.core.util.Util.toLocalFile(URI,
                 // IProgressMonitor)
-                IFileStore fileStore = EFS.getStore(resource.getLocationURI());
+                IFileStore fileStore = EFS.getStore(resource.getLocation().toUri());
                 File localFile = fileStore.toLocalFile(EFS.NONE, null);
                 if (localFile == null) {
                     // non local file system
@@ -348,7 +351,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType) throws CoreException {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType)
+            throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = paths.get(qualifiedNameType.toPath());
         if (props == null) {
@@ -358,7 +362,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qualifiedNameType) throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qualifiedNameType)
+            throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = paths.get(qualifiedNameType.toPath());
         if (props == null) {
@@ -368,9 +373,9 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
-            IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+            AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
             if (archivePath.segmentCount() == 0) {
                 return null;
             }
@@ -383,10 +388,10 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
                 return null;
                 // the archive is not located in the workspace
             }
-            return wsRoot.getFile(archivePath);
+            return wsRoot.getFile(toJavaPath(archivePath));
         }
-        IProject project = getIpsProject().getProject();
-        return project.getFile(archivePath);
+        AProject project = getIpsProject().getProject();
+        return project.getFile(toJavaPath(archivePath));
     }
 
     @Override

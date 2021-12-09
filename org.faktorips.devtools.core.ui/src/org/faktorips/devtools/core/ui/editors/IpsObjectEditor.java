@@ -18,9 +18,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -60,6 +60,7 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -198,7 +199,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         String title = ipsSrcFile.getIpsObjectName();
         setPartName(title);
-        setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getFullPath().toOSString());
+        setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getWorkspaceRelativePath().toOSString());
 
         if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
             try {
@@ -298,9 +299,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * subclasses by adding the pages to edit the ips object with.
      * 
      * @throws PartInitException if there is an exception while initializing a part
-     * @throws CoreException in case of other core exceptions
+     * @throws CoreRuntimeException in case of other core exceptions
      */
-    protected abstract void addPagesForParsableSrcFile() throws CoreException;
+    protected abstract void addPagesForParsableSrcFile() throws CoreRuntimeException;
 
     protected void updatePageStructure(boolean forceRefreshInclStructuralChanges) {
         logMethodStarted("updatePageStructure"); //$NON-NLS-1$
@@ -695,7 +696,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Window.OK) {
                 log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
-                IWorkspaceRunnable fix = $ -> toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
+                ICoreRunnable fix = $ -> toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                 IpsUIPlugin.getDefault().runWorkspaceModification(fix);
                 refreshIncludingStructuralChanges();
             } else {
@@ -714,9 +715,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Creates a dialog to disblay the differences to the model and ask the user if the
      * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
      * 
-     * @throws CoreException May be thrown if any error occurs.
+     * @throws CoreRuntimeException May be thrown if any error occurs.
      */
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+    protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
         throw new UnsupportedOperationException();
     }
 

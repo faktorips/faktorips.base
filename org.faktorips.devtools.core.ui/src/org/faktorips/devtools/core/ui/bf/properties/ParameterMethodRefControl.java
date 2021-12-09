@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.bf.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -62,7 +62,7 @@ public class ParameterMethodRefControl extends TextButtonControl {
         parameterType = type;
     }
 
-    private IMethod[] getSelectableMethods() throws CoreException {
+    private IMethod[] getSelectableMethods() throws CoreRuntimeException {
         if (parameterType == null) {
             return new IMethod[0];
         }

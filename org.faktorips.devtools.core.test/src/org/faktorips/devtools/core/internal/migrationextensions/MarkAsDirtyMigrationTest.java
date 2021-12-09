@@ -16,11 +16,11 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -34,21 +34,21 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private MarkAsDirtyMigration migration;
 
-    private void setUpMigration() throws CoreException {
+    private void setUpMigration() throws CoreRuntimeException {
         ipsProject = newIpsProject();
         migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", ImmutableSet.of(IpsObjectType.POLICY_CMPT_TYPE,
                 IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.ENUM_TYPE), "47.11", "Lorem Ipsum");
     }
 
     @Test
-    public void testTargetVersion() throws CoreException {
+    public void testTargetVersion() throws CoreRuntimeException {
         setUpMigration();
 
         assertThat(migration.getTargetVersion(), is("47.11"));
     }
 
     @Test
-    public void testDescription() throws CoreException {
+    public void testDescription() throws CoreRuntimeException {
         setUpMigration();
 
         assertThat(migration.getDescription(), is("Lorem Ipsum"));

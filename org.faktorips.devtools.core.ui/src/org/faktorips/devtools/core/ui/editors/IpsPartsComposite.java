@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
@@ -373,7 +372,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         new TableMessageHoverService(tableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 return messageCueLabelProvider.getMessages(element);
             }
 

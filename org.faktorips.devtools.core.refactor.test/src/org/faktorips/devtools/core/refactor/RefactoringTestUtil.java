@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -40,10 +41,11 @@ public abstract class RefactoringTestUtil {
 
         String newPackageName = packageName;
         IIpsSrcFolderEntry srcFolderEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
-        IFolder javaSrcFolder = derivedSource ? srcFolderEntry.getOutputFolderForDerivedJavaFiles()
+        IFolder javaSrcFolder = derivedSource ? srcFolderEntry.getOutputFolderForDerivedJavaFiles().unwrap()
                 : srcFolderEntry
-                        .getOutputFolderForMergableJavaFiles();
-        IPackageFragmentRoot javaRoot = ipsProject.getJavaProject().getPackageFragmentRoot(javaSrcFolder);
+                        .getOutputFolderForMergableJavaFiles().unwrap();
+        IPackageFragmentRoot javaRoot = ((IJavaProject)ipsProject.getJavaProject().unwrap())
+                .getPackageFragmentRoot(javaSrcFolder);
 
         String basePackageName = derivedSource ? srcFolderEntry.getBasePackageNameForDerivedJavaClasses()
                 : srcFolderEntry.getBasePackageNameForMergableJavaClasses();

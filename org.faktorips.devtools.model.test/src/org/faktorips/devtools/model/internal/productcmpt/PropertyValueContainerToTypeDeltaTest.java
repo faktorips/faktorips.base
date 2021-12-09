@@ -26,8 +26,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingTemplateLinkEntry;
@@ -110,7 +110,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testEmpty() throws CoreException {
+    public void testEmpty() throws CoreRuntimeException {
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
         assertEquals(0, delta.getEntries().length);
         assertTrue(delta.isEmpty());
@@ -121,7 +121,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
     }
 
-    public void getEntriesByType() throws CoreException {
+    public void getEntriesByType() throws CoreRuntimeException {
         productCmptType.newProductCmptTypeAttribute("a1");
         productCmptType.newProductCmptTypeAttribute("a2");
 
@@ -131,7 +131,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testLinksWithMissingAssociation() throws CoreException {
+    public void testLinksWithMissingAssociation() throws CoreRuntimeException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         IProductCmptGeneration generation = productCmpt.getFirstGeneration();
         IProductCmptLink link = generation.newLink(association.getName());
@@ -153,7 +153,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testMissingTemplateLink_EntryForDefinedLinks() throws CoreException {
+    public void testMissingTemplateLink_EntryForDefinedLinks() throws CoreRuntimeException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
 
@@ -172,7 +172,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testMissingTemplateLink_NoEntryForUndefinedLinks() throws CoreException {
+    public void testMissingTemplateLink_NoEntryForUndefinedLinks() throws CoreRuntimeException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
 
@@ -187,7 +187,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testRemovedTemplateLink_OnlyLinkWithoutAssociationEntryIfRemovedInModel() throws CoreException {
+    public void testRemovedTemplateLink_OnlyLinkWithoutAssociationEntryIfRemovedInModel() throws CoreRuntimeException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
 
@@ -216,7 +216,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testAttributes() throws CoreException {
+    public void testAttributes() throws CoreRuntimeException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
         attribute1.setChangingOverTime(true);
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
@@ -274,7 +274,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testAttributesNotChangingOverTime() throws CoreException {
+    public void testAttributesNotChangingOverTime() throws CoreRuntimeException {
         IProductCmptTypeAttribute attribute1 = productCmptType.newProductCmptTypeAttribute("a1");
         IProductCmptTypeAttribute attribute2 = superProductCmptType.newProductCmptTypeAttribute("a_super");
         attribute1.setChangingOverTime(false);
@@ -376,7 +376,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testTypeMismatch() throws CoreException {
+    public void testTypeMismatch() throws CoreRuntimeException {
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("premium");
         attribute.setChangingOverTime(true);
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
@@ -400,7 +400,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValueSetTypeMismatch() throws CoreException {
+    public void testValueSetTypeMismatch() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setValueSetConfiguredByProduct(true);
         attr.setName("a1");
@@ -451,7 +451,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValueSetTypeMismatch_UndefinedConfigElement() throws CoreException {
+    public void testValueSetTypeMismatch_UndefinedConfigElement() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setValueSetConfiguredByProduct(true);
         attr.setName("a1");
@@ -515,7 +515,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValueMismatch_integrated() throws CoreException {
+    public void testValueMismatch_integrated() throws CoreRuntimeException {
         IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
         attr.setName("a1");
         attr.setMultiValueAttribute(true);
@@ -540,7 +540,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testVRuleMismatch() throws CoreException {
+    public void testVRuleMismatch() throws CoreRuntimeException {
         initRules();
 
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
@@ -563,7 +563,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testVRuleMismatchNotConfigurable() throws CoreException {
+    public void testVRuleMismatchNotConfigurable() throws CoreRuntimeException {
         initRules();
         IValidationRule unconfigurableRule = policyCmptType.newRule();
         unconfigurableRule.setName("unconfigurableRule");

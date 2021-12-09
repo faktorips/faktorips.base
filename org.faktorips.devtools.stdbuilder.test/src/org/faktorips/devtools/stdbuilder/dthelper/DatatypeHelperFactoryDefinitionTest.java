@@ -15,16 +15,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class DatatypeHelperFactoryDefinitionTest {
 
     @Test
-    public void testDatatypeDefinition() throws CoreException {
+    public void testDatatypeDefinition() throws CoreRuntimeException {
         DatatypeHelperFactory factory = mock(DatatypeHelperFactory.class);
         Datatype datatype = mock(Datatype.class);
         IExtension extension = mock(IExtension.class);

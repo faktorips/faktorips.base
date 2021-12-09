@@ -11,13 +11,12 @@
 package org.faktorips.devtools.model.internal.enums;
 
 import java.beans.PropertyChangeListener;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -71,16 +70,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * @param parent The <code>IEnumValue</code> this <code>IEnumAttributeValue</code> belongs to.
      * @param id A unique ID for this <code>IEnumAttributeValue</code>.
      * 
-     * @throws CoreException If an error occurs while initializing the object.
+     * @throws CoreRuntimeException If an error occurs while initializing the object.
      */
-    public EnumAttributeValue(EnumValue parent, String id) throws CoreException {
+    public EnumAttributeValue(EnumValue parent, String id) throws CoreRuntimeException {
         super(parent, id);
         propertyChangeListener = evt -> valueChanged(null, evt.getNewValue());
         setValueInternal(ValueFactory.createStringValue(null));
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) throws CoreRuntimeException {
         IEnumAttribute foundEnumAttribute = findEnumAttribute(getIpsProject());
         if (foundEnumAttribute != null) {
             return foundEnumAttribute.getLabelValue(locale);
@@ -210,7 +209,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         if (enumAttribute == null) {
             return;
@@ -252,11 +251,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         ValueTypeMismatch typeMismatch = checkValueTypeMismatch(enumAttribute);
         if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
             list.add(new Message(MSGCODE_INVALID_VALUE_TYPE,
-                    NLS.bind(Messages.EnumAttributeValue_MultiLingual, enumAttribute.getName(), defaultProjectLanguage),
+                    MessageFormat.format(Messages.EnumAttributeValue_MultiLingual, enumAttribute.getName(),
+                            defaultProjectLanguage),
                     Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
         } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
             list.add(new Message(
-                    MSGCODE_INVALID_VALUE_TYPE, NLS.bind(Messages.EnumAttributeValue_NotMultiLingual,
+                    MSGCODE_INVALID_VALUE_TYPE, MessageFormat.format(Messages.EnumAttributeValue_NotMultiLingual,
                             enumAttribute.getName(), defaultProjectLanguage),
                     Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
         }
@@ -315,7 +315,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         EnumValueContainer enumValueContainerImpl = (EnumValueContainer)getEnumValue().getEnumValueContainer();
         List<String> uniqueIdentifierViolations = enumValueContainerImpl.getUniqueIdentifierViolations(this);
         for (String invalidString : uniqueIdentifierViolations) {
-            text = NLS.bind(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, invalidString);
+            text = MessageFormat.format(Messages.EnumAttributeValue_UniqueIdentifierValueNotUnique, invalidString);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE, text,
                     Message.ERROR, this, PROPERTY_VALUE);
             list.add(validationMessage);
@@ -327,11 +327,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * <code>IEnumAttribute</code>.
      */
     private boolean isUniqueIdentifierEnumAttributeValue(IEnumAttribute enumAttribute) {
-        try {
-            return enumAttribute.findIsUnique(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return enumAttribute.findIsUnique(getIpsProject());
     }
 
     @Override
@@ -434,7 +430,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         protected void validateAndAppendMessages(MessageList messageList) {
             if (!isIdentitifierValid()) {
-                String message = NLS.bind(getRawMessageForTypeOrContent(), getIdAsString(), getIdentifierBoundary());
+                String message = MessageFormat.format(getRawMessageForTypeOrContent(), getIdAsString(),
+                        getIdentifierBoundary());
                 messageList.add(new Message(MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY, message,
                         Message.ERROR, new ObjectProperty(getAttributeValue(), PROPERTY_VALUE)));
             }

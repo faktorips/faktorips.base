@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -114,7 +114,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValueDatatype() throws CoreException {
+    public void testFindValueDatatype() throws CoreRuntimeException {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 

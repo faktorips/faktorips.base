@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DND;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -255,7 +255,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSaveFile() throws CoreException {
+    public void testSaveFile() throws CoreRuntimeException {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());
         ipsSrcFile.save(false, null);
@@ -272,7 +272,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile);
     }
 
-    private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         dropListener.setAutoSave(false);
         assertFalse(ipsSrcFile.isDirty());
         assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
@@ -346,7 +346,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private String[] getFilenames(ProductCmpt... cmpts) {
         String[] filenames = new String[cmpts.length];
         for (int i = 0; i < cmpts.length; i++) {
-            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toOSString();
+            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toString();
         }
         return filenames;
     }

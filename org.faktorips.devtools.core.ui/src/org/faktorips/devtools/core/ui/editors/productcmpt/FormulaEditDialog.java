@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.core.ui.controller.fields.StyledTextField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.type.ParametersEditControl;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.productcmpt.IFormula;
@@ -54,10 +54,10 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
      * 
      * @param parentShell The shell as parent for the dialog.
      * 
-     * @throws CoreException if the config element is invalid (e.g. no datatype can be found for
+     * @throws CoreRuntimeException if the config element is invalid (e.g. no datatype can be found for
      *             it).
      */
-    public FormulaEditDialog(IFormula formula, Shell parentShell) throws CoreException {
+    public FormulaEditDialog(IFormula formula, Shell parentShell) throws CoreRuntimeException {
         super(formula, parentShell, Messages.FormulaEditDialog_editFormula, true);
         ArgumentCheck.notNull(formula);
         this.formula = formula;

@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.cache.UnqualifiedNameCache;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -54,7 +54,7 @@ public class UnqualifiedNameCacheRefactoringTest extends AbstractCoreIpsPluginTe
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_renameProductCmptType() throws CoreException {
+    public void testFindProductCmptByUnqualifiedName_renameProductCmptType() throws CoreRuntimeException {
         performRenameRefactoring(productCmptHausrat2013, "newproductCmptHausrat2013");
 
         Collection<IIpsSrcFile> resultWithNewName = unqualifiedNameCache
@@ -67,7 +67,7 @@ public class UnqualifiedNameCacheRefactoringTest extends AbstractCoreIpsPluginTe
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_moveProdCmptType() throws CoreException {
+    public void testFindProductCmptByUnqualifiedName_moveProdCmptType() throws CoreRuntimeException {
         IIpsPackageFragmentRoot fragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = fragmentRoot.createPackageFragment("target", true, null);
         performMoveRefactoring(productCmptHausrat2013, targetIpsPackageFragment);

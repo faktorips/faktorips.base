@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -154,7 +155,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status) throws CoreRuntimeException {
             IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsMetaClass;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 
@@ -68,9 +68,9 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Returns <code>null</code> if the test parameter was not found. Returns the first test
      * parameter if more than one test parameter found.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
-    public ITestParameter getTestParameterByName(String testParameterName) throws CoreException;
+    public ITestParameter getTestParameterByName(String testParameterName) throws CoreRuntimeException;
 
     /**
      * Returns all test parameters.
@@ -119,18 +119,18 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Returns the input test value parameter or <code>null</code> if not found. Returns the first
      * test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
-    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreException;
+    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws CoreRuntimeException;
 
     /**
      * Returns the input test policy component type parameter or <code>null</code> if not found.
      * Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
     public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Returns all expected result parameters or an empty array if the test case type hasn't got any
@@ -154,20 +154,20 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Returns the expected result test value parameter or <code>null</code> if not found. Returns
      * the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
     public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Returns the expected result test policy component type parameter or <code>null</code> if not
      * found. Returns the first test parameter if more than one test parameter found.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
     public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(
             String expResultTestPolicyCmptTypeParameter)
-            throws CoreException;
+            throws CoreRuntimeException;
 
     /**
      * Evaluates and returns an unique name (inside this test case) for the test attribute.
@@ -193,15 +193,15 @@ public interface ITestCaseType extends IIpsMetaClass {
      * Returns all validation rules from the test policy components which are related by the test
      * policy component type parameters inside this test case type.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Searches and returns the validation rule with the given name which is inside the test case
      * type. The rule will be searched in all policy component types which are related by test test
      * policy component type parameters.
      */
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreRuntimeException;
 
 }

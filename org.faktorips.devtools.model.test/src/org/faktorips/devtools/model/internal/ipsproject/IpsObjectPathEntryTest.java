@@ -10,12 +10,13 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -42,15 +43,16 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIndex() throws CoreException {
+    public void testGetIndex() throws CoreRuntimeException {
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         assertEquals(1, path.getEntries().length);
 
         IIpsObjectPathEntry entry0 = path.getEntries()[0];
         assertEquals(0, entry0.getIndex());
 
-        IIpsObjectPathEntry entry1 = path.newArchiveEntry(ipsProject.getProject().getFile("someArchive.jar")
-                .getFullPath());
+        IIpsObjectPathEntry entry1 = path
+                .newArchiveEntry(toEclipsePath(ipsProject.getProject().getFile("someArchive.jar")
+                        .getWorkspaceRelativePath()));
         assertEquals(0, entry0.getIndex());
         assertEquals(1, entry1.getIndex());
     }
@@ -82,8 +84,8 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsReexport() throws Exception {
-        IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(ipsProject.getProject()
-                .getFile("someArchive.jar").getFullPath());
+        IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(toEclipsePath(ipsProject.getProject()
+                .getFile("someArchive.jar").getWorkspaceRelativePath()));
         assertTrue(ipsObjectPathEntry.isReexported());
         ipsObjectPathEntry.setReexported(false);
         assertFalse(ipsObjectPathEntry.isReexported());

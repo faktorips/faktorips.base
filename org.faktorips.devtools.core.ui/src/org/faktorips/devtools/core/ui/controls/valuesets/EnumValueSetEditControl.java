@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.ContentsChangeListener;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -206,7 +207,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         valueSet.setValue(index2, name1);
     }
 
-    private MessageList validate(Object element) throws CoreException {
+    private MessageList validate(Object element) throws CoreRuntimeException {
         IndexValueWrapper wrapper = (IndexValueWrapper)element;
         if (valueSet == null) {
             return new MessageList();
@@ -340,7 +341,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         }
 
         @Override
-        protected MessageList getMessagesFor(Object element) throws CoreException {
+        protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
             return validate(element);
         }
 

@@ -36,7 +36,7 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
         IPath location = ipsProject.getProject().getLocation();
         String newProjectPath = getTempDirPath();
         new RecursiveCopy().copyDir(location.toPortableString(), newProjectPath);
-        ipsProject.getProject().delete(true, true, null);
+        ipsProject.getProject().delete(null);
 
         ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(newProjectPath);
@@ -55,7 +55,7 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
         IPath location = ipsProject.getProject().getLocation();
         String newProjectPath = getTempDirPath();
         new RecursiveCopy().copyDir(location.toPortableString(), newProjectPath);
-        ipsProject.getProject().delete(true, true, null);
+        ipsProject.getProject().delete(null);
 
         ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(newProjectPath);

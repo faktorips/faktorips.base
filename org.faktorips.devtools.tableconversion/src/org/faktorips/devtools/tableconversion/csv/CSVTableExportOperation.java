@@ -20,12 +20,12 @@ import java.util.List;
 
 import com.opencsv.CSVWriter;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -70,7 +70,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         IProgressMonitor localMonitor = monitor;
         if (localMonitor == null) {
             localMonitor = new NullProgressMonitor();
@@ -150,7 +150,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      * @param monitor The monitor to display the progress.
      * @param exportColumnHeaderRow column header names included or not.
      * 
-     * @throws CoreException thrown if an error occurs during the search for the datatypes of the
+     * @throws CoreRuntimeException thrown if an error occurs during the search for the datatypes of the
      *             structure.
      */
     private void exportDataCells(CSVWriter writer,
@@ -158,7 +158,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             ITableRows tableRows,
             ITableStructure structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException {
+            boolean exportColumnHeaderRow) throws CoreRuntimeException {
 
         List<Datatype> datatypes = new ArrayList<>(contents.getNumOfColumns());
         for (IColumn column : structure.getColumns()) {

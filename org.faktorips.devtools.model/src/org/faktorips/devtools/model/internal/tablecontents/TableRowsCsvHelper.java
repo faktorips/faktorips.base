@@ -19,7 +19,6 @@ import java.util.Optional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -109,8 +108,6 @@ class TableRowsCsvHelper {
             }
         } catch (IOException e) {
             throw asCoreRuntimeException(e);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
 
     }

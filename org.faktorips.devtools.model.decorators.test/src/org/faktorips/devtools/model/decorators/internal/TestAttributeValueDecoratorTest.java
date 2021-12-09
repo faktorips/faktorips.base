@@ -25,6 +25,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -64,7 +65,7 @@ public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindTestAttributeFails() throws CoreException {
+    public void testGetImageDescriptor_FindTestAttributeFails() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         ITestAttributeValue testAttributeValue = mock(ITestAttributeValue.class);
         when(testAttributeValue.getIpsProject()).thenReturn(ipsProject);
@@ -77,7 +78,7 @@ public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor() throws CoreException {
+    public void testGetImageDescriptor() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");

@@ -11,12 +11,12 @@
 package org.faktorips.devtools.model.productcmpt;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.AbstractProductCmptNamingStrategy;
 import org.faktorips.devtools.model.internal.productcmpt.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -137,7 +137,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     private Message newInvalidVersionIdMsg() {
         String versionConcept = getIpsProject().getChangesInTimeNamingConventionForGeneratedCode()
                 .getVersionConceptNameSingular();
-        String text = NLS.bind(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, versionConcept,
+        String text = MessageFormat.format(Messages.DateBasedProductCmptNamingStrategy_msgWrongFormat, versionConcept,
                 dateFormatPattern);
         return Message.newError(MSGCODE_ILLEGAL_VERSION_ID, text);
     }
@@ -168,7 +168,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     }
 
     @Override
-    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreRuntimeException {
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;
 

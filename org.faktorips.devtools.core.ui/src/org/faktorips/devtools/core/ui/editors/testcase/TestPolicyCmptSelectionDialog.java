@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
@@ -234,9 +235,9 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
      * Returns <code>true</code> if the to be filtered object is a child of the given test policy
      * component. If there is no such child object return <code>false</code>.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
-    private boolean isFilterChildOf(ITestPolicyCmpt testPolicyCmpt, String filter) throws CoreException {
+    private boolean isFilterChildOf(ITestPolicyCmpt testPolicyCmpt, String filter) throws CoreRuntimeException {
         boolean found = false;
         ITestPolicyCmptLink[] realtions = testPolicyCmpt.getTestPolicyCmptLinks();
         for (ITestPolicyCmptLink link : realtions) {
@@ -263,9 +264,9 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
      * Returns <code>true</code> if the to be filtered object is a child of the given link. If there
      * is no such child object return <code>false</code>.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
-    private boolean isFilterChildOfLink(ITestPolicyCmptLink link, String filter) throws CoreException {
+    private boolean isFilterChildOfLink(ITestPolicyCmptLink link, String filter) throws CoreRuntimeException {
         boolean found = false;
         ITestPolicyCmpt testPolicyCmpt = link.findTarget();
         if (!link.isAssociation() && testPolicyCmpt != null) {

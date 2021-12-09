@@ -12,7 +12,7 @@ package org.faktorips.devtools.model;
 
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * An interface that marks an object as being able to read via SAX.
@@ -26,7 +26,7 @@ public interface XmlSaxSupport {
      * 
      * @param is input stream
      */
-    public void initFromInputStream(InputStream is) throws CoreException;
+    public void initFromInputStream(InputStream is) throws CoreRuntimeException;
 
     /**
      * Adds the given extension property. If the extension property not exists as definitions then

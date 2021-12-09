@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class TableContentUsageDecoratorTest {
     }
 
     @Test
-    public void testGetLabel() throws CoreException {
+    public void testGetLabel() throws CoreRuntimeException {
         ITableContentUsage tableContentUsage = mock(ITableContentUsage.class);
         when(tableContentUsage.getCaption(any(Locale.class))).thenReturn("Foo");
         when(tableContentUsage.getTableContentName()).thenReturn("baz.Bar");

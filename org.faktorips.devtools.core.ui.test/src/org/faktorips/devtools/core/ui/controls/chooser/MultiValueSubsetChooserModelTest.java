@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -242,7 +242,7 @@ public class MultiValueSubsetChooserModelTest {
     }
 
     @Test
-    public void testValidateValue_NoError() throws CoreException {
+    public void testValidateValue_NoError() throws CoreRuntimeException {
         setUpMultiValueHolder();
         MessageList messageList = mock(MessageList.class);
         doReturn(messageList).when(multiValueHolder).validate(any(IIpsProject.class));

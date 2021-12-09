@@ -56,6 +56,7 @@ import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.DelegateCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -315,7 +316,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         });
     }
 
-    private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreException {
+    private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreRuntimeException {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
         List<ITestPolicyCmpt> result = new ArrayList<>(testPolicyCmpts.length);
         for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
@@ -345,7 +346,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
     }
 
     private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
         List<ComboCellEditor> cellEditors = new ArrayList<>(10);

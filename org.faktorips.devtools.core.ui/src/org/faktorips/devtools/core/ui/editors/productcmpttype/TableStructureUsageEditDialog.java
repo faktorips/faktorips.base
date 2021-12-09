@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -310,7 +311,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
      * Displays a dialog to select a table structure. Returns the selected table structure or
      * <code>null</code> if the user select nothing.
      */
-    private ITableStructure selectTableStructureByDialog() throws CoreException {
+    private ITableStructure selectTableStructureByDialog() throws CoreRuntimeException {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                 new DefaultLabelProvider());
         selectDialog.setTitle(Messages.TblsStructureUsageEditDialog_selectStructurDialogTitle);

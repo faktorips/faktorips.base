@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -107,7 +107,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateTestPolicyCmptAssociation() throws CoreException {
+    public void testValidateTestPolicyCmptAssociation() throws CoreRuntimeException {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptLink pcr = (ITestPolicyCmptLink)pc.getParent();
         MessageList ml = pcr.validate(project);

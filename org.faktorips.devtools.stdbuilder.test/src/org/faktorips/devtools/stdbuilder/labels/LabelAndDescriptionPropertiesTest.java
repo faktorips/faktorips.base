@@ -16,8 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Collection;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -36,7 +36,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     private LabelAndDescriptionProperties labelAndDescriptionProperties;
     private IPolicyCmptType target;
 
-    private void createObjectsAndMessages() throws CoreException {
+    private void createObjectsAndMessages() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         pcType = newPolicyCmptType(ipsProject, "my.PcType");
         target = newPolicyCmptType(ipsProject, "other.PcType");

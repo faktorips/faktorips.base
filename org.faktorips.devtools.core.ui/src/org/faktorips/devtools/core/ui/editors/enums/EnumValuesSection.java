@@ -175,12 +175,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws CoreException If an error occurs while searching for the <code>IEnumType</code>
+     * @throws CoreRuntimeException If an error occurs while searching for the <code>IEnumType</code>
      *             referenced by the IPS object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,
-            UIToolkit toolkit) throws CoreException {
+            UIToolkit toolkit) throws CoreRuntimeException {
         super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.editorSite = editorSite;
         ArgumentCheck.notNull(enumValueContainer);
@@ -574,7 +574,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         new TableMessageHoverService(enumValuesTableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element != null) {
                     return ((IEnumValue)element).validate(enumValueContainer.getIpsProject());
                 }

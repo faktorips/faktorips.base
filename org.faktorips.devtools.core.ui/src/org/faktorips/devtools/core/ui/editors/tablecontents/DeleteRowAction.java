@@ -85,7 +85,7 @@ public class DeleteRowAction extends IpsAction {
         }
 
         @Override
-        protected boolean execute() throws CoreException {
+        protected boolean execute() throws CoreRuntimeException {
             if (selection.isEmpty()) {
                 return false;
             }

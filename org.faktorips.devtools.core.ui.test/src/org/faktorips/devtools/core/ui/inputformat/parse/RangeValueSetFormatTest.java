@@ -17,13 +17,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -242,7 +242,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_EmptyRange() throws CoreException {
+    public void testIsResponsibleFor_EmptyRange() throws CoreRuntimeException {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[]"));
@@ -251,7 +251,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_Range() throws CoreException {
+    public void testIsResponsibleFor_Range() throws CoreRuntimeException {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10 / 1]"));

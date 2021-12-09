@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -139,7 +140,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
      */
     @Test
     public void testRuntimeIdDependency()
-            throws CoreException, IOException, SAXException, ParserConfigurationException {
+            throws CoreRuntimeException, IOException, SAXException, ParserConfigurationException {
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IProductCmptType c = newProductCmptType(root, "C");
         IProductCmptType d = newProductCmptType(root, "D");
@@ -180,7 +181,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testSetRuntimeIdForStaticLinks() throws CoreException, IOException, SAXException,
+    public void testSetRuntimeIdForStaticLinks() throws CoreRuntimeException, IOException, SAXException,
             ParserConfigurationException {
         incrementalBuild();
         IFile xmlFile = getXmlFile(productCmpt);
@@ -194,7 +195,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDeleteDummyGenerationsIfProductCmptTypeDoesNotAllowGenerations() throws CoreException, IOException,
+    public void testDeleteDummyGenerationsIfProductCmptTypeDoesNotAllowGenerations() throws CoreRuntimeException, IOException,
             SAXException, ParserConfigurationException {
         incrementalBuild();
         assertNumberOfGenerations(productCmpt, 1);
@@ -206,7 +207,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDoNotCopyUndefinedLinks() throws CoreException, IOException, SAXException,
+    public void testDoNotCopyUndefinedLinks() throws CoreRuntimeException, IOException, SAXException,
             ParserConfigurationException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
@@ -281,20 +282,20 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild() throws CoreException {
+    public void testBuild() throws CoreRuntimeException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
     @Test
-    public void testDelete() throws CoreException {
+    public void testDelete() throws CoreRuntimeException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        productCmpt.getIpsSrcFile().getCorrespondingFile().delete(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
     @Test
-    public void testBuild_SetsDefaultLocaleInInternationalString() throws CoreException, IOException, SAXException,
+    public void testBuild_SetsDefaultLocaleInInternationalString() throws CoreRuntimeException, IOException, SAXException,
             ParserConfigurationException {
         // Precondition
         Locale defaultLocale = ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
@@ -315,7 +316,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
      * properties.
      */
     @Test
-    public void testBuild_SetsDefaultLocaleInInternationalStringExoticDefaultLocale() throws CoreException,
+    public void testBuild_SetsDefaultLocaleInInternationalStringExoticDefaultLocale() throws CoreRuntimeException,
             IOException, SAXException, ParserConfigurationException {
         // Precondition
         Locale defaultLocale = Locale.KOREAN;
@@ -336,7 +337,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild_RemovesXmlNS() throws CoreException, IOException, SAXException, ParserConfigurationException {
+    public void testBuild_RemovesXmlNS() throws CoreRuntimeException, IOException, SAXException, ParserConfigurationException {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setValidateIpsSchema(true);
         productCmpt.getIpsSrcFile().markAsDirty();

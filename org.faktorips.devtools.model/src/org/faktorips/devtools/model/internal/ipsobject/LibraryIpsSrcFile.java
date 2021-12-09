@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragment;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
@@ -54,18 +54,18 @@ public class LibraryIpsSrcFile extends AbstractIpsSrcFile implements ILibraryIps
     }
 
     @Override
-    public IIpsSrcFileMemento newMemento() throws CoreException {
+    public IIpsSrcFileMemento newMemento() throws CoreRuntimeException {
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
         return new IpsSrcFileMemento(this, getIpsObject().toXml(doc), false);
     }
 
     @Override
-    public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
+    public void setMemento(IIpsSrcFileMemento memento) throws CoreRuntimeException {
         // never dirty => nothing to do
     }
 
     @Override
-    public void save(boolean force, IProgressMonitor monitor) throws CoreException {
+    public void save(boolean force, IProgressMonitor monitor) throws CoreRuntimeException {
         // not possible => nothing to do
     }
 
@@ -80,7 +80,7 @@ public class LibraryIpsSrcFile extends AbstractIpsSrcFile implements ILibraryIps
     }
 
     @Override
-    public IFile getCorrespondingFile() {
+    public AFile getCorrespondingFile() {
         return null;
     }
 
@@ -95,19 +95,19 @@ public class LibraryIpsSrcFile extends AbstractIpsSrcFile implements ILibraryIps
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts() throws CoreException {
+    public String getBasePackageNameForMergableArtefacts() throws CoreRuntimeException {
         IIpsStorage storage = getIpsPackageFragment().getRoot().getIpsStorage();
         return storage.getBasePackageNameForMergableArtefacts(getQualifiedNameType());
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts() throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts() throws CoreRuntimeException {
         IIpsStorage storage = getIpsPackageFragment().getRoot().getIpsStorage();
         return storage.getBasePackageNameForDerivedArtefacts(getQualifiedNameType());
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() throws CoreRuntimeException {
         throw new UnsupportedOperationException("Archived IPS Source Files cannot be deleted."); //$NON-NLS-1$
     }
 

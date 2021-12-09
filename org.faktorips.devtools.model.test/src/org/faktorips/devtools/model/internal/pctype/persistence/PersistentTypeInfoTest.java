@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -50,7 +50,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateMustUseTableFromRootEntity() throws CoreException {
+    public void testValidateMustUseTableFromRootEntity() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         PolicyCmptType subPcType = newPolicyCmptType(ipsProject, "subtype");
         subPcType.setSupertype(policyCmptType.getQualifiedName());
@@ -77,7 +77,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testDoubleColumnNameInConstrainedAssociation() throws CoreException {
+    public void testDoubleColumnNameInConstrainedAssociation() throws CoreRuntimeException {
         policyCmptType.getPersistenceTypeInfo().setTableName("validName");
         policyCmptType.getPersistenceTypeInfo().setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
 
@@ -112,7 +112,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidate_InvalidTableNames() throws CoreException {
+    public void testValidate_InvalidTableNames() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
 
         persTypeInfo.setTableName("validTableName01");
@@ -167,7 +167,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidate_DiscriminatorInvalid() throws CoreException {
+    public void testValidate_DiscriminatorInvalid() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setDiscriminatorValue("value");
@@ -215,7 +215,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     private Message getValidationMessageForDiscriminator(IPersistentTypeInfo persTypeInfo,
-            DiscriminatorDatatype datatype) throws CoreException {
+            DiscriminatorDatatype datatype) throws CoreRuntimeException {
         persTypeInfo.setDiscriminatorDatatype(datatype);
         MessageList msgList = persTypeInfo.validate(ipsProject);
         Message message = msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID);
@@ -244,7 +244,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persTypeInfo.setPersistentType(PersistentType.ENTITY);
         persTypeInfo.setDefinesDiscriminatorColumn(true);
@@ -274,7 +274,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testFindRootEntityWithMappedSuperclass() throws CoreException {
+    public void testFindRootEntityWithMappedSuperclass() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
 
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
@@ -286,7 +286,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testFindRootEntity() throws CoreException {
+    public void testFindRootEntity() throws CoreRuntimeException {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         assertEquals(policyCmptType, persTypeInfo.findRootEntity());
 
@@ -313,7 +313,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateDiscriminatorValue() throws CoreException {
+    public void testValidateDiscriminatorValue() throws CoreRuntimeException {
         MessageList msgList = null;
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
         PolicyCmptType policyCmptType2 = newPolicyCmptType(ipsProject, "Policy2");
@@ -436,7 +436,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testDiscriminatorDefinitionForMappedSuperclass() throws CoreException {
+    public void testDiscriminatorDefinitionForMappedSuperclass() throws CoreRuntimeException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
@@ -481,7 +481,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testTableNameForMappedSuperclass() throws CoreException {
+    public void testTableNameForMappedSuperclass() throws CoreRuntimeException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
@@ -496,7 +496,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateUseTableDefinedInSupertype() throws CoreException {
+    public void testValidateUseTableDefinedInSupertype() throws CoreRuntimeException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
 
@@ -520,7 +520,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testDuplicateColumnName() throws CoreException {
+    public void testDuplicateColumnName() throws CoreRuntimeException {
         MessageList ml = null;
 
         PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
@@ -602,7 +602,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testDuplicateColumnName_OverwriteAttribute() throws CoreException {
+    public void testDuplicateColumnName_OverwriteAttribute() throws CoreRuntimeException {
         MessageList ml = null;
 
         PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
@@ -632,7 +632,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateInheritanceStrategy() throws CoreException {
+    public void testValidateInheritanceStrategy() throws CoreRuntimeException {
         MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);

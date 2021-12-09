@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
@@ -27,6 +26,7 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
@@ -102,17 +102,17 @@ public class IpsProcessorBasedRefactoringTest {
         }
 
         @Override
-        protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
 
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
 
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
             addAffectedSrcFiles(modificationSet);
             return modificationSet;
@@ -136,7 +136,7 @@ public class IpsProcessorBasedRefactoringTest {
 
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-                SharableParticipants sharedParticipants) throws CoreException {
+                SharableParticipants sharedParticipants) throws CoreRuntimeException {
             return null;
         }
 

@@ -18,12 +18,15 @@ import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.abstraction.AProject.PlainJavaProject;
+import org.faktorips.devtools.model.abstraction.AWorkspace;
+import org.faktorips.devtools.model.abstraction.Wrappers;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -104,18 +107,24 @@ public class IpsProjectBuilder {
         return this;
     }
 
-    public IIpsProject build() throws CoreException {
+    public IIpsProject build() throws CoreRuntimeException {
         return newIpsProject();
     }
 
-    private IIpsProject newIpsProject() throws CoreException {
-        IWorkspaceRunnable runnable = $ -> {
-            IProject project = new PlatformProjectBuilder().name(name).description(description).build();
-            ipsPluginTest.addJavaCapabilities(project);
+    private IIpsProject newIpsProject() throws CoreRuntimeException {
+        if (Abstractions.isEclipseRunning()) {
+            ICoreRunnable runnable = $ -> {
+                IProject project = new PlatformProjectBuilder().name(name).description(description).build();
+                ipsPluginTest.addJavaCapabilities(project);
+                ipsPluginTest.addIpsCapabilities(Wrappers.wrap(project).as(AProject.class));
+            };
+            AWorkspace workspace = Abstractions.getWorkspace();
+            workspace.run(runnable, null);
+        } else {
+            PlainJavaProject project = (PlainJavaProject)Abstractions.getWorkspace().getRoot().getProject(name);
+            project.unwrap().mkdirs();
             ipsPluginTest.addIpsCapabilities(project);
-        };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        }
 
         IIpsProject ipsProject = IIpsModel.get().getIpsProject(name);
         IIpsProjectProperties properties = ipsProject.getProperties();

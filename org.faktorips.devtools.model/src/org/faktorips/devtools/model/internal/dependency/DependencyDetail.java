@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.dependency;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -51,15 +51,16 @@ public class DependencyDetail implements IDependencyDetail {
     }
 
     @Override
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName)
+            throws CoreRuntimeException {
         try {
             updateProperty(targetIpsPackageFragment, newName);
         } catch (IllegalAccessException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } catch (IllegalArgumentException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } catch (InvocationTargetException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 

@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -87,7 +86,7 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
         return findFormulaSignature(ipsProject);
     }
 
@@ -166,20 +165,16 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     protected void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes) {
-        try {
-            IIpsProject ipsProject = getIpsProject();
-            IProductCmptType productCmptType = findProductCmptType(ipsProject);
-            if (productCmptType != null) {
-                List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
-                for (IAttribute attribute : attributes) {
-                    Datatype datatype = attribute.findDatatype(ipsProject);
-                    if (datatype instanceof EnumDatatype) {
-                        enumTypes.put(datatype.getName(), (EnumDatatype)datatype);
-                    }
+        IIpsProject ipsProject = getIpsProject();
+        IProductCmptType productCmptType = findProductCmptType(ipsProject);
+        if (productCmptType != null) {
+            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
+            for (IAttribute attribute : attributes) {
+                Datatype datatype = attribute.findDatatype(ipsProject);
+                if (datatype instanceof EnumDatatype) {
+                    enumTypes.put(datatype.getName(), (EnumDatatype)datatype);
                 }
             }
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
         }
     }
 

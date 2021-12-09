@@ -46,6 +46,8 @@ import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.model.abstraction.Wrappers;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -171,7 +173,7 @@ public class IpsArtefactBuilderSetInfoTest {
     private IIpsProject mockIpsAndJavaProject(String complianceLevel) {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IJavaProject javaProject = mock(IJavaProject.class);
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
         when(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)).thenReturn(complianceLevel);
         return ipsProject;
     }

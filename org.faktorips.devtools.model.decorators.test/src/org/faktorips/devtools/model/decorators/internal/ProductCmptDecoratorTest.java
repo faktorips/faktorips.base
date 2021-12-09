@@ -21,12 +21,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -51,7 +51,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testProductCmptIconDesc() throws CoreException {
+    public void testProductCmptIconDesc() throws CoreRuntimeException {
         // create Types
         IProductCmptType aSuperType = newProductCmptType(root, "ASuperType");
         IProductCmptType bNormalType = newProductCmptType(root, "BNormalType");
@@ -106,7 +106,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIconDescriptorsForTemplatesAreReused() throws CoreException {
+    public void testIconDescriptorsForTemplatesAreReused() throws CoreRuntimeException {
         // create Types
         IProductCmptType productType = newProductCmptType(root, "a.ProductType");
         // create components
@@ -159,7 +159,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_ElementTemplate() throws CoreException {
+    public void testGetImageDescriptor_ElementTemplate() throws CoreRuntimeException {
         // create Types
         IProductCmptType productType = newProductCmptType(root, "a.ProductType");
         // create components
@@ -172,7 +172,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_SrcFileTemplate() throws CoreException {
+    public void testGetImageDescriptor_SrcFileTemplate() throws CoreRuntimeException {
         // create Types
         IProductCmptType productType = newProductCmptType(root, "a.ProductType");
         // create components

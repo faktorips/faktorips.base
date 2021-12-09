@@ -33,6 +33,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePag
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -110,7 +111,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * creates a IPageElement representing the given testParameter
      * 
      */
-    private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
+    private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreRuntimeException {
         if (testParameter instanceof ITestValueParameter) {
             return createTestValueParameterPageElement((ITestValueParameter)testParameter);
         }
@@ -126,7 +127,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     }
 
     private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
-            throws CoreException {
+            throws CoreRuntimeException {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),

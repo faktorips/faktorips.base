@@ -15,18 +15,17 @@ import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 // a copy of org.faktorips.devtools.core.internal.JavaRuntimeClassLoaderProviderFactory for tests
-// without a dependency
-// to faktorips.core
+// without a dependency to faktorips.core
 public class TestClassLoaderProviderFactory implements IClassLoaderProviderFactory {
 
     @Override
     public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
-        return new TestClassLoaderProvider(ipsProject.getJavaProject());
+        return new TestClassLoaderProvider(ipsProject.getJavaProject().unwrap());
     }
 
     @Override
     public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject, ClassLoader parent) {
-        return new TestClassLoaderProvider(ipsProject.getJavaProject(), parent);
+        return new TestClassLoaderProvider(ipsProject.getJavaProject().unwrap(), parent);
     }
 
 }

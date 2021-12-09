@@ -21,12 +21,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -88,7 +88,7 @@ public class AbstractCompareItemTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContents() throws CoreException {
+    public void testGetContents() throws CoreRuntimeException {
         assertNotNull(compareItemRoot.getContents());
     }
 

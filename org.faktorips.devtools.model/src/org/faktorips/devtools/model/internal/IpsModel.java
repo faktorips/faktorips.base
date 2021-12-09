@@ -10,8 +10,13 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static java.util.function.Predicate.not;
+import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,7 +31,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -36,19 +43,15 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ContentChangeEvent;
@@ -64,6 +67,13 @@ import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.model.abstraction.AProject.PlainJavaProject;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.model.abstraction.AWorkspace;
+import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -110,7 +120,7 @@ import org.xml.sax.SAXException;
  * 
  * @see IIpsModel
  */
-public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
+public class IpsModel extends IpsElement implements IIpsModel {
 
     public static final boolean TRACE_MODEL_MANAGEMENT = Boolean
             .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
@@ -130,15 +140,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Described in FIPS-5745
      */
     private static final int INVALID_MOD_STAMP = -42;
-    private static final String OLD_NATURE_ID = "org.faktorips.devtools.core.ipsnature"; //$NON-NLS-1$
 
-    private static IpsModel theInstance = new IpsModel();
-
-    /**
-     * Resource delta visitor used to generate IPS source file contents changed events and trigger a
-     * build after changes to the IPS project properties file.
-     */
-    private ResourceDeltaVisitor resourceDeltaVisitor;
+    private static IpsModel theInstance = Abstractions.isEclipseRunning() ? new EclipseIpsModel() : new IpsModel();
 
     /** set of model change listeners that are notified about model changes */
     private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
@@ -200,8 +203,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         customModelExtensions = new CustomModelExtensions(this);
         initIpsObjectTypes();
-        // has to be done after the IPS object types are initialized!
-        resourceDeltaVisitor = new ResourceDeltaVisitor(this);
+    }
+
+    protected Set<IIpsSrcFile> getIpsSrcFilesInternal() {
+        return ipsObjectsMap.keySet();
     }
 
     /**
@@ -212,9 +217,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     @Deprecated
     public static void reInit() {
-        theInstance.stopListeningToResourceChanges();
-        theInstance = new IpsModel();
-        theInstance.startListeningToResourceChanges();
+        if (Abstractions.isEclipseRunning()) {
+            ((EclipseIpsModel)theInstance).stopListeningToResourceChanges();
+            theInstance = new EclipseIpsModel();
+            ((EclipseIpsModel)theInstance).startListeningToResourceChanges();
+        } else {
+            theInstance = new IpsModel();
+        }
     }
 
     /**
@@ -242,7 +251,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return customModelExtensions;
     }
 
-    @SuppressWarnings("deprecation")
     private void initIpsObjectTypes() {
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.initIpsObjectType: start."); //$NON-NLS-1$
@@ -258,14 +266,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         types.add(IpsObjectType.TABLE_CONTENTS);
         types.add(IpsObjectType.TEST_CASE_TYPE);
         types.add(IpsObjectType.TEST_CASE);
-        types.add(IpsObjectType.BUSINESS_FUNCTION);
-
-        ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
-        IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
-        for (IExtension extension : extensions) {
-            List<IpsObjectType> additionalTypes = createIpsObjectTypes(extension);
-            for (IpsObjectType objType : additionalTypes) {
-                addIpsObjectTypeIfNotDuplicate(types, objType);
+        if (Abstractions.isEclipseRunning()) {
+            ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
+            IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
+            for (IExtension extension : extensions) {
+                List<IpsObjectType> additionalTypes = createIpsObjectTypes(extension);
+                for (IpsObjectType objType : additionalTypes) {
+                    addIpsObjectTypeIfNotDuplicate(types, objType);
+                }
             }
         }
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
@@ -318,33 +326,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsProjectDatas.computeIfAbsent(ipsProject, p -> new IpsProjectData(p, ipsObjectPathContainerFactory));
     }
 
-    public void startListeningToResourceChanges() {
-        getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE
-                | IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_REFRESH);
-    }
-
-    public void stopListeningToResourceChanges() {
-        getWorkspace().removeResourceChangeListener(this);
-    }
-
     @Override
-    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) {
-
-        runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
-    }
-
-    @Override
-    public void runAndQueueChangeEvents(IWorkspaceRunnable action,
-            ISchedulingRule rule,
-            int flags,
-            IProgressMonitor monitor) {
+    public void runAndQueueChangeEvents(ICoreRunnable action, IProgressMonitor monitor) {
 
         if (changeListeners.isEmpty() && modificationStatusChangeListeners.isEmpty()) {
             try {
-                getWorkspace().run(action, rule, flags, monitor);
-            } catch (CoreException e) {
+                getWorkspace().run(action, monitor);
+            } catch (CoreRuntimeException e) {
                 IpsLog.log(e);
-                throw new CoreRuntimeException(e);
+                throw e;
             }
             return;
         }
@@ -362,7 +352,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         addModifcationStatusChangeListener(batchModifiyListener);
 
         try {
-            runSafe(action, rule, flags, monitor, modifiedSrcFiles);
+            runSafe(action, monitor, modifiedSrcFiles);
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
@@ -394,18 +384,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
     }
 
-    protected void runSafe(IWorkspaceRunnable action,
-            ISchedulingRule rule,
-            int flags,
+    protected void runSafe(ICoreRunnable action,
             IProgressMonitor monitor,
             final Set<IIpsSrcFile> modifiedSrcFiles) {
         try {
-            getWorkspace().run(action, rule, flags, monitor);
-        } catch (CoreException e) {
-            for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
-                ipsSrcFile.discardChanges();
-            }
-            IpsLog.logAndShowErrorDialog(e);
+            getWorkspace().run(action, monitor);
         } catch (CoreRuntimeException e) {
             for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
                 ipsSrcFile.discardChanges();
@@ -415,57 +398,58 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IWorkspace getWorkspace() {
-        return ResourcesPlugin.getWorkspace();
+    public AWorkspace getWorkspace() {
+        return Abstractions.getWorkspace();
     }
 
     @Override
-    public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException {
-        if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) != null) {
-            return getIpsProject(javaProject.getProject());
-        }
-        IIpsProject ipsProject = getIpsProject(javaProject.getProject());
-        IpsProjectUtil.addNature(javaProject.getProject(), IIpsProject.NATURE_ID);
+    public IIpsProject createIpsProject(AProject project) throws CoreRuntimeException {
+        try {
+            if (Abstractions.isEclipseRunning()) {
+                IProject eclipseProject = project.unwrap();
+                if (eclipseProject.getNature(IIpsProject.NATURE_ID) != null) {
+                    return getIpsProject(project);
+                }
+                IIpsProject ipsProject = getIpsProject(project);
+                IpsProjectUtil.addNature(eclipseProject, IIpsProject.NATURE_ID);
 
-        IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
-        if (infos.length > 0) {
-            IIpsProjectProperties props = ipsProject.getProperties();
-            props.setBuilderSetId(infos[0].getBuilderSetId());
-            ipsProject.setProperties(props);
-        }
+                IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+                if (infos.length > 0) {
+                    IIpsProjectProperties props = ipsProject.getProperties();
+                    props.setBuilderSetId(infos[0].getBuilderSetId());
+                    ipsProject.setProperties(props);
+                }
 
-        return ipsProject;
+                return ipsProject;
+            } else {
+                PlainJavaProject plainJavaProject = (PlainJavaProject)project;
+                if (plainJavaProject.isIpsProject()) {
+                    return getIpsProject(project);
+                }
+
+                IIpsProject ipsProject = getIpsProject(project);
+                IIpsProjectProperties props = ipsProject.getProperties();
+                ipsProject.setProperties(props);
+
+                return ipsProject;
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
     public IIpsProject[] getIpsProjects() {
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        IIpsProject[] ipsProjects = new IIpsProject[projects.length];
-        int counter = 0;
-        for (IProject project : projects) {
-            if (project.isOpen() && hasIpsNature(project)) {
-                ipsProjects[counter] = getIpsProject(project.getName());
-                counter++;
-            }
-        }
-        if (counter == ipsProjects.length) {
-            return ipsProjects;
-        }
-        IIpsProject[] shrinked = new IIpsProject[counter];
-        System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
-        return shrinked;
-    }
-
-    private boolean hasIpsNature(IProject project) {
-        try {
-            return project.hasNature(IIpsProject.NATURE_ID) || project.hasNature(OLD_NATURE_ID);
-        } catch (CoreException e) {
-            return false;
-        }
+        return Abstractions.getWorkspace()
+                .getRoot().getProjects().stream()
+                .filter(AProject::isIpsProject)
+                .map(AProject::getName)
+                .map(this::getIpsProject)
+                .toArray(IIpsProject[]::new);
     }
 
     @Override
-    public IIpsProject[] getIpsModelProjects() throws CoreException {
+    public IIpsProject[] getIpsModelProjects() throws CoreRuntimeException {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> modelProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
@@ -477,7 +461,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IIpsProject[] getIpsProductDefinitionProjects() throws CoreException {
+    public IIpsProject[] getIpsProductDefinitionProjects() throws CoreRuntimeException {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> productDefinitionProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
@@ -489,22 +473,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IResource[] getNonIpsProjects() throws CoreException {
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        IProject[] nonIpsProjects = new IProject[projects.length];
-        int counter = 0;
-        for (IProject project : projects) {
-            if (!project.isOpen() || !project.hasNature(IIpsProject.NATURE_ID)) {
-                nonIpsProjects[counter] = project;
-                counter++;
-            }
-        }
-        if (counter == nonIpsProjects.length) {
-            return nonIpsProjects;
-        }
-        IProject[] shrinked = new IProject[counter];
-        System.arraycopy(nonIpsProjects, 0, shrinked, 0, shrinked.length);
-        return shrinked;
+    public Set<AProject> getNonIpsProjects() throws CoreRuntimeException {
+        return Abstractions.getWorkspace()
+                .getRoot().getProjects().stream()
+                .filter(not(AProject::isIpsProject))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -519,11 +492,18 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public IIpsProject getIpsProject(String name) {
-        return projectMap.computeIfAbsent(name, n -> new IpsProject(this, n));
+        return projectMap.computeIfAbsent(name, this::createIpsProject);
+    }
+
+    private IpsProject createIpsProject(String name) {
+        if (Abstractions.isEclipseRunning()) {
+            return new IpsProject.EclipseIpsProject(this, name);
+        }
+        return new IpsProject(this, name);
     }
 
     @Override
-    public IIpsProject getIpsProject(IProject project) {
+    public IIpsProject getIpsProject(AProject project) {
         return getIpsProject(project.getName());
     }
 
@@ -531,8 +511,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Returns the workspace root. Overridden method.
      */
     @Override
-    public IResource getCorrespondingResource() {
-        return ResourcesPlugin.getWorkspace().getRoot();
+    public AResource getCorrespondingResource() {
+        return Abstractions.getWorkspace().getRoot();
     }
 
     @Override
@@ -541,37 +521,38 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsElement[] getChildren() throws CoreRuntimeException {
         return getIpsProjects();
     }
 
     @Override
-    public IIpsElement getIpsElement(IResource resource) {
+    public IIpsElement getIpsElement(AResource resource) {
         ArgumentCheck.notNull(resource);
-        if (resource.getType() == IResource.ROOT) {
+        if (resource.getType() == AResourceType.WORKSPACE) {
             return this;
         }
-        if (resource.getType() == IResource.PROJECT) {
+        if (resource.getType() == AResourceType.PROJECT) {
             return getIpsProject(resource.getName());
         }
         IIpsProject ipsProject = getIpsProject(resource.getProject().getName());
-        String[] segments = resource.getProjectRelativePath().segments();
-        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(segments[0]);
+        Path relativePath = resource.getProjectRelativePath();
+        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(relativePath.subpath(0, 1).toString());
         if (root == null) {
             return getExternalIpsSrcFile(resource);
         }
-        if (segments.length == 1) {
+        if (relativePath.getNameCount() == 1) {
             return root;
         }
         StringBuilder folderName = new StringBuilder();
-        for (int i = 1; i < segments.length - 1; i++) {
+        for (int i = 1; i < relativePath.getNameCount() - 1; i++) {
             if (i > 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
             }
-            folderName.append(segments[i]);
+            folderName.append(relativePath.subpath(i, i + 1));
         }
-        if (resource.getType() == IResource.FOLDER) {
-            if (segments.length > 2) {
+
+        if (resource.getType() == AResourceType.FOLDER) {
+            if (relativePath.getNameCount() > 2) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
             }
             folderName.append(resource.getName());
@@ -592,16 +573,16 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * @param resource the input file
      * @return the respective IPS file or <code>null</code> if the resource isn't an IPS SRC File
      */
-    private IIpsElement getExternalIpsSrcFile(IResource resource) {
-        if (resource.getType() == IResource.FILE && resource.exists()
-                && getIpsObjectTypeByFileExtension(resource.getFileExtension()) != null) {
-            return new IpsSrcFileOffRoot((IFile)resource);
+    private IIpsElement getExternalIpsSrcFile(AResource resource) {
+        if (resource.getType() == AResourceType.FILE && resource.exists()
+                && getIpsObjectTypeByFileExtension(((AFile)resource).getExtension()) != null) {
+            return new IpsSrcFileOffRoot((AFile)resource);
         }
         return null;
     }
 
     @Override
-    public IIpsElement findIpsElement(IResource resource) {
+    public IIpsElement findIpsElement(AResource resource) {
         if (resource == null) {
             return null;
         }
@@ -739,10 +720,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return ipsSrcFilesChangeListeners.remove(listener);
     }
 
-    private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
-        for (IIpsSrcFilesChangeListener listener : ipsSrcFilesChangeListeners) {
-            listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles));
-        }
+    protected void forEachIpsSrcFilesChangeListener(Consumer<? super IIpsSrcFilesChangeListener> consumer) {
+        ipsSrcFilesChangeListeners.forEach(consumer);
     }
 
     @Override
@@ -761,7 +740,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreException {
+    public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreRuntimeException {
         List<IIpsPackageFragmentRoot> result = new ArrayList<>();
         IIpsProject[] projects = getIpsProjects();
         for (IIpsProject project : projects) {
@@ -875,7 +854,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
             try {
                 emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<String, Object>()));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsLog.log(e);
             }
             return emptyBuilderSet;
@@ -901,7 +880,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     builderSetInfo);
             builderSet.initialize(builderSetConfig);
             return true;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsLog.log(new IpsStatus("An exception occurred while trying to initialize" //$NON-NLS-1$
                     + " the artefact builder set: " //$NON-NLS-1$
                     + builderSet.getId(), e));
@@ -961,7 +940,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * logged and an empty IPS project data instance is returned.
      */
     public IpsProjectProperties getIpsProjectProperties(IIpsProject ipsProject) {
-        IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
+        AFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = getIpsProjectData(ipsProject).getProjectProperties();
         if (properties != null
                 && propertyFile.getModificationStamp() != properties.getLastPersistentModificationTimestamp()) {
@@ -994,7 +973,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Reads the project's data from the .ipsproject file.
      */
     private IpsProjectProperties readProjectProperties(IIpsProject ipsProject) {
-        IFile file = ipsProject.getIpsProjectPropertiesFile();
+        AFile file = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = new IpsProjectProperties(ipsProject);
         properties.setCreatedFromParsableFileContents(false);
         if (!file.exists()) {
@@ -1003,8 +982,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         Document doc;
         InputStream is;
         try {
-            is = file.getContents(true);
-        } catch (CoreException e1) {
+            is = file.getContents();
+        } catch (CoreRuntimeException e1) {
             IpsLog.log(new IpsStatus("Error reading project file contents " //$NON-NLS-1$
                     + file, e1));
             return properties;
@@ -1040,49 +1019,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return properties;
     }
 
-    @Override
-    public void resourceChanged(IResourceChangeEvent event) {
-        if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
-            if (event.getResource() == null || event.getResource() instanceof IProject) {
-                forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
-            }
-        } else {
-            IResourceDelta delta = event.getDelta();
-            if (delta != null) {
-                try {
-                    delta.accept(resourceDeltaVisitor);
-                    IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
-                    delta.accept(visitor);
-                    if (!visitor.changedIpsSrcFiles.isEmpty()) {
-                        notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
-                    }
-                    // CSOFF: IllegalCatch
-                } catch (Exception e) {
-                    IpsLog.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
-                            e));
-                }
-                // CSON: IllegalCatch
-            }
-        }
-    }
-
-    /**
-     * Forces to reload the the cached IPS source file contents of a single project or the whole
-     * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in each
-     * content object.
-     * 
-     * @param project The project that should considered or <code>null</code> if the whole workspace
-     *            should be considered.
-     */
-    private synchronized void forceReloadOfCachedIpsSrcFileContents(IProject project) {
-        HashSet<IIpsSrcFile> copyKeys = new HashSet<>(ipsObjectsMap.keySet());
-        for (IIpsSrcFile srcFile : copyKeys) {
-            if (!srcFile.isDirty() && (project == null || srcFile.getIpsProject().getProject().equals(project))) {
-                releaseInCache(srcFile);
-            }
-        }
-    }
-
     /**
      * Releases a cached {@link IIpsSrcFile} from the ipsObjectMap cache.
      * <p>
@@ -1095,7 +1031,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * 
      * @param srcFile The {@link IIpsSrcFile} you want to release from the cache.
      */
-    private void releaseInCache(IIpsSrcFile srcFile) {
+    protected void releaseInCache(IIpsSrcFile srcFile) {
         IpsSrcFileContent contents = ipsObjectsMap.get(srcFile);
         contents.setModificationStamp(INVALID_MOD_STAMP);
     }
@@ -1148,22 +1084,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private Map<String, Datatype> initDatatypesDefinedViaExtension() {
         Map<String, Datatype> datatypesMap = new HashMap<>();
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
+        if (Abstractions.isEclipseRunning()) {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
+            IExtension[] extensions = point.getExtensions();
 
-        // first, get all datatypes defined by the ips-plugin itself
-        // to get them at top of the list...
-        for (IExtension extension : extensions) {
-            if (extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                createDatatypeDefinition(datatypesMap, extension);
+            // first, get all datatypes defined by the ips-plugin itself
+            // to get them at top of the list...
+            for (IExtension extension : extensions) {
+                if (extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
+                    createDatatypeDefinition(datatypesMap, extension);
+                }
             }
-        }
 
-        // and second, get the rest.
-        for (IExtension extension : extensions) {
-            if (!extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                createDatatypeDefinition(datatypesMap, extension);
+            // and second, get the rest.
+            for (IExtension extension : extensions) {
+                if (!extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
+                    createDatatypeDefinition(datatypesMap, extension);
+                }
             }
         }
         return datatypesMap;
@@ -1336,7 +1274,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
-        IResource enclResource = file.getEnclosingResource();
+        AResource enclResource = file.getEnclosingResource();
         if (enclResource == null) {
             return content;
         }
@@ -1483,10 +1421,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-            IResource enclosingResource = ipsSrcFile.getEnclosingResource();
-            System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
-                    new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                            Thread.currentThread().getName() }));
+            AResource enclosingResource = ipsSrcFile.getEnclosingResource();
+            System.out.println(
+                    MessageFormat.format("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
+                            text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
+                            Thread.currentThread().getName()));
         }
     }
 
@@ -1514,18 +1453,19 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * is provided by the {@link SingleEventModification} is fired. No events are fired during the
      * method execution.
      * 
-     * @throws CoreException delegates the exceptions from the
+     * @throws CoreRuntimeException delegates the exceptions from the
      *             {@link SingleEventModification#execute() execute()} method of the
      *             {@link SingleEventModification}
      */
-    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) throws CoreException {
+    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications)
+            throws CoreRuntimeException {
         boolean successful = false;
         IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
         IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
         try {
             stopBroadcastingChangesMadeByCurrentThread();
             successful = modifications.execute();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             throw e;
         } finally {
             if (successful) {
@@ -1544,7 +1484,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() throws CoreRuntimeException {
         throw new UnsupportedOperationException("The IPS Model cannot be deleted."); //$NON-NLS-1$
     }
 
@@ -1625,37 +1565,113 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
     }
 
-    private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
+    public static class EclipseIpsModel extends IpsModel implements IResourceChangeListener {
 
-        private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
-        private Set<String> fileExtensionsOfInterest;
+        /**
+         * Resource delta visitor used to generate IPS source file contents changed events and
+         * trigger a build after changes to the IPS project properties file.
+         */
+        private ResourceDeltaVisitor resourceDeltaVisitor;
 
-        public IpsSrcFileChangeVisitor() {
-            fileExtensionsOfInterest = resourceDeltaVisitor.getFileExtensionsOfInterest();
+        public EclipseIpsModel() {
+            super();
+            // has to be done after the IPS object types are initialized!
+            resourceDeltaVisitor = new ResourceDeltaVisitor(this);
+        }
+
+        public void startListeningToResourceChanges() {
+            ((IWorkspace)getWorkspace().unwrap()).addResourceChangeListener(this,
+                    IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE
+                            | IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_REFRESH);
+        }
+
+        public void stopListeningToResourceChanges() {
+            ((IWorkspace)getWorkspace().unwrap()).removeResourceChangeListener(this);
         }
 
         @Override
-        public boolean visit(final IResourceDelta delta) {
-            IResource resource = delta.getResource();
-            if (resource == null || resource.getType() != IResource.FILE) {
-                return true;
-            }
-            if (fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
-                if (delta.getKind() == IResourceDelta.REMOVED) {
-                    IIpsElement ipsElement = getIpsElement(resource);
-                    if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
-                        changedIpsSrcFiles.put((IIpsSrcFile)ipsElement, delta);
+        public void resourceChanged(IResourceChangeEvent event) {
+            if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
+                if (event.getResource() == null || event.getResource() instanceof IProject) {
+                    forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
+                }
+            } else {
+                IResourceDelta delta = event.getDelta();
+                if (delta != null) {
+                    try {
+                        delta.accept(resourceDeltaVisitor);
+                        IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
+                        delta.accept(visitor);
+                        if (!visitor.changedIpsSrcFiles.isEmpty()) {
+                            notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
+                        }
+                        // CSOFF: IllegalCatch
+                    } catch (Exception e) {
+                        IpsLog.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
+                                e));
                     }
-                } else {
-                    final IIpsElement ipsElement = findIpsElement(resource);
-                    if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
-                        IpsSrcFile srcFile = (IpsSrcFile)ipsElement;
-                        changedIpsSrcFiles.put(srcFile, delta);
-                    }
+                    // CSON: IllegalCatch
                 }
             }
-            return false;
         }
+
+        /**
+         * Forces to reload the the cached IPS source file contents of a single project or the whole
+         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
+         * each content object.
+         * 
+         * @param project The project that should considered or <code>null</code> if the whole
+         *            workspace should be considered.
+         */
+        private synchronized void forceReloadOfCachedIpsSrcFileContents(IProject project) {
+            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
+            for (IIpsSrcFile srcFile : copyKeys) {
+                if (!srcFile.isDirty()
+                        && (project == null || srcFile.getIpsProject().getProject().unwrap().equals(project))) {
+                    releaseInCache(srcFile);
+                }
+            }
+        }
+
+        private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
+            forEachIpsSrcFilesChangeListener(
+                    listener -> listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles)));
+        }
+
+        private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
+
+            private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
+            private Set<String> fileExtensionsOfInterest;
+
+            public IpsSrcFileChangeVisitor() {
+                fileExtensionsOfInterest = resourceDeltaVisitor.getFileExtensionsOfInterest();
+            }
+
+            @Override
+            public boolean visit(final IResourceDelta delta) {
+                IResource resource = delta.getResource();
+                if (resource == null || resource.getType() != IResource.FILE) {
+                    return true;
+                }
+                if (fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
+                    AResource aResource = wrap(resource).as(AResource.class);
+                    if (delta.getKind() == IResourceDelta.REMOVED) {
+                        IIpsElement ipsElement = getIpsElement(aResource);
+                        if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
+                            changedIpsSrcFiles.put((IIpsSrcFile)ipsElement, delta);
+                        }
+                    } else {
+                        final IIpsElement ipsElement = findIpsElement(aResource);
+                        if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
+                            IpsSrcFile srcFile = (IpsSrcFile)ipsElement;
+                            changedIpsSrcFiles.put(srcFile, delta);
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
     }
 
 }

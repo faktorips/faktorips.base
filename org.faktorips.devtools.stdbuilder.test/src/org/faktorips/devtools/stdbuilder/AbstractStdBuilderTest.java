@@ -60,7 +60,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
 
     @Override
     protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         properties.setBuilderSetId(StandardBuilderSet.ID);
     }

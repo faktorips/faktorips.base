@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -111,7 +111,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status) throws CoreRuntimeException {
             IStructuredSelection selection = (IStructuredSelection)destinationTreeViewer.getSelection();
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {

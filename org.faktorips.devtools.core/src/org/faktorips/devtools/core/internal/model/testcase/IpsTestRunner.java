@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -62,9 +61,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AJavaProject.AEclipseJavaProject;
+import org.faktorips.devtools.model.abstraction.AProject.AEclipseProject;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -278,7 +281,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         // sets the launch start time
         launchStartTime = System.currentTimeMillis();
 
-        IVMInstall vmInstall = getVMInstall(ipsProject.getJavaProject());
+        IVMInstall vmInstall = getVMInstall(ipsProject.getJavaProject().unwrap());
 
         if (vmInstall == null) {
             trace("Cancel test run, VM not found."); //$NON-NLS-1$
@@ -293,7 +296,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        String[] classPath = computeClasspath(this.ipsProject.getJavaProject());
+        String[] classPath = computeClasspath(((AEclipseJavaProject)this.ipsProject.getJavaProject()).unwrap());
 
         VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
         String[] args = new String[4];
@@ -351,7 +354,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /*
      * Create the string containing the additional repository packages
      */
-    private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreException {
+    private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreRuntimeException {
         StringBuilder argument = new StringBuilder();
         for (String repositoryPackages : getAllRepositoryPackagesAsString(currentIpsProject)) {
             argument.append(BRACELEFT + repositoryPackages + BRACERIGHT);
@@ -522,7 +525,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         sld.initializeDefaults(configuration);
 
         // get source container from the project
-        ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject(), true);
+        ISourceContainer sc = new ProjectSourceContainer(((AEclipseProject)ipsProject.getProject()).unwrap(), true);
         List<ISourceContainer> sourceContainer = new ArrayList<>(
                 Arrays.asList(sc.getSourceContainers()));
 
@@ -532,7 +535,8 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // get source container from the classpath
         List<IRuntimeClasspathEntry> classpaths = new ArrayList<>();
-        classpaths.addAll(Arrays.asList(JavaRuntime.computeUnresolvedRuntimeClasspath(ipsProject.getJavaProject())));
+        classpaths.addAll(Arrays.asList(JavaRuntime
+                .computeUnresolvedRuntimeClasspath(((AEclipseJavaProject)ipsProject.getJavaProject()).unwrap())));
         IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
         classpaths.toArray(entries);
         IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveSourceLookupPath(entries, configuration);
@@ -569,7 +573,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     @Override
-    public void terminate() throws CoreException {
+    public void terminate() throws CoreRuntimeException {
         try {
             if (launch != null) {
                 if (launch.canTerminate()) {
@@ -584,7 +588,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
         } catch (DebugException e) {
             e.printStackTrace();
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 
@@ -806,7 +810,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Returns a list off repository packages of the given ips project and its referenced projects
      * and referenced projects by the referenced projects ...
      */
-    private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException {
+    private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreRuntimeException {
         List<String> repositoryPackages = new ArrayList<>();
         getRepositoryPackages(ipsProject, repositoryPackages);
         List<IIpsProject> ipsProjects = ipsProject.getAllReferencedIpsProjects();
@@ -826,14 +830,15 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Adds all repository packages of the given ips project to the given list. Add the repository
      * package only if the toc file exists.
      */
-    private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages) throws CoreException {
+    private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages)
+            throws CoreRuntimeException {
         IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
         List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsRoots);
         // need reverse sort order: see IpsTestAction#ipsProjectSelected
         Collections.reverse(ipsRootsList);
         for (IIpsPackageFragmentRoot ipsRoot : ipsRootsList) {
             IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
-            IFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoot);
+            AFile tocFile = builderSet.getRuntimeRepositoryTocFile(ipsRoot);
             if (tocFile != null && tocFile.exists()) {
                 String repositoryPck = builderSet.getRuntimeRepositoryTocResourceName(ipsRoot);
                 if (repositoryPck != null && !repositoryPackages.contains(repositoryPck)) {
@@ -888,7 +893,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (testRunnerMonitor.isCanceled()) {
             try {
                 terminate();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         }

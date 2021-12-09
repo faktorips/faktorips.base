@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.ipsproject.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,15 +28,13 @@ import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.abstraction.AFile;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
@@ -256,7 +255,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
         try {
             MessageList list = new MessageList();
             if (validateBuilderSetId(ipsProject, list)) {
@@ -273,30 +272,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validatePersistenceOption(list);
             validateVersion(list);
             validateSupportedLanguages(list);
-            validateDeprecatedBusinessFunctions(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             // CSON: IllegalCatch
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void validateDeprecatedBusinessFunctions(MessageList msgList) {
-        if (isBusinessFunctionsForValidationRulesEnabled()) {
-            msgList.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
-                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
-                    Message.WARNING,
-                    new ObjectProperty(this, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 
     private void validatePersistenceOption(MessageList msgList) {
         if (isPersistenceSupportEnabled()) {
-            String text = NLS.bind(Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
+            String text = MessageFormat.format(
+                    Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
                     SETTING_SHARED_ASSOCIATIONS, ATTRIBUTE_PERSISTENT_PROJECT);
             if (isSharedDetailToMasterAssociations()) {
                 msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_OPTIONAL_CONSTRAINT, text, Message.ERROR,
@@ -307,7 +296,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void validateProductCmptNamingStrategy(MessageList msgList) {
         if (productCmptNamingStrategy == null) {
-            String text = NLS.bind(Messages.IpsProjectProperties_unknownNamingStrategy, productCmptNamingStrategyId);
+            String text = MessageFormat.format(Messages.IpsProjectProperties_unknownNamingStrategy,
+                    productCmptNamingStrategyId);
             msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY, text,
                     Message.ERROR, this));
         }
@@ -323,7 +313,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
         for (IIpsFeatureVersionManager manager : managers) {
             if (manager.isRequiredForAllProjects() && getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, manager.getFeatureId());
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgMissingMinFeatureId,
+                        manager.getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }
         }
@@ -333,7 +324,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         IIpsModel model = ipsProject.getIpsModel();
         for (String element : predefinedDatatypesUsed) {
             if (!model.isPredefinedValueDatatype(element)) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownDatatype, element);
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgUnknownDatatype, element);
                 Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE, text,
                         Message.ERROR, this);
                 list.add(msg);
@@ -356,7 +347,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * Validate the IPS object path entry.
      */
-    private void validateIpsObjectPath(MessageList list) throws CoreException {
+    private void validateIpsObjectPath(MessageList list) throws CoreRuntimeException {
         list.add(path.validate());
     }
 
@@ -378,7 +369,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             String languageString = supportedLanguage.getLocale().getLanguage();
             if (!(isoLanguagesList.contains(languageString))) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgSupportedLanguageUnknownLocale, languageString);
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgSupportedLanguageUnknownLocale,
+                        languageString);
                 Message msg = new Message(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE, text,
                         Message.ERROR);
                 list.add(msg);
@@ -881,7 +873,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createObjectPathFromManifest(IIpsProject ipsProject) {
-        IFile file = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        AFile file = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
         if (file.exists()) {
             createObjectPathFromExistingManifest(ipsProject, file);
         } else {
@@ -890,7 +882,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void createObjectPathFromExistingManifest(IIpsProject ipsProject, IFile file) {
+    private void createObjectPathFromExistingManifest(IIpsProject ipsProject, AFile file) {
         InputStream contents = null;
         try {
             contents = file.getContents();
@@ -899,8 +891,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             path = new IpsObjectPathManifestReader(bundleManifest, ipsProject).readIpsObjectPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         } finally {
             IoUtil.close(contents);
         }

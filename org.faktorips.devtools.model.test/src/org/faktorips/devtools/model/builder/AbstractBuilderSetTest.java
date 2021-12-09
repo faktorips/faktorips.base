@@ -14,9 +14,9 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -78,7 +78,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class A extends StubJavaSourceFileBuilder {
 
-        public A() throws CoreException {
+        public A() throws CoreRuntimeException {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -86,7 +86,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class B extends StubJavaSourceFileBuilder {
 
-        public B() throws CoreException {
+        public B() throws CoreRuntimeException {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -94,7 +94,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class C extends StubJavaSourceFileBuilder {
 
-        public C() throws CoreException {
+        public C() throws CoreRuntimeException {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -102,7 +102,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class DExtendsC extends C {
 
-        public DExtendsC() throws CoreException {
+        public DExtendsC() throws CoreRuntimeException {
             super();
         }
 
@@ -110,7 +110,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class EExtendsC extends C {
 
-        public EExtendsC() throws CoreException {
+        public EExtendsC() throws CoreRuntimeException {
             super();
         }
 
@@ -148,13 +148,13 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
             // Auto-generated method stub
 
         }
 
         @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
             // Auto-generated method stub
 
         }

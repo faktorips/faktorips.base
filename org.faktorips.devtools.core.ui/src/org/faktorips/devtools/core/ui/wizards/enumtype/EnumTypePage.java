@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumTypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -242,7 +242,7 @@ public class EnumTypePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
@@ -288,7 +288,7 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() throws CoreRuntimeException {
         super.validatePageExtension();
 
         MessageList validationMessages = new MessageList();

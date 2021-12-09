@@ -18,11 +18,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -57,7 +57,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetRuntimeRepositoryTocFile() {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFile file = builderSet.getRuntimeRepositoryTocFile(root);
+        AFile file = builderSet.getRuntimeRepositoryTocFile(root);
         assertNotNull(file);
         assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
     }
@@ -70,8 +70,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAdditionalAnnotations() throws CoreException {
-        builderSet.beforeBuildProcess(0);
+    public void testGetAdditionalAnnotations() throws CoreRuntimeException {
+        builderSet.beforeBuildProcess(null);
         List<String> annotations = builderSet.getAdditionalAnnotations();
 
         assertEquals(4, annotations.size());
@@ -82,8 +82,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAdditionalImports() throws CoreException {
-        builderSet.beforeBuildProcess(0);
+    public void testGetAdditionalImports() throws CoreRuntimeException {
+        builderSet.beforeBuildProcess(null);
         List<String> imports = builderSet.getAdditionalImports();
 
         assertEquals(2, imports.size());
@@ -115,7 +115,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+        protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
             return new LinkedHashMap<>();
         }
 

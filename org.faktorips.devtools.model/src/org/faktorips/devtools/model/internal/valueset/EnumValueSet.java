@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +27,6 @@ import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -137,7 +136,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
+    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             return false;
@@ -204,12 +203,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         String[] subsetValues = subset.getValues();
 
         for (String value : subsetValues) {
-            try {
-                if (!containsValue(value, contextProject)) {
-                    return false;
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (!containsValue(value, contextProject)) {
+                return false;
             }
         }
         return true;
@@ -327,13 +322,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         list.add(createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validate());
     }
 
     @Override
-    public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
+    public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreRuntimeException {
         return createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validateValue(index);
     }
 
@@ -374,13 +369,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private String toStringAbstractEnumValueSet() {
         String nullText;
         if (isContainsNull()) {
-            nullText = NLS.bind(Messages.ValueSet_includingNull,
+            nullText = MessageFormat.format(Messages.ValueSet_includingNull,
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
         } else {
-            nullText = NLS.bind(Messages.ValueSet_excludingNull,
+            nullText = MessageFormat.format(Messages.ValueSet_excludingNull,
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation());
         }
-        return NLS.bind(Messages.EnumValueSet_abstract, nullText);
+        return MessageFormat.format(Messages.EnumValueSet_abstract, nullText);
     }
 
     @Override

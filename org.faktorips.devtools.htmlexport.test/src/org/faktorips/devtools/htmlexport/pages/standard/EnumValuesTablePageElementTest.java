@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -96,7 +97,7 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResult() throws CoreException {
+    public void testCreateRowWithIpsObjectPart_filledResult() throws CoreRuntimeException {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(enumAttribute1);
         doReturn(stringValue).when(enumAttributeValue1).getValue();
         doReturn("toBeAdded").when(stringValue).getDefaultLocalizedContent(ipsProject);
@@ -113,7 +114,7 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResultThrowException() throws CoreException {
+    public void testCreateRowWithIpsObjectPart_filledResultThrowException() throws CoreRuntimeException {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(enumAttribute1);
         doReturn(stringValue).when(enumAttributeValue1).getValue();
         doReturn("enumAttributeValue1Name").when(enumAttributeValue1).getName();

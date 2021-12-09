@@ -26,9 +26,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -45,7 +45,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     private final IpsObjectType[] ipsObjectTypes = { IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE };
 
     @Test
-    public void testGetProjectRootElements_DontFindLocalRootElementsInDistributedProjects() throws CoreException {
+    public void testGetProjectRootElements_DontFindLocalRootElementsInDistributedProjects() throws CoreRuntimeException {
         // setup
         IIpsProject superProject = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(superProject, "Vertrag");
@@ -69,7 +69,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetProjectRootElements_DetectCycleOnSelfreferencingELement() throws CoreException {
+    public void testGetProjectRootElements_DetectCycleOnSelfreferencingELement() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -86,7 +86,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetProjectRootElements_DetectCycleOnIndirectSelfreferencingELement() throws CoreException {
+    public void testGetProjectRootElements_DetectCycleOnIndirectSelfreferencingELement() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -113,7 +113,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetProjectRootElements_FindAssociationRootElements() throws CoreException {
+    public void testGetProjectRootElements_FindAssociationRootElements() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on associations
         IIpsProject project = newIpsProject();
@@ -135,7 +135,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetProjectRootElements_FindSupertypeRootElements() throws CoreException {
+    public void testGetProjectRootElements_FindSupertypeRootElements() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -164,7 +164,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
      */
     @Test
     public void testGetProjectRootElements_OmitBranchesNotContainingSoureceProjectElementsWithoutAnyHierarchy()
-            throws CoreException {
+            throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "AnyElement");
@@ -185,7 +185,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociationTarget_Aggregation_IsAssociationTarget() throws CoreException {
+    public void testIsAssociationTarget_Aggregation_IsAssociationTarget() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -201,7 +201,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociationTarget_MasterToDetail_IsAssociationTarget() throws CoreException {
+    public void testIsAssociationTarget_MasterToDetail_IsAssociationTarget() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -217,7 +217,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociationTarget_DetailToMaster_IsNoAssociationTarget() throws CoreException {
+    public void testIsAssociationTarget_DetailToMaster_IsNoAssociationTarget() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -233,7 +233,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociationTarget_Association_IsNoAssociationTarget() throws CoreException {
+    public void testIsAssociationTarget_Association_IsNoAssociationTarget() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -249,7 +249,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociationTarget_IsNoAssociationTarget() throws CoreException {
+    public void testIsAssociationTarget_IsNoAssociationTarget() throws CoreRuntimeException {
         // setup
         // Status of root elements depends only on supertypes
         IIpsProject project = newIpsProject();
@@ -260,7 +260,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAsscoiatingTypes_NoAssociatingType() throws CoreException {
+    public void testGetAsscoiatingTypes_NoAssociatingType() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -270,7 +270,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAsscoiatingTypes_HasAssociatingTypes() throws CoreException {
+    public void testGetAsscoiatingTypes_HasAssociatingTypes() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -305,7 +305,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAsscoiatingTypes_NoAssociatingTypeBetweenDifferentProjects() throws CoreException {
+    public void testGetAsscoiatingTypes_NoAssociatingTypeBetweenDifferentProjects() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -334,7 +334,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAsscoiatingTypes_AssociatingTypeBetweenDifferentProjects() throws CoreException {
+    public void testGetAsscoiatingTypes_AssociatingTypeBetweenDifferentProjects() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -365,7 +365,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void hasExistingSupertype_HasSupertypeInSingleProject() throws CoreException {
+    public void hasExistingSupertype_HasSupertypeInSingleProject() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -378,7 +378,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void hasExistingSupertype_HasSupertypeFromDifferentProject() throws CoreException {
+    public void hasExistingSupertype_HasSupertypeFromDifferentProject() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -398,7 +398,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void hasExistingSupertype_HasNoSupertypeFromDifferentProject() throws CoreException {
+    public void hasExistingSupertype_HasNoSupertypeFromDifferentProject() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -416,7 +416,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void hasExistingSupertype_HasNoSupertype() throws CoreException {
+    public void hasExistingSupertype_HasNoSupertype() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -427,7 +427,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
 
     @Test
     public void testGetAssociationsForAssociationTypes_HasAggregationAndMasterToDetailAssociation()
-            throws CoreException {
+            throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
@@ -451,7 +451,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAssociationsForAssociationTypes_NoAssociationCausesEmptyList() throws CoreException {
+    public void testGetAssociationsForAssociationTypes_NoAssociationCausesEmptyList() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
@@ -463,7 +463,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetExistingSupertypeFromList_FindSupertype() throws CoreException {
+    public void testGetExistingSupertypeFromList_FindSupertype() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -479,7 +479,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetExistingSupertypeFromList_HasNoSupertype() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasNoSupertype() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -491,7 +491,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetExistingSupertypeFromList_HasNoExistingSupertypeFromDifferentProjects() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasNoExistingSupertypeFromDifferentProjects() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -510,7 +510,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetExistingSupertypeFromList_HasExistingSupertypeFromDifferentProjects() throws CoreException {
+    public void testGetExistingSupertypeFromList_HasExistingSupertypeFromDifferentProjects() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType cmptType = newPolicyCmptTypeWithoutProductCmptType(project, "TestPolicyComponentType");
@@ -532,7 +532,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
 
     @Test
     public void testRemoveDescendants_removeElementsFromInheritanceHierarchyAndKeepSecondRootElement()
-            throws CoreException {
+            throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
@@ -563,7 +563,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testRemoveDescendants_removeElementsFromInheritanceHierarchy() throws CoreException {
+    public void testRemoveDescendants_removeElementsFromInheritanceHierarchy() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
@@ -590,7 +590,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testRemoveDescendants_removeAssociatedElementsAndKeepSecondRootElement() throws CoreException {
+    public void testRemoveDescendants_removeAssociatedElementsAndKeepSecondRootElement() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
@@ -623,7 +623,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testRemoveDescendants_removeAssociatedElements() throws CoreException {
+    public void testRemoveDescendants_removeAssociatedElements() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
@@ -652,7 +652,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testRemoveDescendants_removeAssociatedAndSubtypedElements() throws CoreException {
+    public void testRemoveDescendants_removeAssociatedAndSubtypedElements() throws CoreRuntimeException {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");
@@ -697,7 +697,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociated_DirectAssociation() throws CoreException {
+    public void testIsAssociated_DirectAssociation() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
@@ -716,7 +716,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociated_SupertypesAssociationHasAssociatingSubtype() throws CoreException {
+    public void testIsAssociated_SupertypesAssociationHasAssociatingSubtype() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "a.A");
@@ -751,7 +751,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testIsAssociated_AssociationOverTwoInheritanceLevels() throws CoreException {
+    public void testIsAssociated_AssociationOverTwoInheritanceLevels() throws CoreRuntimeException {
         // setup
         IIpsProject projectA = newIpsProject();
         IType aA = newPolicyCmptTypeWithoutProductCmptType(projectA, "aA");

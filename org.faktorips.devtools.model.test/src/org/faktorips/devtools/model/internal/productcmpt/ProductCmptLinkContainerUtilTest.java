@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -61,7 +60,7 @@ public class ProductCmptLinkContainerUtilTest {
     }
 
     @Test
-    public void testCanCreateLink() throws CoreException {
+    public void testCanCreateLink() throws CoreRuntimeException {
         setUpSrcFileMutable(true);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
         IProductCmptType prodCmptType = mock(IProductCmptType.class);
@@ -78,7 +77,7 @@ public class ProductCmptLinkContainerUtilTest {
     }
 
     @Test
-    public void testTargetNotWithinProjectStructure() throws CoreException {
+    public void testTargetNotWithinProjectStructure() throws CoreRuntimeException {
         setUpSrcFileMutable(true);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
         IProductCmptType prodCmptType = mock(IProductCmptType.class);
@@ -116,10 +115,6 @@ public class ProductCmptLinkContainerUtilTest {
     }
 
     private boolean canCreateLink() {
-        try {
-            return ProductCmptLinkContainerUtil.canCreateValidLink(linkContainer, target, association, ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ProductCmptLinkContainerUtil.canCreateValidLink(linkContainer, target, association, ipsProject);
     }
 }

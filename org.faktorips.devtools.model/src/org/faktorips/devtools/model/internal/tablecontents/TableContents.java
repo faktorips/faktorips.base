@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.tablecontents;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +26,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
@@ -106,7 +106,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // will be handled as validation error
             IpsLog.log(e);
             return;
@@ -136,7 +136,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreException {
+    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreRuntimeException {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
 
@@ -190,20 +190,15 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         int referenceCount = getColumnReferencesCount();
         if (referenceCount == 0 && numOfColumns != 0) {
             ITableStructure newTableStructure;
-            try {
-                newTableStructure = findTableStructure(getIpsProject());
-                if (newTableStructure != null) {
-                    // Only references of columns that actually exist in the structure will be
-                    // created
-                    for (int i = 0; i < newTableStructure.getNumOfColumns(); i++) {
-                        IPartReference newReference = new TableColumnReference(this, getNextPartId());
-                        newReference.setName(newTableStructure.getColumn(i).getName());
-                        columnReferences.addPart(newReference);
-                    }
+            newTableStructure = findTableStructure(getIpsProject());
+            if (newTableStructure != null) {
+                // Only references of columns that actually exist in the structure will be
+                // created
+                for (int i = 0; i < newTableStructure.getNumOfColumns(); i++) {
+                    IPartReference newReference = new TableColumnReference(this, getNextPartId());
+                    newReference.setName(newTableStructure.getColumn(i).getName());
+                    columnReferences.addPart(newReference);
                 }
-
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
     }
@@ -240,12 +235,8 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     private ITableStructure findTableStructureInternal() {
         ITableStructure tableStructure;
-        try {
-            tableStructure = findTableStructure(getIpsProject());
-            return tableStructure;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        tableStructure = findTableStructure(getIpsProject());
+        return tableStructure;
     }
 
     private boolean isSingleContentStructure(ITableStructure tableStructure) {
@@ -270,23 +261,23 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public void initFromInputStream(InputStream is) throws CoreException {
+    public void initFromInputStream(InputStream is) throws CoreRuntimeException {
         initTableContentFromStream(is, false);
     }
 
-    private void initTableContentFromStream(InputStream is, boolean readWholeContent) throws CoreException {
+    private void initTableContentFromStream(InputStream is, boolean readWholeContent) throws CoreRuntimeException {
         try {
             reinitPartCollections();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
         } catch (SAXNotSupportedException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } catch (SAXException e) {
             handleSaxException(e);
         } catch (ParserConfigurationException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 
@@ -297,9 +288,9 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * {@link SAXException} we want to throw this as {@link CoreException}.
      * 
      */
-    private void handleSaxException(SAXException e) throws CoreException {
+    private void handleSaxException(SAXException e) throws CoreRuntimeException {
         if (e.getCause() != null) {
-            throw new CoreException(new IpsStatus(e.getCause()));
+            throw new CoreRuntimeException(new IpsStatus(e.getCause()));
         }
     }
 
@@ -403,18 +394,18 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
         if (isRowsInitialized() || IIpsModelExtensions.get().getModelPreferences().isAutoValidateTables()) {
             super.validateChildren(result, ipsProject);
         }
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure == null) {
-            String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
+            String text = MessageFormat.format(Messages.TableContents_msgMissingTablestructure, structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
@@ -446,7 +437,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      */
     private void validateColumnReferencesCount(MessageList validationMessageList, ITableStructure tableStructure) {
         if (tableStructure.getNumOfColumns() != getColumnReferencesCount()) {
-            String text = NLS.bind(Messages.TableContents_ReferencedColumnCountInvalid,
+            String text = MessageFormat.format(Messages.TableContents_ReferencedColumnCountInvalid,
                     tableStructure.getQualifiedName());
             Message validationMessage = new Message(
                     ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID, text, Message.ERROR, this);
@@ -464,7 +455,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
         for (IColumn currentColumn : columns) {
             if (!(containsEnumAttributeReference(currentColumn.getName()))) {
-                String text = NLS.bind(Messages.TableContents_ReferencedColumnNamesInvalid,
+                String text = MessageFormat.format(Messages.TableContents_ReferencedColumnNamesInvalid,
                         tableStructure.getQualifiedName());
                 Message validationMessage = new Message(
                         ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID, text, Message.ERROR,
@@ -485,7 +476,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             String currentColumnName = columns.get(i).getName();
             String currentReference = columnReferences.getPart(i).getName();
             if (!(currentColumnName.equals(currentReference))) {
-                String text = NLS.bind(Messages.TableContents_ReferencedColumnOrderingInvalid,
+                String text = MessageFormat.format(Messages.TableContents_ReferencedColumnOrderingInvalid,
                         tableStructure.getQualifiedName());
                 Message validationMessage = new Message(
                         TableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_ORDERING_INVALID, text, Message.ERROR,
@@ -513,12 +504,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         for (IPartReference reference : columnReferences) {
             IColumn column = structure.getColumn(reference.getName());
             if (column != null) {
-                try {
-                    valueDatatypes[i++] = column.findValueDatatype(ipsProject);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
-
+                valueDatatypes[i++] = column.findValueDatatype(ipsProject);
             } else {
                 valueDatatypes[i++] = null;
             }
@@ -532,21 +518,17 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException {
         return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
     }
 
     @Override
     public boolean isFixToModelRequired() {
-        try {
-            MessageList messages = validate(getIpsProject());
-            for (Message message : messages) {
-                if (FIX_REQUIRING_ERROR_CODES.contains(message.getCode())) {
-                    return true;
-                }
+        MessageList messages = validate(getIpsProject());
+        for (Message message : messages) {
+            if (FIX_REQUIRING_ERROR_CODES.contains(message.getCode())) {
+                return true;
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
 
         return false;
@@ -556,7 +538,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * This method always returns false because differences to model is not supported at the moment
      */
     @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException {
 
         return false;
     }
@@ -565,12 +547,12 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * This method does nothing because there is nothing to do at the moment
      */
     @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreRuntimeException {
         // TODO TableContent does not yet support the fix differences framework
     }
 
     @Override
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
         // TODO TableContent does not yet support the fix differences framework
         return null;
     }
@@ -609,7 +591,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         try {
             inputStream = getIpsSrcFile().getContentFromEnclosingResource();
             initTableContentFromStream(inputStream, true);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             e.printStackTrace();
         } finally {
             IoUtil.close(inputStream);
@@ -622,16 +604,11 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     private void addNewColumnReference(String name) {
         ITableStructure newTableStructure;
-        try {
-            newTableStructure = findTableStructure(getIpsProject());
-            if (newTableStructure != null) {
-                IPartReference newReference = new TableColumnReference(this, getNextPartId());
-                newReference.setName(name);
-                columnReferences.addPart(newReference);
-            }
-
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        newTableStructure = findTableStructure(getIpsProject());
+        if (newTableStructure != null) {
+            IPartReference newReference = new TableColumnReference(this, getNextPartId());
+            newReference.setName(name);
+            columnReferences.addPart(newReference);
         }
     }
 
@@ -648,14 +625,10 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * @param columnIndex index of the ColumnReference to be deleted
      */
     private void removeColumnReference(int columnIndex) {
-        try {
-            ITableStructure newTableStructure;
-            newTableStructure = findTableStructure(getIpsProject());
-            if (newTableStructure != null) {
-                columnReferences.removePart(columnReferences.getPart(columnIndex));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ITableStructure newTableStructure;
+        newTableStructure = findTableStructure(getIpsProject());
+        if (newTableStructure != null) {
+            columnReferences.removePart(columnReferences.getPart(columnIndex));
         }
     }
 
@@ -689,14 +662,10 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     @Override
     public void fixColumnReferences() {
         ITableStructure newTableStructure;
-        try {
-            newTableStructure = findTableStructure(getIpsProject());
-            if (newTableStructure != null) {
-                updateReferences(newTableStructure);
-                sortColumnReferencesInternal(newTableStructure.getColumns());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        newTableStructure = findTableStructure(getIpsProject());
+        if (newTableStructure != null) {
+            updateReferences(newTableStructure);
+            sortColumnReferencesInternal(newTableStructure.getColumns());
         }
 
     }

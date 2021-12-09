@@ -22,10 +22,10 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -66,7 +66,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
         String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource()
-                .getFullPath().toPortableString();
+                .getWorkspaceRelativePath().toPortableString();
         assertEquals(folder + '/' + BASE_PACKAGE_NAME_MERGABLE.replace('.', '/') + "/AnyEnumType_de.properties",
                 propertyFile.getFullPath().toPortableString());
     }
@@ -89,7 +89,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         assertFalse(propertyFile.exists());
     }
 
-    private void createEnumAttributes() throws CoreException {
+    private void createEnumAttributes() throws CoreRuntimeException {
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
         idAttribute.setIdentifier(true);
@@ -151,7 +151,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetPropertyFile_NotNull() throws CoreException {
+    public void testGetPropertyFile_NotNull() throws CoreRuntimeException {
         assertNotNull(enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN));
     }
 }

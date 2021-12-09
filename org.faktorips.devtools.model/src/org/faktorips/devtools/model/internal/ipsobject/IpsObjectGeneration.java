@@ -11,14 +11,14 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -70,7 +70,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) throws CoreRuntimeException {
         return IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
     }
@@ -195,7 +195,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         validateValidFromFormat(list, this);
@@ -221,21 +221,23 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     private void validateValidFrom(MessageList list) {
         GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
         if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
-            String[] params = new String[3];
+            Object[] params = new Object[3];
             params[0] = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                     .getGenerationConceptNameSingular();
             DateFormat format = IIpsModelExtensions.get().getModelPreferences().getDateFormat();
             params[1] = format.format(getValidFrom().getTime());
             params[2] = format.format(parentValidTo.getTime());
-            String msg = NLS.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
+            String msg = MessageFormat.format(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
 
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM, msg, this, PROPERTY_VALID_FROM));
         }
 
         IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(getValidFrom());
         if (duplicateGeneration != this) {
-            String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IIpsModelExtensions.get()
-                    .getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+            String msg = MessageFormat.format(Messages.IpsObjectGeneration_msgDuplicateGeneration,
+                    IIpsModelExtensions.get()
+                            .getModelPreferences().getChangesOverTimeNamingConvention()
+                            .getGenerationConceptNameSingular());
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this, PROPERTY_VALID_FROM));
         }
     }

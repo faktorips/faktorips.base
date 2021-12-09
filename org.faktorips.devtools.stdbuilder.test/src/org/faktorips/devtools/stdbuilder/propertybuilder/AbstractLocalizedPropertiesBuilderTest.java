@@ -20,8 +20,8 @@ import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -111,12 +111,12 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
 
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
             return true;
         }
 

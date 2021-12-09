@@ -88,7 +88,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
      */
     public void validateIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
-            MessageList validationMessageList) throws CoreException {
+            MessageList validationMessageList) throws CoreRuntimeException {
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getIpsObjectName();
             if (isInvalidNewName(newName, sourceFileName)) {
@@ -136,8 +136,12 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             // CSOFF: IllegalCatch
             // Need to catch Exception to get really every exception and set corresponding
             // fatal error status
-        } catch (CoreException e) {
-            addExceptionStatus(status, e.getStatus());
+        } catch (CoreRuntimeException e) {
+            if (e.getCause() instanceof CoreException) {
+                addExceptionStatus(status, ((CoreException)e.getCause()).getStatus());
+            } else {
+                status.addFatalError(e.getLocalizedMessage());
+            }
             return new MessageList();
         } catch (Exception e) {
             if (e.getLocalizedMessage() != null) {
@@ -188,7 +192,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     public IpsRefactoringModificationSet refactorIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             boolean adaptRuntimeId,
-            IProgressMonitor pm) throws CoreException {
+            IProgressMonitor pm) throws CoreRuntimeException {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(toBeRefactored);
         try {
             modifications.append(updateDependencies(targetIpsPackageFragment, newName));
@@ -207,9 +211,6 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
                 ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
             }
             return modifications;
-        } catch (CoreException e) {
-            modifications.undo();
-            throw e;
         } catch (CoreRuntimeException e) {
             modifications.undo();
             throw e;
@@ -217,7 +218,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     }
 
     private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment,
-            String newName) throws CoreException {
+            String newName) throws CoreRuntimeException {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(null);
         for (IDependency dependency : getDependencies()) {
             if (!isMatching(dependency)) {
@@ -237,7 +238,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
 
     private IIpsSrcFile moveSourceFileToTargetFile(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
-            IProgressMonitor pm) throws CoreException {
+            IProgressMonitor pm) throws CoreRuntimeException {
 
         IIpsSrcFile originalSrcFile = toBeRefactored.getIpsSrcFile();
 
@@ -265,7 +266,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
         return true;
     }
 
-    private boolean isMatching(IDependency dependency) throws CoreException {
+    private boolean isMatching(IDependency dependency) throws CoreRuntimeException {
         Object target = dependency.getTarget();
 
         if (target instanceof QualifiedNameType) {
@@ -273,7 +274,8 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
         } else if (target instanceof String) {
             return toBeRefactored.getQualifiedName().equals(target);
         } else {
-            throw new CoreException(new IpsStatus("The type of the dependency-target (" + target + ") is unknown.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new CoreRuntimeException(
+                    new IpsStatus("The type of the dependency-target (" + target + ") is unknown.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

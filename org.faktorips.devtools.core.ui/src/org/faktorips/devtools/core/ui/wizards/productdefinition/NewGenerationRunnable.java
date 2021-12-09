@@ -50,7 +50,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
     }
 
     @Override
-    protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         String taskName = NLS.bind(Messages.NewGenerationRunnable_taskName, IpsPlugin.getDefault().getIpsPreferences()

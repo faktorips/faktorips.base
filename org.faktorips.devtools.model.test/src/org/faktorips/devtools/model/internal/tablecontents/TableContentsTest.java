@@ -32,12 +32,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -234,7 +234,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      * Test init via SAX
      */
     @Test
-    public void testInitFromInputStream() throws CoreException {
+    public void testInitFromInputStream() throws CoreRuntimeException {
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "RateTableStructure");
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
 
@@ -249,7 +249,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      * Test init via SAX
      */
     @Test
-    public void testInitFromInputStream_WithExtensionProperties() throws CoreException {
+    public void testInitFromInputStream_WithExtensionProperties() throws CoreRuntimeException {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
 
@@ -263,8 +263,8 @@ public class TableContentsTest extends AbstractDependencyTest {
     /**
      * test invalid XML table content with extension properties inside generation node
      */
-    @Test(expected = CoreException.class)
-    public void testgetTableRows_WithExtensionPropertiesError() throws CoreException {
+    @Test(expected = CoreRuntimeException.class)
+    public void testgetTableRows_WithExtensionPropertiesError() throws CoreRuntimeException {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         table = spy(newTableContents(structure, "Tc"));
         when(table.getIpsSrcFile()).thenReturn(ipsSrcFile);
@@ -445,7 +445,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      * test the findMetaClass method
      */
     @Test
-    public void testFindMetaClass() throws CoreException {
+    public void testFindMetaClass() throws CoreRuntimeException {
         ITableStructure structure = newTableStructure(project, "SearchStructure");
         table.setTableStructure(structure.getQualifiedName());
 
@@ -484,7 +484,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateChildren() throws CoreException {
+    public void testValidateChildren() throws CoreRuntimeException {
         TableContents tableContents = spy(table);
         ((DefaultIpsModelPreferences)IIpsModelExtensions.get().getModelPreferences()).setAutoValidateTables(true);
         TableRows tableRows = spy(new TableRows(tableContents, "Test"));
@@ -497,7 +497,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateChildren_TableRowNull() throws CoreException {
+    public void testValidateChildren_TableRowNull() throws CoreRuntimeException {
         TableContents tableContents = spy(table);
         ((DefaultIpsModelPreferences)IIpsModelExtensions.get().getModelPreferences()).setAutoValidateTables(true);
         TableRows tableRows = spy(new TableRows(tableContents, "Test"));
@@ -510,7 +510,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateChildren_AutoValidateTablesFalse() throws CoreException {
+    public void testValidateChildren_AutoValidateTablesFalse() throws CoreRuntimeException {
         TableContents tableContents = spy(table);
         ((DefaultIpsModelPreferences)IIpsModelExtensions.get().getModelPreferences()).setAutoValidateTables(false);
         TableRows tableRows = spy(new TableRows(tableContents, "Test"));
@@ -523,7 +523,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateChildren_NotCall() throws CoreException {
+    public void testValidateChildren_NotCall() throws CoreRuntimeException {
         TableContents tableContents = spy(table);
         ((DefaultIpsModelPreferences)IIpsModelExtensions.get().getModelPreferences()).setAutoValidateTables(false);
         TableRows tableRows = spy(new TableRows(tableContents, "Test"));
@@ -553,7 +553,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testInitFromInputStream_UUID_creation() throws CoreException {
+    public void testInitFromInputStream_UUID_creation() throws CoreRuntimeException {
         // create valid TableContents
         TableContents tempTc = newTableContents(project, "UUIDTestTC");
         table.setTableStructure(structure.getQualifiedName());

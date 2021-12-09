@@ -200,7 +200,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         createCategoryCombo(workArea);
     }
 
-    private Control createDefaultAndValuesPage(TabFolder folder) throws CoreException {
+    private Control createDefaultAndValuesPage(TabFolder folder) throws CoreRuntimeException {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
@@ -307,7 +307,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                                     new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
                                         @Override
-                                        protected boolean execute() throws CoreException {
+                                        protected boolean execute() throws CoreRuntimeException {
                                             attribute.setDatatype(overwrittenAttribute.getDatatype());
                                             attribute.setModifier(overwrittenAttribute.getModifier());
                                             attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
@@ -349,7 +349,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 && event.isPropertyAffected(IAttribute.PROPERTY_OVERWRITES);
     }
 
-    private void updateValueSetTypes() throws CoreException {
+    private void updateValueSetTypes() throws CoreRuntimeException {
         if (valueSetEditControl == null) {
             return;
         }

@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.util.Collection;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
@@ -31,7 +31,7 @@ public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOpera
 
     @SuppressWarnings("deprecation")
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         int count = values.size();
         monitor.beginTask(Messages.SetTemplateValueStatusOperation_progress, count + 10);
         for (ITemplatedValue propertyValue : values) {

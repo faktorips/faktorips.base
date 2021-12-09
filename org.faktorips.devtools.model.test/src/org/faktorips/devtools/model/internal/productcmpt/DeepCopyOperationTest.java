@@ -40,13 +40,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
@@ -115,9 +115,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @Mock
     private IpsPackageFragment targetPackageFragment;
     @Mock
-    private IFile sortOrderFile;
+    private AFile sortOrderFile;
     @Mock
-    private IFile targetSortOrderFile;
+    private AFile targetSortOrderFile;
     @Mock
     private IProgressMonitor progressMonitor;
 
@@ -349,7 +349,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDeepCopyOperationFixups() throws CoreException, CycleInProductStructureException {
+    public void testDeepCopyOperationFixups() throws CoreRuntimeException, CycleInProductStructureException {
         createTestContent();
         IProductCmptTreeStructure structure = comfortMotorProduct
                 .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
@@ -384,13 +384,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
     }
 
-    private void createTestContent() throws CoreException {
+    private void createTestContent() throws CoreRuntimeException {
         createModel();
         createProducts();
         createTables();
     }
 
-    private void createModel() throws CoreException {
+    private void createModel() throws CoreRuntimeException {
 
         // set up extension properties
         // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
@@ -461,7 +461,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         salesNameAttribute.setValueSetConfiguredByProduct(true);
     }
 
-    private void createProducts() throws CoreException {
+    private void createProducts() throws CoreRuntimeException {
         comfortMotorProduct = newProductCmpt(motorContract.findProductCmptType(ipsProject),
                 "products.ComfortMotorProduct");
         comfortMotorProduct.setProductCmptType(motorContract.getProductCmptType());
@@ -504,7 +504,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }
 
-    private void createTables() throws CoreException {
+    private void createTables() throws CoreRuntimeException {
         tableContent = newTableContents(ipsProject, "TableContent");
         ITableContentUsage newTableContentUsage = standardTplCoverage.getLatestProductCmptGeneration()
                 .newTableContentUsage();
@@ -550,7 +550,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopySortOrder_empty() throws Exception {
-        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(mock(IFolder.class));
+        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(mock(AFolder.class));
         when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(new IIpsPackageFragment[] {});
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
 
@@ -766,7 +766,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             Set<IProductCmptStructureReference> toCopy,
             Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles,
             IpsPackageFragment sourcePackageFragment,
-            IIpsPackageFragment targetPackageFragment) throws CoreException {
+            IIpsPackageFragment targetPackageFragment) throws CoreRuntimeException {
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
                 new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
                 new GregorianCalendar());
@@ -801,7 +801,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     private void mockSourcePackage(IIpsPackageFragment... childPackages) throws Exception {
-        IFolder sourceFolder = mock(IFolder.class);
+        AFolder sourceFolder = mock(AFolder.class);
         when(sourceFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(sortOrderFile);
         when(sourcePackageFragment.getCorrespondingResource()).thenReturn(sourceFolder);
         when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
@@ -809,7 +809,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     private void mockTargetPackage(IIpsPackageFragment... childPackages) throws Exception {
-        IFolder targetFolder = mock(IFolder.class);
+        AFolder targetFolder = mock(AFolder.class);
         when(targetFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(targetSortOrderFile);
         when(targetPackageFragment.getCorrespondingResource()).thenReturn(targetFolder);
         when(targetPackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);

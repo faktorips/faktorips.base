@@ -34,6 +34,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -97,7 +98,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_CoreExceptionWhenFindigTarget() throws CoreException {
+    public void testGetImageDescriptor_CoreExceptionWhenFindigTarget() throws CoreRuntimeException {
         link = mock(IProductCmptLink.class);
         doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
 
@@ -115,7 +116,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_CustomProductCmptTypeIcon() throws CoreException, IOException {
+    public void testGetImageDescriptor_CustomProductCmptTypeIcon() throws CoreRuntimeException, IOException {
         IFile file = ipsProject.getProject().getFile("/root/foo.gif");
         file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), true,
                 null);
@@ -157,7 +158,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLabel_CoreExceptionWhenFindigTarget() throws CoreException {
+    public void testGetLabel_CoreExceptionWhenFindigTarget() throws CoreRuntimeException {
         link = mock(IProductCmptLink.class);
         when(link.getName()).thenReturn("foo");
         doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));

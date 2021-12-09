@@ -12,16 +12,14 @@ package org.faktorips.abstracttest.core;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.IControlFlow;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -162,9 +160,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
 
     protected ITableContents tableContents;
 
-    @SuppressWarnings("deprecation")
-    protected org.faktorips.devtools.model.bf.IBusinessFunction businessFunction;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -176,14 +171,13 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         createTestModel();
         createEnumModel();
         createTableModel();
-        createBusinessModel();
 
         createProductCmpt();
         createEnumContent();
         createTableContents();
     }
 
-    private void createPolicyAndProductModel() throws CoreException {
+    private void createPolicyAndProductModel() throws CoreRuntimeException {
         // Create super policy component type.
         superPolicyCmptType = newPolicyCmptType(ipsProject, QUALIFIED_SUPER_POLICY_CMPT_TYPE_NAME);
         superPolicyCmptType.setAbstract(true);
@@ -238,7 +232,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         otherProductToProductAssociation.setTargetRoleSingular(PRODUCT_CMPT_TYPE_NAME);
     }
 
-    private void createTestModel() throws CoreException {
+    private void createTestModel() throws CoreRuntimeException {
         // Create a test case type with a test attribute.
         testCaseType = newTestCaseType(ipsProject, TEST_CASE_TYPE_NAME);
         testPolicyCmptTypeParameter = testCaseType.newCombinedPolicyCmptTypeParameter();
@@ -268,7 +262,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         testCase.setTestCaseType(testCaseType.getQualifiedName());
     }
 
-    private void createEnumModel() throws CoreException {
+    private void createEnumModel() throws CoreRuntimeException {
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);
         enumType.setEnumContentName(ENUM_CONTENT_NAME);
         enumType.setExtensible(true);
@@ -308,24 +302,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         enumLiteralNameAttributeValue = enumValue.getEnumLiteralNameAttributeValue();
     }
 
-    private void createTableModel() throws CoreException {
+    private void createTableModel() throws CoreRuntimeException {
         tableStructure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
         tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
     }
 
-    @SuppressWarnings("deprecation")
-    private void createBusinessModel() throws CoreException {
-        businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(ipsProject,
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(),
-                BUSINESS_FUNCTION_NAME);
-        businessFunction.newStart(new Location(0, 0));
-        businessFunction.newEnd(new Location(10, 10));
-        IControlFlow controlFlow = businessFunction.newControlFlow();
-        controlFlow.setSource(businessFunction.getStart());
-        controlFlow.setTarget(businessFunction.getEnd());
-    }
-
-    private void createProductCmpt() throws CoreException {
+    private void createProductCmpt() throws CoreRuntimeException {
         productCmpt = newProductCmpt(productCmptType, PRODUCT_NAME);
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration.setValidFrom(new GregorianCalendar(2010, 3, 10));
@@ -337,12 +319,12 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         attributeValue = productCmptGeneration.newAttributeValue(productCmptTypeAttribute);
     }
 
-    private void createEnumContent() throws CoreException {
+    private void createEnumContent() throws CoreRuntimeException {
         enumContent = newEnumContent(ipsProject, ENUM_CONTENT_NAME);
         enumContent.setEnumType(enumType.getQualifiedName());
     }
 
-    private void createTableContents() throws CoreException {
+    private void createTableContents() throws CoreRuntimeException {
         tableContents = newTableContents(ipsProject, TABLE_CONTENTS_NAME);
         tableContents.setTableStructure(tableStructure.getQualifiedName());
     }

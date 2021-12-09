@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -31,12 +31,12 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
     }
 
     @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
         return copyIpsSrcFile(monitor);
     }
 
     @SuppressWarnings("deprecation")
-    private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
         IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
         String fileName = getPmo().getCopyProductCmpt().getIpsObjectType().getFileName(getPmo().getName());
         // @formatter:off
@@ -60,7 +60,7 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
     }
 
     @Override
-    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreRuntimeException {
         initProductCmpt(ipsSrcFile);
         monitor.worked(1);
 

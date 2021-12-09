@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.runtime.MessageList;
@@ -101,7 +102,7 @@ public final class LabelEditComposite extends Composite {
     private void createTableHoverService(TableViewer tableViewer) {
         new TableMessageHoverService(tableViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element != null) {
                     ILabel label = (ILabel)element;
                     return label.validate(label.getIpsProject());

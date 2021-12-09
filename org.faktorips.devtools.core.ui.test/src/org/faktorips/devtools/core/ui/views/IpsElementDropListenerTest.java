@@ -26,13 +26,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import org.junit.Test;
 public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetTransferedElements() throws CoreException {
+    public void testGetTransferedElements() throws CoreRuntimeException {
         IIpsProject prj = super.newIpsProject();
         PolicyCmptType type = newPolicyCmptType(prj, "first.second.Name");
 
@@ -85,7 +85,7 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTransferedElements_nestedProjects() throws CoreException {
+    public void testGetTransferedElements_nestedProjects() throws CoreRuntimeException {
         String parent = "P" + UUID.randomUUID().toString();
         String child = "X" + UUID.randomUUID().toString();
         IProject parentProject = newPlatformProject(parent);

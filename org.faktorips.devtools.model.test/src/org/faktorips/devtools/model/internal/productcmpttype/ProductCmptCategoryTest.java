@@ -22,9 +22,9 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ContentChangeEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -139,7 +139,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIsContainingProperty() throws CoreException {
+    public void testFindIsContainingProperty() throws CoreRuntimeException {
         // Create a super product type and a category in it
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory superCategory = superProductType.newCategory("superCategory");
@@ -169,7 +169,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * category was not stored in the attribute
      */
     @Test
-    public void testFindIsContainingProperty_pendingChanges() throws CoreException {
+    public void testFindIsContainingProperty_pendingChanges() throws CoreRuntimeException {
         IProductCmptCategory category = productType.newCategory("newCategory");
         IProductCmptCategory defCategory = productType.newCategory("defCategory");
         defCategory.setDefaultForPolicyCmptTypeAttributes(true);
@@ -200,7 +200,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory()
-            throws CoreException {
+            throws CoreRuntimeException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
@@ -220,7 +220,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * assigned to the corresponding default {@link IProductCmptCategory}.
      */
     @Test
-    public void testFindIsContainingProperty_CategoryNotFound() throws CoreException {
+    public void testFindIsContainingProperty_CategoryNotFound() throws CoreRuntimeException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
@@ -242,7 +242,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * considered.
      */
     @Test
-    public void testFindIsContainingProperty_CategoryDefinedInSupertype() throws CoreException {
+    public void testFindIsContainingProperty_CategoryDefinedInSupertype() throws CoreRuntimeException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
@@ -264,7 +264,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * The policy cmpt attribute should be found only one times
      */
     @Test
-    public void testFindIsContainingProperty_supertypeWithSamePolicy() throws CoreException {
+    public void testFindIsContainingProperty_supertypeWithSamePolicy() throws CoreRuntimeException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForPolicyCmptTypeAttributes(true);
 
@@ -291,7 +291,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with empty name.
      */
     @Test
-    public void testFindIsContainingProperty_CategoryNameIsEmpty() throws CoreException {
+    public void testFindIsContainingProperty_CategoryNameIsEmpty() throws CoreRuntimeException {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
         IProductCmptCategory emptyNameCategory = productType.newCategory();
@@ -408,7 +408,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_NameIsEmpty() throws CoreException {
+    public void testValidate_NameIsEmpty() throws CoreRuntimeException {
         category.setName("");
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -417,7 +417,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_NameIsUsedTwiceInType() throws CoreException {
+    public void testValidate_NameIsUsedTwiceInType() throws CoreRuntimeException {
         productType.newCategory(CATEGORY_NAME);
 
         MessageList validationMessageList = category.validate(ipsProject);
@@ -427,7 +427,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_NameIsUsedTwiceInTypeHierarchy() throws CoreException {
+    public void testValidate_NameIsUsedTwiceInTypeHierarchy() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         superProductType.newCategory(CATEGORY_NAME);
 
@@ -438,7 +438,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateCategoriesMarkedAsDefaultForFormulaSignatureDefinitions() throws CoreException {
+    public void testValidate_DuplicateCategoriesMarkedAsDefaultForFormulaSignatureDefinitions() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newCategory("bar");
 
@@ -452,7 +452,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateCategoriesMarkedAsDefaultForValidationRules() throws CoreException {
+    public void testValidate_DuplicateCategoriesMarkedAsDefaultForValidationRules() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newCategory("bar");
 
@@ -466,7 +466,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateCategoriesMarkedAsDefaultForTableStructureUsages() throws CoreException {
+    public void testValidate_DuplicateCategoriesMarkedAsDefaultForTableStructureUsages() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newCategory("bar");
 
@@ -480,7 +480,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateCategoriesMarkedAsDefaultForPolicyCmptTypeAttributes() throws CoreException {
+    public void testValidate_DuplicateCategoriesMarkedAsDefaultForPolicyCmptTypeAttributes() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newCategory("bar");
 
@@ -494,7 +494,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateCategoriesMarkedAsDefaultForProductCmptTypeAttributes() throws CoreException {
+    public void testValidate_DuplicateCategoriesMarkedAsDefaultForProductCmptTypeAttributes() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category2 = superProductType.newCategory("bar");
 
@@ -518,7 +518,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * complete property list should correspond to the performed move operations.
      */
     @Test
-    public void testMoveProductCmptProperties() throws CoreException {
+    public void testMoveProductCmptProperties() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
 
         IProductCmptProperty superProperty1 = superProductType.newProductCmptTypeAttribute("s1");
@@ -558,7 +558,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * An {@link IndexOutOfBoundsException} should be thrown.
      */
     @Test(expected = IndexOutOfBoundsException.class)
-    public void testMoveProductCmptProperties_InvalidIndexesGiven() throws CoreException {
+    public void testMoveProductCmptProperties_InvalidIndexesGiven() throws CoreRuntimeException {
         category.moveProductCmptProperties(new int[] { 1 }, true, productType);
     }
 
@@ -570,7 +570,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * An empty array should be returned and no move should be performed.
      */
     @Test
-    public void testMoveProductCmptProperties_EmptyIndexArrayGiven() throws CoreException {
+    public void testMoveProductCmptProperties_EmptyIndexArrayGiven() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
@@ -591,7 +591,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * performed.
      */
     @Test
-    public void testMoveProductCmptProperties_DontMoveUpIfOneElementIsAtUpperLimit() throws CoreException {
+    public void testMoveProductCmptProperties_DontMoveUpIfOneElementIsAtUpperLimit() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
@@ -616,7 +616,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * performed.
      */
     @Test
-    public void testMoveProductCmptProperties_DontMoveDownIfOneElementIsAtLowerLimit() throws CoreException {
+    public void testMoveProductCmptProperties_DontMoveDownIfOneElementIsAtLowerLimit() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("p1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("p2");
@@ -642,7 +642,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * performed.
      */
     @Test
-    public void testMoveProductCmptProperties_DontMoveUpIfElementAtUpperCategoryLimit() throws CoreException {
+    public void testMoveProductCmptProperties_DontMoveUpIfElementAtUpperCategoryLimit() throws CoreRuntimeException {
         IProductCmptCategory aboveCategory = productType.newCategory("aboveCategory");
         IProductCmptCategory testCategory = productType.newCategory("testCategory");
 
@@ -665,7 +665,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * performed.
      */
     @Test
-    public void testMoveProductCmptProperties_DontMoveDownIfElementAtLowerCategoryLimit() throws CoreException {
+    public void testMoveProductCmptProperties_DontMoveDownIfElementAtLowerCategoryLimit() throws CoreRuntimeException {
         IProductCmptCategory testCategory = productType.newCategory("testCategory");
         IProductCmptCategory belowCategory = productType.newCategory("belowCategory");
 
@@ -687,7 +687,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with higher index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_InsertBelowFromLowerIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertBelowFromLowerIndex() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -713,7 +713,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with lower index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_InsertBelowFromHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertBelowFromHigherIndex() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -738,7 +738,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_TargetPropertyNull() throws CoreException {
+    public void testInsertProductCmptProperty_TargetPropertyNull() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -765,7 +765,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * the target {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptPropertyBelow_InsertBelowFromAnotherCategoryWithLowerIndex() throws CoreException {
+    public void testInsertProductCmptPropertyBelow_InsertBelowFromAnotherCategoryWithLowerIndex() throws CoreRuntimeException {
         IProductCmptCategory foreignCategory = productType.newCategory("foreignCategory");
 
         IProductCmptProperty foreignProperty = productType.newProductCmptTypeAttribute("foreignProperty");
@@ -795,7 +795,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * The category stored in the {@link IProductCmptProperty} should not be changed.
      */
     @Test
-    public void testInsertProductCmptProperty_DoNotChangeCategoryStoredInPolicyProperty() throws CoreException {
+    public void testInsertProductCmptProperty_DoNotChangeCategoryStoredInPolicyProperty() throws CoreRuntimeException {
         IPolicyCmptTypeAttribute policyProperty = policyType.newPolicyCmptTypeAttribute("policyProperty");
         policyProperty.setValueSetConfiguredByProduct(true);
         policyProperty.setCategory("beforeCategory");
@@ -816,7 +816,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testInsertProductCmptProperty_DoChangeCategoryStoredInPolicyPropertyOnSaveOfConfiguringProductCmptType()
-            throws CoreException {
+            throws CoreRuntimeException {
 
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category = superProductType.newCategory("testCategory");
@@ -847,7 +847,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with higher index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_InsertAboveFromLowerIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromLowerIndex() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -873,7 +873,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * with lower index and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_InsertAboveFromHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromHigherIndex() throws CoreRuntimeException {
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
         property1.setCategory(CATEGORY_NAME);
         IProductCmptProperty property2 = productType.newProductCmptTypeAttribute("property2");
@@ -900,7 +900,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * the target {@link IProductCmptCategory} and true should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_InsertAboveFromAnotherCategoryWithHigherIndex() throws CoreException {
+    public void testInsertProductCmptProperty_InsertAboveFromAnotherCategoryWithHigherIndex() throws CoreRuntimeException {
         IProductCmptCategory foreignCategory = productType.newCategory("foreignCategory");
 
         IProductCmptProperty property1 = productType.newProductCmptTypeAttribute("property1");
@@ -933,7 +933,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * Nothing should happen and false should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_IndexOfPropertyToBeInsertedCannotBeDetermined() throws CoreException {
+    public void testInsertProductCmptProperty_IndexOfPropertyToBeInsertedCannotBeDetermined() throws CoreRuntimeException {
         IProductCmptCategory category = productType.newCategory("myCategory");
 
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
@@ -966,7 +966,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * Nothing should happen and false should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_IndexOfTargetPropertyCannotBeDetermined() throws CoreException {
+    public void testInsertProductCmptProperty_IndexOfTargetPropertyCannotBeDetermined() throws CoreRuntimeException {
         IProductCmptCategory category = productType.newCategory("myCategory");
 
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
@@ -998,7 +998,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * Nothing should happen and false should be returned.
      */
     @Test
-    public void testInsertProductCmptProperty_ContextTypeCannotBeFound() throws CoreException {
+    public void testInsertProductCmptProperty_ContextTypeCannotBeFound() throws CoreRuntimeException {
         IProductCmptCategory category = productType.newCategory("myCategory");
 
         IProductCmptProperty property = productType.newProductCmptTypeAttribute("property");
@@ -1025,7 +1025,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * should be fired.
      */
     @Test
-    public void testInsertProductCmptProperty_FireOnlyASingleChangeEvent() throws CoreException {
+    public void testInsertProductCmptProperty_FireOnlyASingleChangeEvent() throws CoreRuntimeException {
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory sourceCategory = superProductType.newCategory("sourceCategory");
         IProductCmptCategory targetCategory = superProductType.newCategory("targetCategory");
@@ -1047,7 +1047,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         assertSingleContentChangeEvent();
     }
 
-    private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreException {
+    private IProductCmptType createSuperProductType(IProductCmptType productType, String prefix) throws CoreRuntimeException {
         IPolicyCmptType superPolicyType = newPolicyAndProductCmptType(ipsProject, prefix + "PolicyType", prefix
                 + "ProductType");
         IProductCmptType superProductType = superPolicyType.findProductCmptType(ipsProject);

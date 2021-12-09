@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -99,11 +98,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     }
 
     protected ITableStructure findTableStructure() {
-        try {
-            return getTableContents().findTableStructure(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getTableContents().findTableStructure(getIpsProject());
     }
 
     /**
@@ -270,7 +265,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypesByReferences(tableStructure,

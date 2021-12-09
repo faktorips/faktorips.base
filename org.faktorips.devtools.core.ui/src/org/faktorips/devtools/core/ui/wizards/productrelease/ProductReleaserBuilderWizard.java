@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.productrelease;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
@@ -24,6 +23,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
@@ -179,7 +179,7 @@ public class ProductReleaserBuilderWizard extends Wizard {
         }
 
         @Override
-        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+        protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
                 InterruptedException {
             if (productReleaseProcessor != null) {
                 returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);

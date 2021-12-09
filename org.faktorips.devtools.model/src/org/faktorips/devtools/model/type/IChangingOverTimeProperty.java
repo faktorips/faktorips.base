@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -30,8 +30,8 @@ public interface IChangingOverTimeProperty extends ITypePart {
      * Returns the {@link IProductCmptType} this {@link IChangingOverTimeProperty property} belongs
      * to or null if the referenced {@link IProductCmptType} could not be found.
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws CoreRuntimeException if an error occurs during the search
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException;
 
 }

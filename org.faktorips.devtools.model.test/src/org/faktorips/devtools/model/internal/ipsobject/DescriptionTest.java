@@ -17,8 +17,8 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -70,7 +70,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleMissing() throws CoreException {
+    public void testValidateLocaleMissing() throws CoreRuntimeException {
         MessageList validationMessages = description.validate(ipsProject);
         assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.ERROR);
@@ -78,7 +78,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleNotSupported() throws CoreException {
+    public void testValidateLocaleNotSupported() throws CoreRuntimeException {
         description.setLocale(Locale.TAIWAN);
         MessageList validationMessages = description.validate(ipsProject);
         assertEquals(1, validationMessages.size());
@@ -87,7 +87,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleNotSupportedByContextProject() throws CoreException {
+    public void testValidateLocaleNotSupportedByContextProject() throws CoreRuntimeException {
         IIpsProject contextProject = newIpsProject("ContextProject");
         IIpsProjectProperties properties = contextProject.getProperties();
         properties.removeSupportedLanguage(Locale.GERMAN);
@@ -99,7 +99,7 @@ public class DescriptionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateOk() throws CoreException {
+    public void testValidateOk() throws CoreRuntimeException {
         description.setLocale(Locale.US);
         MessageList validationMessages = description.validate(ipsProject);
         assertEquals(0, validationMessages.size());

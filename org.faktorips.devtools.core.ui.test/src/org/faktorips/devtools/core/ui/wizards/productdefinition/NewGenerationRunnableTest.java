@@ -23,11 +23,11 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
@@ -81,7 +81,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
 
     @Test
     public void testExecute_CancelStateIsPolled()
-            throws CoreException, InvocationTargetException, InterruptedException {
+            throws CoreRuntimeException, InvocationTargetException, InterruptedException {
         when(monitor.isCanceled()).thenReturn(false, true);
 
         runnable.execute(monitor);
@@ -91,7 +91,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExecute_UpdateProgressMonitor() throws CoreException, InvocationTargetException,
+    public void testExecute_UpdateProgressMonitor() throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         runnable.execute(monitor);
@@ -107,7 +107,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExecute_CreateNewGenerations() throws CoreException, InvocationTargetException,
+    public void testExecute_CreateNewGenerations() throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
@@ -120,7 +120,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExecute_CreateNewGenerationEvenIfAGenerationWithThatDateAlreadyExists() throws CoreException,
+    public void testExecute_CreateNewGenerationEvenIfAGenerationWithThatDateAlreadyExists() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
@@ -139,7 +139,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
 
     @Test
     public void testExecute_DoNotCreateNewGenerationIfGenerationWithThatDateExistsAndPMOIsConfiguredToSkip()
-            throws CoreException, InvocationTargetException, InterruptedException {
+            throws CoreRuntimeException, InvocationTargetException, InterruptedException {
 
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
         pmo.setValidFrom(validFrom);
@@ -155,7 +155,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExecute_UpdateProgressMonitorEvenIfObjectIsSkipped() throws CoreException,
+    public void testExecute_UpdateProgressMonitorEvenIfObjectIsSkipped() throws CoreRuntimeException,
             InvocationTargetException, InterruptedException {
 
         GregorianCalendar validFrom = new GregorianCalendar(1986, 4, 16);
@@ -171,7 +171,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExecute_SaveIfSourceFileWasNotDirtyBefore() throws CoreException, InvocationTargetException,
+    public void testExecute_SaveIfSourceFileWasNotDirtyBefore() throws CoreRuntimeException, InvocationTargetException,
             InterruptedException {
 
         pmo.setValidFrom(new GregorianCalendar(1986, 4, 16));

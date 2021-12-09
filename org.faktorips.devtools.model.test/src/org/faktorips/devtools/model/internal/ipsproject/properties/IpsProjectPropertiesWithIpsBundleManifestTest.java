@@ -24,10 +24,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -54,14 +54,14 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
         IIpsProject realIpsProject = newIpsProject();
         ipsProject = spy(realIpsProject);
 
-        IProject realProject = ipsProject.getProject();
-        IProject spiedProject = spy(realProject);
+        AProject realProject = ipsProject.getProject();
+        AProject spiedProject = spy(realProject);
         when(ipsProject.getProject()).thenReturn(spiedProject);
 
-        IFolder folder = mock(IFolder.class);
+        AFolder folder = mock(AFolder.class);
         doReturn(folder).when(spiedProject).getFolder(anyString());
 
-        IFile file = mock(IFile.class);
+        AFile file = mock(AFile.class);
         when(file.exists()).thenReturn(true);
         String s = createManifest();
         InputStream inputStream = new ByteArrayInputStream(s.getBytes());

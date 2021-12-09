@@ -26,7 +26,6 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
@@ -58,7 +57,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
 
     @Override
     public void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsProject.getIpsPackageFragmentRoots());
         Collections.reverse(ipsRootsList);
@@ -87,7 +86,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             Set<IpsJarBundle> jarBundles,
             Map<Artifact, IpsMavenDependency> ipsDependencies,
             MavenProject mp)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         try {
             for (DependencyNode childNode : rootNode.getChildren()) {
@@ -121,7 +120,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
         return location.toFile().getAbsoluteFile().getCanonicalFile();
     }
 
-    private Artifact resolveArtifactFile(DependencyNode child, MavenProject mavenProject) throws CoreException {
+    private Artifact resolveArtifactFile(DependencyNode child, MavenProject mavenProject) throws CoreRuntimeException {
         return ((MavenImpl)MavenPlugin.getMaven()).resolve(
                 RepositoryUtils.toArtifact(child.getArtifact()),
                 mavenProject.getRemoteArtifactRepositories(), new NullProgressMonitor());

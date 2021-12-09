@@ -131,7 +131,7 @@ public class TypeTest {
 
     }
 
-    public static abstract class SuperSource implements ISuperSource {
+    public abstract static class SuperSource implements ISuperSource {
 
         private Target target;
 
@@ -172,7 +172,7 @@ public class TypeTest {
 
     }
 
-    public static abstract class Source extends SuperSource implements ISource {
+    public abstract static class Source extends SuperSource implements ISource {
 
         private Target target;
 
@@ -194,7 +194,7 @@ public class TypeTest {
 
     }
 
-    public static abstract class SuperTarget implements ISuperTarget {
+    public abstract static class SuperTarget implements ISuperTarget {
 
         private SuperSource superSource;
 
@@ -221,7 +221,7 @@ public class TypeTest {
 
     }
 
-    public static abstract class Target extends SuperTarget implements ITarget {
+    public abstract static class Target extends SuperTarget implements ITarget {
 
         private Source source;
         private SuperSource superSource;

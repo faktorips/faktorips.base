@@ -17,12 +17,12 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl.ValueSetPmo;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.internal.valueset.DerivedValueSet;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
@@ -64,7 +64,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidatePMO_configElement() throws CoreException {
+    public void testValidatePMO_configElement() throws CoreRuntimeException {
 
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
@@ -81,7 +81,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidatePMO_overwrittenAttribute() throws CoreException {
+    public void testValidatePMO_overwrittenAttribute() throws CoreRuntimeException {
         IProductCmptTypeAttribute attr = superProductCmptType.newProductCmptTypeAttribute("attr");
         IProductCmptTypeAttribute overwritingAttr = productCmptType.newProductCmptTypeAttribute("attr");
         attr.setDatatype("Integer");
@@ -179,7 +179,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
     }
 
-    private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) throws CoreException {
+    private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) throws CoreRuntimeException {
         MessageList messageList = new ValueSetSpecificationControl.ValueSetPmo(valueSetOwner).validate(ipsProject);
         assertNotNull(messageList.getMessageByCode(ValueSetPmo.MSG_CODE_NULL_NOT_ALLOWED));
     }

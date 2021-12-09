@@ -14,9 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsLibraryEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -121,7 +121,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) throws CoreRuntimeException {
         return ipsBundle.contains(qnt.toPath());
     }
 
@@ -131,7 +131,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
     }
 
     @Override
-    protected IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException {
+    protected IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreRuntimeException {
         return findIpsSrcFile(qnt);
     }
 

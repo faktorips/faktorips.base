@@ -24,10 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.fl.IdentifierKind;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AttributeNode;
@@ -195,7 +195,7 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     @Test
-    public void testfindAttributes() throws CoreException {
+    public void testfindAttributes() throws CoreRuntimeException {
         AttributeParser spy = spy(attributeParser);
         ArrayList<IAttribute> arrayList = new ArrayList<>();
         arrayList.add(attribute);
@@ -226,7 +226,7 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     @Test
-    public void testfindAttributes_NoProductCmpt() throws CoreException {
+    public void testfindAttributes_NoProductCmpt() throws CoreRuntimeException {
         AttributeParser spy = spy(attributeParser);
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
@@ -284,7 +284,7 @@ public class AttributeParserTest extends AbstractParserTest {
         assertEquals(attribute2.getName(), proposals.get(1).getText());
     }
 
-    private AbstractIdentifierNodeParser mockAttributesForProposal() throws CoreException {
+    private AbstractIdentifierNodeParser mockAttributesForProposal() throws CoreRuntimeException {
         AttributeParser spy = spy(attributeParser);
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);

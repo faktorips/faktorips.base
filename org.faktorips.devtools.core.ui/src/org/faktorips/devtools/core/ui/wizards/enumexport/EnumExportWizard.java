@@ -14,7 +14,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -38,6 +37,7 @@ import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPage;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.MessageList;
@@ -132,7 +132,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
                 protected void execute(IProgressMonitor monitor)
-                        throws CoreException, InvocationTargetException, InterruptedException {
+                        throws CoreRuntimeException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeEnumExport(exportEnumContainer, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);

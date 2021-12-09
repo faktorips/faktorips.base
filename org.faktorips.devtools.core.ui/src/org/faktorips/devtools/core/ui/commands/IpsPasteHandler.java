@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWiza
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductWizard;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -394,7 +395,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
-    private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
+    private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreRuntimeException {
         String contents = getContentsOfIpsObject(ipsObject);
 
         String ipsSrcFileName = getNewIpsSrcFileName((IFolder)parent.getCorrespondingResource(), ipsObject);
@@ -407,7 +408,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Creates a new file in the parent folder based on the given ips source object.
      */
-    private void createFile(IFolder parent, IIpsObject ipsObject) throws CoreException {
+    private void createFile(IFolder parent, IIpsObject ipsObject) throws CoreRuntimeException {
         String contents = getContentsOfIpsObject(ipsObject);
         InputStream is;
         try {
@@ -430,7 +431,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * source package fragment.
      */
     private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
@@ -507,7 +508,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * all children of the given source package fragment .
      */
     private IFolder createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment)
-            throws CoreException {
+            throws CoreRuntimeException {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
@@ -540,9 +541,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Copy the given resource to the given target path.
      * 
-     * @throws CoreException If copy failed.
+     * @throws CoreRuntimeException If copy failed.
      */
-    private void copy(IResource targetParent, IResource resource) throws CoreException {
+    private void copy(IResource targetParent, IResource resource) throws CoreRuntimeException {
         if (targetParent == null) {
             return;
         }

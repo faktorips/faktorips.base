@@ -17,10 +17,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -46,7 +46,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     @Override
-    public boolean visit(IResourceDelta delta) throws CoreException {
+    public boolean visit(IResourceDelta delta) throws CoreRuntimeException {
         IResource resource = delta.getResource();
         if (resource.isTeamPrivateMember()) {
             return handlePrivateTeamMember(resource);

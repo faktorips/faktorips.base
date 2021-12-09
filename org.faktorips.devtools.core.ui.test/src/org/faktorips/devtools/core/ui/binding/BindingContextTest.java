@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
@@ -38,6 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.Validatable;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -110,7 +110,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void updateAllMappingsOnContentChange() throws CoreException {
+    public void updateAllMappingsOnContentChange() throws CoreRuntimeException {
         IProductCmpt prodCmpt = newProductCmpt(newIpsProject(), "ProdCmpt");
         FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
         // valid
@@ -307,7 +307,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testErrorBinding_WithValidatable() throws CoreException {
+    public void testErrorBinding_WithValidatable() throws CoreRuntimeException {
         Validatable validatable = mockValidatable();
         EditField<?> field = mockField();
         Validatable validatableWithError = mockValidatable();
@@ -362,7 +362,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
      * Both fields have the same message list set.
      */
     @Test
-    public void testErrorBinding_WithIpsObject() throws CoreException {
+    public void testErrorBinding_WithIpsObject() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsObject ipsObject = mock(IIpsObject.class);
         IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);
@@ -397,7 +397,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
      * Both fields receive the message directed to them.
      */
     @Test
-    public void testErrorBinding_WithIpsObject_DifferentParts() throws CoreException {
+    public void testErrorBinding_WithIpsObject_DifferentParts() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsObject ipsObject = mock(IIpsObject.class);
         IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);

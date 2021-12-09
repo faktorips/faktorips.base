@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
+import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,11 +22,12 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -64,7 +66,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_RemoveProductCmpt() throws CoreException {
+    public void testFindProductCmptByRuntimeId_RemoveProductCmpt() throws CoreRuntimeException {
         productCmpt.setRuntimeId("runtimeId");
         Collection<IIpsSrcFile> beforeDeletion = runtimeIdCache.findProductCmptByRuntimeId("runtimeId");
         assertThat(beforeDeletion.size(), is(1));
@@ -76,7 +78,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_MoreThanOneProdCmptWithSameId() throws CoreException {
+    public void testFindProductCmptByRuntimeId_MoreThanOneProdCmptWithSameId() throws CoreRuntimeException {
         productCmpt.setRuntimeId("runtimeId");
         ProductCmpt newProductCmpt = newProductCmpt(productCmptType, "b.productCmpt2020-2");
         newProductCmpt.setRuntimeId("runtimeId");
@@ -87,11 +89,11 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_ChangeIdByText() throws CoreException, IOException {
+    public void testFindProductCmptByRuntimeId_ChangeIdByText() throws CoreRuntimeException, IOException {
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(0));
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("productCmpt2020").size(), is(1));
 
-        IFile file = (IFile)productCmpt.getEnclosingResource();
+        AFile file = (AFile)productCmpt.getEnclosingResource();
         InputStreamReader inputStreamReader = new InputStreamReader(file.getContents());
         String content = new BufferedReader(inputStreamReader).lines().collect(Collectors.joining("\n"));
         inputStreamReader.close();
@@ -99,7 +101,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
         String modifiedContent = content.replace("runtimeId=\"productCmpt2020",
                 "runtimeId=\"runtimeId");
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(modifiedContent.getBytes())) {
-            file.setContents(inputStream, false, true, new NullProgressMonitor());
+            file.setContents(inputStream, true, new NullProgressMonitor());
         }
 
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(1));
@@ -113,8 +115,8 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
 
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId"), hasItem(ipsSrcFile));
 
-        IResource resource = productCmpt.getEnclosingResource();
-        resource.move(ipsProject.getProject().getFullPath().append(resource.getName()), true, null);
+        IResource resource = productCmpt.getEnclosingResource().unwrap();
+        resource.move(toEclipsePath(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName())), true, null);
 
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(0));
     }
@@ -124,8 +126,8 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
         productCmpt.setRuntimeId("runtimeId");
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(1));
 
-        IResource resource = productCmpt.getEnclosingResource();
-        resource.delete(true, new NullProgressMonitor());
+        AResource resource = productCmpt.getEnclosingResource();
+        resource.delete(new NullProgressMonitor());
         // to make sure the change is detected at deletion time
         // (and not by findProductCmptByRuntimeId checking if the file exists)
         // a new file is created at the same location

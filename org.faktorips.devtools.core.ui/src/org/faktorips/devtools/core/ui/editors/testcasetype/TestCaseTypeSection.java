@@ -1355,7 +1355,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
         new TableMessageHoverService(viewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element != null) {
                     return validateElement(element);
                 } else {
@@ -1648,7 +1648,7 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Performs and returns validation messages on the given element.
      */
-    private MessageList validateElement(Object element) throws CoreException {
+    private MessageList validateElement(Object element) throws CoreRuntimeException {
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer) {
@@ -1684,7 +1684,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
         new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
                 if (element != null) {
                     return validateElement(element);
                 } else {

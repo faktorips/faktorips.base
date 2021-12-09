@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
@@ -45,8 +46,8 @@ public class ValueSetMismatchEntry extends AbstractDeltaEntryForProperty {
     public String getDescription() {
         String desc = Messages.ValueSetMismatchEntry_desc;
         String label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(attribute);
-        return NLS.bind(desc, new Object[] { label, attribute.getValueSet().getValueSetType().getName(),
-                element.getValueSet().getValueSetType().getName() });
+        return MessageFormat.format(desc, label, attribute.getValueSet().getValueSetType().getName(),
+                element.getValueSet().getValueSetType().getName());
     }
 
 }

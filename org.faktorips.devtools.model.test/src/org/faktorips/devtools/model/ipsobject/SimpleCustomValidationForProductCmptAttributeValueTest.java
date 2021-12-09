@@ -16,9 +16,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.SimpleCustomValidationForProductCmptAttributeValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class SimpleCustomValidationForProductCmptAttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() throws CoreRuntimeException {
 
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "ProdType");
@@ -41,7 +41,7 @@ public class SimpleCustomValidationForProductCmptAttributeValueTest extends Abst
                 productCmptType.getName(), productCmptTypeAttribute.getName()) {
 
             @Override
-            public ValidationResult validate(String value, IIpsProject ipsProject) throws CoreException {
+            public ValidationResult validate(String value, IIpsProject ipsProject) throws CoreRuntimeException {
                 return newError("4711", "bar");
             }
         };

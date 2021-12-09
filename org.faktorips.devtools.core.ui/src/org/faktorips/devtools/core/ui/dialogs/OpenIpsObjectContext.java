@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -40,7 +40,7 @@ public class OpenIpsObjectContext extends CachingOpenIpsObjectContext {
     }
 
     @Override
-    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
+    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreRuntimeException {
         List<IIpsSrcFile> result = new ArrayList<>();
         IIpsProject[] projects = IIpsModel.get().getIpsProjects();
         progressMonitor.beginTask(

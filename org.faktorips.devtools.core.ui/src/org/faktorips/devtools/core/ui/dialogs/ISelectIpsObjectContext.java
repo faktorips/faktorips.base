@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.dialogs;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -29,7 +29,7 @@ public interface ISelectIpsObjectContext {
      * Called by the dialog to get the content elements. Use the progress monitor to visualize work
      * progress.
      */
-    public abstract List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException;
+    public abstract List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreRuntimeException;
 
     /**
      * Configure a viewer filter to include or exclude some objects. Note that this filter is

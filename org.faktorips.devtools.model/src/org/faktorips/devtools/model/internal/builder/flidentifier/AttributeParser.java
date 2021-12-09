@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
@@ -142,11 +141,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     private List<IAttribute> findAllAttributesFor(IType contextType) {
-        try {
-            return contextType.findAllAttributes(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return contextType.findAllAttributes(getIpsProject());
     }
 
     private List<IAttribute> findProductAttributesIfAvailable(IType contextType) {
@@ -170,7 +165,8 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     private IdentifierNode createInvalidIdentifierNode() {
         return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
+                MessageFormat.format(Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed,
+                        getIdentifierPart())));
     }
 
     public String getText(IAttribute attribute, boolean defaultValueAccess) {
@@ -185,7 +181,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         IMultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
         String name = getName(attribute, multiLanguageSupport);
         if (defaultValueAccess) {
-            name = NLS.bind(Messages.AttributeParser_defaultOfName, name);
+            name = MessageFormat.format(Messages.AttributeParser_defaultOfName, name);
         }
         return getNameAndDescription(name, getDescription(attribute, multiLanguageSupport));
     }

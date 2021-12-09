@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
@@ -47,7 +48,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    protected void addPagesForParsableSrcFile() throws CoreException {
+    protected void addPagesForParsableSrcFile() throws CoreRuntimeException {
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
         if (getTestCase().findTestCaseType(getIpsProject()) == null && couldDataBeChangedIfTestCaseTypeWasntMissing()
@@ -87,7 +88,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+    protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
         return new TestCaseDeltaDialog(getTestCase().computeDeltaToModel(getIpsProject()), getSite().getShell());
     }
 
@@ -116,7 +117,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() throws CoreRuntimeException {
         ITestCaseType testCaseType = getTestCase().findTestCaseType(getIpsProject());
         if (testCaseType != null) {
             return new TestCaseDescriptionPage(testCaseType);

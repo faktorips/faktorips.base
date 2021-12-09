@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.abstraction.AProject;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -48,7 +50,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
         copy(project, ".ipsproject");
         NullProgressMonitor monitor = new NullProgressMonitor();
         Migration_21_6_0.update(project.getFile(".ipsproject"), c -> c.replace("20.12.0", "19.12.0"), monitor);
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(wrap(project).as(AProject.class));
         assertFalse(ProjectUtil.hasIpsNature(project));
         Migration_21_6_0 migration_21_6_0 = new Migration_21_6_0(ipsProject, "irrelevant");
 
@@ -67,7 +69,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
         copy(project, ".project");
         copy(project, ".classpath");
         copy(project, ".ipsproject");
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(wrap(project).as(AProject.class));
         assertFalse(ProjectUtil.hasIpsNature(project));
         Migration_21_6_0 migration_21_6_0 = new Migration_21_6_0(ipsProject, "irrelevant");
 

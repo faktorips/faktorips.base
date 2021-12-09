@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -127,7 +126,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public IType findTarget(IIpsProject ipsProject) throws CoreException {
+    public IType findTarget(IIpsProject ipsProject) throws CoreRuntimeException {
         return (IType)ipsProject.findIpsObject(getIpsObject().getIpsObjectType(), target);
     }
 
@@ -275,12 +274,12 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreException {
+    public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreRuntimeException {
         return getType().findAssociation(subsettedDerivedUnion, project);
     }
 
     @Override
-    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreException {
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreRuntimeException {
         IType targetType = findTarget(ipsProject);
         if (targetType == null) {
             return new IAssociation[0];
@@ -291,7 +290,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreException {
+    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreRuntimeException {
         if (!isSubsetOfADerivedUnion()) {
             return false;
         }
@@ -354,7 +353,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         validateTarget(list);
 
         validateTargetRoleSingular(list, ipsProject);
@@ -379,7 +378,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
         IStatus javaStatus = ValidationUtils.validateFieldName(targetRoleSingular, ipsProject);
         if (!javaStatus.isOK()) {
-            String text = NLS.bind(Messages.Association_msg_TargetRoleSingularNotAValidJavaFieldName,
+            String text = MessageFormat.format(Messages.Association_msg_TargetRoleSingularNotAValidJavaFieldName,
                     targetRoleSingular);
             list.newError(MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
                     PROPERTY_TARGET_ROLE_SINGULAR);
@@ -390,7 +389,7 @@ public abstract class Association extends TypePart implements IAssociation {
         if (StringUtils.isNotEmpty(targetRolePlural)) {
             IStatus javaStatus = ValidationUtils.validateFieldName(targetRolePlural, ipsProject);
             if (!javaStatus.isOK()) {
-                String text = NLS.bind(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
+                String text = MessageFormat.format(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
                         targetRolePlural);
                 list.newError(MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
                         PROPERTY_TARGET_ROLE_PLURAL);
@@ -424,7 +423,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         if (StringUtils.isEmpty(subsettedDerivedUnion)) {
             return;
         }
@@ -436,7 +435,8 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
         if (unionAss == null) {
-            String text = NLS.bind(Messages.Association_msg_DerivedUnionDoesNotExist, subsettedDerivedUnion);
+            String text = MessageFormat.format(Messages.Association_msg_DerivedUnionDoesNotExist,
+                    subsettedDerivedUnion);
             list.add(new Message(MSGCODE_DERIVED_UNION_NOT_FOUND, text, Message.ERROR, this,
                     PROPERTY_SUBSETTED_DERIVED_UNION));
             return;
@@ -460,7 +460,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss)
-            throws CoreException {
+            throws CoreRuntimeException {
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
@@ -476,11 +476,12 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         if (isConstrain()) {
             IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
             if (constrainedAssociation == null) {
-                String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist, getName());
+                String text = MessageFormat.format(Messages.Association_msg_ConstrainedAssociationSingularDoesNotExist,
+                        getName());
                 list.newError(MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND, text,
                         new ObjectProperty(this, PROPERTY_CONSTRAIN),
                         new ObjectProperty(this, PROPERTY_TARGET_ROLE_SINGULAR));
@@ -494,14 +495,14 @@ public abstract class Association extends TypePart implements IAssociation {
     private void validateConstrainedAssociation(MessageList list,
             IAssociation constrainedAssociation,
             IAssociation parentAssociation)
-            throws CoreException {
+            throws CoreRuntimeException {
         if (!isCovariantTargetType(constrainedAssociation)) {
-            String text = NLS.bind(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
+            String text = MessageFormat.format(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
             list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_TARGET));
         }
         if (!constrainedAssociation.getTargetRolePlural().equals(getTargetRolePlural())) {
-            String text = NLS.bind(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
+            String text = MessageFormat.format(Messages.Association_msg_ConstrainedAssociationPluralDoesNotExist,
                     constrainedAssociation.getTargetRolePlural());
             list.newError(MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND, text, this, PROPERTY_TARGET_ROLE_PLURAL);
         }
@@ -550,7 +551,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedAssociationType(MessageList list, IAssociation superAssociation) {
         if (!isSameAssociationTypeAs(superAssociation)) {
-            String text = NLS.bind(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation,
+            String text = MessageFormat.format(Messages.Association_msg_AssociationTypeNotEqualToSuperAssociation,
                     superAssociation.getAssociationType().getName());
             list.newError(MSGCODE_ASSOCIATION_TYPE_NOT_EQUAL_TO_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_ASSOCIATION_TYPE));
@@ -563,19 +564,22 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedCardinality(MessageList list, IAssociation superAssociation) {
         if (getMaxCardinality() == 1 && superAssociation.getMaxCardinality() > 1) {
-            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainMustAllowMultipleItems,
+            String text = MessageFormat.format(
+                    Messages.Association_msg_MaxCardinalityForConstrainMustAllowMultipleItems,
                     getStringCardinality(superAssociation.getMinCardinality()));
             list.newError(MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
         }
         if (superAssociation.getMinCardinality() > getMinCardinality()) {
-            String text = NLS.bind(Messages.Association_msg_MinCardinalityForConstrainHigherThanSuperAssociation,
+            String text = MessageFormat.format(
+                    Messages.Association_msg_MinCardinalityForConstrainHigherThanSuperAssociation,
                     getStringCardinality(superAssociation.getMinCardinality()));
             list.newError(MSGCODE_MIN_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MIN_CARDINALITY));
         }
         if (superAssociation.getMaxCardinality() < getMaxCardinality()) {
-            String text = NLS.bind(Messages.Association_msg_MaxCardinalityForConstrainLowerThanSuperAssociation,
+            String text = MessageFormat.format(
+                    Messages.Association_msg_MaxCardinalityForConstrainLowerThanSuperAssociation,
                     getStringCardinality(superAssociation.getMaxCardinality()));
             list.newError(MSGCODE_MAX_CARDINALITY_NOT_VALID_CONSTRAINT_FOR_SUPER_ASSOCIATION, text,
                     new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_MAX_CARDINALITY));
@@ -589,7 +593,7 @@ public abstract class Association extends TypePart implements IAssociation {
         return String.valueOf(cardinality);
     }
 
-    private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreException {
+    private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreRuntimeException {
         IType targetType = findTarget(getIpsProject());
         IType superTargetType = superAssociation.findTarget(getIpsProject());
         if (targetType != null && superTargetType != null) {
@@ -681,17 +685,13 @@ public abstract class Association extends TypePart implements IAssociation {
                 if (association.equals(Association.this)) {
                     continue;
                 }
-                try {
-                    IType derivedUnionTarget = association.findTarget(getIpsProject());
-                    if (derivedUnionTarget == null) {
-                        continue;
-                    }
+                IType derivedUnionTarget = association.findTarget(getIpsProject());
+                if (derivedUnionTarget == null) {
+                    continue;
+                }
 
-                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, getIpsProject())) {
-                        candidates.add(association);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (targetType.isSubtypeOrSameType(derivedUnionTarget, getIpsProject())) {
+                    candidates.add(association);
                 }
             }
             return true;

@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
@@ -131,7 +131,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException {
         if (isMultilingual()) {
             ArrayList<ValueSetType> types = new ArrayList<>();
             types.add(ValueSetType.UNRESTRICTED);
@@ -261,7 +261,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
         return getProductCmptType();
     }
 
@@ -276,24 +276,24 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
         validateChangingOverTimeFlag(result);
     }
 
-    private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
+    private void validateAllowedValueSetTypes(MessageList result) throws CoreRuntimeException {
         if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
             result.add(
                     Message.newError(MSGCODE_INVALID_VALUE_SET,
-                            NLS.bind(Messages.ProductCmptTypeAttribute_msg_invalidValueSet,
+                            MessageFormat.format(Messages.ProductCmptTypeAttribute_msg_invalidValueSet,
                                     getValueSet().getValueSetType().getName(), getPropertyName()),
                             this, PROPERTY_VALUE_SET));
         }
     }
 
-    private void validateOverwriteFlag(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void validateOverwriteFlag(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
         if (isOverwrite()) {
             IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
@@ -318,7 +318,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         if (isMultiValueAttribute() && getDefaultValue() != null) {
             validateMultiDefaultValues(valueDatatype, result, ipsProject);
         } else {
@@ -327,7 +327,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreException {
+            throws CoreRuntimeException {
         String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
         for (String singleValue : split) {
             validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
@@ -338,16 +338,17 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     protected void validateDefaultValue(String defaultValueToValidate,
             ValueDatatype valueDatatype,
             MessageList result,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateDefaultValue(defaultValueToValidate, valueDatatype, result, ipsProject);
         validateDefaultValue(defaultValueToValidate, result);
     }
 
-    private void validateDefaultValue(String defaultValue, MessageList result) throws CoreException {
+    private void validateDefaultValue(String defaultValue, MessageList result) throws CoreRuntimeException {
         if (!isVisible() && !getValueSet().containsValue(defaultValue, getIpsProject())) {
             result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
             result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,
-                    NLS.bind(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, defaultValue),
+                    MessageFormat.format(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden,
+                            defaultValue),
                     this, PROPERTY_DEFAULT_VALUE);
         }
     }

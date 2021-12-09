@@ -20,7 +20,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -61,7 +60,7 @@ public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindAttributeFails() throws CoreException {
+    public void testGetImageDescriptor_FindAttributeFails() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");
@@ -77,7 +76,7 @@ public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor() throws CoreException {
+    public void testGetImageDescriptor() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");

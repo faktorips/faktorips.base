@@ -138,7 +138,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     @Override
     protected void fillContentProvider(AbstractContentProvider contentProvider,
             ItemsFilter itemsFilter,
-            IProgressMonitor progressMonitorParam) throws CoreException {
+            IProgressMonitor progressMonitorParam) throws CoreRuntimeException {
 
         IProgressMonitor progressMonitor = progressMonitorParam;
         if (progressMonitorParam == null) {

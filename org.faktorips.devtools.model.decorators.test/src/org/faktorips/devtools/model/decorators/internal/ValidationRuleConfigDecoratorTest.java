@@ -18,10 +18,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
@@ -74,7 +74,7 @@ public class ValidationRuleConfigDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLabel() throws CoreException {
+    public void testGetLabel() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(config.getIpsProject()).thenReturn(ipsProject);
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);

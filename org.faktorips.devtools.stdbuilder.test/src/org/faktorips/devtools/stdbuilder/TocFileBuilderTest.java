@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -70,7 +70,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetToc() throws CoreException {
+    public void testGetToc() throws CoreRuntimeException {
 
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
@@ -87,7 +87,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptWithGeneration() throws CoreException {
+    public void testCreateTocEntryProductCmptWithGeneration() throws CoreRuntimeException {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
@@ -103,7 +103,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptWithoutGeneration() throws CoreException {
+    public void testCreateTocEntryProductCmptWithoutGeneration() throws CoreRuntimeException {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
@@ -119,7 +119,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryPolicyCmptType() throws CoreException {
+    public void testCreateTocEntryPolicyCmptType() throws CoreRuntimeException {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
         assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
@@ -128,7 +128,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptType() throws CoreException {
+    public void testCreateTocEntryProductCmptType() throws CoreRuntimeException {
         IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
@@ -139,7 +139,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryTable() throws CoreException {
+    public void testCreateTocEntryTable() throws CoreRuntimeException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
@@ -157,7 +157,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_RealEnum() throws CoreException {
+    public void testCreateTocEntry_RealEnum() throws CoreRuntimeException {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(false);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
@@ -184,7 +184,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_SeparatedEnum() throws CoreException {
+    public void testCreateTocEntry_SeparatedEnum() throws CoreRuntimeException {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
@@ -211,7 +211,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_AbstractEnum() throws CoreException {
+    public void testCreateTocEntry_AbstractEnum() throws CoreRuntimeException {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         enumType.setIdentifierBoundary("e");
@@ -316,26 +316,26 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         assertEquals(6, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the product cmpt => should be removed from toc => 5
-        motorProduct.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        motorProduct.getIpsSrcFile().getCorrespondingFile().delete(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertEquals(5, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the table => should be removed from toc => 4
-        table.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        table.getIpsSrcFile().getCorrespondingFile().delete(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(4, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the second table => should be removed from toc => 3
-        table2.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        table2.getIpsSrcFile().getCorrespondingFile().delete(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(3, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete test case => should be removed from toc => 2
-        testCase.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        testCase.getIpsSrcFile().getCorrespondingFile().delete(null);
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
@@ -365,7 +365,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Ignore
     // not supported at the moment
     @Test
-    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreException {
+    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreRuntimeException {
         // create a product component
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);

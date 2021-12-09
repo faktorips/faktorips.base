@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeAssociation;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestCaseTestCaseTypeDelta;
@@ -275,7 +276,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Returns <code>true</code> if the object itself or a child of the object is visible for
          * the given delta type aspect.
          */
-        private boolean isFilterFor(Object object, TestCaseDeltaType deltaType) throws CoreException {
+        private boolean isFilterFor(Object object, TestCaseDeltaType deltaType) throws CoreRuntimeException {
             // the object is visible
             if (checkVisibility(object, deltaType)) {
                 return true;

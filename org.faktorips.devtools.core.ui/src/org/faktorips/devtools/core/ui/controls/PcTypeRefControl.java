@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -32,7 +32,7 @@ public class PcTypeRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
         ArrayList<IIpsSrcFile> srcFiles = new ArrayList<>();
         for (IIpsProject p : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(p.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)));
@@ -45,9 +45,9 @@ public class PcTypeRefControl extends IpsObjectRefControl {
      * text value. Returns <code>null</code> if the text value does not identify a policy component
      * type.
      * 
-     * @throws CoreException if an error occurs while searching for the type.
+     * @throws CoreRuntimeException if an error occurs while searching for the type.
      */
-    public IPolicyCmptType findPcType() throws CoreException {
+    public IPolicyCmptType findPcType() throws CoreRuntimeException {
         List<IIpsProject> ipsProjects = getIpsProjects();
         if (ipsProjects.isEmpty()) {
             return null;

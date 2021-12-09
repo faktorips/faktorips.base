@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
@@ -51,9 +51,9 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the test attribute.
+     * @throws CoreRuntimeException if an error occurs while searching for the test attribute.
      */
-    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreException;
+    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Search and returns the corresponding attribute.<br>
@@ -62,7 +62,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * product relevant then the corresponding product component type will be used to start the
      * searching the supertype hierarchy.
      */
-    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns value of the attribute.
@@ -79,9 +79,9 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * parameter then the default value of the model attribute will be used, otherwise the default
      * of the data type will be set.
      * 
-     * @throws CoreException if the test value parameter wasn't found
+     * @throws CoreRuntimeException if the test value parameter wasn't found
      */
-    public void setDefaultValue() throws CoreException;
+    public void setDefaultValue() throws CoreRuntimeException;
 
     /**
      * Returns <code>true</code> if the test attribute value is an input attribute, otherwise
@@ -105,8 +105,8 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * by product then from the policy component. Don't update the value if not default is
      * specified.
      * 
-     * @throws CoreException in case of an error.
+     * @throws CoreRuntimeException in case of an error.
      */
-    public void updateDefaultTestAttributeValue() throws CoreException;
+    public void updateDefaultTestAttributeValue() throws CoreRuntimeException;
 
 }

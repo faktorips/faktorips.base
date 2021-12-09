@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -125,7 +126,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         }
     }
 
-    private IPolicyCmptTypeAttribute[] getElements() throws CoreException {
+    private IPolicyCmptTypeAttribute[] getElements() throws CoreRuntimeException {
         List<? extends IAttribute> attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<>();
         for (IAttribute attribute : attributes) {
@@ -239,7 +240,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         return text;
     }
 
-    private void init(IPolicyCmptType policyCmptType) throws CoreException {
+    private void init(IPolicyCmptType policyCmptType) throws CoreRuntimeException {
         typeHierarchy = policyCmptType.getSupertypeHierarchy();
 
         AttributeLabelProvider attrLabelProvider = new AttributeLabelProvider();

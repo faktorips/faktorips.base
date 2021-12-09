@@ -25,6 +25,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.testcase.ITestAttributeValue;
@@ -51,10 +52,10 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a page for the given {@link ITestCase} with the given context
      * 
-     * @throws CoreException if the ITestCaseType for the ITestCase could not be found
+     * @throws CoreRuntimeException if the ITestCaseType for the ITestCase could not be found
      * 
      */
-    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) throws CoreException {
+    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) throws CoreRuntimeException {
         super(object, context);
         testCaseType = object.findTestCaseType(context.getIpsProject());
     }
@@ -111,7 +112,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 getContext().getLabel(testObject) + " " + testObject.getClass(), getContext()); //$NON-NLS-1$
     }
 
-    private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreRuntimeException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
                         new TextPageElement(testObject.getTestParameterName(), getContext())),
@@ -131,7 +132,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreRuntimeException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(
@@ -165,7 +166,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
+    private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreRuntimeException {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
                         new TextPageElement(testObject.getTestParameterName(), getContext())),

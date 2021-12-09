@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
@@ -48,32 +47,28 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<>();
-        try {
-            result.add(getIpsSrcFile());
-            enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);
-            for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
-                result.add(ipsSrcFile);
+        result.add(getIpsSrcFile());
+        enumTypeSrcFiles = findReferencingIpsSrcFiles(IpsObjectType.ENUM_TYPE);
+        for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
+            result.add(ipsSrcFile);
+        }
+        if ((getEnumType().isExtensible())) {
+            IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
+            if (enumContent != null) {
+                result.add(enumContent.getIpsSrcFile());
             }
-            if ((getEnumType().isExtensible())) {
-                IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
-                if (enumContent != null) {
-                    result.add(enumContent.getIpsSrcFile());
-                }
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
         return result;
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
         validationMessageList.add(getEnumAttribute().validate(getIpsProject()));
         validationMessageList.add(getEnumType().validate(getIpsProject()));
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         try {
             addAffectedSrcFiles(modificationSet);
@@ -86,9 +81,6 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
                 }
             }
             updateEnumAttributeName();
-        } catch (CoreException e) {
-            modificationSet.undo();
-            throw e;
         } catch (CoreRuntimeException e) {
             modificationSet.undo();
             throw e;
@@ -116,7 +108,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    private void updateEnumContentReference() throws CoreException {
+    private void updateEnumContentReference() throws CoreRuntimeException {
         IEnumContent enumContent = getEnumType().findEnumContent(getIpsProject());
         if (enumContent != null) {
             IPartReference attributeReference = enumContent.getEnumAttributeReference(getOriginalName());

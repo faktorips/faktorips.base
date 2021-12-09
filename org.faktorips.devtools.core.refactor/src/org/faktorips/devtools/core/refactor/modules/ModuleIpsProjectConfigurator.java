@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
@@ -67,12 +68,16 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
-        IJavaProject javaProject = ipsProject.getJavaProject();
+            throws CoreRuntimeException {
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         if (IpsProjectConfigurators.applicableTo(javaProject).allMatch((IIpsProjectConfigurator c) -> c == this)) {
             new StandardJavaProjectConfigurator().configureIpsProject(ipsProject, creationProperties);
         }
-        addRequiredModules(javaProject, creationProperties);
+        try {
+            addRequiredModules(javaProject, creationProperties);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private void addRequiredModules(IJavaProject javaProject, IpsProjectCreationProperties creationProperties)

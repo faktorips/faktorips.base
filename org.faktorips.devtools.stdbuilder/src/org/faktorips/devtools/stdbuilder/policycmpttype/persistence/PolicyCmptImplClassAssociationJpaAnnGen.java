@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -173,7 +174,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     }
 
     private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association)
-            throws CoreException {
+            throws CoreRuntimeException {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;

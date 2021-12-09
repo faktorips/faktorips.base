@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
@@ -67,7 +67,7 @@ public class AttributeValueDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_NoValueHolder() throws CoreException {
+    public void testGetLabel_NoValueHolder() throws CoreRuntimeException {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         when(attributeValue.getCaption(any(Locale.class))).thenReturn("Foo");
 
@@ -76,7 +76,7 @@ public class AttributeValueDecoratorTest {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void testGetLabel_Unformatted() throws CoreException {
+    public void testGetLabel_Unformatted() throws CoreRuntimeException {
         IValueHolder valueHolder = mock(IValueHolder.class);
         when(valueHolder.getStringValue()).thenReturn("Bar");
 
@@ -91,7 +91,7 @@ public class AttributeValueDecoratorTest {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    public void testGetLabel_Formatted() throws CoreException {
+    public void testGetLabel_Formatted() throws CoreRuntimeException {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         ValueDatatype datatype = mock(ValueDatatype.class);

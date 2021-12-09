@@ -25,9 +25,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -234,14 +232,10 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     }
 
     private IProductCmptGeneration createContainer() {
-        try {
-            IIpsProject ipsProject = newIpsProject();
-            ProductCmpt productCmpt = newProductCmpt(ipsProject, "ProdCmpt");
-            IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
-            return gen;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmpt productCmpt = newProductCmpt(ipsProject, "ProdCmpt");
+        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
+        return gen;
     }
 
     @Test

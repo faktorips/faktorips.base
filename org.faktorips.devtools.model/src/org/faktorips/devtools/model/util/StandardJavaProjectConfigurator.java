@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.util;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IAccessRule;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -18,6 +17,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
@@ -37,15 +37,19 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
      * Configures a {@link IJavaProject} for the usage of Faktor-IPS.
      * 
      * @param javaProject The java project to be configured
-     * @throws CoreException if configuring failed
+     * @throws CoreRuntimeException if configuring failed
      * @deprecated this method is only here to support the deprecated
      *             {@link ProjectUtil#createIpsProject(IJavaProject, String, boolean, boolean, boolean, java.util.List)}
      *             method without code duplication
      */
     @Deprecated
     public static void configureDefaultIpsProject(IJavaProject javaProject)
-            throws CoreException {
-        configureJavaProject(javaProject, false, false);
+            throws CoreRuntimeException {
+        try {
+            configureJavaProject(javaProject, false, false);
+        } catch (JavaModelException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -60,12 +64,16 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
 
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException {
-        IJavaProject javaProject = ipsProject.getJavaProject();
+            throws CoreRuntimeException {
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         boolean isJodaSupportAvailable = IpsClasspathContainerInitializer.isJodaSupportAvailable();
         boolean isGroovySupportAvailable = IpsClasspathContainerInitializer.isGroovySupportAvailable()
                 && creationProperties.isGroovySupport();
-        configureJavaProject(javaProject, isJodaSupportAvailable, isGroovySupportAvailable);
+        try {
+            configureJavaProject(javaProject, isJodaSupportAvailable, isGroovySupportAvailable);
+        } catch (JavaModelException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     public static void configureJavaProject(IJavaProject javaProject, boolean addJodaSupport, boolean addGroovySupport)

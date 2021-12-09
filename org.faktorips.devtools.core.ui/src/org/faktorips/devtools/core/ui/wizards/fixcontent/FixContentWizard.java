@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.fixcontent;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
@@ -113,7 +113,7 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
         }
 
         if (confirmed) {
-            IWorkspaceRunnable workspaceRunnable = $ -> {
+            ICoreRunnable workspaceRunnable = $ -> {
                 deleteObsoleteContentAttributeValues();
                 createNewContentAttributeValues();
                 if (contentStrategy.getContentValuesCount() > 0) {

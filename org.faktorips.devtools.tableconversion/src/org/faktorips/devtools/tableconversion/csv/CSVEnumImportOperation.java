@@ -19,8 +19,8 @@ import java.util.Locale;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
@@ -31,6 +31,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.value.IValue;
@@ -46,7 +47,7 @@ import org.faktorips.values.LocalizedString;
  * 
  * @author Roman Grutza
  */
-public class CSVEnumImportOperation implements IWorkspaceRunnable {
+public class CSVEnumImportOperation implements ICoreRunnable {
 
     private final IEnumValueContainer valueContainer;
     private final String sourceFile;
@@ -88,7 +89,7 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 

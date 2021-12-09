@@ -14,8 +14,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.junit.Test;
 public class EnumDeclClassJaxbAnnGenTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testIsGenerateAnnotationFor() throws CoreException {
+    public void testIsGenerateAnnotationFor() throws CoreRuntimeException {
         EnumDeclClassJaxbAnnGen enumDeclClassJaxbAnnGen = new EnumDeclClassJaxbAnnGen();
         String qualifiedName = "foo.Enum";
         IEnumType enumType = newEnumType(ipsProject, qualifiedName);
@@ -42,7 +42,7 @@ public class EnumDeclClassJaxbAnnGenTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateAnnotation() throws CoreException {
+    public void testCreateAnnotation() throws CoreRuntimeException {
         EnumDeclClassJaxbAnnGen enumDeclClassJaxbAnnGen = new EnumDeclClassJaxbAnnGen();
         String qualifiedName = "foo.Enum";
         IEnumType enumType = newEnumType(ipsProject, qualifiedName);

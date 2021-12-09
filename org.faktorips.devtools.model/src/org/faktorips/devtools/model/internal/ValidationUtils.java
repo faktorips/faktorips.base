@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.lang.Runtime.Version;
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
@@ -73,7 +74,7 @@ public class ValidationUtils {
          * is implicitly done by calling findIpsObject).
          */
         if (part.getIpsProject().findIpsSrcFile(type, objectName) == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgObjectDoesNotExist,
                     StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
@@ -113,7 +114,7 @@ public class ValidationUtils {
         }
         IIpsSrcFile srcFile = ipsProject.findIpsSrcFile(type, objectName);
         if (srcFile == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgObjectDoesNotExist,
                     StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return null;
@@ -151,7 +152,8 @@ public class ValidationUtils {
 
         Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName,
+                    part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -193,7 +195,8 @@ public class ValidationUtils {
         }
         ValueDatatype datatype = part.getIpsProject().findValueDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName,
+                    part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -252,7 +255,7 @@ public class ValidationUtils {
             MessageList list) {
 
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND,
+            String text = MessageFormat.format(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND,
                     new Object[] { propertyName, value, datatypeName });
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND,
@@ -262,7 +265,8 @@ public class ValidationUtils {
         }
 
         if (datatype.checkReadyToUse().containsErrorMsg()) {
-            String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, propertyName, datatype.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_VALUEDATATYPE_INVALID, propertyName,
+                    datatype.getName());
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text,
                     Message.WARNING, part, propertyName);
@@ -294,10 +298,10 @@ public class ValidationUtils {
 
             if (Datatype.MONEY.equals(datatype)) {
                 String[] params = { propertyName, value, datatype.getName() };
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, params);
             } else {
                 String[] params = { value, propertyName, datatype.getName() };
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, params);
             }
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text,
@@ -330,7 +334,7 @@ public class ValidationUtils {
             MessageList list) {
 
         if (StringUtils.isEmpty(propertyValue)) {
-            String text = NLS.bind(Messages.ValidationUtils_msgPropertyMissing,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgPropertyMissing,
                     StringUtils.capitalize(propertyDisplayName));
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
@@ -348,12 +352,14 @@ public class ValidationUtils {
      * @see JavaConventions#validateFieldName(String, String, String)
      */
     public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name), sourceLevel,
-                complianceLevel);
+        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name),
+                sourceVersion.toString(),
+                sourceVersion.toString());
         if (validateFieldName.isOK()) {
-            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name), sourceLevel, complianceLevel);
+            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name),
+                    sourceVersion.toString(),
+                    sourceVersion.toString());
         } else {
             return validateFieldName;
         }
@@ -374,9 +380,8 @@ public class ValidationUtils {
      * @see JavaConventions#validateJavaTypeName(String, String, String)
      */
     public static IStatus validateJavaTypeName(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        return JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
+        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        return JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString());
     }
 
     /**
@@ -395,9 +400,8 @@ public class ValidationUtils {
      * @see JavaConventions#validateIdentifier(String, String, String)
      */
     public static IStatus validateJavaIdentifier(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        return JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
+        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        return JavaConventions.validateIdentifier(name, sourceVersion.toString(), sourceVersion.toString());
     }
 
 }

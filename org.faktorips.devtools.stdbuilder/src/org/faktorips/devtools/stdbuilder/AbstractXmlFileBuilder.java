@@ -114,13 +114,13 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
-    public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return ((IFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         IFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {
             file.delete(true, null);

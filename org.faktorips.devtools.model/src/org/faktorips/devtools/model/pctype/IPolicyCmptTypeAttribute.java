@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.pctype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
@@ -229,9 +229,9 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * 
      * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws CoreRuntimeException if an error occurs while searching.
      */
-    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
@@ -242,10 +242,10 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * attribute's data type. However if the data type is defined by an {@link IEnumType} with
      * values stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws CoreRuntimeException if an error occurs.
      */
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Creates a copy of the given value set and applies this copy to this attribute.

@@ -16,6 +16,7 @@ import java.util.Collections;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
@@ -73,7 +74,7 @@ public interface IIpsFeatureMigrationOperation {
      */
     // CSOFF: ThrowsCount
     abstract void execute(IProgressMonitor monitor)
-            throws CoreException, InvocationTargetException,
+            throws CoreRuntimeException, InvocationTargetException,
             InterruptedException;
     // CSON: ThrowsCount
 

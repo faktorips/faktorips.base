@@ -43,7 +43,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             // make sure validator class is deleted if the type is removed
             if (!ipsSrcFile.exists()) {
@@ -87,7 +87,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
         }
     }
 
-    private boolean isValidatorClassAlreadyPresent(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private boolean isValidatorClassAlreadyPresent(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         return getJavaFile(ipsSrcFile).exists();
     }
 }

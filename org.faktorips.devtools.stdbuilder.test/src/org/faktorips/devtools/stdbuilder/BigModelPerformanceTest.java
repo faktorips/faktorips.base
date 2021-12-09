@@ -14,8 +14,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -247,7 +247,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     // Remove @Ignore for performance tests. We don't want it to run in the regular build.
     @Ignore
     @Test
-    public void testPerformance() throws CoreException {
+    public void testPerformance() throws CoreRuntimeException {
         int warmup = 3;
         int n = 10;
         long average = 0;

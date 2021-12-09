@@ -337,7 +337,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private void initMaven(IIpsProject ipsProject, String pomContent) throws Exception {
         ipsProject.getProject().getFile(POM_NAME).create(
-                new ByteArrayInputStream(pomContent.getBytes()), true, null);
+                new ByteArrayInputStream(pomContent.getBytes()), null);
         MavenPlugin.getProjectConfigurationManager().enableMavenNature(ipsProject.getProject(),
                 new ResolverConfiguration(),
                 new NullProgressMonitor());

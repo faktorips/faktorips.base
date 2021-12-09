@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.versionmanager;
 
 import static org.junit.Assert.fail;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
@@ -129,7 +129,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         @Override
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-                throws CoreException {
+                throws CoreRuntimeException {
             return null;
         }
 

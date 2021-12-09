@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
@@ -18,6 +17,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.util.ArgumentCheck;
@@ -68,7 +68,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
      * and that the name does not equal the element's original name.
      */
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
         if (newName.isEmpty()) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
             return;
@@ -80,7 +80,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
 
     @Override
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-            SharableParticipants sharedParticipants) throws CoreException {
+            SharableParticipants sharedParticipants) throws CoreRuntimeException {
 
         return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new IpsRenameArguments(newName,
                 newPluralName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);

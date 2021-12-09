@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsProblemChangedListener;
 import org.faktorips.devtools.model.builder.IpsBuilder;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Listens to resource deltas and filters for marker changes of type
@@ -97,7 +98,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
         @Override
-        public boolean visit(IResourceDelta delta) throws CoreException {
+        public boolean visit(IResourceDelta delta) throws CoreRuntimeException {
             IResource res = delta.getResource();
             if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {
                 IProject project = (IProject)res;

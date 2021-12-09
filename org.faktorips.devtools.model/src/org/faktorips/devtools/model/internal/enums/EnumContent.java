@@ -10,14 +10,13 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -98,7 +97,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public void setEnumType(String enumType) throws CoreException {
+    public void setEnumType(String enumType) throws CoreRuntimeException {
         ArgumentCheck.notNull(enumType);
 
         String oldEnumType = this.enumType;
@@ -150,7 +149,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
@@ -192,7 +191,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
             String currentEnumAttributeName = enumAttributes.get(i).getName();
             String currentReference = enumAttributeReferences.getPart(i).getName();
             if (!(currentEnumAttributeName.equals(currentReference))) {
-                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesOrderingInvalid,
+                String text = MessageFormat.format(Messages.EnumContent_ReferencedEnumAttributesOrderingInvalid,
                         enumType.getQualifiedName());
                 Message validationMessage = new Message(
                         IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID, text,
@@ -213,7 +212,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
 
         for (IEnumAttribute currentEnumAttribute : enumAttributes) {
             if (!(containsEnumAttributeReference(currentEnumAttribute.getName()))) {
-                String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributeNamesInvalid,
+                String text = MessageFormat.format(Messages.EnumContent_ReferencedEnumAttributeNamesInvalid,
                         enumType.getQualifiedName());
                 Message validationMessage = new Message(
                         IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID, text, Message.ERROR,
@@ -229,7 +228,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      */
     private void validateEnumAttributeReferencesCount(MessageList validationMessageList, IEnumType enumType) {
         if (enumType.getEnumAttributesCountIncludeSupertypeCopies(false) != getEnumAttributeReferencesCount()) {
-            String text = NLS.bind(Messages.EnumContent_ReferencedEnumAttributesCountInvalid,
+            String text = MessageFormat.format(Messages.EnumContent_ReferencedEnumAttributesCountInvalid,
                     enumType.getQualifiedName());
             Message validationMessage = new Message(
                     IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID, text, Message.ERROR,
@@ -287,7 +286,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreException {
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException {
         return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
     }
 
@@ -295,18 +294,18 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * Returns <code>false</code>.
      */
     @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException {
         // TODO AW: What shall we do here?
         return false;
     }
 
     @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreRuntimeException {
         // TODO AW: What shall we do here?
     }
 
     @Override
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
         // TODO AW: What shall we do here?
         return null;
     }
@@ -322,15 +321,11 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      */
     @Override
     public boolean isCapableOfContainingValues() {
-        try {
-            return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return (findEnumType(getIpsProject()) == null) ? false : !(isFixToModelRequired());
     }
 
     @Override
-    public boolean isFixToModelRequired() throws CoreException {
+    public boolean isFixToModelRequired() throws CoreRuntimeException {
 
         MessageList messages = validate(getIpsProject());
 

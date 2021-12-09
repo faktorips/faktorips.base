@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsMetaObject;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
@@ -43,12 +43,12 @@ public interface ITestCase extends IIpsMetaObject {
     public String getTestCaseType();
 
     @Override
-    public ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+    public ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Fixes all differences that are described in the delta.
      */
-    public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreException;
+    public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws CoreRuntimeException;
 
     /**
      * Sets the test case type the test case belongs to.
@@ -63,9 +63,9 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @return The test case type or <code>null</code> if the test case type can't be found.
      * 
-     * @throws CoreException if an error occurs while searching for the test case type.
+     * @throws CoreRuntimeException if an error occurs while searching for the test case type.
      */
-    public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreException;
+    public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns all test objects or an empty array if the test case hasn't got any test objects.
@@ -142,13 +142,13 @@ public interface ITestCase extends IIpsMetaObject {
      * Returns all test policy components of this test case.<br>
      * Returns an empty array if the test case has no test policy components.
      */
-    public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreException;
+    public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws CoreRuntimeException;
 
     /**
      * Returns all test objects of this test case.<br>
      * Returns an empty array if the test case has no test objects components.
      */
-    public ITestObject[] getAllTestObjects() throws CoreException;
+    public ITestObject[] getAllTestObjects() throws CoreRuntimeException;
 
     /**
      * Creates a new test value object.
@@ -183,16 +183,16 @@ public interface ITestCase extends IIpsMetaObject {
     /**
      * Removes the given object from the list of input or expected result objects.
      * 
-     * @throws CoreException if an error occurs while removing the object.
+     * @throws CoreRuntimeException if an error occurs while removing the object.
      */
-    public void removeTestObject(ITestObject testObject) throws CoreException;
+    public void removeTestObject(ITestObject testObject) throws CoreRuntimeException;
 
     /**
      * Sorts the test objects concerning the test case type.
      * 
-     * @throws CoreException if an error occurs while sorting the objects.
+     * @throws CoreRuntimeException if an error occurs while sorting the objects.
      */
-    public void sortTestObjects() throws CoreException;
+    public void sortTestObjects() throws CoreRuntimeException;
 
     /**
      * Returns all validation rules from the test policy components which are related by the test
@@ -204,9 +204,9 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreException;
+    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Searches and returns the validation rule with the given name which is inside the test case.
@@ -215,20 +215,20 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @see #getTestRuleCandidates(IIpsProject)
      */
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreException;
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws CoreRuntimeException;
 
     /**
      * Returns the qualified names of all referenced product components. Returns an empty array if
      * no product components are referenced.
      */
-    public String[] getReferencedProductCmpts() throws CoreException;
+    public String[] getReferencedProductCmpts() throws CoreRuntimeException;
 
     /**
      * Clears the test values of the given test parameter type (input, expected or combined). The
      * values of all test objects in the test case will be cleared.
      * 
-     * @throws CoreException if an error occurs
+     * @throws CoreRuntimeException if an error occurs
      */
-    public void clearTestValues(TestParameterType testParameterType) throws CoreException;
+    public void clearTestValues(TestParameterType testParameterType) throws CoreRuntimeException;
 
 }

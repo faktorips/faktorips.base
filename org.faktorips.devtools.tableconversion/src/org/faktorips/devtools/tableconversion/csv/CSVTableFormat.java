@@ -27,6 +27,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -83,7 +84,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) throws CoreRuntimeException {
 
         CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure, filename.toOSString(),
                 targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
@@ -96,7 +97,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) throws CoreRuntimeException {
 
         CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename.toOSString(),
                 this, nullRepresentationString, ignoreColumnHeaderRow, list);

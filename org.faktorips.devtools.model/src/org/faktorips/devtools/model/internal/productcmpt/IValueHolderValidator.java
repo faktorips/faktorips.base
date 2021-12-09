@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.runtime.MessageList;
 
 /** Interface for classes used to validate an {@link IValueHolder}. */
 public interface IValueHolderValidator {
 
-    MessageList validate() throws CoreException;
+    MessageList validate() throws CoreRuntimeException;
 
 }

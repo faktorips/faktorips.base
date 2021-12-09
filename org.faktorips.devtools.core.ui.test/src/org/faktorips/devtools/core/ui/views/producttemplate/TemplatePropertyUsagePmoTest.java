@@ -18,8 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -41,7 +41,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     private static final GregorianCalendar EFFECTIVE_DATE = new GregorianCalendar(2016, Calendar.JANUARY, 1);
 
     @Test
-    public void testGetInheritingTemplatedValues() throws CoreException {
+    public void testGetInheritingTemplatedValues() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -90,7 +90,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetInheritingTemplatedValues_UndefinedTemplateValue() throws CoreException {
+    public void testGetInheritingTemplatedValues_UndefinedTemplateValue() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -141,7 +141,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefiningTemplatedValues() throws CoreException {
+    public void testGetDefiningTemplatedValues() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -190,7 +190,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefiningTemplatedValues_UndefinedTemplateValue() throws CoreException {
+    public void testGetDefiningTemplatedValues_UndefinedTemplateValue() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -241,7 +241,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefinedProductCmptValues() throws CoreException {
+    public void testGetDefinedProductCmptValues() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -285,7 +285,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testTemplatePropertyUsagePmo_ShowsTemplateProperty() throws CoreException {
+    public void testTemplatePropertyUsagePmo_ShowsTemplateProperty() throws CoreRuntimeException {
 
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
@@ -309,7 +309,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testTemplatePropertyUsagePmo_NonTemplateProperty() throws CoreException {
+    public void testTemplatePropertyUsagePmo_NonTemplateProperty() throws CoreRuntimeException {
 
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
@@ -327,7 +327,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetActualTemplateValue() throws CoreException {
+    public void testGetActualTemplateValue() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -353,7 +353,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetActualTemplateValue_null() throws CoreException {
+    public void testGetActualTemplateValue_null() throws CoreRuntimeException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
