@@ -367,6 +367,7 @@
         <setEntry value="org.eclipse.ui.navigator.resources@default:default"/>
         <setEntry value="org.eclipse.ui.navigator@default:default"/>
         <setEntry value="org.eclipse.ui.nl_de@default:false"/>
+        <setEntry value="org.eclipse.ui.themes@default:default"/>
         <setEntry value="org.eclipse.ui.trace.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.trace@default:default"/>
         <setEntry value="org.eclipse.ui.views.log.nl_de@default:false"/>
