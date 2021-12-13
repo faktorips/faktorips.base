@@ -1,6 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule
 
@@ -9,7 +10,6 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class ValidationRuleTmpl {
 
@@ -90,7 +90,7 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
         «ELSE»
             «val attribute = checkedAttribute»
             «val valueSetMethods = generatorConfig.valueSetMethods»
-            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetMethods.both ? ValueSetMethods.Unified : valueSetMethods)»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
+            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED))»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
 
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));

@@ -340,11 +340,9 @@ public class XPolicyAttribute extends XAttribute {
         if (isConstant()) {
             return false;
         } else {
-            // CSOFF: BooleanExpressionComplexity
             return (isProductRelevant() && isChangeable())
                     || isValueSet()
                     || isNotConfiguredOverrideConfigured();
-            // CSON: BooleanExpressionComplexity
         }
     }
 
@@ -507,46 +505,84 @@ public class XPolicyAttribute extends XAttribute {
         return "old" + StringUtils.capitalize(getFieldName());
     }
 
-    public boolean isGetAllowedValuesMethodDeprecated(ValueSetMethods valueSetMethods) {
-        return valueSetMethods.isByValueSetType() && getGeneratorConfig().getValueSetMethods().isBoth()
-                && !getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
-                        .equals("getSetOfAllowedValuesFor" + StringUtils.capitalize(getFieldName()));
+    /**
+     * Whether an allowed-values-method should be deprecated.
+     * <p>
+     * The by-type method is marked as deprecated, if both methods are generated.
+     * 
+     * @param valueSetMethods The type of the allowed-values-method either by-type or unified.
+     * @return {@code true} If the unify-value-set setting is <em>both</em>, the unified method name
+     *         is different from the by-type name and the method is generated for
+     *         {@link GenerateValueSetType#GENERATE_BY_TYPE}.
+     */
+    public boolean isGetAllowedValuesMethodDeprecated(GenerateValueSetType valueSetMethods) {
+        return valueSetMethods.isGenerateByType()
+                && getGeneratorConfig().getValueSetMethods().isBoth()
+                && !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+    }
+
+    private boolean isMethodNameGetAllowedValuesForByTypeEqualUnfied() {
+        return getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)
+                .equals(getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED));
     }
 
     private boolean isMethodNameEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten) {
         ValueSetMethods setting = getGeneratorConfig().getValueSetMethods();
-        if (setting.isBoth()) {
-            return overwritten.getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
-                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType));
-        } else {
-            return overwritten.getMethodNameGetAllowedValuesFor(setting)
-                    .equals(getMethodNameGetAllowedValuesFor(setting));
-        }
+        GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
+                GenerateValueSetType.GENERATE_BY_TYPE);
+
+        return overwritten.getMethodNameGetAllowedValuesFor(genValueSet)
+                .equals(getMethodNameGetAllowedValuesFor(genValueSet));
     }
 
+    /**
+     * Checks if the {@link ValueSetMethods#Unified} method that is about to be created, has a
+     * unique name. This is important because we unify only enums and ranges. The other value sets
+     * already use the unified name.
+     * 
+     * @return {@code false} If the unify-value-set setting is <em>both</em> and the
+     *         <em>unified</em> method does not match the <em>by-type</em> method.
+     */
     public boolean isNotDuplicateMethodNameGetAllowedValues() {
         if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
-            return !getMethodNameGetAllowedValuesFor(ValueSetMethods.Unified)
-                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType));
+            return !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
         }
         return true;
     }
 
+    /**
+     * Checks if the {@link ValueSetMethods#Unified} method that is about to be created, has a
+     * unique name in its <strong>super type</strong>. This is important because we unify only enums
+     * and ranges. The other value sets already use the unified name in their <strong>super
+     * types</strong>.
+     * 
+     * @return {@code false} If the unify-value-set setting is <em>both</em> and the attribute is
+     *         overwritten and the <em>unified</em> method does not match the <em>by-type</em>
+     *         method.
+     */
     public boolean isNotDuplicateMethodNameGetAllowedValuesWithOverride() {
         if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues() && isOverwrite()
                 && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
 
-            return !getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)
-                    .equals(getMethodNameGetAllowedValuesFor(ValueSetMethods.Unified));
+            return !getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED)
+                    .equals(getOverwrittenAttribute()
+                            .getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE));
         }
         return true;
     }
 
-    public String getMethodNameGetAllowedValuesFor(ValueSetMethods valueSetMethods) {
+    /**
+     * Creates the method name for the getter of the allowed values of a {@link ValueSet}. If
+     * {@link GenerateValueSetType#GENERATE_BY_TYPE} add a different prefix for enums and ranges.
+     * 
+     * @param valueSetMethods If the method should be generated by-type or by a unified name.
+     * @return The method name.
+     */
+    public String getMethodNameGetAllowedValuesFor(GenerateValueSetType valueSetMethods) {
         String prefix;
-        if (isValueSetEnum() && valueSetMethods.isByValueSetType()) {
+        if (isValueSetEnum() && valueSetMethods.isGenerateByType()) {
             prefix = "getAllowedValuesFor";
-        } else if (isValueSetRange() && valueSetMethods.isByValueSetType()) {
+        } else if (isValueSetRange() && valueSetMethods.isGenerateByType()) {
             prefix = "getRangeFor";
         } else {
             prefix = "getSetOfAllowedValuesFor";
@@ -703,7 +739,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns the java doc key used to localize the java doc. The key depends on the kind of the
+     * Returns the javadoc key used to localize the java doc. The key depends on the kind of the
      * allowed value set and of the kind of artifact you want to generate, identified by the prefix.
      * <p>
      * For example the if the allowed values are configured as range and you want to generate a
@@ -747,4 +783,46 @@ public class XPolicyAttribute extends XAttribute {
         return getValuesetDatatypeHelper().getJavaClassName();
     }
 
+    /**
+     * Enum to generate a specific get valueset method.
+     * 
+     */
+    public static enum GenerateValueSetType {
+        GENERATE_UNIFIED,
+        GENERATE_BY_TYPE;
+
+        public boolean isGenerateByType() {
+            return GENERATE_BY_TYPE.equals(this);
+        }
+
+        public boolean isGenerateUnified() {
+            return GENERATE_UNIFIED.equals(this);
+        }
+
+        /**
+         * Convenience map method for the {@link ValueSetMethods} setting to its corresponding
+         * builder enum. Note that the {@link ValueSetMethods#Both} setting is not a valid
+         * instruction for the source code builder. Therefore the {@code defaultValue} is used to
+         * handle this case.
+         * 
+         * @param setting The setting from the project settings, in case of
+         *            {@link ValueSetMethods#Both} the defaultValue will be returned.
+         * @param defaultValue The default to return if the settings can not be matched or the
+         *            setting is {@link ValueSetMethods#Both}.
+         * @return The enum used to determine the name of the value set method.
+         */
+        public static GenerateValueSetType mapFromSettings(ValueSetMethods setting, GenerateValueSetType defaultValue) {
+            if (setting != null) {
+                switch (setting) {
+                    case ByValueSetType:
+                        return GENERATE_BY_TYPE;
+                    case Unified:
+                        return GENERATE_UNIFIED;
+                    default:
+                        break;
+                }
+            }
+            return defaultValue;
+        }
+    }
 }

@@ -2,6 +2,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
@@ -20,7 +21,6 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class PolicyCmptTmpl {
 
@@ -109,10 +109,10 @@ def static String body(XPolicyCmptClass it) '''
 
         «FOR it : attributesIncludingAbstract»
             «IF generateUnifiedMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
-                «allowedValuesMethod(ValueSetMethods.Unified)»
+                «allowedValuesMethod(GenerateValueSetType.GENERATE_UNIFIED)»
             «ENDIF»
             «IF generateDifferentMethodsByValueSetType»
-                «allowedValuesMethod(ValueSetMethods.ByValueSetType)»
+                «allowedValuesMethod(GenerateValueSetType.GENERATE_BY_TYPE)»
             «ENDIF»
             «IF !it.isAbstract»
                 «getter»

@@ -1,15 +1,14 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-
+import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class PolicyCmptInterfaceTmpl {
 
@@ -53,10 +52,10 @@ class PolicyCmptInterfaceTmpl {
                 «FOR it : attributesIncludingAbstract»
                     «IF published»
                         «IF generateUnifiedMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
-                            «allowedValuesMethod(ValueSetMethods.Unified)»
+                            «allowedValuesMethod(GenerateValueSetType.GENERATE_UNIFIED)»
                         «ENDIF»
                         «IF generateDifferentMethodsByValueSetType»
-                            «allowedValuesMethod(ValueSetMethods.ByValueSetType)»
+                            «allowedValuesMethod(GenerateValueSetType.GENERATE_BY_TYPE)»
                         «ENDIF»
                         «getter»
                         «setter»

@@ -1,14 +1,14 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
+import org.faktorips.devtools.model.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeExtensionTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import org.faktorips.devtools.model.builder.naming.BuilderAspect
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class PolicyCmptAttributeTmpl {
 
@@ -182,12 +182,12 @@ class PolicyCmptAttributeTmpl {
     «ENDIF»
   '''
 
-  def package static allowedValuesMethod(XPolicyAttribute it, ValueSetMethods valueSetMethods) '''
+  def package static allowedValuesMethod(XPolicyAttribute it, GenerateValueSetType valueSetMethods) '''
     «IF generateGetAllowedValuesForAndGetDefaultValue»
       /**
        * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
-       *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedJDoc("DEPRECATED_UNIFY_METHODS")»«ENDIF»
+       *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
        * «IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
        */
       «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
@@ -206,7 +206,7 @@ class PolicyCmptAttributeTmpl {
             «ENDIF»
             // end-user-code
           «ELSE»
-              return «IF valueSetMethods.unified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)»(context)«ELSE»«IF overwrite»«typeName».«ENDIF»«constantNameValueSet»«ENDIF»;
+              return «IF valueSetMethods.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context)«ELSE»«IF overwrite»«typeName».«ENDIF»«constantNameValueSet»«ENDIF»;
           «ENDIF»
           }
       «ENDIF»
@@ -223,7 +223,7 @@ class PolicyCmptAttributeTmpl {
     «ENDIF»
   '''
 
-  protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it, ValueSetMethods valueSetMethods) {
+  protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it, GenerateValueSetType valueSetMethods) {
     overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue &&
       !overwrittenAttribute.getMethodNameGetAllowedValuesFor(valueSetMethods).equals(getMethodNameGetAllowedValuesFor(valueSetMethods)) && !genInterface
   }

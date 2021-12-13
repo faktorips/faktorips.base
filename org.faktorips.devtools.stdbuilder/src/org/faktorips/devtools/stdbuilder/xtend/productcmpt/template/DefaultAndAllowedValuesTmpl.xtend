@@ -2,15 +2,15 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
-import static extension org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -46,10 +46,10 @@ class DefaultAndAllowedValuesTmpl {
             «getterDefaultValue»
             «setterDefaultValue»
             «IF generateUnifiedMethodNameGetAllowedValues &&  notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
-                «getterAllowedValues(ValueSetMethods.Unified)»
+                «getterAllowedValues(GenerateValueSetType.GENERATE_UNIFIED)»
             «ENDIF»
             «IF generateDifferentMethodsByValueSetType»
-                «getterAllowedValues((ValueSetMethods.ByValueSetType))»
+                «getterAllowedValues((GenerateValueSetType.GENERATE_BY_TYPE))»
             «ENDIF»
             «setterAllowedValues»
         «ENDIF»
@@ -90,11 +90,11 @@ class DefaultAndAllowedValuesTmpl {
         «ENDIF»
     '''
 
-    def private static getterAllowedValues (XPolicyAttribute it, ValueSetMethods valueSetMethods) '''
+    def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetType valueSetMethods) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
-         *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedJDoc("DEPRECATED_UNIFY_METHODS")»«ENDIF»
+         *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
@@ -103,7 +103,7 @@ class DefaultAndAllowedValuesTmpl {
         public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext, "context")»
         «IF genInterface || isAbstract»;«ELSE»
         {
-            return «IF valueSetMethods.unified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(ValueSetMethods.ByValueSetType)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
+            return «IF valueSetMethods.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
         }
         «ENDIF»
     '''
