@@ -114,11 +114,20 @@ def static String body(XPolicyCmptClass it) '''
             «IF generateDifferentMethodsByValueSetType»
                 «allowedValuesMethod(GenerateValueSetType.GENERATE_BY_TYPE)»
             «ENDIF»
+            
             «IF !it.isAbstract»
                 «getter»
                 «setter»
                 «setterInternal»
             «ENDIF»
+        «ENDFOR»
+
+        «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+            «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_BY_TYPE)»
+        «ENDFOR»
+
+        «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+            «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_UNIFIED)»
         «ENDFOR»
 
         «FOR it : associations» «methods» «ENDFOR»

@@ -9,6 +9,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.Gene
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeExtensionTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 
 class PolicyCmptAttributeTmpl {
 
@@ -221,6 +222,20 @@ class PolicyCmptAttributeTmpl {
         }
       «ENDIF»
     «ENDIF»
+  '''
+  
+  def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XPolicyCmptClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
+        /**
+         * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
+         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         * @generated
+         */
+        «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
+        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext(), "context")» 
+        «IF genInterface() || isAbstract()»;«ELSE» {
+          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(context);
+        }
+        «ENDIF»
   '''
 
   protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it, GenerateValueSetType valueSetMethods) {

@@ -62,6 +62,13 @@ class PolicyCmptInterfaceTmpl {
                     «ENDIF»
                 «ENDFOR»
 
+                «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_BY_TYPE)»
+                «ENDFOR»
+                «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_UNIFIED)»
+                «ENDFOR»
+
                 «FOR it : associations» «methods» «ENDFOR»
 
                 «IF configured»

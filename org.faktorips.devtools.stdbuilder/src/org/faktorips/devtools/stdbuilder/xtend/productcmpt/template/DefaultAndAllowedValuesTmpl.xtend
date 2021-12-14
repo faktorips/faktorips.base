@@ -11,6 +11,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.temp
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -52,6 +53,20 @@ class DefaultAndAllowedValuesTmpl {
                 «getterAllowedValues((GenerateValueSetType.GENERATE_BY_TYPE))»
             «ENDIF»
             «setterAllowedValues»
+        «ENDIF»
+    '''
+
+    def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XProductClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
+        /**
+         * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
+         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         * @generated
+         */
+        «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
+        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext(), "context")» 
+        «IF genInterface() || isAbstract()»;«ELSE» {
+          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(context);
+        }
         «ENDIF»
     '''
 

@@ -18,6 +18,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNa
 import static org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 class ProductComponentGenTmpl {
 
@@ -81,7 +82,19 @@ class ProductComponentGenTmpl {
 
                 «FOR it : attributes» «getterSetter» «ENDFOR»
 
-           «FOR it : configuredAttributes» «getterAndSetter» «ENDFOR»
+                «FOR it : configuredAttributes» «getterAndSetter» «ENDFOR»
+
+                «FOR superAttribute : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+                    «IF superAttribute.published»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, superAttribute, GenerateValueSetType.GENERATE_BY_TYPE)»
+                    «ENDIF»
+                «ENDFOR»
+
+                «FOR superAttribute : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+                    «IF superAttribute.published»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, superAttribute, GenerateValueSetType.GENERATE_UNIFIED)»
+                    «ENDIF»
+                «ENDFOR»
 
                 «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
 
