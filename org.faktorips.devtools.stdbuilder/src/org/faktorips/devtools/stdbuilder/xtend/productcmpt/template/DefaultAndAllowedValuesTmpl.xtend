@@ -12,6 +12,8 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNa
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -46,12 +48,9 @@ class DefaultAndAllowedValuesTmpl {
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «getterDefaultValue»
             «setterDefaultValue»
-            «IF generateUnifiedMethodNameGetAllowedValues &&  notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
-                «getterAllowedValues(GenerateValueSetType.GENERATE_UNIFIED)»
-            «ENDIF»
-            «IF generateDifferentMethodsByValueSetType»
-                «getterAllowedValues((GenerateValueSetType.GENERATE_BY_TYPE))»
-            «ENDIF»
+            «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
+                «getterAllowedValues(it, rule)»
+            «ENDFOR»
             «setterAllowedValues»
         «ENDIF»
     '''
@@ -105,21 +104,23 @@ class DefaultAndAllowedValuesTmpl {
         «ENDIF»
     '''
 
-    def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetType valueSetMethods) '''
-        /**
-         * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
-        «getAnnotations(ELEMENT_JAVA_DOC)»
-         *«IF isGetAllowedValuesMethodDeprecated(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
-         * @generated
-         */
-        «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
-        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
-        «IF isGetAllowedValuesMethodDeprecated(valueSetMethods)»@Deprecated«ENDIF»
-        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext, "context")»
-        «IF genInterface || isAbstract»;«ELSE»
-        {
-            return «IF valueSetMethods.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
-        }
+    def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
+        «IF !isAllowedValuesMethodWasAlreadyUnified(rule)»
+            /**
+             * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+             * @generated
+             */
+            «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
+            «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isOverrideGetAllowedValuesFor(rule.fromMethod) && overwrittenAttribute.productRelevantInHierarchy)»
+            «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
+            public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), IValidationContext, "context")»
+            «IF genInterface || isAbstract»;«ELSE»
+            {
+                return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
+            }
+            «ENDIF»
         «ENDIF»
     '''
 

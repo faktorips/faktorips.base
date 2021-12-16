@@ -9,6 +9,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class PolicyCmptInterfaceTmpl {
 
@@ -51,11 +52,11 @@ class PolicyCmptInterfaceTmpl {
 
                 «FOR it : attributesIncludingAbstract»
                     «IF published»
-                        «IF generateUnifiedMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValues && notDuplicateMethodNameGetAllowedValuesWithOverride»
-                            «allowedValuesMethod(GenerateValueSetType.GENERATE_UNIFIED)»
-                        «ENDIF»
-                        «IF generateDifferentMethodsByValueSetType»
-                            «allowedValuesMethod(GenerateValueSetType.GENERATE_BY_TYPE)»
+                        «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
+                            «allowedValuesMethod(rule)»
+                        «ENDFOR»
+                        «IF generateByTypeMethodsToGetAllowedValues»
+                            «allowedValuesMethodWithMoreConcreteTypeForByType»
                         «ENDIF»
                         «getter»
                         «setter»

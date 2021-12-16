@@ -102,14 +102,6 @@ public class GeneratorConfig {
         return getValueSetMethods().isBoth();
     }
 
-    public boolean isGenerateUnifiedMethodsForAllValueSetTypes() {
-        return getValueSetMethods().isCompileUnifiedMethods();
-    }
-
-    public boolean isGenerateDifferentMethodsByValueSetType() {
-        return getValueSetMethods().isCompileDifferentMethodsByValueSetType();
-    }
-
     /**
      * Returns whether to generate camel case constant names with underscore separator or without.
      * For example if this property is true, the constant for the property

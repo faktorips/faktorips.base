@@ -38,16 +38,16 @@ class CommonGeneratorExtensions {
         if(generatePublishedInterfaces) "@Override"
     }
     
-    def static generateUnifiedMethodNameGetAllowedValues(AbstractGeneratorModelNode it){
-        generatorConfig.generateUnifiedMethodsForAllValueSetTypes
+    def static generateUnifiedMethodToGetAllowedValues(AbstractGeneratorModelNode it){
+        generatorConfig.valueSetMethods.unified
     }
     
-    def static generateDifferentMethodsByValueSetType(AbstractGeneratorModelNode it){
-        generatorConfig.generateDifferentMethodsByValueSetType
+    def static generateByTypeMethodsToGetAllowedValues(AbstractGeneratorModelNode it){
+        generatorConfig.valueSetMethods.byValueSetType
     }
 
     def static generateBothMethodsToGetAllowedValues(AbstractGeneratorModelNode it){
-        generatorConfig.generateBothMethodsForAllowedValues
+        generatorConfig.valueSetMethods.both
     }
 
     def static generatePublishedInterfaces(AbstractGeneratorModelNode it){

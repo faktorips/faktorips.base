@@ -352,7 +352,19 @@ public class XPolicyAttribute extends XAttribute {
         }
         boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
                 .isGenerateGetAllowedValuesForAndGetDefaultValue()
-                && isMethodNameEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute());
+                && isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute(),
+                        GenerateValueSetType.GENERATE_BY_TYPE);
+        return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
+    }
+
+    public boolean isOverrideGetAllowedValuesFor(GenerateValueSetType type) {
+        if (!isOverwrite()) {
+            return false;
+        }
+        boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
+                .isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute(),
+                        type);
         return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
     }
 
@@ -389,6 +401,11 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isNonExtensibleEnumValueSet() {
         return isValueSetEnum() && !isDatatypeExtensibleEnum();
+    }
+
+    public boolean isOverwritingValueSetEqualType() {
+        return getAttribute().getValueSet().getValueSetType()
+                .equals(getOverwrittenAttribute().getAttribute().getValueSet().getValueSetType());
     }
 
     public boolean isValueSet() {
@@ -505,70 +522,83 @@ public class XPolicyAttribute extends XAttribute {
         return "old" + StringUtils.capitalize(getFieldName());
     }
 
-    /**
-     * Whether an allowed-values-method should be deprecated.
-     * <p>
-     * The by-type method is marked as deprecated, if both methods are generated.
-     * 
-     * @param valueSetMethods The type of the allowed-values-method either by-type or unified.
-     * @return {@code true} If the unify-value-set setting is <em>both</em>, the unified method name
-     *         is different from the by-type name and the method is generated for
-     *         {@link GenerateValueSetType#GENERATE_BY_TYPE}.
-     */
-    public boolean isGetAllowedValuesMethodDeprecated(GenerateValueSetType valueSetMethods) {
-        return valueSetMethods.isGenerateByType()
-                && getGeneratorConfig().getValueSetMethods().isBoth()
-                && !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
-    }
-
     private boolean isMethodNameGetAllowedValuesForByTypeEqualUnfied() {
         return getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)
                 .equals(getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED));
     }
 
-    private boolean isMethodNameEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten) {
+    public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
+            GenerateValueSetType valueSetType) {
         ValueSetMethods setting = getGeneratorConfig().getValueSetMethods();
         GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
-                GenerateValueSetType.GENERATE_BY_TYPE);
+                valueSetType);
 
+        return isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(overwritten, genValueSet);
+    }
+
+    public boolean isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(XPolicyAttribute overwritten,
+            GenerateValueSetType genValueSet) {
         return overwritten.getMethodNameGetAllowedValuesFor(genValueSet)
                 .equals(getMethodNameGetAllowedValuesFor(genValueSet));
     }
 
     /**
-     * Checks if the {@link ValueSetMethods#Unified} method that is about to be created, has a
-     * unique name. This is important because we unify only enums and ranges. The other value sets
-     * already use the unified name.
+     * For {@link UnrestrictedValueSet} the method name is and was already unified. Therefore we can
+     * not simply generate the method with the by-type and unified schema. We prefer the by-type
+     * over unified to keep changes in the source code to a minimum.
      * 
-     * @return {@code false} If the unify-value-set setting is <em>both</em> and the
-     *         <em>unified</em> method does not match the <em>by-type</em> method.
+     * @return {@code true} If the unify-value-set setting is <em>both</em> and the <em>unified</em>
+     *         method does match the <em>by-type</em> method.
      */
-    public boolean isNotDuplicateMethodNameGetAllowedValues() {
-        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
-            return !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+    public boolean isAllowedValuesMethodWasAlreadyUnified(GenerateValueSetTypeRule rule) {
+        if (rule.getFromMethod().isGenerateUnified() && getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
+            return isMethodNameGetAllowedValuesForByTypeEqualUnfied();
         }
-        return true;
+        return false;
+    }
+
+    public boolean isConditionForOverrideAnnotation(GenerateValueSetTypeRule rule) {
+        if (!rule.isFromOverride()) {
+            return false;
+        }
+        return isOverrideGetAllowedValuesFor() || isOverwritingValueSetWithMoreConcreteType(rule.getFromMethod());
+    }
+
+    public boolean isOverwritingValueSetWithMoreConcreteType(GenerateValueSetType type) {
+        boolean isOverwrittenAndGenerateAllowedValues = isOverwrite()
+                && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue();
+        return isOverwrittenAndGenerateAllowedValues
+                && isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(getOverwrittenAttribute(), type)
+                && !isOverwritingValueSetEqualType() && !getOverwrittenAttribute().isValueSetDerived();
+    }
+
+    public boolean isOverwritingValueSetWithMoreConcreteTypeForByType() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && !isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(getOverwrittenAttribute(),
+                        GenerateValueSetType.GENERATE_BY_TYPE);
+    }
+
+    public boolean isOverwritingValueSetWithDerived() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && isValueSetDerived();
     }
 
     /**
-     * Checks if the {@link ValueSetMethods#Unified} method that is about to be created, has a
-     * unique name in its <strong>super type</strong>. This is important because we unify only enums
-     * and ranges. The other value sets already use the unified name in their <strong>super
-     * types</strong>.
+     * Whether an allowed-values-method should be deprecated.
+     * <p>
+     * The by-type method is marked as deprecated, if both methods are generated.
      * 
-     * @return {@code false} If the unify-value-set setting is <em>both</em> and the attribute is
-     *         overwritten and the <em>unified</em> method does not match the <em>by-type</em>
-     *         method.
+     * @return {@code true} If the unify-value-set setting is <em>both</em>, the unified method name
+     *         is different from the by-type name and the method is generated for
+     *         {@link GenerateValueSetType#GENERATE_BY_TYPE}.
      */
-    public boolean isNotDuplicateMethodNameGetAllowedValuesWithOverride() {
-        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues() && isOverwrite()
-                && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
-
-            return !getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED)
-                    .equals(getOverwrittenAttribute()
-                            .getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE));
+    public boolean isGetAllowedValuesMethodDeprecated(GenerateValueSetTypeRule rule) {
+        if (!rule.isFromDeprecated()) {
+            return false;
         }
-        return true;
+        return rule.getFromMethod().isGenerateByType()
+                && getGeneratorConfig().getValueSetMethods().isBoth()
+                && !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
     }
 
     /**
