@@ -34,14 +34,20 @@ public class MoneyRange extends DefaultRange<Money> {
 
     /**
      * Creates a new empty {@link MoneyRange}.
+     * 
+     * @deprecated since 22.6. Use {@link MoneyRange#empty()} instead.
      */
+    @Deprecated
     public MoneyRange() {
         super();
     }
 
     /**
      * Creates a new {@link MoneyRange} with the provided lower bound and upper bound.
+     * 
+     * @deprecated since 22.6. Use {@link MoneyRange#valueOf(Money, Money)} instead.
      */
+    @Deprecated
     public MoneyRange(Money lowerBound, Money upperBound) {
         super(lowerBound, upperBound);
     }
@@ -63,24 +69,89 @@ public class MoneyRange extends DefaultRange<Money> {
     /**
      * Creates a new {@link MoneyRange} with the provided lower and upper bounds parsed using the
      * {@link Money#valueOf(String)} method.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
     public static final MoneyRange valueOf(String lowerBound, String upperBound) {
-        return new MoneyRange(Money.valueOf(lowerBound), Money.valueOf(upperBound));
+        return valueOf(lowerBound, upperBound, null, false);
+    }
+
+    /**
+     * Creates a new {@link MoneyRange} with the provided lower and upper bounds.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     */
+    public static final MoneyRange valueOf(Money lowerBound, Money upperBound) {
+        return valueOf(lowerBound, upperBound, null, false);
+    }
+
+    /**
+     * Creates and new {@link MoneyRange} with the provided lower and upper bounds and step parsed
+     * using the {@link Money#valueOf(String)} method.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static final MoneyRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates and new {@link MoneyRange} with the provided lower and upper bounds and step.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static final MoneyRange valueOf(Money lowerBound, Money upperBound, Money step) {
+        return valueOf(lowerBound, upperBound, step, false);
     }
 
     /**
      * Creates a new {@link MoneyRange} with the provided lower and upper bounds, the step increment
      * and an indicator saying whether the {@code null} value is contained. The values are
      * determined by parsing the strings using the {@link Money#valueOf(String)} method.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
      */
     public static final MoneyRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
-        return new MoneyRange(Money.valueOf(lowerBound), Money.valueOf(upperBound), Money.valueOf(step), containsNull);
+        MoneyRange range = new MoneyRange(Money.valueOf(lowerBound), Money.valueOf(upperBound), Money.valueOf(step),
+                containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
-    public static final MoneyRange valueOf(Money lowerBound, Money upperBound, Money step) {
-        return valueOf(lowerBound, upperBound, step, false);
-    }
-
+    /**
+     * Creates a new {@link MoneyRange} with the provided lower and upper bounds, the step increment
+     * and an indicator saying whether the {@code null} value is contained.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     */
     public static final MoneyRange valueOf(Money lowerBound, Money upperBound, Money step, boolean containsNull) {
         MoneyRange range = new MoneyRange(lowerBound, upperBound, step, containsNull);
         range.checkIfStepFitsIntoBounds();

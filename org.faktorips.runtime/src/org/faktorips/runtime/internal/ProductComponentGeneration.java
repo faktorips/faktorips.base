@@ -247,7 +247,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         }
 
         Integer minCardinality = Integer.valueOf(relationElement.getAttribute("minCardinality"));
-        cardinalityMap.put(targetId, new IntegerRange(minCardinality, maxCardinality));
+        cardinalityMap.put(targetId, IntegerRange.valueOf(minCardinality, maxCardinality));
     }
 
     @Override

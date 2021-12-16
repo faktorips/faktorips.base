@@ -30,8 +30,8 @@ import org.junit.Test;
 public class MoneyRangeTest {
 
     @Test
-    public void testDefaultConstructor() {
-        MoneyRange range = new MoneyRange();
+    public void testEmpty() {
+        MoneyRange range = MoneyRange.empty();
 
         assertTrue(range.isEmpty());
         assertTrue(range.isDiscrete());
@@ -39,16 +39,6 @@ public class MoneyRangeTest {
         assertNull(range.getLowerBound());
         assertNull(range.getUpperBound());
         assertNull(range.getStep());
-    }
-
-    @Test
-    public void testConstructor() {
-        MoneyRange range = new MoneyRange(Money.euro(1, 25), Money.euro(5, 67));
-
-        Money lower = range.getLowerBound();
-        Money upper = range.getUpperBound();
-        assertEquals(Money.euro(1, 25), lower);
-        assertEquals(Money.euro(5, 67), upper);
     }
 
     @Test

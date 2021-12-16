@@ -26,15 +26,25 @@ public class LongRange extends DefaultRange<Long> {
 
     /**
      * Creates a new empty {@link LongRange}.
+     * 
+     * @deprecated since 22.6. Use {@link LongRange#empty()} instead.
      */
+    @Deprecated
     public LongRange() {
         super();
     }
 
+    /**
+     * @deprecated since 22.6. Use {@link LongRange#valueOf(Long, Long)} instead.
+     */
+    @Deprecated
     public LongRange(Long lowerBound, Long upperBound) {
         super(lowerBound, upperBound, Long.valueOf(1));
     }
 
+    /**
+     * Creates a new {@link LongRange} with the provided lower bound, upper bound and step.
+     */
     private LongRange(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
     }
@@ -47,32 +57,96 @@ public class LongRange extends DefaultRange<Long> {
     }
 
     /**
-     * Creates a {@link LongRange} based on the given strings. The strings are parsed with the
-     * {@link Long#valueOf(String)} method. An empty string is interpreted as {@code null}.
+     * Creates a new {@link LongRange} with the provided lower and upper bounds parsed using the
+     * {@link Long#valueOf(String)} method. An empty string is interpreted as {@code null}. The step
+     * increment is 1 and this range doesn't contain {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
     public static LongRange valueOf(String lowerBound, String upperBound) {
-        Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
-        Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
-        return new LongRange(min, max);
+        return valueOf(lowerBound, upperBound, "1", false);
     }
 
     /**
-     * Creates a {@link LongRange} based on the given strings. The strings are parsed with the
-     * {@link Long#valueOf(long)} method. An empty String is interpreted as {@code null}. If the
-     * parameter {@code containsNull} is {@code true}, {@code null} is considered to be included
-     * within this range.
+     * Creates a new {@link LongRange} with the provided lower and upper bounds. The step increment
+     * is 1 and this range doesn't contain {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     */
+    public static LongRange valueOf(Long lowerBound, Long upperBound) {
+        return valueOf(lowerBound, upperBound, 1L, false);
+    }
+
+    /**
+     * Creates a new {@link LongRange} with the provided lower and upper bounds and step parsed
+     * using the {@link Long#valueOf(String)} method. An empty string is interpreted as
+     * {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static LongRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates a new {@link LongRange} with the provided lower and upper bounds and step.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates a new {@link LongRange} with the provided lower and upper bounds, the step increment
+     * and an indicator saying whether the {@code null} value is contained. The strings are parsed
+     * with the {@link Long#valueOf(long)} method. An empty String is interpreted as {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
      */
     public static LongRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
         Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
         Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
         Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
-        return new LongRange(min, max, stepLong, containsNull);
+        LongRange range = new LongRange(min, max, stepLong, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
-    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step) {
-        return valueOf(lowerBound, upperBound, step, false);
-    }
-
+    /**
+     * Creates a new {@link LongRange} with the provided lower and upper bounds, the step increment
+     * and an indicator saying whether the {@code null} value is contained.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     */
     public static LongRange valueOf(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
         LongRange range = new LongRange(lowerBound, upperBound, step, containsNull);
         range.checkIfStepFitsIntoBounds();

@@ -68,7 +68,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10));
         assertThat(Relevance.isIrrelevant(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(false));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isIrrelevant(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(true));
     }
 
@@ -96,7 +96,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10));
         assertThat(Relevance.isIrrelevant(modelObject, policyAttribute), is(false));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isIrrelevant(modelObject, policyAttribute), is(true));
     }
 
@@ -128,7 +128,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.isMandatory(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(false));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isMandatory(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(false));
     }
 
@@ -162,7 +162,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.isMandatory(modelObject, policyAttribute), is(false));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isMandatory(modelObject, policyAttribute), is(false));
     }
 
@@ -194,7 +194,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.isOptional(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(true));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isOptional(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(false));
     }
 
@@ -228,7 +228,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.isOptional(modelObject, policyAttribute), is(true));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isOptional(modelObject, policyAttribute), is(false));
     }
 
@@ -254,7 +254,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10));
         assertThat(Relevance.isRelevant(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(true));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isRelevant(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(false));
     }
 
@@ -282,7 +282,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10));
         assertThat(Relevance.isRelevant(modelObject, policyAttribute), is(true));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isRelevant(modelObject, policyAttribute), is(false));
     }
 
@@ -319,7 +319,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE), is(Relevance.OPTIONAL));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.of(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
                 is(Relevance.IRRELEVANT));
     }
@@ -354,7 +354,7 @@ public class RelevanceTest {
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(0, 10, 2, true));
         assertThat(Relevance.of(modelObject, policyAttribute), is(Relevance.OPTIONAL));
 
-        modelObject.setAllowedValuesForIntegerAttribute(new IntegerRange());
+        modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.of(modelObject, policyAttribute), is(Relevance.IRRELEVANT));
     }
 
@@ -378,11 +378,11 @@ public class RelevanceTest {
         assertThat(
                 Relevance.IRRELEVANT.asValueSetFor(new TestPolicyWithIntegerRange(),
                         TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE),
-                is(new IntegerRange()));
+                is(IntegerRange.empty()));
         assertThat(
                 Relevance.IRRELEVANT.asValueSetFor(new TestPolicyWithMoneyRange(),
                         TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
-                is(new MoneyRange()));
+                is(MoneyRange.empty()));
     }
 
     private Matcher<ValueSet<?>> emptyRange() {
@@ -690,7 +690,7 @@ public class RelevanceTest {
 
         private Integer integerAttributeWithRange;
 
-        private ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithRange = new IntegerRange(0, 10);
+        private ValueSet<Integer> setOfAllowedValuesIntegerAttributeWithRange = IntegerRange.valueOf(0, 10);
 
         @IpsAllowedValues(PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE)
         public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttributeWithRange() {

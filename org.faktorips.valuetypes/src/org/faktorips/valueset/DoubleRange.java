@@ -26,19 +26,35 @@ public class DoubleRange extends DefaultRange<Double> {
 
     /**
      * Creates a new empty {@link DoubleRange}.
+     * 
+     * @deprecated since 22.6. Use {@link DoubleRange#empty()} instead.
      */
+    @Deprecated
     public DoubleRange() {
         super();
     }
 
+    /**
+     * @deprecated since 22.6. Use {@link DoubleRange#valueOf(Double, Double, Double, boolean)}
+     *             instead.
+     */
+    @Deprecated
     public DoubleRange(Double lowerBound, Double upperBound, Double step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
     }
 
+    /**
+     * @deprecated since 22.6. Use {@link DoubleRange#valueOf(Double, Double, boolean)} instead.
+     */
+    @Deprecated
     public DoubleRange(Double lowerBound, Double upperBound, boolean containsNull) {
         this(lowerBound, upperBound, null, containsNull);
     }
 
+    /**
+     * @deprecated since 22.6. Use {@link DoubleRange#valueOf(Double, Double)} instead.
+     */
+    @Deprecated
     public DoubleRange(Double lowerBound, Double upperBound) {
         this(lowerBound, upperBound, false);
     }
@@ -55,9 +71,83 @@ public class DoubleRange extends DefaultRange<Double> {
      * {@link Double#valueOf(String)} method. An asterisk (*) is interpreted as the maximum/minimum
      * available {@link Double} value. The step is set to {@code null}.
      * 
-     * @param containsNull defines whether {@code null} is part of the range or not
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     */
+    public static DoubleRange valueOf(String lowerBound, String upperBound) {
+        return valueOf(lowerBound, upperBound, null, false);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} based on the indicated {@link Double} values. The step is set
+     * to {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     */
+    public static DoubleRange valueOf(Double lowerBound, Double upperBound) {
+        return valueOf(lowerBound, upperBound, null, false);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} based on the indicated strings. The strings are parsed with the
+     * {@link Double#valueOf(String)} method. An asterisk (*) is interpreted as the maximum/minimum
+     * available {@link Double} value. The step is set to {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static DoubleRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} based on the indicated {@link Double} values.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static DoubleRange valueOf(Double lowerBound, Double upperBound, Double step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} based on the indicated strings. The strings are parsed with the
+     * {@link Double#valueOf(String)} method. An asterisk (*) is interpreted as the maximum/minimum
+     * available {@link Double} value. The step is set to {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param containsNull {@code true} indicates that the range contains {@code null}
      */
     public static DoubleRange valueOf(String lowerBound, String upperBound, boolean containsNull) {
+        return valueOf(lowerBound, upperBound, null, containsNull);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} based on the indicated {@link Double} values.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     */
+    public static DoubleRange valueOf(Double lowerBound, Double upperBound, boolean containsNull) {
         return valueOf(lowerBound, upperBound, null, containsNull);
     }
 
@@ -66,31 +156,38 @@ public class DoubleRange extends DefaultRange<Double> {
      * {@link Double#valueOf(String)} method. An asterisk (*) is interpreted as the maximum/minimum
      * available {@link Double} value.
      * 
-     * @param containsNull defines whether {@code null} is part of the range or not
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
      */
     public static DoubleRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
         Double min = lowerBound == null || lowerBound.isEmpty() ? null : Double.valueOf(lowerBound);
         Double max = upperBound == null || upperBound.isEmpty() ? null : Double.valueOf(upperBound);
         Double stepValue = step == null || step.isEmpty() ? null : Double.valueOf(step);
-        return new DoubleRange(min, max, stepValue, containsNull);
+        DoubleRange range = new DoubleRange(min, max, stepValue, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
     /**
      * Creates a {@link DoubleRange} based on the indicated {@link Double} values.
      * 
-     * @param containsNull defines whether {@code null} is part of the range or not
-     */
-    public static DoubleRange valueOf(Double lowerBound, Double upperBound, boolean containsNull) {
-        return new DoubleRange(lowerBound, upperBound, containsNull);
-    }
-
-    /**
-     * Creates a {@link DoubleRange} based on the indicated {@link Double} values.
-     * 
-     * @param containsNull defines whether {@code null} is part of the range or not
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
      */
     public static DoubleRange valueOf(Double lowerBound, Double upperBound, Double step, boolean containsNull) {
-        return new DoubleRange(lowerBound, upperBound, step, containsNull);
+        DoubleRange range = new DoubleRange(lowerBound, upperBound, step, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
     @Override

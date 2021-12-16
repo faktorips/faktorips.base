@@ -417,22 +417,22 @@ public enum Relevance {
 
     private static ValueSet<?> createEmptyRange(Class<?> datatype) {
         if (BigDecimal.class.isAssignableFrom(datatype)) {
-            return new BigDecimalRange();
+            return BigDecimalRange.empty();
         }
         if (Decimal.class.isAssignableFrom(datatype)) {
-            return new DecimalRange();
+            return DecimalRange.empty();
         }
         if (Double.class.isAssignableFrom(datatype) || Double.TYPE.isAssignableFrom(datatype)) {
-            return new DoubleRange();
+            return DoubleRange.empty();
         }
         if (Integer.class.isAssignableFrom(datatype) || Integer.TYPE.isAssignableFrom(datatype)) {
-            return new IntegerRange();
+            return IntegerRange.empty();
         }
         if (Long.class.isAssignableFrom(datatype) || Long.TYPE.isAssignableFrom(datatype)) {
-            return new LongRange();
+            return LongRange.empty();
         }
         if (Money.class.isAssignableFrom(datatype)) {
-            return new MoneyRange();
+            return MoneyRange.empty();
         }
         @SuppressWarnings("rawtypes")
         DefaultRange defaultRange = new DefaultRange();

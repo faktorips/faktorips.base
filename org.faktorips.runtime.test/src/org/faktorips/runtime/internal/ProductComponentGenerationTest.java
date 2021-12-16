@@ -55,7 +55,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         HashMap<String, IntegerRange> cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation3", relEl);
         IntegerRange cardinality = cardinalityMap.get("relation3");
-        assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
+        assertEquals(IntegerRange.valueOf(0, Integer.MAX_VALUE), cardinality);
 
         list = map.get("relation4");
         assertEquals(1, list.size());
@@ -63,7 +63,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation4", relEl);
         cardinality = cardinalityMap.get("relation4");
-        assertEquals(new IntegerRange(0, Integer.MAX_VALUE), cardinality);
+        assertEquals(IntegerRange.valueOf(0, Integer.MAX_VALUE), cardinality);
     }
 
     @Test

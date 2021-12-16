@@ -26,7 +26,10 @@ public class IntegerRange extends DefaultRange<Integer> {
 
     /**
      * Creates a new empty {@link IntegerRange}.
+     * 
+     * @deprecated since 22.6. Use {@link IntegerRange#empty()} instead.
      */
+    @Deprecated
     public IntegerRange() {
         super();
     }
@@ -39,7 +42,10 @@ public class IntegerRange extends DefaultRange<Integer> {
      *            that the range is unlimited on this side
      * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
      *            that the range is unlimited on this side
+     * 
+     * @deprecated since 22.6. Use {@link IntegerRange#valueOf(Integer, Integer)} instead.
      */
+    @Deprecated
     public IntegerRange(Integer lowerBound, Integer upperBound) {
         super(lowerBound, upperBound, 1);
     }
@@ -56,14 +62,59 @@ public class IntegerRange extends DefaultRange<Integer> {
     }
 
     /**
-     * Creates an {@link IntegerRange} based on the given strings. The strings are parsed with the
+     * Creates an {@link IntegerRange} with the provided lower and upper bounds. The step increment is 1 and this
+     * range doesn't contain {@code null}. The strings are parsed with the
      * {@link Integer#valueOf(String)} method. An empty string is interpreted as {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
      */
     public static IntegerRange valueOf(String lowerBound, String upperBound) {
-        Integer min = (lowerBound == null || lowerBound.isEmpty()) ? null : Integer.valueOf(lowerBound);
-        Integer max = (upperBound == null || upperBound.isEmpty()) ? null : Integer.valueOf(upperBound);
-        return new IntegerRange(min, max);
+        return valueOf(lowerBound, upperBound, "1", false);
+    }
 
+    /**
+     * Creates and new {@link IntegerRange} with the provided lower and upper bounds. The step
+     * increment is 1 and this range doesn't contain {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     */
+    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound) {
+        return valueOf(lowerBound, upperBound, 1, false);
+    }
+
+    /**
+     * Creates and new {@link IntegerRange} with the provided lower and upper bounds as well as the
+     * step. The strings are parsed with the {@link Integer#valueOf(String)} method. An empty string
+     * is interpreted as {@code null}.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range.
+     */
+    public static IntegerRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates and new {@link IntegerRange} with the provided lower and upper bounds as well as the
+     * step.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range.
+     */
+    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound, Integer step) {
+        return valueOf(lowerBound, upperBound, step, false);
     }
 
     /**
@@ -71,17 +122,28 @@ public class IntegerRange extends DefaultRange<Integer> {
      * {@link Integer#valueOf(String)} method. An empty string is interpreted as {@code null}. If
      * the parameter {@code containsNull} is {@code true}, {@code null} is considered to be included
      * within this range.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
      */
-    public static IntegerRange valueOf(String lowerBound, String upperBound, String stepBound, boolean containsNull) {
+    public static IntegerRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
         Integer min = (lowerBound == null || lowerBound.isEmpty()) ? null : Integer.valueOf(lowerBound);
         Integer max = (upperBound == null || upperBound.isEmpty()) ? null : Integer.valueOf(upperBound);
-        Integer stepInt = (stepBound == null || stepBound.isEmpty()) ? null : Integer.valueOf(stepBound);
-        return new IntegerRange(min, max, stepInt, containsNull);
+        Integer stepInt = (step == null || step.isEmpty()) ? null : Integer.valueOf(step);
+        IntegerRange range = new IntegerRange(min, max, stepInt, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
     }
 
     /**
      * Creates and new {@link IntegerRange} with the provided lower and upper bounds as well as the
-     * step.
+     * step. If the parameter {@code containsNull} is {@code true}, {@code null} is considered to be
+     * included within this range.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
      *            that the range is unlimited on this side
@@ -97,35 +159,8 @@ public class IntegerRange extends DefaultRange<Integer> {
         return range;
     }
 
-    /**
-     * Creates and new {@link IntegerRange} with the provided lower and upper bounds.
-     * 
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     */
-    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound) {
-        return new IntegerRange(lowerBound, upperBound);
-    }
-
-    /**
-     * Creates and new {@link IntegerRange} with the provided lower and upper bounds as well as the
-     * step.
-     * 
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param step the step increment of this range.
-     */
-    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound, int step) {
-        return valueOf(lowerBound, upperBound, Integer.valueOf(step), false);
-    }
-
     @Override
     protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
-
         if (getStep() == 0) {
             throw new IllegalArgumentException(
                     "The step size cannot be zero. Use null to indicate a continuous range.");

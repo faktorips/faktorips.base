@@ -24,8 +24,8 @@ import org.junit.Test;
 public class LongRangeTest {
 
     @Test
-    public void testDefaultConstructor() {
-        LongRange range = new LongRange();
+    public void testEmpty() {
+        LongRange range = LongRange.empty();
 
         assertTrue(range.isEmpty());
         assertTrue(range.isDiscrete());
@@ -36,44 +36,84 @@ public class LongRangeTest {
     }
 
     @Test
-    public void testConstructor() {
-        LongRange range = new LongRange(5L, 10L);
+    public void testValueOf() {
+        LongRange range = LongRange.valueOf(5L, 10L);
 
         assertEquals(range.getLowerBound().longValue(), 5L);
         assertEquals(range.getUpperBound().longValue(), 10L);
     }
 
     @Test
+    public void testValueOf_EmptyLimits() {
+        assertEquals(LongRange.valueOf((Long)null, (Long)null), LongRange.valueOf("", ""));
+    }
+
+    @Test
+    public void testValueOf_Step() {
+        LongRange range = LongRange.valueOf(10L, 100L, 10L);
+
+        assertEquals(Long.valueOf(10), range.getLowerBound());
+        assertEquals(Long.valueOf(100), range.getUpperBound());
+        assertEquals(Long.valueOf(10), range.getStep());
+        assertFalse(range.containsNull());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepMismatch() {
+        LongRange.valueOf(10L, 101L, 10L);
+    }
+
+    @Test
+    public void testValueOf_WithNull() {
+        LongRange range = LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10), true);
+
+        assertEquals(Long.valueOf(10), range.getLowerBound());
+        assertEquals(Long.valueOf(100), range.getUpperBound());
+        assertEquals(Long.valueOf(10), range.getStep());
+        assertTrue(range.containsNull());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepMismatchWithNull() {
+        LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(10), true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepZero() {
+        LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(0), true);
+    }
+
+    @Test
     public void testSize() {
-        LongRange range = new LongRange(5L, 10L);
+        LongRange range = LongRange.valueOf(5L, 10L);
 
         assertEquals(6, range.size());
     }
 
     @Test
     public void testSize_NoLower() {
-        LongRange range = new LongRange(null, Long.valueOf(10));
+        LongRange range = LongRange.valueOf(null, Long.valueOf(10));
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
 
     @Test
     public void testSize_NoUpper() {
-        LongRange range = new LongRange(Long.valueOf(10), null);
+        LongRange range = LongRange.valueOf(Long.valueOf(10), null);
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
 
     @Test
     public void testSize_NoLimits() {
-        LongRange range = new LongRange(null, null);
+        LongRange range = LongRange.valueOf((Long)null, (Long)null);
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
 
     @Test(expected = RuntimeException.class)
     public void testSize_LargerThanIntMax() {
-        LongRange range = new LongRange(1L, Integer.MAX_VALUE + 3L);
+        LongRange range = LongRange.valueOf(1L, Integer.MAX_VALUE + 3L);
 
         range.size();
     }
@@ -116,56 +156,6 @@ public class LongRangeTest {
         assertFalse(values.contains(Long.valueOf(1200)));
         assertFalse(values.contains(Long.valueOf(0)));
         assertTrue(values.contains(null));
-    }
-
-    @Test
-    public void testValueOf() {
-        assertEquals(new LongRange(2L, 5L), LongRange.valueOf("2", "5"));
-    }
-
-    @Test
-    public void testValueOf_EmptyLimits() {
-        assertEquals(new LongRange(null, null), LongRange.valueOf("", ""));
-    }
-
-    @Test
-    public void testValueOf_NullLimits() {
-        assertEquals(new LongRange(null, null), LongRange.valueOf(null, null));
-    }
-
-    @Test
-    public void testValueOf_Step() {
-        LongRange range = LongRange.valueOf(10L, 100L, 10L);
-
-        assertEquals(Long.valueOf(10), range.getLowerBound());
-        assertEquals(Long.valueOf(100), range.getUpperBound());
-        assertEquals(Long.valueOf(10), range.getStep());
-        assertFalse(range.containsNull());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValueOf_StepMismatch() {
-        LongRange.valueOf(10L, 101L, 10L);
-    }
-
-    @Test
-    public void testValueOf_WithNull() {
-        LongRange range = LongRange.valueOf(Long.valueOf(10), Long.valueOf(100), Long.valueOf(10), true);
-
-        assertEquals(Long.valueOf(10), range.getLowerBound());
-        assertEquals(Long.valueOf(100), range.getUpperBound());
-        assertEquals(Long.valueOf(10), range.getStep());
-        assertTrue(range.containsNull());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValueOf_StepMismatchWithNull() {
-        LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(10), true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValueOf_StepZero() {
-        LongRange.valueOf(Long.valueOf(10), Long.valueOf(101), Long.valueOf(0), true);
     }
 
     @Test

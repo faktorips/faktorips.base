@@ -22,8 +22,8 @@ import org.junit.Test;
 public class DoubleRangeTest {
 
     @Test
-    public void testDefaultConstructor() {
-        DoubleRange range = new DoubleRange();
+    public void testEmpty() {
+        DoubleRange range = DoubleRange.empty();
 
         assertTrue(range.isEmpty());
         assertTrue(range.isDiscrete());
@@ -34,8 +34,8 @@ public class DoubleRangeTest {
     }
 
     @Test
-    public void testConstructor() {
-        DoubleRange range = new DoubleRange(5.0, 10.0);
+    public void testValueOf_Bounds() {
+        DoubleRange range = DoubleRange.valueOf(5.0, 10.0);
 
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
         assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
@@ -43,8 +43,8 @@ public class DoubleRangeTest {
     }
 
     @Test
-    public void testConstructor2() {
-        DoubleRange range = new DoubleRange(5.0, 10.0, true);
+    public void testValueOf_Bounds_ContainsNull() {
+        DoubleRange range = DoubleRange.valueOf(5.0, 10.0, true);
 
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
         assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
@@ -52,8 +52,8 @@ public class DoubleRangeTest {
     }
 
     @Test
-    public void testConstructor3() {
-        DoubleRange range = new DoubleRange(5.0, 10.0, 1.0, true);
+    public void testValueOf_Bounds_Step_ContainsNull() {
+        DoubleRange range = DoubleRange.valueOf(5.0, 10.0, 1.0, true);
 
         assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
         assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
@@ -141,7 +141,7 @@ public class DoubleRangeTest {
 
     @Test
     public void testSerializable() throws Exception {
-        TestUtil.testSerializable(new DoubleRange(5.0, 10.0));
+        TestUtil.testSerializable(DoubleRange.valueOf(5.0, 10.0));
     }
 
 }

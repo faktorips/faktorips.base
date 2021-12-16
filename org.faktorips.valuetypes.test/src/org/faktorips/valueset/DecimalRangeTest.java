@@ -24,18 +24,8 @@ import org.junit.Test;
 public class DecimalRangeTest {
 
     @Test
-    public void testValueOf() {
-        DecimalRange range = DecimalRange.valueOf("1.25", "5.67");
-
-        Decimal lower = range.getLowerBound();
-        Decimal upper = range.getUpperBound();
-        assertEquals(Decimal.valueOf(125, 2), lower);
-        assertEquals(Decimal.valueOf(567, 2), upper);
-    }
-
-    @Test
-    public void testDefaultConstructor() {
-        DecimalRange range = new DecimalRange();
+    public void testEmpty() {
+        DecimalRange range = DecimalRange.empty();
 
         assertTrue(range.isEmpty());
         assertTrue(range.isDiscrete());
@@ -46,8 +36,8 @@ public class DecimalRangeTest {
     }
 
     @Test
-    public void testConstructor() {
-        DecimalRange range = new DecimalRange(Decimal.valueOf(125, 2), Decimal.valueOf(567, 2));
+    public void testValueOf() {
+        DecimalRange range = DecimalRange.valueOf("1.25", "5.67");
 
         Decimal lower = range.getLowerBound();
         Decimal upper = range.getUpperBound();
@@ -103,7 +93,7 @@ public class DecimalRangeTest {
 
     @Test
     public void testContains() {
-        DecimalRange range = new DecimalRange(Decimal.valueOf(Integer.valueOf(10)),
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)));
 
         assertTrue(range.contains(Decimal.valueOf(Integer.valueOf(30))));
@@ -124,7 +114,7 @@ public class DecimalRangeTest {
 
     @Test(expected = IllegalStateException.class)
     public void testGetValues_NoStep() {
-        DecimalRange range = new DecimalRange(Decimal.valueOf(Integer.valueOf(10)),
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)));
 
         range.getValues(false);

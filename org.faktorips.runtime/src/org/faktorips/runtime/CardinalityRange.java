@@ -52,6 +52,7 @@ public class CardinalityRange extends IntegerRange {
      * @param def the default cardinality, must be in between or equal to one of the bounds
      * @throws IllegalArgumentException if the default value is not in the range.
      */
+    @SuppressWarnings("deprecation")
     public CardinalityRange(Integer lower, Integer upper, Integer def) {
         // constructs an IntegerRage with step=1 that does not contain null
         super(lower, upper);

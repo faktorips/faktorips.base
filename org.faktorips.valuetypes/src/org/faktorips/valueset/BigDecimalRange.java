@@ -29,14 +29,20 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
     /**
      * Creates a new empty {@link BigDecimalRange}.
+     * 
+     * @deprecated since 22.6. Use {@link BigDecimalRange#empty()} instead.
      */
+    @Deprecated
     public BigDecimalRange() {
         super();
     }
 
     /**
      * Creates a new {@link BigDecimalRange} with the provided lower and upper bound.
+     * 
+     * @deprecated since 22.6. Use {@link BigDecimalRange#valueOf(BigDecimal, BigDecimal)} instead.
      */
+    @Deprecated
     public BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound) {
         super(lowerBound, upperBound);
     }
@@ -57,33 +63,44 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
     /**
      * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
     public static final BigDecimalRange valueOf(String lowerBound, String upperBound) {
-        return new BigDecimalRange(bigDecimalOf(lowerBound), bigDecimalOf(upperBound));
+        return valueOf(lowerBound, upperBound, null, false);
     }
 
     /**
-     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds, the step
-     * increment and an indicator saying whether the <code>null</code> value is contained.
+     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
-    public static final BigDecimalRange valueOf(String lowerBound,
-            String upperBound,
-            String step,
-            boolean containsNull) {
-        return new BigDecimalRange(bigDecimalOf(lowerBound), bigDecimalOf(upperBound), bigDecimalOf(step),
-                containsNull);
-    }
-
-    private static BigDecimal bigDecimalOf(String textToParse) {
-        if (textToParse == null || textToParse.isEmpty()) {
-            return null;
-        } else {
-            return new BigDecimal(textToParse);
-        }
+    public static final BigDecimalRange valueOf(BigDecimal lowerBound, BigDecimal upperBound) {
+        return valueOf(lowerBound, upperBound, null, false);
     }
 
     /**
-     * Creates and new {@link BigDecimalRange} with the provided lower, upper bounds and step.
+     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds and step.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static final BigDecimalRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds and step.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
@@ -97,7 +114,30 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     }
 
     /**
-     * Creates and new {@link BigDecimalRange} with the provided lower, upper bounds and step.
+     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds, the step
+     * increment and an indicator saying whether the <code>null</code> value is contained.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     */
+    public static final BigDecimalRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull) {
+        BigDecimalRange range = new BigDecimalRange(bigDecimalOf(lowerBound), bigDecimalOf(upperBound),
+                bigDecimalOf(step),
+                containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates and new {@link BigDecimalRange} with the provided lower and upper bounds and step.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
@@ -114,6 +154,14 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
         BigDecimalRange range = new BigDecimalRange(lowerBound, upperBound, step, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
+    }
+
+    private static BigDecimal bigDecimalOf(String textToParse) {
+        if (textToParse == null || textToParse.isEmpty()) {
+            return null;
+        } else {
+            return new BigDecimal(textToParse);
+        }
     }
 
     @Override

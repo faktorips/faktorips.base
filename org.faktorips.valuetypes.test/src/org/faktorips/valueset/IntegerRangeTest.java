@@ -23,8 +23,8 @@ import org.junit.Test;
 public class IntegerRangeTest {
 
     @Test
-    public void testDefaultConstructor() {
-        IntegerRange range = new IntegerRange();
+    public void testEmpty() {
+        IntegerRange range = IntegerRange.empty();
 
         assertTrue(range.isEmpty());
         assertTrue(range.isDiscrete());
@@ -35,44 +35,61 @@ public class IntegerRangeTest {
     }
 
     @Test
-    public void testConstructor() {
-        IntegerRange range = new IntegerRange(5, 10);
+    public void testValueOf() {
+        IntegerRange range = IntegerRange.valueOf(5, 10);
 
         assertEquals(range.getLowerBound().intValue(), 5);
         assertEquals(range.getUpperBound().intValue(), 10);
     }
 
     @Test
+    public void testValueOf_EmptyLimits() {
+        assertEquals(IntegerRange.valueOf((Integer)null, (Integer)null), IntegerRange.valueOf("", ""));
+    }
+
+    @Test
+    public void testValueOf_NullLimits() {
+        assertEquals(IntegerRange.valueOf((Integer)null, (Integer)null),
+                IntegerRange.valueOf((String)null, (String)null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testValueOf_StepZero() {
+        IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), Integer.valueOf(0), false);
+        fail("Expect to fail since zero step size is not allowed.");
+    }
+
+    @Test
     public void testSize() {
-        IntegerRange range = new IntegerRange(5, 10);
+        IntegerRange range = IntegerRange.valueOf(5, 10);
 
         assertEquals(6, range.size());
     }
 
     @Test(expected = RuntimeException.class)
     public void testSize_TooLarge() {
-        IntegerRange range = new IntegerRange(-2, Integer.MAX_VALUE - 1);
+        IntegerRange range = IntegerRange.valueOf(-2, Integer.MAX_VALUE - 1);
 
         range.size();
     }
 
     @Test
     public void testSize_NoLower() {
-        IntegerRange range = new IntegerRange(null, Integer.valueOf(10));
+        IntegerRange range = IntegerRange.valueOf(null, Integer.valueOf(10));
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
 
     @Test
     public void testSize_NoUpper() {
-        IntegerRange range = new IntegerRange(Integer.valueOf(10), null);
+        IntegerRange range = IntegerRange.valueOf(Integer.valueOf(10), null);
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
 
     @Test
     public void testSize_NoLimit() {
-        IntegerRange range = new IntegerRange(null, null);
+        IntegerRange range = IntegerRange.valueOf((Integer)null, (Integer)null);
 
         assertEquals(Integer.MAX_VALUE, range.size());
     }
@@ -96,27 +113,6 @@ public class IntegerRangeTest {
         IntegerRange range = IntegerRange.valueOf(Integer.valueOf(10), null, 10);
 
         assertEquals(Integer.MAX_VALUE, range.size());
-    }
-
-    @Test
-    public void testValueOf() {
-        assertEquals(new IntegerRange(2, 5), IntegerRange.valueOf("2", "5"));
-    }
-
-    @Test
-    public void testValueOf_EmptyLimits() {
-        assertEquals(new IntegerRange(null, null), IntegerRange.valueOf("", ""));
-    }
-
-    @Test
-    public void testValueOf_NullLimits() {
-        assertEquals(new IntegerRange(null, null), IntegerRange.valueOf((String)null, (String)null));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testValueOf_StepZero() {
-        IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), Integer.valueOf(0), false);
-        fail("Expect to fail since zero step size is not allowed.");
     }
 
     @Test

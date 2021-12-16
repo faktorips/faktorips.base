@@ -30,14 +30,20 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     /**
      * Creates a new empty {@link DecimalRange}.
+     *
+     * @deprecated since 22.6. Use {@link DecimalRange#empty()} instead.
      */
+    @Deprecated
     public DecimalRange() {
         super();
     }
 
     /**
      * Creates a new {@link DecimalRange} with the provided lower and upper bound.
+     * 
+     * @deprecated since 22.6. Use {@link DecimalRange#valueOf(Decimal, Decimal)} instead.
      */
+    @Deprecated
     public DecimalRange(Decimal lowerBound, Decimal upperBound) {
         super(lowerBound, upperBound);
     }
@@ -58,22 +64,44 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     /**
      * Creates and new {@link DecimalRange} with the provided lower and upper bounds.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
     public static final DecimalRange valueOf(String lowerBound, String upperBound) {
-        return new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound));
+        return valueOf(lowerBound, upperBound, null, false);
     }
 
     /**
-     * Creates and new {@link DecimalRange} with the provided lower and upper bounds, the step
-     * increment and an indicator saying if the {@link Decimal#NULL} value is contained.
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
      */
-    public static final DecimalRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
-        return new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound), Decimal.valueOf(step),
-                containsNull);
+    public static final DecimalRange valueOf(Decimal lowerBound, Decimal upperBound) {
+        return valueOf(lowerBound, upperBound, null, false);
     }
 
     /**
-     * Creates and new {@link DecimalRange} with the provided lower, upper bounds and step.
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds and step.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     */
+    public static final DecimalRange valueOf(String lowerBound, String upperBound, String step) {
+        return valueOf(lowerBound, upperBound, step, false);
+    }
+
+    /**
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds and step.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
@@ -87,7 +115,29 @@ public class DecimalRange extends DefaultRange<Decimal> {
     }
 
     /**
-     * Creates and new {@link DecimalRange} with the provided lower, upper bounds and step.
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds, the step
+     * increment and an indicator saying if the {@link Decimal#NULL} value is contained.
+     * 
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is open on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull true indicates that the range contains the null representation value
+     *            {@link Decimal#NULL}
+     */
+    public static final DecimalRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
+        DecimalRange range = new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound),
+                Decimal.valueOf(step),
+                containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates and new {@link DecimalRange} with the provided lower and upper bounds, the step
+     * increment and an indicator saying if the {@link Decimal#NULL} value is contained.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
