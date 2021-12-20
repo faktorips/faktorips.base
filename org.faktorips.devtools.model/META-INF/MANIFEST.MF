@@ -130,7 +130,8 @@ Export-Package: org.faktorips.devtools.model,
    org.faktorips.productvariant.core,
    org.faktorips.productvariant.core.test,
    org.faktorips.productvariant.ui,
-   org.faktorips.productvariant.ui.test",
+   org.faktorips.productvariant.ui.test,
+   org.faktorips.productvariant.core",
  org.faktorips.devtools.model.internal.method;
   x-friends:="org.faktorips.devtools.core.ui,
    org.faktorips.devtools.core.ui.test,
@@ -246,7 +247,8 @@ Export-Package: org.faktorips.devtools.model,
  org.faktorips.devtools.model.util,
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
- org.faktorips.devtools.model.versionmanager
+ org.faktorips.devtools.model.versionmanager,
+ org.faktorips.devtools.model.versionmanager.options
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,

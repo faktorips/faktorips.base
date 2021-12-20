@@ -134,6 +134,9 @@
 
    <!--Lässt alle generierten Klassen Serializable implementieren.-->
    <Property name="serializablePolicyCmpts" value="false"/>
+
+   <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie ursprünglich ihren Typ im Methodennamen widerspiegeln sollen. Wird ein Manifest verwendet sollte diese Einstellung auch dort gepflegt werden.-->
+   <Property name="valueSetMethods" value="Unified"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
@@ -337,8 +340,6 @@
             <!- - True to allow shared associations. Shared associations are detail-to-master associationis that can be used
                 by multiple master-to-detail associations- ->
             <Setting enabled="true" name="sharedDetailToMasterAssociations"/>
-            <!- - True to allow navigation via associations in formulas. - ->
-            <Setting enabled="true" name="associationsInFormulas"/>
             <!- - Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German.
                 Only English (en) and German (de) are supported at the moment. - ->
             <Setting name="formulaLanguageLocale" value="en"/>
@@ -376,7 +377,6 @@
   <Setting enabled="true" name="referencedProductComponentsAreValidOnThisGenerationsValidFromDate"/>
   <Setting enabled="false" name="rulesWithoutReferencesAllowed"/>
   <Setting enabled="false" name="sharedDetailToMasterAssociations"/>
-  <Setting enabled="false" name="associationsInFormulas"/>
   <Setting name="formulaLanguageLocale" value="de"/>
   <Setting enabled="false" name="markerEnums" value=""/>
   <Setting enabled="false" name="businessFunctionsForValidationRules"/>
@@ -406,7 +406,7 @@
         on the association side which holds a single value (to-one relationship side).
          
         <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
-                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="4000"
+                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="1000"
                 allowLazyFetchForSingleValuedAssociations="true">
             <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
             <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
@@ -416,7 +416,7 @@
         for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, example:
             IdentifierName1 -> IDENTIFIER_NAME1
     -->
- <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="4000" maxTableNameLength="30">
+ <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="1000" maxTableNameLength="30">
   <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
   <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
  </PersistenceOptions>

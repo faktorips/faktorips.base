@@ -78,7 +78,7 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
 
         assertThat(sl.getMaximumLength(), is("0"));
         assertThat(sl.isContainsNull(), is(true));
-        assertThat(sl.isEmpty(), is(false));
+        assertThat(sl.isEmpty(), is(true));
 
         // empty
         element = XmlUtil.getElement(root, 1);
@@ -214,7 +214,7 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testIsEmpty() {
         StringLengthValueSet sl = new StringLengthValueSet(cValueSet, "50", "0", true);
-        assertFalse(sl.isEmpty());
+        assertTrue(sl.isEmpty());
 
         sl.setContainsNull(false);
 

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -131,12 +132,12 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     }
 
     /**
-     * Transforms this qualified name part into an IPath. E.g.: mycompany.motor.MotorPolicy of type
+     * Transforms this qualified name part into a Path. E.g.: mycompany.motor.MotorPolicy of type
      * PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
      */
     public Path toPath() {
         if (path == null) {
-            path = Path.of(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+            path = Path.of(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, File.separatorChar)
                     + FILE_EXTENSION_SEPERATOR + type.getFileExtension());
         }
         return path;

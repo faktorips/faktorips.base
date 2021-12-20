@@ -55,7 +55,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
     /**
-     * The <code>UIToolkit<code> used for updating the changeability states.
+     * The <code>UIToolkit</code> used for updating the changeability states.
      */
     private UIToolkit uiToolkit;
 

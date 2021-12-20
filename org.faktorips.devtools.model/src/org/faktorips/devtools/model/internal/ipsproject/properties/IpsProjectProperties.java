@@ -1,3 +1,5 @@
+// CSOFF: FileLengthCheck
+// CSOFF: RegexpHeaderCheck
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
@@ -19,10 +21,12 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
@@ -48,6 +52,7 @@ import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -78,8 +83,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
- * An ips project's properties. The project can't keep the properties on its own, as it is a handle.
+ * An IPS project's properties. The project can't keep the properties on its own, as it is a handle.
  * 
  * @author Jan Ortmann
  */
@@ -108,8 +115,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String SETTING_RULES_WITHOUT_REFERENCE = "rulesWithoutReferencesAllowed"; //$NON-NLS-1$
 
     private static final String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
-
-    private static final String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
 
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
@@ -154,6 +159,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String MARKER_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
 
+    private static final String FEATURE_CONFIGURATIONS_ELEMENT = "FeatureConfigurations"; //$NON-NLS-1$
+
+    private static final String FEATURE_ID_ATTRIBUTE = "featureId"; //$NON-NLS-1$
+
     private boolean createdFromParsableFileContents = true;
 
     private boolean modelProject;
@@ -193,7 +202,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
-    private boolean associationsInFormulas = false;
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
@@ -227,6 +235,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Locale formulaLanguageLocale = Locale.GERMAN;
 
     private String versionProviderId;
+
+    private final Map<String, IpsFeatureConfiguration> featureConfigurations = new LinkedHashMap<>();
 
     /**
      * Used to check if the additional setting "markerEnums" is configured in the .ipsproject file.
@@ -272,6 +282,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validatePersistenceOption(list);
             validateVersion(list);
             validateSupportedLanguages(list);
+            validateFeatureConfigurations(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -391,6 +402,23 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                         Message.ERROR);
                 list.add(msg);
                 break;
+            }
+        }
+    }
+
+    private void validateFeatureConfigurations(MessageList list) {
+        Set<String> requiredIpsFeatureIds = new LinkedHashSet<>();
+        for (String featureId : getRequiredIpsFeatureIds()) {
+            requiredIpsFeatureIds.add(featureId);
+        }
+        for (Entry<String, IpsFeatureConfiguration> featureConfigurationEntry : featureConfigurations.entrySet()) {
+            String featureId = featureConfigurationEntry.getKey();
+            if (!requiredIpsFeatureIds.contains(featureId)) {
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgUnknownFeatureIdForConfiguration,
+                        featureId);
+                Message msg = new Message(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE, text,
+                        Message.ERROR);
+                list.add(msg);
             }
         }
     }
@@ -605,6 +633,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
+        toXmlFeatureConfigurations(doc, projectEl);
+
         return projectEl;
     }
 
@@ -676,9 +706,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS, isSharedDetailToMasterAssociations()));
 
-        additionalSettingsEl
-                .appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS, isAssociationsInFormulas()));
-
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE, formulaLanguageLocale.getLanguage()));
 
@@ -745,6 +772,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+    }
+
+    private void toXmlFeatureConfigurations(Document doc, Element projectEl) {
+        if (!featureConfigurations.isEmpty()) {
+            Element featureConfigurationsElement = doc.createElement(FEATURE_CONFIGURATIONS_ELEMENT);
+            for (Entry<String, IpsFeatureConfiguration> featureConfiguration : featureConfigurations.entrySet()) {
+                Element featureConfigurationElement = featureConfiguration.getValue().toXml(doc);
+                featureConfigurationElement.setAttribute(FEATURE_ID_ATTRIBUTE, featureConfiguration.getKey());
+                featureConfigurationsElement.appendChild(featureConfigurationElement);
+            }
+            projectEl.appendChild(featureConfigurationsElement);
+        }
     }
 
     @Override
@@ -847,6 +886,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
         initSupportedLanguages(element);
         initDefaultCurrency(element);
+        initFeatureConfigurations(element);
 
         initCompatibilityMode(element);
     }
@@ -1082,8 +1122,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             rulesWithoutReferencesAllowed = enabled;
         } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
             setSharedDetailToMasterAssociations(enabled);
-        } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
-            setAssociationsInFormulas(enabled);
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
@@ -1165,6 +1203,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             return Currency.getInstance(value);
         } catch (IllegalArgumentException e) {
             return defaultCurrency;
+        }
+    }
+
+    private void initFeatureConfigurations(Element element) {
+        Element featureConfigurationsElement = XmlUtil.getFirstElement(element, FEATURE_CONFIGURATIONS_ELEMENT);
+        if (featureConfigurationsElement != null) {
+            featureConfigurations.clear();
+            NodeList featureConfigurationElements = featureConfigurationsElement
+                    .getElementsByTagName(IpsFeatureConfiguration.FEATURE_CONFIGURATION_ELEMENT);
+            for (int i = 0; i < featureConfigurationElements.getLength(); i++) {
+                Element featureConfigurationElement = (Element)featureConfigurationElements.item(i);
+                String featureId = featureConfigurationElement.getAttribute(FEATURE_ID_ATTRIBUTE);
+                IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+                featureConfiguration.initFromXml(featureConfigurationElement);
+                setFeatureConfiguration(featureId, featureConfiguration);
+            }
         }
     }
 
@@ -1419,8 +1473,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     // @formatter:on
 
     private void createProductReleaseComment(Element parentEl) {
-        String s = "Product Release" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
-                "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
+        String s = "Product Release" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
                 + System.lineSeparator()
@@ -1428,17 +1482,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
-                + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$
-                "<" //$NON-NLS-1$
-                + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<" + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator();
         createDescriptionComment(s, parentEl);
     }
 
     // @formatter:off
     private void createVersionComment(Element parentEl) {
-        String s = "Version" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
-                "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
+        String s = "Version" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "it is possible to configure a version provider." //$NON-NLS-1$
                 + System.lineSeparator()
@@ -1470,9 +1523,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + System.lineSeparator() //$NON-NLS-1$
                 + "        by multiple master-to-detail associations-->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + System.lineSeparator()
-                + "    <!-- True to allow navigation via associations in formulas. -->" + System.lineSeparator() //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator()
                 + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + System.lineSeparator() //$NON-NLS-1$
                 + "        Only English (en) and German (de) are supported at the moment. -->" + System.lineSeparator() //$NON-NLS-1$
@@ -1549,7 +1599,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "on the association side which holds a single value (to-one relationship side)." + System.lineSeparator() //$NON-NLS-1$
                 + " " + System.lineSeparator() //$NON-NLS-1$
                 + "<PersistenceOptions maxColumnNameLength=\"30\" maxTableNameLength=\"30\"" + System.lineSeparator() //$NON-NLS-1$
-                + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"4000\"" + System.lineSeparator() //$NON-NLS-1$
+                + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"1000\"" + System.lineSeparator() //$NON-NLS-1$
                 + "        allowLazyFetchForSingleValuedAssociations=\"true\">" + System.lineSeparator() //$NON-NLS-1$
                 + "    <TableNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
                 + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
@@ -1818,26 +1868,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public void setAssociationsInFormulas(boolean associationsInFormulas) {
-        this.associationsInFormulas = associationsInFormulas;
-    }
-
-    @Override
     public void setReleaseExtensionId(String releaseExtensionId) {
         this.releaseExtensionId = releaseExtensionId;
     }
 
     @Override
-    public boolean isAssociationsInFormulas() {
-        return associationsInFormulas;
-    }
-
-    @Override
     public boolean isActive(IFunctionResolverFactory<?> factory) {
-        if (!isAssociationsInFormulas()) {
-            if (factory instanceof AssociationNavigationFunctionsResolver) {
-                return false;
-            }
+        if (factory instanceof AssociationNavigationFunctionsResolver) {
+            return false;
         }
         return true;
     }
@@ -1923,6 +1961,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
+    public @CheckForNull IIpsFeatureConfiguration getFeatureConfiguration(String featureId) {
+        return featureConfigurations.get(featureId);
+    }
+
+    /**
+     * Sets the {@link IIpsFeatureConfiguration} for the feature identified by the given ID.
+     */
+    public void setFeatureConfiguration(String featureId, IpsFeatureConfiguration featureConfiguration) {
+        ArgumentCheck.notNull(featureId, "featureId must not be null"); //$NON-NLS-1$
+        ArgumentCheck.notNull(featureConfiguration, "featureConfiguration must not be null"); //$NON-NLS-1$
+        featureConfigurations.put(featureId, featureConfiguration);
+    }
+
+    @Override
     public Severity getDuplicateProductComponentSeverity() {
         return duplicateProductComponentSeverity;
     }
@@ -1963,3 +2015,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
 }
+// CSON: RegexpHeaderCheck
+// CSON: FileLengthCheck

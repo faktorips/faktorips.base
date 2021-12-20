@@ -55,6 +55,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -1512,7 +1513,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (resourcePath.length() <= projectPath.length()) {
             return false;
         }
-        String location = resource.getProjectRelativePath().toString();
+        String location = PathUtil.toPortableString(resource.getProjectRelativePath());
         return props.isResourceExcludedFromProductDefinition(location);
     }
 

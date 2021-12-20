@@ -96,14 +96,6 @@ public class IpsJarBundle extends AbstractIpsBundle {
         return new RuntimeException(message, e);
     }
 
-    void closeJarFile(JarFile jarFile) {
-        try {
-            jarFile.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error while closeing jar file " + getLocation(), e); //$NON-NLS-1$
-        }
-    }
-
     @Override
     public Path getLocation() {
         return jarFileFactory.getJarPath();
@@ -117,7 +109,7 @@ public class IpsJarBundle extends AbstractIpsBundle {
             throwExceptionWhenNotFound(zipEntry, path);
             return getInputStream(jarFile, zipEntry);
         } finally {
-            closeJarFile(jarFile);
+            jarFileFactory.closeJarFile();
         }
     }
 

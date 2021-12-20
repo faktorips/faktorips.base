@@ -42,7 +42,7 @@ public class WorkingDirectoryTest {
     public void testCreateFor() {
         File workingDirectory = WorkingDirectory.createFor(mp);
 
-        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(System.getProperty("java.io.tmpdir"))
+        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(getTmpDir())
                 .append(File.separator)
                 .append("group.id")
                 .append(File.separator)
@@ -54,11 +54,19 @@ public class WorkingDirectoryTest {
                 .toString()));
     }
 
+    private String getTmpDir() {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        if (tmpDir.endsWith("/")) {
+            tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
+        }
+        return tmpDir;
+    }
+
     @Test
     public void testCreateForWithPrefix() {
         File workingDirectory = WorkingDirectory.createFor(mp, "project.name");
 
-        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(System.getProperty("java.io.tmpdir"))
+        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(getTmpDir())
                 .append(File.separator)
                 .append("project.name")
                 .append(File.separator)

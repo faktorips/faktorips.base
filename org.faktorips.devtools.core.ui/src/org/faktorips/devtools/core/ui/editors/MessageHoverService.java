@@ -173,11 +173,11 @@ public abstract class MessageHoverService {
         /**
          * Distance of info hover arrow from left side.
          */
-        private int HD = 10;
+        private int hd = 10;
         /**
          * Width of info hover arrow.
          */
-        private int HW = 8;
+        private int hw = 8;
         /**
          * Height of info hover arrow.
          */
@@ -187,10 +187,10 @@ public abstract class MessageHoverService {
          */
         private int LABEL_MARGIN = 2;
 
-        private int defaultOffsetOfArrow = HD + HW / 2;
+        private int defaultOffsetOfArrow = hd + hw / 2;
 
         Hover(Shell shell, int arrowOffset) {
-            HD = arrowOffset;
+            hd = arrowOffset;
             createHover(shell);
         }
 
@@ -215,10 +215,10 @@ public abstract class MessageHoverService {
         int[] getPolygon(boolean border) {
             Point e = getExtent();
             if (border) {
-                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, HD + HW, e.y - 1, HD + HW / 2, e.y + HH - 1, HD,
+                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, hd + hw, e.y - 1, hd + hw / 2, e.y + HH - 1, hd,
                         e.y - 1, 0, e.y - 1, 0, 0 };
             } else {
-                return new int[] { 0, 0, e.x, 0, e.x, e.y, HD + HW, e.y, HD + HW / 2, e.y + HH, HD, e.y, 0, e.y, 0, 0 };
+                return new int[] { 0, 0, e.x, 0, e.x, e.y, hd + hw, e.y, hd + hw / 2, e.y + HH, hd, e.y, 0, e.y, 0, 0 };
             }
         }
 
@@ -267,7 +267,7 @@ public abstract class MessageHoverService {
 
         void setLocation(Point position) {
             int height = getExtent().y;
-            fHoverShell.setLocation(position.x + (10 + HW / 2), position.y - height - 5);
+            fHoverShell.setLocation(position.x + (10 + hw / 2), position.y - height - 5);
         }
 
         Point getExtent() {

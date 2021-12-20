@@ -45,7 +45,7 @@ import org.faktorips.devtools.model.enums.IEnumValueContainer;
 public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
     /**
-     * The <code>UIToolkit<code> used for updating the changeability states.
+     * The <code>UIToolkit</code> used for updating the changeability states.
      */
     private UIToolkit uiToolkit;
 

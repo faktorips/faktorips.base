@@ -414,14 +414,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     private boolean contentsEqual(EnumTypeDatatypeAdapter other) {
-        if (enumContent == null && other.enumContent == null) {
-            return true;
-        } else if ((other.enumContent == null && enumContent != null)
-                || (other.enumContent != null && enumContent == null)) {
-            return false;
-        } else {
-            return enumContent.equals(other.enumContent);
-        }
+        return Objects.equals(enumContent, other.enumContent);
     }
 
     @Override

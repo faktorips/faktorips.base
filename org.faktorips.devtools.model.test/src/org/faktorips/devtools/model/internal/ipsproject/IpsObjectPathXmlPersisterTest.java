@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -116,10 +117,10 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
 
         IIpsObjectPathEntry[] entries = path.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
-                .toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
-                .toString());
+        assertEquals("ipssrc/modelclasses",
+                PathUtil.toPortableString(((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()));
+        assertEquals("ipssrc/products",
+                PathUtil.toPortableString(((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()));
 
         // test case 2
         path = new IpsObjectPathXmlPersister().read(ipsProject,
@@ -133,10 +134,10 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
 
         entries = path.getEntries();
         assertEquals(2, entries.length);
-        assertEquals("ipssrc/modelclasses", ((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()
-                .toString());
-        assertEquals("ipssrc/products", ((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()
-                .toString());
+        assertEquals("ipssrc/modelclasses",
+                PathUtil.toPortableString(((IIpsSrcFolderEntry)entries[0]).getSourceFolder().getProjectRelativePath()));
+        assertEquals("ipssrc/products",
+                PathUtil.toPortableString(((IIpsSrcFolderEntry)entries[1]).getSourceFolder().getProjectRelativePath()));
 
     }
 

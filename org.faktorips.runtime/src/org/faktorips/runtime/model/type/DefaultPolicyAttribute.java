@@ -18,8 +18,11 @@ import java.util.Map;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentLinkSource;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
@@ -29,6 +32,7 @@ import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -149,6 +153,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         Method valueSetMethod = getValueSetMethod(getType());
+
         return getValueSet(valueSetMethod, modelObject, context);
     }
 
@@ -159,8 +164,29 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         return getValueSet(valueSetMethod, productObject, context);
     }
 
+    // CSOFF: CyclomaticComplexity
     private ValueSet<?> getValueSet(Method valueSetMethod, Object object, IValidationContext context) {
         if (valueSetMethod == null) {
+            if (Boolean.class.equals(getDatatype()) || boolean.class.equals(getDatatype())) {
+                return new OrderedValueSet<>(!getDatatype().isPrimitive(), null, Boolean.TRUE, Boolean.FALSE);
+            }
+            if (getDatatype().isEnum()) {
+                return new OrderedValueSet<>(true, null, getDatatype().getEnumConstants());
+            }
+            if (IpsModel.isEnumType(getDatatype()) && IpsModel.getEnumType(getDatatype()).isExtensible()) {
+                if (object instanceof IProductComponentLinkSource) {
+                    IRuntimeRepository repository = ((IProductComponentLinkSource)object).getRepository();
+                    return new OrderedValueSet<>(repository.getEnumValues(getDatatype()), true, null);
+
+                }
+                if (object instanceof IConfigurableModelObject) {
+                    IProductComponent productComponent = ((IConfigurableModelObject)object).getProductComponent();
+                    if (productComponent != null) {
+                        IRuntimeRepository repository = productComponent.getRepository();
+                        return new OrderedValueSet<>(repository.getEnumValues(getDatatype()), true, null);
+                    }
+                }
+            }
             return new UnrestrictedValueSet<>(!getDatatype().isPrimitive());
         } else if (valueSetMethod.getParameterTypes().length == 0) {
             return (ValueSet<?>)invokeMethod(valueSetMethod, object);
@@ -168,9 +194,10 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
             return (ValueSet<?>)invokeMethod(valueSetMethod, object, context);
         } else {
             throw new IllegalStateException("The method for retrieving the allowed values of attribute: " + getName()
-                    + " has too many aruments: " + valueSetMethod);
+                    + " has too many arguments: " + valueSetMethod);
         }
     }
+    // CSON: CyclomaticComplexity
 
     private Method getValueSetMethod(Type model) {
         if (valueSetMethods.containsKey(model)) {

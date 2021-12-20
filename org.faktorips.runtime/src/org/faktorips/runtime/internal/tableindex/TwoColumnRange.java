@@ -224,7 +224,9 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * Represents a bound of a range. Holds the boundary value and the direction to which the brace
      * is opened.
      */
-    private static final class Bound<K extends Comparable<? super K>> implements Comparable<Bound<K>> {
+    private static final class Bound<K extends Comparable<? super K>> implements Comparable<Bound<K>>, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         private static final Bound<?> NEGATIVE_INFINITY = new Bound<Comparable<Object>>(null, IntervalDirection.LEFT);
 

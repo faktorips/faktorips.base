@@ -29,7 +29,7 @@ With this setting the faktorips-maven-plugin will check the local workspace for 
 
 #### failBuild
 
-Whether the build should fail if local modifications are detected.
+Whether the build should fail if local modifications are detected. The value of `failBuild`can be overridden with the `git.fail.build` property.
 
 #### verbosity
 

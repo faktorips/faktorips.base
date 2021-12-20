@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.eq;
@@ -63,6 +64,24 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
         formulaHandler.doInitFormulaFromXml(element);
 
         assertEquals(formulaEvaluator, formulaHandler.getFormulaEvaluator());
+
+    }
+
+    @Test
+    public void testDoInitFormulaFromXml_NoFormulas() {
+        Element element = getTestDocument("FormulaHandlerTestWithoutFormulas.xml").getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+
+        assertNull(formulaHandler.getFormulaEvaluator());
+
+    }
+
+    @Test
+    public void testDoInitFormulaFromXml_EmptyFormulas() {
+        Element element = getTestDocument("FormulaHandlerTestWithEmptyFormulas.xml").getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+
+        assertNull(formulaHandler.getFormulaEvaluator());
 
     }
 

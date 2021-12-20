@@ -11,6 +11,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.temp
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 class ProductComponentInterfaceTmpl{
 
@@ -54,6 +55,18 @@ class ProductComponentInterfaceTmpl{
              «FOR it : configuredAttributes»
                 «IF published»
                     «getterAndSetter»
+                «ENDIF»
+            «ENDFOR»
+
+            «FOR superAttribute : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+                «IF superAttribute.published»
+                «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, superAttribute, GenerateValueSetType.GENERATE_BY_TYPE)»
+                «ENDIF»
+            «ENDFOR»
+
+            «FOR superAttribute : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+                «IF superAttribute.published»
+                «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, superAttribute, GenerateValueSetType.GENERATE_UNIFIED)»
                 «ENDIF»
             «ENDFOR»
 

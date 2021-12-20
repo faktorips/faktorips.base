@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
-import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;

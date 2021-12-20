@@ -32,14 +32,14 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     /**
      * Array containing the widths of all columns of the table counted in tabulators. The array has
      * a length of the tables' columnNumber plus one. The first entry defines the width of the
-     * column of rownumbers, the others contain the widths of the content-columns of the table. Thus
-     * columnWidthsInTabs[2] contains the width of the second content column in tabs.
+     * column of row numbers, the others contain the widths of the content-columns of the table.
+     * Thus columnWidthsInTabs[2] contains the width of the second content column in tabs.
      */
     private int[] columnWidthsInTabs = null;
 
     /**
      * A row's content string separating the column values with a "|" character, and with all
-     * whitespace removed. Used for hashcode() and equals().
+     * whitespace removed. Used for hashCode() and equals().
      */
     private String rowContentStringColumnSeparated;
 
@@ -58,7 +58,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * A row is represented by its rownumber and all values of its colums separated by tabs. The
+     * A row is represented by its row number and all values of its columns separated by tabs. The
      * number of tabs needed to separate the values is calculated. This is necessary to align values
      * of different rows to columns.
      * <p>
@@ -163,7 +163,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Initializes the columnwidth for all columns of all generations. {@inheritDoc}
+     * Initializes the column width for all columns of all generations. {@inheritDoc}
      */
     @Override
     public void init() {
@@ -216,11 +216,11 @@ public class TableContentsCompareItem extends AbstractCompareItem {
 
     /**
      * Calculates the widths of all columns in tabs by searching for the longest (String) value in
-     * the tablecontent. The columnwidth is at least one tab greater than needed to fit in the
+     * the table content. The column width is at least one tab greater than needed to fit in the
      * string value (number of characters).
      * <p>
      * This calculation is based on the base tabWidth (number of characters a tab is displayed as)
-     * of the displaying textViewer. The tabwidth is set by the
+     * of the displaying textViewer. The tab width is set by the
      * <code>TableContentsCompareViewer</code> and can be accessed as a static field. @see
      * TableContentsCompareViewer#TAB_WIDTH
      * <p>
@@ -243,14 +243,14 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     }
 
     /**
-     * Returns the number of tabs needed to fit the given stringlength plus one.
+     * Returns the number of tabs needed to fit the given string length plus one.
      * <p>
-     * Example: tabwidth is 4
+     * Example: tab width is 4
      * <ul>
      * <li>length is 7 -> returns 3 (2 tabs to fit 7 characters + 1 additional tab)</li>
      * <li>length is 8 -> returns 3 (2 tabs to fit 8 characters exactly + 1 additional tab)</li>
      * <li>length is 9 -> returns 4 (3 tabs to fit 9 characters + 1 additional tab)</li>
-     * <ul>
+     * </ul>
      * 
      * @return Tabs needed to fit this string and create space between columns.
      * 
@@ -266,7 +266,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
 
     /**
      * Returns an int array containing the widths of all columns in tabs. This includes the column
-     * of Rownumbers, that are part of the string representation of the IpsObject.
+     * of row numbers, that are part of the string representation of the IpsObject.
      */
     public int[] getColumnWidths() {
         if (isRoot()) {

@@ -301,7 +301,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         // testTypesCount ++; is currently no ips object type
 
         // Product cmpt
-        IProductCmpt pc = newProductCmpt(ipsProject, "*test");
+        IProductCmpt pc = newProductCmpt(ipsProject, "#test");
         ml = pc.validate(ipsProject);
         assertThat(ml, hasMessageCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
 
@@ -311,6 +311,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Test case
+        // funktioniert nicht unter Windows da * kein gültiges Zeichen für Dateinamen ist
         ITestCase tc = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "*test");
         ml = tc.validate(ipsProject);
         assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));

@@ -147,8 +147,8 @@ public class IpsObjectPathXmlPersister {
                 + "               Boolean flag that indicates if there are separate output folders for each source folder" //$NON-NLS-1$
                 + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES //$NON-NLS-1$
-                + "             The output folder for the generated artefacts that will not be deleted during a " + //$NON-NLS-1$
-                "clean build cycle but may be merged with the generated content during a build cycle" //$NON-NLS-1$
+                + "             The output folder for the generated artefacts that will not be deleted during a " //$NON-NLS-1$
+                + "clean build cycle but may be merged with the generated content during a build cycle" //$NON-NLS-1$
                 + System.lineSeparator()
                 + " " + ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE //$NON-NLS-1$
                 + "                     The base package for generated and merable java files" //$NON-NLS-1$

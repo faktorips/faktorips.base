@@ -31,6 +31,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -139,7 +140,23 @@ public abstract class XProductClass extends XType {
             attributes = nodesForParts;
         }
         return attributes.stream().filter(filter)
-                .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<XPolicyAttribute> attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(
+            Predicate<XPolicyAttribute> filter,
+            GenerateValueSetType valueSetType) {
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            if (policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
+                return policyCmptClass.attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(valueSetType)
+                        .stream()
+                        .filter(a -> a.isProductRelevant())
+                        .filter(filter)
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+        }
+        return Set.of();
     }
 
     /**
@@ -156,7 +173,7 @@ public abstract class XProductClass extends XType {
             }
             return policyCmptClass.getAttributes().stream()
                     .filter(a -> a.isProductRelevant() && a.isGenerateGetAllowedValuesForAndGetDefaultValue())
-                    .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
         }
         return resultingAttributes;

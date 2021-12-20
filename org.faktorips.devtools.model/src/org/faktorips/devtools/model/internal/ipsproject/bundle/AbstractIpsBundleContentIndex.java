@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -86,7 +86,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * @see #getQualifiedNameTypes(String)
      */
     public Set<QualifiedNameType> getQualifiedNameTypes() {
-        return new CopyOnWriteArraySet<>(qualifiedNameTypes);
+        return Collections.unmodifiableSet(qualifiedNameTypes);
     }
 
     /**

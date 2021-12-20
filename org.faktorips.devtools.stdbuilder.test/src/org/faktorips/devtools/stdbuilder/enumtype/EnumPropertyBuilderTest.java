@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -64,10 +65,11 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
         AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
-        String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource()
-                .getWorkspaceRelativePath().toString();
+        String folder = PathUtil.toPortableString(
+                ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource()
+                        .getWorkspaceRelativePath());
         assertEquals(folder + '/' + BASE_PACKAGE_NAME_MERGABLE.replace('.', '/') + "/AnyEnumType_de.properties",
-                propertyFile.getWorkspaceRelativePath().toString());
+                PathUtil.toPortableString(propertyFile.getWorkspaceRelativePath()));
     }
 
     @Test

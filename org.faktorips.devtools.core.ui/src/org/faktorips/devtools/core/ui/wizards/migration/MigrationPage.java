@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -33,7 +34,9 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsBooleanMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 
 /**
  * @author Joerg Ortmann
@@ -43,7 +46,8 @@ public class MigrationPage extends WizardPage {
     private ProjectSelectionPage projectSelectionPage;
     private Composite overview;
     private Text description;
-    private Map<String, IpsMigrationOption> options = Collections.emptyMap();
+    private Map<String, IpsMigrationOption<?>> options = Collections
+            .emptyMap();
 
     public MigrationPage(ProjectSelectionPage projectSelectionPage) {
         super(Messages.MigrationPage_titleMigrationOperations);
@@ -62,7 +66,7 @@ public class MigrationPage extends WizardPage {
 
     }
 
-    public Map<String, IpsMigrationOption> getOptions() {
+    public Map<String, IpsMigrationOption<?>> getOptions() {
         return options;
     }
 
@@ -103,8 +107,18 @@ public class MigrationPage extends WizardPage {
             UIToolkit toolkit = new UIToolkit(null);
             BindingContext bindingContext = new BindingContext();
             options.values().forEach(option -> {
-                Checkbox checkbox = toolkit.createCheckbox(overview, option.getText());
-                bindingContext.bindContent(checkbox, option, IpsMigrationOption.PROPERTY_ACTIVE);
+                if (option instanceof IpsBooleanMigrationOption) {
+                    Checkbox checkbox = toolkit.createCheckbox(overview, option.getText());
+                    IpsBooleanMigrationOption booleanOption = (IpsBooleanMigrationOption)option;
+                    bindingContext.bindContent(checkbox, booleanOption, IpsMigrationOption.PROPERTY_SELECTED);
+                } else if (option instanceof IpsEnumMigrationOption) {
+                    toolkit.createLabel(overview, option.getText());
+                    Combo combo = toolkit.createCombo(overview);
+                    IpsEnumMigrationOption<?> enumMigrationOption = (IpsEnumMigrationOption<?>)option;
+                    bindingContext.bindContent(combo, enumMigrationOption, IpsMigrationOption.PROPERTY_SELECTED,
+                            enumMigrationOption.getEnumClass());
+                }
+                bindingContext.updateUI();
             });
         }
 

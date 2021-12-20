@@ -14,13 +14,10 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
@@ -160,21 +157,6 @@ public class Formula extends Expression implements IFormula {
             usages.addAll(getPropertyValueContainer().getProductCmpt().getPropertyValues(ITableContentUsage.class));
         }
         return usages.toArray(new ITableContentUsage[usages.size()]);
-    }
-
-    @Override
-    protected void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes) {
-        IIpsProject ipsProject = getIpsProject();
-        IProductCmptType productCmptType = findProductCmptType(ipsProject);
-        if (productCmptType != null) {
-            List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
-            for (IAttribute attribute : attributes) {
-                Datatype datatype = attribute.findDatatype(ipsProject);
-                if (datatype instanceof EnumDatatype) {
-                    enumTypes.put(datatype.getName(), (EnumDatatype)datatype);
-                }
-            }
-        }
     }
 
     @Override

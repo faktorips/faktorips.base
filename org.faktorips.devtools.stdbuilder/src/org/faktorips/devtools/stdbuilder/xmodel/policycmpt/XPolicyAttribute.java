@@ -18,6 +18,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xtend.template.ClassNames;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
@@ -332,19 +334,10 @@ public class XPolicyAttribute extends XAttribute {
         if (isConstant()) {
             return false;
         } else {
-            // CSOFF: BooleanExpressionComplexity
             return (isProductRelevant() && isChangeable())
-                    || !isValueSetUnrestricted()
-                    || isUnrestrictedButStillNeedsAllowedValues()
+                    || isValueSet()
                     || isNotConfiguredOverrideConfigured();
-            // CSON: BooleanExpressionComplexity
         }
-    }
-
-    private boolean isUnrestrictedButStillNeedsAllowedValues() {
-        boolean doesNotContainNull = !isValueSetContainingNull() && !getDatatype().isPrimitive();
-        boolean overwritesDerivedValueSet = isOverwrite() && getOverwrittenAttribute().isValueSetDerived();
-        return isValueSetUnrestricted() && (doesNotContainNull || overwritesDerivedValueSet);
     }
 
     public boolean isOverrideGetAllowedValuesFor() {
@@ -353,8 +346,19 @@ public class XPolicyAttribute extends XAttribute {
         }
         boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
                 .isGenerateGetAllowedValuesForAndGetDefaultValue()
-                && getOverwrittenAttribute().getMethodNameGetAllowedValuesFor()
-                        .equals(getMethodNameGetAllowedValuesFor());
+                && isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute(),
+                        GenerateValueSetType.GENERATE_BY_TYPE);
+        return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
+    }
+
+    public boolean isOverrideGetAllowedValuesFor(GenerateValueSetType type) {
+        if (!isOverwrite()) {
+            return false;
+        }
+        boolean overwrittenAttributeSuitedForOverride = getOverwrittenAttribute()
+                .isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(getOverwrittenAttribute(),
+                        type);
         return overwrittenAttributeSuitedForOverride || getOverwrittenAttribute().isOverrideGetAllowedValuesFor();
     }
 
@@ -372,11 +376,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
-        // CSOFF: BooleanExpressionComplexity
-        boolean isGenerateForValueSetType = isValueSetRange() || isNonExtensibleEnumValueSet()
-                || isUnrestrictedButStillNeedsAllowedValues() || isValueSetStringLength()
+        // NonExtensibleEnumValueSet können nicht generiert werden da die Werte aus einem Repository
+        // geladen werden, das im statischen Kontext nicht bekannt ist. Siehe
+        // https://jira.faktorzehn.de/browse/FIPS-3981 dazu.
+        boolean isGenerateForValueSetType = !isValueSetEnum() || isNonExtensibleEnumValueSet()
                 || isNotConfiguredOverrideConfigured();
-        // CSON: BooleanExpressionComplexity
         return isConcreteOrNotProductRelevant() && isGenerateForValueSetType;
     }
 
@@ -391,6 +395,15 @@ public class XPolicyAttribute extends XAttribute {
 
     private boolean isNonExtensibleEnumValueSet() {
         return isValueSetEnum() && !isDatatypeExtensibleEnum();
+    }
+
+    public boolean isOverwritingValueSetEqualType() {
+        return getValueSetType()
+                .equals(getOverwrittenAttribute().getValueSetType());
+    }
+
+    public boolean isValueSet() {
+        return getAttribute().getValueSet() != null;
     }
 
     public boolean isValueSetEnum() {
@@ -414,11 +427,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
-        return getAttribute().getValueSet().getValueSetType() == valueSetType;
-    }
-
-    private boolean isValueSetContainingNull() {
-        return getAttribute().getValueSet().isContainsNull();
+        return getValueSetType() == valueSetType;
     }
 
     public boolean isAbstractValueSet() {
@@ -507,16 +516,155 @@ public class XPolicyAttribute extends XAttribute {
         return "old" + StringUtils.capitalize(getFieldName());
     }
 
-    public String getMethodNameGetAllowedValuesFor() {
-        String prefix;
-        if (isValueSetEnum()) {
-            prefix = "getAllowedValuesFor";
-        } else if (isValueSetRange()) {
-            prefix = "getRangeFor";
+    public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
+            GenerateValueSetType valueSetType) {
+        ValueSetMethods setting = getUnifyValueSetSettingFormSuperType(overwritten);
+        GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
+                valueSetType);
+        return isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(overwritten, genValueSet);
+    }
+
+    public boolean isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(XPolicyAttribute overwritten,
+            GenerateValueSetType genValueSet) {
+        return overwritten.getMethodNameGetAllowedValuesFor(genValueSet)
+                .equals(getMethodNameGetAllowedValuesFor(genValueSet))
+                && hasSameSignature(overwritten, genValueSet);
+    }
+
+    private boolean hasSameSignature(XPolicyAttribute overwritten, GenerateValueSetType genValueSet) {
+        return Arrays.equals(overwritten.getAllowedValuesMethodParameterSignature(genValueSet),
+                getAllowedValuesMethodParameterSignature(genValueSet));
+    }
+
+    public boolean isConditionForOverrideAnnotation(GenerateValueSetTypeRule rule) {
+        if (!isOverwrite()) {
+            return false;
+        }
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        GenerateValueSetType superGenMode = GenerateValueSetType.mapFromSettings(superSetting, rule.getFromMethod());
+
+        String thisMethodName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
+        String superMethodName = getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(superGenMode);
+
+        String[] thisMethodSignature = getAllowedValuesMethodParameterSignature(rule.getFromMethod());
+        String[] superMethodSignature = getOverwrittenAttribute()
+                .getAllowedValuesMethodParameterSignature(superGenMode);
+
+        if (thisMethodName.equals(superMethodName) && Arrays.equals(thisMethodSignature, superMethodSignature)) {
+            if (getOverwrittenAttribute().isValueSetUnrestricted() && !isValueSetUnrestricted()) {
+                if (isOverwritingValueSetWithMoreConcreteType(rule.getFromMethod())) {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOverwritingValueSetWithMoreConcreteType(GenerateValueSetType type) {
+        boolean isOverwrittenAndGenerateAllowedValues = isOverwrite()
+                && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue();
+        return isOverwrittenAndGenerateAllowedValues
+                && isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(getOverwrittenAttribute(), type)
+                && !isOverwritingValueSetEqualType() && !getOverwrittenAttribute().isValueSetDerived();
+    }
+
+    public boolean isOverwritingValueSetWithMoreConcreteTypeForByType() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && !isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(getOverwrittenAttribute(),
+                        GenerateValueSetType.GENERATE_BY_TYPE);
+    }
+
+    public boolean isOverwritingValueSetWithMoreConcreteTypeForByTypeWithBothTypeParent() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && (getAttribute().getValueSet().compareTo(getOverwrittenAttribute().getAttribute().getValueSet()) != 0
+                        || getValueSetType() == ValueSetType.DERIVED);
+    }
+
+    public boolean isOverwritingValueSetWithDerived() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && isValueSetDerived();
+    }
+
+    /**
+     * Whether an allowed-values-method should be deprecated.
+     * <p>
+     * The by-type method is marked as deprecated, if both methods are generated.
+     * 
+     * @return {@code true} If the unify-value-set setting is <em>both</em>, the unified method name
+     *         is different from the by-type name and the method is generated for
+     *         {@link GenerateValueSetType#GENERATE_BY_TYPE}.
+     */
+    public boolean isGetAllowedValuesMethodDeprecated(GenerateValueSetTypeRule rule) {
+        if (!rule.isFromDeprecated()) {
+            return false;
+        }
+        return rule.getFromMethod().isGenerateByType()
+                && getUnifyValueSetMethodsSetting().isBoth();
+    }
+
+    public String[] getAllowedValuesMethodParameterSignature(GenerateValueSetType type) {
+        if (type.isGenerateByType()) {
+            return new String[] { ClassNames.IValidationContext(this), "context" };
         } else {
-            prefix = "getSetOfAllowedValuesFor";
+            return new String[] {};
+        }
+    }
+
+    public String allowedValuesMethodParameter(GenerateValueSetType caller,
+            GenerateValueSetType called) {
+        if (called.isGenerateByType()) {
+            if (caller.isGenerateByType()) {
+                return "context";
+            } else {
+                return "null";
+            }
+        } else {
+            return "";
+        }
+    }
+
+    public ValueSetType getValueSetType() {
+        return getAttribute().getValueSet().getValueSetType();
+    }
+
+    public boolean isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType() {
+        if (isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
+            ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+            return (superSetting.isByValueSetType() || superSetting.isBoth())
+                    && !getUnifyValueSetMethodsSetting().isByValueSetType()
+                    && !isOverwritingValueSetEqualType();
+        }
+        return false;
+    }
+
+    /**
+     * Creates the method name for the getter of the allowed values of a {@link ValueSet}. If
+     * {@link GenerateValueSetType#GENERATE_BY_TYPE} add a different prefix for enums and ranges.
+     * 
+     * @param valueSetMethods If the method should be generated by-type or by a unified name.
+     * @return The method name.
+     */
+    public String getMethodNameGetAllowedValuesFor(GenerateValueSetType valueSetMethods) {
+        String prefix;
+        if (valueSetMethods.isGenerateByType()) {
+            ValueSetType valueSetType = getValueSetType();
+            if (isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType()) {
+                valueSetType = getOverwrittenAttribute().getValueSetType();
+            }
+            if (valueSetType == ValueSetType.ENUM) {
+                prefix = "getAllowedValuesFor";
+            } else if (valueSetType == ValueSetType.RANGE) {
+                prefix = "getRangeFor";
+            } else {
+                prefix = "getSetOfAllowedValuesFor";
+            }
+        } else {
+            prefix = "getAllowedValuesFor";
         }
         return prefix + StringUtils.capitalize(getFieldName());
+
     }
 
     public String getMethodNameSetAllowedValuesFor() {
@@ -668,7 +816,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns the java doc key used to localize the java doc. The key depends on the kind of the
+     * Returns the javadoc key used to localize the java doc. The key depends on the kind of the
      * allowed value set and of the kind of artifact you want to generate, identified by the prefix.
      * <p>
      * For example the if the allowed values are configured as range and you want to generate a
@@ -712,4 +860,131 @@ public class XPolicyAttribute extends XAttribute {
         return getValuesetDatatypeHelper().getJavaClassName();
     }
 
+    /**
+     * Marks the template
+     * allowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings deprecated.
+     * 
+     * @param valueSetMethods If the method should be generated by-type or by a unified name.
+     * @return If this setting is Both and the generated method name is by-type mark the method as
+     *         deprecated.
+     */
+    public boolean isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(
+            GenerateValueSetType valueSetMethods) {
+        // use getBaseGeneratorConfig here since getGeneratorConfig will use the attribute to find
+        // the config, the attribute at this point is from a super type and therefore maybe
+        // different than expected
+        return getUnifyValueSetMethodsSetting().isBoth()
+                && valueSetMethods.isGenerateByType();
+    }
+
+    /**
+     * The annotation should only be created on the method matching the generator settings. If the
+     * setting is {@link ValueSetMethods#Both} the unified method should be used.
+     * 
+     * @param rule the Rule
+     * @return {@code true} if the settings match
+     */
+    public boolean isPublishedInterfaceModifierRelevant(GenerateValueSetTypeRule rule) {
+        GenerateValueSetType setting = GenerateValueSetType
+                .mapFromSettings(getUnifyValueSetMethodsSetting(),
+                        GenerateValueSetType.GENERATE_UNIFIED);
+        return rule.getFromMethod().equals(setting);
+    }
+
+    /**
+     * If using the by-type setting and overwriting an attribute with a more concrete type, the used
+     * name was already the unified one.
+     * 
+     * @return {@code true} if both the attribute and the super attribute are
+     *         {@link ValueSetMethods#ByValueSetType}.
+     */
+    public boolean isGenerateAllowedValuesMethodWithMoreConcreteTypeForByType() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        return thisSetting.isByValueSetType()
+                && (superSetting.isBoth() || superSetting.isByValueSetType());
+    }
+
+    public boolean isGenerateAllowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        return thisSetting.isByValueSetType() && superSetting.isBoth();
+    }
+
+    private ValueSetMethods getUnifyValueSetSettingFormSuperType(XPolicyAttribute attribute) {
+        return getContext()
+                .getGeneratorConfig(attribute.getAttribute().getIpsObject())
+                .getValueSetMethods();
+    }
+
+    private ValueSetMethods getUnifyValueSetMethodsSetting() {
+        return getContext().getBaseGeneratorConfig().getValueSetMethods();
+    }
+
+    /**
+     * Enum to generate a specific get valueset method.
+     * 
+     */
+    public static enum GenerateValueSetType {
+        GENERATE_UNIFIED {
+            @Override
+            public GenerateValueSetType inverse() {
+                return GENERATE_BY_TYPE;
+            }
+        },
+        GENERATE_BY_TYPE {
+            @Override
+            public GenerateValueSetType inverse() {
+                return GENERATE_UNIFIED;
+            }
+        };
+
+        /**
+         * Convenience method to return the opposing {@link GenerateValueSetType} for a given one.
+         * Will throw an {@link IllegalArgumentException} if the type cannot be matched.
+         * 
+         * @return The opposing type.
+         */
+        public abstract GenerateValueSetType inverse();
+
+        public boolean isGenerateByType() {
+            return GENERATE_BY_TYPE.equals(this);
+        }
+
+        public boolean isGenerateUnified() {
+            return GENERATE_UNIFIED.equals(this);
+        }
+
+        /**
+         * Convenience map method for the {@link ValueSetMethods} setting to its corresponding
+         * builder enum. Note that the {@link ValueSetMethods#Both} setting is not a valid
+         * instruction for the source code builder. Therefore the {@code defaultValue} is used to
+         * handle this case.
+         * 
+         * @param setting The setting from the project settings, in case of
+         *            {@link ValueSetMethods#Both} the defaultValue will be returned.
+         * @param defaultValue The default to return if the settings can not be matched or the
+         *            setting is {@link ValueSetMethods#Both}.
+         * @return The enum used to determine the name of the value set method.
+         */
+        public static GenerateValueSetType mapFromSettings(ValueSetMethods setting, GenerateValueSetType defaultValue) {
+            if (setting != null) {
+                switch (setting) {
+                    case ByValueSetType:
+                        return GENERATE_BY_TYPE;
+                    case Unified:
+                        return GENERATE_UNIFIED;
+                    default:
+                        break;
+                }
+            }
+            return defaultValue;
+        }
+    }
 }

@@ -22,6 +22,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -58,7 +59,8 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
         AFile file = builderSet.getRuntimeRepositoryTocFile(root);
         assertNotNull(file);
-        assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
+        assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml",
+                PathUtil.toPortableString(file.getProjectRelativePath()));
     }
 
     @Test

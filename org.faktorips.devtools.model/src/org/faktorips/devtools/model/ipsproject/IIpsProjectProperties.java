@@ -84,6 +84,14 @@ public interface IIpsProjectProperties {
             + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the feature ID given for a
+     * {@link #getFeatureConfiguration(String) feature configuration} is not known, as it is not
+     * contained in the list of {@link #getRequiredIpsFeatureIds() required feature IDs}.
+     */
+    public static final String MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE = MSGCODE_PREFIX
+            + "FeatureConfigurationUnknownFeature"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that more than one supported language is marked as
      * default language.
      */
@@ -361,18 +369,6 @@ public interface IIpsProjectProperties {
      * @param sharedDetailToMasterAssociations True to allow unsafe inverse associations
      */
     void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations);
-
-    /**
-     * Check if the option to allow navigation via associations in formulas
-     * 
-     * @return true if the option is enabled
-     */
-    boolean isAssociationsInFormulas();
-
-    /**
-     * @see #isAssociationsInFormulas()
-     */
-    void setAssociationsInFormulas(boolean associationsInFormulas);
 
     /**
      * @return The IDs of all required features.
@@ -691,6 +687,13 @@ public interface IIpsProjectProperties {
      * @see #getInferredTemplateLinkThreshold()
      */
     void setInferredTemplateLinkThreshold(Decimal inferredTemplateLinkThreshold);
+
+    /**
+     * Returns the {@link IIpsFeatureConfiguration} for the feature identified by the given ID.
+     *
+     * @see #getRequiredIpsFeatureIds()
+     */
+    IIpsFeatureConfiguration getFeatureConfiguration(String featureId);
 
     /**
      * Returns the severity for validation messages when two product components have the same kindId

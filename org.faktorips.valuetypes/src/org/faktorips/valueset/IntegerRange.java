@@ -62,8 +62,8 @@ public class IntegerRange extends DefaultRange<Integer> {
     }
 
     /**
-     * Creates an {@link IntegerRange} with the provided lower and upper bounds. The step increment is 1 and this
-     * range doesn't contain {@code null}. The strings are parsed with the
+     * Creates an {@link IntegerRange} with the provided lower and upper bounds. The step increment
+     * is 1 and this range doesn't contain {@code null}. The strings are parsed with the
      * {@link Integer#valueOf(String)} method. An empty string is interpreted as {@code null}.
      * 
      * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
@@ -113,7 +113,7 @@ public class IntegerRange extends DefaultRange<Integer> {
      *            that the range is unlimited on this side
      * @param step the step increment of this range.
      */
-    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound, Integer step) {
+    public static IntegerRange valueOf(Integer lowerBound, Integer upperBound, int step) {
         return valueOf(lowerBound, upperBound, step, false);
     }
 

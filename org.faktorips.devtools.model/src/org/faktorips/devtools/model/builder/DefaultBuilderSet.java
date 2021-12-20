@@ -22,6 +22,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -90,7 +91,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             return null;
         }
         AFolder tocFileLocation = getTocFileLocation(root);
-        return tocFileLocation.getWorkspaceRelativePath().relativize(tocFile.getWorkspaceRelativePath()).toString();
+        return PathUtil.toPortableString(
+                tocFileLocation.getWorkspaceRelativePath().relativize(tocFile.getWorkspaceRelativePath()));
     }
 
     @Override

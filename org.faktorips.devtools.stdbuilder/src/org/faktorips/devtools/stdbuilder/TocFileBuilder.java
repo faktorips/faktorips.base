@@ -32,6 +32,7 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -211,8 +212,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private void replaceTocFileIfContentHasChanged(IIpsProject ipsProject, AFile tocFile, String newContents)
-            {
+    private void replaceTocFileIfContentHasChanged(IIpsProject ipsProject, AFile tocFile, String newContents) {
         String oldContents = null;
         String charset = ipsProject.getXmlFileCharset();
         try {
@@ -355,7 +355,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         DateTime validTo = DateTime.createDateOnly(productCmpt.getValidTo());
 
         ProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
-                xmlContentRelativeFile.toString(), implementationClass, generationImplClass, validTo);
+                PathUtil.toPortableString(xmlContentRelativeFile), implementationClass, generationImplClass,
+                validTo);
         if (pcType.isChangingOverTime()) {
             createProductCmptGenerationTocEntries(productCmpt, xmlContentRelativeFile, entry);
         }
@@ -376,7 +377,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             String generationClassName = getBuilderSet().getProductCmptBuilder()
                     .getImplementationClass((IProductCmptGeneration)generation);
             genEntries.add(
-                    new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile.toString()));
+                    new GenerationTocEntry(entry, validFrom, generationClassName,
+                            xmlContentRelativeFile.toString().replaceAll("\\\\", "/")));
         }
         entry.setGenerationEntries(genEntries);
     }
@@ -392,7 +394,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String tableStructureName = getBuilderSet().getTableBuilder()
                 .getQualifiedClassName(tableStructure.getIpsSrcFile());
         TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
-                tableContents.getQualifiedName(), xmlRelativeFile.toString(), tableStructureName);
+                tableContents.getQualifiedName(), PathUtil.toPortableString(xmlRelativeFile),
+                tableStructureName);
         return entry;
     }
 
@@ -412,8 +415,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String objectId = packageRootName + "." + testCase.getQualifiedName(); //$NON-NLS-1$
         objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension(); //$NON-NLS-1$
 
-        String xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.TEST_CASE, TestCaseBuilder.class)
-                .getXmlContentRelativeFile(testCase.getIpsSrcFile()).toString();
+        String xmlResourceName = PathUtil
+                .toPortableString(getBuilderSet().getBuilderById(BuilderKindIds.TEST_CASE, TestCaseBuilder.class)
+                        .getXmlContentRelativeFile(testCase.getIpsSrcFile()));
         String testCaseTypeName = getBuilderSet()
                 .getBuilderById(BuilderKindIds.TEST_CASE_TYPE, TestCaseTypeClassBuilder.class)
                 .getQualifiedClassName(type);
@@ -442,7 +446,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         String enumTypeName = getBuilderSet().getEnumTypeBuilder().getQualifiedClassName(enumType);
         TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(),
-                xmlResourceName.toString(), enumTypeName);
+                PathUtil.toPortableString(xmlResourceName), enumTypeName);
         return entry;
     }
 

@@ -67,6 +67,11 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
         setControl(pageComposite);
     }
 
+    @Override
+    public boolean isPageVisible() {
+        return wizard.isProductCmptTypeAvailable();
+    }
+
     /**
      * Listener for the radio buttons.
      */
@@ -88,10 +93,5 @@ public class ConfigureProductCmptTypePage extends WizardPage implements IHiddenW
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
         }
-    }
-
-    @Override
-    public boolean isPageVisible() {
-        return wizard.isProductCmptTypeAvailable();
     }
 }

@@ -11,6 +11,7 @@ A table of property names that can be added by -D execution, setting properties 
 |faktorips.debuglog.options|debugLogOptions|
 |faktorips.repository.version|fipsRepositoryVersion|
 |faktorips.skip|skip|
+|git.fail.build|gitFailBuild|
 |jdk.dir|jdkDir|
 |jdk.id |jdkId|
 |repository.eclipse|eclipseRepository|

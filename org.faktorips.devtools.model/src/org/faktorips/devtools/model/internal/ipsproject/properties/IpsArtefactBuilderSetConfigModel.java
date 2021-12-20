@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -172,8 +173,10 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
                 continue;
             }
             String valueAsString = this.properties.get(name);
-            Object value = propertyDef.parseValue(valueAsString);
-            parsedValueMap.put(name, value);
+            if (IpsStringUtils.isNotBlank(valueAsString)) {
+                Object value = propertyDef.parseValue(valueAsString);
+                parsedValueMap.put(name, value);
+            }
         }
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {

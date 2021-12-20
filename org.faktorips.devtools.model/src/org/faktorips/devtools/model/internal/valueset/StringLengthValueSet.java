@@ -153,7 +153,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public boolean isEmpty() {
-        return isContainsNull() ? false : maximumLength != null && Integer.parseInt(maximumLength) == 0;
+        return maximumLength != null && Integer.parseInt(maximumLength) == 0;
     }
 
     @Override

@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -218,14 +219,18 @@ public class IpsPreferences implements IIpsModelPreferences {
                 if (inputContext != null) {
                     defaultLocale = inputContext.getLocale();
                 }
+                // CSOFF: IllegalCatch
             } catch (Throwable t) {
-                // We also want to catch errors because on a linux system without a X-Server the
-                // virtual mashine throws an InternalError!
+                // We also want to catch errors because on a Linux system without a X-Server the
+                // virtual machine throws an InternalError!
                 IpsPlugin
                         .log(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID,
                                 "Cannot load default locale from input context. Use system default locale. (Maybe there is no X Server)")); //$NON-NLS-1$
             }
-            if (defaultLocale == null) {
+            // CSON: IllegalCatch
+            if (defaultLocale == null || IpsStringUtils.isBlank(defaultLocale.getLanguage())) {
+                // FIPS-8512 on MacOS it is possible to configure a keyboard layout with only region
+                // and no language, which will show up as a locale like "_US_UserDefined_252"
                 defaultLocale = Locale.getDefault();
             }
         }

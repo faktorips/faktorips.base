@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.abstracttest.TestEclipseIpsModelExtensions;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.abstraction.AJavaProject;

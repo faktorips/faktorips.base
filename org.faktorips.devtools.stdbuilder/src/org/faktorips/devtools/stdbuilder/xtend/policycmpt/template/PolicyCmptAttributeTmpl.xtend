@@ -1,13 +1,17 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
+import org.faktorips.devtools.model.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeExtensionTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import org.faktorips.devtools.model.builder.naming.BuilderAspect
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter
 
 class PolicyCmptAttributeTmpl {
 
@@ -61,6 +65,7 @@ class PolicyCmptAttributeTmpl {
       private «javaClassName» «field(fieldName)» = «defaultValueCode»;
     «ENDIF»
   '''
+
   def package static abstractGetter(XPolicyAttribute it) '''
     /**
      * «inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
@@ -85,8 +90,14 @@ class PolicyCmptAttributeTmpl {
        «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overwrite)»
       public abstract void «method(methodNameSetter, javaClassName, "newValue")»;
     «ENDIF»
-    
   '''
+
+  def private static changesDatatype(XPolicyAttribute it) {
+    if(datatype instanceof EnumTypeDatatypeAdapter && overwrittenAttribute.datatype instanceof EnumTypeDatatypeAdapter) {
+      return (datatype as EnumTypeDatatypeAdapter).enumType != (overwrittenAttribute.datatype as EnumTypeDatatypeAdapter).enumType
+    }
+    return datatype != overwrittenAttribute.datatype;
+  }
 
   def package static getter(XPolicyAttribute it) '''
     «IF isGenerateGetter(genInterface())»
@@ -108,7 +119,7 @@ class PolicyCmptAttributeTmpl {
               return «defaultValueCode»;
               // end-user-code
             «ELSEIF overwrite»
-              return «IF datatype!=overwrittenAttribute.datatype»(«javaClassName») «ENDIF»super.«methodNameGetter»();
+              return «IF changesDatatype»(«javaClassName») «ENDIF»super.«methodNameGetter»();
             «ELSE»
               «IF changingOverTime»
                 «getPolicyCmptNode.productCmptGenerationNode.implClassName» productCmpt = «getPropertyValueContainer(false)»;
@@ -139,7 +150,7 @@ class PolicyCmptAttributeTmpl {
   def package static setter(XPolicyAttribute it) '''
     «IF generateSetter && !(genInterface() && isDerived)»
       /**
-       * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
+       * «inheritDocOrJavaDocIf(genInterface()||isDerived, "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
        «IF overwriteAbstract»
          *
          * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_PARAM", javaClassName, addImport(ClassCastException))»
@@ -150,7 +161,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
-      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
+      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface()||isDerived)»
       «IF !(isDerived && (!overwrite || overwriteAbstract))»«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)»«ENDIF»
       public void «IF overwriteAbstract»«method(methodNameSetter, overwrittenAttribute.javaClassName, "newValue")»«ELSE»«method(methodNameSetter, javaClassName, "newValue")»«ENDIF»
       «IF genInterface()»;«ELSE» {
@@ -181,55 +192,101 @@ class PolicyCmptAttributeTmpl {
     «ENDIF»
   '''
 
-  def package static allowedValuesMethod(XPolicyAttribute it) '''
+  def package static allowedValuesMethod(XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
     «IF generateGetAllowedValuesForAndGetDefaultValue»
       /**
+       «IF isOverwritingValueSetWithMoreConcreteType(rule.fromMethod) && !isValueSetDerived»
+       * «inheritDoc»
+       «ELSE»
        * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
-      «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
-       *
-       * «IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
+       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+       «ENDIF»
+       *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+       *«IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
        */
-      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
-      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor)»
-      public «IF isAbstract()»abstract «valueSetJavaClassNameWithWildcard»«ELSE»«valueSetJavaClassName»«ENDIF» «method(methodNameGetAllowedValuesFor, IValidationContext(), "context")»
+      «IF isPublishedInterfaceModifierRelevant(rule)»
+         «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
+      «ENDIF»
+      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule))»
+      «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
+      public «IF isAbstract()»abstract «valueSetJavaClassNameWithWildcard»«ELSE»«valueSetJavaClassName»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
       «IF genInterface() || isAbstract()»;«ELSE» {
-          «IF productRelevant»
-            return «getPropertyValueContainer(published)».«methodNameGetAllowedValuesFor»(context);
+          «IF productRelevant && !rule.isDelegate»
+            return «getPropertyValueContainer(published)».«getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
           «ELSEIF isValueSetDerived»
             // begin-user-code
-            «IF overwritingValueSetWithDerived»
-              return super.«overwrittenAttribute.methodNameGetAllowedValuesFor»(context);
+            «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»
+              return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(null);
+            «ELSEIF overwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType && !genInterface»
+              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»);
+            «ELSEIF overwritingValueSetWithDerived && !genInterface && !rule.isDelegate»
+              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
+            «ELSEIF overwritingValueSetWithDerived && !genInterface && rule.isDelegate»
+              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
             «ELSE»
               return «valuesetCode»;
             «ENDIF»
             // end-user-code
           «ELSE»
-            return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
+              «IF rule.isDelegate»
+                return «getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
+              «ELSE»
+                return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
+              «ENDIF»
           «ENDIF»
           }
       «ENDIF»
-      «IF overwritingValueSetWithMoreConcreteType»
+    «ENDIF»
+  '''
+ 
+  def package static allowedValuesMethodWithMoreConcreteTypeForByType(XPolicyAttribute it) '''
+  
+    «IF generateAllowedValuesMethodWithMoreConcreteTypeForByType && generateGetAllowedValuesForAndGetDefaultValue && overwritingValueSetWithMoreConcreteTypeForByType»
         /**
          * «inheritDoc»
          * @generated
          */
         @Override
-        public «valueSetJavaClassName» «method(overwrittenAttribute.methodNameGetAllowedValuesFor, IValidationContext(), "context")» {
-          return «methodNameGetAllowedValuesFor»(context);
+        public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE), IValidationContext(), "context")»
+        «IF genInterface()»;«ELSE» {
+          return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context);
         }
-      «ENDIF»
+        «ENDIF»
+    «ENDIF»    
+    ''' 
+
+   def package static allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent(XPolicyAttribute it) '''
+     «IF generateAllowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent && generateGetAllowedValuesForAndGetDefaultValue && isOverwritingValueSetWithMoreConcreteTypeForByTypeWithBothTypeParent»
+        /**
+         * «inheritDoc»
+         * @generated
+         */
+        @Override
+        public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED))»
+        «IF genInterface()»;«ELSE» {
+          return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(null);
+        }
+        «ENDIF»
     «ENDIF»
+    '''
+
+  def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XPolicyCmptClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
+        /**
+         * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
+         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         * @generated
+         */
+        «overrideAnnotationForPublishedMethodImplementation»
+        «IF !(valueSetMethods.generateByType && generateBothMethodsToGetAllowedValues)»
+            «attributeSuperType.getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
+        «ENDIF»
+        «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
+        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
+        «IF genInterface() || isAbstract()»;«ELSE» {
+          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+        }
+        «ENDIF»
   '''
-
-  protected def static boolean isOverwritingValueSetWithMoreConcreteType(XPolicyAttribute it) {
-    overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue &&
-      !overwrittenAttribute.methodNameGetAllowedValuesFor.equals(methodNameGetAllowedValuesFor) && !genInterface
-  }
-
-  protected def static boolean isOverwritingValueSetWithDerived(XPolicyAttribute it) {
-    isValueSetDerived && overwrite && overwrittenAttribute.generateGetAllowedValuesForAndGetDefaultValue &&
-      !genInterface
-  }
 
   def package static initConfigurableAttribute(XPolicyAttribute it) '''
     «IF generateInitWithProductData»

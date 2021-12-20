@@ -83,6 +83,22 @@ public class InverseAssociationPage extends WizardPage {
         setControl(pageComposite);
     }
 
+    public void setVisibleStateForDetailToMasterAssociation(boolean detailToMasterAssociation) {
+        newInverseAssociation.setVisible(!detailToMasterAssociation);
+        noInverseAssociation.setVisible(!detailToMasterAssociation);
+        if (detailToMasterAssociation) {
+            if (detailToMasterState) {
+                return;
+            }
+            detailToMasterState = true;
+            wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
+            newInverseAssociation.setSelection(false);
+            useExistingAssociation.setSelection(true);
+            noInverseAssociation.setSelection(false);
+            // wizard.handleInverseAssociationSelectionState();
+        }
+    }
+
     /**
      * Listener for the radio buttons.
      */
@@ -107,22 +123,6 @@ public class InverseAssociationPage extends WizardPage {
         @Override
         public void widgetDefaultSelected(SelectionEvent e) {
             widgetSelected(e);
-        }
-    }
-
-    public void setVisibleStateForDetailToMasterAssociation(boolean detailToMasterAssociation) {
-        newInverseAssociation.setVisible(!detailToMasterAssociation);
-        noInverseAssociation.setVisible(!detailToMasterAssociation);
-        if (detailToMasterAssociation) {
-            if (detailToMasterState) {
-                return;
-            }
-            detailToMasterState = true;
-            wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.USE_EXISTING_INVERSE_ASSOCIATION);
-            newInverseAssociation.setSelection(false);
-            useExistingAssociation.setSelection(true);
-            noInverseAssociation.setSelection(false);
-            // wizard.handleInverseAssociationSelectionState();
         }
     }
 }

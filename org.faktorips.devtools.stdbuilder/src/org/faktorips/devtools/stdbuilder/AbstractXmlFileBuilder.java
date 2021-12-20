@@ -14,11 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -106,8 +106,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     public Path getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
         String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
-        String[] packages = packageString.split("\\.");
-        Path pathToPack = Path.of(packages[0], Arrays.copyOfRange(packages, 1, packages.length));
+        Path pathToPack = Path.of(packageString.replace('.', '/'));
         return pathToPack.resolve(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + ".xml");
     }
 
@@ -116,7 +115,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      */
     public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) {
         return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
-                .getFile(getXmlContentRelativeFile(ipsSrcFile));
+                .getFile(PathUtil.toPortableString(getXmlContentRelativeFile(ipsSrcFile)));
     }
 
     @Override

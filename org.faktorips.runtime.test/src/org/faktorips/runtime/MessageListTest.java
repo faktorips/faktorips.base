@@ -282,7 +282,7 @@ public class MessageListTest {
         messageList.add(new Message("none", "none", Message.NONE));
 
         MessageList subList = messageList.getSubList(5);
-        assertSame(subList.size(), messageList.size());
+        assertEquals(subList.size(), messageList.size());
 
         Message message = new Message("error1", "error1", Message.WARNING);
         subList.add(message);

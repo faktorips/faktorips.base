@@ -55,8 +55,8 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         } else if (IIpsLoggingFrameworkConnector.LEVEL_ERROR == level) {
             sb.append(builder.buildError(message));
         } else {
-            throw new IllegalArgumentException("The value of the parameter level is not valid. " + //$NON-NLS-1$
-                    "Use the level constants of " + IIpsLoggingFrameworkConnector.class + "."); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IllegalArgumentException("The value of the parameter level is not valid. " //$NON-NLS-1$
+                    + "Use the level constants of " + IIpsLoggingFrameworkConnector.class + "."); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return sb.toString();
     }

@@ -342,7 +342,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     private String getPropertyValue(Properties properties, Path path, String postfix) {
-        String key = path.toString() + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + postfix;
+        String key = PathUtil.toPortableString(path) + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + postfix;
         return properties.getProperty(key);
     }
 

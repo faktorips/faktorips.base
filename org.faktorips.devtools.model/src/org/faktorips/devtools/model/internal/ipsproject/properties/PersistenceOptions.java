@@ -34,7 +34,7 @@ public class PersistenceOptions implements IPersistenceOptions {
 
     private int maxTableColumnScale = 31;
     private int maxTableColumnPrecision = 31;
-    private int maxTableColumnSize = 4000;
+    private int maxTableColumnSize = 1000;
     // note that only the maximum could be changed in the ips-project-file, the minimum is always 1
     private int minTableColumnScale = 1;
     private int minTableColumnPrecision = 1;
@@ -52,7 +52,7 @@ public class PersistenceOptions implements IPersistenceOptions {
      * <pre>
      * {@code
      * <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
-     *       maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="4000"
+     *       maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="1000"
      *       allowLazyFetchForSingleValuedAssociations="true">
      *      <TableNamingStrategy
      *          id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>

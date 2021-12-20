@@ -2,6 +2,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
@@ -20,6 +21,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class PolicyCmptTmpl {
 
@@ -107,12 +109,25 @@ def static String body(XPolicyCmptClass it) '''
 
 
         «FOR it : attributesIncludingAbstract»
-            «allowedValuesMethod»
+
+            «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
+                «allowedValuesMethod(rule)»
+            «ENDFOR»
+            «allowedValuesMethodWithMoreConcreteTypeForByType»
+            «allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent»
             «IF !it.isAbstract»
                 «getter»
                 «setter»
                 «setterInternal»
             «ENDIF»
+        «ENDFOR»
+
+        «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+            «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_BY_TYPE)»
+        «ENDFOR»
+
+        «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+            «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_UNIFIED)»
         «ENDFOR»
 
         «FOR it : associations» «methods» «ENDFOR»
@@ -387,7 +402,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
         }
     «ENDIF»
  
-    «IF firstDependantTypeInHierarchy»
+    «IF firstDependantConfiguredTypeInHierarchy»
         /**
          * «inheritDoc»
          *

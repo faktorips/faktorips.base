@@ -183,7 +183,9 @@ public abstract class AbstractAbstractionTestSetup {
      */
     public String readFrom(InputStream is) {
         try {
-            return IOUtils.toString(is, Charset.defaultCharset());
+            String inputString = IOUtils.toString(is, Charset.defaultCharset());
+            is.close();
+            return inputString;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
