@@ -139,7 +139,7 @@ class PolicyCmptAttributeTmpl {
   def package static setter(XPolicyAttribute it) '''
     «IF generateSetter && !(genInterface() && isDerived)»
       /**
-       * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
+       * «inheritDocOrJavaDocIf(genInterface()||isDerived, "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
        «IF overwriteAbstract»
          *
          * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_PARAM", javaClassName, addImport(ClassCastException))»
@@ -150,7 +150,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
-      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
+      «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface()||isDerived)»
       «IF !(isDerived && (!overwrite || overwriteAbstract))»«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)»«ENDIF»
       public void «IF overwriteAbstract»«method(methodNameSetter, overwrittenAttribute.javaClassName, "newValue")»«ELSE»«method(methodNameSetter, javaClassName, "newValue")»«ENDIF»
       «IF genInterface()»;«ELSE» {
