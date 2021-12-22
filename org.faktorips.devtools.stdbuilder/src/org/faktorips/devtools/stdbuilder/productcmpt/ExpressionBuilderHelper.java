@@ -69,9 +69,9 @@ public class ExpressionBuilderHelper {
                 JavaCodeFragment convertedFrag = conversion.getConversionCode(result.getDatatype(), attributeDatatype,
                         result.getCodeFragment());
                 if (convertedFrag == null) {
-                    return new JavaCodeFragment("// Unable to convert the expression \"" + //$NON-NLS-1$
-                            result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() + //$NON-NLS-1$
-                            " to the datatype " + attributeDatatype); //$NON-NLS-1$
+                    return new JavaCodeFragment("// Unable to convert the expression \"" //$NON-NLS-1$
+                            + result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() //$NON-NLS-1$
+                            + " to the datatype " + attributeDatatype); //$NON-NLS-1$
                 }
                 return convertedFrag;
             }

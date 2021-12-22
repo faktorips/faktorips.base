@@ -753,8 +753,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             return StringUtil.readFromInputStream(javaFileContents, charset);
         } catch (IOException e) {
             throw new CoreException(
-                    new IpsStatus("An exception ocurred while trying to read the contents of the java file " + //$NON-NLS-1$
-                            javaFile, e));
+                    new IpsStatus("An exception ocurred while trying to read the contents of the java file " //$NON-NLS-1$
+                            + javaFile, e));
         } finally {
             closeStream(javaFileContents);
         }
@@ -877,11 +877,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     private JControlModel getJControlModel() {
         if (model == null) {
-            throw new IllegalStateException("The jmerge control model has not been set, " + //$NON-NLS-1$
-                    "while merging is activated. Possible reason for that might be that " + //$NON-NLS-1$
-                    "the builder initialization method beforeBuildProcess(IIpsProject, int) " + //$NON-NLS-1$
-                    "this class: " + JavaSourceFileBuilder.class + " has been overridden and " + //$NON-NLS-1$ //$NON-NLS-2$
-                    "a call to the super class method has been forgotten."); //$NON-NLS-1$
+            throw new IllegalStateException("The jmerge control model has not been set, " //$NON-NLS-1$
+                    + "while merging is activated. Possible reason for that might be that " //$NON-NLS-1$
+                    + "the builder initialization method beforeBuildProcess(IIpsProject, int) " //$NON-NLS-1$
+                    + "this class: " + JavaSourceFileBuilder.class + " has been overridden and " //$NON-NLS-1$ //$NON-NLS-2$
+                    + "a call to the super class method has been forgotten."); //$NON-NLS-1$
         }
         return model;
     }
@@ -917,8 +917,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             merger.merge();
             return merger.getTargetCompilationUnitContents();
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus("An error occurred while trying to merge " + //$NON-NLS-1$
-                    "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
+            throw new CoreException(new IpsStatus("An error occurred while trying to merge " //$NON-NLS-1$
+                    + "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
         // CSON: IllegalCatch
     }

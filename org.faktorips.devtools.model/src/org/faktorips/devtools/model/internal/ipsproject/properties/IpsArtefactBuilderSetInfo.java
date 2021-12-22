@@ -83,8 +83,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             builderSet.setIpsProject(ipsProject);
             return builderSet;
         } catch (ClassCastException e) {
-            IpsLog.log(new IpsStatus("The registered builder set " + getBuilderSetClass() + //$NON-NLS-1$
-                    " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
+            IpsLog.log(new IpsStatus("The registered builder set " + getBuilderSetClass() //$NON-NLS-1$
+                    + " doesn't implement the " + IIpsArtefactBuilderSet.class + " interface.", e)); //$NON-NLS-1$ //$NON-NLS-2$
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
@@ -113,8 +113,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             try {
                 builderSetClass = Platform.getBundle(namespace).loadClass(builderSetClassName);
             } catch (ClassNotFoundException e) {
-                IpsLog.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName + //$NON-NLS-1$
-                        " with the id " + builderSetId)); //$NON-NLS-1$
+                IpsLog.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName //$NON-NLS-1$
+                        + " with the id " + builderSetId)); //$NON-NLS-1$
             }
         }
         return builderSetClass;
@@ -236,8 +236,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                     String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
                     if (StringUtils.isEmpty(builderSetClassName)) {
                         logger.log(new IpsStatus(
-                                "The class attribute of the IpsArtefactBuilderSet extension with the extension id " + //$NON-NLS-1$
-                                        extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
+                                "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
+                                        + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
                         continue;
                     }
 

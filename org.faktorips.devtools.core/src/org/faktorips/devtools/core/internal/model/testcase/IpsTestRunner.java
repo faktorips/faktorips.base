@@ -62,8 +62,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
+import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.testcase.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -475,8 +475,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             ILaunchConfigurationWorkingCopy wc) throws CoreException {
 
         if (configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "") //$NON-NLS-1$
-                .equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) && //$NON-NLS-1$
-                configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
+                .equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) //$NON-NLS-1$
+                && configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         }
         return false;

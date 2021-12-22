@@ -193,8 +193,8 @@ public abstract class Key extends AtomicIpsObjectPart implements IKey {
             }
         }
         throw new IllegalArgumentException(
-                "The provided item name: " + itemName + " doesn't match with one of the items" + //$NON-NLS-1$ //$NON-NLS-2$
-                        " in the itme list of this key."); //$NON-NLS-1$
+                "The provided item name: " + itemName + " doesn't match with one of the items" //$NON-NLS-1$ //$NON-NLS-2$
+                        + " in the itme list of this key."); //$NON-NLS-1$
     }
 
     @Override

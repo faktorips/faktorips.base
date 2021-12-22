@@ -1067,8 +1067,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (type instanceof ValueDatatype) {
                 return new ArrayOfValueDatatype(type, arrayDimension);
             }
-            throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
-                    "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+            throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype //$NON-NLS-1$
+                    + "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
         return getEnumTypeDatatypeAdapter(qualifiedNameDatatype, this);
     }
@@ -1105,8 +1105,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
-                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype //$NON-NLS-1$
+                + "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     private ValueDatatype findValueDatatypeInclSubprojects(IpsProject ipsProject, String qualifiedName) {
@@ -1158,8 +1158,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
-                "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype //$NON-NLS-1$
+                + "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
     private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IIpsProject ipsProject,

@@ -444,27 +444,27 @@ public class MessageCueController {
         /**
          * Distance of info hover arrow from left side.
          */
-        private int HD = 10;
+        private int hd = 10;
 
         /**
          * Width of info hover arrow.
          */
-        private int HW = 8;
+        private int hw = 8;
 
         /**
          * Height of info hover arrow.
          */
-        private int HH = 10;
+        private int hh = 10;
 
         /**
          * Margin around info hover text.
          */
-        private int LABEL_MARGIN = 2;
+        private int labelMargin = 2;
 
-        private int defaultOffsetOfArrow = HD + HW / 2;
+        private int defaultOffsetOfArrow = hd + hw / 2;
 
         Hover(Control control, int arrowOffset) {
-            HD = arrowOffset;
+            hd = arrowOffset;
             createHover(control);
         }
 
@@ -479,7 +479,7 @@ public class MessageCueController {
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
             fHoverShell.addPaintListener(pe -> {
-                pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
+                pe.gc.drawText(fText, labelMargin, labelMargin);
                 if (!fgCarbon) {
                     pe.gc.drawPolygon(getPolygon(true));
                 }
@@ -489,10 +489,10 @@ public class MessageCueController {
         int[] getPolygon(boolean border) {
             Point e = getExtent();
             if (border) {
-                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, HD + HW, e.y - 1, HD + HW / 2, e.y + HH - 1, HD,
+                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, hd + hw, e.y - 1, hd + hw / 2, e.y + hh - 1, hd,
                         e.y - 1, 0, e.y - 1, 0, 0 };
             } else {
-                return new int[] { 0, 0, e.x, 0, e.x, e.y, HD + HW, e.y, HD + HW / 2, e.y + HH, HD, e.y, 0, e.y, 0, 0 };
+                return new int[] { 0, 0, e.x, 0, e.x, e.y, hd + hw, e.y, hd + hw / 2, e.y + hh, hd, e.y, 0, e.y, 0, 0 };
             }
         }
 
@@ -538,7 +538,7 @@ public class MessageCueController {
         void setLocation() {
             if (control != null) {
                 int h = getExtent().y;
-                Point point = control.toDisplay(-HD + HW / 2, -h - HH + 1);
+                Point point = control.toDisplay(-hd + hw / 2, -h - hh + 1);
                 fHoverShell.setLocation(point.x, point.y);
             }
         }
@@ -547,8 +547,8 @@ public class MessageCueController {
             GC gc = new GC(fHoverShell);
             Point e = gc.textExtent(fText);
             gc.dispose();
-            e.x += LABEL_MARGIN * 2;
-            e.y += LABEL_MARGIN * 2;
+            e.x += labelMargin * 2;
+            e.y += labelMargin * 2;
             return e;
         }
 

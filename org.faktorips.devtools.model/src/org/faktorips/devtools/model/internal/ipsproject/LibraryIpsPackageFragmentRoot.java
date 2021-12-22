@@ -155,8 +155,8 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     public void delete() throws CoreException {
-        throw new UnsupportedOperationException("IPS Package Fragment Roots that are stored" + //$NON-NLS-1$
-                " in an archive cannot be deleted."); //$NON-NLS-1$
+        throw new UnsupportedOperationException("IPS Package Fragment Roots that are stored" //$NON-NLS-1$
+                + " in an archive cannot be deleted."); //$NON-NLS-1$
     }
 
     @Override

@@ -1429,8 +1429,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     // @formatter:on
 
     private void createProductReleaseComment(Element parentEl) {
-        String s = "Product Release" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
-                "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
+        String s = "Product Release" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, the product defintion release is configured. You could reference an release extension" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "by specifying the releaseExtensionId. This extension is used by the release builder wizard." //$NON-NLS-1$
                 + System.lineSeparator()
@@ -1438,8 +1438,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "The version of the latest release is also configured in this element. If you use the release builder wizard" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
-                + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$
-                "<" //$NON-NLS-1$
+                + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$
+                + "<" //$NON-NLS-1$
                 + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + System.lineSeparator();
         createDescriptionComment(s, parentEl);
@@ -1447,8 +1447,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // @formatter:off
     private void createVersionComment(Element parentEl) {
-        String s = "Version" + System.lineSeparator() + " " + System.lineSeparator() + //$NON-NLS-1$ //$NON-NLS-2$
-                "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
+        String s = "Version" + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$ //$NON-NLS-2$
+                + "In this section, the version for this project is specified. In alternativ to directly see a version" //$NON-NLS-1$
                 + System.lineSeparator()
                 + "it is possible to configure a version provider." //$NON-NLS-1$
                 + System.lineSeparator()

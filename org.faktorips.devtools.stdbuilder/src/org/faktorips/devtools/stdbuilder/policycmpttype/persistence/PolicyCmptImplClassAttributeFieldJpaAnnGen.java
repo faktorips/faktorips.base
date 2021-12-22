@@ -104,7 +104,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     }
 
     /**
-     * <code> Converter(name = "gender", converterClass = example.Gender) Convert("gender") <code>
+     * <code> Converter(name = "gender", converterClass = example.Gender) Convert("gender") </code>
      */
     private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
