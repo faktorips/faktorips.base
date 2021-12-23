@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.plugin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -59,7 +60,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     private final Supplier<IClassLoaderProviderFactory> classLoaderProviderFactory;
 
-    private final Supplier<Map<Version, IIpsProjectMigrationOperationFactory>> registeredMigrationOperations;
+    private final Function<String, Map<Version, IIpsProjectMigrationOperationFactory>> registeredMigrationOperations;
 
     private final Supplier<SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>> flFunctionResolvers;
 
@@ -100,7 +101,9 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         ipsWorkspaceInteractions = new IpsWorkspaceInteractionsExtension(extensionPoints);
         ipsProjectConfigurators = new IpsProjectConfigurerExtension(extensionPoints);
         classLoaderProviderFactory = new ClassLoaderProviderFactoryExtension(extensionPoints);
-        registeredMigrationOperations = new MigrationOperationExtensions(extensionPoints);
+        MigrationOperationExtensions migrationOperationExtensions = new MigrationOperationExtensions(extensionPoints);
+        registeredMigrationOperations = contributorName -> migrationOperationExtensions.get()
+                .computeIfAbsent(contributorName, $ -> Map.of());
         flFunctionResolvers = new FunctionResolverFactoryExtensions(extensionPoints);
         loggingFrameworkConnectors = new org.faktorips.devtools.model.plugin.extensions.LoggingFrameworkConnectorExtensions(
                 extensionPoints);
@@ -148,9 +151,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     @Override
     public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
-        // FIXME filter by contributor
-        // if (!contributorName.equals(configElement.getContributor().getName())) {
-        return registeredMigrationOperations.get();
+        return registeredMigrationOperations.apply(contributorName);
     }
 
     @Override

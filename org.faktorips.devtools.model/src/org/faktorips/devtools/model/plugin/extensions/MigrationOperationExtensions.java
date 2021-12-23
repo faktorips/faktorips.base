@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -23,7 +23,7 @@ import org.osgi.framework.Version;
  * implementations of the extension point {@value #EXTENSION_POINT_ID_MIGRATION_OPERATION}.
  */
 public class MigrationOperationExtensions extends
-        LazyCollectionExtension<IIpsProjectMigrationOperationFactory, Map<Version, IIpsProjectMigrationOperationFactory>> {
+        LazyCollectionExtension<IIpsProjectMigrationOperationFactory, Map<String, Map<Version, IIpsProjectMigrationOperationFactory>>> {
 
     /**
      * The extension point id of the extension point
@@ -43,10 +43,14 @@ public class MigrationOperationExtensions extends
                 EXTENSION_POINT_ID_MIGRATION_OPERATION,
                 ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
                 IIpsProjectMigrationOperationFactory.class,
-                HashMap::new,
-                (configElement, factory, factoryByVersionMap) -> factoryByVersionMap.put(
-                        Version.parseVersion(configElement.getAttribute(CONFIG_ELEMENT_PROPERTY_TARGET_VERSION)),
-                        factory));
+                LinkedHashMap::new,
+                (configElement, factory, factoryByVersionByContributorMap) -> {
+                    Map<Version, IIpsProjectMigrationOperationFactory> factoryByVersionMap = factoryByVersionByContributorMap
+                            .computeIfAbsent(configElement.getContributor().getName(), $ -> new LinkedHashMap<>());
+                    factoryByVersionMap.put(
+                            Version.parseVersion(configElement.getAttribute(CONFIG_ELEMENT_PROPERTY_TARGET_VERSION)),
+                            factory);
+                });
     }
 
 }
