@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -44,27 +44,27 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.ALogListener;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
-import org.faktorips.devtools.model.abstraction.AProject;
-import org.faktorips.devtools.model.abstraction.AResource;
-import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
-import org.faktorips.devtools.model.abstraction.AWorkspaceRoot;
-import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -559,8 +559,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         typeADescription.setText("foo");
         typeA.getIpsSrcFile().save(true, null);
         final List<IStatus> logs = new LinkedList<>();
-        ILog log = IpsLog.get();
-        ILogListener logListener = (status, plugin) -> logs.add(status);
+        ALog log = IpsLog.get();
+        ALogListener logListener = (status, plugin) -> logs.add(status);
         log.addLogListener(logListener);
         try {
             ICoreRunnable action = $ -> {

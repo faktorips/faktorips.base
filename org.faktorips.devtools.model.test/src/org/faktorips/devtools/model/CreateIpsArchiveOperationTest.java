@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model;
 
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,9 +22,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.abstraction.ABuildKind;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchive;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

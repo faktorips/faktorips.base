@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 

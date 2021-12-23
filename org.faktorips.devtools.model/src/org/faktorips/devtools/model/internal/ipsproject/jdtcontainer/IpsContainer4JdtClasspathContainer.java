@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;

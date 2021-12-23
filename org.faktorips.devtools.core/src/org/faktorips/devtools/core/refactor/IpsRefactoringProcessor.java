@@ -25,7 +25,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;

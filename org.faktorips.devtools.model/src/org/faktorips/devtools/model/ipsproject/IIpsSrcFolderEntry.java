@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AFolder;
 
 /**
  * An object path entry that defines a folder containing Faktor-IPS source files.

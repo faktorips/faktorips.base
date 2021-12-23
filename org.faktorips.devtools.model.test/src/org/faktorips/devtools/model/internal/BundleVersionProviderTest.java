@@ -23,8 +23,8 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
 import org.faktorips.devtools.model.IVersion;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;

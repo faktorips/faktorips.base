@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

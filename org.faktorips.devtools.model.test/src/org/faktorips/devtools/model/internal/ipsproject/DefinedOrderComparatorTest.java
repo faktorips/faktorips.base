@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;

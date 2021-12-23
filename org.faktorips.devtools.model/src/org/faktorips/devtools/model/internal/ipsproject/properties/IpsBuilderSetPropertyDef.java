@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
@@ -203,7 +203,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             String builderSetId,
             Map<String, Object> properties,
             IConfigurationElement element,
-            ILog logger) {
+            ALog logger) {
 
         if ("extensionPoint".equals(type)) { //$NON-NLS-1$
 
@@ -238,7 +238,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
     }
 
-    private static final boolean retrieveProperties(ILog logger,
+    private static final boolean retrieveProperties(ALog logger,
             IExtensionRegistry registry,
             String builderSetId,
             IConfigurationElement element,
@@ -297,7 +297,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     public static final IIpsBuilderSetPropertyDef loadExtensions(IConfigurationElement element,
             IExtensionRegistry registry,
             String builderSetId,
-            ILog logger,
+            ALog logger,
             IIpsModel ipsModel) {
 
         Map<String, Object> properties = new HashMap<>();

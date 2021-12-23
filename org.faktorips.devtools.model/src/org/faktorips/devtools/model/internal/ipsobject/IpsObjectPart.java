@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;

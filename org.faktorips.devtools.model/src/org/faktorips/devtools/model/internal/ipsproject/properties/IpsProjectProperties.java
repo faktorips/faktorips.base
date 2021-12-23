@@ -34,7 +34,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;

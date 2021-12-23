@@ -10,7 +10,7 @@
 
 package org.faktorips.abstracttest.matcher;
 
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

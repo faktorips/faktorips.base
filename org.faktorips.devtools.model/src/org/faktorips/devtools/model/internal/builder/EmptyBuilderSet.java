@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,13 +37,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AProject;
-import org.faktorips.devtools.model.abstraction.AResource;
-import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
-import org.faktorips.devtools.model.abstraction.AResourceDelta;
-import org.faktorips.devtools.model.abstraction.AWorkspaceRoot;
-import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.AbstractIpsStorage;

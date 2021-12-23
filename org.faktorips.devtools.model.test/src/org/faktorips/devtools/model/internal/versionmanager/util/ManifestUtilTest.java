@@ -23,7 +23,7 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.service.resolver.VersionRange;
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.internal.versionmanager.util.ManifestUtil.ManifestFactory;
 import org.junit.Before;
 import org.junit.Test;

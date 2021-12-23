@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
@@ -201,7 +201,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             String builderSetId,
             IIpsModel ipsModel,
             IConfigurationElement element,
-            ILog logger) {
+            ALog logger) {
 
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren(BUILDER_SET_PROPERTY_DEF);
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<>();
@@ -219,7 +219,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * Loads IpsArtefactBuilderSetInfos from the extension registry.
      */
     public static final void loadExtensions(IExtensionRegistry registry,
-            ILog logger,
+            ALog logger,
             List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
         if (Abstractions.isEclipseRunning()) {

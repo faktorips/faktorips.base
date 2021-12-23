@@ -22,7 +22,7 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.ContentChangeEvent;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;

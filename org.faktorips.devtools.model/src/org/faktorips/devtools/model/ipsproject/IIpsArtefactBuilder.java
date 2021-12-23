@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import org.eclipse.core.runtime.MultiStatus;
-import org.faktorips.devtools.model.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 

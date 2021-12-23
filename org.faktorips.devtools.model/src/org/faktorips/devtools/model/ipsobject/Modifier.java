@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.model.abstraction.AAdaptersFactory;
+import org.faktorips.devtools.abstraction.AAdaptersFactory;
 
 /**
  * The kind of modifiers.

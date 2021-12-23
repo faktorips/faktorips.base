@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.model.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta;
 
 /**
  * An object path entry for an IPS archive.

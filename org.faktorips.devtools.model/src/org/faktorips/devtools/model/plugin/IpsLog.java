@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.plugin;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.abstraction.Abstractions;
 
 public class IpsLog {
 
@@ -24,7 +24,7 @@ public class IpsLog {
         // no instances
     }
 
-    public static ILog get() {
+    public static ALog get() {
         return Abstractions.getLog();
     }
 

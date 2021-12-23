@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;

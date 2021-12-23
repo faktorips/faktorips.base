@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.internal;
 
 import static java.util.function.Predicate.not;
-import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +54,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.DateDatatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
+import org.faktorips.datatype.joda.LocalTimeDatatype;
+import org.faktorips.datatype.joda.MonthDayDatatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.abstraction.AWorkspace;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -67,13 +79,6 @@ import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AProject;
-import org.faktorips.devtools.model.abstraction.AProject.PlainJavaProject;
-import org.faktorips.devtools.model.abstraction.AResource;
-import org.faktorips.devtools.model.abstraction.AResource.AResourceType;
-import org.faktorips.devtools.model.abstraction.AWorkspace;
-import org.faktorips.devtools.model.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -1103,6 +1108,28 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     createDatatypeDefinition(datatypesMap, extension);
                 }
             }
+        } else {
+            // same order as in the extensions
+            // TODO Über ModelExtensions laden
+            Arrays.asList(
+                    Datatype.STRING,
+                    Datatype.INTEGER,
+                    Datatype.LONG,
+                    Datatype.BOOLEAN,
+                    new DateDatatype(),
+                    Datatype.GREGORIAN_CALENDAR,
+                    Datatype.DECIMAL,
+                    Datatype.MONEY,
+                    Datatype.DOUBLE,
+                    Datatype.PRIMITIVE_BOOLEAN,
+                    Datatype.PRIMITIVE_INT,
+                    Datatype.PRIMITIVE_LONG,
+                    Datatype.BIG_DECIMAL,
+                    new LocalDateDatatype(),
+                    new LocalTimeDatatype(),
+                    new LocalDateTimeDatatype(),
+                    new MonthDayDatatype())
+                    .forEach(d -> datatypesMap.put(d.getName(), d));
         }
         return datatypesMap;
     }

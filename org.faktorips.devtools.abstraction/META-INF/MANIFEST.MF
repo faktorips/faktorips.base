@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Faktor-IPS Abstractions
+Bundle-SymbolicName: org.faktorips.devtools.abstraction;singleton:=true
+Bundle-Version: 22.6.0.qualifier
+Bundle-Vendor: Faktor Zehn GmbH
+Require-Bundle: org.faktorips.runtime;visibility:=reexport,
+ org.faktorips.util;visibility:=reexport,
+ org.eclipse.core.runtime;bundle-version="3.15.200";visibility:=reexport,
+ org.eclipse.core.resources;bundle-version="3.13.300";visibility:=reexport,
+ org.eclipse.jdt.core;bundle-version="3.17.0";visibility:=reexport
+Export-Package: org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.eclipse,
+ org.faktorips.devtools.abstraction.mapping,
+ org.faktorips.devtools.abstraction.plainjava,
+ org.faktorips.devtools.abstraction.plainjava.internal;x-friends:="org.faktorips.abstracttest,org.faktorips.devtools.model,org.faktorips.devtools.model.test",
+ org.faktorips.devtools.model.exception
+Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.faktorips.devtools.abstraction.eclipse.EclipseImplementation

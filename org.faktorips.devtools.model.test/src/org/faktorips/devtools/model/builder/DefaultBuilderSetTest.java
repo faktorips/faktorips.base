@@ -21,7 +21,7 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;

@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;

@@ -17,7 +17,7 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.model.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**

@@ -27,7 +27,7 @@ import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
-import org.faktorips.devtools.model.abstraction.AProject.AEclipseProject;
+import org.faktorips.devtools.abstraction.AProject.AEclipseProject;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;

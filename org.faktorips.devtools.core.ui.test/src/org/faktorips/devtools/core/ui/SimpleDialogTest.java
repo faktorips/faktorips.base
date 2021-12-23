@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui;
 import static org.junit.Assert.fail;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @author Thorsten Guenther
  */
-public class SimpleDialogTest extends AbstractIpsPluginTest implements ILogListener {
+public class SimpleDialogTest extends AbstractIpsPluginTest implements ALogListener {
 
     @Override
     @Before

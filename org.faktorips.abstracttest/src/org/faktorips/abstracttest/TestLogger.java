@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
-import org.osgi.framework.Bundle;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.ALogListener;
 
 /**
  * An implementation of the {@link ILog} interface for testing purposes. Not all of the methods are
@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
  * 
  * @author Peter Erzberger
  */
-public class TestLogger implements ILog {
+public class TestLogger implements ALog {
 
     private List<IStatus> logEntries = new ArrayList<>();
 
@@ -47,16 +47,8 @@ public class TestLogger implements ILog {
      * Throws RuntimeException
      */
     @Override
-    public void addLogListener(ILogListener listener) {
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    /**
-     * Throws RuntimeException
-     */
-    @Override
-    public Bundle getBundle() {
-        throw new RuntimeException("Not implemented yet.");
+    public void addLogListener(ALogListener listener) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -68,8 +60,13 @@ public class TestLogger implements ILog {
      * Throws RuntimeException
      */
     @Override
-    public void removeLogListener(ILogListener listener) {
-        throw new RuntimeException("Not implemented yet.");
+    public void removeLogListener(ALogListener listener) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public <T> T unwrap() {
+        throw new UnsupportedOperationException();
     }
 
 }

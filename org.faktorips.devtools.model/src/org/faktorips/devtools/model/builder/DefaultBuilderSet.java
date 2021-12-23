@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,9 +21,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.abstraction.ABuildKind;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.naming.JavaPackageStructure;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

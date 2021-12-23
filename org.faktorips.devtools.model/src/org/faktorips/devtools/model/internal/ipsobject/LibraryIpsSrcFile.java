@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragment;

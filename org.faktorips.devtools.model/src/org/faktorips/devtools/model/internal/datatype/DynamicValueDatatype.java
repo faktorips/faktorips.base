@@ -14,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;

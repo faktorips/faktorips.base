@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toJavaPath;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;

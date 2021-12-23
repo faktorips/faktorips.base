@@ -34,12 +34,12 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.ILogListener;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.ALogListener;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
@@ -388,7 +388,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         model.addIpsObjectExtensionProperty(extProp0);
 
         final StringBuilder sb = new StringBuilder();
-        ILogListener listener = (status, $) -> sb.append(status.getMessage());
+        ALogListener listener = (status, $) -> sb.append(status.getMessage());
         IpsLog.get().addLogListener(listener);
         try {
             Element docEl = getTestDocument().getDocumentElement();

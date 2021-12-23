@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.faktorips.devtools.model.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
 
 /**
  * A listener that listens to changes to classpath contents that is either a Jar file in the

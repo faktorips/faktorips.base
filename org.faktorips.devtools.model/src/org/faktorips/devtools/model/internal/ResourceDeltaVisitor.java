@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +22,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.abstraction.AProject;
-import org.faktorips.devtools.model.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

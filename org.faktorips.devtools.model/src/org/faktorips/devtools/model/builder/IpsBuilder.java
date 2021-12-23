@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.model.abstraction.Wrappers.unwrap;
-import static org.faktorips.devtools.model.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.model.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -40,17 +40,17 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.abstraction.ABuildKind;
-import org.faktorips.devtools.model.abstraction.ABuilder;
-import org.faktorips.devtools.model.abstraction.AFile;
-import org.faktorips.devtools.model.abstraction.AFolder;
-import org.faktorips.devtools.model.abstraction.AMarker;
-import org.faktorips.devtools.model.abstraction.APackageFragmentRoot;
-import org.faktorips.devtools.model.abstraction.AProject;
-import org.faktorips.devtools.model.abstraction.AResource;
-import org.faktorips.devtools.model.abstraction.AResource.AResourceTreeTraversalDepth;
-import org.faktorips.devtools.model.abstraction.AResourceDelta;
-import org.faktorips.devtools.model.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.ABuilder;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AMarker;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.DependencyResolver;
