@@ -110,8 +110,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_SHARED_ASSOCIATIONS = "sharedDetailToMasterAssociations"; //$NON-NLS-1$
 
-    private static final String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
-
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
@@ -194,7 +192,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = true;
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
-    private boolean associationsInFormulas = false;
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
@@ -684,9 +681,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS, isSharedDetailToMasterAssociations()));
 
-        additionalSettingsEl
-                .appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS, isAssociationsInFormulas()));
-
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE, formulaLanguageLocale.getLanguage()));
 
@@ -1092,8 +1086,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             rulesWithoutReferencesAllowed = enabled;
         } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
             setSharedDetailToMasterAssociations(enabled);
-        } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
-            setAssociationsInFormulas(enabled);
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
@@ -1481,9 +1473,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        by multiple master-to-detail associations-->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator()
-                + "    <!-- True to allow navigation via associations in formulas. -->" + System.lineSeparator() //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + System.lineSeparator()
                 + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + System.lineSeparator() //$NON-NLS-1$
                 + "        Only English (en) and German (de) are supported at the moment. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_FORMULA_LANGUAGE_LOCALE + "\" value=\"en\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -1828,26 +1817,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public void setAssociationsInFormulas(boolean associationsInFormulas) {
-        this.associationsInFormulas = associationsInFormulas;
-    }
-
-    @Override
     public void setReleaseExtensionId(String releaseExtensionId) {
         this.releaseExtensionId = releaseExtensionId;
     }
 
     @Override
-    public boolean isAssociationsInFormulas() {
-        return associationsInFormulas;
-    }
-
-    @Override
     public boolean isActive(IFunctionResolverFactory<?> factory) {
-        if (!isAssociationsInFormulas()) {
-            if (factory instanceof AssociationNavigationFunctionsResolver) {
-                return false;
-            }
+        if (factory instanceof AssociationNavigationFunctionsResolver) {
+            return false;
         }
         return true;
     }

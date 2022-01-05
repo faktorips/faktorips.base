@@ -501,16 +501,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isAssociationsInFormulas() {
-        return propertiesInternal.isAssociationsInFormulas();
-    }
-
-    @Override
-    public void setAssociationsInFormulas(boolean associationsInFormulas) {
-        throw new RuntimeException(ERROR_READ_ONLY);
-    }
-
-    @Override
     public boolean isActive(IFunctionResolverFactory<?> factory) {
         return propertiesInternal.isActive(factory);
     }

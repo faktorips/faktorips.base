@@ -363,18 +363,6 @@ public interface IIpsProjectProperties {
     void setSharedDetailToMasterAssociations(boolean sharedDetailToMasterAssociations);
 
     /**
-     * Check if the option to allow navigation via associations in formulas
-     * 
-     * @return true if the option is enabled
-     */
-    boolean isAssociationsInFormulas();
-
-    /**
-     * @see #isAssociationsInFormulas()
-     */
-    void setAssociationsInFormulas(boolean associationsInFormulas);
-
-    /**
      * @return The IDs of all required features.
      */
     public String[] getRequiredIpsFeatureIds();

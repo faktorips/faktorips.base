@@ -337,8 +337,6 @@
             <!- - True to allow shared associations. Shared associations are detail-to-master associationis that can be used
                 by multiple master-to-detail associations- ->
             <Setting enabled="true" name="sharedDetailToMasterAssociations"/>
-            <!- - True to allow navigation via associations in formulas. - ->
-            <Setting enabled="true" name="associationsInFormulas"/>
             <!- - Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German.
                 Only English (en) and German (de) are supported at the moment. - ->
             <Setting name="formulaLanguageLocale" value="en"/>
@@ -376,7 +374,6 @@
   <Setting enabled="true" name="referencedProductComponentsAreValidOnThisGenerationsValidFromDate"/>
   <Setting enabled="false" name="rulesWithoutReferencesAllowed"/>
   <Setting enabled="false" name="sharedDetailToMasterAssociations"/>
-  <Setting enabled="false" name="associationsInFormulas"/>
   <Setting name="formulaLanguageLocale" value="en"/>
   <Setting enabled="false" name="markerEnums" value=""/>
   <Setting enabled="false" name="businessFunctionsForValidationRules"/>

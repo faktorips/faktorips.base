@@ -20,6 +20,7 @@ public class Messages extends NLS {
     public static String Migration_21_6_0_IpsVersionTooOld;
     public static String Migration_21_12_0_description;
     public static String Migration_21_12_0_AddSchemas;
+    public static String Migration_22_6_0_description;
 
     static {
         // initialize resource bundle

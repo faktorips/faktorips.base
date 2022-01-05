@@ -33,7 +33,6 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
-import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IExpression;
@@ -187,17 +186,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     @Override
     public EnumDatatype[] getEnumDatatypesAllowedInFormula() {
         HashMap<String, EnumDatatype> enumtypes = new HashMap<>();
-        collectEnumsAllowedInFormula(enumtypes);
+        collectAllEnumDatatypes(enumtypes);
         return enumtypes.values().toArray(new EnumDatatype[enumtypes.size()]);
-    }
-
-    private void collectEnumsAllowedInFormula(Map<String, EnumDatatype> nameToTypeMap) {
-        if (getIpsProject().getReadOnlyProperties().isAssociationsInFormulas()) {
-            collectAllEnumDatatypes(nameToTypeMap);
-        } else {
-            collectEnumTypesFromAttributes(nameToTypeMap);
-            collectEnumTypesFromMethod(nameToTypeMap);
-        }
     }
 
     private void collectAllEnumDatatypes(final Map<String, EnumDatatype> nameToTypeMap) {
@@ -207,38 +197,6 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             if (datatype instanceof EnumDatatype) {
                 EnumDatatype enumDatatyp = (EnumDatatype)datatype;
                 nameToTypeMap.put(enumDatatyp.getName(), enumDatatyp);
-            }
-        }
-    }
-
-    protected abstract void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes);
-
-    private void collectEnumTypesFromMethod(Map<String, EnumDatatype> enumtypes) {
-        IIpsProject ipsProject = getIpsProject();
-        IBaseMethod method = findFormulaSignature(ipsProject);
-        if (method == null) {
-            return;
-        }
-        Datatype valuetype = null;
-        try {
-            valuetype = method.findDatatype(ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-        if (valuetype instanceof EnumDatatype) {
-            enumtypes.put(valuetype.getName(), (EnumDatatype)valuetype);
-        }
-        IParameter[] params = method.getParameters();
-        for (IParameter param : params) {
-            Datatype datatype = ipsProject.findDatatype(param.getDatatype());
-            if (datatype instanceof EnumDatatype) {
-                enumtypes.put(datatype.getName(), (EnumDatatype)datatype);
-                continue;
-            }
-            if (datatype instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, enumtypes);
-                collector.start(policyCmptType);
             }
         }
     }
