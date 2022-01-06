@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -238,6 +239,26 @@ public class DefaultPolicyAttributeTest {
         attribute.getValueSet(source, effectiveDate, new ValidationContext());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetValueSet_Product_ExtensibleEnum() {
+        TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
+        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        Produkt source = new Produkt();
+        ProduktGen produktGen = new ProduktGen(source);
+        repository.putProductCmptGeneration(produktGen);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
+        ValueSet<?> valueSet = attribute.getValueSet(source, effectiveDate, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(TestExtensibleEnum.ENUM1));
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(TestExtensibleEnum.ENUM2));
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(testExtensibleEnum));
+        assertTrue(valueSet.containsNull());
+    }
+
     @Test
     public void testGetValueSet_ModelObject_Handwritten() {
         Policy policy = new Policy();
@@ -270,13 +291,79 @@ public class DefaultPolicyAttributeTest {
         assertTrue(valueSet instanceof UnrestrictedValueSet);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testGetValueSet_ModelObject_UnrestrictedNotConfigured() {
+    public void testGetValueSet_ModelObject_Boolean() {
         Policy policy = new Policy();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
 
-        PolicyAttribute attribute = policyModel.getAttribute("attrWithNull");
+        PolicyAttribute attribute = policyModel.getAttribute("attrBoolean");
         ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertTrue(((ValueSet<Boolean>)valueSet).contains(Boolean.TRUE));
+        assertTrue(((ValueSet<Boolean>)valueSet).contains(Boolean.FALSE));
+        assertTrue(valueSet.containsNull());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetValueSet_ModelObject_PrimitiveBoolean() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("primitiveBooleanAttr");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertTrue(((ValueSet<Boolean>)valueSet).contains(Boolean.TRUE));
+        assertTrue(((ValueSet<Boolean>)valueSet).contains(Boolean.FALSE));
+        assertFalse(valueSet.containsNull());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetValueSet_ModelObject_Enum() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrEnum");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertTrue(((ValueSet<TestEnum>)valueSet).contains(TestEnum.TestEnum1));
+        assertTrue(((ValueSet<TestEnum>)valueSet).contains(TestEnum.TestEnum2));
+        assertTrue(((ValueSet<TestEnum>)valueSet).contains(TestEnum.TestEnum3));
+        assertTrue(valueSet.containsNull());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetValueSet_ModelObject_ExtensibleEnum() {
+        TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
+        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        ConfVertrag vertrag = new ConfVertrag();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, new ValidationContext());
+
+        assertTrue(valueSet instanceof OrderedValueSet);
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(TestExtensibleEnum.ENUM1));
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(TestExtensibleEnum.ENUM2));
+        assertTrue(((ValueSet<TestExtensibleEnum>)valueSet).contains(testExtensibleEnum));
+        assertTrue(valueSet.containsNull());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_ExtensibleEnum_NoProduct() {
+        TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
+        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        ConfVertrag vertrag = new ConfVertrag(null);
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
+        ValueSet<?> valueSet = attribute.getValueSet(vertrag, new ValidationContext());
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
         assertTrue(valueSet.containsNull());
@@ -304,6 +391,18 @@ public class DefaultPolicyAttributeTest {
 
         assertTrue(valueSet instanceof UnrestrictedValueSet);
         assertFalse(valueSet.containsNull());
+    }
+
+    @Test
+    public void testGetValueSet_ModelObject_UnrestrictedNotConfigured() {
+        Policy policy = new Policy();
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrWithNull");
+        ValueSet<?> valueSet = attribute.getValueSet(policy, new ValidationContext());
+
+        assertTrue(valueSet instanceof UnrestrictedValueSet);
+        assertTrue(valueSet.containsNull());
     }
 
     @Test
@@ -728,7 +827,7 @@ public class DefaultPolicyAttributeTest {
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
-            "attrWithValueSetWithTooManyArgs" })
+            "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured" })
     private class ConfVertrag implements IConfigurableModelObject {
 
         private Produkt produkt;
@@ -738,10 +837,16 @@ public class DefaultPolicyAttributeTest {
         private String attrChangingOverTime;
         private String attrWithValueSetWithoutValidationContext;
         private String attrWithValueSetWithTooManyArgs;
+        private TestExtensibleEnum attrExtensibleEnum;
+        private TestExtensibleEnum attrExtensibleEnumConfigured;
         private Calendar effectiveFrom;
 
         public ConfVertrag() {
-            produkt = new Produkt();
+            this(new Produkt());
+        }
+
+        public ConfVertrag(Produkt produkt) {
+            this.produkt = produkt;
         }
 
         @IpsAttribute(name = "attr1", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
@@ -827,6 +932,27 @@ public class DefaultPolicyAttributeTest {
         public ValueSet<String> getAllowedValuesForAttrWithValueSetWithTooManyArgs(IValidationContext context,
                 boolean includeNull) {
             return produkt.getAllowedValuesForAttrWithValueSetWithTooManyArgs(context, includeNull);
+        }
+
+        @IpsAttribute(name = "attrExtensibleEnum", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public TestExtensibleEnum getAttrExtensibleEnum() {
+            return attrExtensibleEnum;
+        }
+
+        @IpsAttributeSetter("attrExtensibleEnum")
+        public void setAttrExtensibleEnum(TestExtensibleEnum attrExtensibleEnum) {
+            this.attrExtensibleEnum = attrExtensibleEnum;
+        }
+
+        @IpsAttribute(name = "attrExtensibleEnumConfigured", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public TestExtensibleEnum getAttrExtensibleEnumConfigured() {
+            return attrExtensibleEnumConfigured;
+        }
+
+        @IpsAttributeSetter("attrExtensibleEnumConfigured")
+        public void setAttrExtensibleEnumConfigured(TestExtensibleEnum attrExtensibleEnumConfigured) {
+            this.attrExtensibleEnumConfigured = attrExtensibleEnumConfigured;
         }
 
         @Override
@@ -1044,7 +1170,8 @@ public class DefaultPolicyAttributeTest {
 
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsAttributes({ "const", "attr1", "primitiveUnrestrictedAttr", "attrWithNull", "attrWithoutNull", "overriddenAttr",
-            "attrWithValueSetWithoutValidationContext", "attrWithValueSetWithTooManyArgs", "getterOverriddenAttr" })
+            "attrWithValueSetWithoutValidationContext", "attrWithValueSetWithTooManyArgs", "getterOverriddenAttr",
+            "attrBoolean", "primitiveBooleanAttr", "attrEnum" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Policy implements IModelObject {
 
@@ -1053,6 +1180,9 @@ public class DefaultPolicyAttributeTest {
 
         private int attr1;
         private int primitiveUnrestrictedAttr;
+        private boolean primitiveBooleanAttr;
+        private Boolean attrBoolean;
+        private TestEnum attrEnum;
         private Integer attrWithNull;
         private Integer attrWithoutNull;
         private String attrWithValueSetWithoutValidationContext;
@@ -1158,6 +1288,36 @@ public class DefaultPolicyAttributeTest {
         public MessageList validate(IValidationContext context) {
             return null;
         }
+
+        @IpsAttribute(name = "primitiveBooleanAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public boolean isPrimitiveBooleanAttr() {
+            return primitiveBooleanAttr;
+        }
+
+        @IpsAttributeSetter("primitiveBooleanAttr")
+        public void setPrimitiveBooleanAttr(boolean primitiveBooleanAttr) {
+            this.primitiveBooleanAttr = primitiveBooleanAttr;
+        }
+
+        @IpsAttribute(name = "attrBoolean", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public Boolean getAttrBoolean() {
+            return attrBoolean;
+        }
+
+        @IpsAttributeSetter("attrBoolean")
+        public void setAttrBoolean(Boolean attrBoolean) {
+            this.attrBoolean = attrBoolean;
+        }
+
+        @IpsAttribute(name = "attrEnum", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        public TestEnum getAttrEnum() {
+            return attrEnum;
+        }
+
+        @IpsAttributeSetter("attrEnum")
+        public void setAttrEnum(TestEnum attrEnum) {
+            this.attrEnum = attrEnum;
+        }
     }
 
     @IpsPolicyCmptType(name = "MySubPolicy")
@@ -1189,4 +1349,9 @@ public class DefaultPolicyAttributeTest {
         }
     }
 
+    private enum TestEnum {
+        TestEnum1,
+        TestEnum2,
+        TestEnum3;
+    }
 }
