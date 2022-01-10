@@ -134,6 +134,9 @@
 
    <!--Lässt alle generierten Klassen Serializable implementieren.-->
    <Property name="serializablePolicyCmpts" value="false"/>
+
+   <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie urspr\u00FCnglich ihren Typ im Methodennamen widerspiegeln sollen-->
+   <Property name="valueSetMethods" value="Unified"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
