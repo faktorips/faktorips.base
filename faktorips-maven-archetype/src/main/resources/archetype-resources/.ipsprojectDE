@@ -406,7 +406,7 @@
         on the association side which holds a single value (to-one relationship side).
          
         <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
-                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="4000"
+                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="2000"
                 allowLazyFetchForSingleValuedAssociations="true">
             <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
             <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
@@ -416,7 +416,7 @@
         for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, example:
             IdentifierName1 -> IDENTIFIER_NAME1
     -->
- <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="4000" maxTableNameLength="30">
+ <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="2000" maxTableNameLength="30">
   <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
   <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
  </PersistenceOptions>
