@@ -1559,7 +1559,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "on the association side which holds a single value (to-one relationship side)." + System.lineSeparator() //$NON-NLS-1$
                 + " " + System.lineSeparator() //$NON-NLS-1$
                 + "<PersistenceOptions maxColumnNameLength=\"30\" maxTableNameLength=\"30\"" + System.lineSeparator() //$NON-NLS-1$
-                + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"2000\"" + System.lineSeparator() //$NON-NLS-1$
+                + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"1000\"" + System.lineSeparator() //$NON-NLS-1$
                 + "        allowLazyFetchForSingleValuedAssociations=\"true\">" + System.lineSeparator() //$NON-NLS-1$
                 + "    <TableNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
                 + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
