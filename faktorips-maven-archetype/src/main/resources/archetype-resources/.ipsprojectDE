@@ -135,7 +135,7 @@
    <!--Lässt alle generierten Klassen Serializable implementieren.-->
    <Property name="serializablePolicyCmpts" value="false"/>
 
-   <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie urspr\u00FCnglich ihren Typ im Methodennamen widerspiegeln sollen-->
+   <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie ursprünglich ihren Typ im Methodennamen widerspiegeln sollen. Wird ein Manifest verwendet sollte diese Einstellung auch dort gepflegt werden.-->
    <Property name="valueSetMethods" value="Unified"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>

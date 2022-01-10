@@ -9,20 +9,26 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.jar.Manifest;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption;
@@ -77,7 +83,23 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
         MigrationUtil.updateAllIpsArtefactBuilderSetDescriptions(builderSetInfo, builderSetConfig);
 
         ipsProject.setProperties(properties);
+        updateManifest();
         return super.migrate(monitor);
+    }
+
+    private void updateManifest() {
+        IIpsProject ipsProject = getIpsProject();
+        IFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        if (manifestFile.exists()) {
+            try {
+                Manifest manifest = new Manifest(manifestFile.getContents());
+                IpsBundleManifest ipsBundleManifest = new IpsBundleManifest(manifest);
+                ipsBundleManifest.writeBuilderSettings(ipsProject);
+            } catch (IOException | CoreException e) {
+                throw new CoreRuntimeException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
+            }
+
+        }
     }
 
     @Override
