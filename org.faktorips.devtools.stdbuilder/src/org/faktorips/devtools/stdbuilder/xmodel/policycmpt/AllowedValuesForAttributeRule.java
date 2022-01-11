@@ -19,7 +19,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.Gene
 public class AllowedValuesForAttributeRule {
 
     private static final Map<ValueSetMethods, Map<ValueSetMethods, List<GenerateValueSetTypeRule>>> RULES = new HashMap<>();
-
+    // @formatter:off
     static {
         RULES.put(ValueSetMethods.Unified,
                 Map.of(ValueSetMethods.Unified,
@@ -60,8 +60,8 @@ public class AllowedValuesForAttributeRule {
                         List.of(
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, true),
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, true, true, false))));
-
     }
+    // @formatter:on
 
     private AllowedValuesForAttributeRule() {
         // Util Class

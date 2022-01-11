@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -87,11 +89,16 @@ public class XPolicyAttributeTest {
 
         IPolicyCmptType polType = mock(IPolicyCmptType.class);
         when(attribute.getPolicyCmptType()).thenReturn(polType);
+        when(attribute.getIpsObject()).thenReturn(polType);
+        when(polType.getIpsProject()).thenReturn(ipsProject);
+        StandardBuilderSet builderSet = mock(StandardBuilderSet.class);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(builderSet.getGeneratorModelContext()).thenReturn(modelContext);
 
         policyClass = mock(XPolicyCmptClass.class);
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        when(modelContext.getGeneratorConfig(any(IpsObject.class))).thenReturn(generatorConfig);
 
         when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 

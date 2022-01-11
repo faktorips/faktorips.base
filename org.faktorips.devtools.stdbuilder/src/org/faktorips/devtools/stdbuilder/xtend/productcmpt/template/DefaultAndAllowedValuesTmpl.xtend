@@ -61,6 +61,7 @@ class DefaultAndAllowedValuesTmpl {
          *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
          * @generated
          */
+        «overrideAnnotationForPublishedMethodImplementation»
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
         public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext(), "context")» 
         «IF genInterface() || isAbstract()»;«ELSE» {
@@ -113,7 +114,7 @@ class DefaultAndAllowedValuesTmpl {
              * @generated
              */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
-            «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isOverrideGetAllowedValuesFor(rule.fromMethod) && overwrittenAttribute.productRelevantInHierarchy)»
+            «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
             «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
             public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), IValidationContext, "context")»
             «IF genInterface || isAbstract»;«ELSE»

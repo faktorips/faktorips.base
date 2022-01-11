@@ -55,9 +55,7 @@ class PolicyCmptInterfaceTmpl {
                         «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
                             «allowedValuesMethod(rule)»
                         «ENDFOR»
-                        «IF generateByTypeMethodsToGetAllowedValues»
-                            «allowedValuesMethodWithMoreConcreteTypeForByType»
-                        «ENDIF»
+                        «allowedValuesMethodWithMoreConcreteTypeForByType»
                         «getter»
                         «setter»
                     «ENDIF»

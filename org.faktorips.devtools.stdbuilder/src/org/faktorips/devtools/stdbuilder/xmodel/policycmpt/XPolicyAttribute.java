@@ -529,10 +529,9 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
             GenerateValueSetType valueSetType) {
-        ValueSetMethods setting = getGeneratorConfig().getValueSetMethods();
+        ValueSetMethods setting = getUnifyValueSetSettingFormSuperType(overwritten);
         GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
                 valueSetType);
-
         return isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(overwritten, genValueSet);
     }
 
@@ -551,17 +550,38 @@ public class XPolicyAttribute extends XAttribute {
      *         method does match the <em>by-type</em> method.
      */
     public boolean isAllowedValuesMethodWasAlreadyUnified(GenerateValueSetTypeRule rule) {
-        if (rule.getFromMethod().isGenerateUnified() && getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
-            return isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
+            return rule.getFromMethod().isGenerateUnified() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+        }
+        if (getGeneratorConfig().getValueSetMethods().isByValueSetType()) {
+            return rule.getFromMethod().isGenerateUnified() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+        }
+        if (getGeneratorConfig().getValueSetMethods().isUnified()) {
+            return rule.getFromMethod().isGenerateByType() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
         }
         return false;
     }
 
     public boolean isConditionForOverrideAnnotation(GenerateValueSetTypeRule rule) {
-        if (!rule.isFromOverride()) {
+        if (!isOverwrite()) {
             return false;
         }
-        return isOverrideGetAllowedValuesFor() || isOverwritingValueSetWithMoreConcreteType(rule.getFromMethod());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        GenerateValueSetType superGenMode = GenerateValueSetType.mapFromSettings(superSetting, rule.getFromMethod());
+
+        String thisMethodeName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
+        String superMethodeName = getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(superGenMode);
+
+        if (thisMethodeName.equals(superMethodeName)) {
+            if (getOverwrittenAttribute().isValueSetUnrestricted() && !isValueSetUnrestricted()) {
+                if (isOverwritingValueSetWithMoreConcreteType(rule.getFromMethod())) {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean isOverwritingValueSetWithMoreConcreteType(GenerateValueSetType type) {
@@ -597,7 +617,7 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         return rule.getFromMethod().isGenerateByType()
-                && getGeneratorConfig().getValueSetMethods().isBoth()
+                && getUnifyValueSetMethodsSetting().isBoth()
                 && !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
     }
 
@@ -826,8 +846,50 @@ public class XPolicyAttribute extends XAttribute {
         // use getBaseGeneratorConfig here since getGeneratorConfig will use the attribute to find
         // the config, the attribute at this point is from a super type and therefore maybe
         // different than expected
-        return getContext().getBaseGeneratorConfig().getValueSetMethods().isBoth()
+        return getUnifyValueSetMethodsSetting().isBoth()
                 && valueSetMethods.isGenerateByType();
+    }
+
+    /**
+     * The annotation should only be created on the method matching the generator settings. If the
+     * setting is {@link ValueSetMethods#Both} the unified method should be used.
+     * 
+     * @param rule the Rule
+     * @return {@code true} if the settings match
+     */
+    public boolean isPublishedInterfaceModifierRelevant(GenerateValueSetTypeRule rule) {
+        GenerateValueSetType setting = GenerateValueSetType
+                .mapFromSettings(getUnifyValueSetMethodsSetting(),
+                        GenerateValueSetType.GENERATE_UNIFIED);
+        return rule.getFromMethod().equals(setting) || (getUnifyValueSetMethodsSetting().isBoth()
+                && isMethodNameGetAllowedValuesForByTypeEqualUnfied());
+    }
+
+    /**
+     * If using the by-type setting and overwriting an attribute with a more concrete type, the used
+     * name was already the unified one.
+     * 
+     * @return {@code true} if both the attribute and the super attribute are
+     *         {@link ValueSetMethods#ByValueSetType}.
+     */
+    public boolean isGenerateAllowedValuesMethodWithMoreConcreteTypeForByType() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        return thisSetting.isByValueSetType()
+                && (superSetting.isBoth() || superSetting.isByValueSetType());
+    }
+
+    private ValueSetMethods getUnifyValueSetSettingFormSuperType(XPolicyAttribute attribute) {
+        return getContext()
+                .getGeneratorConfig(attribute.getAttribute().getIpsObject())
+                .getValueSetMethods();
+    }
+
+    private ValueSetMethods getUnifyValueSetMethodsSetting() {
+        return getContext().getBaseGeneratorConfig().getValueSetMethods();
     }
 
     /**

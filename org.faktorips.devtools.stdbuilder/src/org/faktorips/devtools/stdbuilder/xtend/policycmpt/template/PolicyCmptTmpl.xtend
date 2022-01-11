@@ -113,9 +113,7 @@ def static String body(XPolicyCmptClass it) '''
             «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
                 «allowedValuesMethod(rule)»
             «ENDFOR»
-            «IF generateByTypeMethodsToGetAllowedValues»
-                «allowedValuesMethodWithMoreConcreteTypeForByType»
-            «ENDIF»
+            «allowedValuesMethodWithMoreConcreteTypeForByType»
             «IF !it.isAbstract»
                 «getter»
                 «setter»
