@@ -6,6 +6,15 @@
 
 == Release Notes (English)
 
+=== Version 21.12.1
+
+The patch release 21.12.1 fixes some links in the documentation and two bugs:
+
+ * Locale is sometimes not recognized on MacOS (https://jira.faktorzehn.de/browse/FIPS-8512[FIPS-8512])
+ * Migration to product variants 21.12 removes duplicate blanks in labels (https://jira.faktorzehn.de/browse/IPSPV-587[IPSPV-587])
+
+The errors do not affect the runtime, so only an update of the installed Eclipse features is required.
+
 === Version 21.12.0
 
 ==== New Features and Improvements

@@ -6,6 +6,15 @@
 
 == Release Notes
 
+=== Version 21.12.1
+
+Das Patch-Release 21.12.1 korrigiert einige Links in der Dokumentation und behebt zwei Fehler:
+
+ * Locale wird auf MacOS manchmal nicht erkannt (https://jira.faktorzehn.de/browse/FIPS-8512[FIPS-8512])
+ * Migration auf Produktvarianten 21.12 entfernt doppelte Leerzeichen in Labels (https://jira.faktorzehn.de/browse/IPSPV-587[IPSPV-587])
+ 
+Die Fehler betreffen nicht die Runtime, so dass nur ein Update der Features in Eclipse notwendig ist. 
+
 === Version 21.12.0
 
 ==== Neue Funktionen und Verbesserungen
