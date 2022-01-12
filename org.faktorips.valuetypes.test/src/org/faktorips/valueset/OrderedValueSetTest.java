@@ -51,6 +51,14 @@ public class OrderedValueSetTest {
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
+
+        try {
+            OrderedValueSet<Money> valueSet4 = new OrderedValueSet<>(true, null, Money.valueOf("1"),
+                    Money.NULL, null);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // Expected exception.
+        }
     }
 
     @Test
@@ -115,7 +123,7 @@ public class OrderedValueSetTest {
         Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null, Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = OrderedValueSet.<Integer> of(values);
         Stream<Integer> valueStream = valueSet.stream();
-        assertEquals(Arrays.asList(values), valueStream.collect(Collectors.toList()));
+        assertThat(valueStream.collect(Collectors.toList()), hasItems(values));
     }
 
     @Test
@@ -149,7 +157,7 @@ public class OrderedValueSetTest {
         assertTrue(valueSet.isEmpty());
 
         valueSet = new OrderedValueSet<>(true, null, new Object[] { null });
-        assertFalse(valueSet.isEmpty());
+        assertTrue(valueSet.isEmpty());
 
         Object[] values = new Object[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         valueSet = new OrderedValueSet<>(false, null, values);
@@ -186,14 +194,9 @@ public class OrderedValueSetTest {
 
         assertFalse(valueSet.equals(valueSet3));
 
-        values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null };
-        OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(false, null, values);
-
-        assertFalse(valueSet.equals(valueSet4));
-
         NaturalOrderedValueSet<Integer> naturalOrderedValueSet = new NaturalOrderedValueSet<>(values);
 
-        assertFalse(valueSet4.equals(naturalOrderedValueSet));
+        assertFalse(valueSet3.equals(naturalOrderedValueSet));
     }
 
     @Test
@@ -212,7 +215,7 @@ public class OrderedValueSetTest {
         assertFalse(valueSet.hashCode() == valueSet3.hashCode());
 
         values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null };
-        OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(false, null, values);
+        OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(true, null, values);
 
         assertFalse(valueSet.hashCode() == valueSet4.hashCode());
 

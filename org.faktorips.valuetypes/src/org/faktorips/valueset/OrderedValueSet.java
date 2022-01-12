@@ -61,6 +61,15 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
                 if (set.contains(e)) {
                     throw new IllegalArgumentException("The provided values array contains duplicate entries.");
                 }
+                if (ObjectUtil.isNull(e) && !Objects.equals(e, nullValue)) {
+                    throw new IllegalArgumentException(
+                            "The provided values array contains a null value other than the specified nullValue '"
+                                    + nullValue + "'.");
+                }
+                if (!containsNull && Objects.equals(e, nullValue)) {
+                    throw new IllegalArgumentException(
+                            "The provided values array should not contain a null value.");
+                }
                 set.add(e);
             }
         }
@@ -87,8 +96,18 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
                 if (set.contains(e)) {
                     throw new IllegalArgumentException("The provided values Collection contains duplicate entries.");
                 }
+                if (ObjectUtil.isNull(e) && !Objects.equals(e, nullValue)) {
+                    throw new IllegalArgumentException(
+                            "The provided values Collection contains a null value other than the specified nullValue '"
+                                    + nullValue + "'.");
+                }
+                if (!containsNull && Objects.equals(e, nullValue)) {
+                    throw new IllegalArgumentException(
+                            "The provided values Collection should not contain a null value");
+                }
                 set.add(e);
             }
+
         }
         initialize(containsNull, nullValue);
     }
@@ -107,6 +126,10 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
             for (E e : values) {
                 if (set.contains(e)) {
                     throw new IllegalArgumentException("The provided values Collection contains duplicate entries.");
+                }
+                if (containsNull && ObjectUtil.isNull(e) && !Objects.equals(e, nullValue)) {
+                    throw new IllegalArgumentException(
+                            "The provided values Collection contains more than one null value.");
                 }
                 if (ObjectUtil.isNull(e)) {
                     containsNull = true;
@@ -254,12 +277,16 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
 
     @Override
     public boolean contains(E value) {
+        if (ObjectUtil.isNull(value) || value.equals(nullValue)) {
+            return containsNull();
+        }
         return set.contains(value);
     }
 
     @Override
     public boolean isEmpty() {
-        return set.isEmpty();
+        return set.isEmpty() || (set.size() == 1 && containsNull());
+
     }
 
     @Override
@@ -287,7 +314,11 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     }
 
     public Stream<E> stream() {
-        return set.stream();
+        Set<E> set2 = cloneSetInternal();
+        if (containsNull) {
+            set2.add(nullValue);
+        }
+        return set2.stream();
     }
 
 }

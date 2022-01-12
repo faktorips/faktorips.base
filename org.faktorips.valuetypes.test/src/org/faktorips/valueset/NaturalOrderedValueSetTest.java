@@ -25,14 +25,6 @@ public class NaturalOrderedValueSetTest {
         } catch (IllegalArgumentException e) {
             // Expected exception.
         }
-
-        try {
-            new NaturalOrderedValueSet<>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3),
-                    null);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
     }
 
     @Test
