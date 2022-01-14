@@ -1,31 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>org.faktorips</groupId>
-        <artifactId>faktorips-nexus-base-11</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
-        <relativePath>../../org.faktorips.aggregator/nexus11/pom.xml</relativePath>
-    </parent>
-
+    
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-abstraction</artifactId>
-
+    <version>@version@</version>
     <packaging>jar</packaging>
-
-    <name>Faktor-IPS Abstractions</name>
+    
+    <name>Faktor-IPS Abstractions/name>
     <description>Abstractions used in the Faktor-IPS design time tools</description>
+    <url>http://faktorzehn.org</url>
 
-    <build>
-        <sourceDirectory>../src</sourceDirectory>
-    </build>
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>https://faktorzehn.org/</url>
+    </organization>
+
+    <scm>
+        <url>https://github.com/faktorips/faktorips.base</url>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License Version 3 with additional permissions</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS-Team</name>
+            <email>fips@faktorzehn.de</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-fl</artifactId>
-            <version>${project.version}</version>
+            <version>@version@</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.platform</groupId>
