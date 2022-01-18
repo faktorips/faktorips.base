@@ -12,6 +12,7 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -50,6 +51,9 @@ public abstract class PlainJavaContainer extends PlainJavaResource implements AC
 
     private SortedSet<PlainJavaResource> findMembers() {
         File[] files = directory().listFiles();
+        if (files == null) {
+            return Collections.emptySortedSet();
+        }
         PlainJavaWorkspaceRoot root = getWorkspace().getRoot();
         return Arrays.stream(files)
                 .map(File::toPath)

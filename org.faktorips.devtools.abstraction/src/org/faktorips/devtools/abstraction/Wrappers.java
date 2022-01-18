@@ -51,7 +51,7 @@ public class Wrappers {
      * Any {@link CoreException} thrown by the supplier is rethrown as a
      * {@link IpsException}.
      */
-    public static <T> WrapperBuilder wrap(CoreExceptionThrowingSupplier<T> supplier) {
+    public static <T> WrapperBuilder wrapSupplier(CoreExceptionThrowingSupplier<T> supplier) {
         return get(() -> wrap(supplier.get()));
     }
 

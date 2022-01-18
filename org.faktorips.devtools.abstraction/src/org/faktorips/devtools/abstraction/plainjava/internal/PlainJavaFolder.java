@@ -48,7 +48,8 @@ public class PlainJavaFolder extends PlainJavaContainer implements AFolder {
 
     @Override
     void create() {
-        directory().mkdir();
+        directory().mkdirs();
+        refreshParent();
     }
 
 }

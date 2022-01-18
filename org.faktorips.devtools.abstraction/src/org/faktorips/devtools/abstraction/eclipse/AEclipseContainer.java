@@ -10,6 +10,7 @@
 package org.faktorips.devtools.abstraction.eclipse;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrapSupplier;
 
 import java.nio.file.Path;
 import java.util.SortedSet;
@@ -38,7 +39,7 @@ public abstract class AEclipseContainer extends AEclipseResource implements ACon
 
     @Override
     public SortedSet<AResource> getMembers() {
-        return wrap(container()::members).asSortedSetOf(AResource.class);
+        return wrapSupplier(container()::members).asSortedSetOf(AResource.class);
     }
 
     @Override

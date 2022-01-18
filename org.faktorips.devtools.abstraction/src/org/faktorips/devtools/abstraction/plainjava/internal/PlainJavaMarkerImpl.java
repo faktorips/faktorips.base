@@ -80,15 +80,34 @@ public class PlainJavaMarkerImpl {
     }
 
     public String getAttribute(String attributeName, String defaultValue) {
-        return (String)attributes.getOrDefault(attributeName, defaultValue);
+        // eclipse specific
+        Object value = attributes.get(attributeName);
+        if (isAttributeSameTypeAsDefault(value, String.class)) {
+            return (String)value;
+        }
+        return defaultValue;
+    }
+
+    private boolean isAttributeSameTypeAsDefault(Object value, Class<?> clazz) {
+        return value != null && value.getClass().isAssignableFrom(clazz);
     }
 
     public int getAttribute(String attributeName, int defaultValue) {
-        return (int)attributes.getOrDefault(attributeName, defaultValue);
+        // eclipse specific
+        Object value = attributes.get(attributeName);
+        if (isAttributeSameTypeAsDefault(value, Integer.class)) {
+            return (int)value;
+        }
+        return defaultValue;
     }
 
     public boolean getAttribute(String attributeName, boolean defaultValue) {
-        return (boolean)attributes.getOrDefault(attributeName, defaultValue);
+        // eclipse specific
+        Object value = attributes.get(attributeName);
+        if (isAttributeSameTypeAsDefault(value, Boolean.class)) {
+            return (boolean)value;
+        }
+        return defaultValue;
     }
 
     public void setAttribute(String attributeName, Object value) {

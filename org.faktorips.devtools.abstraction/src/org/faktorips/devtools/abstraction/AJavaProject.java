@@ -18,7 +18,7 @@ import org.faktorips.runtime.MessageList;
 /**
  * A Java project is {@link AProject a project} containing {@link AJavaElement Java elements}.
  */
-public interface AJavaProject extends AAbstraction {
+public interface AJavaProject extends AJavaElement {
 
     /**
      * Returns the corresponding project.
@@ -31,6 +31,7 @@ public interface AJavaProject extends AAbstraction {
      *
      * @return whether this project exists
      */
+    @Override
     boolean exists();
 
     /**
@@ -46,18 +47,30 @@ public interface AJavaProject extends AAbstraction {
     Path getOutputLocation();
 
     /**
-     * Returns the package fragment root for an external library
+     * Returns the package fragment root for an external library. The Path must either be a file or
+     * a folder outside of the workspace.
      *
      * @param externalLibraryPath the path to the external library, either a folder or archive file
      */
-    APackageFragmentRoot getPackageFragmentRoot(String externalLibraryPath);
+    APackageFragmentRoot toPackageFragmentRoot(String externalLibraryPath);
 
     /**
-     * Returns the package fragment root for an external library
+     * Returns the {@code resource} as package fragment root. Every sub folder of the
+     * {@code resource} will be considered as java package and therefore must be excluded in the
+     * path of the {@code resource}.
+     * <p>
+     * For example the path of the {@code resource} in a typical eclipse project would be
+     * {@code src}. In a maven project the path would be {@code src/main/java}
      *
      * @param resource the path to the root, either a folder or archive file
      */
-    APackageFragmentRoot getPackageFragmentRoot(AResource resource);
+    APackageFragmentRoot toPackageFragmentRoot(AResource resource);
+
+    /**
+     * Returns all of the existing package fragment roots that exist on the classpath, in the order
+     * they are defined by the classpath.
+     */
+    Set<APackageFragmentRoot> getAllPackageFragmentRoots();
 
     /**
      * Returns the Java version number for this project's source code.

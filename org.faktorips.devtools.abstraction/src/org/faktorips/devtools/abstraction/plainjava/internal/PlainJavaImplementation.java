@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.ALog;
@@ -27,7 +29,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 public enum PlainJavaImplementation implements AImplementation {
     INSTANCE;
 
-    private static final String ID = "Plain Java Faktor-IPS"; //$NON-NLS-1$
+    static final String ID = "Plain Java Faktor-IPS"; //$NON-NLS-1$
     private final Locale locale = Locale.getDefault();
     private volatile PlainJavaWorkspace workspace;
     private final ALog log = new PlainJavaLog();
@@ -100,6 +102,17 @@ public enum PlainJavaImplementation implements AImplementation {
         private final Map<ALogListener, Void> logListeners = new WeakHashMap<>();
 
         @Override
+        public <T> T unwrap() {
+            throw new UnsupportedOperationException(
+                    PlainJavaLog.class.getSimpleName() + " does not wrap a single object"); //$NON-NLS-1$
+        }
+
+        @Override
+        public void addLogListener(ALogListener listener) {
+            logListeners.put(listener, null);
+        }
+
+        @Override
         public void removeLogListener(ALogListener listener) {
             logListeners.remove(listener);
         }
@@ -109,20 +122,14 @@ public enum PlainJavaImplementation implements AImplementation {
             // TODO formatting, logging frameworks/maven logging,...
             logListeners.keySet().forEach(l -> l.logging(status, ID));
             if (status.getSeverity() == IStatus.ERROR) {
-                System.err.println(status);
+                Logger.getLogger(ID).log(Level.SEVERE, status.getMessage());
+            } else if (status.getSeverity() == IStatus.WARNING) {
+                Logger.getLogger(ID).log(Level.WARNING, status.getMessage());
+            } else if (status.getSeverity() == IStatus.INFO) {
+                Logger.getLogger(ID).log(Level.INFO, status.getMessage());
             } else {
-                System.out.println(status);
+                Logger.getLogger(ID).log(Level.FINE, status.getMessage());
             }
-        }
-
-        @Override
-        public void addLogListener(ALogListener listener) {
-            logListeners.put(listener, null);
-        }
-
-        @Override
-        public <T> T unwrap() {
-            throw new UnsupportedOperationException();
         }
     }
 

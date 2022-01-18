@@ -58,14 +58,22 @@ public class PlainJavaWrapperBuilder extends WrapperBuilder {
             return (A)((PlainJavaWorkspaceRoot)Abstractions.getWorkspace().getRoot())
                     .get(originalFolder.toPath());
         }
+        if (AJavaProject.class.isAssignableFrom(aClass)) {
+            if (original instanceof PlainJavaProject) {
+                return (A)new PlainJavaJavaProject(((PlainJavaProject)original).unwrap());
+            } else {
+                return (A)new PlainJavaJavaProject((java.io.File)original);
+            }
+        }
         if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {
-            return (A)new PlainJavaPackageFragmentRoot((java.io.File)original);
+            if (original instanceof AFolder) {
+                return (A)new PlainJavaPackageFragmentRoot(((AFolder)original).unwrap());
+            } else {
+                return (A)new PlainJavaPackageFragmentRoot((java.io.File)original);
+            }
         }
         if (AJavaElement.class.isAssignableFrom(aClass)) {
             return (A)new PlainJavaJavaElement((java.io.File)original);
-        }
-        if (AJavaProject.class.isAssignableFrom(aClass)) {
-            return (A)new PlainJavaJavaProject((PlainJavaProject)original);
         }
         if (AMarker.class.isAssignableFrom(aClass)) {
             return (A)new PlainJavaMarker((PlainJavaMarkerImpl)original);

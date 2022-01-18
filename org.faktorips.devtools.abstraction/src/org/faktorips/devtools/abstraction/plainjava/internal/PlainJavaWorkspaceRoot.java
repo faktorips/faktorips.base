@@ -9,7 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,6 +23,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 
@@ -79,16 +84,22 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
             return resources.computeIfAbsent(path.toAbsolutePath(), p -> {
                 File file = p.toFile();
                 if (file.isFile()) {
-                    return new PlainJavaFile(file);
+                    return (PlainJavaFile)wrap(file).as(AFile.class);
                 }
                 if (file.isDirectory()) {
                     if (file.equals(directory())) {
                         return this;
-                    } else if (file.getParentFile().equals(directory())) {
-                        // TODO Projekte erkennen? Evtl. sind nur IPS-Projekte relevant?
-                        return new PlainJavaProject(file);
                     } else {
-                        return new PlainJavaFolder(file);
+                        File parentFile = file.getParentFile();
+                        if (parentFile == null) {
+                            return null;
+                        }
+                        if (parentFile.equals(directory())) {
+                            // TODO Projekte erkennen? Evtl. sind nur IPS-Projekte relevant?
+                            return (PlainJavaProject)wrap(file).as(AProject.class);
+                        } else {
+                            return (PlainJavaFolder)wrap(file).as(AFolder.class);
+                        }
                     }
                 }
                 // TODO was gibt's noch?
@@ -97,10 +108,23 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
         }
     }
 
+    public void remove(Path path) {
+        synchronized (resources) {
+            if (path.toFile().isDirectory()) {
+                try {
+                    Files.walk(path).forEach(f -> resources.remove(f));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            resources.remove(path);
+        }
+    }
+
     PlainJavaFile file(Path path) {
         synchronized (resources) {
             PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
-                    p -> new PlainJavaFile(p.toFile()));
+                    p -> (PlainJavaFile)wrap(p.toFile()).as(AFile.class));
             if (resource instanceof PlainJavaFile) {
                 return (PlainJavaFile)resource;
             }
@@ -111,7 +135,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     PlainJavaFolder folder(Path path) {
         synchronized (resources) {
             PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
-                    p -> new PlainJavaFolder(p.toFile()));
+                    p -> (PlainJavaFolder)wrap(p.toFile()).as(AFolder.class));
             if (resource instanceof PlainJavaFolder) {
                 return (PlainJavaFolder)resource;
             }
@@ -123,17 +147,17 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
         synchronized (resources) {
             Path absolutePath = path.toAbsolutePath();
             PlainJavaResource resource = resources.computeIfAbsent(absolutePath,
-                    p -> new PlainJavaProject(p.toFile()));
+                    p -> (PlainJavaProject)wrap(p.toFile()).as(AProject.class));
             if (resource instanceof PlainJavaProject) {
                 return (PlainJavaProject)resource;
             }
             if (resource instanceof PlainJavaFolder) {
-                PlainJavaProject project = new PlainJavaProject(((PlainJavaFolder)resource).directory());
+                PlainJavaProject project = (PlainJavaProject)wrap(((PlainJavaFolder)resource).directory())
+                        .as(AProject.class);
                 resources.put(absolutePath, project);
                 return project;
             }
             throw new IllegalArgumentException(path + " is not a project"); //$NON-NLS-1$
         }
     }
-
 }

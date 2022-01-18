@@ -39,6 +39,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
     void create() {
         try {
             file().createNewFile();
+            refreshParent();
         } catch (IOException e) {
             throw new IpsException("Creating " + file() + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -50,6 +51,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
             p.getParent().toFile().mkdirs();
             Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING);
         });
+        refreshParent();
     }
 
     @Override

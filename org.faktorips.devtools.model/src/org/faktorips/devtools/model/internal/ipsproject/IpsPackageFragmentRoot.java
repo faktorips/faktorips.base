@@ -56,7 +56,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
         } else {
             folder = entry.getOutputFolderForMergableJavaFiles();
         }
-        return getIpsProject().getJavaProject().getPackageFragmentRoot(folder);
+        return getIpsProject().getJavaProject().toPackageFragmentRoot(folder);
     }
 
     /**

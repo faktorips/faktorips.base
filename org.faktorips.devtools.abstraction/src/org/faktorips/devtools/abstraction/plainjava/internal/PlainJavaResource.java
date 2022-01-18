@@ -12,7 +12,6 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -113,8 +112,28 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     @Override
     public void delete(IProgressMonitor monitor) {
         // TODO auch im IpsModel entsprechende Objekte löschen, siehe
-        // org.faktorips.devtools.model.internal.PlainJavaIpsModelTest.testClearIpsSrcFileContentsCacheWhenFileDeleted()
-        PlainJavaFileUtil.walk(file(), monitor, "Deleting", Files::delete); //$NON-NLS-1$
+        // org.faktorips.devtools.model.internal.PlainJavaIpsModelTest.testClearIpsSrcFileContentsCacheWhenFileDeleted()v
+        if (file().exists()) {
+            getWorkspace().getRoot().remove(file().toPath());
+            clearMarkers();
+            PlainJavaFileUtil.walk(file(), monitor, "Deleting", Files::delete); //$NON-NLS-1$
+        }
+        refreshParent();
+    }
+
+    private void clearMarkers() {
+        if (markers != null) {
+            synchronized (markers) {
+                markers.clear();
+            }
+        }
+    }
+
+    void refreshParent() {
+        AContainer parent = getParent();
+        if (parent instanceof PlainJavaContainer) {
+            ((PlainJavaContainer)parent).refreshInternal();
+        }
     }
 
     @Override
@@ -265,10 +284,7 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     @Override
     public void copy(Path destination, IProgressMonitor monitor) {
-        Path source = file().toPath();
-        PlainJavaFileUtil.walk(file(), monitor, "Copying", //$NON-NLS-1$
-                p -> Files.copy(p, destination.resolve(source.relativize(p)),
-                        StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING));
+        PlainJavaFileUtil.copy(file(), destination, monitor);
     }
 
     @Override

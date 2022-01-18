@@ -9,6 +9,10 @@
         <relativePath>../../org.faktorips.aggregator/nexus11/pom.xml</relativePath>
     </parent>
 
+<properties>
+<revapi.skip>true</revapi.skip> 
+</properties>
+
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-model</artifactId>
 
@@ -46,7 +50,7 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.core.filesystem</artifactId>
-            <version>1.7.300</version>
+            <version>1.7.0</version>
         </dependency>
 
     </dependencies>

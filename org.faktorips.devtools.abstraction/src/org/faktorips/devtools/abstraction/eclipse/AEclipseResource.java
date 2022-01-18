@@ -11,6 +11,7 @@ package org.faktorips.devtools.abstraction.eclipse;
 
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.Wrappers.wrapSupplier;
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 
 import java.nio.file.Path;
@@ -119,12 +120,12 @@ public abstract class AEclipseResource extends AWrapper<IResource> implements AR
 
     @Override
     public Set<AMarker> findMarkers(String type, boolean includeSubtypes, AResourceTreeTraversalDepth depth) {
-        return wrap(() -> resource().findMarkers(type, includeSubtypes, to(depth))).asSetOf(AMarker.class);
+        return wrapSupplier(() -> resource().findMarkers(type, includeSubtypes, to(depth))).asSetOf(AMarker.class);
     }
 
     @Override
     public AMarker createMarker(String markerType) {
-        return wrap(() -> resource().createMarker(markerType)).as(AMarker.class);
+        return wrapSupplier(() -> resource().createMarker(markerType)).as(AMarker.class);
     }
 
     @Override

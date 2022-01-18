@@ -48,12 +48,12 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
     @Override
     public void delete(IProgressMonitor monitor) {
         if (directory().exists()) {
-            delete(monitor);
+            super.delete(monitor);
         }
     }
 
     @Override
-    void create() {
+    public void create() {
         super.create();
         // TODO muss noch etwas angelegt werden, um den Ordner als Projekt zu markieren? Evtl.
         // eine pom.xml wenn wir ein Maven-Projekt anlegen?

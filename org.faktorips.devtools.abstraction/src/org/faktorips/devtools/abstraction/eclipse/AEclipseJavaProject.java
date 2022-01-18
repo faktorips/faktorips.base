@@ -15,10 +15,12 @@ import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePa
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -33,7 +35,6 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.abstraction.AWrapper;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.eclipse.internal.Messages;
@@ -44,7 +45,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.Severity;
 
-public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJavaProject {
+public class AEclipseJavaProject extends AEclipseJavaElement implements AJavaProject {
 
     /**
      * Validation message code to indicate that the corresponding Java Project has build path
@@ -54,6 +55,12 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
 
     AEclipseJavaProject(IJavaProject javaProject) {
         super(javaProject);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public IJavaProject unwrap() {
+        return (IJavaProject)super.unwrap();
     }
 
     IJavaProject javaProject() {
@@ -71,13 +78,13 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
     }
 
     @Override
-    public APackageFragmentRoot getPackageFragmentRoot(String externalLibraryPath) {
+    public APackageFragmentRoot toPackageFragmentRoot(String externalLibraryPath) {
         IPackageFragmentRoot packageFragmentRoot = javaProject().getPackageFragmentRoot(externalLibraryPath);
         return wrap(packageFragmentRoot).as(APackageFragmentRoot.class);
     }
 
     @Override
-    public APackageFragmentRoot getPackageFragmentRoot(AResource resource) {
+    public APackageFragmentRoot toPackageFragmentRoot(AResource resource) {
         IPackageFragmentRoot packageFragmentRoot = javaProject()
                 .getPackageFragmentRoot(((AEclipseResource)resource).unwrap());
         return wrap(packageFragmentRoot).as(APackageFragmentRoot.class);
@@ -85,7 +92,7 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
 
     @Override
     public AProject getProject() {
-        return wrap(javaProject().getProject()).as(AProject.class);
+        return getResource().getProject();
     }
 
     @Override
@@ -193,4 +200,14 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
         return javaProject().getOptions(true);
     }
 
+    @Override
+    public Set<APackageFragmentRoot> getAllPackageFragmentRoots() {
+        try {
+            return Arrays.stream(javaProject().getAllPackageFragmentRoots())
+                    .map(p -> Wrappers.wrap(p).as(APackageFragmentRoot.class))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+        } catch (JavaModelException e) {
+            throw new IpsException(e.getMessage(), e);
+        }
+    }
 }

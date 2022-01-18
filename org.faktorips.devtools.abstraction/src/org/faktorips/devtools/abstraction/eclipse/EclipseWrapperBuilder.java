@@ -95,12 +95,6 @@ public class EclipseWrapperBuilder extends WrapperBuilder {
                         "Don't know how to wrap a " + resource.getClass().getName() + " as a " + aClass.getName()); //$NON-NLS-1$//$NON-NLS-2$
             }
         }
-        if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipsePackageFragmentRoot((IPackageFragmentRoot)original);
-        }
-        if (AJavaElement.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseJavaElement((IJavaElement)original);
-        }
         if (AJavaProject.class.isAssignableFrom(aClass)) {
             if (original instanceof AEclipseProject) {
                 return (A)new AEclipseJavaProject(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot())
@@ -108,6 +102,12 @@ public class EclipseWrapperBuilder extends WrapperBuilder {
             } else {
                 return (A)new AEclipseJavaProject((IJavaProject)original);
             }
+        }
+        if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {
+            return (A)new AEclipsePackageFragmentRoot((IPackageFragmentRoot)original);
+        }
+        if (AJavaElement.class.isAssignableFrom(aClass)) {
+            return (A)new AEclipseJavaElement((IJavaElement)original);
         }
         if (AMarker.class.isAssignableFrom(aClass)) {
             return (A)new AEclipseMarker((IMarker)original);

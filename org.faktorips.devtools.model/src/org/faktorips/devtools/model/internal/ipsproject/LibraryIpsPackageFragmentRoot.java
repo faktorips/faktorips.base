@@ -69,7 +69,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         } else {
             path = getIpsProject().getProject().getLocation().resolve(entry.getPath()).toString();
         }
-        return getIpsProject().getJavaProject().getPackageFragmentRoot(path);
+        return getIpsProject().getJavaProject().toPackageFragmentRoot(path);
     }
 
     @Override
