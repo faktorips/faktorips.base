@@ -10,6 +10,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
@@ -63,9 +64,9 @@ class DefaultAndAllowedValuesTmpl {
          */
         «overrideAnnotationForPublishedMethodImplementation»
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
-        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), IValidationContext(), "context")» 
+        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
         «IF genInterface() || isAbstract()»;«ELSE» {
-          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(context);
+          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
         }
         «ENDIF»
     '''
@@ -106,22 +107,20 @@ class DefaultAndAllowedValuesTmpl {
     '''
 
     def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
-        «IF !isAllowedValuesMethodWasAlreadyUnified(rule)»
-            /**
-             * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
-            «getAnnotations(ELEMENT_JAVA_DOC)»
-             *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
-             * @generated
-             */
-            «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
-            «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
-            «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
-            public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), IValidationContext, "context")»
-            «IF genInterface || isAbstract»;«ELSE»
-            {
-                return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context)«ELSE»«fieldNameValueSet»«ENDIF»;
-            }
-            «ENDIF»
+        /**
+         * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         * @generated
+         */
+        «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
+        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
+        «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
+        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
+        «IF genInterface || isAbstract»;«ELSE»
+        {
+            return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
+        }
         «ENDIF»
     '''
 

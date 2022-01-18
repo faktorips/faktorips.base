@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.devtools.stdbuilder.xtend.template.ClassNames;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
@@ -522,11 +523,6 @@ public class XPolicyAttribute extends XAttribute {
         return "old" + StringUtils.capitalize(getFieldName());
     }
 
-    private boolean isMethodNameGetAllowedValuesForByTypeEqualUnfied() {
-        return getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)
-                .equals(getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED));
-    }
-
     public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
             GenerateValueSetType valueSetType) {
         ValueSetMethods setting = getUnifyValueSetSettingFormSuperType(overwritten);
@@ -538,28 +534,13 @@ public class XPolicyAttribute extends XAttribute {
     public boolean isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(XPolicyAttribute overwritten,
             GenerateValueSetType genValueSet) {
         return overwritten.getMethodNameGetAllowedValuesFor(genValueSet)
-                .equals(getMethodNameGetAllowedValuesFor(genValueSet));
+                .equals(getMethodNameGetAllowedValuesFor(genValueSet))
+                && hasSameSignature(overwritten, genValueSet);
     }
 
-    /**
-     * For {@link UnrestrictedValueSet} the method name is and was already unified. Therefore we can
-     * not simply generate the method with the by-type and unified schema. We prefer the by-type
-     * over unified to keep changes in the source code to a minimum.
-     * 
-     * @return {@code true} If the unify-value-set setting is <em>both</em> and the <em>unified</em>
-     *         method does match the <em>by-type</em> method.
-     */
-    public boolean isAllowedValuesMethodWasAlreadyUnified(GenerateValueSetTypeRule rule) {
-        if (getGeneratorConfig().isGenerateBothMethodsForAllowedValues()) {
-            return rule.getFromMethod().isGenerateUnified() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
-        }
-        if (getGeneratorConfig().getValueSetMethods().isByValueSetType()) {
-            return rule.getFromMethod().isGenerateUnified() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
-        }
-        if (getGeneratorConfig().getValueSetMethods().isUnified()) {
-            return rule.getFromMethod().isGenerateByType() && isMethodNameGetAllowedValuesForByTypeEqualUnfied();
-        }
-        return false;
+    private boolean hasSameSignature(XPolicyAttribute overwritten, GenerateValueSetType genValueSet) {
+        return Arrays.equals(overwritten.getAllowedValuesMethodParameterSignature(genValueSet),
+                getAllowedValuesMethodParameterSignature(genValueSet));
     }
 
     public boolean isConditionForOverrideAnnotation(GenerateValueSetTypeRule rule) {
@@ -569,10 +550,14 @@ public class XPolicyAttribute extends XAttribute {
         ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
         GenerateValueSetType superGenMode = GenerateValueSetType.mapFromSettings(superSetting, rule.getFromMethod());
 
-        String thisMethodeName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
-        String superMethodeName = getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(superGenMode);
+        String thisMethodName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
+        String superMethodName = getOverwrittenAttribute().getMethodNameGetAllowedValuesFor(superGenMode);
 
-        if (thisMethodeName.equals(superMethodeName)) {
+        String[] thisMethodSignature = getAllowedValuesMethodParameterSignature(rule.getFromMethod());
+        String[] superMethodSignature = getOverwrittenAttribute()
+                .getAllowedValuesMethodParameterSignature(superGenMode);
+
+        if (thisMethodName.equals(superMethodName) && Arrays.equals(thisMethodSignature, superMethodSignature)) {
             if (getOverwrittenAttribute().isValueSetUnrestricted() && !isValueSetUnrestricted()) {
                 if (isOverwritingValueSetWithMoreConcreteType(rule.getFromMethod())) {
                     return true;
@@ -617,8 +602,28 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         return rule.getFromMethod().isGenerateByType()
-                && getUnifyValueSetMethodsSetting().isBoth()
-                && !isMethodNameGetAllowedValuesForByTypeEqualUnfied();
+                && getUnifyValueSetMethodsSetting().isBoth();
+    }
+
+    public String[] getAllowedValuesMethodParameterSignature(GenerateValueSetType type) {
+        if (type.isGenerateByType()) {
+            return new String[] { ClassNames.IValidationContext(this), "context" };
+        } else {
+            return new String[] {};
+        }
+    }
+
+    public String allowedValuesMethodParameter(GenerateValueSetType caller,
+            GenerateValueSetType called) {
+        if (called.isGenerateByType()) {
+            if (caller.isGenerateByType()) {
+                return "context";
+            } else {
+                return "null";
+            }
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -630,12 +635,16 @@ public class XPolicyAttribute extends XAttribute {
      */
     public String getMethodNameGetAllowedValuesFor(GenerateValueSetType valueSetMethods) {
         String prefix;
-        if (isValueSetEnum() && valueSetMethods.isGenerateByType()) {
-            prefix = "getAllowedValuesFor";
-        } else if (isValueSetRange() && valueSetMethods.isGenerateByType()) {
-            prefix = "getRangeFor";
+        if (valueSetMethods.isGenerateByType()) {
+            if (isValueSetEnum()) {
+                prefix = "getAllowedValuesFor";
+            } else if (isValueSetRange()) {
+                prefix = "getRangeFor";
+            } else {
+                prefix = "getSetOfAllowedValuesFor";
+            }
         } else {
-            prefix = "getSetOfAllowedValuesFor";
+            prefix = "getAllowedValuesFor";
         }
         return prefix + StringUtils.capitalize(getFieldName());
     }
@@ -861,8 +870,7 @@ public class XPolicyAttribute extends XAttribute {
         GenerateValueSetType setting = GenerateValueSetType
                 .mapFromSettings(getUnifyValueSetMethodsSetting(),
                         GenerateValueSetType.GENERATE_UNIFIED);
-        return rule.getFromMethod().equals(setting) || (getUnifyValueSetMethodsSetting().isBoth()
-                && isMethodNameGetAllowedValuesForByTypeEqualUnfied());
+        return rule.getFromMethod().equals(setting);
     }
 
     /**

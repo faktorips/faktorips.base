@@ -90,8 +90,8 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
         «ELSE»
             «val attribute = checkedAttribute»
             «val valueSetMethods = generatorConfig.valueSetMethods»
-            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED))»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
-
+            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
+            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
                 // end-user-code

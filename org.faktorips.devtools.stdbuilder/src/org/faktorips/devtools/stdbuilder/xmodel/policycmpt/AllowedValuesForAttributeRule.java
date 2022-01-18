@@ -27,8 +27,8 @@ public class AllowedValuesForAttributeRule {
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, false)),
                         ValueSetMethods.ByValueSetType,
                         List.of(
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, false, false, false),
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, true, false, true)),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, false, false, true),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, true, false, false)),
                         ValueSetMethods.Both,
                         List.of(
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, false),
@@ -38,8 +38,8 @@ public class AllowedValuesForAttributeRule {
                 Map.of(
                         ValueSetMethods.Unified,
                         List.of(
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, false, false, false),
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, true)),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, false, false, true),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, false)),
                         ValueSetMethods.ByValueSetType,
                         List.of(
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, true, false, false)),
@@ -50,8 +50,8 @@ public class AllowedValuesForAttributeRule {
         RULES.put(ValueSetMethods.Both,
                 Map.of(ValueSetMethods.Unified,
                         List.of(
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, true),
-                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, false, true, false)),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_BY_TYPE, false, true, true),
+                                new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, true, false, false)),
                         ValueSetMethods.ByValueSetType,
                         List.of(
                                 new GenerateValueSetTypeRule(GenerateValueSetType.GENERATE_UNIFIED, false, false, true),

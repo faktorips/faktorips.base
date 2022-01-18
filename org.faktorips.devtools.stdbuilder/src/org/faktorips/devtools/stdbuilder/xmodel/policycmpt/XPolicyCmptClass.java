@@ -256,7 +256,6 @@ public class XPolicyCmptClass extends XType {
             // overwritten
             return findAllSuperAttributes().stream()
                     .filter(a -> !isSuperAttributeOverwritten(a))
-                    .filter(a -> a.isValueSetEnum() || a.isValueSetRange())
                     .collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
