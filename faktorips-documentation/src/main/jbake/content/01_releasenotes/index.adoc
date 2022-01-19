@@ -12,8 +12,12 @@
 
 [[vereinheitlichte_wertebereichsmethoden]]
 ===== Vereinheitlichte Wertebereichsmethoden (https://jira.faktorzehn.de/browse/FIPS-6497[FIPS-6497])
-Um den im Modell oder Produkt konfigurierten Wertebereich eines Attributs abfragen zu können generierte Faktor-IPS bisher abhängig vom Wertebereichstyp unterschiedliche Methoden (z.B. `getRangeForWohnflaeche`,`getSetOfAllowedValuesForZahlweise`,`getAllowedValuesForHubraum`). Deshalb musste man die Art des Wertebereichs kennen, um die passende Methode aufrufen zu können (oder generisch über das `IpsModel`) gehen. Ab Faktor-IPS 22.6 gibt es die Möglichkeit, den Generator anzuweisen, für alle Typen von Wertebereichen einen einheitlichen Methodennamen(`getSetOfAllowedValuesForWohnflaeche`) zu verwenden. Diese erleichtert auch die Überschreibung, z.B. mit berechneten Wertebereichen.
-Bei der Migration kann gewählt werden, ob direkt auf die neuen einheitlichen Methoden(`Unified`) umgestellt, weiterhin die alten Methoden(`ByValueSetType`) genutzt oder beide Methoden(`Both`) generiert werden sollen. 
+Die Methoden zur Abfrage von im Modell oder Produkt definierten Wertebereichen für Vertragsattribute hatten in der Anwendung zwei Probleme:
+
+ * Sie hießen abhängig von der Art des Wertebereichs unterschiedlich (z.B. `getRangeForWohnflaeche`,`getSetOfAllowedValuesForZahlweise`,`getAllowedValuesForHubraum`). Ursprünglich war es so gedacht, dass man am Namen der Methode schon den Rückgabetyp erahnen kann, doch dazu muss man die Methode schon gefunden haben. Meist war es eher hinderlich, da man beim Programmieren nur den Namen des Attributs, nicht aber die Art des Wertebereichs kennt. 
+ * Sie hatten einen ValidationContext als Parameter - der dann im generierten Code nicht genutzt wurde und deshalb zu Warnings im Code führte. Hier war angedacht, dass der Kontext genutzt würde, um davon abhängig unterschiedliche Wertebereiche zurückzugeben, doch diese ließen sich so nicht in der Produktkonfiguration festlegen. 
+Deshalb musste man die Art des Wertebereichs kennen, um die passende Methode aufrufen zu können (oder generisch über das `IpsModel` gehen) und immer einen ValidationContext oder `null` übergeben. Ab Faktor-IPS 22.6 gibt es die Möglichkeit, den Generator anzuweisen, für alle Typen von Wertebereichen einen einheitlichen Methodennamen(`getAllowedValuesForWohnflaeche`) zu verwenden und auf den Kontext-Parameter zu verzichten. Dies erleichtert auch die Überschreibung, z.B. mit berechneten Wertebereichen.
+Bei der Migration kann gewählt werden, ob direkt auf die neuen einheitlichen Methoden(`Unified`) umgestellt wird, weiterhin die alten Methoden(`ByValueSetType`) genutzt oder beide Methoden(`Both`) generiert werden sollen.
 
 Faktor-IPS unterstützt auch unterschiedliche `valueSetMethods` Einstellungen per Projekt. Diese Funktion sollte aber spärlich verwenden werden da der Code Generator zusätzliche ähnlich Methoden generieren muss damit die Vererbung in Java weiterhin wie erwartet funktioniert.
 Außerdem empfehlen wir die Einstellung `Both` nur für Migrationszwecke zu verwenden, nicht jedoch für den Produktivcode. 
@@ -29,6 +33,7 @@ Wurden bereits Wertebereichsmethoden manuell angepasst empfiehlt sich folgendes 
  
 WARNING: Die Einstellung `valueSetMethods` sollte für Maven- und OSGi-Projekte nicht nur in der `.ipsproject`-Datei sondern auch in der `META-INF/MANIFEST.MF` gepflegt werden. Ist diese vorhanden wird im Rahmen der Migration der Abschnitt `Fips-GeneratorConfig` dort angelegt bzw. mit den aktuellen Werten überschrieben. Bei späteren Änderungen der Einstellungen muss der Wert manuell synchronisiert werden. Die Einstellung aus dem Manifest wird vom Codegenerator verwendet, wenn ein referenziertes Projekt (z.B. das Basismodell) nur als Dependency vorhanden ist und nicht im Workspace geöffnet ist.
 
+Noch im handgeschriebenen Codeteil verbliebene Aufrufe der alten Methoden lassen sich z.B. in Eclipse über Regular Expressions beim Suchen und Ersetzen finden, z.B. kann `\.get(?:Range|(?:SetOf)AllowedValues)For([^(]+)\((?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\)` durch `.getAllowedValuesFor$1()` ersetzt werden.
  
 ===== Migration
 Bei der Migration auf Faktor-IPS 22.6 kann auf vereinheitlichte Wertebereichsmethoden umgestellt werden. Im Abschnitt <<vereinheitlichte_wertebereichsmethoden, Vereinheitlichte Wertebereichsmethoden>> ist ein Migrationsvorgehen für mehrere Projekte beschrieben.
