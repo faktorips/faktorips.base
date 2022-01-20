@@ -24,10 +24,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
-import org.faktorips.devtools.abstraction.AProject.AEclipseProject;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -166,8 +167,8 @@ public class ProductReleaseProcessor {
 
     private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreRuntimeException {
         try {
-            if (!ipsProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
-                ipsProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            if (!ipsProject.getProject().isSynchronized(AResourceTreeTraversalDepth.INFINITE)) {
+                ipsProject.getProject().refreshLocal(AResourceTreeTraversalDepth.INFINITE, monitor);
             }
         } finally {
             monitor.done();

@@ -10,16 +10,19 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -64,20 +67,22 @@ public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
 
         IIpsPackageFragment targetIpsPackageFragment = ipsProject.getIpsPackageFragmentRoots()[0]
                 .getIpsPackageFragment("source");
-        IResource source01 = ((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
-        assertTrue(source01 == null);
+        AResource aResource = ((AContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
+        assertNull(aResource);
         IFile source1 = folderTarget.getFile("file1");
 
         operation = new NonIPSMoveOperation(new Object[] { source1 }, targetIpsPackageFragment);
         operation.run(null);
-        source01 = ((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
+        aResource = ((AContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1");
+        assertNotNull(aResource);
+        IResource source01 = aResource.unwrap();
         assertTrue(source01.exists());
 
         // test move to project
         operation = new NonIPSMoveOperation(ipsProject.getProject().unwrap(), new Object[] { source01 },
                 ipsProject.getProject().getLocation().toString());
         operation.run(null);
-        assertTrue(((IContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1") == null);
+        assertTrue(((AContainer)targetIpsPackageFragment.getEnclosingResource()).findMember("file1") == null);
         assertTrue(ipsProject.getProject().findMember("file1").exists());
     }
 

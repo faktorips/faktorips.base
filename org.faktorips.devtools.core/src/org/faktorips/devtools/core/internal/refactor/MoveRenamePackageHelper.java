@@ -26,15 +26,15 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
@@ -220,7 +220,7 @@ public final class MoveRenamePackageHelper {
             IProgressMonitor monitor) throws CoreException {
         AFolder folder = (AFolder)sourcePackage.getEnclosingResource();
         IFile rawFile = folder.getFile(fileInfos.getFileName()).unwrap();
-        IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath()
+        IPath destination = ((IFolder)((AFolder)targetPackage.getCorrespondingResource()).unwrap()).getFullPath()
                 .append(fileInfos.getFileName());
         if (rawFile.exists()) {
             rawFile.move(destination, true, monitor);

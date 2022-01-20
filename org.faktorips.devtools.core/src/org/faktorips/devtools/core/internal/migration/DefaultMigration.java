@@ -11,12 +11,13 @@
 package org.faktorips.devtools.core.internal.migration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.SortedSet;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -79,18 +80,13 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
 
     protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor)
             throws CoreRuntimeException {
-        IFolder folder = (IFolder)pack.getCorrespondingResource();
-        IResource[] members;
-        try {
-            members = folder.members();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-        monitor.beginTask("Migrate package " + pack.getName(), members.length); //$NON-NLS-1$
-        for (IResource member : members) {
+        AFolder folder = (AFolder)pack.getCorrespondingResource();
+        SortedSet<? extends AResource> members = folder.getMembers();
+        monitor.beginTask("Migrate package " + pack.getName(), members.size()); //$NON-NLS-1$
+        for (AResource member : members) {
             try {
-                if (member instanceof IFile) {
-                    IFile file = (IFile)member;
+                if (member instanceof AFile) {
+                    AFile file = (AFile)member;
                     boolean wasMigrated = migrate(file);
                     if (!wasMigrated) {
                         IIpsSrcFile srcFile = pack.getIpsSrcFile(file.getName());
@@ -125,7 +121,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
      * @throws CoreRuntimeException in case of any exception throw a {@link CoreException}
      */
-    protected boolean migrate(IFile file) throws CoreRuntimeException {
+    protected boolean migrate(AFile file) throws CoreRuntimeException {
         // default do nothing
         return false;
     }

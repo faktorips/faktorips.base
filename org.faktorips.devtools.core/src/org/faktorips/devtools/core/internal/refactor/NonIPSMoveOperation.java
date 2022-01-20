@@ -119,7 +119,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * @param target The package fragment to move to.
      */
     private String[] getTargetNames(Object[] sources, IIpsPackageFragment target) {
-        return getTargetNames(sources, target.getName(), target.getEnclosingResource().getLocation().toOSString());
+        return getTargetNames(sources, target.getName(), target.getEnclosingResource().getLocation().toString());
     }
 
     /**

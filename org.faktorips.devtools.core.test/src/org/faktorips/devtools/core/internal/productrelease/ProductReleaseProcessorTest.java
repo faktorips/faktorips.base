@@ -36,6 +36,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
@@ -64,6 +66,9 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
         super.setUp();
 
         ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        IProject project = mock(IProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        AProject aProject = Wrappers.wrap(project).as(AProject.class);
+        when(ipsProject.getProject()).thenReturn(aProject);
 
         when(ipsProject.getReadOnlyProperties().getReleaseExtensionId()).thenReturn("releaseExtensionId");
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[0]);

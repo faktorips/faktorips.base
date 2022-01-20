@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
@@ -112,7 +114,7 @@ public class ClassLoaderProvider implements IClassLoaderProvider {
     private void classpathContentsChanged() {
         classLoader = null;
         for (IClasspathContentsChangeListener listener : classpathContentsChangeListeners) {
-            listener.classpathContentsChanges(javaProject);
+            listener.classpathContentsChanges(Wrappers.wrap(javaProject).as(AJavaProject.class));
         }
     }
 

@@ -17,12 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -111,8 +111,8 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
     }
 
@@ -183,7 +183,7 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("data.newproducts");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);

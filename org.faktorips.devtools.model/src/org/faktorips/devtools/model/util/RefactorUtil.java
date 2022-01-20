@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
@@ -60,9 +62,12 @@ public final class RefactorUtil {
         Path destinationFolder = targetIpsPackageFragment.getCorrespondingResource().getWorkspaceRelativePath();
 
         String targetSrcFileName = getTargetFileName(toBeCopied, copyName);
-        Path destinationPath = destinationFolder.resolve(targetSrcFileName);
-
-        toBeCopied.getCorrespondingResource().copy(destinationPath, progressMonitor);
+        try {
+            Path destinationPath = destinationFolder.resolve(targetSrcFileName);
+            toBeCopied.getCorrespondingResource().copy(destinationPath, progressMonitor);
+        } catch (InvalidPathException ipe) {
+            throw new CoreRuntimeException(new IpsStatus(ipe));
+        }
         return targetIpsPackageFragment.getIpsSrcFile(targetSrcFileName);
     }
 

@@ -18,12 +18,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -187,8 +187,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     @Test
     public void testGetAffectedIpsSrcFiles() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
 
         helper = new MoveRenamePackageHelper(source);
@@ -208,8 +208,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(source.exists());
         assertFalse(target.exists());
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
 
         helper = new MoveRenamePackageHelper(source);
@@ -227,7 +227,7 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("target.products");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);
@@ -275,8 +275,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(source.exists());
         assertFalse(target.exists());
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
 
         helper = new MoveRenamePackageHelper(source);
@@ -294,7 +294,7 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         IIpsPackageFragment newTarget = ipsRoot2.getIpsPackageFragment("target.products");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);
@@ -317,8 +317,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(source.exists());
         assertTrue(target.exists());
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
 
         helper = new MoveRenamePackageHelper(source);
@@ -336,7 +336,7 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("products");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);
@@ -366,8 +366,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(source.exists());
         assertFalse(target.exists());
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
 
         helper = new MoveRenamePackageHelper(source);
@@ -383,7 +383,7 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
 
         assertTrue(target.exists());
 
-        IFile newFile = ((IFolder)target.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)target.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsPackageFragment newTargetProducts = ipsRoot2.getIpsPackageFragment("target.data.products");
@@ -411,8 +411,8 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(coverage.getIpsSrcFile().exists());
 
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("data.coverages.subpackage", true, null);
-        IFile file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)pack.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(pack.exists());
         assertTrue(file.exists());
 
@@ -439,7 +439,7 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
 
         pack = ipsRoot.createPackageFragment("data.renamed.subpackage", true, null);
         assertTrue(pack.exists());
-        file = ((IFolder)pack.getCorrespondingResource()).getFile("test.unknown");
+        file = ((AFolder)pack.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(file.exists());
     }
 
