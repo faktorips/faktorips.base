@@ -145,7 +145,7 @@ public class IpsJarBundleTest {
         assertEquals('F', ressourceAsStream.read());
         assertEquals('o', ressourceAsStream.read());
         assertEquals('o', ressourceAsStream.read());
-        verify(jarFile).close();
+        verify(jarFileFactory).closeJarFile();
     }
 
     @Test
@@ -157,7 +157,7 @@ public class IpsJarBundleTest {
         assertEquals('F', ressourceAsStream.read());
         assertEquals('o', ressourceAsStream.read());
         assertEquals('o', ressourceAsStream.read());
-        verify(jarFile).close();
+        verify(jarFileFactory).closeJarFile();
     }
 
     private void mockJarFileWithResource() throws IOException {
