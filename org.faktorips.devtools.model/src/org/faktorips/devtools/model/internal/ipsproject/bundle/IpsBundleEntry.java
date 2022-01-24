@@ -91,9 +91,13 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     private void initJarBundle(IPath bundlePath) throws IOException {
         JarFileFactory jarFileFactory = new JarFileFactory(bundlePath);
-        IpsJarBundle ipsJarBundle = ipsStorageFactory.createJarBundle(getIpsProject(), jarFileFactory);
-        ipsJarBundle.initBundle();
-        ipsBundle = ipsJarBundle;
+        try {
+            IpsJarBundle ipsJarBundle = ipsStorageFactory.createJarBundle(getIpsProject(), jarFileFactory);
+            ipsJarBundle.initBundle();
+            ipsBundle = ipsJarBundle;
+        } finally {
+            jarFileFactory.closeJarFile();
+        }
     }
 
     @Override

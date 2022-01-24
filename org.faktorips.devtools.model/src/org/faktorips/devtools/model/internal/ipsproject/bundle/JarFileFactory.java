@@ -11,11 +11,15 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 
 /**
  * This class simply creates a JarFile for a previously specified path. After creating a
@@ -26,11 +30,17 @@ import org.eclipse.core.runtime.IPath;
  * The path in this {@link JarFileFactory} may either be absolute in the workspace or it is absolute
  * in the file system. The factory first checks if there is a file with the specified path in the
  * workspace. If not it will take the path as being absolute in the file system.
- * 
- * 
- * @author dirmeier
  */
 public class JarFileFactory {
+
+    private static final boolean TRACE_JAR_FILES = Boolean
+            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")).booleanValue(); //$NON-NLS-1$
+
+    private static final Map<IPath, OpenedJar> CACHE = new ConcurrentHashMap<>();
+
+    private static final int DEFAULT_DELAY_TIME = 5000;
+
+    private static int closeDelay = DEFAULT_DELAY_TIME;
 
     private final IPath jarPath;
 
@@ -42,6 +52,10 @@ public class JarFileFactory {
      */
     public JarFileFactory(IPath jarPath) {
         this.jarPath = jarPath;
+    }
+
+    protected void setCloseDelay(int ms) {
+        closeDelay = ms;
     }
 
     /**
@@ -62,9 +76,21 @@ public class JarFileFactory {
      * @throws IOException in case of any IO exception while creating the {@link JarFileFactory}
      * @see JarFile#JarFile(java.io.File)
      */
-    public JarFile createJarFile() throws IOException {
-        IPath absolutePath = getAbsolutePath(jarPath);
-        return new JarFile(absolutePath.toFile());
+    public synchronized JarFile createJarFile() throws IOException {
+        OpenedJar openedJar = CACHE.get(getJarPath());
+        if (openedJar == null) {
+            JarFile jarFile = new JarFile(getAbsolutePath(getJarPath()).toFile());
+            openedJar = new OpenedJar(jarFile);
+            CACHE.put(getJarPath(), openedJar);
+            trace(MessageFormat.format("Open {0}.", jarFile.getName())); //$NON-NLS-1$
+        }
+        return openedJar.getJarFile();
+    }
+
+    private void trace(String message) {
+        if (TRACE_JAR_FILES) {
+            System.out.println("JarFileFactory: " + message); //$NON-NLS-1$
+        }
     }
 
     /* private */IPath getAbsolutePath(IPath bundlePath) {
@@ -84,4 +110,74 @@ public class JarFileFactory {
         return file.getLocation();
     }
 
+    public synchronized void closeJarFile() {
+        OpenedJar openedJar = CACHE.get(getJarPath());
+        if (openedJar != null) {
+            openedJar.close();
+        }
+    }
+
+    private class OpenedJar {
+
+        private final JarFile jarFile;
+        private volatile long lastCallToClose;
+        private volatile Closer closer;
+
+        public OpenedJar(JarFile jarFile) {
+            this.jarFile = jarFile;
+        }
+
+        public synchronized JarFile getJarFile() {
+            if (closer != null) {
+                trace(MessageFormat.format("Received a reopen request for {0}. Delaying close.", jarFile.getName())); //$NON-NLS-1$
+                closer.dontCloseYet();
+            }
+            return jarFile;
+        }
+
+        public synchronized void close() {
+            trace(MessageFormat.format("Received close for {0}. Wait {1} ms before doing so.", //$NON-NLS-1$
+                    jarFile.getName(),
+                    closeDelay));
+            lastCallToClose = System.currentTimeMillis();
+            if (closer == null) {
+                closer = new Closer();
+                new Thread(closer, "Closer for " + jarFile.getName()).start(); //$NON-NLS-1$
+            }
+        }
+
+        private class Closer implements Runnable {
+
+            private volatile boolean shouldClose = true;
+
+            @Override
+            public void run() {
+                shouldClose = true;
+                while (shouldClose) {
+                    if (shouldClose && lastCallToClose + closeDelay <= System.currentTimeMillis()) {
+                        try {
+                            jarFile.close();
+                            CACHE.remove(jarPath);
+                            trace(MessageFormat.format("Finally closing {0}.", jarFile.getName())); //$NON-NLS-1$
+                            break;
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    try {
+                        Thread.sleep(closeDelay);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+            }
+
+            protected void dontCloseYet() {
+                shouldClose = false;
+            }
+
+        }
+
+    }
 }
