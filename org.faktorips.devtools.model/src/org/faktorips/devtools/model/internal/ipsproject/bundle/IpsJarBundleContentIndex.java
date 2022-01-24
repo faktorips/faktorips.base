@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -40,23 +39,16 @@ public class IpsJarBundleContentIndex extends AbstractIpsBundleContentIndex {
      *            file
      */
     public IpsJarBundleContentIndex(JarFile jarFile, List<IPath> modelFolders) {
-        try {
-            Assert.isNotNull(jarFile, "jarFile must not be null"); //$NON-NLS-1$
-            Assert.isNotNull(modelFolders, "modelFolders must not be null"); //$NON-NLS-1$
 
-            Enumeration<JarEntry> entries = jarFile.entries();
+        Assert.isNotNull(jarFile, "jarFile must not be null"); //$NON-NLS-1$
+        Assert.isNotNull(modelFolders, "modelFolders must not be null"); //$NON-NLS-1$
 
-            while (entries.hasMoreElements()) {
-                JarEntry jarEntry = entries.nextElement();
+        Enumeration<JarEntry> entries = jarFile.entries();
 
-                registerJarEntry(jarEntry, modelFolders);
-            }
-        } finally {
-            try {
-                jarFile.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Error while closing jar file " + jarFile.getName(), e); //$NON-NLS-1$
-            }
+        while (entries.hasMoreElements()) {
+            JarEntry jarEntry = entries.nextElement();
+
+            registerJarEntry(jarEntry, modelFolders);
         }
     }
 

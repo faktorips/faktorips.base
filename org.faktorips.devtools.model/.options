@@ -13,3 +13,5 @@ org.faktorips.devtools.model/trace/testrunner=false
 
 # tracing options for user interface
 org.faktorips.devtools.model/trace/ui=false
+
+org.faktorips.devtools.model/trace/jarfiles=false
