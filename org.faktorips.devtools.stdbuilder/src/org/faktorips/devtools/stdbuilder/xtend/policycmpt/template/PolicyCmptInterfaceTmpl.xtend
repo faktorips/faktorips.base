@@ -56,6 +56,7 @@ class PolicyCmptInterfaceTmpl {
                             «allowedValuesMethod(rule)»
                         «ENDFOR»
                         «allowedValuesMethodWithMoreConcreteTypeForByType»
+                        «allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent»
                         «getter»
                         «setter»
                     «ENDIF»

@@ -405,8 +405,8 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isOverwritingValueSetEqualType() {
-        return getAttribute().getValueSet().getValueSetType()
-                .equals(getOverwrittenAttribute().getAttribute().getValueSet().getValueSetType());
+        return getValueSetType()
+                .equals(getOverwrittenAttribute().getValueSetType());
     }
 
     public boolean isValueSet() {
@@ -434,7 +434,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private boolean isValueSetOfType(ValueSetType valueSetType) {
-        return getAttribute().getValueSet().getValueSetType() == valueSetType;
+        return getValueSetType() == valueSetType;
     }
 
     public boolean isAbstractValueSet() {
@@ -583,6 +583,12 @@ public class XPolicyAttribute extends XAttribute {
                         GenerateValueSetType.GENERATE_BY_TYPE);
     }
 
+    public boolean isOverwritingValueSetWithMoreConcreteTypeForByTypeWithBothTypeParent() {
+        return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
+                && (getAttribute().getValueSet().compareTo(getOverwrittenAttribute().getAttribute().getValueSet()) != 0
+                        || getValueSetType() == ValueSetType.DERIVED);
+    }
+
     public boolean isOverwritingValueSetWithDerived() {
         return isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()
                 && isValueSetDerived();
@@ -626,6 +632,20 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
+    public ValueSetType getValueSetType() {
+        return getAttribute().getValueSet().getValueSetType();
+    }
+
+    public boolean isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType() {
+        if (isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
+            ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+            return (superSetting.isByValueSetType() || superSetting.isBoth())
+                    && !getUnifyValueSetMethodsSetting().isByValueSetType()
+                    && !isOverwritingValueSetEqualType();
+        }
+        return false;
+    }
+
     /**
      * Creates the method name for the getter of the allowed values of a {@link ValueSet}. If
      * {@link GenerateValueSetType#GENERATE_BY_TYPE} add a different prefix for enums and ranges.
@@ -636,9 +656,13 @@ public class XPolicyAttribute extends XAttribute {
     public String getMethodNameGetAllowedValuesFor(GenerateValueSetType valueSetMethods) {
         String prefix;
         if (valueSetMethods.isGenerateByType()) {
-            if (isValueSetEnum()) {
+            ValueSetType valueSetType = getValueSetType();
+            if (isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType()) {
+                valueSetType = getOverwrittenAttribute().getValueSetType();
+            }
+            if (valueSetType == ValueSetType.ENUM) {
                 prefix = "getAllowedValuesFor";
-            } else if (isValueSetRange()) {
+            } else if (valueSetType == ValueSetType.RANGE) {
                 prefix = "getRangeFor";
             } else {
                 prefix = "getSetOfAllowedValuesFor";
@@ -647,6 +671,7 @@ public class XPolicyAttribute extends XAttribute {
             prefix = "getAllowedValuesFor";
         }
         return prefix + StringUtils.capitalize(getFieldName());
+
     }
 
     public String getMethodNameSetAllowedValuesFor() {
@@ -888,6 +913,15 @@ public class XPolicyAttribute extends XAttribute {
         ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
         return thisSetting.isByValueSetType()
                 && (superSetting.isBoth() || superSetting.isByValueSetType());
+    }
+
+    public boolean isGenerateAllowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        return thisSetting.isByValueSetType() && superSetting.isBoth();
     }
 
     private ValueSetMethods getUnifyValueSetSettingFormSuperType(XPolicyAttribute attribute) {

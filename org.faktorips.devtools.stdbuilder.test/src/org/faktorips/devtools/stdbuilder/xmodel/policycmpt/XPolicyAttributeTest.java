@@ -99,6 +99,7 @@ public class XPolicyAttributeTest {
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
         when(modelContext.getGeneratorConfig(any(IpsObject.class))).thenReturn(generatorConfig);
+        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
 
         when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 

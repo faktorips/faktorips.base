@@ -114,6 +114,7 @@ def static String body(XPolicyCmptClass it) '''
                 «allowedValuesMethod(rule)»
             «ENDFOR»
             «allowedValuesMethodWithMoreConcreteTypeForByType»
+            «allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent»
             «IF !it.isAbstract»
                 «getter»
                 «setter»
