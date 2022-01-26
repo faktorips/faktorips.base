@@ -11,6 +11,7 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 
 import java.lang.Runtime.Version;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -86,6 +87,12 @@ public class PlainJavaJavaProject extends AWrapper<PlainJavaProject> implements 
     public MessageList validateJavaProjectBuildPath() {
         // TODO
         return MessageList.of();
+    }
+
+    @Override
+    public Map<String, String> getOptions() {
+        // TODO von Maven ableiten?
+        return Map.of();
     }
 
 }

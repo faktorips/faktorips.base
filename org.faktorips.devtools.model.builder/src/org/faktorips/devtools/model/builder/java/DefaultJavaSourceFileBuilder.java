@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IImportContainer;
 import org.eclipse.jdt.core.IImportDeclaration;
@@ -24,6 +23,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.TypeSection;
@@ -97,11 +97,15 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             innerClassesSections = null;
         }
         if (importContainer != null && importContainer.exists()) {
-            content.append(importContainer.getSource());
-            ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
-            if (newImports.getNoOfImports() > 0) {
-                content.append(System.lineSeparator());
-                content.append(newImports);
+            try {
+                content.append(importContainer.getSource());
+                ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
+                if (newImports.getNoOfImports() > 0) {
+                    content.append(System.lineSeparator());
+                    content.append(newImports);
+                }
+            } catch (JavaModelException e) {
+                throw new CoreRuntimeException(e);
             }
         } else {
             content.append(code.getImportDeclaration(pack));
@@ -130,9 +134,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             return section;
         }
         throw new RuntimeException(
-                "This exception occurs when the list for inner class sections has not been properly initialized. " + //$NON-NLS-1$
-                        "Initialization takes place in the generate() method of the class " + //$NON-NLS-1$
-                        DefaultJavaSourceFileBuilder.class);
+                "This exception occurs when the list for inner class sections has not been properly initialized. " //$NON-NLS-1$
+                        + "Initialization takes place in the generate() method of the class " //$NON-NLS-1$
+                        + DefaultJavaSourceFileBuilder.class);
     }
 
     private JavaCodeFragment generateClassBody(TypeSection section, List<TypeSection> innerClassSections)
@@ -197,8 +201,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * <code>getMainTypeSection()</code> method or to <code>TypeSection</code> objects retrieved by
      * the <code>createInnerClassTypeSection()</code> method.
      * 
-     * @throws CoreRuntimeException exceptions that occur during the generation process can be wrapped into
-     *             a CoreExceptions and are safely handled by the framework
+     * @throws CoreRuntimeException exceptions that occur during the generation process can be
+     *             wrapped into a CoreExceptions and are safely handled by the framework
      */
     protected abstract void generateCodeForJavatype() throws CoreRuntimeException;
 
@@ -218,8 +222,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     private IImportContainer getImportContainer() throws CoreRuntimeException {
-        IFile file = getJavaFile(getIpsSrcFile());
-        ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+        AFile file = getJavaFile(getIpsSrcFile());
+        ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file.unwrap());
         if (cu == null || !cu.exists()) {
             return null;
         }
@@ -304,7 +308,8 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message) throws CoreRuntimeException {
+    protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message)
+            throws CoreRuntimeException {
         if (!checkLoggingGenerationConditions()) {
             return;
         }

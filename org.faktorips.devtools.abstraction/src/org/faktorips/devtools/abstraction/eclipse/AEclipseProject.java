@@ -13,6 +13,7 @@ import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
+import java.nio.charset.Charset;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -70,6 +71,11 @@ public class AEclipseProject extends AEclipseContainer implements AProject {
     @Override
     public void build(ABuildKind kind, IProgressMonitor monitor) {
         run(() -> project().build(BuildKindMapping.forEclipse(kind), monitor));
+    }
+
+    @Override
+    public Charset getDefaultCharset() {
+        return get(() -> Charset.forName(project().getDefaultCharset()));
     }
 
 }

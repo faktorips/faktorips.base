@@ -10,6 +10,8 @@
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,6 +62,12 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
     @Override
     public void build(ABuildKind incrementalBuild, IProgressMonitor monitor) {
         // TODO später...
+    }
+
+    @Override
+    public Charset getDefaultCharset() {
+        // TODO von Maven / Filesystem abfragen?
+        return StandardCharsets.UTF_8;
     }
 
 }

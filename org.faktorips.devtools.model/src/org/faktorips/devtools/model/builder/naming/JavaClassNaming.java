@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model.builder.naming;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -103,7 +104,7 @@ public class JavaClassNaming {
      * If the java class name is org.example.MyExample this method would return an {@link IPath} of
      * <em>/org/example/MyExample.java</em>
      */
-    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile,
+    public Path getRelativeJavaFile(IIpsSrcFile ipsSrcFile,
             BuilderAspect aspect,
             IJavaClassNameProvider javaClassNameProvider) {
         String name = getQualifiedClassName(ipsSrcFile, aspect, javaClassNameProvider);
@@ -112,7 +113,7 @@ public class JavaClassNaming {
         if (index == name.length()) {
             throw new RuntimeException("The qualified class name is not a valid java class name"); //$NON-NLS-1$
         }
-        IPath javaFile = new Path(name.replace('.', '/') + JAVA_EXTENSION);
+        Path javaFile = Path.of(name.replace('.', '/') + JAVA_EXTENSION);
         return javaFile;
     }
 

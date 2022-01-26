@@ -17,6 +17,7 @@ import java.lang.Runtime.Version;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -184,6 +185,11 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
         String message = status.getMessage();
         String code = Integer.toString(status.getCode());
         return MessageList.of(new Message(code, message, severity));
+    }
+
+    @Override
+    public Map<String, String> getOptions() {
+        return javaProject().getOptions(true);
     }
 
 }

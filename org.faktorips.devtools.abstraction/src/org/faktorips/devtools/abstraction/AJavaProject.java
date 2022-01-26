@@ -10,6 +10,7 @@
 package org.faktorips.devtools.abstraction;
 
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Set;
 
 import org.faktorips.runtime.MessageList;
@@ -85,5 +86,10 @@ public interface AJavaProject extends AAbstraction {
     public static AJavaProject from(AProject project) {
         return Wrappers.wrap(project).as(AJavaProject.class);
     }
+
+    /**
+     * Returns the options for this project.
+     */
+    Map<String, String> getOptions();
 
 }

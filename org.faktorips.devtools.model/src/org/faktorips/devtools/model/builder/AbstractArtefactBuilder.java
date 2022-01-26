@@ -28,7 +28,6 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.EclipseIOUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -231,9 +230,9 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      *             file @see
      *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      */
-    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
+    public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory)
             throws CoreRuntimeException {
-        EclipseIOUtil.writeToFile(file, inputStream, force, keepHistory, new NullProgressMonitor());
+        file.setContents(inputStream, keepHistory, new NullProgressMonitor());
     }
 
     /**

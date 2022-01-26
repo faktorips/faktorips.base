@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction;
 
+import java.nio.charset.Charset;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,5 +56,10 @@ public interface AProject extends AContainer {
      *            The monitor may be {@code null} when progress does not need to be reported.
      */
     void build(ABuildKind buildKind, IProgressMonitor monitor);
+
+    /**
+     * Returns the default character set used for files in this project.
+     */
+    Charset getDefaultCharset();
 
 }
