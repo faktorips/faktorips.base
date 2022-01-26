@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Formula Language Tests
 Bundle-SymbolicName: org.faktorips.fl.test
-Bundle-Version: 21.6.6.qualifier
+Bundle-Version: 21.6.7.qualifier
 Fragment-Host: org.faktorips.fl;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
