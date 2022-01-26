@@ -7,7 +7,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-maven-plugin</artifactId>
-    <version>21.6.5-SNAPSHOT</version>
+    <version>21.6.6-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
 
