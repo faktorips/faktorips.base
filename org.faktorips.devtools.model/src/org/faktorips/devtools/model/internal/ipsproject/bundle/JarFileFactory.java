@@ -78,9 +78,7 @@ public class JarFileFactory {
      */
     public synchronized JarFile createJarFile() throws IOException {
         OpenedJar openedJar = CACHE.get(getJarPath());
-        if (openedJar != null) {
-            openedJar.resetCreatedAt();
-        } else {
+        if (openedJar == null) {
             JarFile jarFile = new JarFile(getAbsolutePath(getJarPath()).toFile());
             openedJar = new OpenedJar(jarFile);
             CACHE.put(getJarPath(), openedJar);
@@ -122,12 +120,41 @@ public class JarFileFactory {
     private class OpenedJar {
 
         private final JarFile jarFile;
-        private volatile long createdAt;
-        private final Thread closer = new Thread(new Runnable() {
+        private volatile long lastCallToClose;
+        private volatile Closer closer;
+
+        public OpenedJar(JarFile jarFile) {
+            this.jarFile = jarFile;
+        }
+
+        public synchronized JarFile getJarFile() {
+            if (closer != null) {
+                trace(MessageFormat.format("Received a reopen request for {0}. Delaying close.", jarFile.getName())); //$NON-NLS-1$
+                closer.dontCloseYet();
+            }
+            return jarFile;
+        }
+
+        public synchronized void close() {
+            trace(MessageFormat.format("Received close for {0}. Wait {1} ms before doing so.", //$NON-NLS-1$
+                    jarFile.getName(),
+                    closeDelay));
+            lastCallToClose = System.currentTimeMillis();
+            if (closer == null) {
+                closer = new Closer();
+                new Thread(closer, "Closer for " + jarFile.getName()).start(); //$NON-NLS-1$
+            }
+        }
+
+        private class Closer implements Runnable {
+
+            private volatile boolean shouldClose = true;
+
             @Override
             public void run() {
-                while (true) {
-                    if (getCreatedAt() + closeDelay <= System.currentTimeMillis()) {
+                shouldClose = true;
+                while (shouldClose) {
+                    if (shouldClose && lastCallToClose + closeDelay <= System.currentTimeMillis()) {
                         try {
                             jarFile.close();
                             CACHE.remove(jarPath);
@@ -143,34 +170,14 @@ public class JarFileFactory {
                         Thread.currentThread().interrupt();
                     }
                 }
+
             }
-        });
 
-        public OpenedJar(JarFile jarFile) {
-            this.jarFile = jarFile;
-            createdAt = System.currentTimeMillis();
-        }
-
-        public JarFile getJarFile() {
-            return jarFile;
-        }
-
-        public synchronized long getCreatedAt() {
-            return createdAt;
-        }
-
-        public synchronized void resetCreatedAt() {
-            trace(MessageFormat.format("Received a reopen request for {0}. Delaying close.", jarFile.getName())); //$NON-NLS-1$
-            createdAt = System.currentTimeMillis();
-        }
-
-        public void close() {
-            if (!closer.isAlive()) {
-                trace(MessageFormat.format("Received close for {0}. Wait {1} ms before doing so.", jarFile.getName(), //$NON-NLS-1$
-                        closeDelay));
-
-                closer.start();
+            protected void dontCloseYet() {
+                shouldClose = false;
             }
+
         }
+
     }
 }

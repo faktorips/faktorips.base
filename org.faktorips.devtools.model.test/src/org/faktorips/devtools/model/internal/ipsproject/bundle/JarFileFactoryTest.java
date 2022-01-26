@@ -104,6 +104,8 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         assertThat(openJar, is(notNullValue()));
         assertThat(openJar.entries(), is(notNullValue()));
 
+        jarFileFactory.closeJarFile();
+
         JarFile sameJarOtherHandle = jarFileFactory.createJarFile();
         assertSame(openJar, sameJarOtherHandle);
         assertThat(sameJarOtherHandle.entries(), is(notNullValue()));
