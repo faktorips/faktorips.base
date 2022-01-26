@@ -85,7 +85,7 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
 
         assertThat(openJar.entries(), is(notNullValue()));
 
-        Thread.sleep(600);
+        Thread.sleep(1100);
 
         try {
             openJar.entries();
@@ -119,7 +119,7 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         assertThat(sameJarOtherHandle.entries(), is(notNullValue()));
 
         // need to wait until the file is closed
-        Thread.sleep(600);
+        Thread.sleep(1000);
     }
 
 }

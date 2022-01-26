@@ -6,6 +6,10 @@
 
 == Release Notes
 
+=== Version 21.12.2
+
+Version 21.12.2 bringt Performance-Verbesserungen bei der Verwendung großer Modelle in JARs in der Faktor-IPS-Designzeitumgebung(Eclipse-Plugin). Ein Update der Runtime-Dependencies ist nicht notwendig.
+
 === Version 21.12.1
 
 Das Patch-Release 21.12.1 korrigiert einige Links in der Dokumentation und behebt zwei Fehler:

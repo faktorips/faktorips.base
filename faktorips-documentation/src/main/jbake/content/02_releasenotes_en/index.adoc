@@ -6,6 +6,10 @@
 
 == Release Notes (English)
 
+=== Version 21.12.2
+
+Version 21.12.2 brings performance improvements when using large models and products from JARs in the Faktor-IPS design time tools(Eclipse plugin). An update of the runtime dependencies is not necessary.
+
 === Version 21.12.1
 
 The patch release 21.12.1 fixes some links in the documentation and two bugs:
