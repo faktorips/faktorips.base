@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Standard Code Generator
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder; singleton:=true
-Bundle-Version: 21.12.1.qualifier
+Bundle-Version: 21.12.2.qualifier
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin

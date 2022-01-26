@@ -21,7 +21,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-nexus-base-8</artifactId>
-    <version>21.12.1-SNAPSHOT</version>
+    <version>21.12.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Library for Maven Java8</name>
