@@ -63,15 +63,15 @@ import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
@@ -1420,10 +1420,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Clears the output folders of the given {@link IIpsProject} (to avoid code merging problems)
      * and performs a full build.
      */
-    protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
+    protected final void performFullBuild(IIpsProject ipsProject) {
         // To avoid code merging problems
-        clearOutputFolders(ipsProject);
-        ((IProject)ipsProject.getProject().unwrap()).build(IncrementalProjectBuilder.FULL_BUILD, null);
+        try {
+            clearOutputFolders(ipsProject);
+            ((IProject)ipsProject.getProject().unwrap()).build(IncrementalProjectBuilder.FULL_BUILD, null);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private void clearOutputFolders(IIpsProject ipsProject) throws CoreRuntimeException {
