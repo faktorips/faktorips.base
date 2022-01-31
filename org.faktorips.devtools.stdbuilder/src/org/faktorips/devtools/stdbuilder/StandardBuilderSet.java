@@ -241,6 +241,11 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC = "minimalJavadoc"; //$NON-NLS-1$
 
+    /**
+     * Configuration property for the unify value set methods option.
+     */
+    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "valueSetMethods";
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;

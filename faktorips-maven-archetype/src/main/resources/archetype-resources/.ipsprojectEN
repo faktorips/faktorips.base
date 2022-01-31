@@ -134,6 +134,9 @@
 
    <!--Enables the generation of Serializable support on policy components-->
    <Property name="serializablePolicyCmpts" value="false"/>
+
+   <!--Whether the value set methods should be unified for all ValueSet implementations, or as originally reflect their type in the method name. The three options are Unified, ByValueSetType or Both. This option should be mirrored in the manifest if one is used.-->
+   <Property name="valueSetMethods" value="Unified"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 

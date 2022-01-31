@@ -10,23 +10,35 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
+import java.util.jar.Attributes.Name;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleException;
 
@@ -49,7 +61,7 @@ import org.osgi.framework.BundleException;
  * </code>
  * <p>
  * This is the easiest way to configure a single model folder called 'model' with the output folders
- * 'src' and 'reource'. If you have multiple model folders you could simply add them to the
+ * 'src' and 'resource'. If you have multiple model folders you could simply add them to the
  * Attribute <em>Fips-Object-Dir</em>. If you need to specify other output folders for different
  * model folders you could overwrite the settings from the main attribute with an additional
  * attribute section with the name of the model folder.
@@ -263,6 +275,47 @@ public class IpsBundleManifest {
 
         }
         return generatorConfig;
+    }
+
+    /**
+     * Writes the given Faktor-IPS project's generator settings to this manifest, overwriting any
+     * old values.
+     *
+     * @param ipsProject the Faktor-IPS project this manifest belongs to
+     */
+    public void writeBuilderSettings(IIpsProject ipsProject) {
+        String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
+        Attributes attributes = manifest.getMainAttributes();
+        if (attributes != null) {
+            String delimiter = ";"; //$NON-NLS-1$
+            StringBuilder sb = new StringBuilder(builderSetId);
+            sb.append(delimiter);
+            IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
+            Map<String, Object> properties = new TreeMap<>(
+                    Arrays.stream(config.getPropertyNames())
+                            .map(p -> new Object() {
+                                private final String key = p;
+                                private final Object value = config.getPropertyValue(p);
+                            })
+                            .filter(p -> p.value != null)
+                            .collect(Collectors.toMap(p -> p.key, p -> p.value)));
+
+            StringBuilderJoiner.join(sb, properties.entrySet(), delimiter, p -> {
+                sb.append(p.getKey());
+                sb.append('=');
+                sb.append('"');
+                sb.append(p.getValue());
+                sb.append('"');
+            });
+            attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
+        }
+        IFile manifestFileInProject = ipsProject.getProject().getFile(MANIFEST_NAME);
+        File manifestFile = manifestFileInProject.getLocation().toFile();
+        try (FileOutputStream outputStream = new FileOutputStream(manifestFile)) {
+            manifest.write(outputStream);
+        } catch (IOException e) {
+            throw new CoreRuntimeException(new IpsStatus("Can't write " + manifestFileInProject, e)); //$NON-NLS-1$
+        }
     }
 
 }

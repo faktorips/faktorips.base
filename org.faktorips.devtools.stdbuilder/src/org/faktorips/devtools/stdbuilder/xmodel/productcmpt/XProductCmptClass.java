@@ -10,12 +10,15 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import static java.util.function.Predicate.not;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IProductComponent;
@@ -108,7 +111,12 @@ public class XProductCmptClass extends XProductClass {
     }
 
     public Set<XPolicyAttribute> getConfiguredAttributesIncludingAbstract() {
-        return getConfiguredAttributes(a -> !a.isChangingOverTime());
+        return getConfiguredAttributes(not(XPolicyAttribute::isChangingOverTime));
     }
 
+    public Set<XPolicyAttribute> attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(
+            GenerateValueSetType valueSetType) {
+        return attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(not(XPolicyAttribute::isChangingOverTime),
+                valueSetType);
+    }
 }

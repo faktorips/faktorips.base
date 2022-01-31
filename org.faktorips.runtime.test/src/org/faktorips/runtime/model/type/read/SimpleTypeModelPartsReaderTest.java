@@ -40,6 +40,9 @@ public class SimpleTypeModelPartsReaderTest {
     @Mock
     ModelElement parentModel;
 
+    // TODO replace with assertThrows when moving to JUnit 4.13 or newer, see
+    // https://github.com/junit-team/junit4/wiki/Exception-testing
+    @Deprecated
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 

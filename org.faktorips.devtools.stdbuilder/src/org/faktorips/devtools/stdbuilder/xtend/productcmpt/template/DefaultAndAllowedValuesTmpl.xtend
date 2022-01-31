@@ -2,14 +2,19 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
+import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
-import static extension org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -44,8 +49,25 @@ class DefaultAndAllowedValuesTmpl {
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «getterDefaultValue»
             «setterDefaultValue»
-            «getterAllowedValues»
+            «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
+                «getterAllowedValues(it, rule)»
+            «ENDFOR»
             «setterAllowedValues»
+        «ENDIF»
+    '''
+
+    def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XProductClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
+        /**
+         * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
+         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         * @generated
+         */
+        «overrideAnnotationForPublishedMethodImplementation»
+        «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
+        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
+        «IF genInterface() || isAbstract()»;«ELSE» {
+          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+        }
         «ENDIF»
     '''
 
@@ -84,19 +106,20 @@ class DefaultAndAllowedValuesTmpl {
         «ENDIF»
     '''
 
-    def private static getterAllowedValues (XPolicyAttribute it) '''
+    def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
         /**
          * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
-         *
+         *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
          * @generated
          */
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
-        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideGetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
-        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(methodNameGetAllowedValuesFor, IValidationContext, "context")»
+        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
+        «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
+        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
         «IF genInterface || isAbstract»;«ELSE»
         {
-            return «fieldNameValueSet»;
+            return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
         }
         «ENDIF»
     '''

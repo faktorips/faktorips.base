@@ -12,6 +12,7 @@ class CommonGeneratorExtensions {
 
     var static ThreadLocal<Boolean> generateInterface = new ThreadLocal
 
+
     def static setGenInterface(boolean genInterface) {
         generateInterface.set(genInterface)
     }
@@ -37,6 +38,18 @@ class CommonGeneratorExtensions {
         if(generatePublishedInterfaces) "@Override"
     }
     
+    def static generateUnifiedMethodToGetAllowedValues(AbstractGeneratorModelNode it){
+        generatorConfig.valueSetMethods.unified
+    }
+    
+    def static generateByTypeMethodsToGetAllowedValues(AbstractGeneratorModelNode it){
+        generatorConfig.valueSetMethods.byValueSetType
+    }
+
+    def static generateBothMethodsToGetAllowedValues(AbstractGeneratorModelNode it){
+        generatorConfig.valueSetMethods.both
+    }
+
     def static generatePublishedInterfaces(AbstractGeneratorModelNode it){
         generatorConfig.isGeneratePublishedInterfaces(ipsProject)
     }
