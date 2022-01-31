@@ -215,7 +215,9 @@ class PolicyCmptAttributeTmpl {
             return «getPropertyValueContainer(published)».«getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
           «ELSEIF isValueSetDerived»
             // begin-user-code
-            «IF overwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType && !genInterface»
+            «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»
+              return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(null);
+            «ELSEIF overwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType && !genInterface»
               return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»);
             «ELSEIF overwritingValueSetWithDerived && !genInterface && !rule.isDelegate»
               return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
