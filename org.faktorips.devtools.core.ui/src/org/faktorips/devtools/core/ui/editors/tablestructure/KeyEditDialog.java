@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -379,7 +378,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
             Message msg = msgList.getMessage(0);
             setMessage(msg.getText(), UIToolkit.convertToJFaceSeverity(msg.getSeverity()));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
     }
@@ -404,7 +403,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             MessageList list;
             try {
                 list = key.validate(key.getIpsProject());
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return image;
             }

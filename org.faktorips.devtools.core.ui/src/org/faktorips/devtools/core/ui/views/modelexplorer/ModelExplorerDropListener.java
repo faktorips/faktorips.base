@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -120,12 +119,12 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
 
             moveNonIPSObjects(sources, target, shell);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             logCoreException(shell, e);
         }
     }
 
-    private void logCoreException(Shell shell, CoreException e) {
+    private void logCoreException(Shell shell, CoreRuntimeException e) {
         IStatus status = e.getStatus();
         if (status instanceof IpsStatus) {
             MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());

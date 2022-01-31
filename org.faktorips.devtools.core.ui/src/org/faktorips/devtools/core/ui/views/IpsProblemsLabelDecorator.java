@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IpsBuilder;
@@ -65,7 +66,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
             try {
                 return (Image)getResourceManager().get(
                         IpsProblemOverlayIcon.createMarkerOverlayIcon(baseImage, findMaxProblemSeverity(element)));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -78,20 +79,20 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
             if (ipsElement instanceof IIpsProject) {
                 return computeAdornmentFlagsProject((IIpsProject)ipsElement);
             } else {
-                // As we don't show ips source file in the user interface, but the ips object,
-                // we handle ips objects as ips source files.
+                // As we don't show IPS source file in the user interface, but the IPS object,
+                // we handle IPS objects as IPS source files.
                 // Added due to bug 1513
                 if (ipsElement instanceof IIpsObject) {
                     ipsElement = ipsElement.getParent();
                 }
                 // Following line changed from getEnclosingRessource to
                 // getCorrespondingRessource() due to bug 1500
-                // The special handling of ips obejcts parts in former version, was removed as
+                // The special handling of IPS objects parts in former version, was removed as
                 // parts return null
-                // as corresponding ressource. If for some reaseon we have to switch back to
+                // as corresponding resource. If for some reason we have to switch back to
                 // getEnclosingRessource()
-                // we must readd the special handling to ips object parts.
-                IResource res = ipsElement.getCorrespondingResource();
+                // we must read the special handling to IPS object parts.
+                IResource res = Wrappers.unwrap(ipsElement.getCorrespondingResource());
                 if (res == null || !res.isAccessible()) {
                     return DEFAULT_FLAG;
                 }
@@ -110,12 +111,20 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                         depth = IResource.DEPTH_ONE;
                     }
                 }
-                return res.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, true, depth);
+                try {
+                    return res.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, true, depth);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             }
         } else if (element instanceof IResource) {
             IResource resource = (IResource)element;
             if (resource.isAccessible()) {
-                return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+                try {
+                    return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             } else {
                 return DEFAULT_FLAG;
             }
@@ -192,7 +201,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     public void decorate(Object element, IDecoration decoration) {
         try {
             decoration.addOverlay(IpsProblemOverlayIcon.getMarkerOverlay(findMaxProblemSeverity(element)));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
     }

@@ -12,13 +12,13 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -69,7 +69,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
 
     @Override
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreRuntimeException {
-        String objectDir = getRootFolder(qnt.toPath()).toPortableString();
+        String objectDir = PathUtil.toPortableString(getRootFolder(qnt.toPath()));
         return bundleManifest.getBasePackage(objectDir);
     }
 
@@ -102,7 +102,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     /**
      * returns the root folder
      */
-    IPath getRootFolder(IPath path) {
+    Path getRootFolder(Path path) {
         return bundleContentIndex.getModelPath(path);
     }
 
@@ -124,25 +124,25 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     }
 
     @Override
-    public boolean contains(IPath path) {
+    public boolean contains(Path path) {
         return bundleContentIndex.getModelPath(path) != null;
     }
 
     @Override
-    public InputStream getContent(IPath path) {
+    public InputStream getContent(Path path) {
         if (path == null) {
             return null;
         }
-        IPath rootFolder = getRootFolder(path);
-        IPath entryPath = rootFolder.append(path);
+        Path rootFolder = getRootFolder(path);
+        Path entryPath = rootFolder.resolve(path);
         return getResourceAsStream(entryPath);
     }
 
     @Override
     public InputStream getResourceAsStream(String pathName) {
-        Path path = new Path(pathName);
-        IPath rootFolder = getRootFolder(path);
-        return getResourceAsStream(rootFolder.append(path));
+        Path path = Path.of(pathName);
+        Path rootFolder = getRootFolder(path);
+        return getResourceAsStream(rootFolder.resolve(path));
     }
 
     /**
@@ -155,11 +155,11 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * 
      * @return An InputStream that represents the content of the requested resource.
      */
-    protected abstract InputStream getResourceAsStream(IPath resourcePath);
+    protected abstract InputStream getResourceAsStream(Path resourcePath);
 
     @Override
     public String getName() {
-        return getLocation().lastSegment();
+        return PathUtil.lastSegment(getLocation());
     }
 
     /**
@@ -173,7 +173,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      */
     @Override
     public AResource getCorrespondingResource() {
-        return getIpsProject().getProject().getFile(getLocation().lastSegment());
+        return getIpsProject().getProject().getFile(PathUtil.lastSegment(getLocation()));
     }
 
     AbstractIpsBundleContentIndex getBundleContentIndex() {

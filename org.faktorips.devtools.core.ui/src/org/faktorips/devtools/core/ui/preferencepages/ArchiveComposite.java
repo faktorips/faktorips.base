@@ -10,16 +10,15 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,8 +40,10 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -195,12 +196,12 @@ public class ArchiveComposite extends DataChangeableComposite {
                 for (Object selectedArchive : selectedArchives) {
                     IFile archiveFile = (IFile)selectedArchive;
                     IPath archivePath = archiveFile.getFullPath();
-                    ipsObjectPath.newArchiveEntry(archivePath);
+                    ipsObjectPath.newArchiveEntry(PathMapping.toJavaPath(archivePath));
                     tableViewer.refresh(false);
                 }
                 dataChanged = true;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -211,13 +212,13 @@ public class ArchiveComposite extends DataChangeableComposite {
         fileDialog.setFilterExtensions(new String[] { "*.ipsar", "*.jar", "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         String fileName = fileDialog.open();
         if (fileName != null) {
-            IPath path = new Path(fileName);
+            Path path = Path.of(fileName);
             try {
                 ipsObjectPath.newArchiveEntry(path);
                 tableViewer.refresh(false);
                 dataChanged = true;
 
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -198,7 +197,7 @@ public class TestCaseStructurePage extends WizardPage {
                     return;
                 }
                 refreshCanditatesInTable(testPolicyCmpt);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         });
@@ -297,7 +296,7 @@ public class TestCaseStructurePage extends WizardPage {
         IProductCmpt oldProductCmp;
         try {
             oldProductCmp = testPolicyCmpt.findProductCmpt(ipsProject);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return null;
         }
@@ -457,7 +456,7 @@ public class TestCaseStructurePage extends WizardPage {
                 if (selectedTreeItem.length > 0) {
                     refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } finally {
                 treeViewer.getTree().setRedraw(true);

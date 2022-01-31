@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -318,7 +317,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
                     constrainedAssociation);
             IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(ipsProject);
             assertNotNull(inverseAssociation);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             fail();
         }
     }

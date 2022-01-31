@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.EnumSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -158,12 +157,8 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
             Object selected = selection.getFirstElement();
             if (selected instanceof IPolicyCmptTypeAssociation) {
                 IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)selected;
-                try {
-                    IType target = policyCmptTypeAssociation.findTarget(type.getIpsProject());
-                    IpsUIPlugin.getDefault().openEditor(target);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                IType target = policyCmptTypeAssociation.findTarget(type.getIpsProject());
+                IpsUIPlugin.getDefault().openEditor(target);
             }
         }
 

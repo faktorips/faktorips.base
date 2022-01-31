@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -50,7 +49,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             try {
                 List<GenerationDate> result = collectGenerationDates(productCmpt, monitor);
                 return result.toArray();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         }

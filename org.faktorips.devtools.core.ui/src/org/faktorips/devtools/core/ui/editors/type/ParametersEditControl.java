@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -675,7 +674,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                 MessageList list = validate((IParameter)element);
                 return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                         false);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return null;
             }

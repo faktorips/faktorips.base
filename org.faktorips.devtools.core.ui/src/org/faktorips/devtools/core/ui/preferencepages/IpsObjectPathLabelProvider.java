@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
@@ -60,7 +61,7 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
             text = ((IIpsProjectRefEntry)element).getReferencedIpsProject().getName();
         } else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry)element;
-            IPath archivePath = entry.getArchiveLocation();
+            IPath archivePath = PathMapping.toEclipsePath(entry.getArchiveLocation());
             IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
 
             text = archivePath.lastSegment()

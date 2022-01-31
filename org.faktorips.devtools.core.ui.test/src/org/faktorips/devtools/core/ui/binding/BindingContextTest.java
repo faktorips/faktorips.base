@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -230,6 +231,17 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         verify(textControl).removeFocusListener(any(FocusListener.class));
     }
 
+    public static class DummyControlPropertyBinding extends ControlPropertyBinding {
+        private DummyControlPropertyBinding(Control control) {
+            super(control, null, null, null);
+        }
+
+        @Override
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+            // don't
+        }
+    }
+
     public class TestPMO extends PresentationModelObject {
         public static final String PROPERTY_ENABLED = "enabled";
         public static final String PROPERTY_OTHER_PROPERTY = "otherProperty";
@@ -275,10 +287,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void removeBindingIfControlIsDisposed() {
-        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
         Control control = mock(Control.class);
+        ControlPropertyBinding binding = spy(new DummyControlPropertyBinding(control));
 
-        when(binding.getControl()).thenReturn(control);
+        doReturn(control).when(binding).getControl();
         when(control.isDisposed()).thenReturn(true);
 
         bindingContext.add(binding);

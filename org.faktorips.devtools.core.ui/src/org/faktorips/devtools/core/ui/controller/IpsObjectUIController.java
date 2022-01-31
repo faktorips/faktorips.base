@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.controller;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -117,7 +117,7 @@ public class IpsObjectUIController extends DefaultUIController {
                 mapping.getField().setMessages(fieldMessages);
             }
             return list;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return new MessageList();
         }

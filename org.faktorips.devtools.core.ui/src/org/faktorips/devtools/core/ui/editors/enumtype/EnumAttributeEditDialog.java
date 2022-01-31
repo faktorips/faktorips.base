@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -306,17 +305,13 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void obtainContentsFromSuperEnumAttribute() {
-        try {
-            IIpsProject ipsProject = enumAttribute.getIpsProject();
-            Datatype datatype = enumAttribute.findDatatype(ipsProject);
-            String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
-            datatypeControl.setText(datatypeName);
-            uniqueCheckbox.setChecked(enumAttribute.findIsUnique(ipsProject));
-            identifierCheckbox.setChecked(enumAttribute.findIsIdentifier(ipsProject));
-            displayNameCheckbox.setChecked(enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        IIpsProject ipsProject = enumAttribute.getIpsProject();
+        Datatype datatype = enumAttribute.findDatatype(ipsProject);
+        String datatypeName = (datatype == null) ? "" : datatype.getName(); //$NON-NLS-1$
+        datatypeControl.setText(datatypeName);
+        uniqueCheckbox.setChecked(enumAttribute.findIsUnique(ipsProject));
+        identifierCheckbox.setChecked(enumAttribute.findIsIdentifier(ipsProject));
+        displayNameCheckbox.setChecked(enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
     }
 
     private void bindEnabledStates() {

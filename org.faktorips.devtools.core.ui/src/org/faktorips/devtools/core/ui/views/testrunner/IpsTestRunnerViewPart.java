@@ -182,7 +182,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
      * Runs the last runned test.
      */
     private void rerunTestRun() throws CoreRuntimeException {
-        IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
+        try {
+            IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -750,7 +754,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fUpdateJob.schedule(0);
 
         // store the project which contains the tests, will be used to open the test in the editor
-        fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject().getJavaProject();
+        fTestProject = IpsPlugin.getDefault().getIpsTestRunner().getIpsProject().getJavaProject().unwrap();
     }
 
     @Override
@@ -881,7 +885,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public void run() {
             try {
                 IpsPlugin.getDefault().getIpsTestRunner().terminate();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -906,7 +910,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public void run() {
             try {
                 rerunTestRun();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

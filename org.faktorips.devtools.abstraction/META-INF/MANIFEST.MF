@@ -13,7 +13,8 @@ Export-Package: org.faktorips.devtools.abstraction,
  org.faktorips.devtools.abstraction.eclipse,
  org.faktorips.devtools.abstraction.mapping,
  org.faktorips.devtools.abstraction.plainjava,
- org.faktorips.devtools.abstraction.plainjava.internal;x-friends:="org.faktorips.abstracttest,org.faktorips.devtools.model,org.faktorips.devtools.model.test",
+ org.faktorips.devtools.abstraction.plainjava.internal;x-friends:="org.faktorips.abstracttest,org.faktorips.devtools.model,org.faktorips.devtools.model.test", 
+ org.faktorips.devtools.abstraction.util,
  org.faktorips.devtools.model.exception
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11

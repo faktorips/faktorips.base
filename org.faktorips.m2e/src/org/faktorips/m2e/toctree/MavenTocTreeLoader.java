@@ -27,7 +27,6 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
@@ -121,7 +120,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
     }
 
     private File getJarBundleFile(IpsJarBundle jarBundle) throws IOException {
-        IPath location = jarBundle.getLocation();
+        Path location = jarBundle.getLocation();
         return location.toFile().getAbsoluteFile().getCanonicalFile();
     }
 

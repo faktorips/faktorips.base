@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.model.IIpsModel;
@@ -163,20 +162,16 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             return;
         }
         baseTypes.clear();
-        try {
-            IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
-            Set<IIpsSrcFile> concreteTypes = new HashSet<>();
-            // 1. making a list containing all NOT ABSTRACT types if the new product component is
-            // not a template
-            for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
-                if (isTemplate() || !Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
-                    concreteTypes.add(ipsSrcFile);
-                }
+        IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
+        Set<IIpsSrcFile> concreteTypes = new HashSet<>();
+        // 1. making a list containing all NOT ABSTRACT types if the new product component is
+        // not a template
+        for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
+            if (isTemplate() || !Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_ABSTRACT))) {
+                concreteTypes.add(ipsSrcFile);
             }
-            addBaseTypesRecursive(concreteTypes, ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        addBaseTypesRecursive(concreteTypes, ipsProject);
     }
 
     private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreRuntimeException {
@@ -401,8 +396,6 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             if (ipsProject != null) {
                 setRuntimeId(ipsProject.getProductCmptNamingStrategy().getUniqueRuntimeId(ipsProject, getName()));
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         } catch (IllegalArgumentException e) {
             setRuntimeId(StringUtils.EMPTY);
         }

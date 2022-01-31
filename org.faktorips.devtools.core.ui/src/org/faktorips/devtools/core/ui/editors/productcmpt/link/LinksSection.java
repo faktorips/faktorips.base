@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -339,15 +338,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void openLink(IProductCmptLink link) {
-        try {
-            IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
-            if (targetProductCmpt != null) {
-                IProductCmptGeneration targetGeneration = targetProductCmpt
-                        .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
-                IpsUIPlugin.getDefault().openEditor(targetGeneration);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
+        if (targetProductCmpt != null) {
+            IProductCmptGeneration targetGeneration = targetProductCmpt
+                    .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
+            IpsUIPlugin.getDefault().openEditor(targetGeneration);
         }
     }
 

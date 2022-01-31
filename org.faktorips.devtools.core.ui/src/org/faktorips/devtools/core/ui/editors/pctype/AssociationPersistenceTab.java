@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -88,7 +88,7 @@ class AssociationPersistenceTab {
     private void searchInverseAssociation() {
         try {
             inverseAssociation = association.findInverseAssociation(getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -163,7 +163,7 @@ class AssociationPersistenceTab {
                             getToolkit().setDataChangeable(groupForeignKey,
                                     persistEnabled && ownerOfManyToManyAssociation && !joinTableRequired);
                             enableOrDisableForeignKeyColumn();
-                        } catch (CoreException e) {
+                        } catch (CoreRuntimeException e) {
                             IpsPlugin.logAndShowErrorDialog(e);
                         }
                     }
@@ -319,7 +319,7 @@ class AssociationPersistenceTab {
             if (persistentAssociationInfo.isJoinTableRequired()) {
                 return;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         getToolkit().setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);

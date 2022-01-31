@@ -10,11 +10,9 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.search.AbstractSearch;
 import org.faktorips.devtools.model.internal.ipsproject.search.CycleSearch;
@@ -226,13 +224,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreRuntimeException {
-        IPath correctArchivePath = archivePath;
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws CoreRuntimeException {
+        Path correctArchivePath = archivePath;
 
-        if (archivePath.segmentCount() >= 2 && archivePath.segment(0).equals(getIpsProject().getName())) {
+        if (archivePath.getNameCount() >= 2
+                && PathUtil.segment(archivePath, 0).equals(getIpsProject().getName())) {
             // Path should be project relative
-            AFile archiveFile = Abstractions.getWorkspace().getRoot().getFile(toJavaPath(archivePath));
-            correctArchivePath = toEclipsePath(archiveFile.getProjectRelativePath());
+            AFile archiveFile = Abstractions.getWorkspace().getRoot().getFile(archivePath);
+            correctArchivePath = archiveFile.getProjectRelativePath();
         }
 
         for (IIpsArchiveEntry archiveEntry : getArchiveEntries()) {

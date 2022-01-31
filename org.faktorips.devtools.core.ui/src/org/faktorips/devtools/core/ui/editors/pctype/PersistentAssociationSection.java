@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -195,7 +195,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                             return image;
                         }
                     }
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 return null;
@@ -224,7 +224,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 try {
                     joinTableReq = jpaAssociationInfo.isJoinTableRequired();
                     foreignKeyColumnReq = !jpaAssociationInfo.isForeignKeyColumnDefinedOnTargetSide();
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.log(e);
                 }
 

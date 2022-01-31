@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
@@ -21,6 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -82,9 +83,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             } else if (element instanceof IJavaElement) {
                 return ((IJavaElement)element).getCorrespondingResource();
             } else if (element instanceof IIpsElement) {
-                return ((IIpsElement)element).getEnclosingResource();
+                return ((IIpsElement)element).getEnclosingResource().unwrap();
             } else if (element instanceof IProductCmptReference) {
-                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource();
+                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource().unwrap();
             }
         } catch (JavaModelException e) {
             /*
@@ -108,7 +109,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             setIpsPackageFragmentRoot(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
             roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
@@ -151,7 +152,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         if (selectedResource == null) {
             return null;
         }
-        IIpsElement el = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement el = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }
@@ -164,7 +165,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         Control control = createControlInternal(parent);
         try {
             setDefaults(selectedResource);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
         setControl(control);

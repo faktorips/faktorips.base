@@ -64,14 +64,14 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.IVersionProvider;
-import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IVersionProvider;
+import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -1075,7 +1075,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        path.newArchiveEntry(archiveFile.getWorkspaceRelativePath());
         ipsProject.setIpsObjectPath(path);
 
         IIpsSrcFile foundFile = ipsProject.findIpsSrcFile(type.getQualifiedNameType());
@@ -1127,10 +1127,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindProductCmptsWithIpsArchive() throws Exception {
         AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
-        new IpsArchive(ipsProject, toEclipsePath(archiveFile.getProjectRelativePath()));
+        new IpsArchive(ipsProject, archiveFile.getProjectRelativePath());
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(toEclipsePath(archiveFile.getLocation()));
+        path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
 
         IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(null, true);
@@ -1464,7 +1464,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(toEclipsePath(archiveFile.getLocation()));
+        path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
         IPolicyCmptType basePolicy = newPolicyCmptType(ipsProject, "basePolicy");
 

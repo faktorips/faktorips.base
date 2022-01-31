@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
@@ -109,7 +108,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
         try {
             createIpsPackageFragment(targetIpsPackageFragment);
-        } catch (CoreException e1) {
+        } catch (CoreRuntimeException e1) {
             throw new RuntimeException("Target package fragment couldn't be created!"); //$NON-NLS-1$
         }
 
@@ -195,7 +194,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             clearTestValues();
             targetTestCase.getIpsSrcFile().save(true, null);
             IpsUIPlugin.getDefault().openEditor(targetTestCase);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
@@ -227,7 +226,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             if (fragment.exists()) {
                 try {
                     fragment.getEnclosingResource().delete(null);
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -240,7 +239,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             ((IpsModel)testCase.getIpsModel()).removeIpsSrcFileContent(testCase.getIpsSrcFile());
             testCase.getEnclosingResource().delete(null);
             deletePackageFragments();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

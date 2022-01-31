@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -470,7 +469,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 showInstancesOf(ipsObject);
                 return true;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
         return false;
@@ -500,7 +499,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                         showInstancesOf(contentProvider.getActualElement());
                     }
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -520,7 +519,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 try {
                     // getSite().getPage().activate(getSite().getPage().findView(EXTENSION_ID));
                     showInstancesOf(((IIpsSrcFile)transferred[0]).getIpsObject());
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.log(e);
                 }
             }

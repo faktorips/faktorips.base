@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -230,7 +229,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
                 MessageList list = validate(element);
                 return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                         false);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return null;
             }

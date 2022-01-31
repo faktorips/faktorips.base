@@ -13,11 +13,9 @@ package org.faktorips.devtools.core.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.controls.tableedit.IEditTableModel;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -163,11 +161,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
         ISingleValueHolder holder = valueToValidate.getSingleValueHolder();
         if (getValueHolderList().contains(holder)) {
             MessageList messageList;
-            try {
-                messageList = attributeValue.validate(attributeValue.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            messageList = attributeValue.validate(attributeValue.getIpsProject());
             return messageList.getMessagesFor(holder);
         } else {
             throw new IllegalArgumentException(NLS.bind(

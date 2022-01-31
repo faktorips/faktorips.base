@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,22 +22,22 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.util.PathUtil;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -66,8 +64,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IpsArchive archive;
     private AFile archiveFile;
     private File externalArchiveFile;
-    private IPath archivePath;
-    private IPath externalArchivePath;
+    private Path archivePath;
+    private Path externalArchivePath;
 
     private IPolicyCmptType motorPolicyType;
 
@@ -88,7 +86,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
 
         archiveFile = project.getProject().getFile("test124.ipsar");
-        archivePath = toEclipsePath(archiveFile.getWorkspaceRelativePath());
+        archivePath = archiveFile.getWorkspaceRelativePath();
         createArchive(project, archiveFile);
         archive = new IpsArchive(project, archivePath);
 
@@ -96,7 +94,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         externalArchiveFile.deleteOnExit();
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
         op.run(null);
-        externalArchivePath = Path.fromOSString(externalArchiveFile.getAbsolutePath());
+        externalArchivePath = PathUtil.fromOSString(externalArchiveFile.getAbsolutePath());
     }
 
     /**
@@ -146,9 +144,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContains_icon() {
-        assertTrue(archive.contains(new Path("myTest.gif")));
+        assertTrue(archive.contains(Path.of("myTest.gif")));
 
-        assertFalse(archive.contains(new Path("test.png")));
+        assertFalse(archive.contains(Path.of("test.png")));
     }
 
     @Test
@@ -177,7 +175,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     @Test
     public void testExists_FileInWorkspaceButDifferentProject() throws CoreRuntimeException {
         IIpsProject project2 = newIpsProject("Project2");
-        IIpsArchive archive2 = new IpsArchive(project2, toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        IIpsArchive archive2 = new IpsArchive(project2, archiveFile.getWorkspaceRelativePath());
 
         assertTrue(archive2.exists());
         archiveFile.delete(null);
@@ -192,7 +190,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         externalArchiveFile.delete();
         assertFalse(archive.exists());
 
-        externalArchivePath = new Path("//server/freigabe/abc.jar"); // UNC-Path
+        externalArchivePath = Path.of("//server/freigabe/abc.jar"); // UNC-Path
         archive = new IpsArchive(project, externalArchivePath);
         assertFalse(archive.exists());
     }
@@ -214,7 +212,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCorrespondingResource_FileInWorkspaceButDifferentProject() throws CoreRuntimeException {
         IIpsProject project2 = newIpsProject("Project2");
-        IpsArchive archive2 = new IpsArchive(project2, toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        IpsArchive archive2 = new IpsArchive(project2, archiveFile.getWorkspaceRelativePath());
 
         assertEquals(archiveFile, archive2.getCorrespondingResource());
     }
@@ -227,7 +225,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocation_FileInSameProject() {
-        assertEquals(archiveFile.getLocation(), toJavaPath(archive.getLocation()));
+        assertEquals(archiveFile.getLocation(), archive.getLocation());
     }
 
     @Test
@@ -239,8 +237,8 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     @Test
     public void testGetLocation_FileOutsideWorkspace() throws CoreRuntimeException {
         IIpsProject project2 = newIpsProject("Project2");
-        IpsArchive archive2 = new IpsArchive(project2, toEclipsePath(archiveFile.getWorkspaceRelativePath()));
-        assertEquals(archiveFile.getLocation(), toJavaPath(archive2.getLocation()));
+        IpsArchive archive2 = new IpsArchive(project2, archiveFile.getWorkspaceRelativePath());
+        assertEquals(archiveFile.getLocation(), archive2.getLocation());
     }
 
     @Test
@@ -268,7 +266,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         IIpsProject anotherProject = newIpsProject("AnotherArchiveProject");
         newPolicyCmptType(anotherProject, "SomeType");
         archiveFile = anotherProject.getProject().getFile("anotherArchive.ipsar");
-        archivePath = toEclipsePath(archiveFile.getProjectRelativePath());
+        archivePath = archiveFile.getProjectRelativePath();
         createArchive(anotherProject, archiveFile);
         archive = new IpsArchive(anotherProject, archivePath);
 
@@ -389,7 +387,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
         AFile dummyArchiveFile = dummyProject.getProject().getFile("test.ipsar");
 
-        IPath dummyArchivePath = toEclipsePath(dummyArchiveFile.getWorkspaceRelativePath());
+        Path dummyArchivePath = dummyArchiveFile.getWorkspaceRelativePath();
         createArchive(dummyProject, dummyArchiveFile);
 
         IIpsObjectPath ipsObjectPath = dummyProject.getIpsObjectPath();
@@ -432,7 +430,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         prodType.getIpsSrcFile().save(true, new NullProgressMonitor());
 
         // as a custom icon test.gif is automatically included in the archive
-        IPath path = toEclipsePath(project.getProject().getFile("test.ipsar").getLocation());
+        Path path = project.getProject().getFile("test.ipsar").getLocation();
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, path.toFile());
         op.run(new NullProgressMonitor());
 
@@ -458,9 +456,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn(IpsArchive.IPSOBJECTS_FOLDER + "/my/object/dings");
 
-        IPath path = archive.getPath(jarEntry);
+        Path path = archive.getPath(jarEntry);
 
-        assertEquals(new Path("my/object/dings"), path);
+        assertEquals(Path.of("my/object/dings"), path);
     }
 
     @Test
@@ -468,7 +466,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn(IpsArchive.IPSOBJECTS_FOLDER + " 2" + "/my/object/dings");
 
-        IPath path = archive.getPath(jarEntry);
+        Path path = archive.getPath(jarEntry);
 
         assertNull(path);
     }
@@ -478,7 +476,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn("not/relevant/dings");
 
-        IPath path = archive.getPath(jarEntry);
+        Path path = archive.getPath(jarEntry);
 
         assertNull(path);
     }
@@ -488,9 +486,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn("my/object/dings.png");
 
-        IPath path = archive.getPath(jarEntry);
+        Path path = archive.getPath(jarEntry);
 
-        assertEquals(new Path("my/object/dings.png"), path);
+        assertEquals(Path.of("my/object/dings.png"), path);
     }
 
     @Test
@@ -498,9 +496,9 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn("my/object/dings.gif");
 
-        IPath path = archive.getPath(jarEntry);
+        Path path = archive.getPath(jarEntry);
 
-        assertEquals(new Path("my/object/dings.gif"), path);
+        assertEquals(Path.of("my/object/dings.gif"), path);
     }
 
 }

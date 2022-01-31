@@ -47,6 +47,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
@@ -233,7 +236,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             setSelectionInTree(ipsEditor.getIpsSrcFile());
         } else if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
-            IIpsElement ipsElement = IIpsModel.get().getIpsElement(file);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AFile.class));
             if (ipsElement == null || !ipsElement.exists()) {
                 setSelectionInTree(file);
             } else {
@@ -479,7 +482,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         }
         IResource resource = adaptable.getAdapter(IResource.class);
         if (resource != null) {
-            ipsElement = IIpsModel.get().getIpsElement(resource);
+            ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             if (ipsElement != null) {
                 selectAndReveal(ipsElement);
                 return true;

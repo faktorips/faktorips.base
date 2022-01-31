@@ -11,11 +11,10 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -35,7 +34,7 @@ public interface IIpsStorage {
      * Returns the absolute path in the local file system to this resource, or <code>null</code> if
      * no path can't be determined.
      */
-    public IPath getLocation();
+    public Path getLocation();
 
     /**
      * Returns the name of this storage. Represents the last segment of this storage path and does
@@ -83,7 +82,7 @@ public interface IIpsStorage {
      * Returns <code>true</code> if the storage contains the IPS object or resource identified by
      * the given path, otherwise <code>false</code>.
      */
-    public boolean contains(IPath path);
+    public boolean contains(Path path);
 
     /**
      * Returns the content for the path or <code>null</code> if the archive does not contain the
@@ -91,7 +90,7 @@ public interface IIpsStorage {
      * <p>
      * The path is relative to the IPS object root.
      */
-    public InputStream getContent(IPath path);
+    public InputStream getContent(Path path);
 
     /**
      * Returns the content of a file with the given path. Returns <code>null</code> if path is
@@ -127,7 +126,7 @@ public interface IIpsStorage {
     /**
      * Returns true, if this archive is part of the provided delta or one of its children.
      * 
-     * @see IIpsArchiveEntry#isAffectedBy(IResourceDelta)
+     * @see IIpsArchiveEntry#isAffectedBy(AResourceDelta)
      */
     public boolean isAffectedBy(AResourceDelta delta);
 

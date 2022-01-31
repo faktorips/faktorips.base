@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.actions.OpenProjectAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -75,6 +74,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -277,9 +277,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE)) {
             newMenu.add(new NewEnumTypeAction(workbenchWindow));
         }
-        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
-            newMenu.add(new org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction(workbenchWindow));
-        }
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
             newMenu.add(new NewTableStructureAction(workbenchWindow));
         }
@@ -347,7 +344,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createRefreshAction(IMenuManager manager, Object selected) {
         boolean open = false;
         if (selected instanceof IIpsElement) {
-            open = ((IIpsElement)selected).getIpsProject().getProject().isOpen();
+            open = ((IProject)((IIpsElement)selected).getIpsProject().getProject().unwrap()).isOpen();
         } else if (selected instanceof IResource) {
             open = ((IResource)selected).getProject().isOpen();
         }
@@ -396,7 +393,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                         manager.add(migrateAction);
                     }
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         } else {

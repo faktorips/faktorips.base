@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -29,6 +28,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsSrcFileEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
@@ -64,7 +64,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
                 for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
                     try {
                         srcFileToSave.save(true, monitor);
-                    } catch (CoreException e) {
+                    } catch (CoreRuntimeException e) {
                         result.add(e.getStatus());
                     }
                 }

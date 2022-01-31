@@ -20,9 +20,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsFolderBundle.IOFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -36,10 +37,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class IpsFolderBundleTest {
 
     @Mock
-    private IPath folder;
+    private Path folder;
 
     @Mock
-    private IPath manifestPath;
+    private Path manifestPath;
 
     @Mock
     private IIpsProject ipsProject;
@@ -54,10 +55,10 @@ public class IpsFolderBundleTest {
     private IOFactory ioFactory;
 
     @Mock
-    private IPath absolutePath;
+    private Path absolutePath;
 
     @Mock
-    private IPath myPath;
+    private Path myPath;
 
     private IpsFolderBundle ipsFolderBundle;
 
@@ -95,7 +96,7 @@ public class IpsFolderBundleTest {
     }
 
     private void mockManifestFile() throws FileNotFoundException {
-        when(folder.append(IpsBundleManifest.MANIFEST_NAME)).thenReturn(manifestPath);
+        when(folder.resolve(IpsBundleManifest.MANIFEST_NAME)).thenReturn(manifestPath);
         when(manifestPath.toFile()).thenReturn(manifestFile);
         when(manifestFile.getPath()).thenReturn("myManifestPath");
         when(ioFactory.createInputStream(manifestFile)).thenReturn(expectedInputStream);
@@ -103,7 +104,7 @@ public class IpsFolderBundleTest {
 
     @Test
     public void testGetResourceAsStream() throws Exception {
-        when(folder.append(myPath)).thenReturn(absolutePath);
+        when(folder.resolve(myPath)).thenReturn(absolutePath);
         File file = mock(File.class);
         when(absolutePath.toFile()).thenReturn(file);
         when(ioFactory.createInputStream(file)).thenReturn(expectedInputStream);

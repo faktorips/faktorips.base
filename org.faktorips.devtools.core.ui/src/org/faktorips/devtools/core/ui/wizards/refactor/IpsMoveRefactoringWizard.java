@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -211,7 +210,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                         IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)parentElement;
                         return root.getIpsPackageFragments();
                     }
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 return new Object[0];

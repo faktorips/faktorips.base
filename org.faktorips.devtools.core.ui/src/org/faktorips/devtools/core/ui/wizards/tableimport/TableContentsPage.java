@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
@@ -95,7 +94,7 @@ public class TableContentsPage extends IpsObjectPage {
             } else if (selectedObject instanceof ITableContents) {
                 return ((ITableContents)selectedObject).getTableStructure();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -115,7 +114,7 @@ public class TableContentsPage extends IpsObjectPage {
     public ITableStructure getTableStructure() {
         try {
             return structureControl.findTableStructure();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             return null;
         }
     }

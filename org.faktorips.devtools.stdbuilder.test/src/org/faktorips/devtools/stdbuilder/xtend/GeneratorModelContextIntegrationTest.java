@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,10 +29,9 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -109,7 +109,7 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
 
     private IpsBundleEntry createBundleEntry(File libFile, IpsObjectPath ipsObjectPath) throws IOException {
         IpsBundleEntry ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
-        IPath libPath = Path.fromOSString(libFile.getAbsolutePath());
+        Path libPath = PathUtil.fromOSString(libFile.getAbsolutePath());
         ipsBundleEntry.initStorage(libPath);
         return ipsBundleEntry;
     }

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,9 +17,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
@@ -54,7 +53,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private IIpsProject project;
     private IpsArchiveEntry entry;
     private AFile archiveFile;
-    private IPath archivePath;
+    private Path archivePath;
 
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
@@ -78,7 +77,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
         project = newIpsProject("TestProject");
         archiveFile = project.getProject().getFile("test.ipsar");
-        archivePath = toEclipsePath(archiveFile.getLocation());
+        archivePath = archiveFile.getLocation();
 
         createArchive(archiveProject, archiveFile);
 
@@ -103,7 +102,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
         AFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
-        IPath archivePath = toEclipsePath(archiveFile.getWorkspaceRelativePath());
+        Path archivePath = archiveFile.getWorkspaceRelativePath();
         assertEquals(archivePath, entry.getIpsArchive().getArchivePath());
 
         entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
@@ -133,7 +132,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     public void testToXml() throws CoreRuntimeException {
         Element el = entry.toXml(newDocument());
         // to create a new entry we need a handle to an existing file path
-        IPath dummyArchivePath = toEclipsePath(project.getIpsProjectPropertiesFile().getLocation());
+        Path dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation();
         IpsArchiveEntry newEntry = (IpsArchiveEntry)project.getIpsObjectPath().newArchiveEntry(dummyArchivePath);
         newEntry.initFromXml(el, project.getProject());
         assertEquals(archivePath, newEntry.getArchiveLocation());
@@ -150,7 +149,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertEquals(1, archiveEntries.length);
         assertEquals(entry.getArchiveLocation(), archiveEntries[0].getArchiveLocation());
 
-        entry.initStorage(toEclipsePath(project.getProject().getFile("NoneExistingFile").getLocation()));
+        entry.initStorage(project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 

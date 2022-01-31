@@ -13,6 +13,8 @@ import java.nio.file.Path;
 
 import org.eclipse.core.runtime.IPath;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * Mapping between Eclipse {@link IPath} and plain Java {@link Path}.
  */
@@ -25,15 +27,17 @@ public class PathMapping {
     /**
      * Maps the given Eclipse {@link IPath} to a plain Java {@link Path}.
      */
-    public static Path toJavaPath(IPath eclipsePath) {
-        return eclipsePath.toFile().toPath();
+    @CheckForNull
+    public static Path toJavaPath(@CheckForNull IPath eclipsePath) {
+        return eclipsePath == null ? null : eclipsePath.toFile().toPath();
     }
 
     /**
      * Maps the given plain Java {@link Path} to an Eclipse {@link IPath}.
      */
-    public static IPath toEclipsePath(Path path) {
-        return org.eclipse.core.runtime.Path.fromOSString(path.toString());
+    @CheckForNull
+    public static IPath toEclipsePath(@CheckForNull Path path) {
+        return path == null ? null : org.eclipse.core.runtime.Path.fromOSString(path.toString());
     }
 
 }

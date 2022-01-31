@@ -15,6 +15,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -76,9 +78,9 @@ public class ProductExplorerFilter extends ViewerFilter {
      */
     private boolean isAllowedReosource(Object element) {
         IIpsProject ipsProject = null;
-        IResource resource = null;
+        AResource resource = null;
         if (element instanceof IResource) {
-            resource = (IResource)element;
+            resource = Wrappers.wrap(element).as(AResource.class);
             ipsProject = IIpsModel.get().getIpsProject(resource.getProject());
         } else if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);

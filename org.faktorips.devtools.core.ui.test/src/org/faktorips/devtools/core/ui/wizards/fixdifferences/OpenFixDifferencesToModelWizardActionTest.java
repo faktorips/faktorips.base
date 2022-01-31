@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -241,7 +240,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
         assertThat(productCmpt, containsDifferenceToModel(ipsProject));
         assertThat(productCmpt2, containsDifferenceToModel(ipsProject));
 
-        IResource resource = ipsProject.getProject();
+        IResource resource = ipsProject.getProject().unwrap();
 
         openFixDifferencesToModelWizardAction.addElementToFix(ipsElementsToFix, resource);
 
@@ -261,7 +260,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
             protected boolean matchesSafely(IFixDifferencesToModelSupport arg0) {
                 try {
                     return arg0.containsDifferenceToModel(ipsProject);
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     e.printStackTrace();
                     return false;
                 }

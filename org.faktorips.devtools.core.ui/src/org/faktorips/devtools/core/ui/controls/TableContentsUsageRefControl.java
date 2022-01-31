@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -30,7 +29,6 @@ import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContent
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.AddNewTableContentsHandler;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -65,11 +63,7 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
 
         proposalProvider = new IpsSrcFileContentProposalProvider(project, IpsObjectType.TABLE_CONTENTS);
 
-        try {
-            filter = new IpsSrcFileFilter(tableUsage.findTableStructureUsage(project));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        filter = new IpsSrcFileFilter(tableUsage.findTableStructureUsage(project));
         proposalProvider.setFilter(filter);
         toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());

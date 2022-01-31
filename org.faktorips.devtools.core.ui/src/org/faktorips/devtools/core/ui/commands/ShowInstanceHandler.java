@@ -11,12 +11,12 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
@@ -44,7 +44,7 @@ public class ShowInstanceHandler extends IpsAbstractHandler {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
-        } catch (CoreException e1) {
+        } catch (CoreRuntimeException e1) {
             IpsPlugin.log(e1);
         }
 

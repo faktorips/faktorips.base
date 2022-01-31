@@ -15,9 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -49,11 +47,7 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
         }
 
         List<IAttribute> attributes;
-        try {
-            attributes = policyCmptType.findAllAttributes(policyCmptType.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        attributes = policyCmptType.findAllAttributes(policyCmptType.getIpsProject());
 
         for (IAttribute attribute : attributes) {
             if (!(attribute instanceof IPolicyCmptTypeAttribute)) {

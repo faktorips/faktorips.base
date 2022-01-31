@@ -12,11 +12,12 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -75,7 +76,7 @@ public class IpsJarBundle extends AbstractIpsBundle {
         }
     }
 
-    void throwExceptionWhenNotFound(ZipEntry zipEntry, IPath path) {
+    void throwExceptionWhenNotFound(ZipEntry zipEntry, Path path) {
         if (zipEntry == null) {
             throw new CoreRuntimeException("There is no entry " + path + " in " + getLocation()); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -104,15 +105,15 @@ public class IpsJarBundle extends AbstractIpsBundle {
     }
 
     @Override
-    public IPath getLocation() {
+    public Path getLocation() {
         return jarFileFactory.getJarPath();
     }
 
     @Override
-    protected InputStream getResourceAsStream(IPath path) {
+    protected InputStream getResourceAsStream(Path path) {
         JarFile jarFile = getJarFileThrowingRuntimeException();
         try {
-            ZipEntry zipEntry = jarFile.getEntry(path.toPortableString());
+            ZipEntry zipEntry = jarFile.getEntry(PathUtil.toPortableString(path));
             throwExceptionWhenNotFound(zipEntry, path);
             return getInputStream(jarFile, zipEntry);
         } finally {

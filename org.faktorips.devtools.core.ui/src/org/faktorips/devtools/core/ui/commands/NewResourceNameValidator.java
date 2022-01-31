@@ -13,12 +13,10 @@ package org.faktorips.devtools.core.ui.commands;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.actions.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
@@ -52,14 +50,10 @@ public class NewResourceNameValidator implements IInputValidator {
         IResource test = null;
         if (resourceType == IResource.FILE) {
             if (namingConventions != null) {
-                try {
-                    MessageList messageList = namingConventions
-                            .validateUnqualifiedIpsObjectName(ipsObjectType, newText);
-                    if (messageList.containsErrorMsg()) {
-                        return messageList.getFirstMessage(Message.ERROR).getText();
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e.getMessage(), e);
+                MessageList messageList = namingConventions
+                        .validateUnqualifiedIpsObjectName(ipsObjectType, newText);
+                if (messageList.containsErrorMsg()) {
+                    return messageList.getFirstMessage(Message.ERROR).getText();
                 }
             }
             test = wsRoot.getFile(root.append(newText + extension));

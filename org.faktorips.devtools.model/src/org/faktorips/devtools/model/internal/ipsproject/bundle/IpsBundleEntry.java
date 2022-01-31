@@ -13,9 +13,9 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsLibraryEntry;
@@ -59,7 +59,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
     /**
      * This constructor creates a new {@link IpsBundleEntry} for the given {@link IpsObjectPath}.
      * After you created the {@link IpsBundleEntry} you need to initialize the bundle by calling
-     * {@link #initStorage(IPath)}.
+     * {@link #initStorage(Path)}.
      * 
      * @param ipsObjectPath The parent {@link IpsObjectPath} of this entry
      */
@@ -73,7 +73,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
     }
 
     @Override
-    public void initStorage(IPath bundlePath) throws IOException {
+    public void initStorage(Path bundlePath) throws IOException {
         File bundleFile = bundlePath.toFile();
         if (bundleFile.isDirectory()) {
             initFolderBundle(bundlePath);
@@ -83,13 +83,13 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
         setIpsPackageFragmentRoot(new LibraryIpsPackageFragmentRoot(getIpsProject(), ipsBundle));
     }
 
-    private void initFolderBundle(IPath bundlePath) throws IOException {
+    private void initFolderBundle(Path bundlePath) throws IOException {
         IpsFolderBundle ipsFolderBundle = ipsStorageFactory.createFolderBundle(getIpsProject(), bundlePath);
         ipsFolderBundle.initBundle();
         ipsBundle = ipsFolderBundle;
     }
 
-    private void initJarBundle(IPath bundlePath) throws IOException {
+    private void initJarBundle(Path bundlePath) throws IOException {
         JarFileFactory jarFileFactory = new JarFileFactory(bundlePath);
         IpsJarBundle ipsJarBundle = ipsStorageFactory.createJarBundle(getIpsProject(), jarFileFactory);
         ipsJarBundle.initBundle();
@@ -98,7 +98,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     @Override
     public String getIpsPackageFragmentRootName() {
-        return ipsBundle.getLocation().lastSegment();
+        return PathUtil.lastSegment(ipsBundle.getLocation());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     @Override
     public boolean containsResource(String resourcePath) {
-        return ipsBundle.contains(new Path(resourcePath));
+        return ipsBundle.contains(Path.of(resourcePath));
     }
 
     @Override
@@ -147,11 +147,11 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     @Override
     protected String getXmlPathRepresentation() {
-        return getIpsStorage().getLocation().toPortableString();
+        return PathUtil.toPortableString(getIpsStorage().getLocation());
     }
 
     @Override
-    public IPath getPath() {
+    public Path getPath() {
         return getIpsStorage().getLocation();
     }
 
@@ -162,7 +162,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     protected class IpsStorageFactory {
 
-        public IpsFolderBundle createFolderBundle(IIpsProject ipsProject, IPath bundlePath) {
+        public IpsFolderBundle createFolderBundle(IIpsProject ipsProject, Path bundlePath) {
             return new IpsFolderBundle(ipsProject, bundlePath);
         }
 

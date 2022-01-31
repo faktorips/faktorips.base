@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -24,11 +23,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -84,7 +83,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.newIpsProjectRefEntry(newIpsProject("Project2"));
 
         AFile archiveFile = ipsProject.getProject().getFile("archive.jar");
-        IIpsObjectPathEntry entry2 = path.newArchiveEntry(toEclipsePath(archiveFile.getLocation()));
+        IIpsObjectPathEntry entry2 = path.newArchiveEntry(archiveFile.getLocation());
 
         assertEquals(entry0, path.getEntry("src"));
         assertNull(path.getEntry("Project2"));
@@ -167,7 +166,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testContainsArchiveEntry() throws Exception {
         AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
-        IIpsArchive ipsArchive = path.newArchiveEntry(toEclipsePath(archiveFile.getLocation())).getIpsArchive();
+        IIpsArchive ipsArchive = path.newArchiveEntry(archiveFile.getLocation()).getIpsArchive();
         assertTrue(path.containsArchiveEntry(ipsArchive));
 
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
@@ -181,7 +180,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testRemoveArchiveEntry() throws Exception {
         AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
-        IIpsArchiveEntry entry0 = path.newArchiveEntry(toEclipsePath(archiveFile.getLocation()));
+        IIpsArchiveEntry entry0 = path.newArchiveEntry(archiveFile.getLocation());
         IIpsArchive archive0 = entry0.getIpsArchive();
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -551,7 +550,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     @Test
     public void testGetIndex() throws Exception {
         IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
-        IIpsArchiveEntry newArchiveEntry = ipsObjectPath.newArchiveEntry(new Path("anyPath"));
+        IIpsArchiveEntry newArchiveEntry = ipsObjectPath.newArchiveEntry(Path.of("anyPath"));
         IIpsContainerEntry newContainerEntry = ipsObjectPath.newContainerEntry("MyContainer", "myContainerPath");
 
         assertEquals(0, ipsObjectPath.getIndex(newArchiveEntry));

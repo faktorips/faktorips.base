@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -61,7 +60,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(2, packs.length);
         assertEquals("mycompany.home", packs[0]);
@@ -102,7 +101,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor", packs[0]);
@@ -183,7 +182,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
         assertTrue(archiveFile.exists());
 
-        IIpsArchive archive = new IpsArchive(project, toEclipsePath(archiveFile.getLocation()));
+        IIpsArchive archive = new IpsArchive(project, archiveFile.getLocation());
         String[] packs = archive.getNonEmptyPackages();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor", packs[0]);

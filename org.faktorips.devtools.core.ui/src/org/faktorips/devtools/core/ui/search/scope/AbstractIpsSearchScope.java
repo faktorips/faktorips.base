@@ -19,8 +19,8 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -182,7 +182,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
             IIpsProject ipsProject = (IIpsProject)element;
 
             for (AResource resource : ipsProject.getProject()) {
-                addResource(srcFiles, resource);
+                addResource(srcFiles, resource.unwrap());
             }
 
             /*

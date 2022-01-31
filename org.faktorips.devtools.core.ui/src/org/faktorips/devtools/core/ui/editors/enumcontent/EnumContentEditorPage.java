@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -105,11 +104,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         createToolbar();
 
         new EnumContentGeneralInfoSection(this, enumContent, formBody, toolkit);
-        try {
-            enumValuesSection = new EnumValuesSection(enumContent, getEditorSite(), formBody, toolkit);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        enumValuesSection = new EnumValuesSection(enumContent, getEditorSite(), formBody, toolkit);
 
         selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditorSite());
 
@@ -187,12 +182,8 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
      * </ul>
      */
     private void updateToolbarActionsEnabledStates() {
-        try {
-            boolean enableOpenFixEnumTypeDialogAction = enumContent.isFixToModelRequired();
-            openFixEnumContentDialogAction.setEnabled(enableOpenFixEnumTypeDialogAction);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        boolean enableOpenFixEnumTypeDialogAction = enumContent.isFixToModelRequired();
+        openFixEnumContentDialogAction.setEnabled(enableOpenFixEnumTypeDialogAction);
     }
 
     @Override

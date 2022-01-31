@@ -26,7 +26,7 @@ public class ProductCmptEditorInput extends FileEditorInput {
     private final IProductCmptGeneration productCmptGeneration;
 
     private ProductCmptEditorInput(IProductCmptGeneration productCmptGeneration) {
-        super(productCmptGeneration.getIpsObject().getIpsSrcFile().getCorrespondingFile());
+        super(productCmptGeneration.getIpsObject().getIpsSrcFile().getCorrespondingFile().unwrap());
         this.productCmptGeneration = productCmptGeneration;
     }
 

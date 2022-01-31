@@ -42,6 +42,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -249,15 +250,15 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             throws CoreRuntimeException {
 
         InputStream content = file.getContentFromEnclosingResource();
+        String path = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath()).toPortableString();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR
-                + file.getQualifiedNameType().toPath().toString();
+                + path;
         if (isDuplicateEntry(entryName)) {
             return;
         }
         writeJarEntry(os, content, entryName, file.getCorrespondingFile().getName());
         writeCustomIconIfApplicable(file, os);
 
-        String path = file.getQualifiedNameType().toPath().toString();
         String basePackageProperty = path + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR
                 + IIpsArchive.PROPERTY_POSTFIX_BASE_PACKAGE_MERGABLE;
         ipsObjectsProperties.setProperty(basePackageProperty, file.getBasePackageNameForMergableArtefacts());

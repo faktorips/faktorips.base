@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -173,7 +172,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
                     getOkButton().setEnabled(true);
                     return;
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 // ignore exception
             }
         }
@@ -248,13 +247,9 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
             }
         }
         ITestPolicyCmptTypeParameter param = null;
-        try {
-            param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
-            if (param.getPolicyCmptType().equals(filteredPolicyCmptType)) {
-                found = true;
-            }
-        } catch (CoreException e) {
-            // ignored exception and don't display the element
+        param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
+        if (param.getPolicyCmptType().equals(filteredPolicyCmptType)) {
+            found = true;
         }
 
         return found;
@@ -303,32 +298,28 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            try {
-                if (element instanceof ITestPolicyCmpt) {
-                    return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
-                } else if (element instanceof TestCaseTypeAssociation) {
-                    TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
-                    ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
-                    if (testPolicyCmpt == null) {
-                        return true;
-                    }
-                    ITestPolicyCmptLink[] childs = testPolicyCmpt.getTestPolicyCmptLinks();
-                    boolean found = false;
-                    for (ITestPolicyCmptLink elem : childs) {
-                        String linkName = ""; //$NON-NLS-1$
-                        if (elem.findTarget() != null) {
-                            linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
-                            if (linkName.equals(dummyAssociation.getName())) {
-                                found = isFilterChildOfLink(elem, filteredPolicyCmptType);
-                                if (found) {
-                                    return found;
-                                }
+            if (element instanceof ITestPolicyCmpt) {
+                return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
+            } else if (element instanceof TestCaseTypeAssociation) {
+                TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
+                ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
+                if (testPolicyCmpt == null) {
+                    return true;
+                }
+                ITestPolicyCmptLink[] childs = testPolicyCmpt.getTestPolicyCmptLinks();
+                boolean found = false;
+                for (ITestPolicyCmptLink elem : childs) {
+                    String linkName = ""; //$NON-NLS-1$
+                    if (elem.findTarget() != null) {
+                        linkName = elem.findTarget().getTestPolicyCmptTypeParameter();
+                        if (linkName.equals(dummyAssociation.getName())) {
+                            found = isFilterChildOfLink(elem, filteredPolicyCmptType);
+                            if (found) {
+                                return found;
                             }
                         }
                     }
                 }
-            } catch (CoreException e) {
-                // ignore exception and don't display the element
             }
             return false;
         }

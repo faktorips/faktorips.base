@@ -208,7 +208,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             previousTarget = association.getTarget();
             try {
                 storeTargetPolicyCmptType((IPolicyCmptType)association.findTarget(ipsProject));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 showAndLogError(e);
                 return;
             }
@@ -289,7 +289,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             } else {
                 list = associationForPage.validate(ipsProject);
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             showAndLogError(e);
             return false;
         }
@@ -456,7 +456,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     getAssociation().getPolicyCmptType().getQualifiedName(),
                     getAssociation().getAssociationType().getCorrespondingAssociationType(),
                     getAssociation().getIpsProject(), false);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             showAndLogError(e);
         }
         return null;
@@ -517,7 +517,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 } else {
                     inverseAssociationPropertyPage.setExistingAssociations(new String[0]);
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 showAndLogError(e);
             }
         } else if (isNewInverseAssociation()) {
@@ -528,7 +528,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             storeInverseAssociation(null);
             try {
                 createNewInverseAssociation();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 showAndLogError(e);
             }
@@ -614,7 +614,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     productCmptTypeAssociation.getIpsSrcFile().save(true, null);
                 }
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             showAndLogError(e);
             return false;
         }

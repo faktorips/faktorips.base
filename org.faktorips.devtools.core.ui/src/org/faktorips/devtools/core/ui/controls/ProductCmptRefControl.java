@@ -16,7 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -82,14 +81,10 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     private Collection<? extends IIpsSrcFile> findIpsSrcFiles(IIpsProject ipsProject) {
-        try {
-            if (searchTemplates) {
-                return ipsProject.findCompatibleProductTemplates(productCmptType);
-            } else {
-                return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (searchTemplates) {
+            return ipsProject.findCompatibleProductTemplates(productCmptType);
+        } else {
+            return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
         }
     }
 

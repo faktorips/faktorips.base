@@ -14,14 +14,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
@@ -61,16 +59,12 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     }
 
     private boolean isAllowedValueSetType(ValueSetType valueSetType, boolean only) {
-        try {
-            List<ValueSetType> allowedValueSetTypes = this.valueSetOwner.getAllowedValueSetTypes(this.valueSetOwner
-                    .getIpsProject());
-            if (only) {
-                return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(valueSetType);
-            } else {
-                return allowedValueSetTypes.contains(valueSetType);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        List<ValueSetType> allowedValueSetTypes = this.valueSetOwner.getAllowedValueSetTypes(this.valueSetOwner
+                .getIpsProject());
+        if (only) {
+            return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(valueSetType);
+        } else {
+            return allowedValueSetTypes.contains(valueSetType);
         }
     }
 

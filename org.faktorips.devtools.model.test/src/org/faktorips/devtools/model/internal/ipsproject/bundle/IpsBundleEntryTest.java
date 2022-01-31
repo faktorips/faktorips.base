@@ -27,9 +27,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry.IpsStorageFactory;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -60,7 +59,7 @@ public class IpsBundleEntryTest {
     private IpsStorageFactory ipsStorageFactory;
 
     @Mock
-    private IPath bundlePath;
+    private Path bundlePath;
 
     private IpsBundleEntry ipsBundleEntry;
 
@@ -109,7 +108,7 @@ public class IpsBundleEntryTest {
     @Test
     public void testGetIpsPackageFragmentRootName() throws Exception {
         initStorage();
-        when(ipsJarBundle.getLocation()).thenReturn(new Path("any/where/test.jar"));
+        when(ipsJarBundle.getLocation()).thenReturn(Path.of("any/where/test.jar"));
 
         String rootName = ipsBundleEntry.getIpsPackageFragmentRootName();
 
@@ -120,7 +119,7 @@ public class IpsBundleEntryTest {
     public void testExists_existing() throws Exception {
         initStorage();
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        when(qnt.toPath()).thenReturn(new Path("myObjectPath"));
+        when(qnt.toPath()).thenReturn(Path.of("myObjectPath"));
         when(ipsJarBundle.contains(qnt.toPath())).thenReturn(true);
 
         boolean exists = ipsBundleEntry.exists(qnt);
@@ -207,7 +206,7 @@ public class IpsBundleEntryTest {
     public void testContainsResource_true() throws Exception {
         initStorage();
         String path = "myResourcePath";
-        when(ipsJarBundle.contains(new Path(path))).thenReturn(true);
+        when(ipsJarBundle.contains(Path.of(path))).thenReturn(true);
 
         boolean exists = ipsBundleEntry.containsResource(path);
 

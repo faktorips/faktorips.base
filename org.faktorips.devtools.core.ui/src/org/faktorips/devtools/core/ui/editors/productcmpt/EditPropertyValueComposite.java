@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -172,7 +171,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
         try {
             createEditFields(editFields);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // Log exception and do not add any edit fields
             IpsPlugin.log(e);
         }
@@ -274,11 +273,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private IProductCmptType findProductCmptType() {
         IProductCmptType productCmptType = null;
         if (getProperty() != null) {
-            try {
-                productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
         }
         return productCmptType;
     }

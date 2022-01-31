@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -481,11 +480,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         if (column == null) {
             return ValueDatatype.STRING;
         } else {
-            try {
-                return column.findValueDatatype(getTableContents().getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return column.findValueDatatype(getTableContents().getIpsProject());
         }
     }
 
@@ -543,11 +538,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     private ITableStructure getTableStructure() {
-        try {
-            return getTableContents().findTableStructure(getTableContents().getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getTableContents().findTableStructure(getTableContents().getIpsProject());
     }
 
     private ITableRows getActiveGeneration() {

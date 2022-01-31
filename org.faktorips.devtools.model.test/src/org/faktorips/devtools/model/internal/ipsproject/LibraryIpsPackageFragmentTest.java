@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -21,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -63,7 +62,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        path.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        path.newArchiveEntry(archiveFile.getWorkspaceRelativePath());
         project.setIpsObjectPath(path);
         root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
         pack = (LibraryIpsPackageFragment)root.getIpsPackageFragment("mycompany.motor");

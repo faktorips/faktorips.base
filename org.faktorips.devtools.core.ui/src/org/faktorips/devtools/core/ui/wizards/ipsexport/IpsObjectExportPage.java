@@ -15,7 +15,6 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -31,6 +30,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -107,7 +108,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             if (ipsElement instanceof IIpsObject) {
                 selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
             }
-            selectedResource = ipsElement.getEnclosingResource();
+            selectedResource = ipsElement.getEnclosingResource().unwrap();
         } else {
             selectedResource = null;
         }
@@ -149,7 +150,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         if (selectedIpsSrcFile != null) {
             srcElement = selectedIpsSrcFile;
         } else if (selectedResource != null) {
-            srcElement = IIpsModel.get().getIpsElement(selectedResource);
+            srcElement = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         } else {
             return null;
         }
@@ -247,16 +248,12 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * @throws CoreRuntimeException if an error occurs during the validation
      */
     protected void validateObjectToExportUniqueness() {
-        try {
-            String qualifiedName = exportedIpsObjectField.getText();
-            if (!exportedIpsObjectControl.checkIpsObjectUniqueness(qualifiedName)) {
-                IpsObjectType selectedObjectType = exportedIpsObjectControl.getSelectedObjectType();
-                String message = NLS.bind(Messages.IpsObjectExportPage_msgDuplicateQualifiedName,
-                        qualifiedName, selectedObjectType.getDisplayName());
-                setMessage(message, IMessageProvider.INFORMATION);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        String qualifiedName = exportedIpsObjectField.getText();
+        if (!exportedIpsObjectControl.checkIpsObjectUniqueness(qualifiedName)) {
+            IpsObjectType selectedObjectType = exportedIpsObjectControl.getSelectedObjectType();
+            String message = NLS.bind(Messages.IpsObjectExportPage_msgDuplicateQualifiedName,
+                    qualifiedName, selectedObjectType.getDisplayName());
+            setMessage(message, IMessageProvider.INFORMATION);
         }
     }
 

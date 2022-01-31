@@ -11,11 +11,13 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
 /**
  * This class simply creates a JarFile for a previously specified path. After creating a
@@ -32,7 +34,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class JarFileFactory {
 
-    private final IPath jarPath;
+    private final Path jarPath;
 
     /**
      * Create the {@link JarFileFactory}, the jarPath is the absolute path to the jar file this
@@ -40,7 +42,7 @@ public class JarFileFactory {
      * 
      * @param jarPath The absolute path to a jar file
      */
-    public JarFileFactory(IPath jarPath) {
+    public JarFileFactory(Path jarPath) {
         this.jarPath = jarPath;
     }
 
@@ -49,7 +51,7 @@ public class JarFileFactory {
      * 
      * @return The absolute jar file path
      */
-    public IPath getJarPath() {
+    public Path getJarPath() {
         return jarPath;
     }
 
@@ -63,13 +65,13 @@ public class JarFileFactory {
      * @see JarFile#JarFile(java.io.File)
      */
     public JarFile createJarFile() throws IOException {
-        IPath absolutePath = getAbsolutePath(jarPath);
+        Path absolutePath = getAbsolutePath(jarPath);
         return new JarFile(absolutePath.toFile());
     }
 
-    /* private */IPath getAbsolutePath(IPath bundlePath) {
-        if (isWorkspaceRelativePath(bundlePath)) {
-            return getWorkspaceRelativePath(bundlePath);
+    /* private */Path getAbsolutePath(Path bundlePath) {
+        if (isWorkspaceRelativePath(PathMapping.toEclipsePath(bundlePath))) {
+            return PathMapping.toJavaPath(getWorkspaceRelativePath(PathMapping.toEclipsePath(bundlePath)));
         } else {
             return bundlePath;
         }

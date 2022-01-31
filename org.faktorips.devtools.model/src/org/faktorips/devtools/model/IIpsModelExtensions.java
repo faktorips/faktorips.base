@@ -131,7 +131,7 @@ public interface IIpsModelExtensions {
     /**
      * Returns the available configurators for adding the IPS nature to a project.
      *
-     * @see IpsProjectConfigurators#applicableTo(org.eclipse.jdt.core.IJavaProject)
+     * @see IpsProjectConfigurators#applicableTo(org.faktorips.devtools.abstraction.AJavaProject)
      */
     List<IIpsProjectConfigurator> getIpsProjectConfigurators();
 

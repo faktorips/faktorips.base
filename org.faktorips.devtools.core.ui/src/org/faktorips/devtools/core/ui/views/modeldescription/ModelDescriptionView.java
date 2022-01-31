@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.views.modeldescription;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -22,6 +21,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * This class contributes a simple viewer for object classes implementing IModelDescriptionSupport
@@ -64,12 +64,12 @@ public class ModelDescriptionView extends PageBookView {
     }
 
     /**
-     * Create a page for showing the localized message of an excpetion.
+     * Create a page for showing the localized message of an excetpion.
      * 
      * @param e Exception
      * @return new page with exception message.
      */
-    private IPage createExceptionPage(CoreException e) {
+    private IPage createExceptionPage(CoreRuntimeException e) {
         MessagePage page = new MessagePage();
         page.setMessage(e.getLocalizedMessage());
         return page;
@@ -86,7 +86,7 @@ public class ModelDescriptionView extends PageBookView {
                     return null;
                 }
 
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 page = createExceptionPage(e);
             }

@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IStatus;
 public class CoreRuntimeException extends RuntimeException {
 
     private static final long serialVersionUID = -2861599541541109752L;
+    private final IStatus status;
 
     /**
      * Constructor that should be used when a {@link CoreException} needs to be wrapped into an
@@ -38,6 +39,7 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(CoreException cause) {
         super(cause.getMessage(), cause);
+        status = cause.getStatus();
     }
 
     /**
@@ -46,10 +48,12 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(IStatus status) {
         super(new CoreException(status));
+        this.status = status;
     }
 
     public CoreRuntimeException(String message, CoreException cause) {
         super(message, cause);
+        status = cause.getStatus();
     }
 
     /**
@@ -63,9 +67,15 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(String message) {
         super(message);
+        status = null;
     }
 
     public CoreRuntimeException(String message, CoreRuntimeException cause) {
         super(message, cause);
+        status = cause.getStatus();
+    }
+
+    public IStatus getStatus() {
+        return status;
     }
 }

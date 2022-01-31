@@ -10,20 +10,15 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -41,6 +36,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -414,9 +413,9 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
                 return null;
             }
 
-            IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-            Path path = new Path(fileName);
-            IResource resource;
+            AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+            Path path = Path.of(fileName);
+            AResource resource;
             try {
                 resource = root.getFile(path);
                 // CSOFF: IllegalCatch
@@ -434,20 +433,16 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             }
         }
 
-        protected IIpsSrcFile getIpsSrcFileFromArchive(IMemento memento, IResource resource) {
+        protected IIpsSrcFile getIpsSrcFileFromArchive(IMemento memento, AResource resource) {
             IIpsModel ipsModel = IIpsModel.get();
             String nameType = memento.getString(TAG_NAMETYPE);
             if (nameType != null) {
-                IProject project = resource.getProject();
+                AProject project = resource.getProject();
                 IIpsProject ipsProject = ipsModel.getIpsProject(project);
                 String resourceName = resource.getName();
                 IIpsPackageFragmentRoot packageFragmentRoot = ipsProject.getIpsPackageFragmentRoot(resourceName);
                 if (packageFragmentRoot != null) {
-                    try {
-                        return packageFragmentRoot.findIpsSrcFile(QualifiedNameType.newQualifedNameType(nameType));
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    return packageFragmentRoot.findIpsSrcFile(QualifiedNameType.newQualifedNameType(nameType));
                 }
             }
             return null;
@@ -457,8 +452,11 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         protected void storeItemToMemento(Object object, IMemento memento) {
             if (object instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
-                IResource resource = ipsSrcFile.getEnclosingResource();
-                memento.putString(TAG_PATH, resource.getFullPath().toString());
+                AResource resource = ipsSrcFile.getEnclosingResource();
+                Path location = resource.getLocation();
+                if (location != null) {
+                    memento.putString(TAG_PATH, location.toString());
+                }
                 if (ipsSrcFile.isContainedInArchive()) {
                     memento.putString(TAG_NAMETYPE, ipsSrcFile.getQualifiedNameType().toPath().toString());
                 }

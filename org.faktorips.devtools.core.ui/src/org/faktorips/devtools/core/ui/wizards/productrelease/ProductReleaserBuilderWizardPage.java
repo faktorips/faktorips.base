@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
@@ -156,7 +157,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             ArrayList<IIpsProject> sortedProjectList = new ArrayList<>(Arrays.asList(projects));
             Collections.sort(sortedProjectList, Comparator.comparing(p -> p.getName().toLowerCase()));
             projectSelectComboViewer.setInput(sortedProjectList);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
 

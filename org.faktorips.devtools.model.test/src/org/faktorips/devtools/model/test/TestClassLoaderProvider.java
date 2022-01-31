@@ -28,9 +28,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -155,7 +155,9 @@ public class TestClassLoaderProvider implements IClassLoaderProvider {
             }
             if (event.getType() == IResourceChangeEvent.PRE_DELETE) {
                 try {
-                    classLoader.close();
+                    if (classLoader != null) {
+                        classLoader.close();
+                    }
                 } catch (IOException e) {
                     IpsLog.log(e);
                 }

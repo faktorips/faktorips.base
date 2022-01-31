@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -26,9 +27,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
- * An <code>IRunnableWithProgress</code> that adapts an <code>ICoreRunnable</code> so that is
- * can be executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code>
- * thrown by the adapted runnable are caught and re-thrown as a <code>InterruptedException</code>.
+ * An <code>IRunnableWithProgress</code> that adapts an <code>ICoreRunnable</code> so that is can be
+ * executed inside <code>IRunnableContext</code>. <code>OperationCanceledException</code> thrown by
+ * the adapted runnable are caught and re-thrown as a <code>InterruptedException</code>.
  * 
  * Copied from the class with the same name from the internal Eclipse packages.
  * 
@@ -62,7 +63,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
-            JavaCore.run(workspaceRunnable, rule, monitor);
+            JavaCore.run((IWorkspaceRunnable)workspaceRunnable, rule, monitor);
         } catch (OperationCanceledException e) {
             throw new InterruptedException(e.getMessage());
         } catch (CoreException e) {

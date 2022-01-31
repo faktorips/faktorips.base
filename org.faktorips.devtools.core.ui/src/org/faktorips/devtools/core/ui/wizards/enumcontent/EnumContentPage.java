@@ -15,7 +15,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,6 +24,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -131,7 +132,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         if (selectedResource == null) {
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsSrcFile) {
             IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();
             if (ipsObject instanceof IEnumType) {
@@ -282,7 +283,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         if (validateInput) {
             try {
                 validatePage();
-            } catch (CoreException coreEx) {
+            } catch (CoreRuntimeException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 

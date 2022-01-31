@@ -84,15 +84,15 @@ public class EclipseWrapperBuilder extends WrapperBuilder {
             IResource resource = (IResource)original;
             if (resource instanceof IWorkspaceRoot) {
                 return (A)new AEclipseWorkspaceRoot((IWorkspaceRoot)resource);
-            }
-            if (resource instanceof IProject) {
+            } else if (resource instanceof IProject) {
                 return (A)new AEclipseProject((IProject)resource);
-            }
-            if (resource instanceof IFolder) {
+            } else if (resource instanceof IFolder) {
                 return (A)new AEclipseFolder((IFolder)resource);
-            }
-            if (resource instanceof IFile) {
+            } else if (resource instanceof IFile) {
                 return (A)new AEclipseFile((IFile)resource);
+            } else {
+                throw new IllegalArgumentException(
+                        "Don't know how to wrap a " + resource.getClass().getName() + " as a " + aClass.getName()); //$NON-NLS-1$//$NON-NLS-2$
             }
         }
         if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {

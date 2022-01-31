@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -65,7 +64,7 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
         MessageList list = null;
         try {
             list = getMessages(element);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return baseProvider.getImage(element);
         }

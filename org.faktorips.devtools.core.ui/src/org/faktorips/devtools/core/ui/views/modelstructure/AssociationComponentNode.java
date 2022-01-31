@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
@@ -77,12 +75,8 @@ public class AssociationComponentNode extends ComponentNode {
     public static AssociationComponentNode newAssociationComponentNode(IAssociation targetingAssociation,
             ComponentNode parent,
             IIpsProject rootProject) {
-        try {
-            return new AssociationComponentNode(targetingAssociation.findTarget(rootProject), parent, rootProject,
-                    targetingAssociation);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return new AssociationComponentNode(targetingAssociation.findTarget(rootProject), parent, rootProject,
+                targetingAssociation);
     }
 
     public void setTargetingType(IType type) {

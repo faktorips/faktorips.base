@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -20,6 +19,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
@@ -94,7 +95,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
             setTargetForImport(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile src = (IIpsSrcFile)element;
             setTargetForImport(src.getIpsObject());
@@ -117,24 +118,20 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
             setErrorMessage(Messages.SelectTableContentsPage_msgContentsEmpty);
             return;
         }
-        try {
-            ITableContents tableContents = (ITableContents)getTargetForImport();
-            if (tableContents == null) {
-                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
-                        importTargetControl.getText()));
-                return;
-            }
-            if (!tableContents.exists()) {
-                setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
-                        importTargetControl.getText()));
-                return;
-            }
-            ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());
-            if (structure.validate(structure.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
-                setErrorMessage(Messages.SelectTableContentsPage_msgStructureNotValid);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        ITableContents tableContents = (ITableContents)getTargetForImport();
+        if (tableContents == null) {
+            setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
+                    importTargetControl.getText()));
+            return;
+        }
+        if (!tableContents.exists()) {
+            setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
+                    importTargetControl.getText()));
+            return;
+        }
+        ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());
+        if (structure.validate(structure.getIpsProject()).getNoOfMessages(Message.ERROR) > 0) {
+            setErrorMessage(Messages.SelectTableContentsPage_msgStructureNotValid);
         }
 
     }

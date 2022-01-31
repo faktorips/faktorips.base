@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -184,7 +183,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         IProductCmptProperty property = null;
         try {
             property = propertyValue.findProperty(propertyValue.getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // Log exception, property remains null
             IpsPlugin.log(e);
         }
@@ -271,14 +270,10 @@ public abstract class ProductCmptPropertySection extends IpsSection {
                 hyperlink.addHyperlinkListener(new HyperlinkAdapter() {
                     @Override
                     public void linkActivated(HyperlinkEvent event) {
-                        try {
-                            ITableContents tableContents = ((ITableContentUsage)propertyValue)
-                                    .findTableContents(propertyValue.getIpsProject());
-                            if (tableContents != null) {
-                                IpsUIPlugin.getDefault().openEditor(tableContents.getIpsSrcFile());
-                            }
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
+                        ITableContents tableContents = ((ITableContentUsage)propertyValue)
+                                .findTableContents(propertyValue.getIpsProject());
+                        if (tableContents != null) {
+                            IpsUIPlugin.getDefault().openEditor(tableContents.getIpsSrcFile());
                         }
                     }
                 });
@@ -347,20 +342,14 @@ public abstract class ProductCmptPropertySection extends IpsSection {
 
             @Override
             public Control createLabel(IPropertyValue propertyValue, Composite parent, UIToolkit toolkit) {
-                // Label is for both parts of policy attribute, so label is only the name/label of
-                // the policy attribute
-                try {
-                    IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
-                    String label;
-                    if (property != null) {
-                        label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(property);
-                    } else {
-                        label = propertyValue.getPropertyName();
-                    }
-                    return toolkit.createLabel(parent, label);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                IProductCmptProperty property = propertyValue.findProperty(propertyValue.getIpsProject());
+                String label;
+                if (property != null) {
+                    label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(property);
+                } else {
+                    label = propertyValue.getPropertyName();
                 }
+                return toolkit.createLabel(parent, label);
             }
 
         },

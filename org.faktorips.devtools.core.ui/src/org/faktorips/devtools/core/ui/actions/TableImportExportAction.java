@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard;
 import org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 
@@ -121,7 +121,7 @@ public class TableImportExportAction extends IpsAction {
         Runnable run = () -> {
             try {
                 tableContents.getIpsSrcFile().save(true, null);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         };

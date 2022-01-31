@@ -23,6 +23,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -65,7 +67,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
             IAdaptable adaptableInput = (IAdaptable)input;
             IResource resource = adaptableInput.getAdapter(IResource.class);
             if (resource != null) {
-                IIpsElement element = IIpsModel.get().getIpsElement(resource);
+                IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
                 if (element instanceof IIpsSrcFile) {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
@@ -73,7 +75,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
         }
         if (input instanceof ResourceNode) {
             IResource file = ((ResourceNode)input).getResource();
-            IIpsElement element = IIpsModel.get().getIpsElement(file);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AResource.class));
             if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }
@@ -91,14 +93,14 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
             ISynchronizeModelElement modelElement = (ISynchronizeModelElement)input;
             IResource res = modelElement.getResource();
             if (res instanceof IFile) {
-                IIpsElement element = IIpsModel.get().getIpsElement(res);
+                IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(res).as(AResource.class));
                 if (element instanceof IIpsSrcFile) {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
             }
         } else if (input instanceof HistoryItem) {
             IResource res = ((HistoryItem)input).getResource();
-            IIpsElement element = IIpsModel.get().getIpsElement(res);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(res).as(AResource.class));
             if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }

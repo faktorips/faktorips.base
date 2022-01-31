@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AMarker;
@@ -68,17 +69,18 @@ public abstract class AEclipseResource extends AWrapper<IResource> implements AR
 
     @Override
     public Path getLocation() {
-        return Path.of(resource().getLocation().toOSString());
+        IPath location = resource().getLocation();
+        return location == null ? null : location.toFile().toPath();
     }
 
     @Override
     public Path getProjectRelativePath() {
-        return Path.of(resource().getProjectRelativePath().toOSString());
+        return resource().getProjectRelativePath().toFile().toPath();
     }
 
     @Override
     public Path getWorkspaceRelativePath() {
-        return Path.of(resource().getFullPath().toOSString());
+        return resource().getFullPath().toFile().toPath();
     }
 
     @Override
@@ -108,6 +110,8 @@ public abstract class AEclipseResource extends AWrapper<IResource> implements AR
                 return AResourceType.PROJECT;
             case IResource.ROOT:
                 return AResourceType.WORKSPACE;
+            case 0:
+                return null;
             default:
                 throw new IllegalStateException(getName() + " uses the undefined resource type " + type); //$NON-NLS-1$
         }

@@ -14,11 +14,11 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IPreSaveProcessor;
-import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFileMemento;
@@ -54,6 +54,9 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public boolean isDirty() {
+        if (!getCorrespondingFile().exists()) {
+            return false;
+        }
         IpsSrcFileContent content = getContent();
         if (content == null) {
             return false;

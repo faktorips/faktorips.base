@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -234,7 +233,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         ITableContentUsage tableUsage = mockTableUsage(true);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.isDirty()).thenReturn(false);
-        doThrow(new CoreException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(true, monitor);
+        doThrow(new CoreRuntimeException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(true, monitor);
         when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
         pmo = mockPMO(tableUsage, true);
         NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);

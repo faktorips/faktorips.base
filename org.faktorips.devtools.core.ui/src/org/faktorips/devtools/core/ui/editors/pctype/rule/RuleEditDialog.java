@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
-import org.faktorips.devtools.core.ui.editors.pctype.RuleFunctionsControl;
 import org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesControl;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -32,7 +31,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     // edit fields
     private CheckboxField appliedToAllField;
-    private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
@@ -94,8 +92,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
         Checkbox appliedToAllCheckbox = getToolkit().createCheckbox(workArea,
                 Messages.RuleEditDialog_labelApplyInAllBusinessFunctions);
-        rfControl = new RuleFunctionsControl(workArea);
-        rfControl.initialize(super.getIpsPart(), null);
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
 
         return workArea;

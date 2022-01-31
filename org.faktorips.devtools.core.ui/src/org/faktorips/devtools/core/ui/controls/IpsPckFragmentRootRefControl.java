@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsPackageFragmentRootSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -52,7 +54,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
         try {
             Path path = new Path(pathString);
             IFolder folder = wpRoot.getFolder(path);
-            IIpsElement element = IIpsModel.get().getIpsElement(folder);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(folder).as(AResource.class));
             if (element instanceof IIpsPackageFragmentRoot) {
                 return (IIpsPackageFragmentRoot)element;
             }

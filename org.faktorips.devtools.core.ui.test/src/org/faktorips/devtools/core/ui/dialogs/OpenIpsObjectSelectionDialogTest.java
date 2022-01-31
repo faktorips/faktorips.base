@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IMemento;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -41,7 +41,7 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
     @Mock
     private IIpsObjectPathEntry archiveEntry;
 
-    private IResource resource;
+    private AFile resource;
 
     private IpsObjectSelectionHistory selectionHistory;
 

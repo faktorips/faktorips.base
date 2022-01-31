@@ -14,14 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,74 +34,74 @@ public class IpsFolderBundleContentIndexTest {
 
     @Mock
     private FolderExplorer indexer;
-    private IPath srcPath;
-    private IPath testPath;
-    private IPath srcFile;
-    private IPath srcFile2;
-    private IPath srcCoveragesPath;
-    private IPath srcFileCoverage;
-    private IPath srcFileCoverage2;
-    private IPath testFile;
+    private Path srcPath;
+    private Path testPath;
+    private Path srcFile;
+    private Path srcFile2;
+    private Path srcCoveragesPath;
+    private Path srcFileCoverage;
+    private Path srcFileCoverage2;
+    private Path testFile;
     private IpsFolderBundleContentIndex contentIndex;
-    private IPath srcPathAbsolute;
-    private IPath testPathAbsolute;
+    private Path srcPathAbsolute;
+    private Path testPathAbsolute;
     private Path ressourceFile;
     private Path ressourceFileCoverage;
 
     @Before
     public void setUp() {
-        IPath bundleRoot = new Path("/root/base/folder");
+        Path bundleRoot = Path.of("/root/base/folder");
 
-        srcPath = new Path("src");
-        srcPathAbsolute = bundleRoot.append(srcPath);
+        srcPath = Path.of("src");
+        srcPathAbsolute = bundleRoot.resolve(srcPath);
 
-        testPath = new Path("test");
-        testPathAbsolute = bundleRoot.append(testPath);
+        testPath = Path.of("test");
+        testPathAbsolute = bundleRoot.resolve(testPath);
 
-        List<IPath> modelFolders = Arrays.asList(srcPath, testPath);
+        List<Path> modelFolders = Arrays.asList(srcPath, testPath);
 
-        srcCoveragesPath = srcPathAbsolute.append("coverage");
-        IPath srcEmptyPath = srcPathAbsolute.append("empty");
+        srcCoveragesPath = srcPathAbsolute.resolve("coverage");
+        Path srcEmptyPath = srcPathAbsolute.resolve("empty");
 
-        List<IPath> srcDirs = Arrays.asList(srcCoveragesPath, srcEmptyPath);
+        List<Path> srcDirs = Arrays.asList(srcCoveragesPath, srcEmptyPath);
 
         when(indexer.getFolders(srcPathAbsolute)).thenReturn(srcDirs);
 
-        srcFile = new Path("policy.ipsproductcmpttype");
-        srcFile2 = new Path("contract.ipsproductcmpttype");
+        srcFile = Path.of("policy.ipsproductcmpttype");
+        srcFile2 = Path.of("contract.ipsproductcmpttype");
 
-        ressourceFile = new Path("res.txt");
+        ressourceFile = Path.of("res.txt");
 
-        List<IPath> srcFiles = makeAbsolutePaths(srcPathAbsolute, srcFile, srcFile2, ressourceFile);
+        List<Path> srcFiles = makeAbsolutePaths(srcPathAbsolute, srcFile, srcFile2, ressourceFile);
 
         when(indexer.getFiles(srcPathAbsolute)).thenReturn(srcFiles);
 
-        when(indexer.getFolders(srcCoveragesPath)).thenReturn(new ArrayList<IPath>());
+        when(indexer.getFolders(srcCoveragesPath)).thenReturn(new ArrayList<Path>());
 
-        srcFileCoverage = new Path("coverage/basecoverage.ipsproductcmpttype");
-        srcFileCoverage2 = new Path("coverage/additionalcoverage.ipsproductcmpttype");
-        ressourceFileCoverage = new Path("coverage/resCov.txt");
+        srcFileCoverage = Path.of("coverage/basecoverage.ipsproductcmpttype");
+        srcFileCoverage2 = Path.of("coverage/additionalcoverage.ipsproductcmpttype");
+        ressourceFileCoverage = Path.of("coverage/resCov.txt");
 
-        List<IPath> srcFilesCoverage = makeAbsolutePaths(srcPathAbsolute, srcFileCoverage, srcFileCoverage2,
+        List<Path> srcFilesCoverage = makeAbsolutePaths(srcPathAbsolute, srcFileCoverage, srcFileCoverage2,
                 ressourceFileCoverage);
         when(indexer.getFiles(srcCoveragesPath)).thenReturn(srcFilesCoverage);
 
-        when(indexer.getFolders(srcEmptyPath)).thenReturn(new ArrayList<IPath>());
-        when(indexer.getFiles(srcEmptyPath)).thenReturn(new ArrayList<IPath>());
+        when(indexer.getFolders(srcEmptyPath)).thenReturn(new ArrayList<Path>());
+        when(indexer.getFiles(srcEmptyPath)).thenReturn(new ArrayList<Path>());
 
-        when(indexer.getFolders(testPathAbsolute)).thenReturn(new ArrayList<IPath>());
+        when(indexer.getFolders(testPathAbsolute)).thenReturn(new ArrayList<Path>());
 
-        testFile = new Path("test.ipstestcasetype");
-        List<IPath> testFiles = makeAbsolutePaths(testPathAbsolute, testFile);
+        testFile = Path.of("test.ipstestcasetype");
+        List<Path> testFiles = makeAbsolutePaths(testPathAbsolute, testFile);
         when(indexer.getFiles(testPathAbsolute)).thenReturn(testFiles);
 
         contentIndex = new IpsFolderBundleContentIndex(modelFolders, bundleRoot, indexer);
     }
 
-    private List<IPath> makeAbsolutePaths(IPath base, IPath... files) {
-        List<IPath> srcFiles = new ArrayList<>();
-        for (IPath iPath : Arrays.asList(files)) {
-            srcFiles.add(base.append(iPath));
+    private List<Path> makeAbsolutePaths(Path base, Path... files) {
+        List<Path> srcFiles = new ArrayList<>();
+        for (Path iPath : Arrays.asList(files)) {
+            srcFiles.add(base.resolve(iPath));
         }
         return srcFiles;
     }

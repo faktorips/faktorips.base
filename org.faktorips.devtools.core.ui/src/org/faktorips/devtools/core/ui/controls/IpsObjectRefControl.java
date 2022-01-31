@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -102,11 +101,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
             @Override
             protected IIpsSrcFile[] getIpsSrcFiles() {
-                try {
-                    return IpsObjectRefControl.this.getIpsSrcFiles();
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                return IpsObjectRefControl.this.getIpsSrcFiles();
             }
         };
 
@@ -197,7 +192,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         BusyIndicator.showWhile(getDisplay(), () -> {
             try {
                 context.setElements(getIpsSrcFiles());
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         });

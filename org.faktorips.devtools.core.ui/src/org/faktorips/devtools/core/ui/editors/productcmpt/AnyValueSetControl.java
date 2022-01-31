@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -103,7 +102,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             } else {
                 resetState();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

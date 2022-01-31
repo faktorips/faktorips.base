@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enums;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Table;
@@ -57,11 +56,7 @@ public class NewEnumValueAction extends Action {
     public void run() {
         IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
         IEnumValue newEnumValue;
-        try {
-            newEnumValue = enumValueContainer.newEnumValue();
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        newEnumValue = enumValueContainer.newEnumValue();
 
         tableViewer.refresh(true);
         Table table = tableViewer.getTable();

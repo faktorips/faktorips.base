@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog.SortOrder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
@@ -38,6 +38,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
 
     private IIpsProject ipsProject;
     private IpsPackageFragmentRoot ipsRoot;
+    private AFolder folder;
 
     @Override
     @Before
@@ -46,6 +47,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
 
         ipsProject = this.newIpsProject("TestProject");
         ipsRoot = (IpsPackageFragmentRoot)ipsProject.getIpsPackageFragmentRoots()[0];
+        folder = (AFolder)ipsRoot.getCorrespondingResource();
     }
 
     @Test
@@ -53,7 +55,8 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         ipsRoot.createPackageFragment("a", true, null);
         ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
-        createSortOrderFile((IFolder)ipsRoot.getCorrespondingResource(), "b", "c", "a");
+        createSortOrderFile(folder, "b", "c",
+                "a");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
         assertThat(defaultIpsPackageFragment.getChildOrderComparator(), is(instanceOf(DefinedOrderComparator.class)));
 
@@ -76,7 +79,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
-        createSortOrderFile((IFolder)ipsRoot.getCorrespondingResource(), "b", "c", "a");
+        createSortOrderFile(folder, "b", "c", "a");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
         assertThat(defaultIpsPackageFragment.getChildOrderComparator(), is(instanceOf(DefinedOrderComparator.class)));
 
@@ -106,8 +109,8 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);
 
-        IFile file = ((IFolder)defaultIpsPackageFragment.getCorrespondingResource())
-                .getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
+        IFile file = ((AFolder)defaultIpsPackageFragment.getCorrespondingResource())
+                .getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME).unwrap();
         assertThat(file, not(exists()));
     }
 
@@ -123,8 +126,8 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         sortOrder.up(Arrays.asList(packB));
         sortOrder.save();
 
-        IFile file = ((IFolder)defaultIpsPackageFragment.getCorrespondingResource())
-                .getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
+        IFile file = ((AFolder)defaultIpsPackageFragment.getCorrespondingResource())
+                .getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME).unwrap();
         assertThat(file, exists());
     }
 
@@ -159,7 +162,8 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         ProductCmpt prodA2 = newProductCmpt(ipsProject, "A 2018-02");
         ProductCmpt prodB = newProductCmpt(ipsProject, "B 2018-01");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
-        createSortOrderFile((IFolder)ipsRoot.getCorrespondingResource(), "b", "c", "a", "B 2018-01.ipsproduct",
+        createSortOrderFile(folder, "b", "c", "a",
+                "B 2018-01.ipsproduct",
                 "A 2018-02.ipsproduct", "A 2018-01.ipsproduct");
 
         SortOrder sortOrder = new SortOrder();
@@ -183,7 +187,8 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
         ProductCmpt prodA2 = newProductCmpt(ipsProject, "A 2018-02");
         ProductCmpt prodB = newProductCmpt(ipsProject, "B 2018-01");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
-        createSortOrderFile((IFolder)ipsRoot.getCorrespondingResource(), "b", "B 2018-01.ipsproduct");
+        createSortOrderFile(folder, "b",
+                "B 2018-01.ipsproduct");
 
         SortOrder sortOrder = new SortOrder();
         sortOrder.inputChanged(null, null, defaultIpsPackageFragment);

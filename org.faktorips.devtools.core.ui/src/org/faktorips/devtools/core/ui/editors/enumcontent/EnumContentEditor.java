@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -42,7 +41,7 @@ public class EnumContentEditor extends IpsObjectEditor implements IModelDescript
     }
 
     @Override
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+    protected void addPagesForParsableSrcFile() throws PartInitException, CoreRuntimeException {
         addPage(new EnumContentEditorPage(this));
     }
 

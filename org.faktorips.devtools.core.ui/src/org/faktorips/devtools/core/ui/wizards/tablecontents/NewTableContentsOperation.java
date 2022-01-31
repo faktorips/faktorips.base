@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
@@ -59,11 +58,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
             ITableContentUsage tableContentUsage = getPmo().getAddToTableUsage();
             tableContentUsage.setTableContentName(ipsSrcFile.getQualifiedNameType().getName());
             if (!dirty && getPmo().isAutoSaveAddToFile()) {
-                try {
-                    addToIpsSrcFile.save(true, monitor);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                addToIpsSrcFile.save(true, monitor);
             }
         }
     }

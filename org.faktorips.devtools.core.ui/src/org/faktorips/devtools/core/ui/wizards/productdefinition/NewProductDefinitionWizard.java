@@ -22,6 +22,8 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.devtools.model.IIpsElement;
@@ -99,7 +101,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
         if (resource != null) {
             IProject project = resource.getProject();
             if (project != null) {
-                IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
+                IIpsProject ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
                 if (ipsProject.exists()) {
                     IIpsPackageFragmentRoot root = ipsProject.getSourceIpsPackageFragmentRoots()[0];
                     initDefaults(root.getDefaultIpsPackageFragment(), null);

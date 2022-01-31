@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -32,6 +31,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,12 +47,10 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
-import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
@@ -60,6 +58,7 @@ import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.builder.IpsBuilder.EclipseIpsBuilder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -547,7 +546,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreRuntimeException {
         AFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
-        IPath archivePath = toEclipsePath(archiveFile.getLocation());
+        Path archivePath = archiveFile.getLocation();
         IIpsProject project2 = newIpsProject("Project2");
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archiveFile.getLocation().toFile());
         op.run(null);
@@ -917,7 +916,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         IIpsProject project2 = newIpsProject("TestProject2");
         AFile archiveFile2 = project2.getProject().getFile(archiveFile.getLocation());
-        IPath archivePath2 = toEclipsePath(archiveFile2.getLocation());
+        Path archivePath2 = archiveFile2.getLocation();
 
         IpsArchiveEntry archiveEntry = new IpsArchiveEntry((IpsObjectPath)project2.getIpsObjectPath());
         archiveEntry.initStorage(archivePath2);

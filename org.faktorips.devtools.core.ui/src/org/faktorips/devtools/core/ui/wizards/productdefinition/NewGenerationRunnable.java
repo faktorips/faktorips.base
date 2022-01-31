@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -75,11 +74,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
             boolean wasDirty = timedIpsObject.getIpsSrcFile().isDirty();
             timedIpsObject.newGeneration(pmo.getValidFrom());
             if (!wasDirty) {
-                try {
-                    timedIpsObject.getIpsSrcFile().save(true, monitor);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                timedIpsObject.getIpsSrcFile().save(true, monitor);
             }
 
             monitor.worked(1);

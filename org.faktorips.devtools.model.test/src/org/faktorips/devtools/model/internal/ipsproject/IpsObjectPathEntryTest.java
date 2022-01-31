@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,8 +50,8 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         assertEquals(0, entry0.getIndex());
 
         IIpsObjectPathEntry entry1 = path
-                .newArchiveEntry(toEclipsePath(ipsProject.getProject().getFile("someArchive.jar")
-                        .getWorkspaceRelativePath()));
+                .newArchiveEntry(ipsProject.getProject().getFile("someArchive.jar")
+                        .getWorkspaceRelativePath());
         assertEquals(0, entry0.getIndex());
         assertEquals(1, entry1.getIndex());
     }
@@ -84,8 +83,8 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsReexport() throws Exception {
-        IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(toEclipsePath(ipsProject.getProject()
-                .getFile("someArchive.jar").getWorkspaceRelativePath()));
+        IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(ipsProject.getProject()
+                .getFile("someArchive.jar").getWorkspaceRelativePath());
         assertTrue(ipsObjectPathEntry.isReexported());
         ipsObjectPathEntry.setReexported(false);
         assertFalse(ipsObjectPathEntry.isReexported());

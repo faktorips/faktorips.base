@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -294,7 +293,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
         try {
             valueChangedExtension(e);
-        } catch (CoreException exception) {
+        } catch (CoreRuntimeException exception) {
             IpsPlugin.log(exception);
         }
 
@@ -302,7 +301,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
             // don't validate during control creating!
             try {
                 validatePage();
-            } catch (CoreException coreEx) {
+            } catch (CoreRuntimeException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 
@@ -355,8 +354,8 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * This method is empty by default. Subclasses might override it to add specific validations.
      * This method is called by the validatePage() method before the page will be updated.
      * 
-     * @throws CoreRuntimeException if these exceptions are thrown by subclasses they will be logged and
-     *             displayed in an error dialog
+     * @throws CoreRuntimeException if these exceptions are thrown by subclasses they will be logged
+     *             and displayed in an error dialog
      */
     protected void validatePageExtension() throws CoreRuntimeException {
         // may be override by subclasses
@@ -424,7 +423,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
                     setMessage(msgText, IMessageProvider.NONE);
                 }
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // an error occurred while validating the name
             IpsPlugin.logAndShowErrorDialog(e);
         }

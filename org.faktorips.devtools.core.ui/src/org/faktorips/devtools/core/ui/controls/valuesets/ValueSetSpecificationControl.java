@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -449,13 +448,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             super(valueSetOwner);
             if (valueSetOwner instanceof IConfigElement) {
                 IConfigElement configElement = (IConfigElement)valueSetOwner;
-                try {
-                    IPolicyCmptTypeAttribute attribute = configElement
-                            .findPcTypeAttribute(configElement.getIpsProject());
-                    sourceSet = attribute.getValueSet();
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                IPolicyCmptTypeAttribute attribute = configElement
+                        .findPcTypeAttribute(configElement.getIpsProject());
+                sourceSet = attribute.getValueSet();
             }
         }
 

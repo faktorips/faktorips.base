@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -695,7 +694,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 return (Image)resourceManager
                         .get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList.getSeverity()));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return null;
             }
@@ -1152,7 +1151,7 @@ public class TestCaseTypeSection extends IpsSection {
         MessageList msgList = null;
         try {
             msgList = testParam.validate(testParam.getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return section;
         }
@@ -1465,7 +1464,7 @@ public class TestCaseTypeSection extends IpsSection {
                     return true;
                 }
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // ignore exception, inconsitence are displayed as validation errors
         }
         return false;

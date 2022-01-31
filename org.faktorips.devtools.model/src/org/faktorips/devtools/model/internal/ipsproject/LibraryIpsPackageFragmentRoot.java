@@ -16,10 +16,9 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -66,10 +65,9 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         IIpsLibraryEntry entry = (IIpsLibraryEntry)getIpsObjectPathEntry();
         String path;
         if (entry.getPath().isAbsolute()) {
-            path = entry.getPath().toPortableString();
+            path = entry.getPath().toString();
         } else {
-            path = Path.fromOSString(getIpsProject().getProject().getLocation().toString()).append(entry.getPath())
-                    .toPortableString();
+            path = getIpsProject().getProject().getLocation().resolve(entry.getPath()).toString();
         }
         return getIpsProject().getJavaProject().getPackageFragmentRoot(path);
     }

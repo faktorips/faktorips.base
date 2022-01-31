@@ -156,7 +156,9 @@ public class ClassLoaderProvider implements IClassLoaderProvider {
             }
             if (event.getType() == IResourceChangeEvent.PRE_DELETE) {
                 try {
-                    classLoader.close();
+                    if (classLoader != null) {
+                        classLoader.close();
+                    }
                 } catch (IOException e) {
                     IpsLog.log(e);
                 }

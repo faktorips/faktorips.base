@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -211,7 +210,7 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         try {
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

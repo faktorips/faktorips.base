@@ -20,8 +20,10 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
@@ -83,7 +85,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         attr3.setDatatype("float");
         attr3.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder = ((AProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
         folder.create(true, false, null);
         subFolder = folder.getFolder("subfolder");
         subFolder.create(true, false, null);
@@ -141,7 +143,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetText() throws CoreRuntimeException {
+    public void testGetText() throws CoreRuntimeException, CoreException {
         String fragmentName;
         // packagefragment Labels
         // hierarchical Layout
@@ -195,6 +197,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
 
         // non ips projects in model explorer
         IProject platformProject = newPlatformProject("PlatformProject");
+
         resName = hierarchyProvider.getText(platformProject);
         assertEquals(platformProject.getName() + " (" + Messages.ModelExplorer_nonIpsProjectLabel + ")", resName);
         resName = flatProvider.getText(platformProject);

@@ -74,7 +74,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation.newRow();
 
         srcFile = table.getIpsSrcFile();
-        correspondingFile = srcFile.getCorrespondingFile();
+        correspondingFile = srcFile.getCorrespondingFile().unwrap();
 
         // initialized compareItem
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
@@ -145,7 +145,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
-        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile().unwrap();
         TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
 
@@ -225,7 +225,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
-        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile().unwrap();
         TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
 

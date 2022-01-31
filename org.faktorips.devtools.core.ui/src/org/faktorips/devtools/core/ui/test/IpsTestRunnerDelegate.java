@@ -78,7 +78,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
                 trace("Lauch configuration (" + configuration.getName() + ") in UI Job 'IPS Testrunner delegate'"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
                     startTest(configuration, mode, launch);
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 return Job.ASYNC_FINISH;
@@ -93,8 +93,14 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
      */
     private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch)
             throws CoreRuntimeException {
-        String packageFragment = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
-        String testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
+        String packageFragment;
+        String testCases;
+        try {
+            packageFragment = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
+            testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
 
         IpsTestAction runTestAction = new IpsTestAction(null, mode);
         runTestAction.setLauch(launch);

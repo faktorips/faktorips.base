@@ -40,6 +40,9 @@ public interface AAbstraction {
      * </pre>
      *
      * @param <T> the type of the platform-specific object
+     * 
+     * @see Wrappers#unwrap(AAbstraction) Wrappers#unwrap(AAbstraction) for a way to unwrap
+     *      potentially null abstractions.
      */
     <T> T unwrap();
 

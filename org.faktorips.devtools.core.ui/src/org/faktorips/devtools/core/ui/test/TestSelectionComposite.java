@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -337,7 +336,7 @@ public class TestSelectionComposite extends Composite {
 
         List<String> testSuiteList = AbstractIpsTestRunner.extractListFromString(testSuites);
         if (project == null) {
-            throw new CoreException(new IpsStatus(Messages.TestSelectionComposite_errorProjectNotDetermined));
+            throw new CoreRuntimeException(new IpsStatus(Messages.TestSelectionComposite_errorProjectNotDetermined));
         }
 
         for (String qualifiedName : testSuiteList) {

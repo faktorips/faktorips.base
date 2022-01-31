@@ -20,9 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -242,35 +240,31 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         // add direct associations (from the same project)
         associationNodes.addAll(getDirectAssociationComponentNodes(parent, project));
 
-        try {
-            /*
-             * general root element or supertype is from the same project, therefore we have no
-             * derived associations
-             */
-            if (parentType.findSupertype(project) != null) {
-                // compute the derived associations -> go up in the inheritance hierarchy
-                IType supertype = parentType.findSupertype(project);
-                List<IAssociation> supertypeAssociations = new ArrayList<>();
-                // collect all relevant supertype-associations
-                while (supertype != null) {
-                    supertypeAssociations.addAll(0, supertype.getAssociations(ASSOCIATION_TYPES));
-                    supertype = supertype.findSupertype(project);
-                }
-
-                ArrayList<AssociationComponentNode> superAssociationNodes = new ArrayList<>();
-                for (IAssociation supertypeAssociation : supertypeAssociations) {
-                    if (!supertypeAssociation.isDerivedUnion()) {
-                        IType target = supertypeAssociation.findTarget(project);
-                        AssociationComponentNode associationComponentNode = newAssociationComponentNode(target,
-                                supertypeAssociation, parent, project);
-                        associationComponentNode.setInherited(true);
-                        superAssociationNodes.add(associationComponentNode);
-                    }
-                }
-                associationNodes.addAll(0, superAssociationNodes);
+        /*
+         * general root element or supertype is from the same project, therefore we have no derived
+         * associations
+         */
+        if (parentType.findSupertype(project) != null) {
+            // compute the derived associations -> go up in the inheritance hierarchy
+            IType supertype = parentType.findSupertype(project);
+            List<IAssociation> supertypeAssociations = new ArrayList<>();
+            // collect all relevant supertype-associations
+            while (supertype != null) {
+                supertypeAssociations.addAll(0, supertype.getAssociations(ASSOCIATION_TYPES));
+                supertype = supertype.findSupertype(project);
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+
+            ArrayList<AssociationComponentNode> superAssociationNodes = new ArrayList<>();
+            for (IAssociation supertypeAssociation : supertypeAssociations) {
+                if (!supertypeAssociation.isDerivedUnion()) {
+                    IType target = supertypeAssociation.findTarget(project);
+                    AssociationComponentNode associationComponentNode = newAssociationComponentNode(target,
+                            supertypeAssociation, parent, project);
+                    associationComponentNode.setInherited(true);
+                    superAssociationNodes.add(associationComponentNode);
+                }
+            }
+            associationNodes.addAll(0, superAssociationNodes);
         }
 
         removeImplementedDerivedUnions(associationNodes);
@@ -311,12 +305,8 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
         IType parentValue = parent.getValue();
         List<IAssociation> directAssociations = new ArrayList<>();
         for (IAssociation directAssociation : parentValue.getAssociations(ASSOCIATION_TYPES)) {
-            try {
-                if (directAssociation.findTarget(project).getIpsProject().equals(project)) {
-                    directAssociations.add(directAssociation);
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (directAssociation.findTarget(project).getIpsProject().equals(project)) {
+                directAssociations.add(directAssociation);
             }
         }
 

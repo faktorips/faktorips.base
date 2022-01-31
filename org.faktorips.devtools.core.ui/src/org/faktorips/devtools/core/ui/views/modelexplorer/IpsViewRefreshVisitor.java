@@ -18,6 +18,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -67,11 +70,11 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         if (project == null || !project.isAccessible()) {
             return false;
         }
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(resource.getProject());
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
         if (ipsProject == null) {
             return false;
         }
-        IJavaProject javaProject = ipsProject.getJavaProject();
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         if (javaProject == null || !javaProject.exists()) {
             return false;
         }
@@ -89,7 +92,8 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         if (isJavaResource(parentResource)) {
             // if the team status of a Java resource has changed, we must update the Project
             // to update is't label decoration as well!
-            IIpsProject ipsProject = IIpsModel.get().getIpsProject(parentResource.getProject());
+            IIpsProject ipsProject = IIpsModel.get()
+                    .getIpsProject(Wrappers.wrap(parentResource.getProject()).as(AProject.class));
             if (ipsProject != null) {
                 registerForUpdate(ipsProject);
             }
@@ -191,7 +195,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     private IIpsProject getIpsProject(IResource resource) {
-        return IIpsModel.get().getIpsProject(resource.getProject());
+        return IIpsModel.get().getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
     }
 
     private boolean isManifestFile(IResource resource) {
@@ -239,7 +243,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     private IIpsElement getIpsElement(IResource resource) {
-        IIpsElement element = IIpsModel.get().getIpsElement(resource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
         return element;
     }
 

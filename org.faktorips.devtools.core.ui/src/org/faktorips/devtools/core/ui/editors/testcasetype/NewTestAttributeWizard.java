@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
@@ -89,7 +89,7 @@ public class NewTestAttributeWizard extends Wizard {
                 testAttribute.setDatatype(testAttributeDefinitionWizardPage.getDatatype());
                 firstCreatedTestAttribute = testAttribute;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
@@ -100,23 +100,19 @@ public class NewTestAttributeWizard extends Wizard {
 
         ITestAttribute testAttribute = null;
         for (IPolicyCmptTypeAttribute modelAttribute : attributesSelected) {
-            try {
-                if (testPolicyCmptTypeParam.isCombinedParameter()) {
-                    // if the type of the parent is combined
-                    // create a new expected if attribute is derived or computed
-                    if (modelAttribute.isDerived()) {
-                        testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
-                    } else {
-                        testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
-                    }
-                } else if (testPolicyCmptTypeParam.isExpextedResultOrCombinedParameter()) {
+            if (testPolicyCmptTypeParam.isCombinedParameter()) {
+                // if the type of the parent is combined
+                // create a new expected if attribute is derived or computed
+                if (modelAttribute.isDerived()) {
                     testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
                 } else {
-                    // default is input
                     testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
                 }
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            } else if (testPolicyCmptTypeParam.isExpextedResultOrCombinedParameter()) {
+                testAttribute = testPolicyCmptTypeParam.newExpectedResultTestAttribute();
+            } else {
+                // default is input
+                testAttribute = testPolicyCmptTypeParam.newInputTestAttribute();
             }
 
             testAttribute.setAttribute(modelAttribute);

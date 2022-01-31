@@ -21,11 +21,12 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AWorkspace;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
@@ -108,7 +109,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         emptyPackage = root.createPackageFragment("subpackage.model.emptypackage", true, null);
         filePackage = root.createPackageFragment("subpackage.files", true, null);
         // create files for filepackage
-        IFolder packageFolder = (IFolder)filePackage.getCorrespondingResource();
+        IFolder packageFolder = (IFolder)filePackage.getCorrespondingResource().unwrap();
         IFile packageFile = packageFolder.getFile(new Path("testfile.txt"));
         packageFile.create(null, true, null);
 
@@ -123,7 +124,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
                 "subpackage.product.TestTableContents");
         polCmptType2 = newPolicyCmptType(root, "TestPolicy2"); // defaultpackage
 
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder = ((IProject)proj.getCorrespondingResource().unwrap()).getFolder("testfolder");
         folder.create(true, false, null);
         subFolder = folder.getFolder("subfolder");
         subFolder.create(true, false, null);
@@ -154,7 +155,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         list = Arrays.asList(children);
         assertTrue(list.contains(root));
         assertTrue(list.contains(folder));
-        assertTrue(list.contains(((IProject)proj.getCorrespondingResource()).getFile(".ipsproject")));
+        assertTrue(list.contains(((AProject)proj.getCorrespondingResource()).getFile(".ipsproject").unwrap()));
         // root has two children: the defaultpackage and subPackage
         children = hierarchyProvider.getChildren(root);
         assertEquals(2, children.length);
@@ -202,7 +203,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
         list = Arrays.asList(children);
         assertTrue(list.contains(root));
         assertTrue(list.contains(folder));
-        assertTrue(list.contains(((IProject)proj.getCorrespondingResource()).getFile(".ipsproject")));
+        assertTrue(list.contains(((AProject)proj.getCorrespondingResource()).getFile(".ipsproject").unwrap()));
         // Packages that contain no files but folders are ignored (subpackage).
         children = flatProvider.getChildren(root);
         assertEquals(5, children.length);
@@ -383,8 +384,8 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
             IProject project2 = newPlatformProject("TestJavaProject2");
             addJavaCapabilities(project2);
         };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        AWorkspace workspace = Abstractions.getWorkspace();
+        workspace.run(runnable, null);
         Object[] children = hierarchyProvider.getElements(IIpsModel.get());
         assertEquals(5, children.length);
         children = flatProvider.getElements(IIpsModel.get());

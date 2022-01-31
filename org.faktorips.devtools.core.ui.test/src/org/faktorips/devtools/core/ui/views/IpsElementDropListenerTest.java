@@ -24,13 +24,16 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -44,11 +47,10 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
         IIpsProject prj = super.newIpsProject();
         PolicyCmptType type = newPolicyCmptType(prj, "first.second.Name");
 
-        IFolder folder = prj.getProject().getFolder("Folder");
-        folder.create(true, true, new NullProgressMonitor());
-
-        IFile file = prj.getProject().getFile("File");
-        file.create(new ByteArrayInputStream("Content".getBytes()), true, new NullProgressMonitor());
+        AFolder folder = prj.getProject().getFolder("Folder");
+        AFile file = prj.getProject().getFile("File");
+        folder.create(new NullProgressMonitor());
+        file.create(new ByteArrayInputStream("Content".getBytes()), new NullProgressMonitor());
 
         TransferData notFound = getData();
         TransferData folderData = getData();
@@ -85,11 +87,13 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTransferedElements_nestedProjects() throws CoreRuntimeException {
+    public void testGetTransferedElements_nestedProjects() throws CoreException {
         String parent = "P" + UUID.randomUUID().toString();
         String child = "X" + UUID.randomUUID().toString();
-        IProject parentProject = newPlatformProject(parent);
-        IFolder childFolder = parentProject.getFolder(child);
+        IProject parentProject;
+        IFolder childFolder;
+        parentProject = newPlatformProject(parent);
+        childFolder = parentProject.getFolder(child);
         childFolder.create(false, true, null);
 
         IProjectDescription description = ResourcesPlugin.getWorkspace().newProjectDescription(child);
@@ -101,7 +105,8 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
 
         TransferData typeData = getData();
         FileTransfer mockedTransfer = mock(FileTransfer.class);
-        when(mockedTransfer.nativeToJava(typeData)).thenReturn(new String[] { getPath(type.getEnclosingResource()) });
+        when(mockedTransfer.nativeToJava(typeData))
+                .thenReturn(new String[] { getPath(type.getEnclosingResource()) });
         TestListener l = new TestListener(mockedTransfer);
         Object[] resultType = l.getTransferedElements(typeData);
 
@@ -109,8 +114,8 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
         assertTrue(resultType[0] instanceof IIpsElement);
     }
 
-    private String getPath(IResource res) {
-        return res.getRawLocation().toOSString();
+    private String getPath(AResource res) {
+        return res.getLocation().toString();
     }
 
     private TransferData getData() {

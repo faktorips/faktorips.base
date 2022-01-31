@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -170,7 +169,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             List<IProductCmptCategory> categories = new ArrayList<>();
             try {
                 categories.addAll(getProductCmptType().findCategories(getProductCmptType().getIpsProject()));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 // Recover by not displaying any lastCategoryState
                 IpsPlugin.log(e);
             }
@@ -415,16 +414,12 @@ public class CategoryPage extends IpsObjectEditorPage {
         }
 
         private void refreshCategorySections() {
-            try {
-                Object categoryState = obtainCategoryState();
-                if (lastCategoryState == null || !lastCategoryState.equals(categoryState)) {
-                    if (categoryCompositionSection != null) {
-                        categoryCompositionSection.recreateCategorySections(null);
-                    }
-                    lastCategoryState = categoryState;
+            Object categoryState = obtainCategoryState();
+            if (lastCategoryState == null || !lastCategoryState.equals(categoryState)) {
+                if (categoryCompositionSection != null) {
+                    categoryCompositionSection.recreateCategorySections(null);
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                lastCategoryState = categoryState;
             }
         }
 

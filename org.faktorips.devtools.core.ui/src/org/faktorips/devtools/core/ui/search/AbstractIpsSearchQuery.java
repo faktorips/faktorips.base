@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.search.ui.text.Match;
@@ -65,7 +64,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
             } else {
                 searchDetails();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             return new IpsStatus(e);
         }
 

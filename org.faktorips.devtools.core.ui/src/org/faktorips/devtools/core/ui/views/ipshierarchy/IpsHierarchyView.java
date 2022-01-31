@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -69,6 +68,7 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.type.TypeHierarchy;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -545,7 +545,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             try {
                 final ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
                 display.asyncExec(() -> setInputData(hierarchy));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
             return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, null);

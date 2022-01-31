@@ -476,10 +476,10 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
         Set<AProject> nonIpsResources = model.getNonIpsProjects();
         assertEquals(2, nonIpsResources.size());
-        // compare handles (IProject)
+        // compare handles (AProject)
         Iterator<AProject> iterator = nonIpsResources.iterator();
-        assertEquals(javaProject.getProject(), iterator.next().unwrap());
-        assertEquals(javaProject2.getProject(), iterator.next().unwrap());
+        assertEquals(javaProject.getProject(), iterator.next());
+        assertEquals(javaProject2.getProject(), iterator.next());
     }
 
     @Test

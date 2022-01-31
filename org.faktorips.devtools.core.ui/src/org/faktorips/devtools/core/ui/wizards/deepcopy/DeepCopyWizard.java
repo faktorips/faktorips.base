@@ -201,7 +201,7 @@ public class DeepCopyWizard extends ResizableWizard {
             final boolean createEmptyTableContents = presentationModel.isCreateEmptyTable();
 
             final IWorkspaceRoot schedulingRule = getStructure().getRoot().getProductCmpt().getIpsProject()
-                    .getCorrespondingResource().getWorkspace().getRoot();
+                    .getCorrespondingResource().getWorkspace().getRoot().unwrap();
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 
                 @SuppressWarnings("deprecation")

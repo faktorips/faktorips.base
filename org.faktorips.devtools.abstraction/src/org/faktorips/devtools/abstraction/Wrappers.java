@@ -13,6 +13,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Utility class to wrap, unwrap and implement {@link AWrapper wrappers}.
@@ -85,12 +88,21 @@ public class Wrappers {
      *
      * @param <T> the expected unwrapped type
      * @param wrapper a wrapper wrapping the expected type
-     * @return the unwrapped T object
+     * @return the unwrapped T object or {@code null} if the given wrapper is {@code null}
      * @throws ClassCastException if called with a wrapper not wrapping the expected type
      */
     @SuppressWarnings("unchecked")
-    public static <T> T unwrap(AAbstraction wrapper) {
-        return ((AWrapper<T>)wrapper).unwrap();
+    @CheckForNull
+    public static <T> T unwrap(@CheckForNull AAbstraction wrapper) {
+        return wrapper == null ? null : ((AWrapper<T>)wrapper).unwrap();
+    }
+
+    /**
+     * Returns a {@link ArrayUnwrapper} that allows unwrapping the given array of wrappers to an
+     * array or list of the wrapped class.
+     */
+    public static <A extends AAbstraction> ArrayUnwrapper<A> unwrap(A[] wrappers) {
+        return new ArrayUnwrapper<>(wrappers);
     }
 
     /**
@@ -99,6 +111,32 @@ public class Wrappers {
      */
     public static CollectionUnwrapper unwrap(Collection<? extends AAbstraction> wrappers) {
         return new CollectionUnwrapper(wrappers);
+    }
+
+    public static class ArrayUnwrapper<A extends AAbstraction> {
+        private final A[] wrappers;
+
+        protected ArrayUnwrapper(A[] wrappers) {
+            this.wrappers = wrappers;
+        }
+
+        @SuppressWarnings({ "unchecked" })
+        public <T> T[] asArrayOf(Class<T> clazz) {
+            return wrappers == null
+                    ? null
+                    : Arrays.stream(wrappers)
+                            .map(p -> (T)p.unwrap())
+                            .toArray(l -> (T[])Array.newInstance(clazz, l));
+        }
+
+        @SuppressWarnings({ "unchecked" })
+        public <T> List<T> asList() {
+            return wrappers == null
+                    ? null
+                    : Arrays.stream(wrappers)
+                            .map(p -> (T)p.unwrap())
+                            .collect(Collectors.toList());
+        }
     }
 
     public static class CollectionUnwrapper {

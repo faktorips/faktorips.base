@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -83,7 +85,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
             if (file == null) {
                 return null;
             }
-            IIpsElement element = IIpsModel.get().getIpsElement(file);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AFile.class));
             if (element == null || !element.exists()) {
                 return null;
             }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.dependency.SortedByDependency;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.util.ArgumentCheck;
 
@@ -55,7 +55,7 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
                     element.getIpsSrcFile().save(true, null);
                     monitor.worked(1);
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } finally {
                 monitor.done();

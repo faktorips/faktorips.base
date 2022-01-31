@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.eclipse.core.runtime.IPath;
+import java.nio.file.Path;
+
 import org.faktorips.devtools.abstraction.AResourceDelta;
 
 /**
@@ -31,7 +32,7 @@ public interface IIpsArchiveEntry extends IIpsLibraryEntry {
      * Returns the archive location. Note that the underlying file might not exist and the file
      * might exists outside the workspace.
      */
-    public IPath getArchiveLocation();
+    public Path getArchiveLocation();
 
     /**
      * Returns true if a representation of this entry is part of the provided delta or one of its

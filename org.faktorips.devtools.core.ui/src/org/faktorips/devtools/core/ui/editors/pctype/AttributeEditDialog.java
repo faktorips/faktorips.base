@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -200,7 +199,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         page.setText(Messages.AttributeEditDialog_valuesetTitle);
         try {
             page.setControl(createValueSetPage(tabFolder));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -262,7 +261,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 msgList = rule.validate(rule.getIpsProject());
                 msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
                 validationRuleAddedDecoration.setMessageList(msgList);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         } else {
@@ -288,7 +287,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             } else {
                 setErrorMessage(null);
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             setErrorMessage(null);
         }
@@ -540,7 +539,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
                 return;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -566,7 +565,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             if (!productCmptTypeDirtyBeforeDialog) {
                 try {
                     file.save(true, null);
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -651,37 +650,33 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     @Override
     protected void contentsChangedInternal(ContentChangeEvent event) {
         super.contentsChangedInternal(event);
-        try {
-            if (attribute.getAttributeType() != currentAttributeType) {
-                currentAttributeType = attribute.getAttributeType();
-                recreateConfigGroupContent();
-            }
-
-            if (isOverwriteEvent(event)) {
-                final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
-                        .findOverwrittenAttribute(ipsProject);
-                if (overwrittenAttribute != null) {
-                    ((IpsModel)IIpsModel.get()).executeModificationsWithSingleEvent(
-                            new SingleEventModification<>(attribute.getIpsSrcFile()) {
-
-                                @Override
-                                protected boolean execute() throws CoreRuntimeException {
-                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                    attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());
-                                    attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                    attribute.setCategory(overwrittenAttribute.getCategory());
-                                    return true;
-                                }
-                            });
-                }
-            }
-
-            updateDefaultAndValueSet();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (attribute.getAttributeType() != currentAttributeType) {
+            currentAttributeType = attribute.getAttributeType();
+            recreateConfigGroupContent();
         }
+
+        if (isOverwriteEvent(event)) {
+            final IPolicyCmptTypeAttribute overwrittenAttribute = (IPolicyCmptTypeAttribute)attribute
+                    .findOverwrittenAttribute(ipsProject);
+            if (overwrittenAttribute != null) {
+                ((IpsModel)IIpsModel.get()).executeModificationsWithSingleEvent(
+                        new SingleEventModification<>(attribute.getIpsSrcFile()) {
+
+                            @Override
+                            protected boolean execute() throws CoreRuntimeException {
+                                attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                attribute.setModifier(overwrittenAttribute.getModifier());
+                                attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());
+                                attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                attribute.setCategory(overwrittenAttribute.getCategory());
+                                return true;
+                            }
+                        });
+            }
+        }
+
+        updateDefaultAndValueSet();
 
     }
 
@@ -731,7 +726,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         try {
             valueSetSpecificationControl
                     .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
         }
@@ -812,15 +807,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         @Override
                         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                             if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
-                                try {
-                                    if (attribute.isGenericValidationEnabled() && attribute.isOverwrite()
-                                            && ((IPolicyCmptTypeAttribute)attribute
-                                                    .findOverwrittenAttribute(ipsProject))
-                                                            .isGenericValidationEnabled()) {
-                                        genericValidation.setEnabled(false);
-                                    }
-                                } catch (CoreException e) {
-                                    throw new CoreRuntimeException(e);
+                                if (attribute.isGenericValidationEnabled() && attribute.isOverwrite()
+                                        && ((IPolicyCmptTypeAttribute)attribute
+                                                .findOverwrittenAttribute(ipsProject))
+                                                        .isGenericValidationEnabled()) {
+                                    genericValidation.setEnabled(false);
                                 }
                             }
                         }

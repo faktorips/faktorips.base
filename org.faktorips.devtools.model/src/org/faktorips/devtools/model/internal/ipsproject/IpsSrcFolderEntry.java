@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
-
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.HashSet;
@@ -250,7 +248,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         if (sourceFolder == null) {
             return false;
         }
-        return sourceFolder.getFile(toJavaPath(qnt.toPath())).exists();
+        return sourceFolder.getFile(qnt.toPath()).exists();
     }
 
     @Override

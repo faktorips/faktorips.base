@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -93,11 +92,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
-            try {
-                newTableContentsPage.validatePage();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            newTableContentsPage.validatePage();
             return newTableContentsPage;
         }
 
@@ -214,11 +209,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     }
 
     private int getRowCountNewTable() {
-        try {
-            return getTableContents().getTableRows().getNumOfRows();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getTableContents().getTableRows().getNumOfRows();
     }
 
     /**
@@ -232,7 +223,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             } else {
                 return newTableContentsPage.getTableStructure();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
         return null;

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -28,7 +27,6 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.DiscriminatorDatatype;
@@ -235,18 +233,14 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         public String getTableName() {
             if (getIpsObjectPartContainer().isUseTableDefinedInSupertype()) {
-                try {
-                    IPolicyCmptType rootEntity = getIpsObjectPartContainer().findRootEntity();
-                    IType superType = getPolicyCmptType().findSupertype(getIpsProject());
-                    if (superType == null) {
-                        return Messages.PersistentTypeInfoSection_textSupertypeNotFound;
-                    } else if (rootEntity == null) {
-                        return Messages.PersistentTypeInfoSection_textRootEntityNotFound;
-                    } else {
-                        return rootEntity.getPersistenceTypeInfo().getTableName();
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                IPolicyCmptType rootEntity = getIpsObjectPartContainer().findRootEntity();
+                IType superType = getPolicyCmptType().findSupertype(getIpsProject());
+                if (superType == null) {
+                    return Messages.PersistentTypeInfoSection_textSupertypeNotFound;
+                } else if (rootEntity == null) {
+                    return Messages.PersistentTypeInfoSection_textRootEntityNotFound;
+                } else {
+                    return rootEntity.getPersistenceTypeInfo().getTableName();
                 }
             } else {
                 return getIpsObjectPartContainer().getTableName();

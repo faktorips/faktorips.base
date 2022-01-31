@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -145,7 +145,7 @@ public class AssociationQualificationGroup extends Composite {
                     label = label
                             + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
             return StringUtils.rightPad(label, 80);
@@ -156,7 +156,7 @@ public class AssociationQualificationGroup extends Composite {
                 return getQualificationNote(association.isCompositionMasterToDetail(),
                         association.isQualificationPossible(ipsProject));
 
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
             return ""; //$NON-NLS-1$
@@ -179,7 +179,7 @@ public class AssociationQualificationGroup extends Composite {
         public boolean isQualificationPossible() {
             try {
                 return association.isQualificationPossible(ipsProject);
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return false;
             }

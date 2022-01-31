@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.search.ui.ISearchQuery;
@@ -118,7 +117,7 @@ public class ModelSearchQueryTest {
     public void testCoreException() throws CoreRuntimeException {
 
         IStatus exceptionStatus = new IpsStatus(IStatus.ERROR, "xyz");
-        when(scope.getSelectedIpsSrcFiles()).thenThrow(new CoreException(exceptionStatus));
+        when(scope.getSelectedIpsSrcFiles()).thenThrow(new CoreRuntimeException(exceptionStatus));
 
         IStatus status = query.run(new NullProgressMonitor());
 

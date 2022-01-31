@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.databinding.observable.value.WritableValue;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -30,6 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -98,7 +98,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
                         return image;
                     }
                 }
-            } catch (CoreException exception) {
+            } catch (CoreRuntimeException exception) {
                 IpsPlugin.log(exception);
             }
         }
@@ -240,7 +240,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             if (validationRule != null) {
                 extForPolicyCmptForValidationRule = " - " + ((IPolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             // ignore exception, return empty extension
         }
         return extForPolicyCmptForValidationRule;

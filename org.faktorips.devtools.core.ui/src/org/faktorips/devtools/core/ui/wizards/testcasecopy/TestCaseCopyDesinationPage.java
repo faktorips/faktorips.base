@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -295,7 +294,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             List<ITestPolicyCmpt> relevantTestPolicyCmpts = getRelevantRootTestPolicyCmpts();
             tableViewer.setInput(relevantTestPolicyCmpts.toArray(new ITestPolicyCmpt[relevantTestPolicyCmpts.size()]));
             delegateCellEditor = createCellEditor(tableViewer, relevantTestPolicyCmpts);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -340,7 +339,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             if (!productCmpt.equals(productCmptToReplace)) {
                 setMessage(NLS.bind(Messages.TestCaseCopyDesinationPage_InfoMessageReplacedVersion, versionId));
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -444,7 +443,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         try {
             messageList = namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.TEST_CASE,
                     targetTestCaseName);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

@@ -9,11 +9,6 @@
       }, {
         "regex" : true,
         "code" : "java.class.externalClassExposedInAPI",
-        "new" : "(class|interface|enum) org.faktorips.devtools.abstraction..*",
-        "justification" : "Reexported abstraction API"
-      }, {
-        "regex" : true,
-        "code" : "java.class.externalClassExposedInAPI",
         "new" : "class org.faktorips.values..*",
         "justification" : "Reexported values API"
       }, {
@@ -85,11 +80,6 @@
         "code" : "java.class.externalClassExposedInAPI",
         "new" : "(class|enum|interface) org.eclipse.osgi.*",
         "justification" : "Reexported Eclipse OSGI API"
-      }, {
-        "regex" : true,
-        "code" : "java.class.externalClassExposedInAPI",
-        "new" : "interface com.google.common.collect.Multi.*",
-        "justification" : "Reexported Google Collections API"
       } ]
     }
   }

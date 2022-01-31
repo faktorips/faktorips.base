@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -171,25 +170,20 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() {
-            try {
-                IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
+            IEnumAttribute newEnumAttribute = enumType.newEnumAttribute();
 
-                /*
-                 * If this is the first attribute to be created and the values are being defined in
-                 * the enum type then make sure that there will be one enum value available for
-                 * editing.
-                 */
-                if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
-                    if (enumType.isInextensibleEnum()) {
-                        if (enumType.getEnumValuesCount() == 0) {
-                            enumType.newEnumValue();
-                        }
+            /*
+             * If this is the first attribute to be created and the values are being defined in the
+             * enum type then make sure that there will be one enum value available for editing.
+             */
+            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(true) == 1) {
+                if (enumType.isInextensibleEnum()) {
+                    if (enumType.getEnumValuesCount() == 0) {
+                        enumType.newEnumValue();
                     }
                 }
-                return newEnumAttribute;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
+            return newEnumAttribute;
 
         }
 
@@ -199,11 +193,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(true);
 
             IEnumAttribute enumAttributeToMove = enumAttributes.get(newIndex);
-            try {
-                newIndex = enumType.moveEnumAttribute(enumAttributeToMove, up);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            newIndex = enumType.moveEnumAttribute(enumAttributeToMove, up);
 
             return new int[] { newIndex };
         }
@@ -224,11 +214,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
             inheritButton.addSelectionListener(new SelectionListener() {
                 @Override
                 public void widgetSelected(SelectionEvent event) {
-                    try {
-                        inheritClicked();
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+                    inheritClicked();
                 }
 
                 @Override

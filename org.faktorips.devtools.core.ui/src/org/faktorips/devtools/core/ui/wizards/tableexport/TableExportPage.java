@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.tableexport;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -115,36 +114,32 @@ public class TableExportPage extends IpsObjectExportPage {
             setErrorMessage(Messages.TableExportPage_msgContentsEmpty);
             return;
         }
-        try {
-            ITableContents contents = getTableContents();
-            if (contents == null || !contents.exists()) {
-                setErrorMessage(Messages.TableExportPage_msgNonExisitingContents);
-                return;
-            }
-            ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
-            if (structure == null || !structure.exists()) {
-                setErrorMessage(Messages.TableExportPage_msgNonExisitingStructure);
-                return;
-            }
-            MessageList structureValidationMessages = structure.validate(structure.getIpsProject());
-            removeVersionFormatValidation(structureValidationMessages);
-            if (structureValidationMessages.containsErrorMsg()) {
-                setWarningMessage(Messages.TableExportPage_msgStructureNotValid);
-            } else {
-                clearWarningMessage();
-            }
-            if (structure.getNumOfColumns() > MAX_EXCEL_COLUMNS) {
-                Object[] objects = new Object[3];
-                objects[0] = Integer.valueOf(structure.getNumOfColumns());
-                objects[1] = structure;
-                objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
-                String text = NLS
-                        .bind(org.faktorips.devtools.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
-                                objects);
-                setErrorMessage(text);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        ITableContents contents = getTableContents();
+        if (contents == null || !contents.exists()) {
+            setErrorMessage(Messages.TableExportPage_msgNonExisitingContents);
+            return;
+        }
+        ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
+        if (structure == null || !structure.exists()) {
+            setErrorMessage(Messages.TableExportPage_msgNonExisitingStructure);
+            return;
+        }
+        MessageList structureValidationMessages = structure.validate(structure.getIpsProject());
+        removeVersionFormatValidation(structureValidationMessages);
+        if (structureValidationMessages.containsErrorMsg()) {
+            setWarningMessage(Messages.TableExportPage_msgStructureNotValid);
+        } else {
+            clearWarningMessage();
+        }
+        if (structure.getNumOfColumns() > MAX_EXCEL_COLUMNS) {
+            Object[] objects = new Object[3];
+            objects[0] = Integer.valueOf(structure.getNumOfColumns());
+            objects[1] = structure;
+            objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
+            String text = NLS
+                    .bind(org.faktorips.devtools.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
+                            objects);
+            setErrorMessage(text);
         }
     }
 }

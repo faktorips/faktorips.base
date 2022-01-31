@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -113,7 +112,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             try {
                 boolean result = canCreateLinks(draggedCmpts, target);
                 return result;
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return false;
             }
@@ -129,7 +128,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                     .executeModificationsWithSingleEvent(modification);
             linksSection.setSelection(result);
             return !result.isEmpty();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -155,7 +154,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 result = canCreateLinks(draggedCmpts, target);
             }
             return result;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return false;
         }

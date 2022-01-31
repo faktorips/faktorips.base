@@ -109,7 +109,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
     @Override
     public boolean performFinish() {
         try {
-            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource();
+            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource().unwrap();
             final IEnumValueContainer exportEnumContainer = exportPage.getEnum();
             final String exportFilename = exportPage.getFilename();
             final ITableFormat format = exportPage.getFormat();

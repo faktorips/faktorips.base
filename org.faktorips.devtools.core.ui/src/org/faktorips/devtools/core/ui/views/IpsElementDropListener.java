@@ -23,6 +23,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -110,7 +112,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         }
 
         if (resource.exists()) {
-            IIpsElement element = IIpsModel.get().getIpsElement(resource);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             if (element != null && element.exists()) {
                 result.add(handlePackageFragmentRoot(element));
             } else {

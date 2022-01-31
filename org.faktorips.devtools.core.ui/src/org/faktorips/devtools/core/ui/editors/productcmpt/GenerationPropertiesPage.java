@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -207,7 +206,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         List<IProductCmptCategory> categories = new ArrayList<>(4);
         try {
             categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             /*
              * The categories could not be determined. Recover by creating a fallback section and
              * log the exception.
@@ -254,12 +253,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private List<IPropertyValue> getPropertyValues(IProductCmptCategory category) {
         List<IPropertyValue> propertyValues;
-        try {
-            propertyValues = getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
-                    getIpsObject().getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        propertyValues = getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
+                getIpsObject().getIpsProject());
         return propertyValues;
     }
 

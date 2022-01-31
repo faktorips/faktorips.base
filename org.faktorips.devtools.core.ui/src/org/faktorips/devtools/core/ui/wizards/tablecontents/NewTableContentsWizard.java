@@ -10,13 +10,11 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.FolderAndPackagePage;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionWizard;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
@@ -64,11 +62,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
             getPmo().setSelectedStructure((ITableStructure)selectedIpsObject);
         } else if (selectedIpsObject instanceof ITableContents) {
             ITableContents tableContent = (ITableContents)selectedIpsObject;
-            try {
-                getPmo().setSelectedStructure(tableContent.findTableStructure(tableContent.getIpsProject()));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            getPmo().setSelectedStructure(tableContent.findTableStructure(tableContent.getIpsProject()));
         }
     }
 

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -119,7 +118,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultAndValuesItem.setText(Messages.AttributeEditDialog_defaultAndValuesGroup);
         try {
             defaultAndValuesItem.setControl(createDefaultAndValuesPage(folder));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return folder;
@@ -297,44 +296,40 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     @Override
     protected void contentsChangedInternal(ContentChangeEvent event) {
         super.contentsChangedInternal(event);
-        try {
-            if (isOverwriteEvent(event)) {
-                final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
-                        .findOverwrittenAttribute(ipsProject);
-                if (overwrittenAttribute != null) {
-                    ((IpsModel)IIpsModel.get())
-                            .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<>(attribute.getIpsSrcFile()) {
+        if (isOverwriteEvent(event)) {
+            final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
+                    .findOverwrittenAttribute(ipsProject);
+            if (overwrittenAttribute != null) {
+                ((IpsModel)IIpsModel.get())
+                        .executeModificationsWithSingleEvent(
+                                new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
-                                        @Override
-                                        protected boolean execute() throws CoreRuntimeException {
-                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                            attribute.setModifier(overwrittenAttribute.getModifier());
-                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                            attribute.setMultiValueAttribute(overwrittenAttribute
-                                                    .isMultiValueAttribute());
-                                            attribute.setCategory(overwrittenAttribute.getCategory());
-                                            return true;
-                                        }
-                                    });
-                }
+                                    @Override
+                                    protected boolean execute() throws CoreRuntimeException {
+                                        attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                        attribute.setModifier(overwrittenAttribute.getModifier());
+                                        attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                        attribute.setMultiValueAttribute(overwrittenAttribute
+                                                .isMultiValueAttribute());
+                                        attribute.setCategory(overwrittenAttribute.getCategory());
+                                        return true;
+                                    }
+                                });
             }
-            ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
-            if (defaultValueField != null) {
-                if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-                    return;
-                }
-
-                currentDatatype = newDatatype;
-                getBindingContext().removeBindings(defaultValueField.getControl());
-                disposeChildrenOf(defaultEditFieldPlaceholder);
-            }
-
-            createDefaultValueEditField();
-            updateValueSetTypes();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
+        if (defaultValueField != null) {
+            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
+                return;
+            }
+
+            currentDatatype = newDatatype;
+            getBindingContext().removeBindings(defaultValueField.getControl());
+            disposeChildrenOf(defaultEditFieldPlaceholder);
+        }
+
+        createDefaultValueEditField();
+        updateValueSetTypes();
 
     }
 

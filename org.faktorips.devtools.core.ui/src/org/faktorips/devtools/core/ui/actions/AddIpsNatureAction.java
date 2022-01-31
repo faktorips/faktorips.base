@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -25,9 +27,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.ProjectUtil;
 
@@ -93,7 +97,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 return;
             }
             IIpsModel ipsModel = IIpsModel.get();
-            IIpsProject ipsProject = ipsModel.getIpsProject(javaProject.getProject());
+            IIpsProject ipsProject = ipsModel.getIpsProject(wrap(javaProject.getProject()).as(AProject.class));
             if (ipsProject.getIpsProjectPropertiesFile().exists()) {
                 /*
                  * re-add the IPS Nature. For example when using SAP-NWDS, the project file is
@@ -104,11 +108,11 @@ public class AddIpsNatureAction extends ActionDelegate {
                 boolean answer = MessageDialog.openConfirm(getShell(),
                         Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
-                    ProjectUtil.addIpsNature(ipsProject.getProject());
+                    ProjectUtil.addIpsNature(ipsProject.getProject().unwrap());
                 }
                 return;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return;
         }

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
@@ -106,7 +105,7 @@ public abstract class MessageHoverService {
             MessageList list;
             try {
                 list = getMessagesFor(element);
-            } catch (CoreException coreE) {
+            } catch (CoreRuntimeException coreE) {
                 IpsPlugin.log(coreE);
                 list = new MessageList();
             }

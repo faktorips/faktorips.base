@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
@@ -41,19 +40,15 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
 
     @Override
     public String getToolTipText(Object element) {
-        try {
-            if (element instanceof IProductCmptReference) {
-                IProductCmpt productCmpt = ((IProductCmptReference)element).getProductCmpt();
-                return validateAndReturnErrorMessages(productCmpt);
-            } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)element)
-                        .getTableContentUsage();
-                return validateAndReturnErrorMessages(tableContentUsage);
-            } else {
-                return super.getToolTipText(element);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (element instanceof IProductCmptReference) {
+            IProductCmpt productCmpt = ((IProductCmptReference)element).getProductCmpt();
+            return validateAndReturnErrorMessages(productCmpt);
+        } else if (element instanceof IProductCmptStructureTblUsageReference) {
+            ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)element)
+                    .getTableContentUsage();
+            return validateAndReturnErrorMessages(tableContentUsage);
+        } else {
+            return super.getToolTipText(element);
         }
     }
 

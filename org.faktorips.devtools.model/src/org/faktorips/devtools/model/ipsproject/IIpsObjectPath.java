@@ -11,9 +11,9 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -105,7 +105,7 @@ public interface IIpsObjectPath {
      * is already an archive entry with the given path no entry is created but the existing entry is
      * returned.
      */
-    public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreRuntimeException;
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws CoreRuntimeException;
 
     /**
      * Factory method that creates a new project reference entry and adds it to the list of entries.

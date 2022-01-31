@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -110,7 +109,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                     showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
                     setListElements(getElements());
                     wizard.setShowSubtypeAttributes(showSubtypes);
-                } catch (CoreException ex) {
+                } catch (CoreRuntimeException ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             };
@@ -121,7 +120,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
         try {
             init(policyCmptType);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

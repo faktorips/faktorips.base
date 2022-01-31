@@ -11,10 +11,9 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -65,7 +64,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
             if (StringUtils.isEmpty(path)) {
                 initStorage(null);
             } else {
-                initStorage(new Path(path));
+                initStorage(Path.of(path));
             }
         } catch (IOException e) {
             IpsLog.log(e);
@@ -77,7 +76,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     protected abstract String getXmlAttributePathName();
 
     @Override
-    public abstract void initStorage(IPath path) throws IOException;
+    public abstract void initStorage(Path path) throws IOException;
 
     @Override
     public LibraryIpsPackageFragmentRoot getIpsPackageFragmentRoot() {

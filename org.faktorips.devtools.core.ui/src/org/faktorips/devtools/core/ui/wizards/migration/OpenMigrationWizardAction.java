@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,10 +28,13 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -77,8 +80,9 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
+                    IProject javaProject = ((IJavaProject)selected).getProject();
                     IIpsProject project = IIpsModel.get()
-                            .getIpsProject(((IJavaProject)selected).getProject());
+                            .getIpsProject(Wrappers.wrap(javaProject).as(AProject.class));
                     addPreselection(project);
                 } else if (selected instanceof IIpsProject) {
                     addPreselection((IIpsProject)selected);
@@ -94,7 +98,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
                 if (!operation.isEmpty()) {
                     preSelected.add(project);
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
             }
         }

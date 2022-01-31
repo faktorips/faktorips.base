@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.IPath;
+import java.nio.file.Path;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -54,7 +54,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
 
         project = newIpsProject();
         AFile archiveFile = project.getProject().getFile("test.ipsar");
-        IPath archivePath = toEclipsePath(archiveFile.getWorkspaceRelativePath());
+        Path archivePath = archiveFile.getWorkspaceRelativePath();
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();

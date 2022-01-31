@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -70,7 +72,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
             } else if (selection.getFirstElement() instanceof IJavaElement) {
                 selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
             } else if (selection.getFirstElement() instanceof IIpsElement) {
-                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource().unwrap();
             } else {
                 selectedResource = null;
             }
@@ -105,7 +107,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         if (selectedResource == null) {
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element != null) {
             setIpsProject(element.getIpsProject());
         }

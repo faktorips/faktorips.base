@@ -13,7 +13,9 @@ package org.faktorips.devtools.core.ui.wizards.productrelease;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -128,7 +130,8 @@ public class ProductReleaserBuilderWizard extends Wizard {
         try {
             // save all
             if (!IpsPlugin.getDefault().getWorkbench().saveAllEditors(true)
-                    || selectionPage.getSelectedProject().getJavaProject().hasUnsavedChanges()) {
+                    || ((IJavaProject)selectionPage.getSelectedProject().getJavaProject().unwrap())
+                            .hasUnsavedChanges()) {
                 throw new InterruptedException(Messages.ProductReleaserBuilderWizard_exception_unsavedChanges);
             }
 
@@ -182,7 +185,12 @@ public class ProductReleaserBuilderWizard extends Wizard {
         protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
                 InterruptedException {
             if (productReleaseProcessor != null) {
-                returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
+                try {
+                    returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems,
+                            monitor);
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
             } else {
                 throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
             }

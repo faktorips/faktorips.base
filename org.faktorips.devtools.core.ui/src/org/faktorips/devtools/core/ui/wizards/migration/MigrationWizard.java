@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
@@ -104,7 +104,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                         setSelectedMigrationOptions(migrationOperation);
                         migrationOperation.run(subMonitor);
                         messageList = migrationOperation.getMessageList();
-                    } catch (CoreException e) {
+                    } catch (CoreRuntimeException e) {
                         IpsPlugin.log(e);
                     }
                 }

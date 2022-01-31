@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -67,7 +67,7 @@ public class IpsCheckConditionsOperation {
             editorsSaved = IpsPlugin.getDefault().getWorkbench().saveAllEditors(true);
         }
         if ((ltkCheckOperation != null) && (editorsSaved || !(ensureEditorsSaved))) {
-            ResourcesPlugin.getWorkspace().run(ltkCheckOperation, progressMonitor);
+            Abstractions.getWorkspace().run(ltkCheckOperation, progressMonitor);
         }
     }
 

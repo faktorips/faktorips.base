@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -100,11 +99,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
-            try {
-                newEnumContentPage.validatePage();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            newEnumContentPage.validatePage();
             return newEnumContentPage;
         }
 
@@ -186,7 +181,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             enumTypeOrContent.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } finally {
             // save the dialog settings
@@ -219,11 +214,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     private int getEnumCountNewTable() {
-        try {
-            return getEnumValueContainer().getEnumValuesCount();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getEnumValueContainer().getEnumValuesCount();
     }
 
     /**
@@ -240,7 +231,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             } else {
                 return newEnumContentPage.getEnumType();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
         }
         return null;

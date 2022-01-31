@@ -90,7 +90,7 @@ public class TableExportWizard extends IpsObjectExportWizard {
     @Override
     public boolean performFinish() {
         try {
-            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource();
+            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource().unwrap();
             final ITableContents exportContents = exportPage.getTableContents();
             final String exportFilename = exportPage.getFilename();
             final ITableFormat format = exportPage.getFormat();

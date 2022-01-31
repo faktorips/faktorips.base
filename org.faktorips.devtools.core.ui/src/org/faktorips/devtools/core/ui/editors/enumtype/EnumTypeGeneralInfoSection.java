@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -212,11 +211,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             return;
         }
 
-        try {
-            propertyChanged();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        propertyChanged();
     }
 
     private void propertyChanged() throws CoreRuntimeException {
@@ -280,11 +275,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
             ValueDatatype datatype = null;
             if (identiferAttribute != null) {
-                try {
-                    datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
             }
             return datatype;
         }

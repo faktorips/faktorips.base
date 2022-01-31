@@ -17,7 +17,6 @@ import java.util.Map;
 
 import com.google.common.primitives.Ints;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
@@ -98,11 +97,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
         for (int currentPosition : columnOrder) {
             if (currentPosition == 0) {
                 for (IEnumValue currentEnumValue : getContentValues()) {
-                    try {
-                        currentEnumValue.newEnumAttributeValue();
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    currentEnumValue.newEnumAttributeValue();
                 }
             }
         }

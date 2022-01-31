@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -258,7 +257,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
                 viewer.getTable().setFocus();
                 updateButtonsEnabledState();
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

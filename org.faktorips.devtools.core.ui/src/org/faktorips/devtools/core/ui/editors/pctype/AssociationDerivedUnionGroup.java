@@ -14,7 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -196,14 +195,10 @@ public class AssociationDerivedUnionGroup extends Composite {
             } else {
                 association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
                 if (association instanceof IProductCmptTypeAssociation) {
-                    try {
-                        IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
-                                .findSubsettedDerivedUnion(association.getIpsProject());
-                        ((IProductCmptTypeAssociation)association).setChangingOverTime(subsettedDerivedUnion
-                                .isChangingOverTime());
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
+                            .findSubsettedDerivedUnion(association.getIpsProject());
+                    ((IProductCmptTypeAssociation)association).setChangingOverTime(subsettedDerivedUnion
+                            .isChangingOverTime());
                 }
             }
             notifyListeners();
@@ -250,7 +245,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                         setSubset(true);
                     }
                     derivedUnionsInitialized = true;
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

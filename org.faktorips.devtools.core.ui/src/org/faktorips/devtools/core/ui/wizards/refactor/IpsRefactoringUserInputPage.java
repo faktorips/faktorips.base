@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
@@ -101,12 +100,8 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * Operation that should be called when any user input has changed, triggers validation.
      */
     protected final void userInputChanged() {
-        try {
-            boolean userInputValid = validateUserInput();
-            setPageComplete(userInputValid);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        boolean userInputValid = validateUserInput();
+        setPageComplete(userInputValid);
     }
 
     /**

@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 
@@ -60,11 +62,12 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
                 Object selected = iter.next();
                 if (selected instanceof IJavaProject) {
                     preselectedIpsElement = IIpsModel.get()
-                            .getIpsProject(((IJavaProject)selected).getProject());
+                            .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));
                     break;
                 } else if (selected instanceof IResource) {
                     IResource resource = (IResource)selected;
-                    preselectedIpsElement = IIpsModel.get().getIpsProject(resource.getProject());
+                    preselectedIpsElement = IIpsModel.get()
+                            .getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
                     break;
                 }
             }

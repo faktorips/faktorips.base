@@ -18,7 +18,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -149,12 +148,8 @@ public class InferTemplateProcessor implements ICoreRunnable {
         org.eclipse.core.runtime.SubProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
                 monitor, productCmpts.size());
         saveMonitor.beginTask(Messages.InferTemplateOperation_progress_save, srcFilesToSave.size() + 1);
-        try {
-            for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
-                ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
+            ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         }
     }
 

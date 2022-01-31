@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -194,7 +193,7 @@ public class TestCaseDetailArea {
             for (ITestCaseDetailAreaRedrawListener listener : testCaseDetailAreaRedrawListener) {
                 listener.visibleTestObjectsChanges(testObjects);
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -203,35 +202,31 @@ public class TestCaseDetailArea {
      * Creates the details for the given test objects.
      */
     public void createTestObjectSections(List<ITestObject> testObjects) {
-        try {
-            notifyListener(testObjects);
+        notifyListener(testObjects);
 
-            ScrolledComposite scrolledComposite = createScrolledComposite(dynamicArea);
-            Composite container = new Composite(scrolledComposite, SWT.NONE);
-            container.setBackground(detailsArea.getBackground());
-            container.setLayoutData(new GridData(GridData.FILL_BOTH));
-            GridLayout layout = new GridLayout(1, false);
-            container.setLayout(layout);
-            for (ITestObject testObject : testObjects) {
-                if (testObject instanceof ITestValue) {
-                    Composite borderedComosite = createBorderComposite(container);
-                    createTestValuesSection((ITestValue)testObject, borderedComosite);
-                } else if (testObject instanceof ITestRule) {
-                    Composite borderedComosite = createBorderComposite(container);
-                    createTestRuleSection((ITestRule)testObject, borderedComosite);
-                } else if (testObject instanceof ITestPolicyCmpt) {
-                    Composite borderedComosite = createBorderComposite(container);
-                    createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
-                }
+        ScrolledComposite scrolledComposite = createScrolledComposite(dynamicArea);
+        Composite container = new Composite(scrolledComposite, SWT.NONE);
+        container.setBackground(detailsArea.getBackground());
+        container.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout layout = new GridLayout(1, false);
+        container.setLayout(layout);
+        for (ITestObject testObject : testObjects) {
+            if (testObject instanceof ITestValue) {
+                Composite borderedComosite = createBorderComposite(container);
+                createTestValuesSection((ITestValue)testObject, borderedComosite);
+            } else if (testObject instanceof ITestRule) {
+                Composite borderedComosite = createBorderComposite(container);
+                createTestRuleSection((ITestRule)testObject, borderedComosite);
+            } else if (testObject instanceof ITestPolicyCmpt) {
+                Composite borderedComosite = createBorderComposite(container);
+                createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
             }
-            scrolledComposite.setContent(container);
-            scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        }
+        scrolledComposite.setContent(container);
+        scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-            if (!testCaseSection.isDataChangeable()) {
-                toolkit.setDataChangeable(detailsArea, false);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (!testCaseSection.isDataChangeable()) {
+            toolkit.setDataChangeable(detailsArea, false);
         }
     }
 
@@ -271,7 +266,8 @@ public class TestCaseDetailArea {
      * If the element is a child then the link name could be given as input to display it in the
      * section title beside the test policy component.
      */
-    private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) throws CoreRuntimeException {
+    private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details)
+            throws CoreRuntimeException {
         if (testPolicyCmpt == null || details.isDisposed()) {
             return;
         }
@@ -528,7 +524,7 @@ public class TestCaseDetailArea {
                     if (policyCmpt != null) {
                         createPolicyCmptAndLinkSection(policyCmpt, details);
                     }
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else {
@@ -565,16 +561,12 @@ public class TestCaseDetailArea {
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
         ITestValueParameter param = null;
-        try {
-            param = testValue.findTestValueParameter(ipsProject);
-            if (param != null) {
-                datatype = param.findValueDatatype(ipsProject);
-                ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-            } else {
-                ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(new StringDatatype());
-            }
-        } catch (CoreException e1) {
-            throw new RuntimeException(e1);
+        param = testValue.findTestValueParameter(ipsProject);
+        if (param != null) {
+            datatype = param.findValueDatatype(ipsProject);
+            ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+        } else {
+            ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(new StringDatatype());
         }
 
         Label label = toolkit.createFormLabel(composite, Messages.TestCaseDetailArea_Label_Value);
@@ -638,7 +630,7 @@ public class TestCaseDetailArea {
         ITestRuleParameter testRuleParameter = null;
         try {
             testRuleParameter = rule.findTestRuleParameter(ipsProject);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

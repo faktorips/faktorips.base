@@ -18,13 +18,12 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
@@ -279,10 +278,10 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetObjectDirs() {
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
-        assertEquals(new Path(MY_OBJECT_DIR), objectDir.get(0));
+        assertEquals(Path.of(MY_OBJECT_DIR), objectDir.get(0));
     }
 
     @Test
@@ -313,17 +312,17 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testHasObjectDirs() {
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
-        assertEquals(new Path(MY_OBJECT_DIR), objectDir.get(0));
+        assertEquals(Path.of(MY_OBJECT_DIR), objectDir.get(0));
         assertEquals(true, ipsBundleManifest.hasObjectDirs());
     }
 
     @Test
     public void testHasObjectDirs_NoObjectDirs() {
         ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(0, objectDir.size());
         assertEquals(false, ipsBundleManifest.hasObjectDirs());

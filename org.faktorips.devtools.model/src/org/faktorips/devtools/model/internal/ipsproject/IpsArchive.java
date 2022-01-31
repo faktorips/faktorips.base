@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -35,8 +34,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
@@ -44,6 +41,8 @@ import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.util.PathUtil;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.AbstractIpsStorage;
@@ -65,7 +64,7 @@ import org.faktorips.util.StreamUtil;
  */
 public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
-    private final IPath archivePath;
+    private final Path archivePath;
 
     private long modificationStamp;
 
@@ -73,42 +72,43 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     private HashMap<String, Set<QualifiedNameType>> packs = null;
 
     /** map with IPath as keys and IpsObjectProperties as values. */
-    private LinkedHashMap<IPath, IpsObjectProperties> paths = null;
+    private LinkedHashMap<Path, IpsObjectProperties> paths = null;
 
-    public IpsArchive(IIpsProject ipsProject, IPath path) {
+    public IpsArchive(IIpsProject ipsProject, Path path) {
         super(ipsProject);
         archivePath = path;
     }
 
     @Override
-    public IPath getLocation() {
+    public Path getLocation() {
         if (archivePath == null) {
             return null;
         }
         AResource resource = getCorrespondingResource();
         if (resource != null) {
-            return Path.fromOSString(resource.getLocation().toString());
+            return PathUtil.fromOSString(resource.getLocation().toString());
         }
         File extFile = archivePath.toFile();
-        return Path.fromOSString(extFile.getAbsolutePath());
+        return PathUtil.fromOSString(extFile.getAbsolutePath());
     }
 
     @Override
     public boolean isAffectedBy(AResourceDelta delta) {
         AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
-        AFile file = wsRoot.getFileForLocation(toJavaPath(getLocation()));
+        AFile file = wsRoot.getFileForLocation(getLocation());
         if (file == null) {
             // file is outside the workspace
             return false;
         }
-        if (delta.findMember(Path.fromOSString(file.getProjectRelativePath().toString())) != null) {
+        if (delta.findMember(
+                org.eclipse.core.runtime.Path.fromOSString(file.getProjectRelativePath().toString())) != null) {
             return true;
         }
         return false;
     }
 
     @Override
-    public IPath getArchivePath() {
+    public Path getArchivePath() {
         return archivePath;
     }
 
@@ -149,7 +149,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public boolean contains(IPath path) {
+    public boolean contains(Path path) {
         readArchiveContentIfNecessary();
         return paths.containsKey(path);
     }
@@ -158,7 +158,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     public Set<QualifiedNameType> getQNameTypes() throws CoreRuntimeException {
         readArchiveContentIfNecessary();
         TreeSet<QualifiedNameType> qualifiedNameTypes = new TreeSet<>();
-        for (IPath path : paths.keySet()) {
+        for (Path path : paths.keySet()) {
             if (QualifiedNameType.representsQualifiedNameType(path.toString())) {
                 QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(path.toString());
                 qualifiedNameTypes.add(qualifedNameType);
@@ -179,7 +179,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public InputStream getContent(IPath path) {
+    public InputStream getContent(Path path) {
         if (path == null) {
             return null;
         }
@@ -247,14 +247,14 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     private void indexContent(JarFile jar) {
-        SortedMap<IPath, IpsObjectProperties> pathsTmp = new TreeMap<>(Comparator.comparing(IPath::toString));
+        SortedMap<Path, IpsObjectProperties> pathsTmp = new TreeMap<>(Comparator.comparing(Path::toString));
         Properties ipsObjectProperties = readIpsObjectsProperties(jar);
         for (Enumeration<?> e = jar.entries(); e.hasMoreElements();) {
             JarEntry entry = (JarEntry)e.nextElement();
             if (entry.isDirectory()) {
                 continue;
             }
-            IPath path = getPath(entry);
+            Path path = getPath(entry);
             if (path == null) {
                 continue;
             }
@@ -273,8 +273,9 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
             IpsObjectProperties props = new IpsObjectProperties(basePackageMergable, basePackageDerived);
             pathsTmp.put(path, props);
-            if (QualifiedNameType.representsQualifiedNameType(path.toString())) {
-                QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(path.toString());
+            String pathName = PathUtil.toPortableString(path);
+            if (QualifiedNameType.representsQualifiedNameType(pathName)) {
+                QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(pathName);
                 Set<QualifiedNameType> content = packs.computeIfAbsent(qualifedNameType.getPackageName(),
                         $ -> new HashSet<>());
                 content.add(qualifedNameType);
@@ -325,14 +326,14 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         }
     }
 
-    protected IPath getPath(JarEntry jarEntry) {
+    protected Path getPath(JarEntry jarEntry) {
         // IPS object paths begins after "ipsobject/"
         final String name = jarEntry.getName();
-        IPath path = new Path(name);
-        if (path.segment(0).equals(IPSOBJECTS_FOLDER)) {
-            return path.removeFirstSegments(1);
+        Path path = Path.of(name);
+        if (PathUtil.segment(path, 0).equals(IPSOBJECTS_FOLDER)) {
+            return PathUtil.removeFirstSegments(path, 1);
         } else {
-            if (IProductCmptType.SUPPORTED_ICON_EXTENSIONS.contains(path.getFileExtension())) {
+            if (IProductCmptType.SUPPORTED_ICON_EXTENSIONS.contains(PathUtil.getFileExtension(path))) {
                 return path;
             } else {
                 return null;
@@ -340,7 +341,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         }
     }
 
-    private String getPropertyValue(Properties properties, IPath path, String postfix) {
+    private String getPropertyValue(Properties properties, Path path, String postfix) {
         String key = path.toString() + IIpsArchive.QNT_PROPERTY_POSTFIX_SEPARATOR + postfix;
         return properties.getProperty(key);
     }
@@ -376,7 +377,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     public AResource getCorrespondingResource() {
         if (archivePath.isAbsolute()) {
             AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
-            if (archivePath.segmentCount() == 0) {
+            if (archivePath.getNameCount() == 0) {
                 return null;
             }
             /*
@@ -384,14 +385,14 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
              * distinguish between workspace absolut paths and absolute path to locations outside
              * the workspace so we check, if the first segment identifies a project.
              */
-            if (!wsRoot.getProject(archivePath.segment(0)).exists()) {
+            if (!wsRoot.getProject(PathUtil.segment(archivePath, 0)).exists()) {
                 return null;
                 // the archive is not located in the workspace
             }
-            return wsRoot.getFile(toJavaPath(archivePath));
+            return wsRoot.getFile(archivePath);
         }
         AProject project = getIpsProject().getProject();
-        return project.getFile(toJavaPath(archivePath));
+        return project.getFile(archivePath);
     }
 
     @Override
@@ -435,7 +436,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         if (archivePath == null) {
             return StringUtils.EMPTY;
         }
-        return archivePath.lastSegment();
+        return PathUtil.lastSegment(archivePath);
     }
 
     @Override

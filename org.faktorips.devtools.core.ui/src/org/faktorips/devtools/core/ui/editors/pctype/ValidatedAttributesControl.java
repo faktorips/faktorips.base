@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -148,7 +147,7 @@ public class ValidatedAttributesControl extends EditTableControl {
             IndexedValidatedAttributeWrapper wrapper = (IndexedValidatedAttributeWrapper)element;
             return rule.validate(rule.getIpsProject()).getMessagesFor(rule,
                     IValidationRule.PROPERTY_VALIDATED_ATTRIBUTES, wrapper.index);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return new MessageList();
         }

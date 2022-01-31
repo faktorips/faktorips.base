@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -20,8 +21,6 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
@@ -117,7 +116,7 @@ public class IpsBundleManifest {
      * Returning the base package for the specified objectDir. If there is no special setting for
      * the specified objectDir the default base package is returned.
      * <p>
-     * Note that there is no possibility to configure different base packages for the mergable and
+     * Note that there is no possibility to configure different base packages for the mergeable and
      * derived artifacts.
      * 
      * @param objectDir The name of the model folder for which you want to know the base package
@@ -189,11 +188,11 @@ public class IpsBundleManifest {
      * 
      * @return A list of all configured objectDirs
      */
-    public List<IPath> getObjectDirs() {
-        ArrayList<IPath> result = new ArrayList<>();
+    public List<Path> getObjectDirs() {
+        ArrayList<Path> result = new ArrayList<>();
         ManifestElement[] objectDirElements = getObjectDirElements();
         for (ManifestElement manifestElement : objectDirElements) {
-            result.add(new Path(manifestElement.getValue()));
+            result.add(Path.of(manifestElement.getValue()));
         }
         return result;
     }

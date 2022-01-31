@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -72,8 +71,6 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
             callParticipants(ipsSrcFile, monitor);
             saveIpsSrcFile(ipsSrcFile, monitor);
             postProcess(ipsSrcFile, monitor);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         } finally {
             monitor.done();
         }
@@ -129,7 +126,8 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * 
      * @throws CoreRuntimeException thrown in case of any error
      */
-    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreRuntimeException;
+    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor)
+            throws CoreRuntimeException;
 
     /**
      * This method may put the new {@link IIpsSrcFile} in context to other objects. It is called

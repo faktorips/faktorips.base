@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.search.reference;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -18,7 +17,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -59,9 +57,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
             monitor.worked(1);
             addFoundMatches(found);
-        } catch (PartInitException e) {
-            return new IpsStatus(e);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             return new IpsStatus(e);
         }
         monitor.done();

@@ -10,22 +10,20 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -66,7 +64,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        entry = (IpsArchiveEntry)path.newArchiveEntry(archiveFile.getWorkspaceRelativePath());
         project.setIpsObjectPath(path);
         root = (LibraryIpsPackageFragmentRoot)project.getIpsPackageFragmentRoots()[1];
     }
@@ -82,7 +80,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreRuntimeException {
         IIpsProject project2 = newIpsProject("Project2");
         IIpsObjectPath path2 = project2.getIpsObjectPath();
-        entry = (IpsArchiveEntry)path2.newArchiveEntry(toEclipsePath(archiveFile.getWorkspaceRelativePath()));
+        entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getWorkspaceRelativePath());
         project2.setIpsObjectPath(path2);
         root = (LibraryIpsPackageFragmentRoot)project2.getIpsPackageFragmentRoots()[1];
 
@@ -98,7 +96,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         externalArchiveFile.deleteOnExit();
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
         ResourcesPlugin.getWorkspace().run(op, null);
-        IPath externalArchivePath = new Path(externalArchiveFile.getAbsolutePath());
+        Path externalArchivePath = Path.of(externalArchiveFile.getAbsolutePath());
 
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(externalArchivePath);
@@ -191,7 +189,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = otherProject.getIpsObjectPath();
         AFile otherArchiveFile = otherProject.getProject().getFile("test.ipsar");
         IpsArchiveEntry otherEntry = (IpsArchiveEntry)path
-                .newArchiveEntry(toEclipsePath(otherArchiveFile.getWorkspaceRelativePath()));
+                .newArchiveEntry(otherArchiveFile.getWorkspaceRelativePath());
         otherProject.setIpsObjectPath(path);
 
         LibraryIpsPackageFragmentRoot otherProjectRoot = new LibraryIpsPackageFragmentRoot(otherProject,

@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 
 /**
  * This {@link IpsFolderBundleContentIndex} registers the folder structure for an
@@ -24,40 +25,40 @@ public class IpsFolderBundleContentIndex extends AbstractIpsBundleContentIndex {
 
     private final FolderExplorer explorer;
 
-    private final IPath bundleRoot;
+    private final Path bundleRoot;
 
-    public IpsFolderBundleContentIndex(IPath bundleRoot, List<IPath> modelFolders) {
+    public IpsFolderBundleContentIndex(Path bundleRoot, List<Path> modelFolders) {
         this(modelFolders, bundleRoot, new FolderExplorer());
     }
 
-    protected IpsFolderBundleContentIndex(List<IPath> modelFolders, IPath bundleRoot, FolderExplorer folderExplorer) {
+    protected IpsFolderBundleContentIndex(List<Path> modelFolders, Path bundleRoot, FolderExplorer folderExplorer) {
         this.bundleRoot = bundleRoot;
         this.explorer = folderExplorer;
         initFolderStructure(modelFolders, bundleRoot);
     }
 
-    private void initFolderStructure(List<IPath> modelFolders, IPath bundleRoot) {
-        for (IPath relativeModelFolder : modelFolders) {
-            IPath absoluteModelFolder = bundleRoot.append(relativeModelFolder);
+    private void initFolderStructure(List<Path> modelFolders, Path bundleRoot) {
+        for (Path relativeModelFolder : modelFolders) {
+            Path absoluteModelFolder = bundleRoot.resolve(relativeModelFolder);
             registerFolder(absoluteModelFolder, relativeModelFolder);
         }
     }
 
-    private void registerFolders(List<IPath> absoluteFolders, IPath relativeModelPath) {
-        for (IPath absoluteFolder : absoluteFolders) {
+    private void registerFolders(List<Path> absoluteFolders, Path relativeModelPath) {
+        for (Path absoluteFolder : absoluteFolders) {
             registerFolder(absoluteFolder, relativeModelPath);
         }
     }
 
-    private void registerFolder(IPath absoluteFolder, IPath relativeModelPath) {
+    private void registerFolder(Path absoluteFolder, Path relativeModelPath) {
         registerPaths(absoluteFolder, relativeModelPath);
         registerFolders(explorer.getFolders(absoluteFolder), relativeModelPath);
     }
 
-    private void registerPaths(IPath absolutePathToFolder, IPath relativeModelFolder) {
-        List<IPath> files = explorer.getFiles(absolutePathToFolder);
-        for (IPath file : files) {
-            IPath relativeFilePath = file.makeRelativeTo(bundleRoot.append(relativeModelFolder));
+    private void registerPaths(Path absolutePathToFolder, Path relativeModelFolder) {
+        List<Path> files = explorer.getFiles(absolutePathToFolder);
+        for (Path file : files) {
+            Path relativeFilePath = PathUtil.makeRelativeTo(file, bundleRoot.resolve(relativeModelFolder));
             registerPath(relativeModelFolder, relativeFilePath);
         }
     }
