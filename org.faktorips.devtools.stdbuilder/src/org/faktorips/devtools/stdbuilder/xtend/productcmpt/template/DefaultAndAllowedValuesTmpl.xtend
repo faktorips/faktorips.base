@@ -191,7 +191,7 @@ class DefaultAndAllowedValuesTmpl {
                     «Range» range = «ValueToXmlHelper».«getRangeFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (range != null) {
                         if (range.isEmpty()) {
-                          «fieldNameValueSet» = new «addImport(getValuesetDatatypeHelper.getRangeJavaClassName(false))»();
+                          «fieldNameValueSet» = «addImport(getValuesetDatatypeHelper.getRangeJavaClassName(false))».empty();
                         } else {
                           «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
                                 .getUpper()", "range.getStep()", "range.containsNull()")»;
