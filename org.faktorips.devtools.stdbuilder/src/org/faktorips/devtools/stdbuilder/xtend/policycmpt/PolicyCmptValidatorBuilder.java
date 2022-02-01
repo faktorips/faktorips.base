@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -70,11 +69,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
 
     @Override
     public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
-        try {
-            return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
     }
 
     @Override

@@ -19,9 +19,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -54,18 +52,14 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            if (!getType().isValid(getIpsProject())) {
-                return false;
+        if (!getType().isValid(getIpsProject())) {
+            return false;
+        } else {
+            if (isConfigured()) {
+                return getProductCmptType().isValid(getIpsProject());
             } else {
-                if (isConfigured()) {
-                    return getProductCmptType().isValid(getIpsProject());
-                } else {
-                    return true;
-                }
+                return true;
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -116,11 +110,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isAggregateRoot() {
-        try {
-            return getType().isAggregateRoot();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getType().isAggregateRoot();
     }
 
     /**
@@ -136,11 +126,7 @@ public class XPolicyCmptClass extends XType {
     }
 
     public boolean isDependantType() {
-        try {
-            return getType().isDependantType();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getType().isDependantType();
     }
 
     /**
@@ -539,18 +525,14 @@ public class XPolicyCmptClass extends XType {
      * <code>false</code> otherwise.
      */
     public boolean isFirstDependantTypeInHierarchy() {
-        try {
-            if (!getType().isDependantType()) {
-                return false;
-            }
-            IPolicyCmptType supertype = (IPolicyCmptType)getType().findSupertype(getIpsProject());
-            if (supertype == null) {
-                return true;
-            }
-            return !supertype.isDependantType();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (!getType().isDependantType()) {
+            return false;
         }
+        IPolicyCmptType supertype = (IPolicyCmptType)getType().findSupertype(getIpsProject());
+        if (supertype == null) {
+            return true;
+        }
+        return !supertype.isDependantType();
     }
 
     /**

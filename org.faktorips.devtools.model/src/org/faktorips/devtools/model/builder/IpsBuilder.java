@@ -37,9 +37,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.ABuilder;
 import org.faktorips.devtools.abstraction.AFile;
@@ -51,6 +48,9 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.DependencyResolver;
@@ -85,8 +85,6 @@ import org.faktorips.util.MultiMap;
  */
 public class IpsBuilder {
 
-    private final ABuilder builder;
-
     /**
      * The builders extension id.
      */
@@ -95,6 +93,8 @@ public class IpsBuilder {
     public static final String PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
 
     public static final boolean TRACE_BUILDER_TRACE;
+
+    private final ABuilder builder;
 
     static {
         TRACE_BUILDER_TRACE = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder")) //$NON-NLS-1$
@@ -989,16 +989,20 @@ public class IpsBuilder {
             return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
         }
 
+        @Override
+        protected void clean(IProgressMonitor monitor) throws CoreException {
+            ipsBuilder.clean(monitor);
+        }
+
         private static ABuildKind buildKind(int kind) {
             switch (kind) {
-                case IncrementalProjectBuilder.FULL_BUILD:
-                    return ABuildKind.FULL_BUILD;
                 case IncrementalProjectBuilder.INCREMENTAL_BUILD:
                     return ABuildKind.INCREMENTAL_BUILD;
-
+                case IncrementalProjectBuilder.CLEAN_BUILD:
+                    return ABuildKind.CLEAN_BUILD;
+                case IncrementalProjectBuilder.FULL_BUILD:
                 default:
-                    // TODO
-                    throw new IllegalArgumentException();
+                    return ABuildKind.FULL_BUILD;
             }
         }
 

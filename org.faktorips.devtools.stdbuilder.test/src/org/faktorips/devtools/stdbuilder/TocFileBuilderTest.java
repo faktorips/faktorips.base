@@ -20,8 +20,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
@@ -81,7 +82,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         TableOfContent toc = tocFileBuilder.getToc(root);
         assertEquals(0, toc.getEntries().size());
 
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         toc = tocFileBuilder.getToc(root);
         assertEquals(3, toc.getEntries().size());
     }
@@ -273,9 +274,9 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         testCase.getIpsSrcFile().save(true, null);
 
         // now build
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root).unwrap();
         assertTrue(tocFile.exists());
         assertTrue(tocFile.isDerived());
         assertEquals(ipsProject.getXmlFileCharset(), tocFile.getCharset());
@@ -311,32 +312,32 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         // no changes => toc file should remain untouched.
         long stamp = tocFile.getModificationStamp();
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertEquals(stamp, tocFile.getModificationStamp());
         assertEquals(6, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the product cmpt => should be removed from toc => 5
         motorProduct.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertEquals(5, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the table => should be removed from toc => 4
         table.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("motor.RateTable", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(4, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete the second table => should be removed from toc => 3
         table2.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("motor.RateTable2", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(3, tocFileBuilder.getToc(root).getEntries().size());
 
         // delete test case => should be removed from toc => 2
         testCase.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertNull(tocFileBuilder.getToc(root)
                 .getEntry(new QualifiedNameType("tests.PremiumCalcTestA", IpsObjectType.TABLE_CONTENTS)));
         assertEquals(2, tocFileBuilder.getToc(root).getEntries().size());
@@ -356,7 +357,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         tableContent.getIpsSrcFile().save(true, null);
 
         // build
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         TableOfContent builderToc = tocFileBuilder.getToc(root);
         assertNotNull(
                 builderToc.getEntry(new QualifiedNameType("motor.RateTableContent", IpsObjectType.TABLE_CONTENTS)));
@@ -372,14 +373,14 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         newProductCmpt(productCmptType, "motor.MotorProduct");
 
         // now make a full build
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
-        IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+        AFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
         assertTrue(tocFile.exists());
         long modStamp = tocFile.getModificationStamp();
 
         // now make a seond full build
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         assertEquals(modStamp, tocFile.getModificationStamp());
     }
 

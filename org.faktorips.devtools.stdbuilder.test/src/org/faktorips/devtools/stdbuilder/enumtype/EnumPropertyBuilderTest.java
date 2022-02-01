@@ -21,8 +21,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -63,18 +63,18 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testGetPropertyFile() throws Exception {
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
-        IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
+        AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
         String folder = ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource()
-                .getWorkspaceRelativePath().toPortableString();
+                .getWorkspaceRelativePath().toString();
         assertEquals(folder + '/' + BASE_PACKAGE_NAME_MERGABLE.replace('.', '/') + "/AnyEnumType_de.properties",
-                propertyFile.getFullPath().toPortableString());
+                propertyFile.getWorkspaceRelativePath().toString());
     }
 
     @Test
     public void testBuild_emptyEnum() throws Exception {
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
-        IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
+        AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
         assertFalse(propertyFile.exists());
     }
@@ -84,7 +84,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         createEnumAttributes();
 
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
-        IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
+        AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
         assertFalse(propertyFile.exists());
     }
@@ -105,7 +105,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         enumType.newEnumValue();
 
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
-        IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
+        AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
 
         assertTrue(propertyFile.exists());
     }
@@ -115,7 +115,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         createEnumAttributes();
         enumType.newEnumValue();
         enumPropertyBuilder.build(enumType.getIpsSrcFile());
-        IFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
+        AFile propertyFile = enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN);
         long modificationStamp = propertyFile.getModificationStamp();
 
         enumPropertyBuilder.build(enumType.getIpsSrcFile());

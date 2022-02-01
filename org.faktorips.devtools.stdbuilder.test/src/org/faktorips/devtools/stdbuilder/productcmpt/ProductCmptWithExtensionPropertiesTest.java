@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
@@ -96,7 +96,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
             ProductCmptXMLBuilder productCmptXMLBuilder = findProductCmptXMLBuilder();
             productCmptXMLBuilder.build(productCmpt.getIpsSrcFile());
-            IFile xmlContentFile = productCmptXMLBuilder.getXmlContentFile(productCmpt.getIpsSrcFile());
+            AFile xmlContentFile = productCmptXMLBuilder.getXmlContentFile(productCmpt.getIpsSrcFile());
 
             document = XmlUtil.getDefaultDocumentBuilder().parse(xmlContentFile.getContents());
             documentElement = document.getDocumentElement();

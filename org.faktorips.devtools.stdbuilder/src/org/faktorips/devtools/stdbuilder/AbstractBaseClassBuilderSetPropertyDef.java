@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
@@ -55,7 +56,8 @@ public abstract class AbstractBaseClassBuilderSetPropertyDef extends IpsBuilderS
      */
     private boolean isJavaTypeInProject(IIpsProject ipsProject, String value) {
         try {
-            IType type = ipsProject.getJavaProject().findType(value);
+            IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
+            IType type = javaProject.findType(value);
             return type != null && type.exists();
         } catch (JavaModelException e) {
             // not found

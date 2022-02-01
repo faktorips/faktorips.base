@@ -10,12 +10,16 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -56,14 +60,14 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
         super.beforeBuildProcess(project, buildKind);
         productCmptCuBuilder.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreRuntimeException {
+    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
         super.afterBuildProcess(project, buildKind);
         productCmptCuBuilder.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
@@ -134,15 +138,15 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         // instead we delete all file that start with the common prefix.
         String prefix = generationBuilder.getJavaSrcFilePrefix(deletedFile);
         // get a file handle in the
-        IFile file = generationBuilder.getJavaFile(deletedFile);
+        AFile file = generationBuilder.getJavaFile(deletedFile);
         // target folder
-        IContainer folder = file.getParent();
+        AContainer folder = file.getParent();
         // now delete all files that start with the common
-        IResource[] members = folder.members();
+        SortedSet<? extends AResource> members = folder == null ? Collections.emptySortedSet() : folder.getMembers();
         // prefix
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE && member.getName().startsWith(prefix)) {
-                member.delete(true, null);
+        for (AResource member : members) {
+            if (member.getType() == AResourceType.FILE && member.getName().startsWith(prefix)) {
+                member.delete(null);
             }
         }
     }

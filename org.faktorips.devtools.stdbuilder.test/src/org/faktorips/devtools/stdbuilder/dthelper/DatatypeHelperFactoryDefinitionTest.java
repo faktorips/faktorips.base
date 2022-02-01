@@ -15,24 +15,24 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class DatatypeHelperFactoryDefinitionTest {
 
     @Test
-    public void testDatatypeDefinition() throws CoreRuntimeException {
+    public void testDatatypeDefinition() throws CoreException {
         DatatypeHelperFactory factory = mock(DatatypeHelperFactory.class);
         Datatype datatype = mock(Datatype.class);
         IExtension extension = mock(IExtension.class);
         IConfigurationElement configElement = mock(IConfigurationElement.class);
 
         when(configElement.getName()).thenReturn(DatatypeHelperFactoryDefinition.FACTORY_DEFINTIION);
-        when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.DATATYPE_CLASS)).thenReturn(
-                datatype);
+        when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.DATATYPE_CLASS))
+                .thenReturn(datatype);
         when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.FACTORY_CLASS))
                 .thenReturn(factory);
 

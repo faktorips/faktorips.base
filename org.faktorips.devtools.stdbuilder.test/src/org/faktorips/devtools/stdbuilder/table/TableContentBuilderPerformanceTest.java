@@ -12,8 +12,8 @@ package org.faktorips.devtools.stdbuilder.table;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -31,7 +31,7 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
 
     @Ignore
     @Test
-    public void testBuildBigTable() throws CoreRuntimeException {
+    public void testBuildBigTable() throws CoreException {
         ITableStructure tableStructure = newTableStructure(ipsProject, "TS");
         for (int c = 0; c < COLUMNS; c++) {
             IColumn column = tableStructure.newColumn();

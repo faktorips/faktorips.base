@@ -10,14 +10,15 @@
 
 package org.faktorips.devtools.stdbuilder.propertybuilder;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -30,13 +31,14 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.LocalizedStringsSet;
 
 public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefactBuilder {
 
     public static final String MESSAGES_EXTENSION = "properties";
 
-    private final Map<IFile, AbstractPropertiesGenerator> propertiesGeneratorMap = new HashMap<>();
+    private final Map<AFile, AbstractPropertiesGenerator> propertiesGeneratorMap = new HashMap<>();
 
     public AbstractLocalizedPropertiesBuilder(IIpsArtefactBuilderSet builderSet) {
         super(builderSet);
@@ -47,7 +49,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         super(builderSet, localizedStringsSet);
     }
 
-    protected abstract AbstractPropertiesGenerator createNewMessageGenerator(IFile propertyFile,
+    protected abstract AbstractPropertiesGenerator createNewMessageGenerator(AFile propertyFile,
             ISupportedLanguage supportedLanguage);
 
     protected abstract String getResourceBundleBaseName(IIpsSrcFolderEntry entry);
@@ -70,18 +72,18 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
      * 
      */
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
             for (ISupportedLanguage supportedLanguage : project.getReadOnlyProperties().getSupportedLanguages()) {
-                if (buildKind == IncrementalProjectBuilder.FULL_BUILD) {
+                if (buildKind == ABuildKind.FULL_BUILD) {
                     getMessagesGenerator(srcRoot, supportedLanguage).loadMessages();
                 }
-                IFile propertyFile = getPropertyFile(srcRoot, supportedLanguage);
+                AFile propertyFile = getPropertyFile(srcRoot, supportedLanguage);
                 if (propertyFile == null) {
                     continue;
                 }
-                createFolderIfNotThere((IFolder)propertyFile.getParent());
+                createFolderIfNotThere((AFolder)propertyFile.getParent());
             }
         }
     }
@@ -93,7 +95,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
      * {@inheritDoc}
      */
     @Override
-    public void afterBuildProcess(IIpsProject ipsProject, int buildKind) throws CoreRuntimeException {
+    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException {
         super.afterBuildProcess(ipsProject, buildKind);
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
@@ -104,13 +106,19 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         }
     }
 
-    /* protected */public IFile getPropertyFile(IIpsPackageFragmentRoot root, ISupportedLanguage supportedLanguage) {
+    /* protected */public AFile getPropertyFile(IIpsPackageFragmentRoot root, ISupportedLanguage supportedLanguage) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
-        IFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
+        AFolder derivedFolder = entry.getOutputFolderForDerivedJavaFiles();
         String resourceBundleBaseName = getResourceBundleBaseName(entry)
                 + getMessagesFileSuffix(supportedLanguage.getLocale());
-        IPath path = QNameUtil.toPath(resourceBundleBaseName).addFileExtension(MESSAGES_EXTENSION);
-        IFile messagesFile = derivedFolder.getFile(path);
+        Path path = QNameUtil.toPath(resourceBundleBaseName);
+        if (path == null) {
+            throw new CoreRuntimeException("Can't find resource bundle for messages of " + entry);
+        }
+        Path file = path.getFileName();
+        String fileName = file == null ? IpsStringUtils.EMPTY : file.toString();
+        path = path.resolveSibling(fileName + '.' + MESSAGES_EXTENSION);
+        AFile messagesFile = derivedFolder.getFile(path);
         return messagesFile;
     }
 
@@ -126,7 +134,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
 
     /* protected */public AbstractPropertiesGenerator getMessagesGenerator(IIpsPackageFragmentRoot root,
             ISupportedLanguage supportedLanguage) {
-        IFile propertyFile = getPropertyFile(root, supportedLanguage);
+        AFile propertyFile = getPropertyFile(root, supportedLanguage);
         return propertiesGeneratorMap.computeIfAbsent(propertyFile,
                 f -> createNewMessageGenerator(f, supportedLanguage));
     }

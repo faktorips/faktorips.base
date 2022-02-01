@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -112,11 +111,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public Datatype getDatatype() {
-        try {
-            return getMethod().findDatatype(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getMethod().findDatatype(getIpsProject());
     }
 
     public String getDefaultReturnValue() {
@@ -137,11 +132,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public boolean isOverrides() {
-        try {
-            return getMethod().findOverriddenMethod(getIpsProject()) != null;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getMethod().findOverriddenMethod(getIpsProject()) != null;
     }
 
     public boolean isPublished() {

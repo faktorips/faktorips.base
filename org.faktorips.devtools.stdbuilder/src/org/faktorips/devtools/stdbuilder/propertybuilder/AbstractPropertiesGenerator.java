@@ -16,8 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
@@ -25,12 +24,12 @@ import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 
 public abstract class AbstractPropertiesGenerator {
 
-    private final IFile messagesPropertiesFile;
+    private final AFile messagesPropertiesFile;
     private final ISupportedLanguage supportedLanguage;
     private final AbstractLocalizedPropertiesBuilder builder;
     private final AbstractLocalizedProperties localizedProperties;
 
-    public AbstractPropertiesGenerator(IFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
+    public AbstractPropertiesGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             AbstractLocalizedPropertiesBuilder propertiesBuilder, AbstractLocalizedProperties localizedProperties) {
         this.messagesPropertiesFile = messagesPropertiesFile;
         this.supportedLanguage = supportedLanguage;
@@ -40,12 +39,12 @@ public abstract class AbstractPropertiesGenerator {
             if (messagesPropertiesFile.exists()) {
                 localizedProperties.load(messagesPropertiesFile.getContents());
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             StdBuilderPlugin.log(e);
         }
     }
 
-    void storeMessagesToFile(IFile propertyFile, AbstractLocalizedProperties messages) throws CoreRuntimeException {
+    void storeMessagesToFile(AFile propertyFile, AbstractLocalizedProperties messages) throws CoreRuntimeException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -60,9 +59,9 @@ public abstract class AbstractPropertiesGenerator {
      */
     public boolean saveIfModified() throws CoreRuntimeException {
         if (getLocalizedProperties().isModified()) {
-            IFile file = getMessagesPropertiesFile();
+            AFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
-                file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
+                file.create(new ByteArrayInputStream("".getBytes()), null); //$NON-NLS-1$
                 file.setDerived(builder.buildsDerivedArtefacts()
                         && builder.getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             }
@@ -84,7 +83,7 @@ public abstract class AbstractPropertiesGenerator {
     /**
      * @return Returns the messagesPropertiesFile.
      */
-    public IFile getMessagesPropertiesFile() {
+    public AFile getMessagesPropertiesFile() {
         return messagesPropertiesFile;
     }
 

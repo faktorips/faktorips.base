@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -303,8 +302,9 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             throws CoreRuntimeException {
         IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType(getIpsProject());
         if (policyCmptType == null) {
-            throw new CoreException(new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType()
-                    + " not found for test policy component type parameter " + testPolicyTypeParam.getName()));
+            throw new CoreRuntimeException(
+                    new IpsStatus("Policy component type " + testPolicyTypeParam.getPolicyCmptType()
+                            + " not found for test policy component type parameter " + testPolicyTypeParam.getName()));
         }
         return getBuilderSet().getModelNode(policyCmptType, XPolicyCmptClass.class)
                 .getQualifiedName(BuilderAspect.IMPLEMENTATION);

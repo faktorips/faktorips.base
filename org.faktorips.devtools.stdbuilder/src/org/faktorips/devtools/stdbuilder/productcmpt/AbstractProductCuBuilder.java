@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -41,6 +40,8 @@ import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * Abstract class to generates the compilation unit that represents the product component or product
  * component generation.
@@ -62,6 +63,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         this.cuBuilderClazz = clazz;
     }
 
+    @CheckForNull
     public MultiStatus getBuildStatus() {
         return buildStatus;
     }
@@ -76,11 +78,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
-        try {
-            super.beforeBuild(ipsSrcFile, status);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
     }
 
@@ -114,12 +112,8 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
-        try {
-            mainSection.setUnqualifiedName(getUnqualifiedClassName());
-            mainSection.setSuperClass(getSuperClassQualifiedClassName(getPropertyValueContainer()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        mainSection.setUnqualifiedName(getUnqualifiedClassName());
+        mainSection.setSuperClass(getSuperClassQualifiedClassName(getPropertyValueContainer()));
 
         buildConstructor(mainSection.getConstructorBuilder());
         List<IFormula> formulas = getFormulas();
@@ -167,7 +161,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             if (!formula.isValid(getIpsProject())) {
                 return false;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             StdBuilderPlugin.log(e);
             return false;
         }
@@ -187,57 +181,53 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     private void generateMethodForFormula(IFormula formula,
             JavaCodeFragmentBuilder builder,
             boolean addOverrideAnnotationIfNecessary) {
-        try {
-            IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
-            if (method.validate(getIpsProject()).containsErrorMsg()) {
-                return;
-            }
-
-            builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
-            if (addOverrideAnnotationIfNecessary) {
-                // if the formula is also compiled to XML we have a standard implementation of this
-                // method
-                builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
-            }
-
-            generateSignatureForModelMethod(method, builder);
-
-            builder.openBracket();
-            builder.append("try {"); //$NON-NLS-1$
-            builder.append("return "); //$NON-NLS-1$
-            builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
-            builder.appendln(";"); //$NON-NLS-1$
-            builder.append("} catch (Exception e) {"); //$NON-NLS-1$
-            builder.appendClassName(StringBuilder.class);
-            builder.append(" parameterValues=new StringBuilder();"); //$NON-NLS-1$
-            // in formula tests the input will not printed in case of an exception
-            // because the input is stored in the formula test
-            IParameter[] parameters = method.getParameters();
-            for (int i = 0; i < parameters.length; i++) {
-                if (i > 0) {
-                    builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
-                }
-                builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
-                ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
-                if (valuetype != null && valuetype.isPrimitive()) {
-                    // optimization: we search for value types only as only those can be primitives!
-                    builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
-                } else {
-                    builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " //$NON-NLS-1$ //$NON-NLS-2$
-                            + parameters[i].getName() + ".toString());"); //$NON-NLS-1$
-                }
-            }
-            builder.append("throw new "); //$NON-NLS-1$
-            builder.appendClassName(FormulaExecutionException.class);
-            builder.append("(toString(), "); //$NON-NLS-1$
-            builder.appendQuoted(StringEscapeUtils.escapeJava(formula.getExpression()));
-            builder.appendln(", parameterValues.toString(), e);"); //$NON-NLS-1$
-            builder.appendln("}"); //$NON-NLS-1$
-
-            builder.closeBracket();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+        IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
+        if (method.validate(getIpsProject()).containsErrorMsg()) {
+            return;
         }
+
+        builder.javaDoc(getJavaDocCommentForOverriddenMethod(), ANNOTATION_GENERATED);
+        if (addOverrideAnnotationIfNecessary) {
+            // if the formula is also compiled to XML we have a standard implementation of this
+            // method
+            builder.annotationLn(JavaSourceFileBuilder.ANNOTATION_OVERRIDE);
+        }
+
+        generateSignatureForModelMethod(method, builder);
+
+        builder.openBracket();
+        builder.append("try {"); //$NON-NLS-1$
+        builder.append("return "); //$NON-NLS-1$
+        builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
+        builder.appendln(";"); //$NON-NLS-1$
+        builder.append("} catch (Exception e) {"); //$NON-NLS-1$
+        builder.appendClassName(StringBuilder.class);
+        builder.append(" parameterValues=new StringBuilder();"); //$NON-NLS-1$
+        // in formula tests the input will not printed in case of an exception
+        // because the input is stored in the formula test
+        IParameter[] parameters = method.getParameters();
+        for (int i = 0; i < parameters.length; i++) {
+            if (i > 0) {
+                builder.append("parameterValues.append(\", \");"); //$NON-NLS-1$
+            }
+            builder.append("parameterValues.append(\"" + parameters[i].getName() + "=\");"); //$NON-NLS-1$ //$NON-NLS-2$
+            ValueDatatype valuetype = getIpsProject().findValueDatatype(parameters[i].getDatatype());
+            if (valuetype != null && valuetype.isPrimitive()) {
+                // optimization: we search for value types only as only those can be primitives!
+                builder.append("parameterValues.append(" + parameters[i].getName() + ");"); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                builder.append("parameterValues.append(" + parameters[i].getName() + " == null ? \"null\" : " //$NON-NLS-1$ //$NON-NLS-2$
+                        + parameters[i].getName() + ".toString());"); //$NON-NLS-1$
+            }
+        }
+        builder.append("throw new "); //$NON-NLS-1$
+        builder.appendClassName(FormulaExecutionException.class);
+        builder.append("(toString(), "); //$NON-NLS-1$
+        builder.appendQuoted(StringEscapeUtils.escapeJava(formula.getExpression()));
+        builder.appendln(", parameterValues.toString(), e);"); //$NON-NLS-1$
+        builder.appendln("}"); //$NON-NLS-1$
+
+        builder.closeBracket();
     }
 
     private void generateSignatureForModelMethod(IProductCmptTypeMethod method,

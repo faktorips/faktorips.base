@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.enumtype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -59,11 +58,7 @@ public class EnumTypeBuilder extends XtendBuilder<XEnumType> {
 
     @Override
     public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
-        try {
-            return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
     }
 
     @Override

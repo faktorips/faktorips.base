@@ -12,9 +12,9 @@ package org.faktorips.devtools.stdbuilder;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.dependency.IDependency;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -34,7 +34,7 @@ public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
      * Tests if the build updates the dependency graph correctly.
      */
     @Test
-    public void test() throws CoreRuntimeException {
+    public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "A");
         IPolicyCmptType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "B");

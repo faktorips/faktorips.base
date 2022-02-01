@@ -207,7 +207,6 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testRemoveEntry() {
         toc.removeEntry(new QualifiedNameType("MotorProduct", IpsObjectType.PRODUCT_CMPT));
@@ -229,7 +228,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
         assertTrue(toc.isModified());
         toc.resetModified();
-        toc.removeEntry(new QualifiedNameType("Unknown Product", IpsObjectType.BUSINESS_FUNCTION));
+        toc.removeEntry(new QualifiedNameType("Unknown Product", IpsObjectType.TABLE_CONTENTS));
         assertFalse(toc.isModified());
 
         toc.removeEntry(new QualifiedNameType(entry1.getIpsObjectQualifiedName(), IpsObjectType.PRODUCT_CMPT));

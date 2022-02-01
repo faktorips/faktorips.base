@@ -13,14 +13,12 @@ package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -301,12 +299,8 @@ public class XPolicyAttribute extends XAttribute {
         } else if (!getAttribute().isProductRelevant()) {
             return true;
         } else {
-            try {
-                IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
-                return formulaSignature == null || formulaSignature.validate(getIpsProject()).containsErrorMsg();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IProductCmptTypeMethod formulaSignature = (getAttribute()).findComputationMethod(getIpsProject());
+            return formulaSignature == null || formulaSignature.validate(getIpsProject()).containsErrorMsg();
         }
     }
 
@@ -316,11 +310,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private IProductCmptTypeMethod getComputationMethod() {
-        try {
-            return getAttribute().findComputationMethod(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAttribute().findComputationMethod(getIpsProject());
     }
 
     public boolean isProductRelevant() {

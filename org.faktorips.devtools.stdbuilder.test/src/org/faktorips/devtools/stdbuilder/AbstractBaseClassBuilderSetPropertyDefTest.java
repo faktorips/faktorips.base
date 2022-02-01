@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.junit.Test;
@@ -83,7 +85,7 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
         IJavaProject javaProject = mock(IJavaProject.class);
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
 
         Message message = new TestBaseClassBuilderSetPropertyDef().validateValue(ipsProject, "foobar");
 
@@ -95,7 +97,7 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
         IJavaProject javaProject = mock(IJavaProject.class);
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
         IType type = mock(IType.class);
         when(type.exists()).thenReturn(true);
         when(javaProject.findType("foo.Bar")).thenReturn(type);
@@ -110,7 +112,7 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsProject.getClassLoaderForJavaProject(any(ClassLoader.class))).thenReturn(getClass().getClassLoader());
         IJavaProject javaProject = mock(IJavaProject.class);
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
         IType type = mock(IType.class);
         when(javaProject.findType("foo.Bar")).thenReturn(type);
 

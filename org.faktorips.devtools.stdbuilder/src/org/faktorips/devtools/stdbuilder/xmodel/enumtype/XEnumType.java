@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
@@ -66,11 +65,7 @@ public class XEnumType extends XClass {
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            return getIpsObjectPartContainer().isValid(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsObjectPartContainer().isValid(getIpsProject());
     }
 
     @Override

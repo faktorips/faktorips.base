@@ -11,11 +11,11 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
@@ -69,9 +69,9 @@ public class ExpressionBuilderHelper {
                 JavaCodeFragment convertedFrag = conversion.getConversionCode(result.getDatatype(), attributeDatatype,
                         result.getCodeFragment());
                 if (convertedFrag == null) {
-                    return new JavaCodeFragment("// Unable to convert the expression \"" + //$NON-NLS-1$
-                            result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() + //$NON-NLS-1$
-                            " to the datatype " + attributeDatatype); //$NON-NLS-1$
+                    return new JavaCodeFragment("// Unable to convert the expression \"" //$NON-NLS-1$
+                            + result.getCodeFragment().getSourcecode() + "\" of datatype " + result.getDatatype() //$NON-NLS-1$
+                            + " to the datatype " + attributeDatatype); //$NON-NLS-1$
                 }
                 return convertedFrag;
             }
@@ -85,7 +85,7 @@ public class ExpressionBuilderHelper {
                 fragment.append(messages.getMessage(i).getText());
             }
             return fragment;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             buildStatus.add(new IpsStatus("Error compiling formula " + formula.getExpression() //$NON-NLS-1$
                     + " of config element " + formula + ".", e)); //$NON-NLS-1$ //$NON-NLS-2$
             JavaCodeFragment fragment = new JavaCodeFragment();

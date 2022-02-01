@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -388,10 +387,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // toc file builder
         builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder businessFunctionBuilder = new org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder(
-                this);
-        builders.put(BuilderKindIds.BUSINESS_FUNCTION, businessFunctionBuilder);
         // New enum type builder
         builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));
@@ -539,17 +534,13 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
             IIpsSrcFile ipsSrcFile = ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
-            try {
-                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                } else if (javaBuilder instanceof XtendBuilder<?>) {
-                    XtendBuilder<?> xtendBuilder = (XtendBuilder<?>)javaBuilder;
-                    if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
-                        javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                    }
+            if (javaBuilder.isBuilderFor(ipsSrcFile)) {
+                javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+            } else if (javaBuilder instanceof XtendBuilder<?>) {
+                XtendBuilder<?> xtendBuilder = (XtendBuilder<?>)javaBuilder;
+                if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
+                    javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
 

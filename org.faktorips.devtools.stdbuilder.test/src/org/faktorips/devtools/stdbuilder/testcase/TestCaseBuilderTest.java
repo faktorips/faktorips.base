@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.testcase;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -63,7 +63,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
         testCase.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
     }
 
     @Test

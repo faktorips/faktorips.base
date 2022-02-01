@@ -11,13 +11,14 @@
 package org.faktorips.devtools.stdbuilder.enumtype;
 
 import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
@@ -88,9 +89,9 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
-        IFile javaFile = getJavaFile(ipsSrcFile);
+        AFile javaFile = getJavaFile(ipsSrcFile);
         if (javaFile.exists()) {
-            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            Charset charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             String oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
             if (oldJavaFileContentsStr.contains('@' + JavaSourceFileBuilder.ANNOTATION_GENERATED)) {
                 setMergeEnabled(true);

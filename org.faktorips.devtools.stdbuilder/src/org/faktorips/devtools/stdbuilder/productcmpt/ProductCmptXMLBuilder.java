@@ -18,9 +18,9 @@ import java.util.Locale;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -73,11 +73,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
-        try {
-            super.beforeBuild(ipsSrcFile, status);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
     }
 
@@ -192,13 +188,9 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private String getTargetRuntimeId(IProductCmptLink link) {
-        try {
-            IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
-            if (productCmpt != null) {
-                return productCmpt.getRuntimeId();
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+        IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
+        if (productCmpt != null) {
+            return productCmpt.getRuntimeId();
         }
         return "";
     }
@@ -246,7 +238,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     @Override
-    public void writeToFile(IFile file, InputStream inputStream, boolean force, boolean keepHistory)
+    public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory)
             throws CoreRuntimeException {
         super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
     }

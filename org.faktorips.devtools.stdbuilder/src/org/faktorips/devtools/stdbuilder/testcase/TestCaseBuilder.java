@@ -14,6 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -21,12 +23,9 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -98,7 +97,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             content = XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, encoding);
 
-            IFile file = getXmlContentFile(ipsSrcFile);
+            AFile file = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(file);
 
             if (newlyCreated) {
@@ -131,9 +130,9 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     @Override
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
-        IFile file = getXmlContentFile(ipsSrcFile);
+        AFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {
-            file.delete(true, null);
+            file.delete(null);
         }
     }
 
@@ -144,7 +143,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 
@@ -154,18 +153,19 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
      * @return the relative path to the generated XML file
      */
-    public IPath getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
+    public Path getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
         String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
-        IPath pathToPack = new Path(packageString.replace('.', '/'));
-        return pathToPack.append(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName())).addFileExtension("xml");
+        String[] packages = packageString.split("\\.");
+        Path pathToPack = Path.of(packages[0], Arrays.copyOfRange(packages, 1, packages.length));
+        return pathToPack.resolve(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + ".xml");
     }
 
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
-    public IFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
-        return ((IFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
+    public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
@@ -309,7 +309,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpt.getIpsProject()
                     .findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             if (policyCmptTypeSrcFile == null) {
-                throw new CoreException(
+                throw new CoreRuntimeException(
                         new IpsStatus(NLS.bind("The policy component type {0} was not found.", policyCmptTypeQName)));
             }
             testPolicyCmptElem.setAttribute("class", getQualifiedClassName(policyCmptTypeSrcFile.getIpsObject()));
@@ -328,7 +328,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         IIpsSrcFile productCmptSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
                 testPolicyCmpt.getProductCmpt());
         if (productCmptSrcFile == null) {
-            throw new CoreException(new IpsStatus(
+            throw new CoreRuntimeException(new IpsStatus(
                     NLS.bind("The product component {0} was not found.", testPolicyCmpt.getProductCmpt())));
         }
         testPolicyCmptElem.setAttribute("productCmpt",
@@ -344,7 +344,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     private String getPolicyCmptTypeNameFromParameter(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(getIpsProject());
         if (parameter == null) {
-            throw new CoreException(
+            throw new CoreRuntimeException(
                     new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
                             testPolicyCmpt.getTestPolicyCmptTypeParameter())));
         }
@@ -359,7 +359,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         if (link != null) {
             ITestPolicyCmptTypeParameter parameter = link.findTestPolicyCmptTypeParameter(getIpsProject());
             if (parameter == null) {
-                throw new CoreException(
+                throw new CoreRuntimeException(
                         new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
                                 link.getTestPolicyCmptTypeParameter())));
             }
@@ -395,12 +395,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 }
                 String associationType = "";
                 if (association.isComposition()) {
-                    try {
-                        addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { association.findTarget() },
-                                association, isInput, objectId);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+                    addTestPolicyCmpts(doc, parent, new ITestPolicyCmpt[] { association.findTarget() },
+                            association, isInput, objectId);
                 } else if (association.isAssociation()) {
                     // @see AbstractModelObject
                     associationType = "association";
@@ -415,7 +411,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput) throws CoreRuntimeException {
+    private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput)
+            throws CoreRuntimeException {
         ITestPolicyCmptTypeParameter param = association.findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null) {
             return false;
@@ -442,7 +439,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     || testAttrValue.isExpectedResultAttribute(ipsProject) && !isInput) {
                 ITestAttribute testAttribute = testAttrValue.findTestAttribute(ipsProject);
                 if (testAttribute == null) {
-                    throw new CoreException(new IpsStatus(
+                    throw new CoreRuntimeException(new IpsStatus(
                             NLS.bind("The test attribute {0} was not found in the test case type definition.",
                                     testAttrValue.getTestAttribute())));
                 }
@@ -461,7 +458,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         try {
             return StringUtil.readFromInputStream(is, charSet);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 

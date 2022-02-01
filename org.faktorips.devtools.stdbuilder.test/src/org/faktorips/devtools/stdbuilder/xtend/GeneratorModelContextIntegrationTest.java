@@ -26,11 +26,12 @@ import java.util.List;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -49,12 +50,12 @@ import org.junit.Test;
 public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testGetGeneratorConfig_IpsObject_FromLibrary() throws CoreRuntimeException, IOException {
+    public void testGetGeneratorConfig_IpsObject_FromLibrary() throws CoreException, IOException {
         IIpsProject libIpsProject = newIpsProject("lib");
         newPolicyCmptTypeWithoutProductCmptType(libIpsProject, "lib.Policy");
         createManifest(libIpsProject);
         File libFile = createBundle(libIpsProject);
-        libIpsProject.getProject().close(null);
+        ((IProject)libIpsProject.getProject().unwrap()).close(null);
         IpsObjectPath ipsObjectPath = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsBundleEntry ipsBundleEntry = createBundleEntry(libFile, ipsObjectPath);
         addEntry(ipsObjectPath, ipsBundleEntry);
@@ -78,7 +79,7 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
                 is(IChangesOverTimeNamingConvention.FAKTOR_IPS));
     }
 
-    private void createManifest(IIpsProject libIpsProject) throws IOException, CoreException {
+    private void createManifest(IIpsProject libIpsProject) throws IOException {
         Manifest manifest = new Manifest();
         manifest.getMainAttributes().putValue(Name.MANIFEST_VERSION.toString(), "1.0");
         manifest.getMainAttributes().putValue(IpsBundleManifest.HEADER_OBJECT_DIR, "ipsobjects");
@@ -90,13 +91,13 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
         PipedOutputStream out = new PipedOutputStream(in);
         manifest.write(out);
         out.close();
-        IFolder metaInf = libIpsProject.getProject().getFolder("src/META-INF");
-        metaInf.create(true, true, null);
-        IFile manifestWorkspaceFile = libIpsProject.getProject().getFile("src/META-INF/MANIFEST.MF");
-        manifestWorkspaceFile.create(in, true, null);
+        AFolder metaInf = libIpsProject.getProject().getFolder("src/META-INF");
+        metaInf.create(null);
+        AFile manifestWorkspaceFile = libIpsProject.getProject().getFile("src/META-INF/MANIFEST.MF");
+        manifestWorkspaceFile.create(in, null);
     }
 
-    private File createBundle(IIpsProject libIpsProject) throws IOException, CoreException {
+    private File createBundle(IIpsProject libIpsProject) throws IOException {
         File libFile = File.createTempFile("externalArchiveFile", ".jar");
         libFile.deleteOnExit();
         CreateIpsArchiveOperation createIpsArchiveOperation = new CreateIpsArchiveOperation(libIpsProject, libFile);

@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -31,7 +31,7 @@ public class ProductCmptWithoutVersionIdTest extends AbstractStdBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void test() throws CoreRuntimeException {
+    public void test() throws CoreException {
         IIpsProject project = newIpsProject();
         IIpsProjectProperties props = project.getProperties();
         props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false));

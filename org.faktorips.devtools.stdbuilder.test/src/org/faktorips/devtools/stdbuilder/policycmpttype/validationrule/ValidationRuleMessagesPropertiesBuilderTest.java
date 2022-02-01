@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,15 +23,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -47,6 +45,7 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
+import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.junit.Test;
 
 public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidationMessagesBuilderTest {
@@ -189,14 +188,16 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
-        IFile file = mock(IFile.class);
+        AFile file = mock(AFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_en" + "."
-                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        Path path = Path.of(ROOT_FOLDER, TEST_VALIDATION_MESSAGES.split("\\."))
+                .resolveSibling(
+                        TEST_VALIDATION_MESSAGES.substring(TEST_VALIDATION_MESSAGES.lastIndexOf('.') + 1) + "_en" + "."
+                                + AbstractLocalizedPropertiesBuilder.MESSAGES_EXTENSION);
         when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
                 ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
-        IFolder derivedFolder = mock(IFolder.class);
+        AFolder derivedFolder = mock(AFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);
 
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
@@ -208,7 +209,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
 
         ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.ENGLISH, true);
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
+        AFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         assertEquals(file, propertyFile);
     }
 
@@ -220,14 +221,17 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         Locale locale = Locale.GERMAN;
 
-        IFile file = mock(IFile.class);
+        AFile file = mock(AFile.class);
 
-        IPath path = new Path(ROOT_FOLDER + "/" + TEST_VALIDATION_MESSAGES.replace('.', '/') + "_"
-                + locale.getLanguage() + "." + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
+        Path path = Path.of(ROOT_FOLDER, TEST_VALIDATION_MESSAGES.split("\\."))
+                .resolveSibling(
+                        TEST_VALIDATION_MESSAGES.substring(TEST_VALIDATION_MESSAGES.lastIndexOf('.') + 1) + "_"
+                                + locale.getLanguage() + "."
+                                + ValidationRuleMessagesPropertiesBuilder.MESSAGES_EXTENSION);
         when(builderSet.getValidationMessageBundleBaseName(any(IIpsSrcFolderEntry.class))).thenReturn(
                 ROOT_FOLDER + "." + TEST_VALIDATION_MESSAGES);
 
-        IFolder derivedFolder = mock(IFolder.class);
+        AFolder derivedFolder = mock(AFolder.class);
         when(derivedFolder.getFile(path)).thenReturn(file);
 
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
@@ -239,7 +243,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(root.getIpsObjectPathEntry()).thenReturn(ipsSrcFolderEntry);
 
         ISupportedLanguage supportedLanguage = new SupportedLanguage(locale, false);
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
+        AFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         assertEquals(file, propertyFile);
     }
 
@@ -259,11 +263,11 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         IIpsProject ipsProject = mockIpsProject();
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] {});
 
-        builderSpy.afterBuildProcess(ipsProject, 0);
+        builderSpy.afterBuildProcess(ipsProject, null);
         verifyZeroInteractions(generatorMock);
 
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
-        builderSpy.afterBuildProcess(ipsProject, 0);
+        builderSpy.afterBuildProcess(ipsProject, null);
 
         verify(generatorMock).saveIfModified();
     }
@@ -280,14 +284,14 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         ValidationRuleMessagesPropertiesBuilder validationMessagesBuilder = new ValidationRuleMessagesPropertiesBuilder(
                 builderSet);
 
-        IFolder folder = mock(IFolder.class);
+        AFolder folder = mock(AFolder.class);
         ISupportedLanguage supportedLanguage = new SupportedLanguage(Locale.GERMAN);
 
-        IFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
+        AFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         when(propertyFile.getParent()).thenReturn(folder);
 
-        validationMessagesBuilder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        verify(folder).create(anyBoolean(), anyBoolean(), any(IProgressMonitor.class));
+        validationMessagesBuilder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        verify(folder).create(any(IProgressMonitor.class));
     }
 
     protected IIpsSrcFile mockIpsSrcFile() {

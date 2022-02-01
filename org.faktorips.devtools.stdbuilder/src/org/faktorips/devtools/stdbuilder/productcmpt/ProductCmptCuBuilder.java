@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -63,22 +62,18 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
     @Override
     protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
-        try {
-            //
-            String className = getUnqualifiedClassName();
-            String[] argNames = new String[] { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
-            String[] argClassNames = new String[] { "IRuntimeRepository", "String", "String", "String" };
-            JavaCodeFragment body = new JavaCodeFragment("super(repository, id, kindId, versionId);"); //$NON-NLS-1$
-            codeBuilder.addImport(IRuntimeRepository.class);
-            codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        //
+        String className = getUnqualifiedClassName();
+        String[] argNames = new String[] { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
+        String[] argClassNames = new String[] { "IRuntimeRepository", "String", "String", "String" };
+        JavaCodeFragment body = new JavaCodeFragment("super(repository, id, kindId, versionId);"); //$NON-NLS-1$
+        codeBuilder.addImport(IRuntimeRepository.class);
+        codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
     }
 
     @Override
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes)
-            throws CoreRuntimeException {
+            throws CoreException {
         IProductCmpt currentProductCmpt = (IProductCmpt)ipsObject;
         IIpsSrcFile productCmptSrcFile = getVirtualIpsSrcFile(currentProductCmpt);
         String typeName = getUnqualifiedClassName(productCmptSrcFile);

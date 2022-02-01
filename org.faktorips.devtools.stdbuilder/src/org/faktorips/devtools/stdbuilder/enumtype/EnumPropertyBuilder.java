@@ -10,15 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -27,6 +25,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.LocalizedStringsSet;
 
@@ -85,40 +84,25 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     private void loadFromFile(EnumPropertyGenerator enumPropertyGenerator) {
-        try {
-            IFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
-            if (file != null && file.exists()) {
-                InputStream contents = null;
-                try {
-                    contents = file.getContents();
-                    enumPropertyGenerator.readFromStream(contents);
-                } finally {
-                    IoUtil.close(contents);
-                }
+        AFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
+        if (file != null && file.exists()) {
+            InputStream contents = null;
+            try {
+                contents = file.getContents();
+                enumPropertyGenerator.readFromStream(contents);
+            } finally {
+                IoUtil.close(contents);
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
     private void writeToFile(EnumPropertyGenerator enumPropertyGenerator) {
-        try {
-            IFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
-            if (file != null) {
-                createFolderIfNotThere((IFolder)file.getParent());
-                createFileIfNotTher(file);
-                InputStream inputStream = enumPropertyGenerator.getStream();
-                writeToFile(file, inputStream, true, true);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    private void createFileIfNotTher(IFile file) throws CoreRuntimeException {
-        if (!file.exists()) {
-            file.create(new ByteArrayInputStream("".getBytes()), true, null);
-            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
+        AFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
+        if (file != null) {
+            createFolderIfNotThere((AFolder)file.getParent());
+            createFileIfNotThere(file);
+            InputStream inputStream = enumPropertyGenerator.getStream();
+            writeToFile(file, inputStream, true, true);
         }
     }
 
@@ -131,14 +115,18 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile represents the file for which the property file will be returned
      * @param locale indicates the language of the property file
      */
-    IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreRuntimeException {
+    AFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreRuntimeException {
         if (ipsSrcFile != null) {
-            IFolder artefactDestination = (IFolder)getArtefactDestination(ipsSrcFile).getResource();
-            IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
-            IPath relativePropertyFile = relativeJavaFile.removeFileExtension();
-            IPath folder = relativePropertyFile.removeLastSegments(1);
-            String filename = relativePropertyFile.lastSegment() + "_" + locale.getLanguage();
-            return artefactDestination.getFile(folder.append(filename).addFileExtension("properties"));
+            AFolder artefactDestination = (AFolder)getArtefactDestination(ipsSrcFile).getResource();
+            Path relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
+            Path javaFile = relativeJavaFile.getFileName();
+            String javaFileName = javaFile == null ? IpsStringUtils.EMPTY : javaFile.toString();
+            int indexOfFileExtension = javaFileName.lastIndexOf('.');
+            String baseFileName = indexOfFileExtension > 0 ? javaFileName.substring(0, indexOfFileExtension)
+                    : javaFileName;
+            Path folder = relativeJavaFile.getParent();
+            String filename = baseFileName + "_" + locale.getLanguage() + ".properties";
+            return artefactDestination.getFile(folder == null ? Path.of(filename) : folder.resolve(filename));
         } else {
             return null;
         }
@@ -164,9 +152,9 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            IFile propertyFile = getPropertyFile(ipsSrcFile, supportedLanguage.getLocale());
+            AFile propertyFile = getPropertyFile(ipsSrcFile, supportedLanguage.getLocale());
             if (propertyFile != null && propertyFile.exists()) {
-                propertyFile.delete(true, null);
+                propertyFile.delete(null);
             }
         }
     }

@@ -10,9 +10,13 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.runtime.internal.IpsStringUtils;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * A collection of utility methods regarding qualified names and packages.
@@ -156,10 +160,15 @@ public class QNameUtil {
      * Transforms the given qualified name to a path. Returns <code>null</code> if
      * <code>qName</code> is <code>null</code>.
      */
+    @CheckForNull
     public static final Path toPath(String qName) {
-        if (qName == null) {
+        if (IpsStringUtils.isBlank(qName)) {
             return null;
         }
-        return new Path(qName.replace('.', IPath.SEPARATOR));
+        String[] pathParts = qName.split("\\."); //$NON-NLS-1$
+        if (pathParts.length == 1) {
+            return Path.of(pathParts[0]);
+        }
+        return Path.of(pathParts[0], Arrays.copyOfRange(pathParts, 1, pathParts.length));
     }
 }

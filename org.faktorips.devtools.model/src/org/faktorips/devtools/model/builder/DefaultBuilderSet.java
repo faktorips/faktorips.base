@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
-
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
@@ -71,13 +69,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         String basePackInternal = javaPackageStructure.getBasePackageName(entry, true, false);
-        IPath path = QNameUtil.toPath(basePackInternal);
-        path = path.append(entry.getBasePackageRelativeTocPath());
+        Path path = QNameUtil.toPath(basePackInternal);
+        String basePackageRelativeTocPath = entry.getBasePackageRelativeTocPath();
+        path = path == null ? Path.of(basePackageRelativeTocPath) : path.resolve(basePackageRelativeTocPath);
         AFolder tocFileLocation = getTocFileLocation(root);
         if (tocFileLocation == null) {
             return null;
         }
-        return tocFileLocation.getFile(toJavaPath(path));
+        return tocFileLocation.getFile(path);
     }
 
     private AFolder getTocFileLocation(IIpsPackageFragmentRoot root) {

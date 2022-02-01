@@ -18,9 +18,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -37,7 +37,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot root;
     private TestBuilder builder;
-    private IFile propertyFile;
+    private AFile propertyFile;
     private ISupportedLanguage supportedLanguage;
 
     private void setUpBuilderAndDependencies() throws Exception {
@@ -52,7 +52,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testBeforeBuildProcess_VerifyCreateParentFolder() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
 
         assertTrue(propertyFile.getParent().exists());
     }
@@ -61,7 +61,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testBeforeBuildProcess_LoadFor_FULL_BUILD() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.FULL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.FULL_BUILD);
 
         verify(builder.generator, times(ipsProject.getReadOnlyProperties().getSupportedLanguages().size()))
                 .loadMessages();
@@ -71,7 +71,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testAfterBuildProcess() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.afterBuildProcess(ipsProject, IncrementalProjectBuilder.FULL_BUILD);
+        builder.afterBuildProcess(ipsProject, ABuildKind.FULL_BUILD);
 
         verify(builder.generator, times(ipsProject.getReadOnlyProperties().getSupportedLanguages().size()))
                 .saveIfModified();
@@ -81,7 +81,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testGetPropertyFile() throws Exception {
         setUpBuilderAndDependencies();
 
-        IFile file = builder.getPropertyFile(root, supportedLanguage);
+        AFile file = builder.getPropertyFile(root, supportedLanguage);
 
         assertEquals("property-file_de.properties", file.getName());
     }
@@ -126,7 +126,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
         }
 
         @Override
-        protected AbstractPropertiesGenerator createNewMessageGenerator(IFile propertyFile,
+        protected AbstractPropertiesGenerator createNewMessageGenerator(AFile propertyFile,
                 ISupportedLanguage supportedLanguage) {
             return generator;
         }

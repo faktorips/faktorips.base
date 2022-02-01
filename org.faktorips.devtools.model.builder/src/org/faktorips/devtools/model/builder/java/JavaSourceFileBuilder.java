@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
@@ -870,7 +869,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     /**
      * Return the path to the java file relative to the destination folder.
      * <p>
-     * If the java class name is org.example.MyExample this method would return an {@link IPath} of
+     * If the java class name is org.example.MyExample this method would return a {@link Path} of
      * <em>/org/example/MyExample.java</em>
      */
     public Path getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
