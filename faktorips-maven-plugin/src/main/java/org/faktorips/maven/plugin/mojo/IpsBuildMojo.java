@@ -48,6 +48,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.Os;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
@@ -404,6 +405,13 @@ public class IpsBuildMojo extends AbstractMojo {
     private GitStatusPorcelain gitStatusPorcelain;
 
     /**
+     * Overrides the {@link GitStatusPorcelain#getFailBuild()} parameter. Specially helpful when
+     * debugging builds.
+     */
+    @Parameter(property = "git.fail.build", defaultValue = "null")
+    private Boolean gitFailBuild;
+
+    /**
      * Whether to only start the {@code IpsBuilder} or all configured builders. The default is to
      * use only the {@code IpsBuilder} as it creates the Java source files before the Maven compiler
      * plugin compiles the entire project.
@@ -721,7 +729,11 @@ public class IpsBuildMojo extends AbstractMojo {
             String statusFile = createStatusFile();
 
             if (isGitStatusPorcelain()) {
-                jvmArgs.add("-Dfail.build=" + gitStatusPorcelain.getFailBuild());
+                String failBuild = gitStatusPorcelain.getFailBuild();
+                if (gitFailBuild != null) {
+                    failBuild = gitFailBuild.toString();
+                }
+                jvmArgs.add("-Dfail.build=" + failBuild);
                 jvmArgs.add("-Dverbosity=" + gitStatusPorcelain.getVerbosity().getName());
             }
             if (debug) {
@@ -738,6 +750,10 @@ public class IpsBuildMojo extends AbstractMojo {
 
             if (StringUtils.isBlank(executionEnvironment)) {
                 executionEnvironment = "JavaSE-" + Runtime.version().feature();
+            }
+
+            if (Os.isFamily(Os.FAMILY_MAC)) {
+                jvmArgs.add("-XstartOnFirstThread");
             }
 
             copyMavenSettings();
