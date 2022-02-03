@@ -57,7 +57,7 @@ public class RecursiveCopyTest {
         RecursiveCopy c = new RecursiveCopy();
 
         try {
-            c.copyDir(tmpDir.getAbsolutePath(), tmpDir3.getAbsolutePath());
+            c.copyDir(tmpDir.toPath().toAbsolutePath(), tmpDir3.toPath().toAbsolutePath());
             File expectedDir = new File(tmpDir3, tmpDir2.getName());
             expectedDir.deleteOnExit();
             assertTrue("expected directory does not exists", expectedDir.exists());
@@ -86,7 +86,7 @@ public class RecursiveCopyTest {
 
             // copy file to dir => should throw an Exception
             try {
-                c.copyFile(tmpFile.getAbsolutePath(), tmpDir.getAbsolutePath());
+                c.copyFile(tmpFile.toPath().toAbsolutePath(), tmpDir.toPath().toAbsolutePath());
                 fail("copy from file to dir was sucessfull. should throw an Exception");
             } catch (Exception e) {
                 // expected
@@ -96,7 +96,7 @@ public class RecursiveCopyTest {
             try {
                 File expectedCopy = new File(tmpDir, tmpFile.getName());
                 expectedCopy.deleteOnExit();
-                c.copyFile(tmpFile.getAbsolutePath(), expectedCopy.getAbsolutePath());
+                c.copyFile(tmpFile.toPath().toAbsolutePath(), expectedCopy.toPath().toAbsolutePath());
                 assertTrue("copied file doesn't exist", expectedCopy.exists());
                 assertEquals("filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
                         + expectedCopy.length(), tmpFile.length(), expectedCopy.length());

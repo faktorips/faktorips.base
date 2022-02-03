@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 public class RecursiveCopy {
 
@@ -28,22 +29,22 @@ public class RecursiveCopy {
      * @param toDir target directory
      * @throws IOException
      */
-    public void copyDir(String fromDir, String toDir) throws IOException {
-        File dirFile = new File(fromDir);
+    public void copyDir(Path fromDir, Path toDir) throws IOException {
+        File dirFile = fromDir.toFile();
         if (!dirFile.exists()) {
             return;
         }
 
-        File toDirFile = new File(toDir);
+        File toDirFile = toDir.toFile();
         if (!toDirFile.exists()) {
             toDirFile.mkdir();
         }
         String[] fileList = dirFile.list();
         if (fileList != null) {
             for (String name : fileList) {
-                String from = fromDir + File.separator + name;
-                String to = toDir + File.separatorChar + name;
-                File file = new File(from);
+                Path from = fromDir.resolve(name);
+                Path to = toDir.resolve(name);
+                File file = from.toFile();
                 if (file.isDirectory()) {
                     copyDir(from, to);
                 } else {
@@ -59,14 +60,14 @@ public class RecursiveCopy {
      * @param from path to the source file
      * @param to path to the target file
      */
-    public void copyFile(String from, String to) throws IOException {
+    public void copyFile(Path from, Path to) throws IOException {
         mkdirs(to);
         InputStream input = null;
         OutputStream output = null;
         int c;
         try {
-            input = new BufferedInputStream(new FileInputStream(from));
-            output = new BufferedOutputStream(new FileOutputStream(to));
+            input = new BufferedInputStream(new FileInputStream(from.toFile()));
+            output = new BufferedOutputStream(new FileOutputStream(to.toFile()));
             while ((c = input.read()) != -1) {
                 output.write(c);
             }
@@ -88,8 +89,8 @@ public class RecursiveCopy {
      * 
      * @param dir directory name
      */
-    private void mkdir(String dir) {
-        new File(dir).mkdirs();
+    private void mkdir(Path dir) {
+        dir.toFile().mkdirs();
     }
 
     /**
@@ -97,11 +98,9 @@ public class RecursiveCopy {
      * 
      * @param file new path
      */
-    private void mkdirs(String file) {
-        String fileName = file.replace('/', File.separatorChar);
-        int pos = fileName.lastIndexOf(File.separatorChar);
-        if (pos != -1) {
-            String dir = fileName.substring(0, pos);
+    private void mkdirs(Path file) {
+        Path dir = file.getParent();
+        if (dir != null) {
             mkdir(dir);
         }
     }

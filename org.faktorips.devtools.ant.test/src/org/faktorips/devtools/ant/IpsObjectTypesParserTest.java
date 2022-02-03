@@ -25,7 +25,6 @@ import org.junit.Test;
 
 public class IpsObjectTypesParserTest {
 
-    @SuppressWarnings("deprecation")
     private static final IpsObjectType[] ALL_STANDARD_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,
             IpsObjectType.ENUM_TYPE, IpsObjectType.POLICY_CMPT_TYPE,
             IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.PRODUCT_TEMPLATE,
