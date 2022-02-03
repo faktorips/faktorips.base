@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.groovy.feature.nls1"
       label="Faktor-IPS Groovy-Addon German Language Pack"
-      version="21.12.2.qualifier"
+      version="21.12.3.qualifier"
       provider-name="Faktor Zehn GmbH"
       license-feature="org.faktorips.license">
 
