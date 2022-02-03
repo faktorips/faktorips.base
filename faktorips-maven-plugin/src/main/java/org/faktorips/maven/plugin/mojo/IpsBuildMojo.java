@@ -408,7 +408,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * Overrides the {@link GitStatusPorcelain#getFailBuild()} parameter. Specially helpful when
      * debugging builds.
      */
-    @Parameter(property = "git.fail.build", defaultValue = "null")
+    @Parameter(property = "git.fail.build")
     private Boolean gitFailBuild;
 
     /**
