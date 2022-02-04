@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.ui.wizards;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -286,7 +289,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             return ((IResource)selected).getProject();
         }
         if (selected instanceof IIpsElement) {
-            return ((IIpsElement)selected).getIpsProject().getProject();
+            return ((IIpsElement)selected).getIpsProject().getProject().unwrap();
         }
         if (selected instanceof IJavaElement) {
             return ((IJavaElement)selected).getJavaProject().getProject();
@@ -300,7 +303,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             return null;
         }
         IIpsModel ipsModel = IIpsModel.get();
-        return ipsModel.getIpsProject(project.getProject());
+        return ipsModel.getIpsProject(wrap(project.getProject()).as(AProject.class));
     }
 
     @Override

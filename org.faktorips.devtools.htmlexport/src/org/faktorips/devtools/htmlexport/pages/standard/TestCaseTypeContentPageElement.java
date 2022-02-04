@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -80,7 +79,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         for (ITestParameter testParameter : testParameters) {
             try {
                 root.addPageElements(createTestParameterPageElement(testParameter));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error adding TestParameter", e)); //$NON-NLS-1$
             }
         }
@@ -97,7 +96,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
                     getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsStatus status = new IpsStatus(IStatus.WARNING,
                     "Could not find image for " + getDocumentedIpsObject().getName(), e); //$NON-NLS-1$
             getContext().addStatus(status);

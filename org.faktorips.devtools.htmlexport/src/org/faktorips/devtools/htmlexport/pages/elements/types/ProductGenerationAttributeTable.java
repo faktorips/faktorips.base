@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -259,7 +258,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         List<IAttribute> allAttributes;
         try {
             allAttributes = policyCmptType.findAllAttributes(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding Attributes of PolicyCmptType " //$NON-NLS-1$
                     + policyCmptType.getQualifiedName(), e));
             return;
@@ -414,7 +413,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         ITableContents tableContent = null;
         try {
             tableContent = usage.findTableContents(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find contents of TableContentUsage " //$NON-NLS-1$
                     + usage.getName(), e));
         }
@@ -467,7 +466,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         for (IProductCmptLink productCmptLink : links) {
             try {
                 cellContent.addPageElements(createProductCmptLink(productCmptLink));
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 getContext().addStatus(new IpsStatus(IStatus.ERROR,
                         "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
             }
@@ -497,7 +496,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         List<IAssociation> associations;
         try {
             associations = productCmptType.findAllAssociations(productCmptType.getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding all associations of " //$NON-NLS-1$
                     + productCmptType.getQualifiedName(), e));
             associations = new ArrayList<>();

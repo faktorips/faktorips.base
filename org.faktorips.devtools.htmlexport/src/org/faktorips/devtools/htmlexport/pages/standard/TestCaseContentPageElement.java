@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -103,7 +102,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             if (testObject instanceof ITestPolicyCmpt) {
                 return createTestPolicyCmptPageElement((ITestPolicyCmpt)testObject);
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR, "Error creating IPageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
@@ -132,7 +131,8 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreRuntimeException {
+    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject)
+            throws CoreRuntimeException {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(
@@ -202,7 +202,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
                     getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not find image for " + getDocumentedIpsObject().getName())); //$NON-NLS-1$
         }

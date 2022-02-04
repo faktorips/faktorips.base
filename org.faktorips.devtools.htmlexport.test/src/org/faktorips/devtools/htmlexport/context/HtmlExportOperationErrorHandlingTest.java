@@ -14,7 +14,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
@@ -82,7 +81,7 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
                 fail("sollte CoreRuntimeException werfen");
             } catch (CoreRuntimeException e1) {
                 // nix zu tun
-            } catch (CoreException e2) {
+            } catch (Exception e2) {
                 fail(e2.getMessage());
             }
         });

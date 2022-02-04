@@ -13,7 +13,6 @@ package org.faktorips.devtools.htmlexport.standard;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -38,9 +37,9 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
         try {
             fileHandler.writeFile("complete.html", context.getLayouter().generate()); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new CoreRuntimeException(new IpsStatus(e));
         }
     }
 

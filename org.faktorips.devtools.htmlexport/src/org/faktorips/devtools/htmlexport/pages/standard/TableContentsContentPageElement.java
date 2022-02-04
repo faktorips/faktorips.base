@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -60,7 +59,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ITableStructure tableStructure;
         try {
             tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Could not find TableStructure of " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
@@ -96,7 +95,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ContentTablePageElement contentTablePageElement = null;
         try {
             contentTablePageElement = new ContentTablePageElement(tableRows);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not create ContentTable of " + tableRows.getName(), e)); //$NON-NLS-1$
         }

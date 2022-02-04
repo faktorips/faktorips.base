@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -31,6 +30,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AttributesTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.ProductCmptTypeAttributesTablePageElement;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -87,7 +87,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         try {
             allProductCmptSrcFiles = new ArrayList<>(
                     getDocumentedIpsObject().searchMetaObjectSrcFiles(true));
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
                     "Error getting ProductCmpts of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
             getContext().addStatus(status);

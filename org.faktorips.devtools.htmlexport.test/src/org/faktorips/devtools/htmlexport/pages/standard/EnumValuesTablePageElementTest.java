@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -119,7 +118,7 @@ public class EnumValuesTablePageElementTest {
         doReturn(stringValue).when(enumAttributeValue1).getValue();
         doReturn("enumAttributeValue1Name").when(enumAttributeValue1).getName();
         doReturn("toBeAdded").when(stringValue).getDefaultLocalizedContent(ipsProject);
-        when(enumAttribute1.findDatatype(ipsProject)).thenThrow(new CoreException(new IpsStatus("Test")));
+        when(enumAttribute1.findDatatype(ipsProject)).thenThrow(new CoreRuntimeException(new IpsStatus("Test")));
 
         pageElement = new EnumValuesTablePageElement(enumType, doc);
         List<IPageElement> resultList = pageElement.createRowWithIpsObjectPart(enumValue1);

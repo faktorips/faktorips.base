@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -180,7 +179,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         IEnumContent enumContent;
         try {
             enumContent = getDocumentedIpsObject().findEnumContent(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find EnumContent for EnumType  " //$NON-NLS-1$
                     + getDocumentedIpsObject().getQualifiedName(), e));
             return;
