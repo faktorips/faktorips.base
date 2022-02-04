@@ -28,19 +28,22 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsJarBundle;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 @SuppressWarnings("restriction")
 public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
@@ -98,13 +101,14 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
                 for (IpsJarBundle ipsJarBundle : jarBundles) {
                     File jarBundleFile = getJarBundleFile(ipsJarBundle);
                     if (artifactFile.equals(jarBundleFile)) {
-
                         String tocFileFromManifest = getTocFileFromManifest(ipsJarBundle);
-
-                        if (parent != null && ipsDependencies.get(parent) != null) {
-                            ipsDependencies.get(parent).addDependencies(new IpsMavenDependency(tocFileFromManifest));
-                        } else {
-                            ipsDependencies.put(child, new IpsMavenDependency(tocFileFromManifest));
+                        if (tocFileFromManifest != null) {
+                            if (parent != null && ipsDependencies.get(parent) != null) {
+                                ipsDependencies.get(parent)
+                                        .addDependencies(new IpsMavenDependency(tocFileFromManifest));
+                            } else {
+                                ipsDependencies.put(child, new IpsMavenDependency(tocFileFromManifest));
+                            }
                         }
                         break;
                     }
@@ -133,10 +137,14 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             String objectDir = manifestElement.getValue();
             String basePackage = bundleManifest.getBasePackage(objectDir);
             String tocPath = bundleManifest.getTocPath(manifestElement);
-            String internalPackage = QNameUtil.concat(basePackage, INTERNAL_PACKAGE);
-            return QNameUtil.toPath(internalPackage).toString() + IPath.SEPARATOR + tocPath;
+            if (IpsStringUtils.isNotBlank(tocPath)) {
+                String internalPackage = QNameUtil.concat(basePackage, INTERNAL_PACKAGE);
+                return QNameUtil.toPath(internalPackage).toString() + IPath.SEPARATOR + tocPath;
+            }
         }
-        throw new CoreRuntimeException("No toc found in the IpsJarBundle " + jarBundle.toString());
+        IpsLog.logAndShowErrorDialog(
+                new IpsStatus(IStatus.WARNING, "No toc found in the IpsJarBundle " + jarBundle.toString()));
+        return null;
     }
 
     private IMavenProjectFacade findMavenProjectFacade(IProject project) {
