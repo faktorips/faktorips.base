@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -93,7 +92,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(
+            throw new CoreRuntimeException(
                     new IpsStatus(NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }

@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -82,7 +81,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
@@ -110,12 +109,12 @@ public class CSVEnumImportOperation implements ICoreRunnable {
             }
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new CoreRuntimeException(new IpsStatus(
                     NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException, CoreException {
+    private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException {
         char fieldSeparator = getFieldSeparator();
         CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
 

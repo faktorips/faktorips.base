@@ -17,7 +17,6 @@ import java.util.Locale;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -71,7 +70,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             throw new RuntimeException(e);
         }
     }
@@ -99,7 +98,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             progressMonitor.worked(1);
             progressMonitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new CoreRuntimeException(new IpsStatus(
                     NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }

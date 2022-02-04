@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
@@ -106,7 +105,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new CoreRuntimeException(new IpsStatus(
                     NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }

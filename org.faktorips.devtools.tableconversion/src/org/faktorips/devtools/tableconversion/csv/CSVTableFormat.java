@@ -20,7 +20,6 @@ import java.util.Locale;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
@@ -214,7 +213,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
 
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return Collections.EMPTY_LIST;
         }

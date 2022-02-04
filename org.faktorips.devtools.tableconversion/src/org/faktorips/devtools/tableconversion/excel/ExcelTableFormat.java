@@ -24,7 +24,6 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
@@ -57,7 +56,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             excelTableExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -90,7 +89,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -174,7 +173,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             }
 
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }
