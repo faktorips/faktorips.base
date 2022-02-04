@@ -26,11 +26,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -100,7 +99,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_CoreExceptionWhenFindigTarget() throws CoreRuntimeException {
         link = mock(IProductCmptLink.class);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(link);
 
@@ -117,9 +116,8 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetImageDescriptor_CustomProductCmptTypeIcon() throws CoreRuntimeException, IOException {
-        IFile file = ipsProject.getProject().getFile("/root/foo.gif");
-        file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), true,
-                null);
+        AFile file = ipsProject.getProject().getFile("/root/foo.gif");
+        file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), null);
         prodType.setInstancesIcon("foo.gif");
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(link);
@@ -161,7 +159,7 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     public void testGetLabel_CoreExceptionWhenFindigTarget() throws CoreRuntimeException {
         link = mock(IProductCmptLink.class);
         when(link.getName()).thenReturn("foo");
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
 
         String label = decorator.getLabel(link);
 

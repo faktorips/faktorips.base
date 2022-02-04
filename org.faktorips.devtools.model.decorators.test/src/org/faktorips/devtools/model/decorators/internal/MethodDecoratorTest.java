@@ -20,7 +20,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -91,7 +90,7 @@ public class MethodDecoratorTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwritingMethod = mock(IMethod.class);
         when(overwritingMethod.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(overwritingMethod)
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(overwritingMethod)
                 .findOverriddenMethod(ipsProject);
 
         ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(overwritingMethod);

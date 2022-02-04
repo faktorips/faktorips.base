@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.decorators.internal.test;
 
-import org.eclipse.core.resources.IResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 
 public class UndecoratedIpsElement extends IpsElement {
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         // not needed for these tests
         return null;
     }

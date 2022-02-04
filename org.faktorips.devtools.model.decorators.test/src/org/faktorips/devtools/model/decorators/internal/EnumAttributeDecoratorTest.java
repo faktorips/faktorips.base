@@ -20,7 +20,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.datatype.ValueDatatype;
@@ -65,7 +64,7 @@ public class EnumAttributeDecoratorTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute)
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute)
                 .findIsUnique(ipsProject);
 
         ImageDescriptor imageDescriptor = enumAttributeDecorator.getImageDescriptor(enumAttribute);
@@ -135,7 +134,7 @@ public class EnumAttributeDecoratorTest {
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
         when(enumAttribute.getName()).thenReturn("Foo");
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute).findDatatype(ipsProject);
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute).findDatatype(ipsProject);
 
         String label = enumAttributeDecorator.getLabel(enumAttribute);
 

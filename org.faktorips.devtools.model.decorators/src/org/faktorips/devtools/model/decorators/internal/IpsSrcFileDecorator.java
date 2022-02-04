@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 import org.faktorips.devtools.model.decorators.IIpsSrcFileDecorator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -46,7 +46,7 @@ public class IpsSrcFileDecorator implements IIpsSrcFileDecorator {
                     }
                 }
             }
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsLog.log(e);
         }
         return defaultImageDescriptor;

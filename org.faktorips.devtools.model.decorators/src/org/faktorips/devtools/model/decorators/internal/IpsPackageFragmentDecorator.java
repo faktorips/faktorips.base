@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -33,7 +33,7 @@ public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
                 if (children != null && children.length > 0) {
                     return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_PACKAGE_FRAGMENT_ICON, true);
                 }
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsLog.log(e);
             }
             return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_PACKAGE_FRAGMENT_EMPTY_ICON, true);

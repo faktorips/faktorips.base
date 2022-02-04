@@ -19,7 +19,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -107,7 +106,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = mock(ITestPolicyCmptTypeParameter.class);
         when(testPolicyCmptTypeParameter.getIpsProject()).thenReturn(ipsProject);
         when(testPolicyCmptTypeParameter.getAssociation()).thenReturn("agg");
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptTypeParameter)
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptTypeParameter)
                 .findAssociation(ipsProject);
 
         ImageDescriptor imageDescriptor = testPolicyCmptTypeParameterDecorator

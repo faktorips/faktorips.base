@@ -18,7 +18,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -48,7 +47,7 @@ public class IpsPackageFragmentDecoratorTest {
     @Test
     public void testGetImageDescriptor_GetChildrenFails() throws CoreRuntimeException {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(packageFragment).getChildren();
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(packageFragment).getChildren();
 
         ImageDescriptor imageDescriptor = ipsPackageFragmentDecorator.getImageDescriptor(packageFragment);
 

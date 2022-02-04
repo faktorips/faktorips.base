@@ -20,7 +20,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -69,7 +68,7 @@ public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         ITestAttributeValue testAttributeValue = mock(ITestAttributeValue.class);
         when(testAttributeValue.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(testAttributeValue)
+        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(testAttributeValue)
                 .findTestAttribute(ipsProject);
 
         ImageDescriptor imageDescriptor = testAttributeValueDecorator.getImageDescriptor(testAttributeValue);
