@@ -478,8 +478,8 @@ public class IpsTestRunner implements IIpsTestRunner {
             ILaunchConfigurationWorkingCopy wc) throws CoreException {
 
         if (configuration.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "") //$NON-NLS-1$
-                .equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) && //$NON-NLS-1$
-                configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
+                .equals(wc.getAttribute(ATTR_PACKAGEFRAGMENTROOT, "")) //$NON-NLS-1$
+                && configuration.getAttribute(ATTR_TESTCASES, "").equals(wc.getAttribute(ATTR_TESTCASES, ""))) { //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         }
         return false;

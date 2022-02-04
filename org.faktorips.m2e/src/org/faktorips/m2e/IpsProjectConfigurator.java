@@ -12,6 +12,7 @@ package org.faktorips.m2e;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -28,7 +29,8 @@ import org.faktorips.devtools.model.util.ProjectUtil;
 public class IpsProjectConfigurator extends AbstractProjectConfigurator {
 
     @Override
-    public void configure(ProjectConfigurationRequest request, IProgressMonitor progressMonitor) throws CoreRuntimeException {
+    public void configure(ProjectConfigurationRequest request, IProgressMonitor progressMonitor)
+            throws CoreRuntimeException {
         progressMonitor.beginTask("Adding Faktor IPS nature and builder", 2); //$NON-NLS-1$
         IFile file = request.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT);
         if (!file.exists()) {
@@ -48,8 +50,12 @@ public class IpsProjectConfigurator extends AbstractProjectConfigurator {
     }
 
     public void configureIpsProject(IJavaProject javaProject) throws CoreRuntimeException {
-        if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) == null) {
-            ProjectUtil.addIpsNature(javaProject.getProject());
+        try {
+            if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) == null) {
+                ProjectUtil.addIpsNature(javaProject.getProject());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

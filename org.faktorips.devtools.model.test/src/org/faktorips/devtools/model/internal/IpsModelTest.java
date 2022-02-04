@@ -47,11 +47,11 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.AProject;
@@ -95,8 +95,8 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     private IpsModel model;
 
     // JavaProjects for testGetNonIpsResources()
-    private IJavaProject javaProject = null;
-    private IJavaProject javaProject2 = null;
+    private AJavaProject javaProject = null;
+    private AJavaProject javaProject2 = null;
 
     @SuppressWarnings("deprecation")
     @Override

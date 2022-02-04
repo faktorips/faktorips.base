@@ -26,10 +26,10 @@ import java.util.Locale;
 import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -250,7 +250,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     public void testValidate() throws Exception {
         try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             IProject project = newPlatformProject(UUID.randomUUID().toString());
-            IJavaProject javaProject = addJavaCapabilities(project);
+            AJavaProject javaProject = addJavaCapabilities(project);
             StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             ValidationErrorIpsProjectConfigurator validationErrorIpsProjectConfigurator = new ValidationErrorIpsProjectConfigurator();
@@ -270,17 +270,17 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     private static class NonApplicableIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return false;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+        public MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
             fail("Validation should never be called when canConfigure returns false");
             return null;
         }
@@ -296,17 +296,17 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     private static class ValidationErrorIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+        public MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
             return MessageList.ofErrors("Not OK");
         }
 

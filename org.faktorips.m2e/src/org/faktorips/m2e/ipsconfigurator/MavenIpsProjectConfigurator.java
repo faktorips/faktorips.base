@@ -31,14 +31,15 @@ import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -77,25 +78,25 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     private static final String MAVEN_SOURCE_PLUGIN_ARTIFACT_ID = "maven-source-plugin";
 
     @Override
-    public boolean canConfigure(IJavaProject javaProject) {
-        return MavenPlugin.getMavenProjectRegistry().getProject(javaProject.getProject()) != null;
+    public boolean canConfigure(AJavaProject javaProject) {
+        return MavenPlugin.getMavenProjectRegistry().getProject(javaProject.getProject().unwrap()) != null;
     }
 
     @Override
-    public boolean isGroovySupported(IJavaProject javaProject) {
+    public boolean isGroovySupported(AJavaProject javaProject) {
         return true;
     }
 
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
             throws CoreRuntimeException {
-        IProject project = ipsProject.getProject();
+        IProject project = ipsProject.getProject().unwrap();
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
 
         String errorMessage = checkForRequiredIpsObjectPathProperties(ipsObjectPath);
 
         if (IpsStringUtils.isNotEmpty(errorMessage)) {
-            throw new CoreException(new IpsStatus(errorMessage));
+            throw new CoreRuntimeException(new IpsStatus(errorMessage));
         }
 
         addIpsProjectProperties(ipsProject);
@@ -103,10 +104,14 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         createManifestFile(ipsProject, creationProperties);
 
         String resourceFolder = ipsObjectPath.getOutputFolderForDerivedSources().getProjectRelativePath().toString();
-        configureMaven(project, resourceFolder, creationProperties);
+        try {
+            configureMaven(project, resourceFolder, creationProperties);
 
-        // Updating the project is required in order to synchronize the project with the new POM
-        MavenPlugin.getProjectConfigurationManager().updateProjectConfiguration(project, new NullProgressMonitor());
+            // Updating the project is required in order to synchronize the project with the new POM
+            MavenPlugin.getProjectConfigurationManager().updateProjectConfiguration(project, new NullProgressMonitor());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -169,18 +174,18 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      */
     private void createManifestFile(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
             throws CoreRuntimeException {
-        IProject project = ipsProject.getProject();
-        IFolder metaInfFolder = project.getFolder(META_INF_FOLDER);
+        AProject project = ipsProject.getProject();
+        AFolder metaInfFolder = project.getFolder(META_INF_FOLDER);
         if (!metaInfFolder.exists()) {
-            metaInfFolder.create(true, true, new NullProgressMonitor());
+            metaInfFolder.create(new NullProgressMonitor());
         }
         try {
-            IFile manifestFile = metaInfFolder.getFile(MANIFEST_FILE);
+            AFile manifestFile = metaInfFolder.getFile(MANIFEST_FILE);
             Manifest manifest = null;
             if (manifestFile.exists()) {
                 manifest = new Manifest(manifestFile.getContents());
             } else {
-                manifestFile.create(InputStream.nullInputStream(), true, new NullProgressMonitor());
+                manifestFile.create(InputStream.nullInputStream(), new NullProgressMonitor());
                 manifest = new Manifest();
             }
             addIpsManifestFileAttributes(manifest, ipsProject.getProperties().getIpsObjectPath(), creationProperties);
@@ -189,7 +194,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 manifest.write(fileOutputStream);
             }
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e.getMessage(), e));
+            throw new CoreRuntimeException(new IpsStatus(e.getMessage(), e));
         }
     }
 
@@ -233,7 +238,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @throws CoreRuntimeException If configuring the project failed
      */
     private void configureMaven(IProject project, String resourcesPath, IpsProjectCreationProperties creationProperties)
-            throws CoreRuntimeException {
+            throws CoreException {
         IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
         if (facade == null) {
             String message = String.format("The project \"%s\" is not a Maven project", project.getName());
@@ -276,7 +281,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @param mavenModel The model to be written to the POM file
      * @throws CoreRuntimeException If updating the POM file failed
      */
-    private void writePom(Model mavenModel) throws CoreRuntimeException {
+    private void writePom(Model mavenModel) throws CoreException {
         try (FileOutputStream fileOutputStream = new FileOutputStream(mavenModel.getPomFile())) {
             MavenPlugin.getMaven().writeModel(mavenModel, fileOutputStream);
         } catch (IOException e) {
@@ -354,7 +359,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 persistenceDependency.setArtifactId("jakarta.persistence-api");
                 persistenceDependency.setVersion("2.2.3");
             } else {
-                throw new CoreException(new IpsStatus(
+                throw new CoreRuntimeException(new IpsStatus(
                         String.format("The selected persistence support \"%s\" is not supported.",
                                 creationProperties.getPersistenceSupport())));
             }

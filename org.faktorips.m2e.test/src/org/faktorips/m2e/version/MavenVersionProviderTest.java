@@ -16,11 +16,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.ByteArrayInputStream;
 
 import org.apache.maven.project.MavenProject;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     // @formatter:on
 
     private IIpsProject ipsProject;
-    private IProject project;
+    private AProject project;
 
     @Before
     @Override
@@ -55,11 +56,11 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     }
 
     private void newPom(String pomContent) throws CoreRuntimeException {
-        project.getFile(POM_XML).create(new ByteArrayInputStream(pomContent.getBytes()), true, null);
+        project.getFile(POM_XML).create(new ByteArrayInputStream(pomContent.getBytes()), null);
     }
 
-    private void addMavenNature() throws CoreRuntimeException {
-        MavenPlugin.getProjectConfigurationManager().enableMavenNature(project, new ResolverConfiguration(),
+    private void addMavenNature() throws CoreException {
+        MavenPlugin.getProjectConfigurationManager().enableMavenNature(project.unwrap(), new ResolverConfiguration(),
                 new NullProgressMonitor());
     }
 
@@ -82,10 +83,10 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProjectVersion_afterMavenUpdate() throws CoreRuntimeException {
+    public void testGetProjectVersion_afterMavenUpdate() throws CoreException {
         MavenVersionProvider mavenVersionProvider = new MavenVersionProvider(ipsProject);
 
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(project)
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(project.unwrap())
                 .getMavenProject(new NullProgressMonitor());
         mavenProject.setVersion("1.2.4-SNAPSHOT");
 
@@ -98,7 +99,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
 
         mavenVersionProvider.setProjectVersion(new MavenVersion("1.2.4-SNAPSHOT"));
 
-        assertThat(MavenPlugin.getMavenProjectRegistry().getProject(project).getMavenProject().getVersion(),
+        assertThat(MavenPlugin.getMavenProjectRegistry().getProject(project.unwrap()).getMavenProject().getVersion(),
                 is("1.2.4-SNAPSHOT"));
     }
 }

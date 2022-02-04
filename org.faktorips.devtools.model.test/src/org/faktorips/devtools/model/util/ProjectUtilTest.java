@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.util;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,10 +40,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
-import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -94,7 +96,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         IProject platformProject = newPlatformProject("TestProject");
-        javaProject = addJavaCapabilities(platformProject);
+        javaProject = addJavaCapabilities(platformProject).unwrap();
         creationProperties = new IpsProjectCreationProperties();
         creationProperties.getLocales().add(new Locale(supportedLanguage));
     }
@@ -138,7 +140,8 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     @Test(expected = CoreException.class)
     public void testCreateIpsProject_missingCreationProperties() throws CoreException {
         creationProperties = mock(IpsProjectCreationProperties.class);
-        when(creationProperties.validate(javaProject)).thenReturn(MessageList.ofErrors("error"));
+        when(creationProperties.validate(wrap(javaProject).as(AJavaProject.class)))
+                .thenReturn(MessageList.ofErrors("error"));
         ProjectUtil.createIpsProject(javaProject, creationProperties);
     }
 

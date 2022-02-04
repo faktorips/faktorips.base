@@ -39,7 +39,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
     private final IMavenProjectChangedListener mavenUpdateListener;
 
     public MavenVersionProvider(IIpsProject ipsProject) {
-        project = ipsProject.getProject();
+        project = ipsProject.getProject().unwrap();
         mavenProject = findMavenProject();
         mavenUpdateListener = (events, $) -> mavenProjectChanged(events);
         MavenPlugin.getMavenProjectRegistry().addMavenProjectChangedListener(mavenUpdateListener);

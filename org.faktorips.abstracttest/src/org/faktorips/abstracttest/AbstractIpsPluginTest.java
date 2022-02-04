@@ -65,9 +65,11 @@ import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
@@ -332,8 +334,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new Java Project for the given platform project.
      */
-    protected IJavaProject addJavaCapabilities(IProject project) throws CoreException {
-        return JavaProjectUtil.addJavaCapabilities(project);
+    protected AJavaProject addJavaCapabilities(IProject project) throws CoreException {
+        return Wrappers.wrap(JavaProjectUtil.addJavaCapabilities(project)).as(AJavaProject.class);
+    }
+
+    /**
+     * Converts the given Java project to a Java 11 module project.
+     */
+    protected void convertToModuleProject(AJavaProject javaProject) {
+        JavaProjectUtil.convertToModuleProject(javaProject.unwrap());
     }
 
     /**

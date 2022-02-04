@@ -31,6 +31,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseFolder;
 import org.faktorips.devtools.model.IIpsModel;
@@ -253,7 +254,7 @@ public class ProjectUtil {
             IpsProjectCreationProperties creationProperties)
             throws CoreException {
 
-        MessageList errorMessages = creationProperties.validate(javaProject);
+        MessageList errorMessages = creationProperties.validate(wrap(javaProject).as(AJavaProject.class));
         if (errorMessages.containsErrorMsg()) {
             throw new CoreException(IpsStatus.of(errorMessages));
         }
@@ -512,7 +513,7 @@ public class ProjectUtil {
             throws CoreRuntimeException {
         boolean isExtensionResponsible = false;
         for (IIpsProjectConfigurator configurator : IpsProjectConfigurators
-                .applicableTo(ipsProject.getJavaProject().unwrap())
+                .applicableTo(ipsProject.getJavaProject())
                 .collect(Collectors.toList())) {
             isExtensionResponsible = true;
             configurator.configureIpsProject(ipsProject, creationProperties);

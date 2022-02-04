@@ -11,6 +11,7 @@ package org.faktorips.m2e.toctree;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -25,13 +26,14 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -58,27 +60,30 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
     @Override
     public void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages)
             throws CoreRuntimeException {
+        try {
+            List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsProject.getIpsPackageFragmentRoots());
+            Collections.reverse(ipsRootsList);
 
-        List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsProject.getIpsPackageFragmentRoots());
-        Collections.reverse(ipsRootsList);
+            IMavenProjectFacade mavenProjectFacade = findMavenProjectFacade(ipsProject.getProject());
+            MavenProject mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
+            DependencyNode mavenDependencies = MavenPlugin.getMavenModelManager().readDependencyTree(mavenProjectFacade,
+                    mavenProject, "compile", new NullProgressMonitor());
 
-        IMavenProjectFacade mavenProjectFacade = findMavenProjectFacade(ipsProject.getProject());
-        MavenProject mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
-        DependencyNode mavenDependencies = MavenPlugin.getMavenModelManager().readDependencyTree(mavenProjectFacade,
-                mavenProject, "compile", new NullProgressMonitor());
+            Set<IpsJarBundle> jarBundles = ipsRootsList.stream()
+                    .filter(LibraryIpsPackageFragmentRoot.class::isInstance)
+                    .map(LibraryIpsPackageFragmentRoot.class::cast)
+                    .map(LibraryIpsPackageFragmentRoot::getIpsStorage)
+                    .filter(IpsJarBundle.class::isInstance)
+                    .map(IpsJarBundle.class::cast)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        Set<IpsJarBundle> jarBundles = ipsRootsList.stream()
-                .filter(LibraryIpsPackageFragmentRoot.class::isInstance)
-                .map(LibraryIpsPackageFragmentRoot.class::cast)
-                .map(LibraryIpsPackageFragmentRoot::getIpsStorage)
-                .filter(IpsJarBundle.class::isInstance)
-                .map(IpsJarBundle.class::cast)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+            Map<Artifact, IpsMavenDependency> ipsDependencies = new LinkedHashMap<>();
+            findIpsMavenDependenciesAndTocs(mavenDependencies, null, jarBundles, ipsDependencies, mavenProject);
 
-        Map<Artifact, IpsMavenDependency> ipsDependencies = new LinkedHashMap<>();
-        findIpsMavenDependenciesAndTocs(mavenDependencies, null, jarBundles, ipsDependencies, mavenProject);
-
-        ipsDependencies.values().stream().map(IpsMavenDependency::toString).forEach(repositoryPackages::add);
+            ipsDependencies.values().stream().map(IpsMavenDependency::toString).forEach(repositoryPackages::add);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private void findIpsMavenDependenciesAndTocs(DependencyNode rootNode,
@@ -86,7 +91,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             Set<IpsJarBundle> jarBundles,
             Map<Artifact, IpsMavenDependency> ipsDependencies,
             MavenProject mp)
-            throws CoreRuntimeException {
+            throws CoreException {
 
         try {
             for (DependencyNode childNode : rootNode.getChildren()) {
@@ -120,7 +125,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
         return location.toFile().getAbsoluteFile().getCanonicalFile();
     }
 
-    private Artifact resolveArtifactFile(DependencyNode child, MavenProject mavenProject) throws CoreRuntimeException {
+    private Artifact resolveArtifactFile(DependencyNode child, MavenProject mavenProject) throws CoreException {
         return ((MavenImpl)MavenPlugin.getMaven()).resolve(
                 RepositoryUtils.toArtifact(child.getArtifact()),
                 mavenProject.getRemoteArtifactRepositories(), new NullProgressMonitor());
@@ -133,13 +138,14 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             String basePackage = bundleManifest.getBasePackage(objectDir);
             String tocPath = bundleManifest.getTocPath(manifestElement);
             String internalPackage = QNameUtil.concat(basePackage, INTERNAL_PACKAGE);
-            return QNameUtil.toPath(internalPackage).toString() + IPath.SEPARATOR + tocPath;
+            Path path = QNameUtil.toPath(internalPackage);
+            return path == null ? tocPath : path.resolve(tocPath).toString();
         }
         throw new CoreRuntimeException("No toc found in the IpsJarBundle " + jarBundle.toString());
     }
 
-    private IMavenProjectFacade findMavenProjectFacade(IProject project) {
-        IFile pom = project.getFile(POM_FILE_NAME);
+    private IMavenProjectFacade findMavenProjectFacade(AProject project) {
+        IFile pom = project.getFile(POM_FILE_NAME).unwrap();
         return MavenPlugin.getMavenProjectRegistry().create(pom, true,
                 new NullProgressMonitor());
     }

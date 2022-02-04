@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -32,16 +33,17 @@ import org.faktorips.runtime.MessageList;
 public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     @Override
-    public boolean canConfigure(IJavaProject javaProject) {
+    public boolean canConfigure(AJavaProject javaProject) {
         try {
-            return javaProject.getModuleDescription() != null;
-        } catch (JavaModelException e) {
+            IJavaProject eclipseJavaProject = javaProject.unwrap();
+            return eclipseJavaProject.getModuleDescription() != null;
+        } catch (JavaModelException | ClassCastException e) {
             return false;
         }
     }
 
     @Override
-    public boolean isGroovySupported(IJavaProject javaProject) {
+    public boolean isGroovySupported(AJavaProject javaProject) {
         // groovy will be added (or not) depending on other configurators - unless this is the only
         // one, the we delegate to the StandardJavaProjectConfigurator
         if (IpsProjectConfigurators.applicableTo(javaProject).allMatch((IIpsProjectConfigurator c) -> c == this)) {
@@ -52,7 +54,7 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
     }
 
     @Override
-    public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+    public MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
         if (creationProperties.isPersistentProject()) {
             String persistenceAPI = creationProperties.getPersistenceSupport();
             switch (persistenceAPI) {
@@ -69,7 +71,7 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
             throws CoreRuntimeException {
-        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
+        AJavaProject javaProject = ipsProject.getJavaProject();
         if (IpsProjectConfigurators.applicableTo(javaProject).allMatch((IIpsProjectConfigurator c) -> c == this)) {
             new StandardJavaProjectConfigurator().configureIpsProject(ipsProject, creationProperties);
         }
@@ -80,7 +82,7 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
         }
     }
 
-    private void addRequiredModules(IJavaProject javaProject, IpsProjectCreationProperties creationProperties)
+    private void addRequiredModules(AJavaProject javaProject, IpsProjectCreationProperties creationProperties)
             throws CoreException {
         List<String> requiredModules = new ArrayList<>();
         requiredModules.add("org.faktorips.runtime");
@@ -90,7 +92,7 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
         if (creationProperties.isPersistentProject()) {
             requiredModules.add("javax.persistence");
         }
-        Modules.addRequired(javaProject, true, requiredModules);
+        Modules.addRequired(javaProject.unwrap(), true, requiredModules);
     }
 
 }

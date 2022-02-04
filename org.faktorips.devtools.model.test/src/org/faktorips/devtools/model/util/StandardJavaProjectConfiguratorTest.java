@@ -36,7 +36,7 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         IProject platformProject = newPlatformProject("TestProject");
-        javaProject = addJavaCapabilities(platformProject);
+        javaProject = addJavaCapabilities(platformProject).unwrap();
     }
 
     @SuppressWarnings("deprecation")

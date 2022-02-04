@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -53,12 +54,12 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
     }
 
     @Override
-    public boolean canConfigure(IJavaProject javaProject) {
+    public boolean canConfigure(AJavaProject javaProject) {
         return true;
     }
 
     @Override
-    public boolean isGroovySupported(IJavaProject javaProject) {
+    public boolean isGroovySupported(AJavaProject javaProject) {
         return IpsClasspathContainerInitializer.isGroovySupportAvailable();
     }
 

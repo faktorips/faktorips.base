@@ -23,10 +23,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -35,7 +35,7 @@ import org.junit.Test;
 
 public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
-    private IJavaProject javaProject;
+    private AJavaProject javaProject;
 
     @Override
     public void setUp() throws Exception {
@@ -82,12 +82,12 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class NonApplicableIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return false;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
@@ -102,12 +102,12 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class GroovyIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
@@ -122,12 +122,12 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class NonGroovyIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return false;
         }
 
