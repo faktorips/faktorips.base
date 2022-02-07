@@ -1,0 +1,219 @@
+<!-- ######################################################################## -->
+<!-- -->
+<!-- Copyright (c) Faktor Zehn GmbH - faktorzehn.org -->
+<!-- -->
+<!-- This source code is available under the terms of the AGPL Affero General -->
+<!-- Public License version 3.0 -->
+<!-- -->
+<!-- Please see LICENSE.txt for full license terms, including the additional -->
+<!-- permissions and -->
+<!-- restrictions as well as the possibility of alternative license terms. -->
+<!-- -->
+<!-- ########################################################################### -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.faktorips</groupId>
+    <artifactId>base</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Platform for Developing Insurance Applications</name>
+
+    <properties>
+        <!-- User properties -->
+        <target-platform>eclipse-2019-03</target-platform>
+        <!-- plugin versions -->
+        <tycho-version>2.7.0-SNAPSHOT</tycho-version>
+        <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
+        <maven-checkstyle-plugin-version>2.17</maven-checkstyle-plugin-version>
+        <maven-surefire-plugin-version>2.22.0</maven-surefire-plugin-version>
+        <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+        <maven-jar-plugin-version>2.6</maven-jar-plugin-version>
+        <maven-scm-plugin-version>1.12.2</maven-scm-plugin-version>
+        <xtend-maven-plugin-version>2.25.0</xtend-maven-plugin-version>
+        <maven-javadoc-plugin-version>3.3.1</maven-javadoc-plugin-version>
+        <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
+        <!-- java and compiler options -->
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>tycho-snapshots</id>
+            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <modules>
+        <module>org.faktorips.codequality.config</module>
+        <module>org.faktorips.aggregator</module>
+    </modules>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <!-- Maven plugins -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${maven-scm-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin-version}</version>
+                    <configuration>
+                        <tags>
+                            <tag>
+                                <name>apiNote</name>
+                                <placement>a</placement>
+                                <head>API Note:</head>
+                            </tag>
+                            <tag>
+                                <name>implSpec</name>
+                                <placement>a</placement>
+                                <head>Implementation Requirements:</head>
+                            </tag>
+                            <tag>
+                                <name>implNote</name>
+                                <placement>a</placement>
+                                <head>Implementation Note:</head>
+                            </tag>
+                            <tag>
+                                <name>param</name>
+                            </tag>
+                            <tag>
+                                <name>return</name>
+                            </tag>
+                            <tag>
+                                <name>throws</name>
+                            </tag>
+                            <tag>
+                                <name>since</name>
+                            </tag>
+                            <tag>
+                                <name>version</name>
+                            </tag>
+                            <tag>
+                                <name>serialData</name>
+                            </tag>
+                            <tag>
+                                <name>see</name>
+                            </tag>
+                        </tags>
+                    </configuration>
+                </plugin>
+                <!-- tycho plugins -->
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-maven-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>target-platform-configuration</artifactId>
+                    <version>${tycho-version}</version>
+                    <configuration>
+                        <target>
+                            <artifact>
+                                <groupId>org.faktorips</groupId>
+                                <artifactId>${target-platform}</artifactId>
+                                <version>${project.version}</version>
+                            </artifact>
+                        </target>
+                        <environments>
+                            <environment>
+                                <os>win32</os>
+                                <ws>win32</ws>
+                                <arch>x86_64</arch>
+                            </environment>
+                            <environment>
+                                <os>linux</os>
+                                <ws>gtk</ws>
+                                <arch>x86_64</arch>
+                            </environment>
+                            <environment>
+                                <os>macosx</os>
+                                <ws>cocoa</ws>
+                                <arch>x86_64</arch>
+                            </environment>
+                        </environments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-versions-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-surefire-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                </plugin>
+                <plugin>
+                    <!-- TODO this is deprecated -->
+                    <groupId>org.eclipse.tycho.extras</groupId>
+                    <artifactId>tycho-source-feature-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                </plugin>
+                <!-- others -->
+                <plugin>
+                    <groupId>org.eclipse.xtend</groupId>
+                    <artifactId>xtend-maven-plugin</artifactId>
+                    <version>${xtend-maven-plugin-version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>${spotbugs-maven-plugin-version}</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+    </dependencies>
+
+    <scm>
+        <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
+        <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
+        <url>https://github.com/faktorips/faktorips.base</url>
+    </scm>
+</project>
