@@ -38,6 +38,14 @@ public abstract class XmlAbstractTestCase {
                 className = className.substring(index + 1);
             }
             String resourceName = className + ".xml";
+            return getTestDocument(resourceName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Document getTestDocument(String resourceName) {
+        try {
             InputStream is = getClass().getResourceAsStream(resourceName);
             if (is == null) {
                 throw new RuntimeException("Can't find resource " + resourceName);
