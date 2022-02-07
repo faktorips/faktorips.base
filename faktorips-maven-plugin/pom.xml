@@ -2,7 +2,13 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.faktorips</groupId>
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>base</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+
     <artifactId>faktorips-maven-plugin</artifactId>
     <version>22.6.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
@@ -25,9 +31,8 @@
         <jdk.version>11</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <tycho-version>2.4.0</tycho-version>
-        <tycho-extras-version>2.4.0</tycho-extras-version>
+        <!-- TODO should there be a different version for build and dependency? -->
+		<tycho-dependency-version>2.4.0</tycho-dependency-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
         <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
@@ -58,12 +63,12 @@
         <dependency>
             <groupId>org.eclipse.tycho.extras</groupId>
             <artifactId>tycho-eclipserun-plugin</artifactId>
-            <version>${tycho-extras-version}</version>
+            <version>${tycho-dependency-version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>sisu-equinox-launching</artifactId>
-            <version>${tycho-version}</version>
+            <version>${tycho-dependency-version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -128,8 +133,8 @@
             </extension>
             <extension>
                 <groupId>org.faktorips</groupId>
-                <artifactId>org.faktorips.build.config</artifactId>
-                <version>1.2.2</version>
+                <artifactId>codequality-config</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
             </extension>
         </extensions>
         <pluginManagement>
