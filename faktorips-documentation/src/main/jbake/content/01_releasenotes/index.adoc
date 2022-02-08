@@ -6,6 +6,10 @@
 
 == Release Notes
 
+=== Version 21.12.3
+
+Mit Version 21.12.3 behandelt Faktor-IPS fehlerhafte MANIFEST.MF-Angaben in Maven-Dependencies bei der Ausführung von Faktor-IPS-Testfällen mit einem Fehlerdialog und dem Versuch, den Test dennoch auszuführen anstatt Tests direkt fehlschlagen zu lassen.
+
 === Version 21.12.2
 
 Version 21.12.2 bringt Performance-Verbesserungen bei der Verwendung großer Modelle in JARs in der Faktor-IPS-Designzeitumgebung(Eclipse-Plugin). Ein Update der Runtime-Dependencies ist nicht notwendig.

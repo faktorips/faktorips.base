@@ -6,6 +6,10 @@
 
 == Release Notes (English)
 
+=== Version 21.12.3
+
+With version 21.12.3 Faktor-IPS treats faulty entries MANIFEST.MF files of Maven dependencies used while running Faktor-IPS testcases with an error dialog and tries to run the test anyways instead of directly aborting the test run.
+
 === Version 21.12.2
 
 Version 21.12.2 brings performance improvements when using large models and products from JARs in the Faktor-IPS design time tools(Eclipse plugin). An update of the runtime dependencies is not necessary.
