@@ -21,14 +21,15 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestEclipseIpsModelExtensions;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -50,7 +51,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCanConfigure() throws Exception {
-        IProject project = newPlatformProject("p");
+        AProject project = newPlatformProject("p");
         AJavaProject javaProject = addJavaCapabilities(project);
         convertToModuleProject(javaProject);
 
@@ -59,7 +60,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCanConfigure_NoModule() throws Exception {
-        IProject project = newPlatformProject("p");
+        AProject project = newPlatformProject("p");
         AJavaProject javaProject = addJavaCapabilities(project);
 
         assertThat(moduleIpsProjectConfigurator.canConfigure(javaProject), is(false));
@@ -67,8 +68,8 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsGroovySupported() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
-            IProject project = newPlatformProject("p");
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            AProject project = newPlatformProject("p");
             AJavaProject javaProject = addJavaCapabilities(project);
             convertToModuleProject(javaProject);
 
@@ -87,7 +88,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_NonPersistentProject() throws Exception {
-        IProject project = newPlatformProject("p");
+        AProject project = newPlatformProject("p");
         AJavaProject javaProject = addJavaCapabilities(project);
         convertToModuleProject(javaProject);
         IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
@@ -99,7 +100,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_PersistentProject() throws Exception {
-        IProject project = newPlatformProject("p");
+        AProject project = newPlatformProject("p");
         AJavaProject javaProject = addJavaCapabilities(project);
         convertToModuleProject(javaProject);
         IpsProjectCreationProperties properties = new IpsProjectCreationProperties();
@@ -132,7 +133,7 @@ public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testConfigureIpsProject_Standard() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             IIpsProject ipsProject = newIpsProject("p");
             IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
             convertToModuleProject(javaProject);

@@ -9,12 +9,19 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
+import static org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange.Type.CONTENT_CHANGED;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +32,7 @@ import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions.AImplementation;
 import org.faktorips.devtools.abstraction.Wrappers.WrapperBuilder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange.Type;
 
 public enum PlainJavaImplementation implements AImplementation {
     INSTANCE;
@@ -33,6 +41,7 @@ public enum PlainJavaImplementation implements AImplementation {
     private final Locale locale = Locale.getDefault();
     private volatile PlainJavaWorkspace workspace;
     private final ALog log = new PlainJavaLog();
+    private final ResourceChanges resourceChanges = new ResourceChanges();
 
     static PlainJavaImplementation get() {
         return INSTANCE;
@@ -98,6 +107,10 @@ public enum PlainJavaImplementation implements AImplementation {
         return log;
     }
 
+    public static ResourceChanges getResourceChanges() {
+        return get().resourceChanges;
+    }
+
     private static final class PlainJavaLog implements ALog {
         private final Map<ALogListener, Void> logListeners = new WeakHashMap<>();
 
@@ -130,6 +143,66 @@ public enum PlainJavaImplementation implements AImplementation {
             } else {
                 Logger.getLogger(ID).log(Level.FINE, status.getMessage());
             }
+        }
+    }
+
+    public static final class ResourceChanges {
+        private final Set<Consumer<PlainJavaResourceChange>> resourceChangeListeners = new LinkedHashSet<>();
+        private final Deque<PlainJavaResourceChange> delayedChangeEvents = new LinkedList<>();
+        private boolean delayChangeEvents;
+
+        void hold() {
+            delayChangeEvents = true;
+        }
+
+        void resume() {
+            Deque<PlainJavaResourceChange> eventsToResend;
+            synchronized (delayedChangeEvents) {
+                eventsToResend = new LinkedList<>(delayedChangeEvents);
+                delayedChangeEvents.clear();
+                delayChangeEvents = false;
+            }
+            eventsToResend.forEach(this::notifyResourceChangeListeners);
+        }
+
+        private void notifyResourceChangeListeners(PlainJavaResourceChange change) {
+            if (delayChangeEvents) {
+                delayedChangeEvents.add(change);
+            } else {
+                resourceChangeListeners.forEach(listener -> listener.accept(change));
+            }
+            PlainJavaResource changedResource = change.getChangedResource();
+            if (changedResource instanceof PlainJavaContainer) {
+                PlainJavaContainer container = (PlainJavaContainer)changedResource;
+                container.getMembers().stream()
+                        .map(r -> new PlainJavaResourceChange(r, change.getType()))
+                        .forEach(this::notifyResourceChangeListeners);
+            }
+        }
+
+        public void resourceChanged(PlainJavaResource changedResource) {
+            notifyResourceChangeListeners(new PlainJavaResourceChange(changedResource, CONTENT_CHANGED));
+        }
+
+        public void resourceMoved(PlainJavaResource oldResource, PlainJavaResource newResource) {
+            notifyResourceChangeListeners(new PlainJavaResourceChange(oldResource, Type.REMOVED));
+            notifyResourceChangeListeners(new PlainJavaResourceChange(newResource, Type.ADDED));
+        }
+
+        public void resourceCreated(PlainJavaResource newResource) {
+            notifyResourceChangeListeners(new PlainJavaResourceChange(newResource, Type.ADDED));
+        }
+
+        public void resourceRemoved(PlainJavaResource removedResource) {
+            notifyResourceChangeListeners(new PlainJavaResourceChange(removedResource, Type.REMOVED));
+        }
+
+        public void addListener(Consumer<PlainJavaResourceChange> listener) {
+            resourceChangeListeners.add(listener);
+        }
+
+        public void removeListener(Consumer<PlainJavaResourceChange> listener) {
+            resourceChangeListeners.remove(listener);
         }
     }
 

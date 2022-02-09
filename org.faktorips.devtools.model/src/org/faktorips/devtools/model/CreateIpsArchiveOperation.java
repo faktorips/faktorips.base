@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.model;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -33,11 +31,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
@@ -348,35 +345,31 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
 
     private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)
             {
-        try {
-            IPackageFragmentRoot javaRoot = root.getArtefactDestination(false).unwrap();
-            if (javaRoot == null) {
-                throw new IpsException(
-                        new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$
+        APackageFragmentRoot javaRoot = root.getArtefactDestination(false);
+        if (javaRoot == null) {
+            throw new IpsException(
+                    new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$
+        }
+        if (inclJavaBinaries) {
+            Path path = javaRoot.getOutputLocation();
+            if (path == null) {
+                path = javaRoot.getJavaProject().getOutputLocation();
             }
-            if (inclJavaBinaries) {
-                IPath path = javaRoot.getRawClasspathEntry().getOutputLocation();
-                if (path == null) {
-                    path = javaRoot.getJavaProject().getOutputLocation();
-                }
-                AFolder outFolder = Abstractions.getWorkspace().getRoot().getFolder(toJavaPath(path));
-                if (!handledRootFolders.contains(outFolder)) {
-                    addFiles(outFolder, outFolder, os, monitor);
-                    handledRootFolders.add(outFolder);
-                }
+            AFolder outFolder = Abstractions.getWorkspace().getRoot().getFolder(path);
+            if (!handledRootFolders.contains(outFolder)) {
+                addFiles(outFolder, outFolder, os, monitor);
+                handledRootFolders.add(outFolder);
             }
-            // Java sourcen
-            if (inclJavaSources) {
-                IPath path = javaRoot.getRawClasspathEntry().getPath();
-                AFolder srcFolder = Abstractions.getWorkspace().getRoot().getFolder(toJavaPath(path));
-                if (handledRootFolders.contains(srcFolder)) {
-                    return;
-                }
-                addFiles(srcFolder, srcFolder, os, monitor);
-                handledRootFolders.add(srcFolder);
+        }
+        // Java sourcen
+        if (inclJavaSources) {
+            Path path = javaRoot.getPath();
+            AFolder srcFolder = Abstractions.getWorkspace().getRoot().getFolder(path);
+            if (handledRootFolders.contains(srcFolder)) {
+                return;
             }
-        } catch (JavaModelException e) {
-            throw new IpsException(e.getMessage(), e);
+            addFiles(srcFolder, srcFolder, os, monitor);
+            handledRootFolders.add(srcFolder);
         }
     }
 

@@ -11,8 +11,10 @@
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.hasSize;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -87,33 +89,33 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setSourceColumnName("");
 
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
 
         persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         inversePersistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
         persistenceAssociatonInfo.setJoinTableName("INVALID JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
 
         inversePersistenceAssociatonInfo.setOwnerOfManyToManyAssociation(false);
 
         persistenceAssociatonInfo.setJoinTableName("JOIN_TABLE");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_EMPTY));
 
         persistenceAssociatonInfo.setTargetColumnName("INVALID SOURCE_COLUMN");
         persistenceAssociatonInfo.setSourceColumnName("INVALID TARGET_COLUMN");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
 
         persistenceAssociatonInfo.setSourceColumnName("SOURCE_COLUMN");
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
 
         persistenceAssociatonInfo.setTransient(true);
         inversePersistenceAssociatonInfo.setTransient(true);
@@ -122,7 +124,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setTransient(true);
         inversePersistenceAssociatonInfo.setTransient(false);
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
     }
 
     @Test
@@ -134,20 +136,20 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         assertEquals(0, ml.size());
 
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
 
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
 
         // test target association must be transient or target policy component persist disabled
 
         sourcePersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         ml = targetPersistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
 
         targetPersistenceAssociatonInfo.setTransient(true);
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
@@ -169,7 +171,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation.setMaxCardinality(1); // set to 1 we don't want a join table
         sourcePersistenceAssociatonInfo.setJoinColumnName("JoinColumn");
         ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
     }
 
     @Test
@@ -675,7 +677,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         pcAssociation2.setInverseAssociation(null);
         pcAssociation3.setInverseAssociation(null);
         MessageList ml = policyCmptType.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
     }
 
     @Test
@@ -693,10 +695,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo2.setTargetColumnName("");
 
         MessageList ml = persistenceAssociatonInfo1.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         ml = persistenceAssociatonInfo1.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
     }
 
     @Test
@@ -719,14 +721,14 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         inversePersistenceAssociatonInfo.setJoinColumnName(columnName);
 
         MessageList ml = inversePersistenceAssociatonInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
 
         ml = inversePersistenceAssociatonInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
 
         inversePersistenceAssociatonInfo.setJoinColumnName("invalid" + columnName);
         ml = inversePersistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_INVALID));
 
         // test join table max table and source/target column name
         // note that the join table is only required on the owner n:n relationship side
@@ -748,18 +750,18 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setTargetColumnName(targetColumnName);
 
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
 
         persistenceAssociatonInfo.setJoinTableName("invalid" + joinTableName);
         persistenceAssociatonInfo.setSourceColumnName("invalid" + sourceColumnName);
         persistenceAssociatonInfo.setTargetColumnName("invalid" + targetColumnName);
 
         ml = persistenceAssociatonInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_TABLE_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_TARGET_COLUMN_NAME_INVALID));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_SOURCE_COLUMN_NAME_INVALID));
     }
 
     @Test
@@ -779,7 +781,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         // unidirectional derived union
         ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        // assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        // assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
 
         IPolicyCmptTypeAssociation invDerivedUnion = superPcType.newPolicyCmptTypeAssociation();
         invDerivedUnion.setTarget(policyCmptType.getQualifiedName());
@@ -790,10 +792,10 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         // bidirectional derived union
         ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
 
         ml = invDerivedUnion.getPersistenceAssociatonInfo().validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
 
         // test join column is necessary on derived union implementation
         // a) unidirectional
@@ -803,14 +805,14 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         implDerivedUnionAss.setTarget(targetPcAssociation.getPolicyCmptType().getQualifiedName());
         implDerivedUnionAss.setTargetRoleSingular("implDerivedUnion");
         ml = implDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
 
         // a) bidirectional, join column must be defined on the owner side
         IPolicyCmptTypeAssociation inverseImplDerivedUnionAss = implDerivedUnionAss.newInverseAssociation();
         ml = inverseImplDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
         ml = implDerivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
     }
 
     @Test

@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.ProjectUtil;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 
 /**
  * An action that adds the ips nature to a project.
@@ -68,7 +68,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             // only work with Java projects that are not IPS Projects at the same time
             try {
                 IJavaProject jPrj = (IJavaProject)prj.getNature(JavaCore.NATURE_ID);
-                if (!ProjectUtil.hasIpsNature(prj) && jPrj != null) {
+                if (!EclipseProjectUtil.hasIpsNature(prj) && jPrj != null) {
                     javaProject = jPrj;
                 }
                 action.setEnabled(javaProject != null);
@@ -91,7 +91,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             return;
         }
         try {
-            if (ProjectUtil.hasIpsNature(javaProject)) {
+            if (EclipseProjectUtil.hasIpsNature(javaProject)) {
                 MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
                         Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
                 return;
@@ -108,7 +108,7 @@ public class AddIpsNatureAction extends ActionDelegate {
                 boolean answer = MessageDialog.openConfirm(getShell(),
                         Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
-                    ProjectUtil.addIpsNature(ipsProject.getProject().unwrap());
+                    EclipseProjectUtil.addIpsNature(ipsProject.getProject().unwrap());
                 }
                 return;
             }
@@ -122,7 +122,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
 
         try {
-            ProjectUtil.createIpsProject(javaProject, dialog.getIpsProjectCreationProperties());
+            EclipseProjectUtil.createIpsProject(javaProject, dialog.getIpsProjectCreationProperties());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             ErrorDialog.openError(getShell(),

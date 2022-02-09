@@ -40,7 +40,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
      * @param javaProject The java project to be configured
      * @throws IpsException if configuring failed
      * @deprecated this method is only here to support the deprecated
-     *             {@link ProjectUtil#createIpsProject(IJavaProject, String, boolean, boolean, boolean, java.util.List)}
+     *             {@link EclipseProjectUtil#createIpsProject(IJavaProject, String, boolean, boolean, boolean, java.util.List)}
      *             method without code duplication
      */
     @Deprecated

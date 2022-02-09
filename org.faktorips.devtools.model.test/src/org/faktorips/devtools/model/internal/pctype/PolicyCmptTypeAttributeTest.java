@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -417,11 +418,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
 
         attribute.setOverwrite(true);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
 
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute();
@@ -429,7 +430,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
 
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
     @Test
@@ -440,7 +441,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
 
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
         pcType.setSupertype(supertype.getQualifiedName());
@@ -450,11 +451,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
 
         attribute.setAttributeType(superAttr.getAttributeType());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
     }
 
     @Test
@@ -613,7 +614,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
@@ -743,7 +744,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
     }
 
     @Test
@@ -755,7 +756,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_CONSTANT_CANT_BE_ABSTRACT));
     }
 
     @Test
@@ -767,7 +768,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
     }
 
     @Test
@@ -779,7 +780,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNotNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
     }
 
     @Test
@@ -790,7 +791,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
     }
 
     @Test
@@ -801,6 +802,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertNull(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
     }
 }

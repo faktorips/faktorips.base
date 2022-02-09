@@ -58,6 +58,8 @@ import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.builder.IpsBuilder.EclipseIpsBuilder;
@@ -96,6 +98,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * A common base class for builder tests.
@@ -107,6 +110,7 @@ import org.junit.Test;
 // causes a clean to the builder set map of the ips model. Hence when the model is requested
 // for the builder set it will look registered builder sets at the extension point and
 // won't find the test builder set
+@Category(EclipseImplementation.class)
 public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -263,614 +267,645 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testMarkerHandling() throws Exception {
-        IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
-        pcType.setSupertype("UnknownSupertype");
-        pcType.getIpsSrcFile().save(true, null);
-        MessageList msgList = pcType.validate(pcType.getIpsProject());
-        int numOfMsg = msgList.size();
-        assertTrue(numOfMsg > 0);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        AResource resource = pcType.getEnclosingResource();
-        Set<AMarker> markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true,
-                AResourceTreeTraversalDepth.INFINITE);
-        assertTrue(markers.size() > 0);
-        assertEquals(msgList.size(), markers.size());
-        Map<String, Integer> msgTexts = new HashMap<>();
-        for (Object name : msgList) {
-            Message msg = (Message)name;
-            if (msg.getSeverity() == Message.ERROR) {
-                msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_ERROR));
+        if (Abstractions.isEclipseRunning()) {
+            IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
+            pcType.setSupertype("UnknownSupertype");
+            pcType.getIpsSrcFile().save(true, null);
+            MessageList msgList = pcType.validate(pcType.getIpsProject());
+            int numOfMsg = msgList.size();
+            assertTrue(numOfMsg > 0);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            AResource resource = pcType.getEnclosingResource();
+            Set<AMarker> markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true,
+                    AResourceTreeTraversalDepth.INFINITE);
+            assertTrue(markers.size() > 0);
+            assertEquals(msgList.size(), markers.size());
+            Map<String, Integer> msgTexts = new HashMap<>();
+            for (Object name : msgList) {
+                Message msg = (Message)name;
+                if (msg.getSeverity() == Message.ERROR) {
+                    msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_ERROR));
+                }
+                if (msg.getSeverity() == Message.WARNING) {
+                    msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_WARNING));
+                }
             }
-            if (msg.getSeverity() == Message.WARNING) {
-                msgTexts.put(msg.getText(), Integer.valueOf(IMarker.SEVERITY_WARNING));
+            for (AMarker marker : markers) {
+                assertTrue(msgTexts.containsKey(marker.getAttribute(IMarker.MESSAGE)));
+                assertEquals(msgTexts.get(marker.getAttribute(IMarker.MESSAGE)), marker.getAttribute(IMarker.SEVERITY));
             }
-        }
-        for (AMarker marker : markers) {
-            assertTrue(msgTexts.containsKey(marker.getAttribute(IMarker.MESSAGE)));
-            assertEquals(msgTexts.get(marker.getAttribute(IMarker.MESSAGE)), marker.getAttribute(IMarker.SEVERITY));
-        }
 
-        // test if marker got's deleted if the problem is fixed.
-        pcType.setSupertype("");
-        pcType.getIpsSrcFile().save(true, null);
-        msgList = pcType.validate(ipsProject);
-        assertEquals(0, msgList.size());
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        resource = pcType.getEnclosingResource();
-        markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true, AResourceTreeTraversalDepth.INFINITE);
-        assertEquals(msgList.size(), markers.size());
+            // test if marker got's deleted if the problem is fixed.
+            pcType.setSupertype("");
+            pcType.getIpsSrcFile().save(true, null);
+            msgList = pcType.validate(ipsProject);
+            assertEquals(0, msgList.size());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            resource = pcType.getEnclosingResource();
+            markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true, AResourceTreeTraversalDepth.INFINITE);
+            assertEquals(msgList.size(), markers.size());
+        }
     }
 
     @Test
     public void testDependencyGraphInstanceOfDependency() throws Exception {
-        IProductCmptType a = newProductCmptType(root, "A");
-        IProductCmptType b = newProductCmptType(root, "B");
-        IAssociation aToB = a.newAssociation();
-        aToB.setTarget(b.getQualifiedName());
+        if (Abstractions.isEclipseRunning()) {
+            IProductCmptType a = newProductCmptType(root, "A");
+            IProductCmptType b = newProductCmptType(root, "B");
+            IAssociation aToB = a.newAssociation();
+            aToB.setTarget(b.getQualifiedName());
 
-        IProductCmpt aProduct = newProductCmpt(a, "AProduct");
+            IProductCmpt aProduct = newProductCmpt(a, "AProduct");
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(b));
-        assertTrue(builtIpsObjects.contains(aProduct));
+            TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
+            assertTrue(builtIpsObjects.contains(b));
+            assertTrue(builtIpsObjects.contains(aProduct));
 
-        builtIpsObjects.clear();
-        assertTrue(builtIpsObjects.isEmpty());
+            builtIpsObjects.clear();
+            assertTrue(builtIpsObjects.isEmpty());
 
-        IProductCmptTypeAttribute bAttr = b.newProductCmptTypeAttribute("bAttr");
-        bAttr.setDatatype("String");
-        b.getIpsSrcFile().save(true, null);
+            IProductCmptTypeAttribute bAttr = b.newProductCmptTypeAttribute("bAttr");
+            bAttr.setDatatype("String");
+            b.getIpsSrcFile().save(true, null);
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(b));
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builtIpsObjects.contains(a));
+            assertTrue(builtIpsObjects.contains(b));
+        }
     }
 
     @Test
     public void testDependencyGraphDatatypeAndInstanceOfDependency() throws Exception {
-        IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
-        IAttribute aAttr = a.newAttribute();
-        aAttr.setName("aAttr");
-        aAttr.setDatatype("Integer");
-        aAttr.setModifier(Modifier.PUBLIC);
+        if (Abstractions.isEclipseRunning()) {
+            IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "AConfigType");
+            IAttribute aAttr = a.newAttribute();
+            aAttr.setName("aAttr");
+            aAttr.setDatatype("Integer");
+            aAttr.setModifier(Modifier.PUBLIC);
 
-        IProductCmptType aConfigType = a.findProductCmptType(ipsProject);
-        IProductCmptTypeMethod formula = aConfigType.newFormulaSignature("formula");
-        formula.setDatatype("Integer");
-        formula.setModifier(Modifier.PUBLIC);
-        formula.setName("calculateValue");
+            IProductCmptType aConfigType = a.findProductCmptType(ipsProject);
+            IProductCmptTypeMethod formula = aConfigType.newFormulaSignature("formula");
+            formula.setDatatype("Integer");
+            formula.setModifier(Modifier.PUBLIC);
+            formula.setName("calculateValue");
 
-        formula.newParameter(a.getQualifiedName(), "pA");
+            formula.newParameter(a.getQualifiedName(), "pA");
 
-        IProductCmpt aProduct = newProductCmpt(aConfigType, "AProduct");
-        IProductCmptGeneration aProductGeneration = aProduct.getFirstGeneration();
-        IFormula productFormula = aProductGeneration.newFormula(formula);
-        productFormula.setExpression("pA.aAttr");
+            IProductCmpt aProduct = newProductCmpt(aConfigType, "AProduct");
+            IProductCmptGeneration aProductGeneration = aProduct.getFirstGeneration();
+            IFormula productFormula = aProductGeneration.newFormula(formula);
+            productFormula.setExpression("pA.aAttr");
 
-        a.getIpsSrcFile().save(true, null);
-        aConfigType.getIpsSrcFile().save(true, null);
-        aProduct.getIpsSrcFile().save(true, null);
+            a.getIpsSrcFile().save(true, null);
+            aConfigType.getIpsSrcFile().save(true, null);
+            aProduct.getIpsSrcFile().save(true, null);
 
-        final TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            final TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(aConfigType));
-        assertTrue(builtIpsObjects.contains(aProduct));
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
+            assertTrue(builtIpsObjects.contains(aConfigType));
+            assertTrue(builtIpsObjects.contains(aProduct));
 
-        builtIpsObjects.clear();
-        assertTrue(builtIpsObjects.isEmpty());
+            builtIpsObjects.clear();
+            assertTrue(builtIpsObjects.isEmpty());
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builtIpsObjects.isEmpty());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builtIpsObjects.isEmpty());
 
-        aAttr.setDatatype("String");
-        final IPolicyCmptType aFinal = a;
-        final IProductCmptType aConfigTypeFinal = aConfigType;
-        final IProductCmpt aProductFinal = aProduct;
+            aAttr.setDatatype("String");
+            final IPolicyCmptType aFinal = a;
+            final IProductCmptType aConfigTypeFinal = aConfigType;
+            final IProductCmpt aProductFinal = aProduct;
 
-        /*
-         * to ensure that the build has finished before the results are checked the assertions are
-         * done within this resource change listener. The listener is registered for post build
-         * events it is necessary to remove the listener after assertion sind the workspace will be
-         * the same for all test cases that are executed in one test suite
-         */
-        IResourceChangeListener listener = new IResourceChangeListener() {
-            @Override
-            public void resourceChanged(IResourceChangeEvent event) {
-                ((IWorkspace)getIpsModel().getWorkspace().unwrap()).removeResourceChangeListener(this);
-                List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-                assertTrue(builtIpsObjects.contains(aFinal));
-                assertTrue(builtIpsObjects.contains(aConfigTypeFinal));
-                assertTrue(builtIpsObjects.contains(aProductFinal));
-            }
-        };
-        ((IWorkspace)getIpsModel().getWorkspace().unwrap()).addResourceChangeListener(listener,
-                IResourceChangeEvent.POST_BUILD);
-        a.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            /*
+             * to ensure that the build has finished before the results are checked the assertions
+             * are done within this resource change listener. The listener is registered for post
+             * build events it is necessary to remove the listener after assertion sind the
+             * workspace will be the same for all test cases that are executed in one test suite
+             */
+            IResourceChangeListener listener = new IResourceChangeListener() {
+                @Override
+                public void resourceChanged(IResourceChangeEvent event) {
+                    ((IWorkspace)getIpsModel().getWorkspace().unwrap()).removeResourceChangeListener(this);
+                    List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+                    assertTrue(builtIpsObjects.contains(aFinal));
+                    assertTrue(builtIpsObjects.contains(aConfigTypeFinal));
+                    assertTrue(builtIpsObjects.contains(aProductFinal));
+                }
+            };
+            ((IWorkspace)getIpsModel().getWorkspace().unwrap()).addResourceChangeListener(listener,
+                    IResourceChangeEvent.POST_BUILD);
+            a.getIpsSrcFile().save(true, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+        }
     }
 
     @Test
     public void testDependencyGraphWithAggregateRootBuilderNoComposits() throws Exception {
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
-        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
-        rel.setTarget(b.getQualifiedName());
-        rel.setAssociationType(AssociationType.ASSOCIATION);
-        rel = b.newPolicyCmptTypeAssociation();
-        rel.setTarget(c.getQualifiedName());
-        rel.setAssociationType(AssociationType.ASSOCIATION);
+        if (Abstractions.isEclipseRunning()) {
+            IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+            IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+            IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+            IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
+            rel.setTarget(b.getQualifiedName());
+            rel.setAssociationType(AssociationType.ASSOCIATION);
+            rel = b.newPolicyCmptTypeAssociation();
+            rel.setTarget(c.getQualifiedName());
+            rel.setAssociationType(AssociationType.ASSOCIATION);
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
-        // initial build: all ipsobjects will be touched
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+            // initial build: all ipsobjects will be touched
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
-        cAttr.setName("cAttr");
-        c.getIpsSrcFile().save(true, null);
+            IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
+            cAttr.setName("cAttr");
+            c.getIpsSrcFile().save(true, null);
 
-        builder.getBuiltIpsObjects().clear();
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        /*
-         * list is expected to be empty since only master to detail compositions will be build when
-         * the the builder set is an aggregate root builder set
-         */
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(c));
+            builder.getBuiltIpsObjects().clear();
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            /*
+             * list is expected to be empty since only master to detail compositions will be build
+             * when the the builder set is an aggregate root builder set
+             */
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(c));
+        }
     }
 
     @Test
     public void testDependencyGraphWithAggregateRootBuilderWithMasterToChildComposits() throws Exception {
+        if (Abstractions.isEclipseRunning()) {
+            IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+            IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+            IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+            IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
+            rel.setTarget(b.getQualifiedName());
+            rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            rel = b.newPolicyCmptTypeAssociation();
+            rel.setTarget(c.getQualifiedName());
+            rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
-        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
-        rel.setTarget(b.getQualifiedName());
-        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        rel = b.newPolicyCmptTypeAssociation();
-        rel.setTarget(c.getQualifiedName());
-        rel.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+            TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+            // initial build: all ipsobjects will be touched
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
-        // initial build: all ipsobjects will be touched
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
+            cAttr.setName("cAttr");
+            c.getIpsSrcFile().save(true, null);
 
-        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
-        cAttr.setName("cAttr");
-        c.getIpsSrcFile().save(true, null);
-
-        builder.getBuiltIpsObjects().clear();
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        /*
-         * all dependent objects are expected to be in the list since all relations are composite
-         * master to detail relations
-         */
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(b));
-        assertTrue(builtIpsObjects.contains(c));
+            builder.getBuiltIpsObjects().clear();
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            /*
+             * all dependent objects are expected to be in the list since all relations are
+             * composite master to detail relations
+             */
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
+            assertTrue(builtIpsObjects.contains(b));
+            assertTrue(builtIpsObjects.contains(c));
+        }
     }
 
     @Test
     public void testDependencyGraphWithAggregateRootBuilderWithChildToMasterComposits() throws Exception {
+        if (Abstractions.isEclipseRunning()) {
+            IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
+            IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
+            IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
+            IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
+            rel.setTarget(b.getQualifiedName());
+            rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+            rel = b.newPolicyCmptTypeAssociation();
+            rel.setTarget(c.getQualifiedName());
+            rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.B");
-        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.C");
-        IPolicyCmptTypeAssociation rel = a.newPolicyCmptTypeAssociation();
-        rel.setTarget(b.getQualifiedName());
-        rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-        rel = b.newPolicyCmptTypeAssociation();
-        rel.setTarget(c.getQualifiedName());
-        rel.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+            TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
+            // initial build: all ipsobjects will be touched
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
-        // initial build: all ipsobjects will be touched
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
+            cAttr.setName("cAttr");
+            c.getIpsSrcFile().save(true, null);
 
-        IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
-        cAttr.setName("cAttr");
-        c.getIpsSrcFile().save(true, null);
-
-        builder.getBuiltIpsObjects().clear();
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        /*
-         * all dependent objects are expected to be in the list since all relations are composite
-         * master to detail relations
-         */
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(c));
+            builder.getBuiltIpsObjects().clear();
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            /*
+             * all dependent objects are expected to be in the list since all relations are
+             * composite master to detail relations
+             */
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(c));
+        }
     }
 
     @Test
     public void testDependencyGraph() {
-        IProductCmptType a = newProductCmptType(root, "A");
-        IProductCmptType b = newProductCmptType(root, "B");
-        b.setSupertype(a.getQualifiedName());
-        IProductCmptType c = newProductCmptType(root, "C");
-        c.newAssociation().setTarget(a.getQualifiedName());
-        IProductCmpt aProduct = newProductCmpt(a, "AProduct");
-        IProductCmptType d = newProductCmptType(root, "D");
-        a.newAssociation().setTarget(d.getQualifiedName());
+        if (Abstractions.isEclipseRunning()) {
+            IProductCmptType a = newProductCmptType(root, "A");
+            IProductCmptType b = newProductCmptType(root, "B");
+            b.setSupertype(a.getQualifiedName());
+            IProductCmptType c = newProductCmptType(root, "C");
+            c.newAssociation().setTarget(a.getQualifiedName());
+            IProductCmpt aProduct = newProductCmpt(a, "AProduct");
+            IProductCmptType d = newProductCmptType(root, "D");
+            a.newAssociation().setTarget(d.getQualifiedName());
 
-        // dependencies: b->a, c->a, aProduct->a, a->d
+            // dependencies: b->a, c->a, aProduct->a, a->d
 
-        TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
+            TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
 
-        // after this incremental build the TestDependencyIpsArtefactBuilder is expected to contain
-        // all new IpsObjects in its build list.
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(b));
-        assertTrue(builtIpsObjects.contains(c));
-        assertTrue(builtIpsObjects.contains(d));
-        assertTrue(builtIpsObjects.contains(aProduct));
+            // after this incremental build the TestDependencyIpsArtefactBuilder is expected to
+            // contain
+            // all new IpsObjects in its build list.
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
+            assertTrue(builtIpsObjects.contains(b));
+            assertTrue(builtIpsObjects.contains(c));
+            assertTrue(builtIpsObjects.contains(d));
+            assertTrue(builtIpsObjects.contains(aProduct));
 
-        builder.clear();
-        // after this second build no IpsObjects are expected in the build list since nothing has
-        // changed since the last build
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builder.getBuiltIpsObjects().isEmpty());
+            builder.clear();
+            // after this second build no IpsObjects are expected in the build list since nothing
+            // has
+            // changed since the last build
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builder.getBuiltIpsObjects().isEmpty());
 
-        // since the ProductCmptType d has been deleted after this build the
-        // TestDependencyIpsArtefactBuilder is expected to contain all dependent IpsObjects
-        d.getIpsSrcFile().getCorrespondingResource().delete(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
+            // since the ProductCmptType d has been deleted after this build the
+            // TestDependencyIpsArtefactBuilder is expected to contain all dependent IpsObjects
+            d.getIpsSrcFile().getCorrespondingResource().delete(null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
 
-        // recreate d. All dependants are expected to be rebuilt
-        d = newProductCmptType(root, "D");
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        builtIpsObjects = builder.getBuiltIpsObjects();
-        assertTrue(builtIpsObjects.contains(a));
+            // recreate d. All dependants are expected to be rebuilt
+            d = newProductCmptType(root, "D");
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            builtIpsObjects = builder.getBuiltIpsObjects();
+            assertTrue(builtIpsObjects.contains(a));
 
-        // delete d and dependants. The IpsBuilder has to make sure to only build the existing
-        // IpsObjects though the graph still contains the dependency chain of the deleted IpsOjects
-        // during the build cycle
-        d.getIpsSrcFile().getCorrespondingResource().delete(null);
-        a.getIpsSrcFile().getCorrespondingResource().delete(null);
-        b.getIpsSrcFile().getCorrespondingResource().delete(null);
-        c.getIpsSrcFile().getCorrespondingResource().delete(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            // delete d and dependants. The IpsBuilder has to make sure to only build the existing
+            // IpsObjects though the graph still contains the dependency chain of the deleted
+            // IpsOjects
+            // during the build cycle
+            d.getIpsSrcFile().getCorrespondingResource().delete(null);
+            a.getIpsSrcFile().getCorrespondingResource().delete(null);
+            b.getIpsSrcFile().getCorrespondingResource().delete(null);
+            c.getIpsSrcFile().getCorrespondingResource().delete(null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+        }
     }
 
     @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() {
-        AFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
-        Path archivePath = archiveFile.getLocation();
-        IIpsProject project2 = newIpsProject("Project2");
-        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archiveFile.getLocation().toFile());
-        op.run(null);
-        archiveFile.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_AND_DIRECT_MEMBERS, null);
-        assertTrue(archiveFile.exists());
+        if (Abstractions.isEclipseRunning()) {
+            AFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
+            Path archivePath = archiveFile.getLocation();
+            IIpsProject project2 = newIpsProject("Project2");
+            CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project2, archiveFile.getLocation().toFile());
+            op.run(null);
+            archiveFile.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_AND_DIRECT_MEMBERS, null);
+            assertTrue(archiveFile.exists());
 
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newArchiveEntry(archivePath);
-        ipsProject.setIpsObjectPath(path);
+            IIpsObjectPath path = ipsProject.getIpsObjectPath();
+            path.newArchiveEntry(archivePath);
+            ipsProject.setIpsObjectPath(path);
 
-        AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
-        setTestArtefactBuilder(ipsProject, builder);
-        builder.called = false;
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
-        assertTrue(builder.called);
+            AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
+            setTestArtefactBuilder(ipsProject, builder);
+            builder.called = false;
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            assertTrue(builder.called);
 
-        builder.buildKind = null;
-        builder.called = false;
-        archiveFile.touch(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
-        assertTrue(builder.called);
-        assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+            builder.buildKind = null;
+            builder.called = false;
+            archiveFile.touch(null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            assertTrue(builder.called);
+            assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+        }
     }
 
     @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() {
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
-        AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
-        // this changes the properties file!
-        setTestArtefactBuilder(ipsProject, builder);
-        builder.buildKind = null;
-        builder.called = false;
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
-        assertTrue(builder.called);
-        assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+        if (Abstractions.isEclipseRunning()) {
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
+            // this changes the properties file!
+            setTestArtefactBuilder(ipsProject, builder);
+            builder.buildKind = null;
+            builder.called = false;
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            assertTrue(builder.called);
+            assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+        }
     }
 
     @Test
     public void testMarkerForNotParsableIpsSrcFiles() throws IpsException, UnsupportedEncodingException {
-        AFile file = ((AContainer)root.getCorrespondingResource())
-                .getFile(java.nio.file.Path.of("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
-        String xml = "invalid xml";
-        suppressLoggingDuringExecutionOfThisTestCase();
-        file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        Set<AMarker> markers = file.findMarkers(IMarker.PROBLEM, true, AResourceTreeTraversalDepth.RESOURCE_ONLY);
-        boolean isMessageThere = false;
-        for (AMarker marker : markers) {
-            String msg = (String)marker.getAttribute(IMarker.MESSAGE);
-            if (msg.equals(Messages.IpsBuilder_ipsSrcFileNotParsable)) {
-                isMessageThere = true;
+        if (Abstractions.isEclipseRunning()) {
+            AFile file = ((AContainer)root.getCorrespondingResource())
+                    .getFile(java.nio.file.Path.of("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
+            String xml = "invalid xml";
+            suppressLoggingDuringExecutionOfThisTestCase();
+            file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            Set<AMarker> markers = file.findMarkers(IMarker.PROBLEM, true, AResourceTreeTraversalDepth.RESOURCE_ONLY);
+            boolean isMessageThere = false;
+            for (AMarker marker : markers) {
+                String msg = (String)marker.getAttribute(IMarker.MESSAGE);
+                if (msg.equals(Messages.IpsBuilder_ipsSrcFileNotParsable)) {
+                    isMessageThere = true;
+                }
             }
+            assertTrue("The expected message could not be found", isMessageThere);
         }
-        assertTrue("The expected message could not be found", isMessageThere);
     }
 
     @Test
     public void testRemoveResource() {
-        TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
+        if (Abstractions.isEclipseRunning()) {
+            TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        ipsProject.setProperties(props);
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
-        builderSet.setIpsProject(ipsProject);
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
-                new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            ipsProject.setProperties(props);
+            TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+            builderSet.setIpsProject(ipsProject);
+            ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
+                    new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
-        IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builder.buildCalled);
-        ipsObject.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builder.deleteCalled);
+            IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builder.buildCalled);
+            ipsObject.getIpsSrcFile().getCorrespondingFile().delete(null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builder.deleteCalled);
+        }
     }
 
     @Test
     public void testBuildOnlyFilesInIpsSrcFolder() {
-        TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
+        if (Abstractions.isEclipseRunning()) {
+            TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        ipsProject.setProperties(props);
-        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
-        builderSet.setIpsProject(ipsProject);
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
-                new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            ipsProject.setProperties(props);
+            TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
+            builderSet.setIpsProject(ipsProject);
+            ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(
+                    new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
-        IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        assertTrue(builder.buildCalled);
-        builder.buildCalled = false;
+            IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            assertTrue(builder.buildCalled);
+            builder.buildCalled = false;
 
-        AResource resource = ipsObject.getEnclosingResource();
-        resource.copy(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName()), null);
+            AResource resource = ipsObject.getEnclosingResource();
+            resource.copy(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName()), null);
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        assertTrue(!builder.buildCalled);
+            assertTrue(!builder.buildCalled);
+        }
     }
 
     @Test
     public void testDependencyGraphWithReferencingProjects() throws Exception {
-        IIpsProject projectB = createSubProject(ipsProject, "projectB");
-        IIpsProject projectC = createSubProject(projectB, "projectC");
-        IpsProjectTest.updateSrcFolderEntryQalifiers(projectB, "b");
-        IpsProjectTest.updateSrcFolderEntryQalifiers(projectC, "c");
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject projectB = createSubProject(ipsProject, "projectB");
+            IIpsProject projectC = createSubProject(projectB, "projectC");
+            IpsProjectTest.updateSrcFolderEntryQualifiers(projectB, "b");
+            IpsProjectTest.updateSrcFolderEntryQualifiers(projectC, "c");
 
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+            IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
 
-        IPolicyCmptType b = newPolicyCmptType(projectB, "B");
-        b.setSupertype(a.getQualifiedName());
+            IPolicyCmptType b = newPolicyCmptType(projectB, "B");
+            b.setSupertype(a.getQualifiedName());
 
-        IPolicyCmptType c = newPolicyCmptType(projectC, "C");
-        c.setSupertype(b.getQualifiedName());
+            IPolicyCmptType c = newPolicyCmptType(projectC, "C");
+            c.setSupertype(b.getQualifiedName());
 
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        ipsProject.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectA = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectA = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectA });
-        builderSetProjectA.setIpsProject(ipsProject);
-        builderSetProjectA.setAggregateRootBuilder(false);
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            ipsProject.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectA = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectA = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectA });
+            builderSetProjectA.setIpsProject(ipsProject);
+            builderSetProjectA.setAggregateRootBuilder(false);
 
-        // the project needs to have its own builder set otherwise the project is considered
-        // invalid since there is no builder set found for the builder set id defined in the
-        // project properties
-        props = projectB.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectB.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectB = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectB = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectB });
-        builderSetProjectB.setIpsProject(projectB);
-        builderSetProjectB.setAggregateRootBuilder(false);
+            // the project needs to have its own builder set otherwise the project is considered
+            // invalid since there is no builder set found for the builder set id defined in the
+            // project properties
+            props = projectB.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            projectB.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectB = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectB = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectB });
+            builderSetProjectB.setIpsProject(projectB);
+            builderSetProjectB.setAggregateRootBuilder(false);
 
-        props = projectC.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectC.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectC = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectC = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectC });
-        builderSetProjectC.setIpsProject(projectC);
-        builderSetProjectC.setAggregateRootBuilder(false);
+            props = projectC.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            projectC.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectC = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectC = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectC });
+            builderSetProjectC.setIpsProject(projectC);
+            builderSetProjectC.setAggregateRootBuilder(false);
 
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
-                new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
-                        new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB, builderSetProjectC }) };
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                    new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
+                            new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
+                                    builderSetProjectC }) };
+            ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
-        assertTrue(buildObjects.contains(a));
+            List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
+            assertTrue(buildObjects.contains(a));
 
-        List<IIpsObject> buildObjectsB = builderProjectB.getBuiltIpsObjects();
-        assertTrue(buildObjectsB.contains(b));
+            List<IIpsObject> buildObjectsB = builderProjectB.getBuiltIpsObjects();
+            assertTrue(buildObjectsB.contains(b));
 
-        List<IIpsObject> buildObjectsC = builderProjectC.getBuiltIpsObjects();
-        assertTrue(buildObjectsC.contains(c));
+            List<IIpsObject> buildObjectsC = builderProjectC.getBuiltIpsObjects();
+            assertTrue(buildObjectsC.contains(c));
 
-        builderProjectA.clear();
-        builderProjectB.clear();
-        builderProjectC.clear();
+            builderProjectA.clear();
+            builderProjectB.clear();
+            builderProjectC.clear();
 
-        IPolicyCmptTypeAttribute attrA = a.newPolicyCmptTypeAttribute();
-        attrA.setName("AttrA");
-        attrA.setAttributeType(AttributeType.CHANGEABLE);
-        attrA.setDatatype("String");
-        a.getIpsSrcFile().save(true, null);
+            IPolicyCmptTypeAttribute attrA = a.newPolicyCmptTypeAttribute();
+            attrA.setName("AttrA");
+            attrA.setAttributeType(AttributeType.CHANGEABLE);
+            attrA.setDatatype("String");
+            a.getIpsSrcFile().save(true, null);
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        buildObjects = builderProjectA.getBuiltIpsObjects();
-        assertTrue(buildObjects.contains(a));
+            buildObjects = builderProjectA.getBuiltIpsObjects();
+            assertTrue(buildObjects.contains(a));
 
-        buildObjectsB = builderProjectB.getBuiltIpsObjects();
-        assertTrue(buildObjectsB.contains(b));
+            buildObjectsB = builderProjectB.getBuiltIpsObjects();
+            assertTrue(buildObjectsB.contains(b));
 
-        buildObjectsC = builderProjectC.getBuiltIpsObjects();
-        assertTrue(buildObjectsC.contains(c));
+            buildObjectsC = builderProjectC.getBuiltIpsObjects();
+            assertTrue(buildObjectsC.contains(c));
 
-        builderProjectA.clear();
-        builderProjectB.clear();
-        builderProjectC.clear();
+            builderProjectA.clear();
+            builderProjectB.clear();
+            builderProjectC.clear();
 
-        attrA = a.newPolicyCmptTypeAttribute();
-        attrA.setName("attrB");
-        attrA.setAttributeType(AttributeType.CHANGEABLE);
-        attrA.setDatatype("String");
-        a.getIpsSrcFile().save(true, null);
+            attrA = a.newPolicyCmptTypeAttribute();
+            attrA.setName("attrB");
+            attrA.setAttributeType(AttributeType.CHANGEABLE);
+            attrA.setDatatype("String");
+            a.getIpsSrcFile().save(true, null);
 
-        ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        buildObjects = builderProjectA.getBuiltIpsObjects();
-        assertTrue(buildObjects.contains(a));
+            buildObjects = builderProjectA.getBuiltIpsObjects();
+            assertTrue(buildObjects.contains(a));
 
-        buildObjectsB = builderProjectB.getBuiltIpsObjects();
-        assertTrue(buildObjectsB.contains(b));
+            buildObjectsB = builderProjectB.getBuiltIpsObjects();
+            assertTrue(buildObjectsB.contains(b));
 
-        buildObjectsC = builderProjectC.getBuiltIpsObjects();
-        assertFalse(buildObjectsC.contains(c));
+            buildObjectsC = builderProjectC.getBuiltIpsObjects();
+            assertFalse(buildObjectsC.contains(c));
+        }
     }
 
     @Test
     public void testDependencyGraphWithProductsInReferencingProjects() throws Exception {
-        IIpsProject projectB = createSubProject(ipsProject, "projectB");
-        IIpsProject projectC = createSubProject(projectB, "projectC");
-        IpsProjectTest.updateSrcFolderEntryQalifiers(projectB, "b");
-        IpsProjectTest.updateSrcFolderEntryQalifiers(projectC, "c");
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject projectB = createSubProject(ipsProject, "projectB");
+            IIpsProject projectC = createSubProject(projectB, "projectC");
+            IpsProjectTest.updateSrcFolderEntryQualifiers(projectB, "b");
+            IpsProjectTest.updateSrcFolderEntryQualifiers(projectC, "c");
 
-        IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
-        IProductCmptType aProductType = newProductCmptType(ipsProject, "aProductType");
-        IProductCmpt aProduct = newProductCmpt(aProductType, "aProduct");
-        a.setProductCmptType(aProductType.getQualifiedName());
-        aProductType.setPolicyCmptType(a.getQualifiedName());
+            IPolicyCmptType a = newPolicyCmptType(ipsProject, "A");
+            IProductCmptType aProductType = newProductCmptType(ipsProject, "aProductType");
+            IProductCmpt aProduct = newProductCmpt(aProductType, "aProduct");
+            a.setProductCmptType(aProductType.getQualifiedName());
+            aProductType.setPolicyCmptType(a.getQualifiedName());
 
-        IPolicyCmptType b = newPolicyCmptType(projectB, "B");
-        b.setSupertype(a.getQualifiedName());
+            IPolicyCmptType b = newPolicyCmptType(projectB, "B");
+            b.setSupertype(a.getQualifiedName());
 
-        IProductCmptType bProductType = newProductCmptType(projectB, "bProductType");
-        bProductType.setPolicyCmptType(b.getQualifiedName());
-        bProductType.setSupertype(aProductType.getQualifiedName());
+            IProductCmptType bProductType = newProductCmptType(projectB, "bProductType");
+            bProductType.setPolicyCmptType(b.getQualifiedName());
+            bProductType.setSupertype(aProductType.getQualifiedName());
 
-        IProductCmpt bProduct = newProductCmpt(bProductType, "bProduct");
-        b.setProductCmptType(bProductType.getQualifiedName());
+            IProductCmpt bProduct = newProductCmpt(bProductType, "bProduct");
+            b.setProductCmptType(bProductType.getQualifiedName());
 
-        IPolicyCmptType c = newPolicyCmptType(projectC, "C");
-        c.setSupertype(b.getQualifiedName());
+            IPolicyCmptType c = newPolicyCmptType(projectC, "C");
+            c.setSupertype(b.getQualifiedName());
 
-        IProductCmptType cProductType = newProductCmptType(projectC, "cProductType");
-        c.setProductCmptType(cProductType.getQualifiedName());
-        cProductType.setPolicyCmptType(c.getQualifiedName());
+            IProductCmptType cProductType = newProductCmptType(projectC, "cProductType");
+            c.setProductCmptType(cProductType.getQualifiedName());
+            cProductType.setPolicyCmptType(c.getQualifiedName());
 
-        cProductType.setSupertype(bProductType.getQualifiedName());
-        IProductCmpt cProduct = newProductCmpt(cProductType, "cProduct");
+            cProductType.setSupertype(bProductType.getQualifiedName());
+            IProductCmpt cProduct = newProductCmpt(cProductType, "cProduct");
 
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        ipsProject.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectA = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectA = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectA });
-        builderSetProjectA.setIpsProject(ipsProject);
-        builderSetProjectA.setAggregateRootBuilder(false);
+            IIpsProjectProperties props = ipsProject.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            ipsProject.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectA = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectA = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectA });
+            builderSetProjectA.setIpsProject(ipsProject);
+            builderSetProjectA.setAggregateRootBuilder(false);
 
-        // the project needs to have its own builder set otherwise the project is considered
-        // invalid since there is no builder set found for the builder set id defined in the
-        // project properties
-        props = projectB.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectB.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectB = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectB = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectB });
-        builderSetProjectB.setIpsProject(projectB);
-        builderSetProjectB.setAggregateRootBuilder(false);
+            // the project needs to have its own builder set otherwise the project is considered
+            // invalid since there is no builder set found for the builder set id defined in the
+            // project properties
+            props = projectB.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            projectB.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectB = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectB = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectB });
+            builderSetProjectB.setIpsProject(projectB);
+            builderSetProjectB.setAggregateRootBuilder(false);
 
-        props = projectC.getProperties();
-        props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
-        projectC.setProperties(props);
-        TestDependencyIpsArtefactBuilder builderProjectC = new TestDependencyIpsArtefactBuilder();
-        TestIpsArtefactBuilderSet builderSetProjectC = new TestIpsArtefactBuilderSet(
-                new IIpsArtefactBuilder[] { builderProjectC });
-        builderSetProjectC.setIpsProject(projectC);
-        builderSetProjectC.setAggregateRootBuilder(false);
+            props = projectC.getProperties();
+            props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
+            projectC.setProperties(props);
+            TestDependencyIpsArtefactBuilder builderProjectC = new TestDependencyIpsArtefactBuilder();
+            TestIpsArtefactBuilderSet builderSetProjectC = new TestIpsArtefactBuilderSet(
+                    new IIpsArtefactBuilder[] { builderProjectC });
+            builderSetProjectC.setIpsProject(projectC);
+            builderSetProjectC.setAggregateRootBuilder(false);
 
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
-                new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
-                        new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB, builderSetProjectC }) };
-        ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+                    new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
+                            new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
+                                    builderSetProjectC }) };
+            ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
-        // first initial build
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            // first initial build
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        // expect the following object in the builders of the projects
-        List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
-        assertTrue(buildObjects.contains(a));
-        assertTrue(buildObjects.contains(aProduct));
+            // expect the following object in the builders of the projects
+            List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
+            assertTrue(buildObjects.contains(a));
+            assertTrue(buildObjects.contains(aProduct));
 
-        List<IIpsObject> buildObjectsB = builderProjectB.getBuiltIpsObjects();
-        assertTrue(buildObjectsB.contains(b));
-        assertTrue(buildObjectsB.contains(bProduct));
+            List<IIpsObject> buildObjectsB = builderProjectB.getBuiltIpsObjects();
+            assertTrue(buildObjectsB.contains(b));
+            assertTrue(buildObjectsB.contains(bProduct));
 
-        List<IIpsObject> buildObjectsC = builderProjectC.getBuiltIpsObjects();
-        assertTrue(buildObjectsC.contains(c));
-        assertTrue(buildObjectsC.contains(cProduct));
+            List<IIpsObject> buildObjectsC = builderProjectC.getBuiltIpsObjects();
+            assertTrue(buildObjectsC.contains(c));
+            assertTrue(buildObjectsC.contains(cProduct));
 
-        // clean the builders after initial build
-        builderProjectA.clear();
-        builderProjectB.clear();
-        builderProjectC.clear();
+            // clean the builders after initial build
+            builderProjectA.clear();
+            builderProjectB.clear();
+            builderProjectC.clear();
 
-        // change a product component type in the root project
-        IProductCmptTypeAttribute aProductTypeAttr = aProductType.newProductCmptTypeAttribute();
-        aProductTypeAttr.setName("aProductTypeAttr");
-        aProductTypeAttr.setDatatype("Integer");
-        aProductTypeAttr.setModifier(Modifier.PUBLIC);
-        aProductTypeAttr.getIpsSrcFile().save(true, null);
+            // change a product component type in the root project
+            IProductCmptTypeAttribute aProductTypeAttr = aProductType.newProductCmptTypeAttribute();
+            aProductTypeAttr.setName("aProductTypeAttr");
+            aProductTypeAttr.setDatatype("Integer");
+            aProductTypeAttr.setModifier(Modifier.PUBLIC);
+            aProductTypeAttr.getIpsSrcFile().save(true, null);
 
-        // build
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            // build
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
 
-        // expect a build of the product components in all the projects
-        buildObjects = builderProjectA.getBuiltIpsObjects();
-        assertTrue(buildObjects.contains(aProduct));
-        assertEquals(ipsProject, builderProjectA.ipsProjectOfBeforeBuildProcess);
-        assertEquals(ipsProject, builderProjectA.ipsProjectOfAfterBuildProcess);
+            // expect a build of the product components in all the projects
+            buildObjects = builderProjectA.getBuiltIpsObjects();
+            assertTrue(buildObjects.contains(aProduct));
+            assertEquals(ipsProject, builderProjectA.ipsProjectOfBeforeBuildProcess);
+            assertEquals(ipsProject, builderProjectA.ipsProjectOfAfterBuildProcess);
 
-        buildObjectsB = builderProjectB.getBuiltIpsObjects();
-        assertTrue(buildObjectsB.contains(bProduct));
-        assertEquals(projectB, builderProjectB.ipsProjectOfBeforeBuildProcess);
-        assertEquals(projectB, builderProjectB.ipsProjectOfAfterBuildProcess);
+            buildObjectsB = builderProjectB.getBuiltIpsObjects();
+            assertTrue(buildObjectsB.contains(bProduct));
+            assertEquals(projectB, builderProjectB.ipsProjectOfBeforeBuildProcess);
+            assertEquals(projectB, builderProjectB.ipsProjectOfAfterBuildProcess);
 
-        buildObjectsC = builderProjectC.getBuiltIpsObjects();
-        assertTrue(buildObjectsC.contains(cProduct));
-        assertEquals(projectC, builderProjectC.ipsProjectOfBeforeBuildProcess);
-        assertEquals(projectC, builderProjectC.ipsProjectOfAfterBuildProcess);
+            buildObjectsC = builderProjectC.getBuiltIpsObjects();
+            assertTrue(buildObjectsC.contains(cProduct));
+            assertEquals(projectC, builderProjectC.ipsProjectOfBeforeBuildProcess);
+            assertEquals(projectC, builderProjectC.ipsProjectOfAfterBuildProcess);
+        }
     }
 
     private IIpsProject createSubProject(IIpsProject superProject, String projectName) throws CoreException {
@@ -1121,15 +1156,17 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCreateMarkersForIpsProjectPropertiesUsingManifestWhichDoesNotExist() {
-        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-        ipsObjectPath.setUsingManifest(true);
-        ipsProject.setIpsObjectPath(ipsObjectPath);
+        if (Abstractions.isEclipseRunning()) {
+            IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+            ipsObjectPath.setUsingManifest(true);
+            ipsProject.setIpsObjectPath(ipsObjectPath);
 
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-        Set<AMarker> markers = ipsProject.getIpsProjectPropertiesFile().findMarkers(IpsBuilder.PROBLEM_MARKER, true,
-                AResourceTreeTraversalDepth.INFINITE);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            Set<AMarker> markers = ipsProject.getIpsProjectPropertiesFile().findMarkers(IpsBuilder.PROBLEM_MARKER, true,
+                    AResourceTreeTraversalDepth.INFINITE);
 
-        assertThat(findMarkerForMissingManifest(markers), is(not(nullValue())));
+            assertThat(findMarkerForMissingManifest(markers), is(not(nullValue())));
+        }
     }
 
     private AMarker findMarkerForMissingManifest(Set<AMarker> markers) {

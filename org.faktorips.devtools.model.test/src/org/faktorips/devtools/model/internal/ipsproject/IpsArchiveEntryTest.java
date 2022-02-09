@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +26,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -102,6 +105,9 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
         AFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
         Path archivePath = archiveFile.getWorkspaceRelativePath();
+        if (!Abstractions.isEclipseRunning()) {
+            archivePath = Path.of("/").resolve(archivePath);
+        }
         assertEquals(archivePath, entry.getIpsArchive().getArchivePath());
 
         entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
@@ -150,11 +156,11 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
         entry.initStorage(project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
         entry.initStorage(null);
         ml = entry.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
     }
 

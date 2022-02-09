@@ -19,22 +19,6 @@
     <description>Runtime library for Faktor-IPS</description>
 
     <build>
-        <sourceDirectory>../src</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>../</directory>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>agpl-3.0.txt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>../src</directory>
-                <includes>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.moditect</groupId>

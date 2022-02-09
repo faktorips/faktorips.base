@@ -378,9 +378,9 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetElements() {
         ICoreRunnable runnable = $ -> {
-            IProject project = newPlatformProject("TestJavaProject");
+            IProject project = newPlatformProject("TestJavaProject").unwrap();
             addJavaCapabilities(project);
-            IProject project2 = newPlatformProject("TestJavaProject2");
+            IProject project2 = newPlatformProject("TestJavaProject2").unwrap();
             addJavaCapabilities(project2);
         };
         AWorkspace workspace = Abstractions.getWorkspace();

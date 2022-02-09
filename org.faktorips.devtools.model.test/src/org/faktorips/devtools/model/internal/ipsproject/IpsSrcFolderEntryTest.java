@@ -15,7 +15,6 @@ import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -190,7 +189,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
+        assertThat(ml, hasMessageCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
 
         // validate missing outputFolderGenerated
         AFolder folder1 = ipsProject.getProject().getFolder("none");
@@ -198,7 +197,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
+        assertThat(ml, hasMessageCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
 
         // validate missing outputFolderDerived
         srcEntries[0].setSpecificOutputFolderForDerivedJavaFiles(folder1);

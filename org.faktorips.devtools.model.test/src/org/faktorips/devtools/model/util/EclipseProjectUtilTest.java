@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -42,6 +41,7 @@ import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
@@ -53,6 +53,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.runtime.MessageList;
@@ -61,7 +62,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ProjectUtilTest extends AbstractIpsPluginTest {
+public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
 
     private static IJavaProject javaProject;
     private static IpsProjectCreationProperties creationProperties;
@@ -76,125 +77,152 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
 
     @BeforeClass
     public static void init() {
-        IIpsModel ipsModel = IIpsModel.get();
+        if (Abstractions.isEclipseRunning()) {
+            IIpsModel ipsModel = IIpsModel.get();
 
-        // Property templates for checking
+            // Property templates for checking
 
-        namingStrategyTemplate = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true);
-        predefinedValueDatatypesTemplate = Arrays.stream(ipsModel.getPredefinedValueDatatypes())
-                .map(ValueDatatype::getQualifiedName)
-                .toArray(String[]::new);
-        changesOverTimeNamingConventionIdForGeneratedCodeTemplate = IIpsModelExtensions.get().getModelPreferences()
-                .getChangesOverTimeNamingConvention().getId();
-        minRequiredVersionTemplate = IpsModelActivator.getInstalledFaktorIpsVersion();
-        supportedLanguage = "en";
+            namingStrategyTemplate = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true);
+            predefinedValueDatatypesTemplate = Arrays.stream(ipsModel.getPredefinedValueDatatypes())
+                    .map(ValueDatatype::getQualifiedName)
+                    .toArray(String[]::new);
+            changesOverTimeNamingConventionIdForGeneratedCodeTemplate = IIpsModelExtensions.get().getModelPreferences()
+                    .getChangesOverTimeNamingConvention().getId();
+            minRequiredVersionTemplate = IpsModelActivator.getInstalledFaktorIpsVersion();
+            supportedLanguage = "en";
+        }
     }
 
     @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        IProject platformProject = newPlatformProject("TestProject");
-        javaProject = addJavaCapabilities(platformProject).unwrap();
-        creationProperties = new IpsProjectCreationProperties();
-        creationProperties.getLocales().add(new Locale(supportedLanguage));
+        if (Abstractions.isEclipseRunning()) {
+            super.setUp();
+            AProject platformProject = newPlatformProject("TestProject");
+            javaProject = addJavaCapabilities(platformProject).unwrap();
+            creationProperties = new IpsProjectCreationProperties();
+            creationProperties.getLocales().add(new Locale(supportedLanguage));
+        }
     }
 
     @Test
     public void testAddIpsNature_And_hasIpsNature() {
-        assertFalse(ProjectUtil.hasIpsNature(javaProject));
-        ProjectUtil.addIpsNature(javaProject.getProject());
-        assertTrue(ProjectUtil.hasIpsNature(javaProject));
+        if (Abstractions.isEclipseRunning()) {
+            assertFalse(EclipseProjectUtil.hasIpsNature(javaProject));
+            EclipseProjectUtil.addIpsNature(javaProject.getProject());
+            assertTrue(EclipseProjectUtil.hasIpsNature(javaProject));
+        }
     }
 
     @Test
     public void testCreateIpsProject() throws CoreException {
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
 
-        createIpsProjectCheckRequiredFolders(ipsProject);
-        createIpsProjectCheckIpsProjectProperties(ipsProject.getProperties());
-        createIpsProjectCheckIpsObjectPath(ipsProject.getIpsObjectPath());
+            createIpsProjectCheckRequiredFolders(ipsProject);
+            createIpsProjectCheckIpsProjectProperties(ipsProject.getProperties());
+            createIpsProjectCheckIpsObjectPath(ipsProject.getIpsObjectPath());
 
-        // Proves that the classpath entries has been set using the StandardJavaProjectConfigurator
-        IClasspathEntry[] entries = javaProject.getRawClasspath();
-        boolean containsIpsClasspathEntry = Arrays.stream(entries)
-                .anyMatch(entry -> IpsClasspathContainerInitializer.CONTAINER_ID.equals(entry.getPath().segment(0)));
-        assertThat(containsIpsClasspathEntry, is(true));
-    }
-
-    @Test
-    public void testCreateIpsProject_setsFormulaLanguageLocaleToEnglishIfDefaultIsNotGerman() throws CoreException {
-        creationProperties.setLocales(Arrays.asList(Locale.ITALIAN, Locale.GERMAN));
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-        assertThat(ipsProject.getFormulaLanguageLocale(), is(Locale.ENGLISH));
-    }
-
-    @Test
-    public void testCreateIpsProject_setsFormulaLanguageLocaleToGermanIfDefaultIsGerman() throws CoreException {
-        creationProperties.setLocales(Arrays.asList(Locale.GERMAN, Locale.ITALIAN, Locale.ENGLISH));
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-        assertThat(ipsProject.getFormulaLanguageLocale(), is(Locale.GERMAN));
-    }
-
-    @Test(expected = CoreException.class)
-    public void testCreateIpsProject_missingCreationProperties() throws CoreException {
-        creationProperties = mock(IpsProjectCreationProperties.class);
-        when(creationProperties.validate(wrap(javaProject).as(AJavaProject.class)))
-                .thenReturn(MessageList.ofErrors("error"));
-        ProjectUtil.createIpsProject(javaProject, creationProperties);
-    }
-
-    @Test
-    public void testCreateIpsProject_noModelProject() throws CoreException {
-        creationProperties.setModelProject(false);
-        creationProperties.setProductDefinitionProject(true);
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-        assertNull(ipsProject.getProperties().getBuilderSetConfig()
-                .getPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED));
-        assertThat(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources().getName(), is("derived"));
-    }
-
-    @Test
-    public void testCreateIpsProject_withExistingSourceFolder() throws CoreException {
-        IFolder sourceFolder = javaProject.getProject().getFolder(creationProperties.getSourceFolderName());
-        sourceFolder.create(true, true, new NullProgressMonitor());
-
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-        IIpsSrcFolderEntry[] srcFolderEntries = ipsProject.getIpsObjectPath().getSourceFolderEntries();
-        assertNotNull(srcFolderEntries);
-        assertThat(srcFolderEntries.length, is(1));
-        assertThat(srcFolderEntries[0].getSourceFolder().getName(), is(creationProperties.getSourceFolderName()));
-    }
-
-    @Test
-    public void testCreateIpsProject_withExistingDerivcedSrcFolder() throws CoreException {
-        IFolder derivedFolder = javaProject.getProject().getFolder("resources");
-        derivedFolder.create(true, true, new NullProgressMonitor());
-
-        IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-        assertThat(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources().getName(), is("resources"));
-    }
-
-    @Test
-    public void testCreateIpsProject_useConfigurationExtension() throws CoreException {
-        List<IIpsProjectConfigurator> projectConfigurators = new ArrayList<>(
-                Arrays.asList(mock(IIpsProjectConfigurator.class)));
-        IIpsProjectConfigurator configurator = mock(IIpsProjectConfigurator.class);
-        when(configurator.canConfigure(any())).thenReturn(true);
-        projectConfigurators.add(configurator);
-        try (TestIpsModelExtensions extension = new TestIpsModelExtensions()) {
-            extension.setIpsProjectConfigurators(projectConfigurators);
-            IIpsProject ipsProject = ProjectUtil.createIpsProject(javaProject, creationProperties);
-
-            verify(configurator, times(1)).configureIpsProject(ipsProject, creationProperties);
-
-            // Proves that the classpath entries has not been set by using the
+            // Proves that the classpath entries has been set using the
             // StandardJavaProjectConfigurator
             IClasspathEntry[] entries = javaProject.getRawClasspath();
             boolean containsIpsClasspathEntry = Arrays.stream(entries)
                     .anyMatch(
                             entry -> IpsClasspathContainerInitializer.CONTAINER_ID.equals(entry.getPath().segment(0)));
-            assertThat(containsIpsClasspathEntry, is(false));
+            assertThat(containsIpsClasspathEntry, is(true));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_setsFormulaLanguageLocaleToEnglishIfDefaultIsNotGerman() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            creationProperties.setLocales(Arrays.asList(Locale.ITALIAN, Locale.GERMAN));
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            assertThat(ipsProject.getFormulaLanguageLocale(), is(Locale.ENGLISH));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_setsFormulaLanguageLocaleToGermanIfDefaultIsGerman() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            creationProperties.setLocales(Arrays.asList(Locale.GERMAN, Locale.ITALIAN, Locale.ENGLISH));
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            assertThat(ipsProject.getFormulaLanguageLocale(), is(Locale.GERMAN));
+        }
+    }
+
+    @Test(expected = CoreException.class)
+    public void testCreateIpsProject_missingCreationProperties() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            creationProperties = mock(IpsProjectCreationProperties.class);
+            when(creationProperties.validate(wrap(javaProject).as(AJavaProject.class)))
+                    .thenReturn(MessageList.ofErrors("error"));
+            EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+        } else {
+            throw new CoreException(new IpsStatus(""));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_noModelProject() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            creationProperties.setModelProject(false);
+            creationProperties.setProductDefinitionProject(true);
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            assertNull(ipsProject.getProperties().getBuilderSetConfig()
+                    .getPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED));
+            assertThat(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources().getName(), is("derived"));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_withExistingSourceFolder() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            IFolder sourceFolder = javaProject.getProject().getFolder(creationProperties.getSourceFolderName());
+            sourceFolder.create(true, true, new NullProgressMonitor());
+
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            IIpsSrcFolderEntry[] srcFolderEntries = ipsProject.getIpsObjectPath().getSourceFolderEntries();
+            assertNotNull(srcFolderEntries);
+            assertThat(srcFolderEntries.length, is(1));
+            assertThat(srcFolderEntries[0].getSourceFolder().getName(), is(creationProperties.getSourceFolderName()));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_withExistingDerivcedSrcFolder() throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            IFolder derivedFolder = javaProject.getProject().getFolder("resources");
+            derivedFolder.create(true, true, new NullProgressMonitor());
+
+            IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            assertThat(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources().getName(), is("resources"));
+        }
+    }
+
+    @Test
+    public void testCreateIpsProject_useConfigurationExtension() throws Exception {
+        if (Abstractions.isEclipseRunning()) {
+            List<IIpsProjectConfigurator> projectConfigurators = new ArrayList<>(
+                    Arrays.asList(mock(IIpsProjectConfigurator.class)));
+            IIpsProjectConfigurator configurator = mock(IIpsProjectConfigurator.class);
+            when(configurator.canConfigure(any())).thenReturn(true);
+            projectConfigurators.add(configurator);
+            try (TestIpsModelExtensions extension = TestIpsModelExtensions.get()) {
+                extension.setIpsProjectConfigurators(projectConfigurators);
+                IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+
+                verify(configurator, times(1)).configureIpsProject(ipsProject, creationProperties);
+
+                // Proves that the classpath entries has not been set by using the
+                // StandardJavaProjectConfigurator
+                IClasspathEntry[] entries = javaProject.getRawClasspath();
+                boolean containsIpsClasspathEntry = Arrays.stream(entries)
+                        .anyMatch(
+                                entry -> IpsClasspathContainerInitializer.CONTAINER_ID
+                                        .equals(entry.getPath().segment(0)));
+                assertThat(containsIpsClasspathEntry, is(false));
+            }
         }
     }
 
@@ -202,6 +230,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
         AProject project = ipsProject.getProject();
         assertThat(project.getFolder("src").exists(), is(true));
         assertThat(project.getFolder(creationProperties.getSourceFolderName()).exists(), is(true));
+
     }
 
     private void createIpsProjectCheckIpsProjectProperties(IIpsProjectProperties projectProperties) {

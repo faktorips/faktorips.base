@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -116,7 +118,14 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
         if (file().exists()) {
             getWorkspace().getRoot().remove(file().toPath());
             clearMarkers();
-            PlainJavaFileUtil.walk(file(), monitor, "Deleting", Files::delete); //$NON-NLS-1$
+            PlainJavaImplementation.getResourceChanges().hold();
+            PlainJavaFileUtil.walk(file(), monitor, "Deleting", path -> { //$NON-NLS-1$
+                PlainJavaResource resource = (PlainJavaResource)wrap(path.toFile()).as(AResource.class);
+                PlainJavaImplementation.getResourceChanges().resourceRemoved(resource);
+                resource.refreshParent();
+                Files.delete(path);
+            });
+            PlainJavaImplementation.getResourceChanges().resume();
         }
         refreshParent();
     }
@@ -284,7 +293,17 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     @Override
     public void copy(Path destination, IProgressMonitor monitor) {
-        PlainJavaFileUtil.copy(file(), destination, monitor);
+        File copy = PlainJavaFileUtil.copy(file(), destination, monitor);
+        PlainJavaResource createdResource = (PlainJavaResource)wrap(copy).as(AResource.class);
+        createdResource.refreshParent();
+        PlainJavaImplementation.getResourceChanges().resourceCreated(createdResource);
+    }
+
+    @Override
+    public void move(Path destination, IProgressMonitor monitor) {
+        PlainJavaFileUtil.move(file(), destination, monitor);
+        PlainJavaImplementation.getResourceChanges()
+                .resourceMoved(this, (PlainJavaResource)wrap(destination.toFile()).as(AResource.class));
     }
 
     @Override

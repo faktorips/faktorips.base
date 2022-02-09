@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -97,7 +98,7 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = ruleInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
+        assertThat(ml, lacksMessageCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
 
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "RuleParameter", 2);
@@ -107,6 +108,6 @@ public class TestRuleParameterTest extends AbstractIpsPluginTest {
         ruleInput.setName(name);
         ruleInput.initFromXml(paramEl);
         ml = ruleInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
+        assertThat(ml, hasMessageCode(ITestRuleParameter.MSGCODE_NOT_EXPECTED_RESULT));
     }
 }

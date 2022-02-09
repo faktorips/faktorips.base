@@ -192,8 +192,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) {
 
         IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
         IpsModel model = (IpsModel)getIpsModel();
@@ -231,8 +230,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) {
         try {
             InputStream is = new ByteArrayInputStream(content.getBytes(getIpsProject().getXmlFileCharset()));
             return createIpsFile(name, is, force, monitor);
@@ -242,8 +240,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(IpsObjectType type,
+            String ipsObjectName,
+            boolean force,
+            IProgressMonitor monitor) {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
@@ -354,8 +354,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
             throw new IpsException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, IStatus.ERROR,
                     MessageFormat.format("{0} is not a valid package name.", name), null)); //$NON-NLS-1$

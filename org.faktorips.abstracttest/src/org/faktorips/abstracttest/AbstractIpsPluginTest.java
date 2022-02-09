@@ -68,9 +68,11 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
@@ -124,6 +126,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.util.StringUtil;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.w3c.dom.Document;
 
@@ -160,10 +163,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsLog.setSuppressLoggingDuringTest(false);
         if (Abstractions.isEclipseRunning()) {
             ((EclipseIpsModel)IpsModel.get()).stopListeningToResourceChanges();
+            setAutoBuild(false);
         }
-        testIpsModelExtensions = new TestIpsModelExtensions();
+        testIpsModelExtensions = TestIpsModelExtensions.get();
         testIpsModelExtensions.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
-        setAutoBuild(false);
 
         ICoreRunnable runnable = monitor -> {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
@@ -175,22 +178,39 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             // also starts the listening process
             IpsModel.reInit();
         };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
 
+        if (Abstractions.isEclipseRunning()) {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        } else {
+            AWorkspace workspace = Abstractions.getWorkspace();
+            workspace.run(runnable, null);
+        }
         getIpsModel().addChangeListener(contentsChangeListener);
     }
 
     @After
     public void tearDown() throws Exception {
-        testIpsModelExtensions.close();
-        IpsLog.setSuppressLoggingDuringTest(false);
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        for (IProject project : projects) {
-            deleteProject(project);
+        if (Abstractions.isEclipseRunning()) {
+            testIpsModelExtensions.close();
+            IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+            for (IProject project : projects) {
+                deleteProject(project);
+            }
+        } else {
+            Abstractions.getWorkspace().getRoot().getProjects().stream().forEach(p -> p.delete(null));
         }
+
         getIpsModel().removeChangeListener(contentsChangeListener);
         tearDownExtension();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        if (!Abstractions.isEclipseRunning()) {
+            File workspace = Abstractions.getWorkspace().getRoot().unwrap();
+            workspace.deleteOnExit();
+        }
     }
 
     private void deleteProject(IProject project) throws IpsException, InterruptedException {
@@ -228,7 +248,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         File file = createFileIfNecessary(archiveFile);
 
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(projectToArchive, file);
-        ResourcesPlugin.getWorkspace().run(op, null);
+        Abstractions.getWorkspace().run(op, null);
 
         createLinkIfNecessary(archiveFile, file);
     }
@@ -237,7 +257,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         File file = createFileIfNecessary(archiveFile);
 
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(rootToArchive, file);
-        ResourcesPlugin.getWorkspace().run(op, null);
+        Abstractions.getWorkspace().run(op, null);
 
         createLinkIfNecessary(archiveFile, file);
     }
@@ -246,12 +266,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a links to the given file in the workspace.
      */
     protected void createLinkIfNecessary(AFile archiveFile, File file) {
-        IFile eclipseFile = archiveFile.unwrap();
-        if (!eclipseFile.isLinked() && !archiveFile.exists()) {
-            try {
-                eclipseFile.createLink(new Path(file.getAbsolutePath()), 0, new NullProgressMonitor());
-            } catch (CoreException e) {
-                throw new IpsException(e);
+        if (Abstractions.isEclipseRunning()) {
+            IFile eclipseFile = archiveFile.unwrap();
+            if (!eclipseFile.isLinked() && !archiveFile.exists()) {
+                try {
+                    eclipseFile.createLink(new Path(file.getAbsolutePath()), 0, new NullProgressMonitor());
+                } catch (CoreException e) {
+                    throw new IpsException(e);
+                }
             }
         }
     }
@@ -261,6 +283,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         if (archiveFile.exists()) {
             file = archiveFile.getLocation().toFile();
         } else {
+            archiveFile.create(InputStream.nullInputStream(), null);
             file = archiveFile.getLocation().toFile();
         }
         return file;
@@ -312,14 +335,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new platform project with the given name and opens it.
      */
-    protected IProject newPlatformProject(String name) throws CoreException {
+    protected AProject newPlatformProject(String name) {
         return new PlatformProjectBuilder().name(name).build();
     }
 
     /**
      * Creates a new platform project with the given name and description and opens it.
      */
-    protected IProject newPlatformProject(String name, IProjectDescription description) throws CoreException {
+    protected AProject newPlatformProject(String name, IProjectDescription description) {
         return new PlatformProjectBuilder().name(name).description(description).build();
     }
 
@@ -335,7 +358,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new Java Project for the given platform project.
      */
     protected AJavaProject addJavaCapabilities(IProject project) throws CoreException {
-        return Wrappers.wrap(JavaProjectUtil.addJavaCapabilities(project)).as(AJavaProject.class);
+        return addJavaCapabilities(Wrappers.wrap(project).as(AProject.class));
+    }
+
+    /**
+     * Creates a new Java Project for the given platform project.
+     */
+    protected AJavaProject addJavaCapabilities(AProject project) throws CoreException {
+        return JavaProjectUtil.addJavaCapabilities(project);
     }
 
     /**
@@ -392,8 +422,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         ipsProject.setProperties(properties);
     }
 
-    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            {
+    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project) {
 
         // Create the builder set for the project
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(
@@ -476,8 +505,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new ipsobject in the indicated project's first source folder. If the qualifiedName
      * includes a package name, the package is created if it does not already exists.
      */
-    protected IIpsObject newIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName)
-            {
+    protected IIpsObject newIpsObject(IIpsProject ipsProject, IpsObjectType type, String qualifiedName) {
         IIpsPackageFragmentRoot root = ipsProject.getSourceIpsPackageFragmentRoots()[0];
         return newIpsObject(root, type, qualifiedName);
     }
@@ -537,8 +565,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException If the enum content could not be created.
      */
-    protected EnumContent newEnumContent(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected EnumContent newEnumContent(final IIpsPackageFragmentRoot root, final String qualifiedName) {
 
         return (EnumContent)newIpsObject(root, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
@@ -554,8 +581,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException If the enum content could not be created.
      */
-    protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName)
-            {
+    protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName) {
         return (EnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT, qualifiedName);
     }
 
@@ -583,8 +609,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException If the enum type could not be created.
      */
-    protected EnumType newEnumType(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected EnumType newEnumType(final IIpsPackageFragmentRoot root, final String qualifiedName) {
         return (EnumType)newIpsObject(root, IpsObjectType.ENUM_TYPE, qualifiedName);
     }
 
@@ -599,8 +624,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException If the enum type could not be created.
      */
-    protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName)
-            {
+    protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName) {
         return (EnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, qualifiedName);
     }
 
@@ -619,8 +643,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException If the enum type could not be created.
      */
-    protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName)
-            {
+    protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName) {
 
         EnumType enumType = newEnumType(ipsProject, qualifiedName);
         enumType.setExtensible(false);
@@ -643,8 +666,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new policy component type in the indicated package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
      */
-    protected PolicyCmptType newPolicyCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected PolicyCmptType newPolicyCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) {
         return (PolicyCmptType)newIpsObject(root, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
 
@@ -652,8 +674,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new policy component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
      */
-    protected PolicyCmptType newPolicyCmptType(IIpsProject ipsProject, String qualifiedName)
-            {
+    protected PolicyCmptType newPolicyCmptType(IIpsProject ipsProject, String qualifiedName) {
         return (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, qualifiedName);
     }
 
@@ -662,8 +683,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * create a product component type. If the qualifiedName includes a package name, the package is
      * created if it does not already exists.
      */
-    protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject ipsProject, String qualifiedName)
-            {
+    protected PolicyCmptType newPolicyCmptTypeWithoutProductCmptType(IIpsProject ipsProject, String qualifiedName) {
         return (PolicyCmptType)newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE,
                 qualifiedName, false);
     }
@@ -672,8 +692,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new product component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
      */
-    protected ProductCmptType newProductCmptType(IProductCmptType supertype, String qualifiedName)
-            {
+    protected ProductCmptType newProductCmptType(IProductCmptType supertype, String qualifiedName) {
         ProductCmptType newType = (ProductCmptType)newIpsObject(supertype.getIpsProject(),
                 IpsObjectType.PRODUCT_CMPT_TYPE, qualifiedName);
         newType.setSupertype(supertype.getQualifiedName());
@@ -687,8 +706,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * qualifiedName includes a package name, the package is created if it does not already exist.
      * Creates the product component type's default categories if they have not yet been created.
      */
-    protected ProductCmptType newProductCmptType(IIpsProject ipsProject, String qualifiedName)
-            {
+    protected ProductCmptType newProductCmptType(IIpsProject ipsProject, String qualifiedName) {
         return newProductCmptType(ipsProject, qualifiedName, true);
     }
 
@@ -743,8 +761,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new product component type in the indicated package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
      */
-    protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected ProductCmptType newProductCmptType(final IIpsPackageFragmentRoot root, final String qualifiedName) {
         ProductCmptType productCmptType = (ProductCmptType)newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE,
                 qualifiedName);
         productCmptType.setConfigurationForPolicyCmptType(false);
@@ -752,8 +769,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         return productCmptType;
     }
 
-    private void createDefaultCategoriesForProductCmptTypeAsNecessary(IProductCmptType productCmptType)
-            {
+    private void createDefaultCategoriesForProductCmptTypeAsNecessary(IProductCmptType productCmptType) {
 
         boolean defaultFormulasFound = false;
         boolean defaultPolicyAttributesFound = false;
@@ -859,8 +875,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException if an error occurs while saving the files.
      */
-    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to, boolean save)
-            {
+    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to, boolean save) {
         IPolicyCmptTypeAssociation master2detail = from.newPolicyCmptTypeAssociation();
         master2detail.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         master2detail.setTarget(to.getQualifiedName());
@@ -895,8 +910,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException if an error occurs while saving the files.
      */
-    public IPolicyCmptTypeAssociation newAssociation(IPolicyCmptType from, IPolicyCmptType to)
-            {
+    public IPolicyCmptTypeAssociation newAssociation(IPolicyCmptType from, IPolicyCmptType to) {
         IPolicyCmptTypeAssociation association = from.newPolicyCmptTypeAssociation();
         association.setAssociationType(AssociationType.ASSOCIATION);
         association.setTarget(to.getQualifiedName());
@@ -921,8 +935,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException if an error occurs while saving the files.
      */
-    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to)
-            {
+    public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to) {
         return newComposition(from, to, true);
     }
 
@@ -936,8 +949,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException if an error occurs while saving the files.
      */
-    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to)
-            {
+    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to) {
         return newAggregation(from, to, true);
     }
 
@@ -948,8 +960,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * 
      * @throws IpsException if an error occurs while saving the files.
      */
-    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to, boolean save)
-            {
+    public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to, boolean save) {
         IProductCmptTypeAssociation agg = from.newProductCmptTypeAssociation();
         agg.setAssociationType(AssociationType.AGGREGATION);
         agg.setTarget(to.getQualifiedName());
@@ -999,8 +1010,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new product component in the indicated package fragment root. If the qualifiedName
      * includes a package name, the package is created if it does not already exists.
      */
-    protected ProductCmpt newProductCmpt(IIpsPackageFragmentRoot root, String qualifiedName)
-            {
+    protected ProductCmpt newProductCmpt(IIpsPackageFragmentRoot root, String qualifiedName) {
         return (ProductCmpt)newIpsObject(root, IpsObjectType.PRODUCT_CMPT, qualifiedName);
     }
 
@@ -1027,8 +1037,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new ipsobject in the indicated package fragment root. If the qualifiedName includes
      * a package name, the package is created if it does not already exists.
      */
-    protected IIpsObject newIpsObject(IIpsPackageFragment pack, IpsObjectType type, String unqualifiedName)
-            {
+    protected IIpsObject newIpsObject(IIpsPackageFragment pack, IpsObjectType type, String unqualifiedName) {
         IIpsSrcFile file = pack.createIpsFile(type, unqualifiedName, true, null);
         return file.getIpsObject();
     }
@@ -1037,8 +1046,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new table structure in the indicated package fragment root. If the qualifiedName
      * includes a package name, the package is created if it does not already exists.
      */
-    protected TableStructure newTableStructure(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected TableStructure newTableStructure(final IIpsPackageFragmentRoot root, final String qualifiedName) {
         return (TableStructure)newIpsObject(root, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
     }
 
@@ -1046,8 +1054,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new table structure in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
      */
-    protected TableStructure newTableStructure(IIpsProject ipsProject, String qualifiedName)
-            {
+    protected TableStructure newTableStructure(IIpsProject ipsProject, String qualifiedName) {
         return (TableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, qualifiedName);
     }
 
@@ -1069,8 +1076,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new table content in the indicated package fragment root. If the qualifiedName
      * includes a package name, the package is created if it does not already exists.
      */
-    protected TableContents newTableContents(IIpsPackageFragmentRoot root, String qualifiedName)
-            {
+    protected TableContents newTableContents(IIpsPackageFragmentRoot root, String qualifiedName) {
         return (TableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, qualifiedName);
     }
 
@@ -1086,8 +1092,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new test case type in the indicated package fragment root. If the qualifiedName
      * includes a package name, the package is created if it does not already exists.
      */
-    protected TestCaseType newTestCaseType(final IIpsPackageFragmentRoot root, final String qualifiedName)
-            {
+    protected TestCaseType newTestCaseType(final IIpsPackageFragmentRoot root, final String qualifiedName) {
         return (TestCaseType)newIpsObject(root, IpsObjectType.TEST_CASE_TYPE, qualifiedName);
     }
 
@@ -1189,8 +1194,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException {
-
-        IPath outputLocation = ((IJavaProject)project.getJavaProject().unwrap()).getResource().getLocation()
+        IPath location = PathMapping.toEclipsePath(project.getJavaProject().getResource().getLocation());
+        IPath outputLocation = location
                 .append(Path.fromOSString(project.getJavaProject().getOutputLocation().toString())
                         .removeFirstSegments(1));
         IPath packagePath = outputLocation.append(adaptedClass.getPackage().getName().replace('.', '/'));
@@ -1235,8 +1240,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * classes are added to the classpath of the project.
      * 
      */
-    protected void configureProject(IIpsProject project, String ipsProjectFileName, Class<?>[] dependencies)
-            {
+    protected void configureProject(IIpsProject project, String ipsProjectFileName, Class<?>[] dependencies) {
         java.nio.file.Path outputPath = project.getJavaProject().getOutputLocation();
         AFolder output = project.getProject().getFolder(outputPath);
         for (Class<?> dependencie : dependencies) {
@@ -1255,8 +1259,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Sets the builderset as the one to be used by the indicated project. This method modifies the
      * project's properties and also registers the builderset in the model.
      */
-    protected void setArtefactBuildset(IIpsProject project, IIpsArtefactBuilderSet builderset)
-            {
+    protected void setArtefactBuildset(IIpsProject project, IIpsArtefactBuilderSet builderset) {
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(builderset.getId());
         project.setProperties(props);
@@ -1344,10 +1347,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         AFile file = folder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
 
-        if (file.exists()) {
-            file.delete(null);
-        }
-
         String print = "";
         String lineSeparator = System.lineSeparator();
 
@@ -1360,7 +1359,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         byte[] bytes = print.getBytes(StringUtil.CHARSET_UTF8);
 
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-        file.create(is, null);
+
+        if (file.exists()) {
+            file.setContents(is, true, null);
+        } else {
+            file.create(is, null);
+        }
 
         return file;
     }
@@ -1405,8 +1409,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a file ("file.txt") with the given String as content and places it in the given
      * folder.
      */
-    protected void createFileWithContent(AFolder parentFolder, String fileName, String content)
-            {
+    protected void createFileWithContent(AFolder parentFolder, String fileName, String content) {
         AFile file = parentFolder.getFile(fileName);
         if (!file.exists()) {
             file.create(new ByteArrayInputStream(content.getBytes()), null);
@@ -1417,8 +1420,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Prints the validation result of the given {@link IIpsObjectPartContainer} to the console if
      * the severity is at least at the warning level.
      */
-    protected final void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer)
-            {
+    protected final void printValidationResult(IIpsObjectPartContainer ipsObjectPartContainer) {
         MessageList validationResult = ipsObjectPartContainer.validate(ipsObjectPartContainer.getIpsProject());
         if (validationResult.getSeverity() == Message.WARNING || validationResult.getSeverity() == Message.ERROR) {
             System.out.println(validationResult.getFirstMessage(Message.ERROR));

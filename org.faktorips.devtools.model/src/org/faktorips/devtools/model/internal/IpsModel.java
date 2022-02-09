@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -47,18 +48,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.datatype.joda.LocalDateDatatype;
-import org.faktorips.datatype.joda.LocalDateTimeDatatype;
-import org.faktorips.datatype.joda.LocalTimeDatatype;
-import org.faktorips.datatype.joda.MonthDayDatatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
@@ -66,7 +62,12 @@ import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFile;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -84,7 +85,6 @@ import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.builder.DependencyGraph;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
-import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -99,6 +99,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -146,7 +147,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      */
     private static final int INVALID_MOD_STAMP = -42;
 
-    private static IpsModel theInstance = Abstractions.isEclipseRunning() ? new EclipseIpsModel() : new IpsModel();
+    private static IpsModel theInstance = create();
 
     /** set of model change listeners that are notified about model changes */
     private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
@@ -161,13 +162,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * a map that contains per thread if changes should be broadcasted to the registered listeners
      * or squeezed.
      */
-    private Map<Thread, Integer> listenerNoticicationLevelMap = new HashMap<>();
-
-    /**
-     * A map containing the datatypes (value) by id (key). The map is initialized with null to point
-     * at the lazy loading mechanism
-     */
-    private Supplier<Map<String, Datatype>> datatypes = CachingSupplier.caching(this::initDatatypesDefinedViaExtension);
+    private Map<Thread, Integer> listenerNotificationLevelMap = new HashMap<>();
 
     /**
      * A map containing the project for every name.
@@ -210,6 +205,20 @@ public class IpsModel extends IpsElement implements IIpsModel {
         initIpsObjectTypes();
     }
 
+    private static IpsModel create() {
+        return Abstractions.isEclipseRunning()
+                ? new EclipseIpsModel()
+                : new PlainJavaIpsModel();
+    }
+
+    public void stopListeningToResourceChanges() {
+        // only in specific implementations
+    }
+
+    public void startListeningToResourceChanges() {
+        // only in specific implementations
+    }
+
     protected Set<IIpsSrcFile> getIpsSrcFilesInternal() {
         return ipsObjectsMap.keySet();
     }
@@ -222,13 +231,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
      */
     @Deprecated
     public static void reInit() {
-        if (Abstractions.isEclipseRunning()) {
-            ((EclipseIpsModel)theInstance).stopListeningToResourceChanges();
-            theInstance = new EclipseIpsModel();
-            ((EclipseIpsModel)theInstance).startListeningToResourceChanges();
-        } else {
-            theInstance = new IpsModel();
-        }
+        theInstance.stopListeningToResourceChanges();
+        theInstance = create();
+        theInstance.startListeningToResourceChanges();
     }
 
     /**
@@ -609,13 +614,13 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * that use these methods without resuming broadcasting to early.
      */
     public void stopBroadcastingChangesMadeByCurrentThread() {
-        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNotificationLevelMap.get(Thread.currentThread());
         if (level == null) {
             level = Integer.valueOf(1);
         } else {
             level = Integer.valueOf(level.intValue() + 1);
         }
-        listenerNoticicationLevelMap.put(Thread.currentThread(), level);
+        listenerNotificationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.stopBroadcastingChangesMadeByCurrentThread(): Thread=" //$NON-NLS-1$
                     + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$
@@ -631,11 +636,11 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * that use these methods without resuming broadcasting to early.
      */
     public void resumeBroadcastingChangesMadeByCurrentThread() {
-        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNotificationLevelMap.get(Thread.currentThread());
         if (level != null && level.intValue() > 0) {
             level = Integer.valueOf(level.intValue() - 1);
         }
-        listenerNoticicationLevelMap.put(Thread.currentThread(), level);
+        listenerNotificationLevelMap.put(Thread.currentThread(), level);
         if (TRACE_MODEL_CHANGE_LISTENERS) {
             System.out.println("IpsModel.restartBroadcastingChangesMadeByCurrentThread(): Thread=" //$NON-NLS-1$
                     + Thread.currentThread() + ", new level=" + level); //$NON-NLS-1$
@@ -647,7 +652,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * object by the current thread.
      */
     public boolean isBroadcastingChangesForCurrentThread() {
-        Integer level = listenerNoticicationLevelMap.get(Thread.currentThread());
+        Integer level = listenerNotificationLevelMap.get(Thread.currentThread());
         if (level == null || level.intValue() == 0) {
             return true;
         }
@@ -813,7 +818,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
         IIpsProjectProperties props = getIpsProjectProperties(project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
-        Map<String, Datatype> datatypeMap = datatypes.get();
+        Map<String, Datatype> datatypeMap = IIpsModelExtensions.get().getPredefinedDatatypes();
         for (String datatypeId : datatypeIds) {
             Datatype datatype = datatypeMap.get(datatypeId);
             if (datatype == null) {
@@ -1087,71 +1092,15 @@ public class IpsModel extends IpsElement implements IIpsModel {
         customModelExtensions.addIpsObjectExtensionProperty(property);
     }
 
-    private Map<String, Datatype> initDatatypesDefinedViaExtension() {
-        Map<String, Datatype> datatypesMap = new HashMap<>();
-        if (Abstractions.isEclipseRunning()) {
-            IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
-            IExtension[] extensions = point.getExtensions();
-
-            // first, get all datatypes defined by the ips-plugin itself
-            // to get them at top of the list...
-            for (IExtension extension : extensions) {
-                if (extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                    createDatatypeDefinition(datatypesMap, extension);
-                }
-            }
-
-            // and second, get the rest.
-            for (IExtension extension : extensions) {
-                if (!extension.getNamespaceIdentifier().equals(IpsModelActivator.PLUGIN_ID)) {
-                    createDatatypeDefinition(datatypesMap, extension);
-                }
-            }
-        } else {
-            // same order as in the extensions
-            // TODO Über ModelExtensions laden
-            Arrays.asList(
-                    Datatype.STRING,
-                    Datatype.INTEGER,
-                    Datatype.LONG,
-                    Datatype.BOOLEAN,
-                    new DateDatatype(),
-                    Datatype.GREGORIAN_CALENDAR,
-                    Datatype.DECIMAL,
-                    Datatype.MONEY,
-                    Datatype.DOUBLE,
-                    Datatype.PRIMITIVE_BOOLEAN,
-                    Datatype.PRIMITIVE_INT,
-                    Datatype.PRIMITIVE_LONG,
-                    Datatype.BIG_DECIMAL,
-                    new LocalDateDatatype(),
-                    new LocalTimeDatatype(),
-                    new LocalDateTimeDatatype(),
-                    new MonthDayDatatype())
-                    .forEach(d -> datatypesMap.put(d.getName(), d));
-        }
-        return datatypesMap;
-    }
-
-    private void createDatatypeDefinition(Map<String, Datatype> datatypesMap, IExtension extension) {
-        for (IConfigurationElement configElement : extension.getConfigurationElements()) {
-            DatatypeDefinition definition = new DatatypeDefinition(extension, configElement);
-            if (definition.hasDatatype()) {
-                datatypesMap.put(definition.getDatatype().getQualifiedName(), definition.getDatatype());
-            }
-        }
-    }
-
     @Override
     public ValueDatatype[] getPredefinedValueDatatypes() {
-        Collection<Datatype> c = datatypes.get().values();
+        Collection<Datatype> c = IIpsModelExtensions.get().getPredefinedDatatypes().values();
         return c.toArray(new ValueDatatype[c.size()]);
     }
 
     @Override
     public boolean isPredefinedValueDatatype(String valueDatatypeId) {
-        return datatypes.get().containsKey(valueDatatypeId);
+        return IIpsModelExtensions.get().getPredefinedDatatypes().containsKey(valueDatatypeId);
     }
 
     @Override
@@ -1484,8 +1433,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *             {@link SingleEventModification#execute() execute()} method of the
      *             {@link SingleEventModification}
      */
-    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications)
-            {
+    public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications) {
         boolean successful = false;
         IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
         IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
@@ -1606,12 +1554,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
             resourceDeltaVisitor = new ResourceDeltaVisitor(this);
         }
 
+        @Override
         public void startListeningToResourceChanges() {
             ((IWorkspace)getWorkspace().unwrap()).addResourceChangeListener(this,
                     IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE
                             | IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_REFRESH);
         }
 
+        @Override
         public void stopListeningToResourceChanges() {
             ((IWorkspace)getWorkspace().unwrap()).removeResourceChangeListener(this);
         }
@@ -1699,6 +1649,219 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
         }
 
+    }
+
+    private static class PlainJavaIpsModel extends IpsModel {
+
+        private Consumer<PlainJavaResourceChange> resourceChangeListener;
+
+        public PlainJavaIpsModel() {
+            super();
+            resourceChangeListener = this::resourceChanged;
+            PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
+        }
+
+        @Override
+        public void startListeningToResourceChanges() {
+            PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
+        }
+
+        @Override
+        public void stopListeningToResourceChanges() {
+            PlainJavaImplementation.getResourceChanges().removeListener(resourceChangeListener);
+        }
+
+        private void resourceChanged(PlainJavaResourceChange change) {
+            PlainJavaResource resource = change.getChangedResource();
+            if (resource instanceof PlainJavaProject) {
+                AProject project = (AProject)resource;
+                if (project.isIpsProject()) {
+                    IIpsProject ipsProject = getIpsProject(project);
+                    forceReloadOfCachedIpsSrcFileContents(ipsProject);
+                }
+            } else if (resource instanceof PlainJavaFile) {
+                AProject project = resource.getProject();
+                if (project != null && project.isIpsProject()) {
+                    IIpsProject ipsProject = getIpsProject(project);
+                    if (IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT.equals(resource.getName())) {
+                        cleanValidationCache(ipsProject);
+                    } else {
+                        String path = PathUtil.toPortableString(resource.getProjectRelativePath());
+                        if (QualifiedNameType.representsQualifiedNameType(path)) {
+                            IIpsSrcFile ipsSrcFile = findIpsSrcFile(resource, ipsProject, path);
+                            if (ipsSrcFile != null) {
+                                forEachIpsSrcFilesChangeListener(listener -> listener
+                                        .ipsSrcFilesChanged(
+                                                new IpsSrcFilesChangedEvent(
+                                                        Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
+                                IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
+                                boolean isInSync = isInSync(ipsSrcFile, content);
+                                if (!isInSync) {
+                                    ipsSrcFileContentHasChanged(
+                                            ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private IIpsSrcFile findIpsSrcFile(PlainJavaResource resource, IIpsProject ipsProject, String path) {
+            IIpsSrcFile ipsSrcFile = ipsProject
+                    .findIpsSrcFile(QualifiedNameType.newQualifedNameType(path));
+            if (ipsSrcFile == null) {
+                ipsSrcFile = findIpsSrcFileInIpsModel(resource);
+            }
+            return ipsSrcFile;
+        }
+
+        private IIpsSrcFile findIpsSrcFileInIpsModel(PlainJavaResource resource) {
+            return getIpsSrcFilesInternal().parallelStream()
+                    .filter(i -> resource.equals(i.getCorrespondingResource()))
+                    .findFirst().orElse(null);
+        }
+
+        /**
+         * This method checks whether the content was saved by a Faktor-IPS save or by an event
+         * outside of Faktor-IPS. If it was saved by us it is still in sync because we have other
+         * mechanism to trigger change events. These change events will be more detailed (for
+         * example it gives the information about a specific part that was changed). If the resource
+         * change event was not triggered by our own save operation we need to assume that the whole
+         * content may have changed.
+         */
+        private boolean isInSync(IIpsSrcFile srcFile, IpsSrcFileContent content) {
+            return content == null
+                    || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
+        }
+
+        /**
+         * Forces to reload the the cached IPS source file contents of a single project or the whole
+         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
+         * each content object.
+         */
+        private synchronized void forceReloadOfCachedIpsSrcFileContents(IIpsProject ipsProject) {
+            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
+            for (IIpsSrcFile srcFile : copyKeys) {
+                if (!srcFile.isDirty() && srcFile.getIpsProject().equals(ipsProject)) {
+                    releaseInCache(srcFile);
+                    getValidationResultCache().removeStaleData(srcFile);
+                }
+            }
+        }
+
+        /**
+         * Forces to reload the the cached IPS source file contents of a single project or the whole
+         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
+         * each content object.
+         */
+        private synchronized void cleanValidationCache(IIpsProject ipsProject) {
+            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
+            for (IIpsSrcFile srcFile : copyKeys) {
+                if (srcFile.getIpsProject().equals(ipsProject)) {
+                    getValidationResultCache().removeStaleData(srcFile);
+                }
+            }
+        }
+
+        private static final class PlainJavaResourceDelta implements IResourceDelta {
+            private final PlainJavaResourceChange change;
+
+            private PlainJavaResourceDelta(PlainJavaResourceChange change) {
+                this.change = change;
+            }
+
+            @Override
+            public <T> T getAdapter(Class<T> adapter) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IResource getResource() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IPath getProjectRelativePath() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IPath getMovedToPath() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IPath getMovedFromPath() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IMarkerDelta[] getMarkerDeltas() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int getKind() {
+                switch (change.getType()) {
+                    case ADDED:
+                        return IResourceDelta.ADDED;
+                    case REMOVED:
+                        return IResourceDelta.REMOVED;
+                    default:
+                        return IResourceDelta.CHANGED;
+                }
+            }
+
+            @Override
+            public IPath getFullPath() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public int getFlags() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IResourceDelta[] getAffectedChildren(int kindMask,
+                    int memberFlags) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IResourceDelta[] getAffectedChildren(int kindMask) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IResourceDelta[] getAffectedChildren() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IResourceDelta findMember(IPath path) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void accept(IResourceDeltaVisitor visitor, int memberFlags)
+                    throws CoreException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void accept(IResourceDeltaVisitor visitor,
+                    boolean includePhantoms) throws CoreException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void accept(IResourceDeltaVisitor visitor)
+                    throws CoreException {
+                throw new UnsupportedOperationException();
+            }
+        }
     }
 
 }

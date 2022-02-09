@@ -367,7 +367,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         configElement.setValue("Foo");
 
         IDeepCopyOperationFixup testDeepCopyOperationFixup = mock(IDeepCopyOperationFixup.class);
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setDeepCopyOperationFixups(Arrays.asList(testDeepCopyOperationFixup));
 
             IpsPackageFragment packageFragment = (IpsPackageFragment)comfortMotorProduct.getIpsPackageFragment();

@@ -20,7 +20,7 @@ import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.ProjectUtil;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 
 /**
  * The {@link IpsProjectConfigurator} checks if there is an existing .ipsproject configuration file.
@@ -52,7 +52,7 @@ public class IpsProjectConfigurator extends AbstractProjectConfigurator {
     public void configureIpsProject(IJavaProject javaProject) {
         try {
             if (javaProject.getProject().getNature(IIpsProject.NATURE_ID) == null) {
-                ProjectUtil.addIpsNature(javaProject.getProject());
+                EclipseProjectUtil.addIpsNature(javaProject.getProject());
             }
         } catch (CoreException e) {
             throw new IpsException(e);

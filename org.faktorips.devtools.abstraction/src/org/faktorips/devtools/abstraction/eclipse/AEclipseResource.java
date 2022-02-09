@@ -164,6 +164,11 @@ public abstract class AEclipseResource extends AWrapper<IResource> implements AR
     }
 
     @Override
+    public void move(Path destination, IProgressMonitor monitor) {
+        run(() -> resource().move(toEclipsePath(destination), true, monitor));
+    }
+
+    @Override
     public void touch(IProgressMonitor monitor) {
         run(() -> resource().touch(monitor));
     }

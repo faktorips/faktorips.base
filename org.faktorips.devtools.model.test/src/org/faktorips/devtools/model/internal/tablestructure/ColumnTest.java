@@ -10,8 +10,10 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -105,11 +107,11 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column.setName("Boolean");
         column.setDatatype(Datatype.STRING.getQualifiedName());
         MessageList ml = column.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+        assertThat(ml, hasMessageCode(IColumn.MSGCODE_INVALID_NAME));
 
         column.setName("integer");
         ml = column.validate(ipsSrcFile.getIpsProject());
-        assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+        assertThat(ml, lacksMessageCode(IColumn.MSGCODE_INVALID_NAME));
     }
 
     @Test

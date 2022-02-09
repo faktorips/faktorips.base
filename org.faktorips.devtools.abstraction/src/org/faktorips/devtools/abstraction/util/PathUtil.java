@@ -12,6 +12,8 @@ package org.faktorips.devtools.abstraction.util;
 import java.nio.file.Path;
 
 import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -63,5 +65,14 @@ public class PathUtil {
     public static String toPortableString(@CheckForNull Path path) {
         IPath eclipsePath = PathMapping.toEclipsePath(path);
         return eclipsePath == null ? null : eclipsePath.toPortableString();
+    }
+
+    public static boolean isAbsoluteInWorkspace(Path path) {
+        if (Abstractions.isEclipseRunning()) {
+            return path.isAbsolute();
+        } else {
+            AWorkspaceRoot workspaceRoot = Abstractions.getWorkspace().getRoot();
+            return workspaceRoot.getProjects().stream().anyMatch(p -> path.startsWith(p.getWorkspaceRelativePath()));
+        }
     }
 }

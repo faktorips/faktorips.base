@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -94,7 +94,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         File externalArchiveFile = File.createTempFile("externalArchiveFile", ".ipsar");
         externalArchiveFile.deleteOnExit();
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, externalArchiveFile);
-        ResourcesPlugin.getWorkspace().run(op, null);
+        Abstractions.getWorkspace().run(op, null);
         Path externalArchivePath = Path.of(externalArchiveFile.getAbsolutePath());
 
         IIpsObjectPath path = project.getIpsObjectPath();

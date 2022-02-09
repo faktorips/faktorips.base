@@ -19,6 +19,7 @@ import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -30,22 +31,23 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
 
     @Test
     public final void testGetDependencyGraph() throws Exception {
-
-        IIpsProject ipsProject = newIpsProject();
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
-        IAssociation bToA = b.newAssociation();
-        bToA.setTarget(a.getQualifiedName());
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
-        DependencyGraphPersistenceManager persistenceManager = IpsModelExtensionsViaEclipsePlugins.get()
-                .getDependencyGraphPersistenceManager();
-        assertNull(persistenceManager.getDependencyGraph(ipsProject));
-        persistenceManager.saving(new TestSaveContext());
-        IDependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
-        assertNotNull(graph);
-        IDependency[] dependencies = graph.getDependants(a.getQualifiedNameType());
-        assertEquals(1, dependencies.length);
-        assertEquals(b.getQualifiedNameType(), dependencies[0].getSource());
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = newIpsProject();
+            IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+            IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
+            IAssociation bToA = b.newAssociation();
+            bToA.setTarget(a.getQualifiedName());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            DependencyGraphPersistenceManager persistenceManager = IpsModelExtensionsViaEclipsePlugins.get()
+                    .getDependencyGraphPersistenceManager();
+            assertNull(persistenceManager.getDependencyGraph(ipsProject));
+            persistenceManager.saving(new TestSaveContext());
+            IDependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
+            assertNotNull(graph);
+            IDependency[] dependencies = graph.getDependants(a.getQualifiedNameType());
+            assertEquals(1, dependencies.length);
+            assertEquals(b.getQualifiedNameType(), dependencies[0].getSource());
+        }
     }
 
     private static class TestSaveContext implements ISaveContext {

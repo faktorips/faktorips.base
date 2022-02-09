@@ -11,6 +11,8 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -69,6 +71,8 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersionProvider;
@@ -113,6 +117,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -284,117 +289,126 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateRequiredFeatures() {
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsProjectProperties propsOrig = new IpsProjectProperties(ipsProject, (IpsProjectProperties)props);
         props.setMinRequiredVersionNumber("unknown-feature", "1.0.0");
         ipsProject.setProperties(props);
 
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
 
         ipsProject.setProperties(propsOrig);
         setMinRequiredVersion("0.0.0");
         TestIpsFeatureVersionManager manager = new TestIpsFeatureVersionManager();
         manager.setCurrentVersionCompatibleWith(false);
         manager.setCompareToCurrentVersion(-1);
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setFeatureVersionManagers(manager);
             ml = ipsProject.validate();
-            assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
-            assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
-            assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
+            assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
+            assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
+            assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_INCOMPATIBLE_VERSIONS));
 
             setMinRequiredVersion("999999.0.0");
             manager.setCompareToCurrentVersion(1);
             ml = ipsProject.validate();
-            assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
+            assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_VERSION_TOO_LOW));
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidate_JavaCodeContainsError() {
-        MessageList list = ipsProject.validate();
-        assertFalse(list.containsErrorMsg());
+        if (Abstractions.isEclipseRunning()) {
+            MessageList list = ipsProject.validate();
+            assertFalse(list.containsErrorMsg());
 
-        // remove src folder => build path error
-        AFolder srcFolder = ipsProject.getProject().getFolder("src");
-        srcFolder.delete(null);
-        list = ipsProject.validate();
-        assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
+            // remove src folder => build path error
+            AFolder srcFolder = ipsProject.getProject().getFolder("src");
+            srcFolder.delete(null);
+            list = ipsProject.validate();
+            assertNotNull(list.getMessageByCode(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS));
+        }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
-        assertNull(ipsProject.isJavaProjectErrorFree(false));
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
-        assertNotNull(ipsProject.isJavaProjectErrorFree(false));
-        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+        if (Abstractions.isEclipseRunning()) {
+            assertNull(ipsProject.isJavaProjectErrorFree(false));
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            assertNotNull(ipsProject.isJavaProjectErrorFree(false));
+            assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // delete the source folder => inconsistent class path
-        AFolder srcFolder = ipsProject.getProject().getFolder("src");
-        srcFolder.delete(null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            // delete the source folder => inconsistent class path
+            AFolder srcFolder = ipsProject.getProject().getFolder("src");
+            srcFolder.delete(null);
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
 
-        assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+            assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // recreate source folder
-        srcFolder.create(null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
-        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+            // recreate source folder
+            srcFolder.create(null);
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // create Java sourcefile with compile error
-        AFile srcFile = srcFolder.getFile("Bla.java");
-        srcFile.create(new ByteArrayInputStream("wrong code".getBytes()), null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
-        assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+            // create Java sourcefile with compile error
+            AFile srcFile = srcFolder.getFile("Bla.java");
+            srcFile.create(new ByteArrayInputStream("wrong code".getBytes()), null);
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // change Java Sourcefile to contain warnings
-        String code = "import java.lang.String; public class Bla { }";
-        srcFile.setContents(new ByteArrayInputStream(code.getBytes()), false, null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
-        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+            // change Java Sourcefile to contain warnings
+            String code = "import java.lang.String; public class Bla { }";
+            srcFile.setContents(new ByteArrayInputStream(code.getBytes()), false, null);
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // create Java sourcefile with compile error
-        srcFile.delete(null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
-        assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
+            // create Java sourcefile with compile error
+            srcFile.delete(null);
+            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
-        // project closed
-        ((IProject)ipsProject.getProject().unwrap()).close(null);
-        assertNull(ipsProject.isJavaProjectErrorFree(false));
+            // project closed
+            ((IProject)ipsProject.getProject().unwrap()).close(null);
+            assertNull(ipsProject.isJavaProjectErrorFree(false));
 
-        // project does not exist
-        IIpsProject project2 = IIpsModel.get().getIpsProject("Project2");
-        assertNull(project2.isJavaProjectErrorFree(false));
+            // project does not exist
+            IIpsProject project2 = IIpsModel.get().getIpsProject("Project2");
+            assertNull(project2.isJavaProjectErrorFree(false));
+        }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testIsJavaProjectErrorFree_WithRefToOtherProjects() throws CoreException {
-        IIpsProject ipsProject2 = newIpsProject("Project2");
-        IIpsProject ipsProject3 = newIpsProject("Project3");
-        AJavaProject javaProject1 = ipsProject.getJavaProject();
-        AJavaProject javaProject2 = ipsProject2.getJavaProject();
-        AJavaProject javaProject3 = ipsProject3.getJavaProject();
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject2 = newIpsProject("Project2");
+            IIpsProject ipsProject3 = newIpsProject("Project3");
+            AJavaProject javaProject1 = ipsProject.getJavaProject();
+            AJavaProject javaProject2 = ipsProject2.getJavaProject();
+            AJavaProject javaProject3 = ipsProject3.getJavaProject();
 
-        IClasspathEntry refEntry = JavaCore.newProjectEntry(new Path("/Project2"));
-        addClasspathEntry(javaProject1.unwrap(), refEntry);
+            IClasspathEntry refEntry = JavaCore.newProjectEntry(new Path("/Project2"));
+            addClasspathEntry(javaProject1.unwrap(), refEntry);
 
-        refEntry = JavaCore.newProjectEntry(new Path("/Project3"));
-        addClasspathEntry(javaProject2.unwrap(), refEntry);
+            refEntry = JavaCore.newProjectEntry(new Path("/Project3"));
+            addClasspathEntry(javaProject2.unwrap(), refEntry);
 
-        assertNull(ipsProject3.isJavaProjectErrorFree(true));
-        assertNull(ipsProject2.isJavaProjectErrorFree(true));
-        assertNull(ipsProject.isJavaProjectErrorFree(true));
+            assertNull(ipsProject3.isJavaProjectErrorFree(true));
+            assertNull(ipsProject2.isJavaProjectErrorFree(true));
+            assertNull(ipsProject.isJavaProjectErrorFree(true));
 
-        // delete the source folder => inconsistent class path
-        AFolder srcFolder = javaProject3.getProject().getFolder("src");
-        srcFolder.delete(null);
-        ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+            // delete the source folder => inconsistent class path
+            AFolder srcFolder = javaProject3.getProject().getFolder("src");
+            srcFolder.delete(null);
+            ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        assertFalse(ipsProject3.isJavaProjectErrorFree(true).booleanValue());
-        assertFalse(ipsProject2.isJavaProjectErrorFree(true).booleanValue());
-        assertFalse(ipsProject.isJavaProjectErrorFree(true).booleanValue());
+            assertFalse(ipsProject3.isJavaProjectErrorFree(true).booleanValue());
+            assertFalse(ipsProject2.isJavaProjectErrorFree(true).booleanValue());
+            assertFalse(ipsProject.isJavaProjectErrorFree(true).booleanValue());
+        }
     }
 
     private void makeIpsProjectDependOnBaseProject() {
@@ -1527,53 +1541,58 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testGetNonIpsResources() throws CoreException {
-        AProject projectHandle = ipsProject.getProject();
-        AFolder nonIpsRoot = projectHandle.getFolder("nonIpsRoot");
-        nonIpsRoot.create(null);
-        AFile nonIpsFile = projectHandle.getFile("nonIpsFile");
-        nonIpsFile.create(null, null);
+        if (Abstractions.isEclipseRunning()) {
+            AProject projectHandle = ipsProject.getProject();
+            AFolder nonIpsRoot = projectHandle.getFolder("nonIpsRoot");
+            nonIpsRoot.create(null);
+            AFile nonIpsFile = projectHandle.getFile("nonIpsFile");
+            nonIpsFile.create(null, null);
 
-        AFolder classpathFolder = projectHandle.getFolder("classpathFolder");
-        classpathFolder.create(null);
-        AFolder outputFolder = projectHandle.getFolder("outputFolder");
-        outputFolder.create(null);
-        AFile classpathFile = projectHandle.getFile("classpathFile");
-        classpathFile.create(null, null);
+            AFolder classpathFolder = projectHandle.getFolder("classpathFolder");
+            classpathFolder.create(null);
+            AFolder outputFolder = projectHandle.getFolder("outputFolder");
+            outputFolder.create(null);
+            AFile classpathFile = projectHandle.getFile("classpathFile");
+            classpathFile.create(null, null);
 
-        // add classpathFolder and classpathFile to the javaprojects classpath
-        // add outputFolder as apecific outputlocation of classpathFolder
-        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
-        IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
-        IClasspathEntry[] newEntries = new IClasspathEntry[2];
-        newEntries[0] = JavaCore.newSourceEntry(toEclipsePath(classpathFolder.getWorkspaceRelativePath()));
-        newEntries[1] = JavaCore.newSourceEntry(toEclipsePath(classpathFile.getWorkspaceRelativePath()), new IPath[] {},
-                toEclipsePath(outputFolder.getWorkspaceRelativePath()));
-        IClasspathEntry[] result = new IClasspathEntry[cpEntries.length + newEntries.length];
-        System.arraycopy(cpEntries, 0, result, 0, cpEntries.length);
-        System.arraycopy(newEntries, 0, result, cpEntries.length, newEntries.length);
-        javaProject.setRawClasspath(result, null);
+            // add classpathFolder and classpathFile to the javaprojects classpath
+            // add outputFolder as apecific outputlocation of classpathFolder
+            IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
+            IClasspathEntry[] cpEntries = javaProject.getRawClasspath();
+            IClasspathEntry[] newEntries = new IClasspathEntry[2];
+            newEntries[0] = JavaCore.newSourceEntry(toEclipsePath(classpathFolder.getWorkspaceRelativePath()));
+            newEntries[1] = JavaCore.newSourceEntry(toEclipsePath(classpathFile.getWorkspaceRelativePath()),
+                    new IPath[] {},
+                    toEclipsePath(outputFolder.getWorkspaceRelativePath()));
+            IClasspathEntry[] result = new IClasspathEntry[cpEntries.length + newEntries.length];
+            System.arraycopy(cpEntries, 0, result, 0, cpEntries.length);
+            System.arraycopy(newEntries, 0, result, cpEntries.length, newEntries.length);
+            javaProject.setRawClasspath(result, null);
 
-        Object[] nonIpsResources = ipsProject.getNonIpsResources();
-        List<?> list = Arrays.asList(nonIpsResources);
-        assertTrue(list.contains(nonIpsRoot));
-        assertTrue(list.contains(nonIpsFile));
-        // /bin, /src and /extension are outputfolders or classpath entries and thus filtered out
-        assertTrue(list.contains(projectHandle.getFile(".project")));
-        assertTrue(list.contains(projectHandle.getFile(".ipsproject")));
-        assertTrue(list.contains(projectHandle.getFile(".classpath")));
-        // assert number of resources returned
-        int expectedNumOfResources = 5;
-        // @see EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME
-        if (list.contains(projectHandle.getFolder(".settings"))) {
-            expectedNumOfResources++;
+            Object[] nonIpsResources = ipsProject.getNonIpsResources();
+            List<?> list = Arrays.asList(nonIpsResources);
+            assertTrue(list.contains(nonIpsRoot));
+            assertTrue(list.contains(nonIpsFile));
+            // /bin, /src and /extension are outputfolders or classpath entries and thus filtered
+            // out
+            assertTrue(list.contains(projectHandle.getFile(".project")));
+            assertTrue(list.contains(projectHandle.getFile(".ipsproject")));
+            assertTrue(list.contains(projectHandle.getFile(".classpath")));
+            // assert number of resources returned
+            int expectedNumOfResources = 5;
+            // @see EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME
+            if (list.contains(projectHandle.getFolder(".settings"))) {
+                expectedNumOfResources++;
+            }
+            assertEquals(expectedNumOfResources, nonIpsResources.length);
+
+            assertFalse(list.contains(classpathFolder));
+            assertFalse(list.contains(classpathFile));
+            assertFalse(list.contains(outputFolder));
         }
-        assertEquals(expectedNumOfResources, nonIpsResources.length);
-
-        assertFalse(list.contains(classpathFolder));
-        assertFalse(list.contains(classpathFile));
-        assertFalse(list.contains(outputFolder));
     }
 
     @Test
@@ -1597,14 +1616,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateMissingMigration() throws Exception {
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
 
         setMinRequiredVersion("0.0.3");
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setFeatureVersionManagers(new InvalidMigrationMockManager());
             suppressLoggingDuringExecutionOfThisTestCase();
             ml = ipsProject.validate();
-            assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
+            assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_INVALID_MIGRATION_INFORMATION));
         }
     }
 
@@ -1646,7 +1665,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testValidateDuplicateTocFilesInDifferentProjects() throws Exception {
         // check if the validation doesn't fail for a valid non duplicate toc file path
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS));
 
         // create builder set so that this test case is independent from StandardBuilderSet which is
         // in a different plugin
@@ -1795,10 +1814,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject2.setIpsObjectPath(path);
-        updateSrcFolderEntryQalifiers(ipsProject2, "2");
+        updateSrcFolderEntryQualifiers(ipsProject2, "2");
 
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject2);
@@ -1810,14 +1829,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we get no stack overflow exception, then the test was successfully executed
 
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject.getIpsObjectPath();
         path.removeProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
 
         ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     /**
@@ -1826,8 +1845,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * to different qualifiers, call this method with
      * <code>setUniqueQualifier(prj, "qualifier1", "qualifier2")</code>.
      */
-    public static void updateSrcFolderEntryQalifiers(IIpsProject prj, String... qualifiers)
-            {
+    public static void updateSrcFolderEntryQualifiers(IIpsProject prj, String... qualifiers) {
         IIpsObjectPath path = prj.getIpsObjectPath();
         IIpsObjectPathEntry[] entries = path.getEntries();
         for (int i = 0; i < entries.length; i++) {
@@ -1853,7 +1871,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we get no stack overflow exception, then the test was successfully executed
 
         MessageList ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     @Test
@@ -1862,9 +1880,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
         IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
         IIpsProject ipsProject13 = this.newIpsProject("TestProject13");
-        updateSrcFolderEntryQalifiers(ipsProject11, "11");
-        updateSrcFolderEntryQalifiers(ipsProject12, "12");
-        updateSrcFolderEntryQalifiers(ipsProject13, "13");
+        updateSrcFolderEntryQualifiers(ipsProject11, "11");
+        updateSrcFolderEntryQualifiers(ipsProject12, "12");
+        updateSrcFolderEntryQualifiers(ipsProject13, "13");
 
         IIpsObjectPath path = ipsProject10.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject11);
@@ -1888,20 +1906,20 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.findAllIpsSrcFiles(result);
 
         MessageList ml = ipsProject10.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject13.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject10);
         ipsProject13.setIpsObjectPath(path);
 
         ml = ipsProject10.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject11.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject12.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject13.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     @Test
@@ -1912,7 +1930,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject2.setIpsObjectPath(path);
 
         MessageList ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject2).setReexported(false);
@@ -1924,14 +1942,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we get no stack overflow exception, then the test was successfully executed
 
         ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject.getIpsObjectPath();
         path.removeProjectRefEntry(ipsProject2);
         ipsProject.setIpsObjectPath(path);
 
         ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     @Test
@@ -1947,7 +1965,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // if we get no stack overflow exception, then the test was successfully executed
 
         MessageList ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     @Test
@@ -1979,20 +1997,20 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProject.findAllIpsSrcFiles(result);
 
         MessageList ml = ipsProject10.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
 
         path = ipsProject13.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject10).setReexported(false);
         ipsProject13.setIpsObjectPath(path);
 
         ml = ipsProject10.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject11.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject12.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
         ml = ipsProject13.validate();
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     private void setMinRequiredVersion(String version) {
@@ -2021,12 +2039,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         MessageList ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
         assertEquals(2, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         cmpt2.setRuntimeId("Hugo");
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
         assertEquals(0, ml.size());
-        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, lacksMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that not linked projects are not checked against each other
         IProductCmpt cmpt3 = newProductCmpt(ipsProject, "product3");
@@ -2034,7 +2052,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         cmpt2.setRuntimeId("Egon");
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
         assertEquals(ml.toString(), 2, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that linked projects will be checked against each other
         IIpsObjectPath objectPath = prj.getIpsObjectPath();
@@ -2042,15 +2060,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         prj.setIpsObjectPath(objectPath);
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
         assertEquals(ml.toString(), 6, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(cmpt3.getIpsSrcFile());
         assertEquals(2, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile());
         assertEquals(4, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
     }
 
     @Test
@@ -2457,7 +2475,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = mock(IVersionProvider.class);
         IVersionProviderFactory versionProviderFactory = $ -> versionProvider;
         IIpsProjectProperties properties = ipsProject.getProperties();
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             Map<String, IVersionProviderFactory> versionProviderFactories = new HashMap<>();
             versionProviderFactories.put("foobar", versionProviderFactory);
             testIpsModelExtensions.setVersionProviderFactories(versionProviderFactories);
@@ -2476,8 +2494,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
 
         @Override
-        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-                {
+        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
             throw new UnsupportedOperationException();
         }
     }

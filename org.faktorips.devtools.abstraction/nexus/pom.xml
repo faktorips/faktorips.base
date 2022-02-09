@@ -21,10 +21,6 @@
   <name>Faktor-IPS Abstractions</name>
   <description>Abstractions used in the Faktor-IPS design time tools</description>
 
-  <build>
-    <sourceDirectory>../src</sourceDirectory>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.faktorips</groupId>

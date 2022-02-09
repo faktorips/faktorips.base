@@ -49,6 +49,6 @@ public class PlainJavaJavaElement extends AWrapper<File> implements AJavaElement
 
     @Override
     public Path getPath() {
-        return getResource().getWorkspace().getRoot().getLocation().relativize(javaElement().toPath());
+        return getResource().getWorkspaceRelativePath();
     }
 }

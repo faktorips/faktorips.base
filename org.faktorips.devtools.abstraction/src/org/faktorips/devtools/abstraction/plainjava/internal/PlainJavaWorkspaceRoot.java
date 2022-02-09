@@ -13,13 +13,16 @@ import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.faktorips.devtools.abstraction.AFile;
@@ -31,7 +34,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
 
     private PlainJavaWorkspace workspace;
 
-    private final Map<Path, PlainJavaResource> resources = new HashMap<>();
+    private final Map<Path, PlainJavaResource> resources = new ConcurrentHashMap<>();
 
     public PlainJavaWorkspaceRoot(PlainJavaWorkspace workspace) {
         super(workspace.unwrap());
@@ -80,84 +83,81 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     }
 
     PlainJavaResource get(Path path) {
-        synchronized (resources) {
-            return resources.computeIfAbsent(path.toAbsolutePath(), p -> {
-                File file = p.toFile();
-                if (file.isFile()) {
-                    return (PlainJavaFile)wrap(file).as(AFile.class);
-                }
-                if (file.isDirectory()) {
-                    if (file.equals(directory())) {
-                        return this;
+        Path absolutePath = path.isAbsolute() ? path : directory().toPath().resolve(path).toAbsolutePath();
+        return resources.computeIfAbsent(absolutePath, p -> {
+            File file = p.toFile();
+            if (file.isDirectory() || (!file.exists() && !file.getName().contains("."))) { //$NON-NLS-1$
+                if (file.equals(directory())) {
+                    return this;
+                } else {
+                    File parentFile = file.getParentFile();
+                    if (parentFile == null) {
+                        return null;
+                    }
+                    if (parentFile.equals(directory())) {
+                        // TODO Projekte erkennen? Evtl. sind nur IPS-Projekte relevant?
+                        return (PlainJavaProject)wrap(file).as(AProject.class);
                     } else {
-                        File parentFile = file.getParentFile();
-                        if (parentFile == null) {
-                            return null;
-                        }
-                        if (parentFile.equals(directory())) {
-                            // TODO Projekte erkennen? Evtl. sind nur IPS-Projekte relevant?
-                            return (PlainJavaProject)wrap(file).as(AProject.class);
-                        } else {
-                            return (PlainJavaFolder)wrap(file).as(AFolder.class);
-                        }
+                        return (PlainJavaFolder)wrap(file).as(AFolder.class);
                     }
                 }
-                // TODO was gibt's noch?
-                return null;
-            });
-        }
+            }
+            return (PlainJavaFile)wrap(file).as(AFile.class);
+        });
     }
 
     public void remove(Path path) {
-        synchronized (resources) {
-            if (path.toFile().isDirectory()) {
-                try {
-                    Files.walk(path).forEach(f -> resources.remove(f));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<java.nio.file.Path>() {
+                @Override
+                public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs)
+                        throws IOException {
+                    resources.remove(file);
+                    return super.visitFile(file, attrs);
                 }
-            }
-            resources.remove(path);
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    resources.remove(dir);
+                    return super.postVisitDirectory(dir, exc);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     PlainJavaFile file(Path path) {
-        synchronized (resources) {
-            PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
-                    p -> (PlainJavaFile)wrap(p.toFile()).as(AFile.class));
-            if (resource instanceof PlainJavaFile) {
-                return (PlainJavaFile)resource;
-            }
-            throw new IllegalArgumentException(path + " is not a file"); //$NON-NLS-1$
+        PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
+                p -> (PlainJavaFile)wrap(p.toFile()).as(AFile.class));
+        if (resource instanceof PlainJavaFile) {
+            return (PlainJavaFile)resource;
         }
+        throw new IllegalArgumentException(path + " is not a file"); //$NON-NLS-1$
     }
 
     PlainJavaFolder folder(Path path) {
-        synchronized (resources) {
-            PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
-                    p -> (PlainJavaFolder)wrap(p.toFile()).as(AFolder.class));
-            if (resource instanceof PlainJavaFolder) {
-                return (PlainJavaFolder)resource;
-            }
-            throw new IllegalArgumentException(path + " is not a folder"); //$NON-NLS-1$
+        PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
+                p -> (PlainJavaFolder)wrap(p.toFile()).as(AFolder.class));
+        if (resource instanceof PlainJavaFolder) {
+            return (PlainJavaFolder)resource;
         }
+        throw new IllegalArgumentException(path + " is not a folder"); //$NON-NLS-1$
     }
 
     PlainJavaProject project(Path path) {
-        synchronized (resources) {
-            Path absolutePath = path.toAbsolutePath();
-            PlainJavaResource resource = resources.computeIfAbsent(absolutePath,
-                    p -> (PlainJavaProject)wrap(p.toFile()).as(AProject.class));
-            if (resource instanceof PlainJavaProject) {
-                return (PlainJavaProject)resource;
-            }
-            if (resource instanceof PlainJavaFolder) {
-                PlainJavaProject project = (PlainJavaProject)wrap(((PlainJavaFolder)resource).directory())
-                        .as(AProject.class);
-                resources.put(absolutePath, project);
-                return project;
-            }
-            throw new IllegalArgumentException(path + " is not a project"); //$NON-NLS-1$
+        Path absolutePath = path.toAbsolutePath();
+        PlainJavaResource resource = resources.computeIfAbsent(absolutePath,
+                p -> (PlainJavaProject)wrap(p.toFile()).as(AProject.class));
+        if (resource instanceof PlainJavaProject) {
+            return (PlainJavaProject)resource;
         }
+        if (resource instanceof PlainJavaFolder) {
+            PlainJavaProject project = (PlainJavaProject)wrap(((PlainJavaFolder)resource).directory())
+                    .as(AProject.class);
+            resources.put(absolutePath, project);
+            return project;
+        }
+        throw new IllegalArgumentException(path + " is not a project"); //$NON-NLS-1$
     }
 }

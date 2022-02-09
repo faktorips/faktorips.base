@@ -14,11 +14,13 @@ import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AWorkspace;
+import org.faktorips.devtools.abstraction.AWorkspaceRoot;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 
 /**
  * Allows easy creation of {@linkplain IProject projects} with different configurations.
@@ -43,17 +45,16 @@ public class PlatformProjectBuilder {
         return this;
     }
 
-    public IProject build() throws CoreException {
+    public AProject build() {
         return newPlatformProject(name, description);
     }
 
     /**
      * Creates a new platform project with the given name and opens it.
      */
-    private IProject newPlatformProject(final String name, final IProjectDescription description)
-            throws CoreException {
+    private AProject newPlatformProject(final String name, final IProjectDescription description) {
         ICoreRunnable runnable = $ -> internalNewPlatformProject(name, description);
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        AWorkspace workspace = Abstractions.getWorkspace();
         workspace.run(runnable, null);
         return workspace.getRoot().getProject(name);
     }
@@ -61,13 +62,16 @@ public class PlatformProjectBuilder {
     /**
      * Creates a new platform project with the given name and opens it.
      */
-    private IProject internalNewPlatformProject(final String name, IProjectDescription description)
+    private AProject internalNewPlatformProject(final String name, IProjectDescription description)
             throws CoreException {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IProject project = root.getProject(name);
-        project.create(description, null);
-        project.open(null);
+        AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+        AProject project = root.getProject(name);
+        if (Abstractions.isEclipseRunning()) {
+            ((IProject)project.unwrap()).create(description, null);
+            ((IProject)project.unwrap()).open(null);
+        } else {
+            ((PlainJavaProject)project).create();
+        }
         return project;
     }
-
 }

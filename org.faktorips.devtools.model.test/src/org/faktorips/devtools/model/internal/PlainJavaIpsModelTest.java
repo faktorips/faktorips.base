@@ -105,7 +105,7 @@ public class PlainJavaIpsModelTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         PlainJavaImplementation.INSTANCE.setWorkspace((PlainJavaWorkspace)null);
         IpsLog.setSuppressLoggingDuringTest(false);
-        // testIpsModelExtensions = new TestIpsModelExtensions();
+        // testIpsModelExtensions = TestIpsModelExtensions.get();
         // testIpsModelExtensions.setFeatureVersionManagers(new TestIpsFeatureVersionManager());
         setAutoBuild(false);
 

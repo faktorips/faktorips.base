@@ -59,9 +59,9 @@ import org.faktorips.runtime.MessageList;
  * 
  * @author Thorsten Günther
  */
-public class ProjectUtil {
+public class EclipseProjectUtil {
 
-    private ProjectUtil() {
+    private EclipseProjectUtil() {
         // Utility class not to be instantiated.
     }
 
@@ -123,7 +123,7 @@ public class ProjectUtil {
 
     /**
      * @deprecated since 21.6; use
-     *             {@link ProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *             {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
      *             instead
      */
     @Deprecated
@@ -289,7 +289,7 @@ public class ProjectUtil {
 
     /**
      * @deprecated since 21.6; use
-     *             {@link ProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *             {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
      *             instead
      */
     @Deprecated

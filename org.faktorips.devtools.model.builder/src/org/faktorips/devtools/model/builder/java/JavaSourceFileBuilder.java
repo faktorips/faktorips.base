@@ -965,7 +965,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 throw new IllegalArgumentException("Cannot find jmerge configuration " + mergeFileName); //$NON-NLS-1$
             }
         } else {
-            throw new IllegalStateException("Cannot accedd Ips Plugin."); //$NON-NLS-1$
+            throw new IllegalStateException("Cannot access Ips Plugin."); //$NON-NLS-1$
         }
     }
 

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -64,7 +65,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public APackageFragmentRoot getArtefactDestination(boolean derived) {
         IIpsLibraryEntry entry = (IIpsLibraryEntry)getIpsObjectPathEntry();
         String path;
-        if (entry.getPath().isAbsolute()) {
+        if (PathUtil.isAbsoluteInWorkspace(entry.getPath())) {
             path = entry.getPath().toString();
         } else {
             path = getIpsProject().getProject().getLocation().resolve(entry.getPath()).toString();
@@ -103,8 +104,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor) {
 
         throw newExceptionMethodNotAvailableForArchvies();
     }
@@ -119,8 +119,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            {
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) {
         if (type == null) {
             return;
         }

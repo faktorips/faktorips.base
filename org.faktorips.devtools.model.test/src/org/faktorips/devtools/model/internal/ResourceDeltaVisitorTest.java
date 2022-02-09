@@ -25,6 +25,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -48,56 +49,67 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        ipsProject = newIpsProject();
-        ipsModel = (IpsModel)IIpsModel.get();
-        productCmptType = newProductCmptType(ipsProject, "TestPCT");
-        ipsModel.addIpsSrcFilesChangedListener(listener);
+        if (Abstractions.isEclipseRunning()) {
+            super.setUp();
+            ipsProject = newIpsProject();
+            ipsModel = (IpsModel)IIpsModel.get();
+            productCmptType = newProductCmptType(ipsProject, "TestPCT");
+            ipsModel.addIpsSrcFilesChangedListener(listener);
+        }
     }
 
     @Test
     public void testChangeIpsProjectProperties() {
-        productCmptType.validate(ipsProject);
-        assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
+        if (Abstractions.isEclipseRunning()) {
+            productCmptType.validate(ipsProject);
+            assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        AFile projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
-        projectPropertiesFile.touch(null);
+            AFile projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
+            projectPropertiesFile.touch(null);
 
-        assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
+            assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
+        }
     }
 
     @Test
     public void testChangeManifest() {
-        productCmptType.validate(ipsProject);
-        assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
+        if (Abstractions.isEclipseRunning()) {
+            productCmptType.validate(ipsProject);
+            assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
-        AFile manifestFile = ipsProject.getProject().getFile(java.nio.file.Path.of(IpsBundleManifest.MANIFEST_NAME));
-        ((AFolder)manifestFile.getParent()).create(null);
-        manifestFile.create(new ByteArrayInputStream(new byte[0]), null);
-        manifestFile.touch(null);
+            AFile manifestFile = ipsProject.getProject()
+                    .getFile(java.nio.file.Path.of(IpsBundleManifest.MANIFEST_NAME));
+            ((AFolder)manifestFile.getParent()).create(null);
+            manifestFile.create(new ByteArrayInputStream(new byte[0]), null);
+            manifestFile.touch(null);
 
-        assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
+            assertThat(ipsModel.getValidationResultCache().getResult(productCmptType), is(nullValue()));
+        }
     }
 
     @Test
     public void testChangeIpsSrcFile() throws JavaModelException {
-        productCmptType.getEnclosingResource().touch(null);
+        if (Abstractions.isEclipseRunning()) {
+            productCmptType.getEnclosingResource().touch(null);
 
-        waitForIndexer();
+            waitForIndexer();
 
-        assertThat(listener.changedFiles, hasItems(productCmptType.getIpsSrcFile()));
+            assertThat(listener.changedFiles, hasItems(productCmptType.getIpsSrcFile()));
+        }
     }
 
     @Test
     public void testChangeIpsSrcFileOffRoot() throws JavaModelException {
-        AFolder folder = ipsProject.getProject().getFolder("test");
-        folder.create(null);
-        AResource file = productCmptType.getEnclosingResource();
-        file.copy(folder.getWorkspaceRelativePath().resolve(file.getName()), null);
+        if (Abstractions.isEclipseRunning()) {
+            AFolder folder = ipsProject.getProject().getFolder("test");
+            folder.create(null);
+            AResource file = productCmptType.getEnclosingResource();
+            file.copy(folder.getWorkspaceRelativePath().resolve(file.getName()), null);
 
-        waitForIndexer();
+            waitForIndexer();
 
-        assertTrue(listener.changedFiles.isEmpty());
+            assertTrue(listener.changedFiles.isEmpty());
+        }
     }
 
     private final class TestIpsSrcFilesChangeListener implements IIpsSrcFilesChangeListener {

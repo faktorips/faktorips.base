@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -364,7 +366,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         path.setOutputDefinedPerSrcFolder(false);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER));
 
         // validate missing outputFolderExtension
         path.setOutputFolderForDerivedSources(folder1);
@@ -388,8 +390,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
 
         ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
-        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
 
         path.setOutputDefinedPerSrcFolder(false);
         path.setOutputFolderForMergableSources(null);
@@ -397,8 +399,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
 
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
-        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
     }
 
     @Test(expected = NullPointerException.class)

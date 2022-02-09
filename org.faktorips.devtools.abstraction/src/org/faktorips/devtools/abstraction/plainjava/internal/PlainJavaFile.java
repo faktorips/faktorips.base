@@ -49,9 +49,17 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
     public void create(InputStream source, IProgressMonitor monitor) {
         withMonitor(file(), monitor, "Creating", p -> { //$NON-NLS-1$
             p.getParent().toFile().mkdirs();
-            Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING);
+            if (source == null) {
+                File file = p.toFile();
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+            } else {
+                Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING);
+            }
         });
         refreshParent();
+        PlainJavaImplementation.getResourceChanges().resourceCreated(this);
     }
 
     @Override
@@ -66,8 +74,22 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
     @Override
     public void setContents(InputStream source, boolean keepHistory, IProgressMonitor monitor) {
         // TODO history?
+        long previousModificationStamp = getModificationStamp();
         withMonitor(file(), monitor, "Writing", p -> //$NON-NLS-1$
         Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING));
+        ensureNewModificationStamp(previousModificationStamp);
+        PlainJavaImplementation.getResourceChanges().resourceChanged(this);
+    }
+
+    private void ensureNewModificationStamp(long previousModificationStamp) {
+        for (int i = 1; previousModificationStamp == getModificationStamp(); i *= 10) {
+            try {
+                Thread.sleep(i);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
+            touch(null);
+        }
     }
 
     @Override

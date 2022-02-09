@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -24,6 +23,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -216,10 +216,11 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
             }
         }
         String identifier = sb.toString();
-        IStatus status = ValidationUtils.validateJavaTypeName(identifier, ipsProject);
-        if (status.isOK() || status.getSeverity() == IStatus.WARNING) {
+        MessageList status = ValidationUtils.validateJavaTypeName(identifier, ipsProject);
+        if (status.isEmpty() || status.getSeverity() == Severity.WARNING) {
             return identifier;
         }
+
         throw new IllegalArgumentException("Name " + name + " can't be transformed to a valid Java class name"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

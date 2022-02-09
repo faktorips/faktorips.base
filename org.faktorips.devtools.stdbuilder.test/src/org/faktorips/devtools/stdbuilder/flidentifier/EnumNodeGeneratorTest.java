@@ -105,8 +105,7 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
         return new IdentifierNodeFactory(new TextRegion(name, 0, name.length()), ipsProject);
     }
 
-    private IEnumAttribute newIdentifierAttribute(IEnumType enumType, String name, StringDatatype string)
-            {
+    private IEnumAttribute newIdentifierAttribute(IEnumType enumType, String name, StringDatatype string) {
         IEnumAttribute identifierAttribute = enumType.newEnumAttribute();
         identifierAttribute.setName(name);
         identifierAttribute.setIdentifier(true);
@@ -116,7 +115,7 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
 
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setClassLoaderProviderFactory(new TestClassLoaderProviderFactory());
             enumDatatype = newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class })[0];
             nodeFactory = newIdentifierNodeFactory(enumDatatype.getName());

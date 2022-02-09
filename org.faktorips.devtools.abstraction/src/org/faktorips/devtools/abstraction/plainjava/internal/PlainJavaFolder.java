@@ -12,6 +12,7 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import java.io.File;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 
 public class PlainJavaFolder extends PlainJavaContainer implements AFolder {
@@ -26,12 +27,12 @@ public class PlainJavaFolder extends PlainJavaContainer implements AFolder {
     }
 
     @Override
-    public PlainJavaFile getFile(String name) {
+    public AFile getFile(String name) {
         return getWorkspace().getRoot().file(directory().toPath().resolve(name));
     }
 
     @Override
-    public PlainJavaFolder getFolder(String name) {
+    public AFolder getFolder(String name) {
         return getWorkspace().getRoot().folder(directory().toPath().resolve(name));
     }
 
@@ -50,6 +51,7 @@ public class PlainJavaFolder extends PlainJavaContainer implements AFolder {
     void create() {
         directory().mkdirs();
         refreshParent();
+        PlainJavaImplementation.getResourceChanges().resourceCreated(this);
     }
 
 }

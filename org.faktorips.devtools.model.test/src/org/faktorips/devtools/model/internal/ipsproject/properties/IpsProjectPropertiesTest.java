@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -94,27 +97,27 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testValidate_RequiredFeatures() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         props.setMinRequiredVersionNumber("org.faktorips.feature", "1.0.0");
         ml = props.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         IIpsFeatureVersionManager versionManager = mock(IIpsFeatureVersionManager.class);
         when(versionManager.getFeatureId()).thenReturn("my.feature");
         when(versionManager.isRequiredForAllProjects()).thenReturn(false);
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setFeatureVersionManagers(versionManager);
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             when(versionManager.isRequiredForAllProjects()).thenReturn(true);
             ml = props.validate(ipsProject);
-            assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             props.setMinRequiredVersionNumber("my.feature", "1.0.0");
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
         }
     }
 

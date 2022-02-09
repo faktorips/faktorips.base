@@ -84,18 +84,18 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_UnknownAttribute() {
         MessageList ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
 
         attributeValue.setAttribute("AnotherAttribute");
         ml = attributeValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, hasMessageCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         productCmptType.setSupertype(supertype.getQualifiedName());
 
         supertype.newProductCmptTypeAttribute().setName("AnotherAttribute");
         ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_ValueNotInSet() {
         MessageList ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
 
         attribute.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attribute.getValueSet();
@@ -122,23 +122,23 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "0"));
         ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "100"));
         ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "42"));
         ml = attributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        assertThat(ml, lacksMessageCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "-1"));
         ml = attributeValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        assertThat(ml, hasMessageCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
 
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "101"));
         ml = attributeValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
+        assertThat(ml, hasMessageCode(IAttributeValue.MSGCODE_VALUE_NOT_IN_SET));
     }
 
     @Test

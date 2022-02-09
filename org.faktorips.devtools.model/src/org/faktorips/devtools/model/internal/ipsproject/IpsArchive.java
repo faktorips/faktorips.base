@@ -187,7 +187,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         if (!paths.containsKey(path)) {
             return null;
         }
-        String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + path.toString();
+        String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR + PathUtil.toPortableString(path);
         return getResourceAsStream(entryName);
     }
 
@@ -287,7 +287,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     private File getFileFromPath() {
         // accessing the file on local file system is tricky in eclipse. At least we have to refresh
         AResource resource = getCorrespondingResource();
-        if (resource != null) {
+        if (resource != null && Abstractions.isEclipseRunning()) {
             try {
                 resource.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
                 // this part is copied from org.eclipse.jdt.internal.core.util.Util.toLocalFile(URI,
@@ -352,8 +352,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType)
-            {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qualifiedNameType) {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = paths.get(qualifiedNameType.toPath());
         if (props == null) {
@@ -363,8 +362,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qualifiedNameType)
-            {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qualifiedNameType) {
         readArchiveContentIfNecessary();
         IpsObjectProperties props = paths.get(qualifiedNameType.toPath());
         if (props == null) {
@@ -375,7 +373,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
 
     @Override
     public AResource getCorrespondingResource() {
-        if (archivePath.isAbsolute()) {
+        if (PathUtil.isAbsoluteInWorkspace(archivePath)) {
             AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
             if (archivePath.getNameCount() == 0) {
                 return null;
@@ -390,6 +388,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
                 // the archive is not located in the workspace
             }
             return wsRoot.getFile(archivePath);
+        } else if (archivePath.isAbsolute()) {
+            return null;
         }
         AProject project = getIpsProject().getProject();
         return project.getFile(archivePath);

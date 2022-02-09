@@ -91,7 +91,7 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
         String child = "X" + UUID.randomUUID().toString();
         IProject parentProject;
         IFolder childFolder;
-        parentProject = newPlatformProject(parent);
+        parentProject = newPlatformProject(parent).unwrap();
         childFolder = parentProject.getFolder(child);
         childFolder.create(false, true, null);
 

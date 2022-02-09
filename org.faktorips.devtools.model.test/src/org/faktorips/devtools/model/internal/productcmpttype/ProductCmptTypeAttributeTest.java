@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -198,7 +200,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setValueSetType(ValueSetType.RANGE);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
     }
 
     @Test
@@ -211,8 +213,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -225,8 +227,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3", null));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -239,8 +241,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -253,8 +255,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3", null));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -267,8 +269,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -281,8 +283,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -295,8 +297,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -309,8 +311,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -325,8 +327,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -341,8 +343,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -357,8 +359,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -373,8 +375,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -390,8 +392,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(false);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -407,8 +409,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(true);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -424,8 +426,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(false);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -441,8 +443,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(true);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -541,7 +543,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         ProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -549,11 +551,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype("Integer");
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         attribute.setDatatype(superAttr.getDatatype());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test
@@ -567,12 +569,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype(SUPER_ENUM_TYPE);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         superAttr.setDatatype(ENUM_TYPE);
         attribute.setDatatype(SUPER_ENUM_TYPE);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test

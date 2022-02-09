@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -132,12 +134,12 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setDerivedUnion(true);
 
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE));
 
         IType otherType = newProductCmptType(ipsProject, "SomeType");
         association.setTarget(otherType.getQualifiedName());
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_TYPE_NOT_A_SUBTYPE));
     }
 
     @Test
@@ -146,11 +148,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setDerivedUnion(true);
 
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST));
 
         association.setTarget("xxx");
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_OF_DERIVED_UNION_DOES_NOT_EXIST));
     }
 
     @Test
@@ -159,11 +161,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         association.setDerivedUnion(true);
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND));
 
         implementationRelation.setSubsettedDerivedUnion("xxx");
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_DERIVED_UNION_NOT_FOUND));
     }
 
     @Test
@@ -172,11 +174,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         association.setDerivedUnion(false);
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_NOT_MARKED_AS_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_NOT_MARKED_AS_DERIVED_UNION));
 
         association.setDerivedUnion(true);
         ml = implementationRelation.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_NOT_MARKED_AS_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_NOT_MARKED_AS_DERIVED_UNION));
     }
 
     @Test
@@ -270,11 +272,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
 
         association.setTarget("UnknownTarget");
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST));
 
         association.setTarget(targetType.getQualifiedName());
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_DOES_NOT_EXIST));
     }
 
     @Test
@@ -309,11 +311,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
     public void testValidate_TargetRoleSingularMustBeSet() {
         association.setTargetRoleSingular("");
         MessageList ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
 
         association.setTargetRoleSingular("Coverage");
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET));
     }
 
     @Test
@@ -346,11 +348,11 @@ public class AssociationTest extends AbstractIpsPluginTest {
     public void testValidate_MaxCardinalityMustBeAtLeast1() {
         association.setMaxCardinality(0);
         MessageList ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
 
         association.setMaxCardinality(1);
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_MAX_CARDINALITY_MUST_BE_AT_LEAST_1));
     }
 
     @Test
@@ -358,22 +360,22 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setMinCardinality(3);
         association.setMaxCardinality(2);
         MessageList ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
 
         association.setMaxCardinality(4);
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_MAX_IS_LESS_THAN_MIN));
     }
 
     @Test
     public void testValidateMaxCardinalityForContainerRelationTooLow() throws Exception {
         MessageList ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
 
         association.setMaxCardinality(1);
         association.setDerivedUnion(true);
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_MAX_CARDINALITY_FOR_DERIVED_UNION_TOO_LOW));
     }
 
     @Test
@@ -386,22 +388,22 @@ public class AssociationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(1);
         association.setTargetRolePlural("");
         MessageList ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
 
         association.setMaxCardinality(2);
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
 
         association.setTargetRolePlural("role1");
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+        assertThat(ml, lacksMessageCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
 
         builderset.setRoleNamePluralRequiredForTo1Relations(true);
         IIpsModel.get().clearValidationCache();
         association.setMaxCardinality(1);
         association.setTargetRolePlural("");
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
+        assertThat(ml, hasMessageCode(IAssociation.MSGCODE_TARGET_ROLE_PLURAL_MUST_BE_SET));
     }
 
     @Test

@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -247,8 +247,8 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
-            IProject project = newPlatformProject(UUID.randomUUID().toString());
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            AProject project = newPlatformProject(UUID.randomUUID().toString());
             AJavaProject javaProject = addJavaCapabilities(project);
             StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();

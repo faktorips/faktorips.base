@@ -9,12 +9,14 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction;
 
+import java.nio.file.Path;
+
 /**
  * A package fragment root is a folder or archive file containing {@link AJavaElement Java elements}
  * and packages.
  */
 public interface APackageFragmentRoot extends AJavaElement {
 
-    // may need some methods in the future
+    Path getOutputLocation();
 
 }

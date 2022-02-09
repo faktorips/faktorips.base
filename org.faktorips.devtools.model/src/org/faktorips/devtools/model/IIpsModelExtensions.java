@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
@@ -189,9 +190,14 @@ public interface IIpsModelExtensions {
     }
 
     /**
-     * Returns a all registered {@link IIpsObjectPathContainerType IIpsObjectPathContainerTypes} to
-     * be used by the {@link IpsObjectPathContainerFactory}.
+     * Returns all registered {@link IIpsObjectPathContainerType IIpsObjectPathContainerTypes} to be
+     * used by the {@link IpsObjectPathContainerFactory}.
      */
     List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes();
+
+    /**
+     * Returns all registered {@link Datatype Datatypes} mapped by their qualified names.
+     */
+    Map<String, Datatype> getPredefinedDatatypes();
 
 }

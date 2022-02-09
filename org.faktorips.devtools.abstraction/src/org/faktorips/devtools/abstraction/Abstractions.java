@@ -96,7 +96,6 @@ public final class Abstractions {
         AVersion getVersion();
 
         ALog getLog();
-
     }
 
 }

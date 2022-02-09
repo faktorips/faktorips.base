@@ -19,11 +19,9 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.nio.file.Path;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
@@ -62,7 +60,7 @@ public class JdtClasspathEntryCreatorTest {
     private IIpsProject refProject;
 
     @Mock
-    private IProject project;
+    private AProject project;
 
     @Mock
     private IpsProjectRefEntry expectedProjectReference;
@@ -174,7 +172,7 @@ public class JdtClasspathEntryCreatorTest {
 
     private void mockProject() {
         when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getProject()).thenReturn(Wrappers.wrap(project).as(AProject.class));
+        when(ipsProject.getProject()).thenReturn(project);
     }
 
 }

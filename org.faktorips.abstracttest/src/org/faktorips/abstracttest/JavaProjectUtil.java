@@ -10,6 +10,7 @@
 
 package org.faktorips.abstracttest;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -29,6 +30,10 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.util.IpsProjectUtil;
 
 public class JavaProjectUtil {
@@ -41,33 +46,47 @@ public class JavaProjectUtil {
     /**
      * Creates a new Java Project for the given platform project.
      */
-    public static IJavaProject addJavaCapabilities(IProject project) throws CoreException {
-        IJavaProject javaProject = JavaCore.create(project);
-        // add Java nature
-        IpsProjectUtil.addNature(project, JavaCore.NATURE_ID);
-        javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-        // create bin folder and set as output folder.
-        IFolder binFolder = project.getFolder("bin");
-        if (!binFolder.exists()) {
-            binFolder.create(true, true, null);
+    public static AJavaProject addJavaCapabilities(AProject aProject) throws CoreException {
+        if (Abstractions.isEclipseRunning()) {
+            IProject project = aProject.unwrap();
+            IJavaProject javaProject = JavaCore.create(project);
+            // add Java nature
+            IpsProjectUtil.addNature(project, JavaCore.NATURE_ID);
+            javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+            // create bin folder and set as output folder.
+            IFolder binFolder = project.getFolder("bin");
+            if (!binFolder.exists()) {
+                binFolder.create(true, true, null);
+            }
+            IFolder srcFolder = project.getFolder(AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_MERGABLE);
+            javaProject.setOutputLocation(binFolder.getFullPath(), null);
+            if (!srcFolder.exists()) {
+                srcFolder.create(true, true, null);
+            }
+            IFolder extFolder = project.getFolder(AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_DERIVED);
+            if (!extFolder.exists()) {
+                extFolder.create(true, true, null);
+            }
+            IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
+            IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
+            IClasspathEntry[] entries = new IClasspathEntry[2];
+            entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
+            entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
+            javaProject.setRawClasspath(entries, null);
+            addSystemLibraries(javaProject);
+            return Wrappers.wrap(javaProject).as(AJavaProject.class);
+        } else {
+            File project = aProject.unwrap();
+            File output = new File(project.getAbsolutePath() + "/bin");
+            output.mkdirs();
+            File srcFolder = new File(
+                    project.getAbsolutePath() + "/" + AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_MERGABLE);
+            srcFolder.mkdirs();
+            File extFolder = new File(
+                    project.getAbsolutePath() + "/" + AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_DERIVED);
+            extFolder.mkdirs();
+            return Wrappers.wrap(project).as(AJavaProject.class);
         }
-        IFolder srcFolder = project.getFolder(AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_MERGABLE);
-        javaProject.setOutputLocation(binFolder.getFullPath(), null);
-        if (!srcFolder.exists()) {
-            srcFolder.create(true, true, null);
-        }
-        IFolder extFolder = project.getFolder(AbstractIpsPluginTest.OUTPUT_FOLDER_NAME_DERIVED);
-        if (!extFolder.exists()) {
-            extFolder.create(true, true, null);
-        }
-        IPackageFragmentRoot srcRoot = javaProject.getPackageFragmentRoot(srcFolder);
-        IPackageFragmentRoot extRoot = javaProject.getPackageFragmentRoot(extFolder);
-        IClasspathEntry[] entries = new IClasspathEntry[2];
-        entries[0] = JavaCore.newSourceEntry(srcRoot.getPath());
-        entries[1] = JavaCore.newSourceEntry(extRoot.getPath());
-        javaProject.setRawClasspath(entries, null);
-        addSystemLibraries(javaProject);
-        return javaProject;
     }
 
     private static void addSystemLibraries(IJavaProject javaProject) throws JavaModelException {

@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -109,11 +110,11 @@ public class TestValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateTestValueParamNotFound() throws Exception {
         MessageList ml = valueObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
 
         valueObjectInput.setTestValueParameter("x");
         ml = valueObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestValue.MSGCODE_TEST_VALUE_PARAM_NOT_FOUND));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         ITestValueParameter param = valueObjectInput.findTestValueParameter(project);
         param.setValueDatatype("String");
         MessageList ml = valueObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
 
         // check if the message is a warning, because it will be validated as error in the parameter
         param.setValueDatatype("x");
@@ -133,7 +134,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = valueObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+        assertThat(ml, lacksMessageCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
 
         // remark the test if the message will be set couldn't be tested here because setting
         // a wrong type of the parameter is not possible without getting an argument exception

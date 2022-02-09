@@ -19,7 +19,6 @@
     <description>Valuetypes library for Faktor-IPS</description>
 
     <build>
-        <sourceDirectory>../src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.moditect</groupId>

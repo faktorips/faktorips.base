@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -537,11 +540,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         pAttInfo2.setTableColumnName("b");
 
         ml = pAttInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAttInfo2.setTableColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         // test duplicate column name in persistence type association
         // a) join column name
@@ -552,12 +555,12 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
         pAssInfo.setJoinColumnName("joinColumn");
         ml = pTypeInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setJoinColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
         // join Column created on target entity
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setJoinColumnName("");
         pAssInfo.setJoinTableName("JoinTable");
@@ -565,19 +568,19 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         pAssInfo.setTargetColumnName("target");
         ml = pTypeInfo.validate(ipsProject);
         // join Column created on toMany table
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setSourceColumnName("a");
         pAssInfo.setTargetColumnName("target");
         ml = pTypeInfo.validate(ipsProject);
         // join Column created on toMany table
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setSourceColumnName("souce");
         pAssInfo.setTargetColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
         // join Column created on toMany table
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAssInfo.setTargetColumnName("target");
 
@@ -587,17 +590,17 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         policyCmptTypeAttribute.getPersistenceAttributeInfo().setTableColumnName("superA");
         ml = pTypeInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         policyCmptTypeAttribute.getPersistenceAttributeInfo().setTableColumnName("a");
         ml = pTypeInfo.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         // test same column name in super type, joined table strategy
         pTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         ml = pTypeInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
     }
 
     @Test
@@ -621,13 +624,13 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         pTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         ml = pTypeInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         // joined table strategy
         pTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
         ml = pTypeInfo.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
     }
 
     @Test

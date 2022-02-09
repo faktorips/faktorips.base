@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -33,12 +32,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.valueset.DelegatingValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
@@ -141,12 +141,12 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     public void testValidate_UnknownAttribute() {
         attribute.setName("unknown");
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
 
         attribute.setName("attribute");
 
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
+        assertThat(ml, lacksMessageCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
     }
 
     @Test
@@ -154,14 +154,14 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
 
         attribute.setDatatype("Decimal");
 
         policyCmptType.getIpsSrcFile().save(true, null);
 
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml, lacksMessageCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
     }
 
     @Test
@@ -201,20 +201,26 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_InvalidDatatype() throws Exception {
-        InvalidDatatype datatype = new InvalidDatatype();
-        attribute.setDatatype(datatype.getQualifiedName());
+        try (var testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            InvalidDatatype datatype = new InvalidDatatype();
+            if (!Abstractions.isEclipseRunning()) {
+                // for eclipse this datatype is defined in the fragment.xml
+                testIpsModelExtensions.addPredefinedDatatype(datatype);
+            }
+            attribute.setDatatype(datatype.getQualifiedName());
 
-        Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<>();
-        vdlist.addAll(Arrays.asList(vds));
-        vdlist.add(datatype);
+            Datatype[] vds = ipsProject.findDatatypes(true, false);
+            ArrayList<Datatype> vdlist = new ArrayList<>();
+            vdlist.addAll(Arrays.asList(vds));
+            vdlist.add(datatype);
 
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
-        ipsProject.setProperties(properties);
+            IIpsProjectProperties properties = ipsProject.getProperties();
+            properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
+            ipsProject.setProperties(properties);
 
-        MessageList ml = configuredValueSet.validate(configuredValueSet.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+            MessageList ml = configuredValueSet.validate(configuredValueSet.getIpsProject());
+            assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+        }
     }
 
     @Test
@@ -224,21 +230,21 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
         ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         attribute.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
         configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
     }
 
     @Test
@@ -331,7 +337,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(true, null);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setUpperBound("20");
         policyCmptType.getIpsSrcFile().save(true, null);
@@ -345,21 +351,21 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setLowerBound("10");
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
         ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound("10");
         valueSet2.setUpperBound(null);
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         // check upper unbound values
         valueSet.setLowerBound(null);
@@ -367,14 +373,14 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound(null);
         ml = configuredValueSet.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
 
         valueSet.setLowerBound(null);
         valueSet.setUpperBound(null);
         valueSet2.setLowerBound(null);
         valueSet2.setUpperBound("10");
         ml = configuredValueSet.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
     }
 
     @Test
@@ -557,7 +563,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() throws XPathException, CoreException {
+    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() throws XPathException {
 
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
@@ -622,8 +628,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.getValueSet(), instanceOf(UnrestrictedValueSet.class));
     }
 
-    private IConfiguredValueSet createTemplateValueSet(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            {
+    private IConfiguredValueSet createTemplateValueSet(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredValueSet templateValueSet = templateGen.newPropertyValue(policyCmptTypeAttribute,

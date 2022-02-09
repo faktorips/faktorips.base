@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -282,41 +285,41 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateTestCaseTypeParamNotFound() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
 
         testPolicyCmptObjectInput.setTestPolicyCmptTypeParameter("x");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
     @Test
     public void testValidateProductCmptIsRequired() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
 
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setRequiresProductCmpt(true);
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
 
         testPolicyCmptObjectInput.setProductCmpt("x");
         ml = testPolicyCmptObjectInput.validate(project);
         // even though x does not exist, there is no error-message for required ProdCmpt
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
         // but there is another that sais "x" cannot be found
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
 
         // any value allowd for TestPolicyCmpts that do not require a productcmpt
         param.setRequiresProductCmpt(false);
         testPolicyCmptObjectInput.setProductCmpt("x");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
         testPolicyCmptObjectInput.setProductCmpt("");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
         testPolicyCmptObjectInput.setProductCmpt(null);
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_IS_REQUIRED));
     }
 
     @Test
@@ -326,7 +329,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         param.setPolicyCmptType(policyCmptType.getQualifiedName());
 
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         param.setPolicyCmptType("x");
         ml = testPolicyCmptObjectInput.validate(project);
@@ -344,17 +347,17 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmptObjectInput.setProductCmpt("");
 
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         testPolicyCmptObjectInput.setProductCmpt("");
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType5");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         testPolicyCmptObjectInput.setProductCmpt("");
         testPolicyCmptObjectInput.setPolicyCmptType("Nonexistent_PolicyCmptType");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
     }
 
     @Test
@@ -363,21 +366,21 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         param.setMinInstances(0);
 
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
 
         // create mandatory instance child 1 on parameter side and validate
         ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
         paramChild.setName("ProductCmpt1");
         paramChild.setMinInstances(1);
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
 
         // create child and validate again
         ITestPolicyCmptLink testAssociation = testPolicyCmptObjectInput.newTestPolicyCmptLink();
         testAssociation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testAssociation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
     }
 
     @Test
@@ -385,115 +388,115 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
 
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
 
         // create instance child 1 on parameter side and validate
         ITestPolicyCmptTypeParameter paramChild = param.newTestPolicyCmptTypeParamChild();
         paramChild.setName("ProductCmpt1");
         paramChild.setMaxInstances(1);
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
 
         // create two child and validate again
         ITestPolicyCmptLink testAssociation = testPolicyCmptObjectInput.newTestPolicyCmptLink();
         testAssociation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testAssociation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
         testAssociation = testPolicyCmptObjectInput.newTestPolicyCmptLink();
         testAssociation.setTestPolicyCmptTypeParameter("ProductCmpt1");
         testAssociation.newTargetTestPolicyCmptChild();
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
     }
 
     @Test
     public void testValidateProductCmptNotExists() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
 
         testPolicyCmptObjectInput.setProductCmpt("productCmpt");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
 
         newProductCmpt(project, "productCmpt");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_CMPT_NOT_EXISTS));
     }
 
     @Test
     public void testValidateProductComponentNotRequired() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
 
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setRequiresProductCmpt(false);
         testPolicyCmptObjectInput.setProductCmpt("x");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
 
         testPolicyCmptObjectInput.setProductCmpt(null);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED));
     }
 
     @Test
     public void testValidatePolicyCmptTypeIsAbstract() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
 
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setPolicyCmptType("PolicyCmptType4");
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType4");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
 
         param.setPolicyCmptType("PolicyCmptType4");
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType5");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT));
     }
 
     @Test
     public void testValidatePolicyCmptTypeAndProductCmptTypeGiven() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
 
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType4");
         testPolicyCmptObjectInput.setProductCmpt("DummyProduct");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
 
         testPolicyCmptObjectInput.setPolicyCmptType("");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
 
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType4");
         testPolicyCmptObjectInput.setProductCmpt("");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN));
     }
 
     @Test
     public void testValidatePolicyCmptTypeNotAssignable() throws Exception {
         MessageList ml = testPolicyCmptObjectInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
 
         ITestPolicyCmptTypeParameter param = testPolicyCmptObjectInput.findTestPolicyCmptTypeParameter(project);
         param.setPolicyCmptType("PolicyCmptType4");
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType5");
         ml = testPolicyCmptObjectInput.validate(project);
         // type5 is subtype of type4 and therefore assignable
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
 
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType6");
         ml = testPolicyCmptObjectInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
 
         param.setPolicyCmptType("PolicyCmptType1");
         testPolicyCmptObjectInput.setPolicyCmptType("PolicyCmptType6");
         ml = testPolicyCmptObjectInput.validate(project);
         // type6 is subtype of type1 and therefore assignable
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
     }
 
     @Test
@@ -771,21 +774,21 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         Message message = ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK);
         assertNotNull(message);
         assertEquals(Message.ERROR, message.getSeverity());
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE));
 
         // no product defined, no error about a wrong product cmpt and no warning about missing
         // parent product cmpt
         testPolicyCmptChild.setProductCmpt("");
         ml = testPolicyCmptChild.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
 
         // product defined but parent product cmpt not specified, no error but warning
         testPolicyCmpt.setProductCmpt("");
         testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
         ml = testPolicyCmptChild.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
         assertEquals(ml.getFirstMessage(Message.WARNING).getCode(),
                 ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED);
 
@@ -793,32 +796,32 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         testPolicyCmpt.findPolicyCmptType().setConfigurableByProductCmptType(false);
         testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
         ml = testPolicyCmptChild.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
         testPolicyCmpt.findPolicyCmptType().setConfigurableByProductCmptType(true);
         testPolicyCmpt.findPolicyCmptType().setProductCmptType(testContent.productCmptTypePolicy.getQualifiedName());
 
         // correct product cmpt of parent (root)
         testPolicyCmpt.setProductCmpt(testContent.policyProduct.getQualifiedName());
         ml = testPolicyCmpt.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
         // with wrong child a) (wrong type)
         testPolicyCmptChild.setProductCmpt(testContent.policyProduct.getQualifiedName());
         ml = testPolicyCmptChild.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
         // with wrong child b) (no link between components policyProduct and coverageProductB)
         testPolicyCmptChild.setProductCmpt(testContent.coverageProductB.getQualifiedName());
         ml = testPolicyCmptChild.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
 
         // with correct child
         testPolicyCmpt.setProductCmpt(testContent.policyProduct.getQualifiedName());
         testPolicyCmptChild.setProductCmpt(testContent.coverageProductA.getQualifiedName());
         ml = testPolicyCmptChild.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
-        assertNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmpt.MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED));
 
     }
 

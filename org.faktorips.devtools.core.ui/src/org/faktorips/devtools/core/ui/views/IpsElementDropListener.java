@@ -28,7 +28,7 @@ import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 /**
  * Abstract default implementation of a drop target listener. {@link #dragOver(DropTargetEvent)},
@@ -98,7 +98,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         }
         ArrayList<Object> elements = new ArrayList<>();
         for (String filename : filenames) {
-            addElementFromResource(elements, NestedProjectFileUtil.getFile(filename));
+            addElementFromResource(elements, NestedEclipseProjectFileUtil.getFile(filename));
 
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(new Path(filename));
             addElementFromResource(elements, container);

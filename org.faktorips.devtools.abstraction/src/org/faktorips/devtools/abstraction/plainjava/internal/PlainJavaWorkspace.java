@@ -40,7 +40,9 @@ public class PlainJavaWorkspace extends AWrapper<File> implements AWorkspace {
 
     @Override
     public void run(ICoreRunnable action, IProgressMonitor monitor) {
+        PlainJavaImplementation.getResourceChanges().hold();
         Wrappers.run(() -> action.run(monitor));
+        PlainJavaImplementation.getResourceChanges().resume();
     }
 
     public long getNextMarkerId() {

@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -77,7 +80,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         range.setStep("1");
         attributeWithValueSet.setDefaultValue("1");
         MessageList ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
 
         attributeWithValueSet.setDefaultValue("100");
         ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
@@ -87,7 +90,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
         attributeWithValueSet.setDefaultValue(null);
         ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -96,11 +99,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute.setDefaultValue("1");
 
         MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
 
         productCmptTypeAttribute.setDatatype("a");
         ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
     }
 
     @Test
@@ -108,11 +111,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
         MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
 
         productCmptTypeAttribute.setDatatype("abc");
         ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
     }
 
     @Test
@@ -120,22 +123,22 @@ public class AttributeTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productCmptTypeAttribute.setDefaultValue("1");
         MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
 
         productCmptTypeAttribute.setDefaultValue("a");
         ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
     @Test
     public void testValidate_invalidAttributeName() throws Exception {
         productCmptTypeAttribute.setName("test");
         MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
 
         productCmptTypeAttribute.setName("a.b");
         ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
     }
 
     @Test
@@ -146,7 +149,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         productCmptTypeAttribute.setOverwrite(true);
 
         MessageList ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -156,11 +159,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setModifier(Modifier.PUBLISHED);
 
         ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
         productCmptTypeAttribute.setModifier(superAttr.getModifier());
         ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
     }
 
     @Test
@@ -284,7 +287,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
@@ -303,7 +306,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
@@ -323,13 +326,13 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
 
         attribute.setChangingOverTime(false);
         superAttr.setChangingOverTime(true);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
@@ -341,7 +344,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
 
         IType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -351,11 +354,11 @@ public class AttributeTest extends AbstractIpsPluginTest {
         superAttr.setChangingOverTime(true);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
 
         attribute.setChangingOverTime(superAttr.isChangingOverTime());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test

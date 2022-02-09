@@ -21,7 +21,6 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
@@ -89,7 +88,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         Element xmlElement = maleIdAttributeValue.toXml(createXmlDocument(IEnumAttributeValue.XML_TAG));
         assertEquals(GENDER_ENUM_LITERAL_MALE_ID, xmlElement.getTextContent());
 

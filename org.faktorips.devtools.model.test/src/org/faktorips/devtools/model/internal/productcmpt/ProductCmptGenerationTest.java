@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -341,16 +343,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association).setTarget(target.getQualifiedName());
 
         ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
 
     @Test
@@ -363,15 +365,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(2);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
     }
 
@@ -385,15 +387,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(1);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
     }
 
     @Test
@@ -503,7 +505,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testValidateNoTemplate() throws Exception {
         generation.getProductCmpt().setProductCmptType("");
         MessageList ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+        assertThat(ml, hasMessageCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
     }
 
     @Test
@@ -512,11 +514,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
 
         MessageList ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+        assertThat(ml, hasMessageCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
 
         generation.setValidFrom(new GregorianCalendar(2000, 9, 1));
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+        assertThat(ml, lacksMessageCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
     @Test

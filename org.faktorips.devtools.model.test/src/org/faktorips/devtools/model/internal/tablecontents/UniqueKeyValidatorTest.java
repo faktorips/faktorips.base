@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -655,8 +656,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         tearDownPerformanceTest();
     }
 
-    private ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject)
-            {
+    private ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) {
         if (structure == null) {
             return new ValueDatatype[0];
         }
@@ -923,7 +923,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     }
 
     private void tearDownPerformanceTest() throws CoreException {
-        ((IProject)project.getProject().unwrap()).close(null);
+        if (Abstractions.isEclipseRunning()) {
+            ((IProject)project.getProject().unwrap()).close(null);
+        }
         project.getProject().delete(null);
     }
 

@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
@@ -367,7 +367,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, file);
         op.setInclJavaBinaries(true);
         op.setInclJavaSources(true);
-        ResourcesPlugin.getWorkspace().run(op, null);
+        Abstractions.getWorkspace().run(op, null);
         createLinkIfNecessary(archiveFile, file);
         // no exception test was successful
 
@@ -405,8 +405,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertEquals(2, childList.size());
     }
 
-    private void collectChildren(IIpsPackageFragment ipsPackageFragment, List<IIpsElement> childList)
-            {
+    private void collectChildren(IIpsPackageFragment ipsPackageFragment, List<IIpsElement> childList) {
         IIpsElement[] childs = ipsPackageFragment.getChildren();
         for (IIpsElement child : childs) {
             childList.add(child);

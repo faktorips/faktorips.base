@@ -14,10 +14,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
 
 /**
  * This class simply creates a JarFile for a previously specified path. After creating a
@@ -70,19 +69,19 @@ public class JarFileFactory {
     }
 
     /* private */Path getAbsolutePath(Path bundlePath) {
-        if (isWorkspaceRelativePath(PathMapping.toEclipsePath(bundlePath))) {
-            return PathMapping.toJavaPath(getWorkspaceRelativePath(PathMapping.toEclipsePath(bundlePath)));
+        if (isWorkspaceRelativePath(bundlePath)) {
+            return getWorkspaceRelativePath(bundlePath);
         } else {
             return bundlePath;
         }
     }
 
-    private boolean isWorkspaceRelativePath(IPath bundlePath) {
-        return ResourcesPlugin.getWorkspace().getRoot().exists(bundlePath);
+    private boolean isWorkspaceRelativePath(Path bundlePath) {
+        return Abstractions.getWorkspace().getRoot().getFile(bundlePath).exists();
     }
 
-    private IPath getWorkspaceRelativePath(IPath bundlePath) {
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(bundlePath);
+    private Path getWorkspaceRelativePath(Path bundlePath) {
+        AFile file = Abstractions.getWorkspace().getRoot().getFile(bundlePath);
         return file.getLocation();
     }
 

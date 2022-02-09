@@ -17,6 +17,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.mapping.StatusMessageListMapping;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaConventions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -29,6 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 /**
  * A collection of helper methods for validating model objects.
@@ -369,18 +373,24 @@ public class ValidationUtils {
      * <code>"java.lang.Object"</code>, or <code>"Object"</code> using the source and compliance
      * levels used by the given IpsProject/JavaProject.
      * <p>
-     * Returns a status object with code <code>IStatus.OK</code> if the given name is valid as a
-     * Java type name, a status with code <code>IStatus.WARNING</code> indicating why the given name
-     * is discouraged, otherwise a status object indicating what is wrong with the name.
+     * Returns an empty {@link MessageList} if the given name is valid as a Java type name, one
+     * containing a {@link Message} with {@link Severity#WARNING} if the given name is discouraged,
+     * otherwise a {@link Message} with {@link Severity#ERROR} indicating what is wrong with the
+     * name.
      * 
      * @param name the name of a type
      * @param ipsProject the project which source and compliance level should be used
      * 
      * @see JavaConventions#validateJavaTypeName(String, String, String)
      */
-    public static IStatus validateJavaTypeName(String name, IIpsProject ipsProject) {
+    public static MessageList validateJavaTypeName(String name, IIpsProject ipsProject) {
         Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        return JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString());
+        if (Abstractions.isEclipseRunning()) {
+            return StatusMessageListMapping.toMessageList(
+                    JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString()));
+        } else {
+            return PlainJavaConventions.validateTypeName(name);
+        }
     }
 
     /**

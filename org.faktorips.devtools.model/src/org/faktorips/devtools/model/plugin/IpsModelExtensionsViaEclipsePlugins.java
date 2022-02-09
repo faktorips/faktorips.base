@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsEx
 import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ModelPreferencesExtension;
 import org.faktorips.devtools.model.plugin.extensions.PreSaveProcessorExtensions;
+import org.faktorips.devtools.model.plugin.extensions.PredefinedDatatypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.VersionProviderFactoryExtensions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.util.SortorderSet;
@@ -83,6 +85,9 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     /** @since 21.12 */
     private final Supplier<Map<IpsObjectType, List<IPreSaveProcessor>>> preSaveProcessors;
 
+    /** @since 22.6 */
+    private final Supplier<Map<String, Datatype>> predefinedDatatypes;
+
     private IpsModelExtensionsViaEclipsePlugins() {
         this(Platform.getExtensionRegistry());
     }
@@ -111,6 +116,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         versionProviderFactories = new VersionProviderFactoryExtensions(extensionPoints);
         ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
         preSaveProcessors = new PreSaveProcessorExtensions(extensionPoints);
+        predefinedDatatypes = new PredefinedDatatypesExtensions(extensionPoints);
     }
 
     /**
@@ -207,6 +213,11 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     @Override
     public List<IPreSaveProcessor> getPreSaveProcessors(IpsObjectType ipsObjectType) {
         return preSaveProcessors.get().computeIfAbsent(ipsObjectType, $ -> Collections.emptyList());
+    }
+
+    @Override
+    public Map<String, Datatype> getPredefinedDatatypes() {
+        return predefinedDatatypes.get();
     }
 
 }

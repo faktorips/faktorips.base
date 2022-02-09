@@ -9,9 +9,9 @@
         <relativePath>../../org.faktorips.aggregator/nexus11/pom.xml</relativePath>
     </parent>
 
-<properties>
-<revapi.skip>true</revapi.skip> 
-</properties>
+    <properties>
+        <revapi.skip>true</revapi.skip>
+    </properties>
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-model</artifactId>
@@ -20,10 +20,6 @@
 
     <name>Faktor-IPS Model</name>
     <description>Model for the Faktor-IPS design time tools</description>
-
-    <build>
-        <sourceDirectory>../src</sourceDirectory>
-    </build>
 
     <dependencies>
         <dependency>

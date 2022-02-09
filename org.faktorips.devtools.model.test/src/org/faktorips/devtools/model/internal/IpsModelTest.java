@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -59,6 +58,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
@@ -87,6 +87,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.mockito.stubbing.Answer;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
@@ -107,9 +108,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCreateIpsProject() throws Exception {
-        IProject project = newPlatformProject("TestProject");
+        AProject project = newPlatformProject("TestProject");
         addJavaCapabilities(project);
-        IIpsProject ipsProject = model.createIpsProject(wrap(project).as(AProject.class));
+        IIpsProject ipsProject = model.createIpsProject(project);
         assertNotNull(ipsProject);
         assertNotNull(ipsProject.getName());
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -134,11 +135,13 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(1, ipsProjects.length);
         assertEquals("TestPdProject", ipsProjects[0].getName());
 
-        ((IProject)project.getProject().unwrap()).close(null);
-        super.newIpsProject("TestProject2");
-        ipsProjects = model.getIpsProjects();
-        assertEquals(1, ipsProjects.length);
-        assertEquals("TestProject2", ipsProjects[0].getName());
+        if (Abstractions.isEclipseRunning()) {
+            ((IProject)project.getProject().unwrap()).close(null);
+            super.newIpsProject("TestProject2");
+            ipsProjects = model.getIpsProjects();
+            assertEquals(1, ipsProjects.length);
+            assertEquals("TestProject2", ipsProjects[0].getName());
+        }
     }
 
     @Test
@@ -250,8 +253,10 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     @Test
     public void testGetIpsElement_NonIpsProject() throws Exception {
         AProject project = Abstractions.getWorkspace().getRoot().getProject("TestProject");
-        ((IProject)project.unwrap()).create(null);
-        ((IProject)project.unwrap()).open(null);
+        if (Abstractions.isEclipseRunning()) {
+            ((IProject)project.unwrap()).create(null);
+            ((IProject)project.unwrap()).open(null);
+        }
 
         AFolder rootFolder = project.getFolder("model");
         rootFolder.create(null);
@@ -389,38 +394,41 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(sourceFile.isDirty());
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testForceReloadOfCachedIpsSrcFileContents_forExternalResources() throws Exception {
-        IIpsProject ipsProject = newIpsProject();
-        IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = newIpsProject();
+            IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
 
-        // Resource does not exist in workspace, therefore will always return -1 as modification
-        // stamp
-        AResource externalResource = ipsProject.getProject().getFile("foo.bar");
-        IpsObjectType ipsObjectType = mock(IpsObjectType.class);
-        IpsSrcFile ipsSrcFile = mock(IpsSrcFile.class);
-        when(ipsSrcFile.exists()).thenReturn(true);
-        when(ipsSrcFile.getIpsObjectType()).thenReturn(ipsObjectType);
-        when(ipsSrcFile.getEnclosingResource()).thenReturn(externalResource);
-        when(ipsSrcFile.getContentFromEnclosingResource()).thenAnswer(withNewXmlInputStream());
+            // Resource does not exist in workspace, therefore will always return -1 as modification
+            // stamp
+            AResource externalResource = ipsProject.getProject().getFile("foo.bar");
+            IpsObjectType ipsObjectType = mock(IpsObjectType.class);
+            IpsSrcFile ipsSrcFile = mock(IpsSrcFile.class);
+            when(ipsSrcFile.exists()).thenReturn(true);
+            when(ipsSrcFile.getIpsObjectType()).thenReturn(ipsObjectType);
+            when(ipsSrcFile.getEnclosingResource()).thenReturn(externalResource);
+            when(ipsSrcFile.getContentFromEnclosingResource()).thenAnswer(withNewXmlInputStream());
 
-        IpsObject ipsObject = mock(IpsObject.class);
-        when(ipsObjectType.newObject(ipsSrcFile)).thenReturn(ipsObject);
-        when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+            IpsObject ipsObject = mock(IpsObject.class);
+            when(ipsObjectType.newObject(ipsSrcFile)).thenReturn(ipsObject);
+            when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
 
-        when(ipsObject.getIpsProject()).thenReturn(ipsProject);
+            when(ipsObject.getIpsProject()).thenReturn(ipsProject);
 
-        // prime the cache
-        ipsModel.getIpsSrcFileContent(ipsSrcFile);
+            // prime the cache
+            ipsModel.getIpsSrcFileContent(ipsSrcFile);
 
-        // clear the cache
-        IResourceChangeEvent event = mock(IResourceChangeEvent.class);
-        when(event.getType()).thenReturn(IResourceChangeEvent.PRE_REFRESH);
-        ((EclipseIpsModel)ipsModel).resourceChanged(event);
+            // clear the cache
+            IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+            when(event.getType()).thenReturn(IResourceChangeEvent.PRE_REFRESH);
+            ((EclipseIpsModel)ipsModel).resourceChanged(event);
 
-        // reload, as cache entry should be marked invalid
-        ipsModel.getIpsSrcFileContent(ipsSrcFile);
-        verify(ipsSrcFile, times(2)).getContentFromEnclosingResource();
+            // reload, as cache entry should be marked invalid
+            ipsModel.getIpsSrcFileContent(ipsSrcFile);
+            verify(ipsSrcFile, times(2)).getContentFromEnclosingResource();
+        }
     }
 
     private Answer<InputStream> withNewXmlInputStream() {
@@ -460,13 +468,18 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     @Test
     public void testGetNonIpsResources() throws CoreException {
         ICoreRunnable runnable = $ -> {
-            IProject project = newPlatformProject("TestJavaProject");
+            AProject project = newPlatformProject("TestJavaProject");
             javaProject = addJavaCapabilities(project);
-            IProject project2 = newPlatformProject("TestJavaProject2");
+            AProject project2 = newPlatformProject("TestJavaProject2");
             javaProject2 = addJavaCapabilities(project2);
         };
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+
+        if (Abstractions.isEclipseRunning()) {
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(runnable, workspace.getRoot(), IWorkspace.AVOID_UPDATE, null);
+        } else {
+            Abstractions.getWorkspace().run(runnable, null);
+        }
 
         newIpsProject("TestProject");
 
@@ -615,32 +628,35 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
-        IIpsProject project = newIpsProject("TestProject");
-        IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
-        pcType.getIpsSrcFile().save(true, null);
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject project = newIpsProject("TestProject");
+            IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
+            pcType.getIpsSrcFile().save(true, null);
 
-        pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
+            pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
 
-        boolean status = false;
-        int counter = 0;
-        while (!status || counter > 200) {
-            status = model.isCached(pcType.getIpsSrcFile());
-            counter++;
+            boolean status = false;
+            int counter = 0;
+            while (!status || counter > 200) {
+                status = model.isCached(pcType.getIpsSrcFile());
+                counter++;
+            }
+            assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected",
+                    status);
+
+            pcType.getIpsSrcFile().getEnclosingResource().delete(null);
+
+            status = false;
+            counter = 0;
+            while (!status || counter > 200) {
+                status = !model.isCached(pcType.getIpsSrcFile());
+                counter++;
+            }
+
+            assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
+                    + " is in the IpsModel cache which is not expected since the resource changed listener "
+                    + "should be triggered by know and have the cache cleared.", status);
         }
-        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected", status);
-
-        pcType.getIpsSrcFile().getEnclosingResource().delete(null);
-
-        status = false;
-        counter = 0;
-        while (!status || counter > 200) {
-            status = !model.isCached(pcType.getIpsSrcFile());
-            counter++;
-        }
-
-        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
-                + " is in the IpsModel cache which is not expected since the resource changed listener "
-                + "should be triggered by know and have the cache cleared.", status);
     }
 
     @Test(expected = UnsupportedOperationException.class)

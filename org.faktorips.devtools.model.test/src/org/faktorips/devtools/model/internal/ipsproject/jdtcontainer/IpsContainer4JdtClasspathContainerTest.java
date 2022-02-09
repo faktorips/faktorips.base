@@ -23,18 +23,22 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer.JdtClasspathResolver;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+@Category(EclipseImplementation.class)
 @RunWith(MockitoJUnitRunner.class)
 public class IpsContainer4JdtClasspathContainerTest {
 
@@ -69,77 +73,93 @@ public class IpsContainer4JdtClasspathContainerTest {
 
     @Test
     public void testName() throws Exception {
-        mockJdtClasspathResolver();
-        when(jdtContainer.getDescription()).thenReturn(MY_NAME);
+        if (Abstractions.isEclipseRunning()) {
+            mockJdtClasspathResolver();
+            when(jdtContainer.getDescription()).thenReturn(MY_NAME);
 
-        String name = ipsContainer4JdtClasspathContainer.getName();
+            String name = ipsContainer4JdtClasspathContainer.getName();
 
-        assertEquals(MY_NAME, name);
+            assertEquals(MY_NAME, name);
+        }
     }
 
     @Test
     public void testName_noContainer() throws Exception {
-        String name = ipsContainer4JdtClasspathContainer.getName();
+        if (Abstractions.isEclipseRunning()) {
+            String name = ipsContainer4JdtClasspathContainer.getName();
 
-        assertEquals("Unresolved: " + IpsContainer4JdtClasspathContainerType.ID + '[' + optionalPath + ']', name);
+            assertEquals("Unresolved: " + IpsContainer4JdtClasspathContainerType.ID + '[' + optionalPath + ']', name);
+        }
     }
 
     @Test
     public void testResolveEntries_noContainer() throws Exception {
-        mockJdtClasspathResolver(null);
+        if (Abstractions.isEclipseRunning()) {
+            mockJdtClasspathResolver(null);
 
-        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(0, resolveEntries.size());
+            assertEquals(0, resolveEntries.size());
+        }
     }
 
     @Test
     public void testResolveEntries_emptyContainer() throws Exception {
-        mockJdtClasspathResolver();
-        when(jdtContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[] {});
+        if (Abstractions.isEclipseRunning()) {
+            mockJdtClasspathResolver();
+            when(jdtContainer.getClasspathEntries()).thenReturn(new IClasspathEntry[] {});
 
-        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(0, resolveEntries.size());
+            assertEquals(0, resolveEntries.size());
+        }
     }
 
     @Test
     public void testResolveEntries_withEntry() throws Exception {
-        mockEntryCreator(objectPathEntry);
+        if (Abstractions.isEclipseRunning()) {
+            mockEntryCreator(objectPathEntry);
 
-        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(1, resolveEntries.size());
-        assertEquals(objectPathEntry, resolveEntries.get(0));
+            assertEquals(1, resolveEntries.size());
+            assertEquals(objectPathEntry, resolveEntries.get(0));
+        }
     }
 
     @Test
     public void testResolveEntries_withEntryCached() throws Exception {
-        mockEntryCreator(objectPathEntry);
-        List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+        if (Abstractions.isEclipseRunning()) {
+            mockEntryCreator(objectPathEntry);
+            List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(expectedEntries, sameEntries);
+            assertEquals(expectedEntries, sameEntries);
+        }
     }
 
     @Test
     public void testResolveEntries_withNullEntry() throws Exception {
-        mockEntryCreator(null);
+        if (Abstractions.isEclipseRunning()) {
+            mockEntryCreator(null);
 
-        List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> resolveEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(0, resolveEntries.size());
+            assertEquals(0, resolveEntries.size());
+        }
     }
 
     @Test
     public void testResolveEntries_emptyContainerCached() throws Exception {
-        mockEntryCreator(null);
-        List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+        if (Abstractions.isEclipseRunning()) {
+            mockEntryCreator(null);
+            List<IIpsObjectPathEntry> expectedEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
+            List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertEquals(expectedEntries, sameEntries);
+            assertEquals(expectedEntries, sameEntries);
+        }
     }
 
     private void mockEntryCreator(IIpsObjectPathEntry objectPathEntry) throws Exception {
@@ -152,27 +172,33 @@ public class IpsContainer4JdtClasspathContainerTest {
 
     @Test
     public void testFindClasspathContainer_notJavaProject() throws Exception {
-        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+        if (Abstractions.isEclipseRunning()) {
+            IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
 
-        assertNull(classpathContainer);
+            assertNull(classpathContainer);
+        }
     }
 
     @Test
     public void testFindClasspathContainer_emptyClasspath() throws Exception {
-        mockProject();
+        if (Abstractions.isEclipseRunning()) {
+            mockProject();
 
-        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+            IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
 
-        assertNull(classpathContainer);
+            assertNull(classpathContainer);
+        }
     }
 
     @Test
     public void testFindClasspathContainer_existingEntry() throws Exception {
-        mockJdtClasspathResolver();
+        if (Abstractions.isEclipseRunning()) {
+            mockJdtClasspathResolver();
 
-        IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
+            IClasspathContainer classpathContainer = ipsContainer4JdtClasspathContainer.findClasspathContainer();
 
-        assertEquals(jdtContainer, classpathContainer);
+            assertEquals(jdtContainer, classpathContainer);
+        }
     }
 
     private void mockJdtClasspathResolver() throws Exception {

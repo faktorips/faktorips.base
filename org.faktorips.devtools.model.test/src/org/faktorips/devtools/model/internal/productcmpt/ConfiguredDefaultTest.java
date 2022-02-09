@@ -24,8 +24,10 @@ import java.util.Locale;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -179,20 +181,26 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_InvalidDatatype() throws Exception {
-        InvalidDatatype datatype = new InvalidDatatype();
-        attribute.setDatatype(datatype.getQualifiedName());
+        try (var testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            InvalidDatatype datatype = new InvalidDatatype();
+            if (!Abstractions.isEclipseRunning()) {
+                // for eclipse this datatype is defined in the fragment.xml
+                testIpsModelExtensions.addPredefinedDatatype(datatype);
+            }
+            attribute.setDatatype(datatype.getQualifiedName());
 
-        Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<>();
-        vdlist.addAll(Arrays.asList(vds));
-        vdlist.add(datatype);
+            Datatype[] vds = ipsProject.findDatatypes(true, false);
+            ArrayList<Datatype> vdlist = new ArrayList<>();
+            vdlist.addAll(Arrays.asList(vds));
+            vdlist.add(datatype);
 
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
-        ipsProject.setProperties(properties);
+            IIpsProjectProperties properties = ipsProject.getProperties();
+            properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
+            ipsProject.setProperties(properties);
 
-        MessageList ml = configuredDefaultValue.validate(configuredDefaultValue.getIpsProject());
-        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+            MessageList ml = configuredDefaultValue.validate(configuredDefaultValue.getIpsProject());
+            assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+        }
     }
 
     @Test
@@ -420,8 +428,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         return templateConfigElement;
     }
 
-    private IConfiguredDefault createDefaultValueInNewTemplate(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            {
+    private IConfiguredDefault createDefaultValueInNewTemplate(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredDefault templateConfigElement = templateGen.newPropertyValue(policyCmptTypeAttribute,

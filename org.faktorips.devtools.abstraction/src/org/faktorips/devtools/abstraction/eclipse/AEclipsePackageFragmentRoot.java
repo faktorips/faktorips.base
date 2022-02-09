@@ -9,8 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.eclipse;
 
+import java.nio.file.Path;
+
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
 public class AEclipsePackageFragmentRoot extends AEclipseJavaElement implements APackageFragmentRoot {
 
@@ -26,6 +31,15 @@ public class AEclipsePackageFragmentRoot extends AEclipseJavaElement implements 
 
     IPackageFragmentRoot packageFragmentRoot() {
         return unwrap();
+    }
+
+    @Override
+    public Path getOutputLocation() {
+        try {
+            return PathMapping.toJavaPath(unwrap().getRawClasspathEntry().getOutputLocation());
+        } catch (JavaModelException e) {
+            throw new IpsException(e);
+        }
     }
 
 }

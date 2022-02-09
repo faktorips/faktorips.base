@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -284,43 +286,43 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         IPolicyCmptType pct = newPolicyCmptType(ipsProject, "1test");
         pct.setConfigurableByProductCmptType(false);
         MessageList ml = pct.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
         pct = newPolicyCmptType(ipsProject, "test.test2");
         pct.setConfigurableByProductCmptType(false);
         ml = pct.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, lacksMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Product cmpt type
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "test.1Product");
         ml = productCmptType.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
         assertEquals(IIpsElement.PROPERTY_NAME, ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)
                 .getInvalidObjectProperties().get(0).getProperty());
         // testTypesCount ++; is currently no ips object type
 
         // Product cmpt
-        IProductCmpt pc = newProductCmpt(ipsProject, "/test");
+        IProductCmpt pc = newProductCmpt(ipsProject, "*test");
         ml = pc.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
+        assertThat(ml, hasMessageCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_CHARACTERS));
 
         // Test case type
         ITestCaseType tct = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "1test");
         ml = tct.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Test case
-        ITestCase tc = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "/test");
+        ITestCase tc = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "*test");
         ml = tc.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Table structure
         ITableStructure ts = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "1test");
         ml = ts.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Table contents
-        ITableContents tco = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "/test");
+        ITableContents tco = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "*test");
         ml = tco.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
+        assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
     }
 }

@@ -39,7 +39,7 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 /**
  * Provides drop support for {@linkplain TestCaseSection}.
@@ -411,7 +411,7 @@ class DropToLinkHelper {
     }
 
     private IProductCmpt getProductCmpt(String filename) {
-        IFile file = NestedProjectFileUtil.getFile(filename);
+        IFile file = NestedEclipseProjectFileUtil.getFile(filename);
         return file.getAdapter(IProductCmpt.class);
     }
 

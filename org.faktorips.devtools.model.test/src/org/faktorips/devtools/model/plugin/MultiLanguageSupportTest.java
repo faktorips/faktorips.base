@@ -16,8 +16,8 @@ import static org.junit.Assert.fail;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -656,7 +656,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testDefaultConstructor() {
         support = new MultiLanguageSupport();
         Locale localizationLocale = support.getLocalizationLocale();
-        String nl = Platform.getNL();
+        String nl = Abstractions.getLocale().getLanguage();
         if (nl.length() > 2) {
             nl = nl.substring(0, 2);
         }

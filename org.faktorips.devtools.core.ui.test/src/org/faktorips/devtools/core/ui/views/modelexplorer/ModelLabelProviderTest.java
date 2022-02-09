@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
@@ -143,7 +142,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetText() throws IpsException, CoreException {
+    public void testGetText() throws IpsException {
         String fragmentName;
         // packagefragment Labels
         // hierarchical Layout
@@ -196,7 +195,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(subFolder.getName(), resName);
 
         // non ips projects in model explorer
-        IProject platformProject = newPlatformProject("PlatformProject");
+        IProject platformProject = newPlatformProject("PlatformProject").unwrap();
 
         resName = hierarchyProvider.getText(platformProject);
         assertEquals(platformProject.getName() + " (" + Messages.ModelExplorer_nonIpsProjectLabel + ")", resName);

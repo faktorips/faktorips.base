@@ -28,19 +28,21 @@ public class PlainJavaFileUtil {
         // util
     }
 
-    public static void copy(File file, Path destination, IProgressMonitor monitor) {
+    public static File copy(File file, Path destination, IProgressMonitor monitor) {
         try {
             if (monitor != null) {
                 initializeAndStartMonitor(file, monitor, "Copying"); //$NON-NLS-1$
             }
+            File copy = makeAbsolute(file, destination).toFile();
             if (file.isDirectory()) {
-                FileUtils.copyDirectory(file, relativeToSourceFile(file, destination).toFile());
+                FileUtils.copyDirectory(file, copy);
             } else {
-                FileUtils.copyFile(file, relativeToSourceFile(file, destination).toFile());
+                FileUtils.copyFile(file, copy);
             }
             if (monitor != null) {
                 monitor.worked(1);
             }
+            return copy;
         } catch (IOException | IllegalArgumentException e) {
             throw new IpsException("Copying " + file + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
         } finally {
@@ -50,12 +52,14 @@ public class PlainJavaFileUtil {
         }
     }
 
-    private static Path relativeToSourceFile(File file, Path destination) {
-        Path parentDir = file.toPath().getParent();
-        if (parentDir == null) {
-            parentDir = file.toPath();
+    private static Path makeAbsolute(File file, Path destination) {
+        PlainJavaWorkspaceRoot workspaceRoot = PlainJavaImplementation.get().getWorkspace().getRoot();
+        if (workspaceRoot.getProjects().stream().anyMatch(p -> destination.startsWith(p.getWorkspaceRelativePath()))) {
+            Path workspacePath = workspaceRoot.getLocation();
+            return workspacePath.resolve(destination);
         }
-        return parentDir.resolve(destination);
+        Path parentDir = file.toPath().toAbsolutePath().getParent();
+        return parentDir == null ? destination : parentDir.resolve(destination);
     }
 
     public static void move(File file, Path destination, IProgressMonitor monitor) {
@@ -64,9 +68,9 @@ public class PlainJavaFileUtil {
                 initializeAndStartMonitor(file, monitor, "Moving"); //$NON-NLS-1$
             }
             if (file.isDirectory()) {
-                FileUtils.moveDirectory(file, relativeToSourceFile(file, destination).toFile());
+                FileUtils.moveDirectory(file, makeAbsolute(file, destination).toFile());
             } else {
-                FileUtils.moveFile(file, relativeToSourceFile(file, destination).toFile());
+                FileUtils.moveFile(file, makeAbsolute(file, destination).toFile());
             }
             if (monitor != null) {
                 monitor.worked(1);
@@ -88,7 +92,8 @@ public class PlainJavaFileUtil {
     }
 
     public static File internalResource(File potentialInternal, PlainJavaProject project) {
-        if (potentialInternal.toPath().startsWith(project.getLocation())) {
+        if (potentialInternal.toPath().startsWith(
+                project.getWorkspace().getRoot().directory().toPath().resolve(project.getWorkspaceRelativePath()))) {
             return potentialInternal;
         }
         throw new IllegalArgumentException(potentialInternal + " is not in the project: " + project.getName()); //$NON-NLS-1$

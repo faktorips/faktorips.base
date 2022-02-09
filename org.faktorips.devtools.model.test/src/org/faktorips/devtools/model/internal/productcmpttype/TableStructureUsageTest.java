@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -156,41 +159,41 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_TableStructureNotFound() {
         MessageList ml = tableStructureUsage.validate(project);
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
 
         tableStructureUsage.addTableStructure("test.TableStructureX");
         ml = tableStructureUsage.validate(project);
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
 
         tableStructureUsage.removeTableStructure("test.TableStructureX");
         tableStructureUsage.addTableStructure("test.TableStructure1");
         ml = tableStructureUsage.validate(project);
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
     }
 
     @Test
     public void testValidate_InvalidRoleName() {
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
 
         tableStructureUsage.setRoleName("1role");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertThat(ml, hasMessageCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
 
         tableStructureUsage.setRoleName("role 1");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
+        assertThat(ml, hasMessageCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
     }
 
     @Test
     public void testValidate_MustReferenceAtLeast1TableStructure() {
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        assertThat(ml, hasMessageCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
 
         tableStructureUsage.addTableStructure("tableStructure1");
         ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
 
     }
 
@@ -201,21 +204,21 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         aStructureUsage.setRoleName("usage");
 
         MessageList ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
         IProductCmptType b = newProductCmptType(project, "b");
         a.setSupertype(b.getQualifiedName());
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
         ITableStructureUsage bStructureUsage = b.newTableStructureUsage();
         bStructureUsage.setRoleName("usage");
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        assertThat(ml, hasMessageCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
 
         bStructureUsage.setRoleName("otherName");
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+        assertThat(ml, lacksMessageCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
     }
 
     @Test

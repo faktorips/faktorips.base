@@ -21,7 +21,6 @@ import org.faktorips.abstracttest.PlatformProjectBuilder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AbstractAbstractionTestSetup;
-import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 
 public class AEclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
@@ -43,7 +42,7 @@ public class AEclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
 
     @Override
     public AProject newProjectImpl(String name) {
-        return Wrappers.wrap(createEclipseProject(name)).as(AProject.class);
+        return createEclipseProject(name);
     }
 
     @Override
@@ -72,18 +71,14 @@ public class AEclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
     @Override
     public AJavaProject toJavaProject(AProject project) {
         try {
-            return Wrappers.wrap(JavaProjectUtil.addJavaCapabilities(project.unwrap())).as(AJavaProject.class);
+            return JavaProjectUtil.addJavaCapabilities(project);
         } catch (CoreException e) {
             throw new IpsException(e);
         }
     }
 
-    private IProject createEclipseProject(String name) {
-        try {
-            return new PlatformProjectBuilder().name(name).build();
-        } catch (CoreException e) {
-            throw new IpsException(e);
-        }
+    private AProject createEclipseProject(String name) {
+        return new PlatformProjectBuilder().name(name).build();
     }
 
     private IProjectDescription createIpsNature(IProject project) throws CoreException {

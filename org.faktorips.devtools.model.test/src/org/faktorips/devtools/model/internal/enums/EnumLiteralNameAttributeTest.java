@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -52,7 +51,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
         assertEquals("name",
@@ -102,8 +101,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertOneValidationMessage(literalNameAttribute2.validate(ipsProject));
     }
 
-    private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2)
-            {
+    private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2) {
         MessageList validationMessageList = literalNameAttribute2.validate(ipsProject);
         Message notNeededMessage = validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED);

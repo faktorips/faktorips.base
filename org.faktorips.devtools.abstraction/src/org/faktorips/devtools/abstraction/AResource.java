@@ -235,6 +235,18 @@ public interface AResource extends AAbstraction, IAdaptable, Comparable<AResourc
      */
     void copy(Path destination, @CheckForNull IProgressMonitor monitor);
 
+    /**
+     * Moves this resource to the given destination.
+     *
+     * @param destination an existing resource of the same {@link AResourceType type} as this
+     *            resource
+     * @param monitor a progress monitor that is notified about the move process. When moving a
+     *            directory, individual file copies are reported to the monitor to allow
+     *            fine-grained progress reporting. The monitor may be {@code null} when progress
+     *            does not need to be reported.
+     */
+    void move(Path destination, @CheckForNull IProgressMonitor monitor);
+
     @Override
     public default int compareTo(AResource o) {
         return COMPARING_BY_NAME.compare(this, o);

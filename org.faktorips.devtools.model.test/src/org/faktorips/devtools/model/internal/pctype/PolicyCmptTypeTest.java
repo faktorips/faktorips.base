@@ -827,11 +827,11 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testValidate_ProductCmptTypeNameMissing() throws Exception {
         MessageList ml = policyCmptType.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
+        assertThat(ml, lacksMessageCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType("");
         ml = policyCmptType.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
+        assertThat(ml, hasMessageCode(IPolicyCmptType.MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING));
     }
 
     @Test
@@ -843,16 +843,16 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.setConfigurableByProductCmptType(true);
 
         MessageList ml = superPcType.validate(superPcType.getIpsProject());
-        assertNull(ml.getMessageByCode(
+        assertThat(ml, lacksMessageCode(
                 IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         ml = policyCmptType.validate(ipsProject);
-        assertNull(ml.getMessageByCode(
+        assertThat(ml, lacksMessageCode(
                 IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         superPcType.setConfigurableByProductCmptType(true);
         ml = policyCmptType.validate(ipsProject);
-        assertNull(ml.getMessageByCode(
+        assertThat(ml, lacksMessageCode(
                 IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
     }
 

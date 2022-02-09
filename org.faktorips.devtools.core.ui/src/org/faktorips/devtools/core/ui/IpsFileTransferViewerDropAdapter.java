@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 
@@ -81,7 +81,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
         List<IProductCmpt> result = new ArrayList<>();
 
         for (String filename : filenames) {
-            IFile file = NestedProjectFileUtil.getFile(filename);
+            IFile file = NestedEclipseProjectFileUtil.getFile(filename);
             if (file == null) {
                 return null;
             }

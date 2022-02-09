@@ -33,7 +33,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class SortedByDependencyTest extends AbstractIpsPluginTest {
-
     @Test
     public void testSortByInstanceOf_SingleCmpt() {
         IIpsProject ipsProject = newIpsProject();

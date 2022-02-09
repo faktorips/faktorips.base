@@ -67,7 +67,9 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
 
         IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
 
-        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
+        String qNameWithBackslash = pathToFile.substring(0, index).replace(IPath.SEPARATOR,
+                IIpsPackageFragment.SEPARATOR);
+        String qName = qNameWithBackslash.replace('\\', IIpsPackageFragment.SEPARATOR);
 
         return new QualifiedNameType(qName, type);
     }

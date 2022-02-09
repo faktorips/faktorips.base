@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -163,17 +165,17 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
         testAttribute.setAttribute(attr.getName());
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
     }
 
     @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_WRONG_TYPE));
 
         Element docEl = getTestDocument().getDocumentElement();
         Element attributeEl = XmlUtil.getElement(docEl, "TestAttribute", 3);
@@ -183,7 +185,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute(attribute + "_new");
         testAttribute.setAttribute(attribute);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_WRONG_TYPE));
     }
 
     @Test
@@ -192,44 +194,44 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         param.setTestParameterType(TestParameterType.COMBINED);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setTestParameterType(TestParameterType.EXPECTED_RESULT);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
 
         param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setTestParameterType(TestParameterType.INPUT);
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE));
     }
 
     @Test
     public void testValidateDuplicateTestAttributeName() throws Exception {
         testAttribute.setName("testAttribute");
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
 
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.newInputTestAttribute().setName(testAttribute.getName());
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
 
         testAttribute.setName("newName");
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME));
     }
 
     @Test
@@ -241,31 +243,31 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ((ITestPolicyCmptTypeParameter)testAttribute.getParent()).setPolicyCmptType(pct.getQualifiedName());
         testAttribute.setAttribute(attr.getName());
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
 
         attr.setAttributeType(AttributeType.CHANGEABLE);
         testAttribute.setTestAttributeType(TestParameterType.EXPECTED_RESULT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
         testAttribute.setTestAttributeType(TestParameterType.INPUT);
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED));
     }
 
     @Test
@@ -279,11 +281,11 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute2.setAttribute("attribute1");
 
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
 
         testAttribute2.setAttribute("attribute2");
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
 
         // test with attributes not based on model attributes
         ITestAttribute testAttribute3 = param.newExpectedResultTestAttribute();
@@ -293,24 +295,24 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute4.setName("String4");
         testAttribute4.setDatatype("String");
         ml = testAttribute3.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
         ml = testAttribute4.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE));
     }
 
     @Test
     public void testValidateNameMustNotBeEmpty() throws Exception {
         testAttribute.setName("attribute1");
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
 
         testAttribute.setName("");
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
 
         testAttribute.setName(null);
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NAME_IS_EMPTY));
     }
 
     @Test
@@ -318,19 +320,19 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute("");
         testAttribute.setDatatype("Y");
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
 
         testAttribute.setAttribute("X");
         testAttribute.setDatatype("Y");
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
         assertEquals(Message.ERROR, ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN)
                 .getSeverity());
 
         testAttribute.setAttribute("X");
         testAttribute.setDatatype("");
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN));
     }
 
     @Test
@@ -338,12 +340,12 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute("");
         testAttribute.setDatatype("String");
         MessageList ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
 
         testAttribute.setAttribute("");
         testAttribute.setDatatype("Y");
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND));
         assertEquals(Message.ERROR, ml.getMessageByCode(ITestAttribute.MSGCODE_DATATYPE_NOT_FOUND).getSeverity());
     }
 
@@ -443,10 +445,10 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         testAttribute.setAttribute("");
         assertFalse(testAttribute.isBasedOnModelAttribute());
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
         testAttribute.setName("invalid Name");
         ml = testAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
 
         // test validate name for non extension attribute (test attributes based on model attribute)
         // -> must be not a valid java field identifier, for this kind of test attributes no name
@@ -459,6 +461,6 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         assertTrue(testAttribute.isBasedOnModelAttribute());
         testAttribute.setName("no invalid Name");
         ml = testAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
     }
 }

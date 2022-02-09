@@ -314,7 +314,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
 
         MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSuperProduct");
@@ -324,28 +324,28 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         supersupertype.setSupertype("abc");
 
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype("");
         ml = type.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype(type.getQualifiedName());
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         type.setSupertype("Unkown");
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
     @Test
@@ -492,7 +492,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product.newGeneration(new GregorianCalendar(2016, 7, 28));
 
         MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
 
         type.setChangingOverTime(false);
         ml = product.validate(type.getIpsProject());

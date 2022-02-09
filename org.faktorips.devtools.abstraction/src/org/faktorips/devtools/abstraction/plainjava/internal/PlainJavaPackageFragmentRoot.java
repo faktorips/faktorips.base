@@ -10,6 +10,7 @@
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 
@@ -27,6 +28,11 @@ public class PlainJavaPackageFragmentRoot extends PlainJavaJavaElement implement
 
     File packageFragmentRoot() {
         return unwrap();
+    }
+
+    @Override
+    public Path getOutputLocation() {
+        return null;
     }
 
 }

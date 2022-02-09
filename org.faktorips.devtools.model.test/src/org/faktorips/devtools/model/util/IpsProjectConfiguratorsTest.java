@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -39,13 +39,13 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        IProject project = newPlatformProject(UUID.randomUUID().toString());
+        AProject project = newPlatformProject(UUID.randomUUID().toString());
         javaProject = addJavaCapabilities(project);
     }
 
     @Test
     public void testApplicableTo() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             testIpsModelExtensions.setIpsProjectConfigurators(
@@ -61,7 +61,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsGroovySupported() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             GroovyIpsProjectConfigurator groovyIpsProjectConfigurator = new GroovyIpsProjectConfigurator();
             NonGroovyIpsProjectConfigurator nonGroovyIpsProjectConfigurator = new NonGroovyIpsProjectConfigurator();

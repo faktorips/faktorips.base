@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +21,6 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
@@ -115,8 +113,8 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
 
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId"), hasItem(ipsSrcFile));
 
-        IResource resource = productCmpt.getEnclosingResource().unwrap();
-        resource.move(toEclipsePath(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName())), true, null);
+        AResource resource = productCmpt.getEnclosingResource();
+        resource.move(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName()), null);
 
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(0));
     }

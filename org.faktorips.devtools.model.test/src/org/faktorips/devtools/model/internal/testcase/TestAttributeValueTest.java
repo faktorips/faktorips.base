@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -90,12 +93,12 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateTestAttributeNotFound() throws Exception {
         MessageList ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
 
         testAttributeValue.setTestAttribute("x"); // the value must be set, otherwise the attribute
         // will be ignored
         ml = testAttributeValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestAttributeValue.MSGCODE_TESTATTRIBUTE_NOT_FOUND));
     }
 
     @Test
@@ -109,7 +112,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
 
         testAttribute.setAttribute(attr.getName());
         MessageList ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         attr.setName("x");
         testAttributeValue.setValue("x");
@@ -120,7 +123,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_WRONG_TYPE));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_WRONG_TYPE));
 
         // remark the test if the message will be set couldn't be tested here because setting
         // a wrong type of the parameter is not possible without getting an argument exception
@@ -159,7 +162,7 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         // because the testattributes parent defines the product cmpt, wich uses a sublass, which
         // defines the attribute
         MessageList ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNotNull(testAttributeValue.findAttribute(ipsProject));
 
         assertNotNull(((ITestPolicyCmpt)testAttributeValue.getParent()).findProductCmptTypeAttribute(
@@ -171,12 +174,12 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         testAttributeValue.setValue("x"); // the value must be set, otherwise the attribute will be
         // ignored
         ml = testAttributeValue.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNull(testAttributeValue.findAttribute(ipsProject));
 
         testAttributeValue.setValue(null); // the value is null, thus the attribute will be ignored
         ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNull(testAttributeValue.findAttribute(ipsProject));
 
         pctSuper.newPolicyCmptTypeAttribute().setName("attributeSuper");
@@ -197,13 +200,13 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         MessageList ml = testAttributeValue.validate(ipsProject);
         // first check the correct test setup
         assertTrue(testAttribute.isBasedOnModelAttribute());
-        assertNotNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
 
         testAttribute.setAttribute("");
         testAttribute.setDatatype("X");
         assertFalse(testAttribute.isBasedOnModelAttribute());
         ml = testAttributeValue.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND));
         assertNotNull(ml
                 .getMessageByCode(
                         IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND));

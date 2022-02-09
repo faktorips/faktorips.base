@@ -45,7 +45,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
     @SuppressWarnings("deprecation")
     @Test
     public void testExtensionXml() throws IpsException, IOException, SAXException {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             TestExtensionPropertyDefinition extensionPropertyDefinition = new TestExtensionPropertyDefinition();
             extensionPropertyDefinition.setName("TestExtension");
             extensionPropertyDefinition.setPropertyId("TestExtensionId");

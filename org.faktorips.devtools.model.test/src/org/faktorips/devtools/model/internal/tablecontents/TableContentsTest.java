@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -266,10 +267,11 @@ public class TableContentsTest extends AbstractDependencyTest {
     @Test(expected = IpsException.class)
     public void testgetTableRows_WithExtensionPropertiesError() {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(ipsSrcFile.exists()).thenReturn(true);
         table = spy(newTableContents(structure, "Tc"));
-        when(table.getIpsSrcFile()).thenReturn(ipsSrcFile);
-        when(ipsSrcFile.getContentFromEnclosingResource())
-                .thenReturn(getClass().getResourceAsStream("TableContentsTest2.xml"));
+        doReturn(ipsSrcFile).when(table).getIpsSrcFile();
+        doReturn(getClass().getResourceAsStream("TableContentsTest2.xml"))
+                .when(ipsSrcFile).getContentFromEnclosingResource();
 
         table.setTableRowsInternal(null);
         table.getTableRows();

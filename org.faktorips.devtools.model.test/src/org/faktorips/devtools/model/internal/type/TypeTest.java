@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -276,7 +279,7 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         MessageList ml = new MessageList();
         // ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation union = (PolicyCmptTypeAssociation)source.newAssociation();
         union.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -285,7 +288,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         union.setTarget(target.getQualifiedName());
 
         ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation inverseOfUnion = (PolicyCmptTypeAssociation)target.newAssociation();
         inverseOfUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -296,21 +299,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         inverseOfUnion.setInverseAssociation(union.getName());
 
         ml = target.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         // test if the rule is not executed when disabled
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setDerivedUnionIsImplementedRuleEnabled(false);
         ipsProject.setProperties(props);
         ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         ipsProject.setProperties(props);
 
         // type is valid, if it is abstract
         target.setAbstract(true);
         ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
         target.setAbstract(false);
 
         // implement the derived union in the same type
@@ -330,7 +333,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         associationD2M.setInverseAssociation(associationM2D.getName());
 
         ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
     }
 
     /**
@@ -347,7 +350,7 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         MessageList ml = new MessageList();
         // ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation union = (PolicyCmptTypeAssociation)source.newAssociation();
         union.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -357,7 +360,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         union.setTarget(target.getQualifiedName());
 
         ml = target.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         PolicyCmptTypeAssociation inverseOfUnion = (PolicyCmptTypeAssociation)target.newAssociation();
         inverseOfUnion.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -370,9 +373,9 @@ public class TypeTest extends AbstractIpsPluginTest {
 
         // test both source and target must be marked as abstract
         ml = target.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
         ml = source.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // now implement a derived union from source to a subtype of target
 
@@ -398,15 +401,15 @@ public class TypeTest extends AbstractIpsPluginTest {
         subTarget.getIpsSrcFile().save(true, null);
 
         ml = source.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // test that in this case the super type (target) needs to be abstract, but the source not
 
         ml = subTarget.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
 
         ml = target.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION));
     }
 
     @Test
@@ -414,7 +417,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         IPolicyCmptType target = newPolicyCmptType(ipsProject, "TargetType");
 
         MessageList ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         IAssociation union = type.newAssociation();
         union.setDerivedUnion(true);
@@ -422,21 +425,21 @@ public class TypeTest extends AbstractIpsPluginTest {
         union.setTarget(target.getQualifiedName());
 
         ml = type.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // test if the rule is not executed when disabled
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setDerivedUnionIsImplementedRuleEnabled(false);
         ipsProject.setProperties(props);
         ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         ipsProject.setProperties(props);
 
         // type is valid, if it is abstract
         type.setAbstract(true);
         ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         type.setAbstract(false);
 
         // implement the derived union in the same type
@@ -446,19 +449,19 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setTarget(target.getQualifiedName());
 
         ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // delete the relation, now same thing for a subtype
         association.delete();
         IType subtype = newProductCmptType(ipsProject, "Subtype");
         subtype.setSupertype(type.getQualifiedName());
         ml = subtype.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // type is valid, if it is abstract
         subtype.setAbstract(true);
         ml = subtype.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
         subtype.setAbstract(false);
 
         association = subtype.newAssociation();
@@ -467,14 +470,14 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setTarget(target.getQualifiedName());
 
         ml = subtype.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         // now same thing for subtype of subtype
         association.delete();
         IType subsubtype = newProductCmptType(ipsProject, "SubSubtype");
         subsubtype.setSupertype(subtype.getQualifiedName());
         ml = subsubtype.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
 
         association = subtype.newAssociation();
         association.setDerivedUnion(false);
@@ -482,18 +485,18 @@ public class TypeTest extends AbstractIpsPluginTest {
         association.setTarget(target.getQualifiedName());
 
         ml = subtype.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_MUST_SPECIFY_DERIVED_UNION));
     }
 
     @Test
     public void testValidate_AbstractMissing() throws Exception {
         MessageList ml = type.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_ABSTRACT_MISSING));
 
         type.newMethod().setAbstract(true);
         type.setAbstract(false);
         ml = type.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_ABSTRACT_MISSING));
     }
 
     @Test
@@ -903,16 +906,16 @@ public class TypeTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_SupertypeNotFound() throws Exception {
         MessageList ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
 
         type.setSupertype("abc");
         ml = type.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
 
         IType supertype = newProductCmptType(ipsProject, "Product");
         type.setSupertype(supertype.getQualifiedName());
         ml = type.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
     }
 
     @Test
@@ -958,11 +961,11 @@ public class TypeTest extends AbstractIpsPluginTest {
         supertype.setSupertype(supersupertype.getQualifiedName());
 
         MessageList ml = type.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype("abc");
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
     @Test

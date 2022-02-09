@@ -32,9 +32,13 @@ public class IpsLog {
      * Logs the status.
      */
     public static final void log(IStatus status) {
-        if (IpsModelActivator.isStarted() && !suppressLoggingDuringTestExecution) {
+        if (isStarted() && !suppressLoggingDuringTestExecution) {
             get().log(status);
         }
+    }
+
+    private static boolean isStarted() {
+        return !Abstractions.isEclipseRunning() || IpsModelActivator.isStarted();
     }
 
     /**
@@ -55,7 +59,7 @@ public class IpsLog {
      * Logs the status and shows the status in a standard error dialog.
      */
     public static final void logAndShowErrorDialog(final IStatus status) {
-        get().log(status);
+        log(status);
         IIpsModelExtensions.get().getWorkspaceInteractions().showErrorDialog(status);
     }
 

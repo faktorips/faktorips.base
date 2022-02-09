@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Locale;
@@ -111,7 +112,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
     @Test
     public void testSaveWithPreProcessor() {
-        try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, (ipsObject) -> {
                         IDescription description = ((IPolicyCmptType)ipsObject).getDescription(Locale.GERMAN);
@@ -128,7 +129,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
 
     @Test
     public void testSaveWithPreProcessorForDifferentIpsObjectType() {
-        try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, (ipsObject) -> {
                         fail("This PreSaveProcessor should never be called while saving a PolicyCmptType as it is registered for ProductCmpts");
@@ -183,7 +184,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testGetIpsObject() {
+    public void testGetIpsObject() throws IOException {
         IIpsObject ipsObject = parsableFile.getIpsObject();
         assertNotNull(ipsObject);
         assertTrue(ipsObject.isFromParsableFile());
@@ -195,13 +196,16 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         assertFalse(ipsObject.isFromParsableFile());
 
         // change from unparsable to parsable
-        InputStream is = parsableFile.getCorrespondingFile().getContents();
-        unparsableFile.getCorrespondingFile().setContents(is, true, null);
+        try (InputStream is = parsableFile.getCorrespondingFile().getContents()) {
+            unparsableFile.getCorrespondingFile().setContents(is, true, null);
+        }
         assertSame(ipsObject, unparsableFile.getIpsObject());
         assertTrue(ipsObject.isFromParsableFile());
 
         // otherway round
-        unparsableFile.getCorrespondingFile().setContents(new ByteArrayInputStream("Blabla".getBytes()), true, null);
+        try (ByteArrayInputStream input = new ByteArrayInputStream("Blabla".getBytes())) {
+            unparsableFile.getCorrespondingFile().setContents(input, true, null);
+        }
         assertSame(ipsObject, unparsableFile.getIpsObject());
         assertFalse(ipsObject.isFromParsableFile());
     }

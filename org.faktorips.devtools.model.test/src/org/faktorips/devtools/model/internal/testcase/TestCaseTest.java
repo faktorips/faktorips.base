@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -398,11 +400,11 @@ public class TestCaseTest extends AbstractDependencyTest {
     @Test
     public void testValidateTestCaseTypeNotFound() throws Exception {
         MessageList ml = testCase.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
 
         testCase.setTestCaseType("x");
         ml = testCase.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
     }
 
     @Test

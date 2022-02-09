@@ -56,7 +56,6 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.util.IoUtil;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -587,14 +586,10 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             newTableRows();
             return;
         }
-        InputStream inputStream = null;
-        try {
-            inputStream = getIpsSrcFile().getContentFromEnclosingResource();
+        try (var inputStream = getIpsSrcFile().getContentFromEnclosingResource()) {
             initTableContentFromStream(inputStream, true);
-        } catch (IpsException e) {
-            e.printStackTrace();
-        } finally {
-            IoUtil.close(inputStream);
+        } catch (IOException e) {
+            throw new IpsException(e.getMessage(), e);
         }
     }
 
