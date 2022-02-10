@@ -30,6 +30,7 @@
 		<deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
 		<deploy.release>false</deploy.release>
 		<snapshotQualifier>-SNAPSHOT</snapshotQualifier>
+        <wagon-ssh-version>3.4.1</wagon-ssh-version>
 	</properties>
 
 	<parent>
@@ -185,9 +186,9 @@
 					</plugin>
 					<!-- Upload Repository and Downloads -->
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>wagon-maven-plugin</artifactId>
-						<version>1.0</version>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <version>2.0.2</version>
 						<executions>
 							<execution>
 								<id>upload-repository</id>
@@ -216,6 +217,13 @@
 								</configuration>
 							</execution>
 						</executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.wagon</groupId>
+                                <artifactId>wagon-ssh</artifactId>
+                                <version>${wagon-ssh-version}</version>
+                            </dependency>
+                        </dependencies>
 					</plugin>
 
 					<plugin>
