@@ -6,6 +6,10 @@
 
 == Release Notes (English)
 
+=== Version 21.12.4
+
+Faktor-IPS 21.12.4 can save configurations of other Faktor-IPS features like the Product Variants in the .ipsproject file. This does not affect the runtime. 
+
 === Version 21.12.3
 
 With version 21.12.3 Faktor-IPS treats faulty entries MANIFEST.MF files of Maven dependencies used while running Faktor-IPS testcases with an error dialog and tries to run the test anyways instead of directly aborting the test run.

@@ -6,6 +6,10 @@
 
 == Release Notes
 
+=== Version 21.12.4
+
+Faktor-IPS kann mit Version 21.12.4 Konfigurationen für andere Faktor-IPS-Features (z.B. die Produktvarianten) in der .ipsproject-Datei ablegen. Dies hat keine Auswirkungen auf die Runtime. 
+
 === Version 21.12.3
 
 Mit Version 21.12.3 behandelt Faktor-IPS fehlerhafte MANIFEST.MF-Angaben in Maven-Dependencies bei der Ausführung von Faktor-IPS-Testfällen mit einem Fehlerdialog und dem Versuch, den Test dennoch auszuführen anstatt Tests direkt fehlschlagen zu lassen.

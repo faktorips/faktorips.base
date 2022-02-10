@@ -11,7 +11,10 @@
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,6 +40,7 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategy;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -209,6 +213,28 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_FeatureConfiguration_UnknownFeature() throws CoreException {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        MessageList list = props.validate(ipsProject);
+        int numOfMessages = list.size();
+
+        // Test that there is no additional error message if everything is OK.
+        props.setMinRequiredVersionNumber("a.feature.id", "0.0.1");
+        props.setFeatureConfiguration("a.feature.id", new IpsFeatureConfiguration());
+        list = props.validate(ipsProject);
+        assertThat(list.size(), is(numOfMessages));
+
+        // Test for one more additional error message if there is a problem.
+        props.setFeatureConfiguration("another.feature.id", new IpsFeatureConfiguration());
+        list = props.validate(ipsProject);
+        assertThat(list.size(), is(numOfMessages + 1));
+        assertThat(list.getMessageByCode(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE),
+                is(notNullValue()));
+        assertThat(list.getMessageByCode(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE).getText(),
+                containsString("another.feature.id"));
+    }
+
+    @Test
     public void testOptionalConstraints() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
@@ -287,6 +313,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.addSupportedLanguage(Locale.ENGLISH);
         props.addSupportedLanguage(Locale.KOREAN);
 
+        IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+        featureConfiguration.set("foo", "bar");
+        featureConfiguration.set("x", "y");
+        props.setFeatureConfiguration("a.feature.id", featureConfiguration);
+
         // 2) ... and retrieve the corresponding XML element ...
         Element projectEl = props.toXml(newDocument());
 
@@ -347,6 +378,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(100, props.getPersistenceOptions().getMaxTableColumnSize());
         assertEquals(101, props.getPersistenceOptions().getMaxTableColumnScale());
         assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
+
+        IIpsFeatureConfiguration newFeatureConfiguration = props.getFeatureConfiguration("a.feature.id");
+        assertThat(newFeatureConfiguration.get("foo"), is("bar"));
+        assertThat(newFeatureConfiguration.get("x"), is("y"));
     }
 
     @Test
