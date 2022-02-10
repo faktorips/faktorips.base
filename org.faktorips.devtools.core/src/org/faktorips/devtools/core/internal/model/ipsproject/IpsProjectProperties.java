@@ -18,10 +18,12 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
@@ -45,6 +47,7 @@ import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConven
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.core.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -70,6 +73,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * An ips project's properties. The project can't keep the properties on its own, as it is a handle.
@@ -136,6 +141,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
 
     private static final String MARKER_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
+
+    private static final String FEATURE_CONFIGURATIONS_ELEMENT = "FeatureConfigurations"; //$NON-NLS-1$
+
+    private static final String FEATURE_ID_ATTRIBUTE = "featureId"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -206,6 +215,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String versionProviderId;
 
+    private final Map<String, IpsFeatureConfiguration> featureConfigurations = new LinkedHashMap<String, IpsFeatureConfiguration>();
+
     /**
      * Used to check if the additional setting "markerEnums" is configured in the .ipsproject file.
      */
@@ -250,6 +261,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validatePersistenceOption(list);
             validateVersion(list);
             validateSupportedLanguages(list);
+            validateFeatureConfigurations(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -365,6 +377,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                         Message.ERROR);
                 list.add(msg);
                 break;
+            }
+        }
+    }
+
+    private void validateFeatureConfigurations(MessageList list) {
+        Set<String> requiredIpsFeatureIds = new LinkedHashSet<String>();
+        for (String featureId : getRequiredIpsFeatureIds()) {
+            requiredIpsFeatureIds.add(featureId);
+        }
+        for (Entry<String, IpsFeatureConfiguration> featureConfigurationEntry : featureConfigurations.entrySet()) {
+            String featureId = featureConfigurationEntry.getKey();
+            if (!requiredIpsFeatureIds.contains(featureId)) {
+                String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownFeatureIdForConfiguration, featureId);
+                Message msg = new Message(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE, text,
+                        Message.ERROR);
+                list.add(msg);
             }
         }
     }
@@ -579,6 +607,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
+        toXmlFeatureConfigurations(doc, projectEl);
+
         return projectEl;
     }
 
@@ -706,6 +736,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
     }
 
+    private void toXmlFeatureConfigurations(Document doc, Element projectEl) {
+        if (!featureConfigurations.isEmpty()) {
+            Element featureConfigurationsElement = doc.createElement(FEATURE_CONFIGURATIONS_ELEMENT);
+            for (Entry<String, IpsFeatureConfiguration> featureConfiguration : featureConfigurations.entrySet()) {
+                Element featureConfigurationElement = featureConfiguration.getValue().toXml(doc);
+                featureConfigurationElement.setAttribute(FEATURE_ID_ATTRIBUTE, featureConfiguration.getKey());
+                featureConfigurationsElement.appendChild(featureConfigurationElement);
+            }
+            projectEl.appendChild(featureConfigurationsElement);
+        }
+    }
+
     @Override
     public LinkedHashSet<String> getMarkerEnums() {
         return markerEnums;
@@ -806,6 +848,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
         initSupportedLanguages(element);
         initDefaultCurrency(element);
+        initFeatureConfigurations(element);
 
         initCompatibilityMode(element);
     }
@@ -1104,6 +1147,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             return Currency.getInstance(value);
         } catch (IllegalArgumentException e) {
             return defaultCurrency;
+        }
+    }
+
+    private void initFeatureConfigurations(Element element) {
+        Element featureConfigurationsElement = XmlUtil.getFirstElement(element, FEATURE_CONFIGURATIONS_ELEMENT);
+        if (featureConfigurationsElement != null) {
+            featureConfigurations.clear();
+            NodeList featureConfigurationElements = featureConfigurationsElement
+                    .getElementsByTagName(IpsFeatureConfiguration.FEATURE_CONFIGURATION_ELEMENT);
+            for (int i = 0; i < featureConfigurationElements.getLength(); i++) {
+                Element featureConfigurationElement = (Element)featureConfigurationElements.item(i);
+                String featureId = featureConfigurationElement.getAttribute(FEATURE_ID_ATTRIBUTE);
+                IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+                featureConfiguration.initFromXml(featureConfigurationElement);
+                setFeatureConfiguration(featureId, featureConfiguration);
+            }
         }
     }
 
@@ -1808,6 +1867,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setInferredTemplatePropertyValueThreshold(Decimal inferredTemplatePropertyValueThreshold) {
         this.inferredTemplatePropertyValueThreshold = inferredTemplatePropertyValueThreshold;
+    }
+
+    @Override
+    public @CheckForNull IIpsFeatureConfiguration getFeatureConfiguration(String featureId) {
+        return featureConfigurations.get(featureId);
+    }
+
+    /**
+     * Sets the {@link IIpsFeatureConfiguration} for the feature identified by the given ID.
+     */
+    public void setFeatureConfiguration(String featureId, IpsFeatureConfiguration featureConfiguration) {
+        ArgumentCheck.notNull(featureId, "featureId must not be null"); //$NON-NLS-1$
+        ArgumentCheck.notNull(featureConfiguration, "featureConfiguration must not be null"); //$NON-NLS-1$
+        featureConfigurations.put(featureId, featureConfiguration);
     }
 
     @Override
