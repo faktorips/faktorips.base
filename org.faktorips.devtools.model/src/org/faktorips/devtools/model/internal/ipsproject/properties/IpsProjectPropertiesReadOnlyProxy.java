@@ -22,6 +22,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -588,6 +589,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public Decimal getInferredTemplateLinkThreshold() {
         return propertiesInternal.getInferredTemplateLinkThreshold();
+    }
+
+    @Override
+    public IIpsFeatureConfiguration getFeatureConfiguration(String featureId) {
+        return propertiesInternal.getFeatureConfiguration(featureId);
     }
 
     @Override
