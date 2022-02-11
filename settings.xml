@@ -1,0 +1,47 @@
+<settings>
+    <mirrors>
+        <mirror>
+            <id>faktorzehn-2019-03</id>
+            <mirrorOf>https://update.faktorzehn.org/p2repositories/2019-03</mirrorOf>
+            <url>http://download.eclipse.org/releases/2019-03</url>
+            <layout>p2</layout>
+            <mirrorOfLayouts>p2</mirrorOfLayouts>
+        </mirror>
+        <mirror>
+            <id>faktorzehn-egit-5.3</id>
+            <mirrorOf>https://update.faktorzehn.org/p2repositories/egit/updates-5.3</mirrorOf>
+            <url>https://archive.eclipse.org/egit/updates-5.3</url>
+            <layout>p2</layout>
+            <mirrorOfLayouts>p2</mirrorOfLayouts>
+        </mirror>
+        
+        <mirror>
+            <id>faktorzehn-babel-2018-12</id>
+            <mirrorOf>https://update.faktorzehn.org/p2repositories/babel/2018-12</mirrorOf>
+            <url>https://archive.eclipse.org/technology/babel/update-site/R0.17.1/2018-12</url>
+            <layout>p2</layout>
+            <mirrorOfLayouts>p2</mirrorOfLayouts>
+        </mirror>
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>tycho-snapshots</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>tycho-snapshots</id>
+                    <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/
+                    </url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>tycho-snapshots</activeProfile>
+    </activeProfiles>
+
+</settings>
