@@ -107,7 +107,6 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
-      <import plugin="opencsv" version="2.3.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.collections"/>
       <import plugin="spotbugs-annotations"/>
       <import plugin="org.eclipse.jdt.core.manipulation"/>
@@ -133,6 +132,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.core.resources" version="3.9.0" match="compatible"/>
       <import plugin="org.eclipse.jdt.core" version="3.10.0" match="compatible"/>
       <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
+      <import plugin="net.sf.opencsv.opencsv" version="2.3.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
