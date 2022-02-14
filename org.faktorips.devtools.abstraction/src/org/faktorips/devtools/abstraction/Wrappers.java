@@ -177,7 +177,7 @@ public class Wrappers {
 
     public abstract static class WrapperBuilder {
 
-        private static Map<Object, AAbstraction> wrappers = new ConcurrentHashMap<>();
+        private static Map<Object, Set<AAbstraction>> wrappers = new ConcurrentHashMap<>();
 
         private final Object original;
 
@@ -191,11 +191,23 @@ public class Wrappers {
          * Wraps the implementation-specific object in {@link AWrapper a wrapper} implementing the
          * given {@link AAbstraction abstraction}.
          */
-        public <A extends AAbstraction> A as(Class<A> abstraction) {
-            @SuppressWarnings("unchecked")
-            A wrapper = original == null ? null
-                    : (A)wrappers.computeIfAbsent(original, o -> wrapInternal(o, abstraction));
-            return wrapper;
+        public <A extends AAbstraction> A as(Class<A> abstractionClass) {
+            if (original == null) {
+                return null;
+            }
+            Set<AAbstraction> abstractions = wrappers.computeIfAbsent(original, $ -> new LinkedHashSet<>());
+            synchronized (abstractions) {
+                for (AAbstraction abstraction : abstractions) {
+                    if (abstractionClass.isInstance(abstraction)) {
+                        @SuppressWarnings("unchecked")
+                        A wrapper = (A)abstraction;
+                        return wrapper;
+                    }
+                }
+                A wrapper = wrapInternal(original, abstractionClass);
+                abstractions.add(wrapper);
+                return wrapper;
+            }
         }
 
         /**
