@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.extproperties;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -135,7 +134,7 @@ public abstract class ExtensionPropertyDefinition implements IExtensionPropertyD
      * Default implementation returns <code>null</code>.
      */
     @Override
-    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreRuntimeException {
+    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) {
         return null;
     }
 

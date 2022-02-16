@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.util.Objects;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
@@ -45,9 +45,9 @@ public interface IPropertyValue extends ITemplatedValue {
      * 
      * @param ipsProject The IPS project which search path is used.
      * 
-     * @throws CoreRuntimeException if an error occurs
+     * @throws IpsException if an error occurs
      */
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the type of the property value.

@@ -33,11 +33,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -100,7 +100,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExists() throws CoreRuntimeException {
+    public void testExists() {
         assertTrue(pack.exists());
         // parent exists, but not the corresponding folder
         IIpsPackageFragment folder = rootPackage.getIpsPackageFragment("unkownFolder");
@@ -115,7 +115,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         assertEquals(0, pack.getChildren().length);
 
         pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorProduct", true, null);
@@ -138,7 +138,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsSrcFiles() throws CoreRuntimeException {
+    public void testGetIpsSrcFiles() {
         assertEquals(0, pack.getIpsSrcFiles().length);
 
         pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "MotorProduct", true, null);
@@ -169,7 +169,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateIpsFile() throws CoreRuntimeException, IOException {
+    public void testCreateIpsFile() throws IpsException, IOException {
         // need to supress the file's contents is not valid!
         suppressLoggingDuringExecutionOfThisTestCase();
         String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("TestType");
@@ -189,7 +189,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObjects_PackContainsInvalidFile() throws CoreRuntimeException {
+    public void testFindIpsObjects_PackContainsInvalidFile() {
         IIpsSrcFile srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
         AFile file = srcFile.getCorrespondingFile();
         file.setContents(new ByteArrayInputStream("<ProductCmpt/>".getBytes()), false, null);
@@ -236,7 +236,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObjectsStartingWith() throws CoreRuntimeException {
+    public void testFindIpsObjectsStartingWith() {
         IIpsObject obj1 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
         IIpsObject obj2 = newIpsObject(pack, IpsObjectType.POLICY_CMPT_TYPE, "motorCoverage");
 
@@ -292,7 +292,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetParentIpsPackageFragment() throws CoreRuntimeException {
+    public void testGetParentIpsPackageFragment() {
         IIpsPackageFragment testPackage = rootPackage.createPackageFragment("products.test.subtest", true, null);
         assertEquals("products.test.subtest", testPackage.getName());
         testPackage = testPackage.getParentIpsPackageFragment();
@@ -305,7 +305,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsChildPackageFragments() throws CoreRuntimeException {
+    public void testGetIpsChildPackageFragments() {
         rootPackage.createPackageFragment("products.test1", true, null);
         rootPackage.createPackageFragment("products.test2", true, null);
 
@@ -320,7 +320,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetNonIpsResources() throws CoreRuntimeException {
+    public void testGetNonIpsResources() {
         AFolder packageHandle = (AFolder)pack.getCorrespondingResource();
         AFolder folder = packageHandle.getFolder("folder");
         folder.create(null);
@@ -339,7 +339,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetChildOrderComparator_createsSortOrderFile() throws CoreRuntimeException {
+    public void testSetChildOrderComparator_createsSortOrderFile() {
         IIpsPackageFragment hausrat = rootPackage.createPackageFragment("products.hausrat", true, null);
         IIpsPackageFragment kranken = rootPackage.createPackageFragment("products.kranken", true, null);
         IIpsPackageFragment unfall = rootPackage.createPackageFragment("products.unfall", true, null);
@@ -360,7 +360,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetChildOrderComparator_deletedSortOrderFile() throws CoreRuntimeException {
+    public void testSetChildOrderComparator_deletedSortOrderFile() {
         IIpsPackageFragment hausrat = rootPackage.createPackageFragment("products.hausrat", true, null);
         IIpsPackageFragment kranken = rootPackage.createPackageFragment("products.kranken", true, null);
         IIpsPackageFragment unfall = rootPackage.createPackageFragment("products.unfall", true, null);
@@ -377,7 +377,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildOrderComparator_default() throws CoreRuntimeException {
+    public void testGetChildOrderComparator_default() {
         rootPackage.createPackageFragment("products.hausrat", true, null);
         rootPackage.createPackageFragment("products.kranken", true, null);
         rootPackage.createPackageFragment("products.unfall", true, null);
@@ -391,7 +391,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildOrderComparator_withSortorder() throws CoreRuntimeException, IOException {
+    public void testGetChildOrderComparator_withSortorder() throws IpsException, IOException {
         rootPackage.createPackageFragment("products.hausrat", true, null);
         rootPackage.createPackageFragment("products.kranken", true, null);
         rootPackage.createPackageFragment("products.unfall", true, null);
@@ -406,7 +406,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildOrderComparator_withUpdatedSortorder() throws CoreRuntimeException, IOException {
+    public void testGetChildOrderComparator_withUpdatedSortorder() throws IpsException, IOException {
         rootPackage.createPackageFragment("products.hausrat", true, null);
         rootPackage.createPackageFragment("products.kranken", true, null);
         rootPackage.createPackageFragment("products.unfall", true, null);
@@ -428,7 +428,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildPackageFragments() throws CoreRuntimeException {
+    public void testHasChildPackageFragments() {
         assertFalse(pack.hasChildIpsPackageFragments());
 
         IIpsPackageFragment products = rootPackage.getIpsPackageFragment("products");
@@ -438,7 +438,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         IIpsPackageFragment childPackage = pack.createSubPackage("foo", true, null);
         IIpsSrcFile childSrcFile = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "FooBar", true, null);
 

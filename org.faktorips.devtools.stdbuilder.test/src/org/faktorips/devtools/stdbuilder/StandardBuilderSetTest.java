@@ -22,7 +22,6 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.datatype.joda.MonthDayDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -32,7 +31,7 @@ import org.junit.Test;
 public class StandardBuilderSetTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testGetDatatypeHelper_DefaultHelper() throws CoreRuntimeException {
+    public void testGetDatatypeHelper_DefaultHelper() {
         IIpsProject ipsProject = newIpsProject();
         StandardBuilderSet builderSet = new StandardBuilderSet();
         builderSet.setIpsProject(ipsProject);
@@ -50,7 +49,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() throws CoreRuntimeException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
 
@@ -65,7 +64,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() throws CoreRuntimeException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() {
         IIpsProject ipsProject = newIpsProject();
         setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT,
                 LocalDateHelperVariant.JAVA8.toString().toLowerCase());

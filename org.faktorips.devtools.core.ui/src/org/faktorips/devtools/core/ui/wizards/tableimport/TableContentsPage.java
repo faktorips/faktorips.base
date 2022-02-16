@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -94,7 +94,7 @@ public class TableContentsPage extends IpsObjectPage {
             } else if (selectedObject instanceof ITableContents) {
                 return ((ITableContents)selectedObject).getTableStructure();
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -114,13 +114,13 @@ public class TableContentsPage extends IpsObjectPage {
     public ITableStructure getTableStructure() {
         try {
             return structureControl.findTableStructure();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             return null;
         }
     }
 
     @Override
-    protected void validatePageExtension() throws CoreRuntimeException {
+    protected void validatePageExtension() {
         if (getErrorMessage() != null) {
             return;
         }
@@ -139,7 +139,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
         createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
         return createdIpsSrcFile;
@@ -147,7 +147,7 @@ public class TableContentsPage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());

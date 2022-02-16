@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -249,9 +249,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the target.
+     * @throws IpsException If an error occurs while searching for the target.
      */
-    public IType findTarget(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IType findTarget(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the qualified name of the target type.
@@ -431,9 +431,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the derived union.
+     * @throws IpsException If an error occurs while searching for the derived union.
      */
-    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws CoreRuntimeException;
+    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches the derived union association and returns it, if it exists. Returns
@@ -445,9 +445,9 @@ public interface IAssociation extends ITypePart {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches for derived union associations in the type's hierarchy (of the type this association
@@ -457,9 +457,9 @@ public interface IAssociation extends ITypePart {
      * <p>
      * Returns an empty array if no such associations exist.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * This method looks for an association with the same name in the super type hierarchy. It
@@ -467,7 +467,7 @@ public interface IAssociation extends ITypePart {
      * 
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
-     * @throws CoreRuntimeException in case of a core exception in the finder methods
+     * @throws IpsException in case of a core exception in the finder methods
      */
     public IAssociation findSuperAssociationWithSameName(IIpsProject ipsProject);
 

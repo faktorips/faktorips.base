@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.ipsproject;
 
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.abstraction.ABuildKind;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -45,11 +45,11 @@ public interface IIpsArtefactBuilder {
      * @param buildKind One of the build kinds defined in
      *            org.eclipse.core.resources.IncrementalProjectBuilder
      * 
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      *             Throwing a CoreException or RuntimeException will stop the current build cycle of
      *             this builder.
      */
-    public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException;
+    public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
 
     /**
      * Is called on every registered IpsArtefactBuilder after a build process has finished.
@@ -57,9 +57,9 @@ public interface IIpsArtefactBuilder {
      * @param buildKind One of the build kinds defined in
      *            org.eclipse.core.resources.IncrementalProjectBuilder
      * 
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException;
+    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
 
     /**
      * Is called directly before the build method is called if the isBuilderFor method has returned
@@ -71,14 +71,14 @@ public interface IIpsArtefactBuilder {
      *            interrupt the current build cycle. The exception will be reported to the used by
      *            means of a dialog at the end of the build routine. In addition the exception will
      *            be logged to the eclipse log file.
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      *             Throwing a CoreException or a RuntimeException will stop the current build cycle
      *             of this builder. Only the afterBuild(IpsSrcFile) method is called to be able to
      *             clean up a builder implementation. The exception will be reported to the used by
      *             means of a dialog at the end of the build routine. In addition the exception will
      *             be logged to the eclipse log file.
      */
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException;
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws IpsException;
 
     /**
      * Is called directly after the build method has finished only if the isBuilderFor method has
@@ -86,32 +86,32 @@ public interface IIpsArtefactBuilder {
      * after the build has finished.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions. The
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. The
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
      */
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException;
+    public void afterBuild(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Is called during full or incremental build if the isBuilderFor method has returned true for
      * the provided IpsSrcFile.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      *             Throwing a CoreException or a RuntimeException will stop the current build cycle
      *             of this builder. Only the afterBuild(IpsSrcFile) method is called to be able to
      *             clean up a builder implementation. The exception will be reported to the used by
      *             means of a dialog at the end of the build routine. In addition the exception will
      *             be logged to the eclipse log file.
      */
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException;
+    public void build(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Is supposed to return <code>true</code> if this builder is a builder for the provided
      * <code>IIpsSrcFile</code>.
      */
     // TODO AW: This method does not need to - and should not - throw a checked exception.
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException;
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Indicates if the builder generates files that are considered derived. This means that the
@@ -135,9 +135,9 @@ public interface IIpsArtefactBuilder {
      * Deletes the artifact that is created by this builder upon the provided IpsSrcFile.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions. The
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. The
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
      */
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException;
+    public void delete(IIpsSrcFile ipsSrcFile) throws IpsException;
 }

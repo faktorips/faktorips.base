@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 
@@ -64,7 +64,7 @@ public class AEclipseFile extends AEclipseResource implements AFile {
                         "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         } finally {
             IoUtil.close(source);
         }

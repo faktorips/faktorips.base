@@ -22,7 +22,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -49,7 +48,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
     }
 
     @Override
-    public void setContentType(String tableStructure) throws CoreRuntimeException {
+    public void setContentType(String tableStructure) {
         tableContents.setTableStructure(tableStructure);
     }
 

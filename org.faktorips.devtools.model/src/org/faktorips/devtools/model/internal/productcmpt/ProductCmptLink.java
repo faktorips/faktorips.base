@@ -19,10 +19,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
@@ -91,7 +91,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
         IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
         if (productCmptType == null) {
             return null;
@@ -112,7 +112,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmpt findTarget(IIpsProject ipsProject) {
         return ipsProject.findProductCmpt(target);
     }
 
@@ -186,7 +186,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         if (isDeleted()) {
             return;
         }
@@ -353,7 +353,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String caption = null;
@@ -365,7 +365,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public String getPluralCaption(Locale locale) throws CoreRuntimeException {
+    public String getPluralCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String pluralCaption = null;
@@ -387,7 +387,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) {
         DerivedUnionVisitor hierarchyVisitor = new DerivedUnionVisitor(association, ipsProject);
         hierarchyVisitor.start(findAssociation(ipsProject));
         return hierarchyVisitor.found;
@@ -399,10 +399,10 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * @return <code>true</code> if it is possible to create a valid relation with the given
      *         parameters at this time, <code>false</code> otherwise.
      * 
-     * @throws CoreRuntimeException if an error occurs during supertype-evaluation
+     * @throws IpsException if an error occurs during supertype-evaluation
      */
     private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         if (target == null || association == null) {
             return false;

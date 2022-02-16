@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -82,7 +82,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     @Override
     public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<>();
 
         IPolicyCmptType sourcePolicyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
@@ -115,13 +115,13 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * @param foundAssociations The list of already found {@link IPolicyCmptTypeAssociation}
      * @param ipsProject the {@link IIpsProject} used as searching base project
      * @return true if there was at least one match
-     * @throws CoreRuntimeException in case of a CoreException accessing the objects or resources
+     * @throws IpsException in case of a CoreException accessing the objects or resources
      */
     private boolean collectPossibleMatchingAssociations(IPolicyCmptType sourcePolicyCmptType,
             String targetQName,
             Set<IPolicyCmptTypeAssociation> foundAssociations,
             IIpsProject ipsProject,
-            Set<IPolicyCmptType> alreadyVisit) throws CoreRuntimeException {
+            Set<IPolicyCmptType> alreadyVisit) {
         boolean result = false;
         List<IPolicyCmptTypeAssociation> policyAssociations = sourcePolicyCmptType.getPolicyCmptTypeAssociations();
         for (IPolicyCmptTypeAssociation policyCmptTypeAssociation : policyAssociations) {
@@ -279,7 +279,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateMatchingAsoociation(list, ipsProject);
         validateDerivedUnionChangingOverTimeProperty(list, ipsProject);
@@ -317,7 +317,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
     }
 
-    private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateMatchingAsoociation(MessageList list, IIpsProject ipsProject) {
         IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = findMatchingPolicyCmptTypeAssociation(
                 ipsProject);
         if (matchingPolicyCmptTypeAssociation == null) {
@@ -477,7 +477,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmptType();
     }
 

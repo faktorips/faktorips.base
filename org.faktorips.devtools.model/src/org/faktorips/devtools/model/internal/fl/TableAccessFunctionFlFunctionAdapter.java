@@ -17,7 +17,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -71,7 +71,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
                 return result;
             }
             return builderSet.getTableAccessCode(tableContentsQualifiedName, fct, argResults);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return new CompilationResultImpl(Message.newError(
                     "", Messages.TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration + fct.toString())); //$NON-NLS-1$

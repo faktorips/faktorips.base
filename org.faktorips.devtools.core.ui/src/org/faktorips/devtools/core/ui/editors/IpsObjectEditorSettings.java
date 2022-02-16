@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.ArgumentCheck;
 
@@ -156,7 +155,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     @Override
-    public void saving(ISaveContext context) throws CoreRuntimeException {
+    public void saving(ISaveContext context) {
         if (context.getKind() != ISaveContext.FULL_SAVE) {
             return;
         }
@@ -191,7 +190,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     @Override
-    public void prepareToSave(ISaveContext context) throws CoreRuntimeException {
+    public void prepareToSave(ISaveContext context) {
         // nothing to do
     }
 

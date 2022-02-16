@@ -14,7 +14,6 @@ import java.io.InputStream;
 
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
@@ -39,7 +38,7 @@ public abstract class XmlContentFileCopyBuilder extends AbstractXmlFileBuilder {
      * @see IIpsArtefactBuilder#build(IIpsSrcFile)
      */
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         AFile file = (AFile)ipsSrcFile.getEnclosingResource();
         InputStream is = file.getContents();
         build(ipsSrcFile, is);

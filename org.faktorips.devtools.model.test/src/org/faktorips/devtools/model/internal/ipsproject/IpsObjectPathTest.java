@@ -32,7 +32,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -73,7 +73,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetEntry() throws CoreRuntimeException {
+    public void testGetEntry() {
         assertNull(path.getEntry(null));
         assertNull(path.getEntry("unknown"));
 
@@ -110,7 +110,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewProjectRefEntry() throws CoreRuntimeException {
+    public void testNewProjectRefEntry() {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -132,7 +132,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsProjectRefEntry() throws CoreRuntimeException {
+    public void testContainsProjectRefEntry() {
         path.newIpsProjectRefEntry(ipsProject);
         assertTrue(path.containsProjectRefEntry(ipsProject));
 
@@ -144,7 +144,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveProjectRefEntry() throws CoreRuntimeException {
+    public void testRemoveProjectRefEntry() {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -194,7 +194,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsSrcFolderEntry() throws CoreRuntimeException {
+    public void testContainsSrcFolderEntry() {
         AFolder folder = ipsProject.getProject().getFolder("testfolder");
         path.newSourceFolderEntry(folder);
         assertTrue(path.containsSrcFolderEntry(folder));
@@ -207,7 +207,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveSrcFolderEntry() throws CoreRuntimeException {
+    public void testRemoveSrcFolderEntry() {
         AFolder folder = ipsProject.getProject().getFolder("testfolder");
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(folder);
         assertEquals(path, entry0.getIpsObjectPath());
@@ -265,7 +265,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllReferencedIpsProjects_refInContainer() throws CoreRuntimeException {
+    public void testFindAllReferencedIpsProjects_refInContainer() {
         setUpReferencedProjects(false);
 
         List<IIpsProject> projects = path.getAllReferencedIpsProjects();
@@ -351,7 +351,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.size());
 
@@ -528,7 +528,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertTrue(path.containsResource("file.txt"));
     }
 
-    private void setUpReferencedProjects(boolean reexportProjects) throws CoreRuntimeException {
+    private void setUpReferencedProjects(boolean reexportProjects) {
         refProject = newIpsProject("RefProject");
         refProject2 = newIpsProject("RefProject2");
         // ipsProject = newIpsProject();
@@ -575,7 +575,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetResourceAsStream() throws CoreRuntimeException, IOException {
+    public void testGetResourceAsStream() throws IpsException, IOException {
         setUpReferencedProjects(true);
         createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
@@ -584,7 +584,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetResourceAsStreamInternal() throws CoreRuntimeException {
+    public void testGetResourceAsStreamInternal() {
         setUpReferencedProjects(false);
         createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
@@ -761,7 +761,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencedIpsProjects_invalidRefEntry() throws CoreRuntimeException {
+    public void testGetReferencedIpsProjects_invalidRefEntry() {
         path.newIpsProjectRefEntry(null);
         path.validate();
     }

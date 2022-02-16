@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.ILinkSectionViewItem;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksContentProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -79,7 +78,7 @@ public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testWithTypedProductCmpt() throws CoreRuntimeException {
+    public void testWithTypedProductCmpt() {
 
         IProductCmpt productCmpt = newProductCmpt(type, "product.Product");
 
@@ -94,7 +93,7 @@ public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testWithNotTypedProductCmpt() throws CoreRuntimeException {
+    public void testWithNotTypedProductCmpt() {
 
         IProductCmpt productCmpt = newProductCmpt(ipsProject, "product.Product");
 

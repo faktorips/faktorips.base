@@ -35,12 +35,12 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -99,7 +99,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
                 setTitle(getIpsObject().getName());
             }
             setDescriptionItems(createDescriptions());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 
@@ -109,7 +109,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
      * Creates a List of DescriptionItems
      * 
      */
-    protected abstract List<DescriptionItem> createDescriptions() throws CoreRuntimeException;
+    protected abstract List<DescriptionItem> createDescriptions() throws IpsException;
 
     /**
      * Creates DescriptionItems

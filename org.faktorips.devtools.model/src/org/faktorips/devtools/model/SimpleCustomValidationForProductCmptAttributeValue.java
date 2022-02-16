@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -71,7 +71,7 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
     }
 
     @Override
-    public MessageList validate(IAttributeValue attribute, IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IAttributeValue attribute, IIpsProject ipsProject) {
         if (!attributeName.equals(attribute.getAttribute())) {
             return null;
         }
@@ -107,9 +107,9 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
      * @param ipsProject the project containing the attribute's product component
      * @return a {@link ValidationResult} containing a message text and code as well as an error
      *         level or {@code null} if the validation finds no problems.
-     * @throws CoreRuntimeException if an error occurs while validating the attribute
+     * @throws IpsException if an error occurs while validating the attribute
      */
-    public abstract ValidationResult validate(String value, IIpsProject ipsProject) throws CoreRuntimeException;
+    public abstract ValidationResult validate(String value, IIpsProject ipsProject) throws IpsException;
 
     public static ValidationResult newError(String code, String text) {
         return new ValidationResult(Message.ERROR, text, code);

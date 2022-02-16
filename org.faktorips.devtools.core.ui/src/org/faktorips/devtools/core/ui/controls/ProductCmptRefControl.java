@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -62,7 +61,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
 
         Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {

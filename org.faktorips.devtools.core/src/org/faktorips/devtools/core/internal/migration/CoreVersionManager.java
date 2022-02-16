@@ -14,8 +14,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.QNameUtil;
@@ -83,7 +83,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 }
             }
             return true;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -99,7 +99,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreRuntimeException {
+            {
         String minRequiredVersion = projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId());
         if (minRequiredVersion == null) {
@@ -112,7 +112,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     }
 
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
-            String versionToStart) throws CoreRuntimeException {
+            String versionToStart) {
         ArrayList<AbstractIpsProjectMigrationOperation> operations = new ArrayList<>();
         String migrationClassName = null;
         try {
@@ -137,7 +137,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
             // If any migration is still missing, the validation should report the problem!
             // CSOFF: IllegalCatch
         } catch (Exception e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
         // CSON: IllegalCatch
 

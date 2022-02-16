@@ -36,14 +36,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -99,7 +99,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * {@link IpsProject} or not.
      */
     @Override
-    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreRuntimeException {
+    public IIpsPackageFragment[] getChildIpsPackageFragments() {
         List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
@@ -119,7 +119,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     /**
      * Get all child IIpsPackageFragments as List.
      */
-    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreRuntimeException {
+    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() {
         List<IIpsPackageFragment> list = new ArrayList<>();
         AFolder folder = (AFolder)getCorrespondingResource();
         for (AResource element : folder) {
@@ -136,7 +136,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public AResource[] getNonIpsResources() throws CoreRuntimeException {
+    public AResource[] getNonIpsResources() {
         AContainer cont = (AContainer)getCorrespondingResource();
         List<AResource> childResources = new ArrayList<>();
         for (AResource child : cont) {
@@ -152,7 +152,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * Returns <code>true</code> if the given IResource is a file or folder that corresponds to an
      * IpsObject or IpsPackageFragment contained in this IpsPackageFragment, false otherwise.
      */
-    private boolean isIpsContent(AResource res) throws CoreRuntimeException {
+    private boolean isIpsContent(AResource res) {
         IIpsElement[] children = getChildIpsPackageFragments();
         for (IIpsElement element : children) {
             if (element.getCorrespondingResource().equals(res)) {
@@ -169,7 +169,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
+    public IIpsSrcFile[] getIpsSrcFiles() {
         AFolder folder = (AFolder)getCorrespondingResource();
         AResource[] members = folder.getMembers().toArray(AResource[]::new);
         IIpsSrcFile[] children = new IIpsSrcFile[members.length];
@@ -193,7 +193,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
 
         IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
         IpsModel model = (IpsModel)getIpsModel();
@@ -232,18 +232,18 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         try {
             InputStream is = new ByteArrayInputStream(content.getBytes(getIpsProject().getXmlFileCharset()));
             return createIpsFile(name, is, force, monitor);
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
     @Override
     public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
@@ -259,7 +259,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreRuntimeException {
+    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) {
         if (!exists()) {
             return;
         }
@@ -278,7 +278,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
     }
 
-    public void findIpsObjects(List<IIpsObject> result) throws CoreRuntimeException {
+    public void findIpsObjects(List<IIpsObject> result) {
         if (!exists()) {
             return;
         }
@@ -303,7 +303,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreRuntimeException {
+    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) {
         if (!exists()) {
             return;
         }
@@ -324,12 +324,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * result.
      * 
      * @throws NullPointerException if either type, prefix or result is null.
-     * @throws CoreRuntimeException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
     public void findIpsSourceFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List<IIpsSrcFile> result) throws CoreRuntimeException {
+            List<IIpsSrcFile> result) {
 
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
@@ -355,16 +355,16 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
-            throw new CoreRuntimeException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, IStatus.ERROR,
+            throw new IpsException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, IStatus.ERROR,
                     MessageFormat.format("{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
         return getRoot().createPackageFragment(getSubPackageName(name), true, null);
     }
 
     @Override
-    public boolean hasChildIpsPackageFragments() throws CoreRuntimeException {
+    public boolean hasChildIpsPackageFragments() {
         AFolder folder = (AFolder)getCorrespondingResource();
         for (AResource element : folder) {
             if (element.getType() == AResourceType.FOLDER) {
@@ -379,7 +379,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         for (IIpsPackageFragment childPackage : getChildIpsPackageFragments()) {
             childPackage.delete();
         }
@@ -529,8 +529,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                         }
                         return sortOrder;
                     } catch (IOException e) {
-                        throw new CoreRuntimeException(new IpsStatus(e));
-                    } catch (CoreRuntimeException e) {
+                        throw new IpsException(new IpsStatus(e));
+                    } catch (IpsException e) {
                         IpsLog.log(e);
                         return null;
                     }

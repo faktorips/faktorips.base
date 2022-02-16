@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -30,7 +31,6 @@ import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.tableimport.Messages;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -159,9 +159,9 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     /**
      * Returns the type into which the external data will be imported.
      * 
-     * @throws CoreRuntimeException If an exception occurs while searching for the target type.
+     * @throws IpsException If an exception occurs while searching for the target type.
      */
-    public abstract IIpsObject getTargetForImport() throws CoreRuntimeException;
+    public abstract IIpsObject getTargetForImport() throws IpsException;
 
     /**
      * Saves the dialog settings to be able to restore them on future instances of this wizard page.

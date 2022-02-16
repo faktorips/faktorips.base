@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -59,7 +58,7 @@ public class StaticContentSelectIpsObjectContext implements ISelectIpsObjectCont
     }
 
     @Override
-    public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreRuntimeException {
+    public List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) {
         return ipsSrcFiles;
     }
 

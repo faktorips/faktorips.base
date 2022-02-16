@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -60,7 +60,7 @@ public class AddNewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO() throws CoreRuntimeException,
+    public void testRun_AddLinkToProductCmptGenerationAsConfiguredByPMO() throws IpsException,
             InvocationTargetException, InterruptedException {
 
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
@@ -89,7 +89,7 @@ public class AddNewProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_DoNotAddLinkToProductCmptGenerationIfGenerationNotEditable() throws CoreRuntimeException,
+    public void testRun_DoNotAddLinkToProductCmptGenerationIfGenerationNotEditable() throws IpsException,
             InvocationTargetException, InterruptedException {
         IProductCmptType targetProductCmptType = newProductCmptType(ipsProject, "TestTargetProductCmptType");
         IProductCmptType sourceProductCmptType = newProductCmptType(ipsProject, "TestSourceProductCmptType");

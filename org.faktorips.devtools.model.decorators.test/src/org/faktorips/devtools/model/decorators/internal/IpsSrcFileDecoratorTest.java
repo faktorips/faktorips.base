@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -69,7 +69,7 @@ public class IpsSrcFileDecoratorTest {
     public void testGetImageDescriptor_IsContentParsableFails() throws Exception {
         IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
         when(srcFile.exists()).thenReturn(true);
-        doThrow(new CoreRuntimeException(new IpsStatus("BROKEN"))).when(srcFile).isContentParsable();
+        doThrow(new IpsException(new IpsStatus("BROKEN"))).when(srcFile).isContentParsable();
 
         ImageDescriptor descriptor = ipsSrcFileDecorator.getImageDescriptor(srcFile);
 

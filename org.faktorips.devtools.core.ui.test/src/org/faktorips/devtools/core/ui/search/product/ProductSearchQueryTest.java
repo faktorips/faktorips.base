@@ -24,7 +24,6 @@ import java.util.Set;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -96,7 +95,7 @@ public class ProductSearchQueryTest {
     }
 
     @Test
-    public void testGetSelectedSrcFiles() throws CoreRuntimeException {
+    public void testGetSelectedSrcFiles() {
         query = new ProductSearchQuery(model, ipsModel);
 
         IIpsSrcFile wrongObjectType = mock(IIpsSrcFile.class);
@@ -122,7 +121,7 @@ public class ProductSearchQueryTest {
     }
 
     @Test
-    public void testGetSelectedSrcFilesNoSelectedFiles() throws CoreRuntimeException {
+    public void testGetSelectedSrcFilesNoSelectedFiles() {
         query = new ProductSearchQuery(model, ipsModel);
 
         IIpsSrcFile wrongObjectType = mock(IIpsSrcFile.class);

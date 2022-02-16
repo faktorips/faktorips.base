@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcasetype;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -132,23 +132,23 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * 
      * @param ipsProject the IpsProject where to start the search from
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the association.
+     * @throws IpsException if an error occurs while searching for the association.
      */
-    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new input test attribute and returns it.
      * 
-     * @throws CoreRuntimeException if the attribute could not be added
+     * @throws IpsException if the attribute could not be added
      */
-    public ITestAttribute newInputTestAttribute() throws CoreRuntimeException;
+    public ITestAttribute newInputTestAttribute() throws IpsException;
 
     /**
      * Creates a new expected result test attribute and returns it.
      * 
-     * @throws CoreRuntimeException if the attribute could not be added
+     * @throws IpsException if the attribute could not be added
      */
-    public ITestAttribute newExpectedResultTestAttribute() throws CoreRuntimeException;
+    public ITestAttribute newExpectedResultTestAttribute() throws IpsException;
 
     /**
      * Returns the type's attributes.
@@ -275,6 +275,6 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
      * Returns an empty array if no product components are found as valid product component.
      */
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt parentProductCmpt)
-            throws CoreRuntimeException;
+            throws IpsException;
 
 }

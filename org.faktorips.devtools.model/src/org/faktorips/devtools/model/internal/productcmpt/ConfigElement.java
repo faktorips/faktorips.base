@@ -16,8 +16,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -58,7 +58,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findPcTypeAttribute(ipsProject);
     }
 
@@ -93,7 +93,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         IPolicyCmptTypeAttribute attribute = validateReferenceToAttribute(list, ipsProject);
@@ -167,7 +167,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     protected abstract void validateContent(MessageList list,
             IIpsProject ipsProject,
-            IPolicyCmptTypeAttribute attribute) throws CoreRuntimeException;
+            IPolicyCmptTypeAttribute attribute) throws IpsException;
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {

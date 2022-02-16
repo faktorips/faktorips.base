@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
@@ -58,6 +58,6 @@ public interface ITestObject extends IIpsObjectPart {
     /**
      * Finds the corresponding test parameter. Returns <code>null</code> if no test parameter found.
      */
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ITestParameter findTestParameter(IIpsProject ipsProject) throws IpsException;
 
 }

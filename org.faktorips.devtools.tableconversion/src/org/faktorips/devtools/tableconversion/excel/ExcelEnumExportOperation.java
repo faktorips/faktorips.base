@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.tableconversion.ITableFormat;
@@ -67,7 +66,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle,
                 2 + enumValueContainer.getEnumValuesCount());
@@ -123,7 +122,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreRuntimeException {
+            boolean exportColumnHeaderRow) {
 
         boolean exportingEnumType = enumValueContainer instanceof IEnumType;
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(exportingEnumType);

@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -498,7 +497,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIndexOfChildTestPolicyCmpt() throws CoreRuntimeException {
+    public void testGetIndexOfChildTestPolicyCmpt() {
         ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput
                 .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
         ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput
@@ -516,7 +515,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testMoveTestPolicyCmptAssociations() throws CoreRuntimeException {
+    public void testMoveTestPolicyCmptAssociations() {
         ITestPolicyCmptLink associationPos0 = testPolicyCmptObjectInput
                 .addTestPcTypeLink(childTestPolicyCmptTypeParameter, "testValueParameter1Child", null, "A");
         ITestPolicyCmptLink associationPos1 = testPolicyCmptObjectInput
@@ -546,7 +545,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
      * Test that adding test objects doesn't end in a fix sort order
      */
     @Test
-    public void testAddTestPcTypeAssociationCorrectOrder() throws CoreRuntimeException {
+    public void testAddTestPcTypeAssociationCorrectOrder() {
         ITestPolicyCmptTypeParameter parentTestPolicyCmptTypeParam = childTestPolicyCmptTypeParameter
                 .getParentTestPolicyCmptTypeParam();
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParamChilds = parentTestPolicyCmptTypeParam
@@ -560,7 +559,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateDefaultTestAttributeValues() throws CoreRuntimeException {
+    public void testUpdateDefaultTestAttributeValues() {
         // create model objects
         IPolicyCmptType policy = newPolicyCmptType(project, "Policy");
         IPolicyCmptTypeAssociation association = policy.newPolicyCmptTypeAssociation();
@@ -673,7 +672,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmpsCurrentGeneration_notProdRelevant() throws CoreRuntimeException {
+    public void testFindProductCmpsCurrentGeneration_notProdRelevant() {
         // test find method if no product is specified, e.g. test object is not product relevant
         // in this case the find method should return null
         IPropertyValueContainer generation = null;
@@ -700,7 +699,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         private ITestPolicyCmptTypeParameter parameter;
         private ITestPolicyCmptTypeParameter childParameter;
 
-        public void init(IIpsProject project) throws CoreRuntimeException {
+        public void init(IIpsProject project) {
             policy = newPolicyAndProductCmptType(project, "Policy", "PolicyType");
             productCmptTypePolicy = (ProductCmptType)policy.findProductCmptType(project);
 
@@ -824,7 +823,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetProductCmptAndNameAfterIfApplicable() throws CoreRuntimeException {
+    public void testSetProductCmptAndNameAfterIfApplicable() {
         TestContent testContent = new TestContent();
         testContent.init(project);
 

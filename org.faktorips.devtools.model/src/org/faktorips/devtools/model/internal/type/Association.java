@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.HierarchyVisitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.AggregationKind;
@@ -126,7 +125,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public IType findTarget(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IType findTarget(IIpsProject ipsProject) {
         return (IType)ipsProject.findIpsObject(getIpsObject().getIpsObjectType(), target);
     }
 
@@ -274,12 +273,12 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public IAssociation findSubsettedDerivedUnion(IIpsProject project) throws CoreRuntimeException {
+    public IAssociation findSubsettedDerivedUnion(IIpsProject project) {
         return getType().findAssociation(subsettedDerivedUnion, project);
     }
 
     @Override
-    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) {
         IType targetType = findTarget(ipsProject);
         if (targetType == null) {
             return new IAssociation[0];
@@ -290,7 +289,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) throws CoreRuntimeException {
+    public boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject project) {
         if (!isSubsetOfADerivedUnion()) {
             return false;
         }
@@ -353,7 +352,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         validateTarget(list);
 
         validateTargetRoleSingular(list, ipsProject);
@@ -423,7 +422,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) {
         if (StringUtils.isEmpty(subsettedDerivedUnion)) {
             return;
         }
@@ -460,7 +459,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss)
-            throws CoreRuntimeException {
+            {
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
@@ -476,7 +475,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
     }
 
-    private void validateConstrain(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateConstrain(MessageList list, IIpsProject ipsProject) {
         if (isConstrain()) {
             IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
             if (constrainedAssociation == null) {
@@ -495,7 +494,7 @@ public abstract class Association extends TypePart implements IAssociation {
     private void validateConstrainedAssociation(MessageList list,
             IAssociation constrainedAssociation,
             IAssociation parentAssociation)
-            throws CoreRuntimeException {
+            {
         if (!isCovariantTargetType(constrainedAssociation)) {
             String text = MessageFormat.format(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
             list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text,
@@ -593,7 +592,7 @@ public abstract class Association extends TypePart implements IAssociation {
         return String.valueOf(cardinality);
     }
 
-    private boolean isCovariantTargetType(IAssociation superAssociation) throws CoreRuntimeException {
+    private boolean isCovariantTargetType(IAssociation superAssociation) {
         IType targetType = findTarget(getIpsProject());
         IType superTargetType = superAssociation.findTarget(getIpsProject());
         if (targetType != null && superTargetType != null) {

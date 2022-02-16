@@ -24,7 +24,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -70,14 +69,14 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExists_ArchiveInSameProject() throws CoreRuntimeException {
+    public void testExists_ArchiveInSameProject() {
         assertTrue(root.exists());
         archiveFile.delete(null);
         assertFalse(root.exists());
     }
 
     @Test
-    public void testExists_ArchiveInWorkspaceButDifferentProject() throws CoreRuntimeException {
+    public void testExists_ArchiveInWorkspaceButDifferentProject() {
         IIpsProject project2 = newIpsProject("Project2");
         IIpsObjectPath path2 = project2.getIpsObjectPath();
         entry = (IpsArchiveEntry)path2.newArchiveEntry(archiveFile.getWorkspaceRelativePath());
@@ -120,7 +119,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsPackageFragments() throws CoreRuntimeException {
+    public void testGetIpsPackageFragments() {
         IIpsPackageFragment[] packs = root.getIpsPackageFragments();
         assertEquals(2, packs.length);
         assertEquals("motor", packs[0].getName());
@@ -128,7 +127,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetNonIpsResources() throws CoreRuntimeException {
+    public void testGetNonIpsResources() {
         AResource[] res = root.getNonIpsResources();
         assertEquals(0, res.length);
     }
@@ -144,7 +143,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSourceFiles() throws CoreRuntimeException {
+    public void testFindIpsSourceFiles() {
         List<IIpsSrcFile> result = new ArrayList<>();
         root.findIpsSourceFiles(IpsObjectType.POLICY_CMPT_TYPE, null, result);
         assertEquals(2, result.size());
@@ -166,7 +165,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         root.delete();
     }
 

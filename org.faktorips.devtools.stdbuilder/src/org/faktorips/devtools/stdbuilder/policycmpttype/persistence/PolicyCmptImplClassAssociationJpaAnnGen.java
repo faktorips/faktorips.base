@@ -18,9 +18,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -130,7 +130,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                 // add special annotation in case of join table needed
                 addAnnotationJoinTable(fragment, association);
                 addAnnotationIndex(persistenceProvider, fragment, persistenceAssociatonInfo);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 StdBuilderPlugin.log(e);
             }
 
@@ -173,7 +173,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     }
 
     private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association)
-            throws CoreRuntimeException {
+            {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;

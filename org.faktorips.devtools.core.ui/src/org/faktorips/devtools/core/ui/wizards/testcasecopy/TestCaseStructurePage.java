@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -48,7 +49,6 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseLabelProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TreeViewerExpandStateStorage;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -125,7 +125,7 @@ public class TestCaseStructurePage extends WizardPage {
 
         new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+            protected MessageList getMessagesFor(Object element) {
                 MessageList result = new MessageList();
                 if (element instanceof IIpsObjectPartContainer) {
                     IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
@@ -197,13 +197,13 @@ public class TestCaseStructurePage extends WizardPage {
                     return;
                 }
                 refreshCanditatesInTable(testPolicyCmpt);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         });
     }
 
-    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
+    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) {
         ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
         changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
                 testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
@@ -235,7 +235,7 @@ public class TestCaseStructurePage extends WizardPage {
      */
     private void changeCandidatesInTable(IProductCmpt productCmptSelected,
             ITestPolicyCmptTypeParameter parameter,
-            IProductCmpt parentProductCmpt) throws CoreRuntimeException {
+            IProductCmpt parentProductCmpt) {
         checkedProductCmpt = null;
         if (productCmptSelected == null) {
             // parameter doens't need product cmpt, therefore clear table
@@ -296,7 +296,7 @@ public class TestCaseStructurePage extends WizardPage {
         IProductCmpt oldProductCmp;
         try {
             oldProductCmp = testPolicyCmpt.findProductCmpt(ipsProject);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return null;
         }
@@ -361,7 +361,7 @@ public class TestCaseStructurePage extends WizardPage {
      * then this element will be ignored.
      */
     private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container)
-            throws CoreRuntimeException {
+            {
         boolean checked = treeViewer.getChecked(container);
         if (checked) {
             result.add(msgList.getMessagesFor(container));
@@ -456,7 +456,7 @@ public class TestCaseStructurePage extends WizardPage {
                 if (selectedTreeItem.length > 0) {
                     refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } finally {
                 treeViewer.getTree().setRedraw(true);

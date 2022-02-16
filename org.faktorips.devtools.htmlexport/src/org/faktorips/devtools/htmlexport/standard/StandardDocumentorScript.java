@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListP
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsPackagesListPageElement;
 import org.faktorips.devtools.htmlexport.pages.standard.ContentPageUtil;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -60,7 +60,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreRuntimeException {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) {
         List<IIpsSrcFile> srcFiles = new ArrayList<>(context.getDocumentedSourceFiles());
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
         IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();
@@ -89,7 +89,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
             writeResources(context, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         } finally {
             monitor.done();
         }

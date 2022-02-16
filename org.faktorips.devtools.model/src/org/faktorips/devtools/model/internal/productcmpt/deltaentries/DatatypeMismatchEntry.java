@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
@@ -113,7 +113,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         try {
             return attributeValue.validate(attributeValue.getIpsProject()).getMessageByCode(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE) != null;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // conversion doesn't make sense in exception case
             return false;
         }

@@ -21,7 +21,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -53,20 +52,20 @@ public final class RenameIpsObjectProcessor extends IpsRenameProcessor implement
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         renameMoveHelper.validateIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(), validationMessageList);
     }
 
     @Override
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreRuntimeException {
+            CheckConditionsContext context) {
         MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(this, status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         return renameMoveHelper.refactorIpsModel(getIpsObject().getIpsPackageFragment(), getNewName(),
                 isAdaptRuntimeId(), pm);
     }

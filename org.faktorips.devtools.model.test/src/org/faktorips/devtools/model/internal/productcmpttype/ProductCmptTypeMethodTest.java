@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
@@ -79,7 +78,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_FormulaMustntBeAbstract() throws CoreRuntimeException {
+    public void testValidate_FormulaMustntBeAbstract() {
         method.setFormulaSignatureDefinition(true);
         method.setAbstract(true);
         MessageList result = method.validate(method.getIpsProject());
@@ -100,7 +99,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_FormulaNameIsMissing() throws CoreRuntimeException {
+    public void testValidate_FormulaNameIsMissing() {
         method.setFormulaSignatureDefinition(false);
         method.setFormulaName("someName");
         MessageList result = method.validate(method.getIpsProject());
@@ -128,7 +127,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreRuntimeException {
+    public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() {
         method.setDatatype("void");
         method.setFormulaSignatureDefinition(false);
         MessageList result = method.validate(method.getIpsProject());
@@ -245,7 +244,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverloadedFormulaMethod() throws CoreRuntimeException {
+    public void testFindOverloadedFormulaMethod() {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -284,7 +283,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverloadsFormula() throws CoreRuntimeException {
+    public void testOverloadsFormula() {
         IProductCmptType bType = newProductCmptType(ipsProject, "BType");
         IProductCmptTypeMethod bMethod = bType.newProductCmptTypeMethod();
         bMethod.setName("calculate");
@@ -302,7 +301,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverLoaded_Mandatory() throws CoreRuntimeException {
+    public void testValidate_OverLoaded_Mandatory() {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -345,7 +344,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() throws CoreRuntimeException {
+    public void testValidateOverLoadedFormulaSignatureNotInSupertypeHierarchy() {
         IProductCmptType aType = newProductCmptType(ipsProject, "AType");
         IProductCmptTypeMethod aMethod = aType.newProductCmptTypeMethod();
         aMethod.setName("calculate");
@@ -385,7 +384,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreRuntimeException {
+    public void testIsPropertyFor() {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newFormula(method);
@@ -417,7 +416,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateOverloadedFormulaSignature_overloadedMendatory() throws CoreRuntimeException {
+    public void testValidateOverloadedFormulaSignature_overloadedMendatory() {
         MessageList list = new MessageList();
         method.setOverloadsFormula(true);
         method.setFormulaName("testName");
@@ -434,7 +433,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_ChangingOverTime() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_ChangingOverTime() {
         MessageList list = new MessageList();
         method.setOverloadsFormula(false);
         method.setFormulaName("testName");
@@ -454,7 +453,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_notChangingOverTime() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_notChangingOverTime() {
         MessageList list = new MessageList();
         method.setOverloadsFormula(false);
         method.setFormulaName("testName");
@@ -473,7 +472,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() {
         productCmptType.setChangingOverTime(true);
         method.setChangingOverTime(false);
 
@@ -504,7 +503,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_overloaded_ChangingOverTime_ChangingOverTime() throws CoreRuntimeException {
+    public void testValidate_overloaded_ChangingOverTime_ChangingOverTime() {
         MessageList list = new MessageList();
         method.setOverloadsFormula(true);
         method.setFormulaName("testName");
@@ -525,7 +524,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_overloaded_ChangingOverTime_notChangingOverTime() throws CoreRuntimeException {
+    public void testValidate_overloaded_ChangingOverTime_notChangingOverTime() {
         MessageList list = new MessageList();
         method.setOverloadsFormula(true);
         method.setFormulaName("testName");
@@ -545,7 +544,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_IsFormulaSignatureDefinition() throws CoreRuntimeException {
+    public void testValidateThis_IsFormulaSignatureDefinition() {
         setUpOverriddenMethod();
         method.setFormulaSignatureDefinition(true);
 
@@ -557,7 +556,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_IsNotFormulaSignatureDefinition() throws CoreRuntimeException {
+    public void testValidateThis_IsNotFormulaSignatureDefinition() {
         setUpOverriddenMethod();
         method.setFormulaSignatureDefinition(false);
 
@@ -568,7 +567,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
     }
 
-    private void setUpOverriddenMethod() throws CoreRuntimeException {
+    private void setUpOverriddenMethod() {
         method.setOverloadsFormula(false);
         method.setFormulaName("testName");
         method.setChangingOverTime(false);

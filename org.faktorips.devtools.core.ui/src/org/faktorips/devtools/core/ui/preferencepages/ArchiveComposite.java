@@ -40,10 +40,10 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -201,7 +201,7 @@ public class ArchiveComposite extends DataChangeableComposite {
                 }
                 dataChanged = true;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -218,7 +218,7 @@ public class ArchiveComposite extends DataChangeableComposite {
                 tableViewer.refresh(false);
                 dataChanged = true;
 
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return;
             }

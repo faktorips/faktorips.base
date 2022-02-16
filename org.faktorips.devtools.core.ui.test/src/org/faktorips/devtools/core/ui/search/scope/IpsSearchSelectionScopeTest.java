@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArchive;
@@ -41,7 +40,7 @@ public class IpsSearchSelectionScopeTest {
     }
 
     @Test
-    public void testIpsArchiveSelected() throws CoreRuntimeException {
+    public void testIpsArchiveSelected() {
         IStructuredSelection selection = mock(IStructuredSelection.class);
 
         IIpsSrcFile scrFile = mock(IpsSrcFile.class);

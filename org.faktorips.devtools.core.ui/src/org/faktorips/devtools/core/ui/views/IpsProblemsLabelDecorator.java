@@ -24,10 +24,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IpsBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -66,14 +66,14 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
             try {
                 return (Image)getResourceManager().get(
                         IpsProblemOverlayIcon.createMarkerOverlayIcon(baseImage, findMaxProblemSeverity(element)));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }
         return baseImage;
     }
 
-    private int findMaxProblemSeverity(Object element) throws CoreRuntimeException {
+    private int findMaxProblemSeverity(Object element) {
         if (element instanceof IIpsElement) {
             IIpsElement ipsElement = ((IIpsElement)element);
             if (ipsElement instanceof IIpsProject) {
@@ -114,7 +114,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 try {
                     return res.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, true, depth);
                 } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                    throw new IpsException(e);
                 }
             }
         } else if (element instanceof IResource) {
@@ -123,7 +123,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                 try {
                     return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
                 } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                    throw new IpsException(e);
                 }
             } else {
                 return DEFAULT_FLAG;
@@ -139,7 +139,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
      * underlying java-project are interpreted as problems of the ips project and erroneously
      * displayed by the decorator.
      */
-    private int computeAdornmentFlagsProject(IIpsProject project) throws CoreRuntimeException {
+    private int computeAdornmentFlagsProject(IIpsProject project) {
         if (project.getProject().isAccessible()) {
             IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
             int result = 0;
@@ -201,7 +201,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     public void decorate(Object element, IDecoration decoration) {
         try {
             decoration.addOverlay(IpsProblemOverlayIcon.getMarkerOverlay(findMaxProblemSeverity(element)));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
     }

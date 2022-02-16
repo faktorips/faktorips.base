@@ -31,7 +31,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItemCreator;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -223,7 +222,7 @@ public abstract class AbstractCompareItem
      * need to implement {@link IStreamContentAccessor} and return a non null value here.
      */
     @Override
-    public InputStream getContents() throws CoreRuntimeException {
+    public InputStream getContents() {
         return new ByteArrayInputStream(new byte[0]);
     }
 

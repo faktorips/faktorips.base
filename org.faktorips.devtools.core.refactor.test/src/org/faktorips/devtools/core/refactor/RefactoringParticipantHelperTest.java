@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -66,7 +65,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testInitializeIpsObjectPartContainer() throws CoreRuntimeException {
+    public void testInitializeIpsObjectPartContainer() {
         when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
         when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockStandardBuilderSet);
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(mockIpsObjectPartContainer);
@@ -80,7 +79,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testInitializeIpsObjectPartContainer_targetsRemembered() throws CoreRuntimeException {
+    public void testInitializeIpsObjectPartContainer_targetsRemembered() {
         ipsRefactoringProcessor = mock(IpsRefactoringProcessor.class,
                 withSettings().extraInterfaces(IIpsMoveRenameIpsObjectProcessor.class));
         when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);

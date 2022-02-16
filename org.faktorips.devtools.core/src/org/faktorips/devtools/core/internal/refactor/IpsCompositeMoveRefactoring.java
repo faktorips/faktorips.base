@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
@@ -37,7 +36,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
     }
 
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException {
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) {
         clearSkippedElements();
 
         RefactoringStatus refactoringStatus = new RefactoringStatus();

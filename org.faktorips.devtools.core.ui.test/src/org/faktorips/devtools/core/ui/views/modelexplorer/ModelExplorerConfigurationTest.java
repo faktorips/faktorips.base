@@ -27,7 +27,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -173,7 +172,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRepresentsFile() throws CoreRuntimeException {
+    public void testRepresentsFile() {
         assertFalse(config.representsFile(proj));
         assertFalse(config.representsFile(proj.getCorrespondingResource().unwrap()));
         assertFalse(config.representsFile(folder));

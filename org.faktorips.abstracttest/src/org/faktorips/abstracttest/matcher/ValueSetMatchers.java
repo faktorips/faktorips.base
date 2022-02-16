@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.hamcrest.Description;
@@ -88,7 +88,7 @@ public class ValueSetMatchers {
                 return Arrays.stream(values).allMatch(v -> {
                     try {
                         return valueSet.containsValue(v, valueSet.getIpsProject());
-                    } catch (CoreRuntimeException e) {
+                    } catch (IpsException e) {
                         fail(e.getMessage());
                         return false;
                     }

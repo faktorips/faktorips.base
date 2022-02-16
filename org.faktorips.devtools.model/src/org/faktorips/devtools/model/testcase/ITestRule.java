@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
@@ -65,9 +65,9 @@ public interface ITestRule extends ITestObject {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the test rule parameter.
+     * @throws IpsException if an error occurs while searching for the test rule parameter.
      */
-    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the validation rule.
@@ -84,9 +84,9 @@ public interface ITestRule extends ITestObject {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the validation rule.
+     * @throws IpsException if an error occurs while searching for the validation rule.
      */
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the violation type.

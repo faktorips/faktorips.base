@@ -23,7 +23,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
@@ -102,7 +101,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         if (identifierAttributeValue == null) {
             return null;
         }
@@ -196,7 +195,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue newEnumValue() throws CoreRuntimeException {
+    public IEnumValue newEnumValue() {
         final IEnumType enumType = findEnumType(getIpsProject());
 
         // Creation not possible if enumeration type can't be found.
@@ -210,7 +209,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     private IEnumValue newEnumValue;
 
                     @Override
-                    public boolean execute() throws CoreRuntimeException {
+                    public boolean execute() {
                         newEnumValue = createEnumValueSingleEvent(enumType);
                         return newEnumValue != null;
                     }
@@ -227,7 +226,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                 });
     }
 
-    private IEnumValue createEnumValueSingleEvent(final IEnumType enumType) throws CoreRuntimeException {
+    private IEnumValue createEnumValueSingleEvent(final IEnumType enumType) {
         IEnumValue newEnumValue = newPart(EnumValue.class);
 
         boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
@@ -247,7 +246,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) throws CoreRuntimeException {
+    public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) {
         ArgumentCheck.notNull(enumValuesToMove);
         final int numberToMove = enumValuesToMove.size();
         if (numberToMove == 0) {
@@ -259,7 +258,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     private int[] indices = new int[numberToMove];
 
                     @Override
-                    public boolean execute() throws CoreRuntimeException {
+                    public boolean execute() {
                         for (int i = 0; i < numberToMove; i++) {
                             IEnumValue currentEnumValue = enumValuesToMove.get(i);
                             int index = getIndexOfEnumValue(currentEnumValue);
@@ -304,7 +303,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     private Boolean changed = false;
 
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         for (IEnumValue currentEnumValue : enumValuesToDelete) {
                             if ((enumValues.contains(currentEnumValue))) {
                                 currentEnumValue.delete();

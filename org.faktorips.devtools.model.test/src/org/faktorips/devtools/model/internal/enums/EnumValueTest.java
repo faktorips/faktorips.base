@@ -23,7 +23,6 @@ import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
@@ -33,14 +32,14 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     private static final String PAYMENT_CONTENT = "paymentContent";
 
     @Test
-    public void testNewEnumAttributeValue() throws CoreRuntimeException {
+    public void testNewEnumAttributeValue() {
         IEnumAttributeValue newEnumAttributeValue = genderEnumValueMale.newEnumAttributeValue();
 
         assertNotNull(newEnumAttributeValue);
     }
 
     @Test
-    public void testNewEnumAttributeValue_fixedValue() throws CoreRuntimeException {
+    public void testNewEnumAttributeValue_fixedValue() {
         IEnumAttributeValue enumAttributeValue = genderEnumValueMale.getEnumAttributeValues()
                 .get(genderEnumValueMale.getEnumAttributeValuesCount() - 1);
         IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
@@ -63,12 +62,12 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateThis() throws CoreRuntimeException {
+    public void testValidateThis() {
         assertTrue(genderEnumValueFemale.isValid(ipsProject));
     }
 
     @Test
-    public void testValidateNumberEnumAttributeValues() throws CoreRuntimeException {
+    public void testValidateNumberEnumAttributeValues() {
         genderEnumType.newEnumAttribute();
         assertTrue(genderEnumValueFemale.isValid(ipsProject));
 
@@ -100,7 +99,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetEnumAttributeValue_extensibleContent() throws CoreRuntimeException {
+    public void testGetEnumAttributeValue_extensibleContent() {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName(PAYMENT_CONTENT);
         EnumContent enumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);
@@ -116,7 +115,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testSetEnumAttributeValueAttributeGiven() throws CoreRuntimeException {
+    public void testSetEnumAttributeValueAttributeGiven() {
         try {
             genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, ValueFactory.createStringValue(""));
             fail();
@@ -128,7 +127,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testSetEnumAttributeValueAttributeNameGiven() throws CoreRuntimeException {
+    public void testSetEnumAttributeValueAttributeNameGiven() {
         try {
             genderEnumValueMale.setEnumAttributeValue((String)null, ValueFactory.createStringValue(""));
             fail();
@@ -159,7 +158,7 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindUniqueEnumAttributeValues() throws CoreRuntimeException {
+    public void testFindUniqueEnumAttributeValues() {
         IEnumValue value = paymentMode.getEnumValues().get(0);
         List<IEnumAttributeValue> uniqueAttributeValues = value
                 .findUniqueEnumAttributeValues(paymentMode.findUniqueEnumAttributes(true, ipsProject), ipsProject);

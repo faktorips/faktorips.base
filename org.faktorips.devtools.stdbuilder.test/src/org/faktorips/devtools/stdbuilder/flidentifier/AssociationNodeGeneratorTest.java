@@ -21,7 +21,6 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -75,7 +74,7 @@ public class AssociationNodeGeneratorTest {
     private IdentifierNodeFactory nodeFactory;
 
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         nodeFactory = new IdentifierNodeFactory(new TextRegion("AssociationNodeGeneratorTest", 0,
                 "AssociationNodeGeneratorTest".length()), ipsProject);
         setUpMockAssociation();
@@ -90,7 +89,7 @@ public class AssociationNodeGeneratorTest {
         when(builderSet.getJavaClassName(elementDatatype, true)).thenReturn("Policy");
     }
 
-    private void setUpMockAssociation() throws CoreRuntimeException {
+    private void setUpMockAssociation() {
         when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
     }
 

@@ -22,10 +22,10 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
@@ -182,14 +182,14 @@ public class ProductReleaserBuilderWizard extends Wizard {
         }
 
         @Override
-        protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
+        protected void execute(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
                 InterruptedException {
             if (productReleaseProcessor != null) {
                 try {
                     returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems,
                             monitor);
                 } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                    throw new IpsException(e);
                 }
             } else {
                 throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);

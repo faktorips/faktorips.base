@@ -19,7 +19,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.method.IBaseMethod;
@@ -183,7 +183,7 @@ public class XMethod extends AbstractGeneratorModelNode {
             IProductCmptTypeMethod overloadedFormulaMethod = ((IProductCmptTypeMethod)getMethod())
                     .findOverloadedFormulaMethod(getIpsProject());
             if (overloadedFormulaMethod == null) {
-                throw new CoreRuntimeException("Cannot find overloaded formula for method " + getName());
+                throw new IpsException("Cannot find overloaded formula for method " + getName());
             }
             XMethod overloadedMethod = getModelNode(overloadedFormulaMethod, XMethod.class);
             return overloadedMethod;

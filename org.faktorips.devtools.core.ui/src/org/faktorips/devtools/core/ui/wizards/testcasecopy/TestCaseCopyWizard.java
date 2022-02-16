@@ -17,12 +17,12 @@ import java.util.List;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -108,7 +108,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
         try {
             createIpsPackageFragment(targetIpsPackageFragment);
-        } catch (CoreRuntimeException e1) {
+        } catch (IpsException e1) {
             throw new RuntimeException("Target package fragment couldn't be created!"); //$NON-NLS-1$
         }
 
@@ -122,7 +122,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
      * Replace all product cmpt (including children)
      */
     private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt, IProductCmpt newProductCmpt)
-            throws CoreRuntimeException {
+            {
 
         testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(newProductCmpt.getQualifiedName());
 
@@ -132,7 +132,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
 
     private void replaceChildsProductCmpts(ITestPolicyCmpt testPolicyCmpt,
             IProductCmpt parentProductCmpt,
-            String newVersionId) throws CoreRuntimeException {
+            String newVersionId) {
         IIpsProject ipsProject = targetTestCase.getIpsProject();
         IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
         ITestPolicyCmptLink[] testPolicyCmptlinks = testPolicyCmpt.getTestPolicyCmptLinks();
@@ -166,7 +166,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
     }
 
-    private void createIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) throws CoreRuntimeException {
+    private void createIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) {
         if (!ipsPackageFragment.exists()) {
             IIpsPackageFragment parentIpsPackageFragment = ipsPackageFragment.getParentIpsPackageFragment();
             createIpsPackageFragment(parentIpsPackageFragment);
@@ -194,13 +194,13 @@ public class TestCaseCopyWizard extends ResizableWizard {
             clearTestValues();
             targetTestCase.getIpsSrcFile().save(true, null);
             IpsUIPlugin.getDefault().openEditor(targetTestCase);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
     }
 
-    private void clearTestValues() throws CoreRuntimeException {
+    private void clearTestValues() {
         if (testCaseCopyDestinationPage.isClearExpectedTestValues()) {
             targetTestCase.clearTestValues(TestParameterType.EXPECTED_RESULT);
         }
@@ -226,7 +226,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             if (fragment.exists()) {
                 try {
                     fragment.getEnclosingResource().delete(null);
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -239,7 +239,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             ((IpsModel)testCase.getIpsModel()).removeIpsSrcFileContent(testCase.getIpsSrcFile());
             testCase.getEnclosingResource().delete(null);
             deletePackageFragments();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -259,7 +259,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
 
         @Override
-        public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+        public void run(IProgressMonitor monitor) {
             IIpsSrcFile targetTestCaseSrcFile = sourceTestCase.createCopy(targetIpsPackageFragment,
                     testCaseCopyDestinationPage.getTargetTestCaseName(), true, null);
             targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
@@ -301,7 +301,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
 
     private final class DeleteUnselectedTestObjects implements ICoreRunnable {
         @Override
-        public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+        public void run(IProgressMonitor monitor) {
             ITestObject[] testObjects;
             testObjects = targetTestCase.getAllTestObjects();
 

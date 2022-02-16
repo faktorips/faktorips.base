@@ -27,13 +27,13 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectGeneration;
@@ -106,7 +106,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // will be handled as validation error
             IpsLog.log(e);
             return;
@@ -136,7 +136,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public ITableStructure findTableStructure(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITableStructure findTableStructure(IIpsProject ipsProject) {
         return (ITableStructure)getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, structure);
     }
 
@@ -261,23 +261,23 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public void initFromInputStream(InputStream is) throws CoreRuntimeException {
+    public void initFromInputStream(InputStream is) {
         initTableContentFromStream(is, false);
     }
 
-    private void initTableContentFromStream(InputStream is, boolean readWholeContent) throws CoreRuntimeException {
+    private void initTableContentFromStream(InputStream is, boolean readWholeContent) {
         try {
             reinitPartCollections();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
         } catch (SAXNotSupportedException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         } catch (SAXException e) {
             handleSaxException(e);
         } catch (ParserConfigurationException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -288,9 +288,9 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * {@link SAXException} we want to throw this as {@link CoreException}.
      * 
      */
-    private void handleSaxException(SAXException e) throws CoreRuntimeException {
+    private void handleSaxException(SAXException e) {
         if (e.getCause() != null) {
-            throw new CoreRuntimeException(new IpsStatus(e.getCause()));
+            throw new IpsException(new IpsStatus(e.getCause()));
         }
     }
 
@@ -394,14 +394,14 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) {
         if (isRowsInitialized() || IIpsModelExtensions.get().getModelPreferences().isAutoValidateTables()) {
             super.validateChildren(result, ipsProject);
         }
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = findTableStructure(ipsProject);
         if (tableStructure == null) {
@@ -518,7 +518,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     @Override
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) {
         return ipsProject.findIpsSrcFile(IpsObjectType.TABLE_STRUCTURE, getTableStructure());
     }
 
@@ -538,7 +538,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * This method always returns false because differences to model is not supported at the moment
      */
     @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) {
 
         return false;
     }
@@ -547,12 +547,12 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * This method does nothing because there is nothing to do at the moment
      */
     @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) {
         // TODO TableContent does not yet support the fix differences framework
     }
 
     @Override
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) {
         // TODO TableContent does not yet support the fix differences framework
         return null;
     }
@@ -591,7 +591,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         try {
             inputStream = getIpsSrcFile().getContentFromEnclosingResource();
             initTableContentFromStream(inputStream, true);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             e.printStackTrace();
         } finally {
             IoUtil.close(inputStream);

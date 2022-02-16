@@ -41,12 +41,12 @@ import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.internal.util.StringUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -366,7 +366,7 @@ public class BuilderSetContainer {
             validateBuilderSetConfig();
             ipsProjectProperties.setBuilderSetConfig(builderSetConfigModel);
             ipsProject.setProperties(ipsProjectProperties);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

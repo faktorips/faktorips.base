@@ -27,7 +27,6 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
@@ -251,7 +250,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperConstant() throws CoreRuntimeException {
+    public void testIsOverrideGetAllowedValuesFor_SuperConstant() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
@@ -266,7 +265,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperOverride() throws CoreRuntimeException {
+    public void testIsOverrideGetAllowedValuesFor_SuperOverride() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);

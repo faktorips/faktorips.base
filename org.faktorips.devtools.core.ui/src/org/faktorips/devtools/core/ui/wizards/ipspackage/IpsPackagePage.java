@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IDecoratorManager;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelLabelProvider;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -259,9 +259,9 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
      * 
-     * @throws CoreRuntimeException if the contents of the resource can't be parsed.
+     * @throws IpsException if the contents of the resource can't be parsed.
      */
-    public IIpsObject getSelectedIpsObject() throws CoreRuntimeException {
+    public IIpsObject getSelectedIpsObject() {
         if (selectedResource == null) {
             return null;
         }
@@ -282,7 +282,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             // don't validate during control creating!
             try {
                 validatePage();
-            } catch (CoreRuntimeException coreEx) {
+            } catch (IpsException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 
@@ -294,7 +294,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Validates the page and generates error messages if needed. Can be overridden in subclasses to
      * add specific validation logic.s
      */
-    protected void validatePage() throws CoreRuntimeException {
+    protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         IIpsProject project = getIpsProject();
@@ -424,7 +424,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                 IIpsPackageFragment ipsPackageFragment = (IIpsPackageFragment)parentElement;
                 try {
                     return ipsPackageFragment.getChildIpsPackageFragments();
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     e.printStackTrace();
                 }
             }

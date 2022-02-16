@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
@@ -43,8 +43,8 @@ public interface ICustomValidation<T extends IIpsObjectPartContainer> {
      * 
      * @return The result of the validation as list of messages.
      * 
-     * @throws CoreRuntimeException If an error occurs while validating the given object.
+     * @throws IpsException If an error occurs while validating the given object.
      */
-    MessageList validate(T objectToValidate, IIpsProject ipsProject) throws CoreRuntimeException;
+    MessageList validate(T objectToValidate, IIpsProject ipsProject) throws IpsException;
 
 }

@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -66,7 +67,6 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -174,12 +174,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the
+     * @throws IpsException If an error occurs while searching for the
      *             <code>IEnumType</code> referenced by the IPS object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,
-            UIToolkit toolkit) throws CoreRuntimeException {
+            UIToolkit toolkit) {
         super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.editorSite = editorSite;
         ArgumentCheck.notNull(enumValueContainer);
@@ -194,7 +194,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             enumContent = (IEnumContent)enumValueContainer;
             enumType = enumContent.findEnumType(ipsProject);
         } else {
-            throw new CoreRuntimeException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
+            throw new IpsException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
         }
 
         loadDialogSettings();
@@ -565,7 +565,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         new TableMessageHoverService(enumValuesTableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     return ((IEnumValue)element).validate(enumValueContainer.getIpsProject());
                 }

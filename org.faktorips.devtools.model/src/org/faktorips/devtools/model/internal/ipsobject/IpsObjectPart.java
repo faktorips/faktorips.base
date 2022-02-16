@@ -14,10 +14,9 @@ import java.beans.PropertyChangeEvent;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -110,12 +109,12 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 

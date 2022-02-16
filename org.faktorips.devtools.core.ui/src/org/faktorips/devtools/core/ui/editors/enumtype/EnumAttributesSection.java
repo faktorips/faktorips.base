@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 
 /**
@@ -265,7 +264,7 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
          * Opens a dialog enabling the user to inherit {@link IEnumAttribute}s from the super type
          * hierarchy in a comfortable way.
          */
-        private void inheritClicked() throws CoreRuntimeException {
+        private void inheritClicked() {
             InheritEnumAttributesDialog dialog = new InheritEnumAttributesDialog(enumType, getShell());
             if (dialog.open() == Window.OK) {
                 enumType.inheritEnumAttributes(dialog.getSelectedParts());

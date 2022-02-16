@@ -46,7 +46,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -102,7 +101,7 @@ public class ProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddIpsNature_And_hasIpsNature() throws CoreRuntimeException {
+    public void testAddIpsNature_And_hasIpsNature() {
         assertFalse(ProjectUtil.hasIpsNature(javaProject));
         ProjectUtil.addIpsNature(javaProject.getProject());
         assertTrue(ProjectUtil.hasIpsNature(javaProject));

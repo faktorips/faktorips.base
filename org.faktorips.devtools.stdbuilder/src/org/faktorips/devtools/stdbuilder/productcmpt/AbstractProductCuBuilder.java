@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.BuilderHelper;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -124,7 +124,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
     }
 
-    public void callBuildProcess(T propertyValueContainer, MultiStatus buildStatus) throws CoreRuntimeException {
+    public void callBuildProcess(T propertyValueContainer, MultiStatus buildStatus) {
         IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyValueContainer);
         setPropertyValueContainer(propertyValueContainer);
         beforeBuild(ipsSrcFile, buildStatus);
@@ -161,7 +161,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             if (!formula.isValid(getIpsProject())) {
                 return false;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             StdBuilderPlugin.log(e);
             return false;
         }

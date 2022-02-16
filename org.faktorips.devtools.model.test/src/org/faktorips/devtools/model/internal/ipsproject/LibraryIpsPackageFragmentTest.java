@@ -22,7 +22,6 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -69,7 +68,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         IIpsElement[] children = pack.getChildren();
         assertEquals(2, children.length);
         assertTrue((children[0] instanceof IIpsSrcFile));
@@ -84,7 +83,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObjectsByIpsObjectType() throws CoreRuntimeException {
+    public void testFindIpsObjectsByIpsObjectType() {
         List<IIpsObject> result = new ArrayList<>();
         pack.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE, result);
         assertEquals(2, result.size());
@@ -95,7 +94,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObjects() throws CoreRuntimeException {
+    public void testFindIpsObjects() {
         List<IIpsObject> result = new ArrayList<>();
         pack.findIpsObjects(result);
         assertEquals(2, result.size());
@@ -109,14 +108,14 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildIpsPackageFragments() throws CoreRuntimeException {
+    public void testGetChildIpsPackageFragments() {
         IIpsPackageFragment[] packs = pack.getChildIpsPackageFragments();
         assertEquals(1, packs.length);
         assertEquals("mycompany.motor.collision", packs[0].getName());
     }
 
     @Test
-    public void testGetNonIpsResources() throws CoreRuntimeException {
+    public void testGetNonIpsResources() {
         assertEquals(0, pack.getNonIpsResources().length);
     }
 
@@ -142,7 +141,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildIpsPackageFragments() throws CoreRuntimeException {
+    public void testHasChildIpsPackageFragments() {
         IIpsPackageFragment empty = root.getIpsPackageFragment("mycompany.motor.Coverage");
         assertFalse(empty.hasChildIpsPackageFragments());
 
@@ -151,7 +150,7 @@ public class LibraryIpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         pack.delete();
     }
 

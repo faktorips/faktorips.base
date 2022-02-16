@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -42,7 +41,7 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIndex() throws CoreRuntimeException {
+    public void testGetIndex() {
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         assertEquals(1, path.getEntries().length);
 

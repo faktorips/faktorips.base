@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -43,7 +42,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     }
 
     @Override
-    public MessageList getMessages(Object element) throws CoreRuntimeException {
+    public MessageList getMessages(Object element) {
         if (element instanceof AbstractAssociationViewItem) {
             AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
             IProductCmpt productCmpt = viewItem.getProductCmpt();

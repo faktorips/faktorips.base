@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
@@ -66,7 +67,6 @@ import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
@@ -199,7 +199,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         page.setText(Messages.AttributeEditDialog_valuesetTitle);
         try {
             page.setControl(createValueSetPage(tabFolder));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -261,7 +261,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 msgList = rule.validate(rule.getIpsProject());
                 msgList = msgList.getMessagesFor(rule, IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
                 validationRuleAddedDecoration.setMessageList(msgList);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         } else {
@@ -287,7 +287,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             } else {
                 setErrorMessage(null);
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             setErrorMessage(null);
         }
@@ -539,7 +539,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
                 return;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -565,7 +565,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             if (!productCmptTypeDirtyBeforeDialog) {
                 try {
                     file.save(true, null);
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -584,7 +584,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         return productCmptType;
     }
 
-    private Control createValueSetPage(TabFolder folder) throws CoreRuntimeException {
+    private Control createValueSetPage(TabFolder folder) {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
         Composite valueSetWorkArea = getToolkit().createLabelEditColumnComposite(pageControl);
@@ -663,7 +663,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
                             @Override
-                            protected boolean execute() throws CoreRuntimeException {
+                            protected boolean execute() {
                                 attribute.setDatatype(overwrittenAttribute.getDatatype());
                                 attribute.setModifier(overwrittenAttribute.getModifier());
                                 attribute.setValueSetConfiguredByProduct(overwrittenAttribute.isProductRelevant());
@@ -726,7 +726,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         try {
             valueSetSpecificationControl
                     .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
         }

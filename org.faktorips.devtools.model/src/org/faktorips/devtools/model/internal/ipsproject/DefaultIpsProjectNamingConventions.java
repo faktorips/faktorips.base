@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
@@ -87,12 +86,12 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     @Override
-    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreRuntimeException {
+    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) {
         return validateIpsObjectNameInternal(type, name, true);
     }
 
     @Override
-    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreRuntimeException {
+    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) {
         ArgumentCheck.notNull(type);
         return validateIpsObjectNameInternal(type, name, false);
     }
@@ -309,7 +308,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     @Override
-    public MessageList validateIpsPackageRootName(String name) throws CoreRuntimeException {
+    public MessageList validateIpsPackageRootName(String name) {
         return new MessageList();
     }
 
@@ -317,7 +316,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public Message validateIfValidJavaIdentifier(String name,
             String text,
             Object validatedObject,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         String sourceLevel = getCompilerSourceLevel(ipsProject);
         String complianceLevel = getCompilerComplianceLevel(ipsProject);

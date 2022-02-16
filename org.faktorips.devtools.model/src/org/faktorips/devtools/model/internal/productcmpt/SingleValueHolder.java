@@ -17,7 +17,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
@@ -155,7 +154,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IIpsProject ipsProject) {
         return new SingleValueHolderValidator(this, getParent(), ipsProject).validate();
     }
 

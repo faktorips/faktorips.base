@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.method.IParameter;
@@ -162,7 +161,7 @@ public class BaseMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMultipleParameterNames() throws CoreRuntimeException {
+    public void testValidateMultipleParameterNames() {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
         method.setName("calculate");

@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.AbstractProductCmptNamingStrategy;
 import org.faktorips.devtools.model.internal.productcmpt.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -168,7 +167,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     }
 
     @Override
-    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreRuntimeException {
+    public String getUniqueRuntimeId(IIpsProject project, String productCmptName) {
         String id = project.getRuntimeIdPrefix() + productCmptName;
         String uniqueId = id;
 

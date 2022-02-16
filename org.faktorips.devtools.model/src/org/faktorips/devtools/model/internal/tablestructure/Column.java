@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -62,7 +61,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
         Datatype type = ValidationUtils.checkValueDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
@@ -106,7 +105,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     }
 
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         return ipsProject.findValueDatatype(datatype);
     }
 

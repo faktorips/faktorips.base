@@ -15,7 +15,6 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
@@ -51,17 +50,17 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IIpsProject ipsProject) {
         return delegate.newValidator(parent, ipsProject).validate();
     }
 

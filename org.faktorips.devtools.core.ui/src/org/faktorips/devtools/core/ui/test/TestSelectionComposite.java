@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -316,9 +316,9 @@ public class TestSelectionComposite extends Composite {
      * Calls <code>IIpsProject#findAllIpsObjects()</code> on all projects in the workspace and
      * returns the collective list of <code>IIpsObject</code>s.
      * 
-     * @throws CoreRuntimeException if getting objects from a <code>IIpsProject</code> fails.
+     * @throws IpsException if getting objects from a <code>IIpsProject</code> fails.
      */
-    public IIpsObject[] getAllIpsTestObjects() throws CoreRuntimeException {
+    public IIpsObject[] getAllIpsTestObjects() {
         List<IIpsSrcFile> allIpsSrcFiles = project.findAllIpsSrcFiles(IpsObjectType.TEST_CASE,
                 IpsObjectType.PRODUCT_CMPT);
         List<IIpsObject> list = new ArrayList<>();
@@ -328,7 +328,7 @@ public class TestSelectionComposite extends Composite {
         return list.toArray(new IIpsObject[list.size()]);
     }
 
-    public void initContent(IIpsProject project, String testSuites) throws CoreRuntimeException {
+    public void initContent(IIpsProject project, String testSuites) {
         ArgumentCheck.notNull(project);
 
         this.project = project;
@@ -336,7 +336,7 @@ public class TestSelectionComposite extends Composite {
 
         List<String> testSuiteList = AbstractIpsTestRunner.extractListFromString(testSuites);
         if (project == null) {
-            throw new CoreRuntimeException(new IpsStatus(Messages.TestSelectionComposite_errorProjectNotDetermined));
+            throw new IpsException(new IpsStatus(Messages.TestSelectionComposite_errorProjectNotDetermined));
         }
 
         for (String qualifiedName : testSuiteList) {

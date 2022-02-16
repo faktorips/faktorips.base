@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -282,7 +282,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                         return false;
                     }
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
                 return false;
             }
@@ -292,7 +292,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         return true;
     }
 
-    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) throws CoreRuntimeException {
+    private boolean checkNotInverseOfDerivedUnion(IPolicyCmptTypeAssociation association) {
         return !association.isInverseOfDerivedUnion() && !association.isSharedAssociation();
     }
 

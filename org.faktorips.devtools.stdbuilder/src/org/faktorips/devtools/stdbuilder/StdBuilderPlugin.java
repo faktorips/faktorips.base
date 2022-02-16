@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.internal.toc.ITocEntryFactory;
@@ -129,7 +129,7 @@ public class StdBuilderPlugin extends Plugin {
     /**
      * Logs the core exception
      */
-    public static final void log(CoreRuntimeException e) {
+    public static final void log(IpsException e) {
         Throwable cause = e.getCause();
         if (cause instanceof CoreException) {
             log(((CoreException)cause).getStatus());

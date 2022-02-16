@@ -21,11 +21,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
@@ -104,7 +104,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                         setSelectedMigrationOptions(migrationOperation);
                         migrationOperation.run(subMonitor);
                         messageList = migrationOperation.getMessageList();
-                    } catch (CoreRuntimeException e) {
+                    } catch (IpsException e) {
                         IpsPlugin.log(e);
                     }
                 }

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class EnumUtilTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumAttributeIsUnique() throws CoreRuntimeException {
+    public void testFindEnumAttributeIsUnique() {
         assertFalse(inheritedAttribute.findIsUnique(ipsProject));
         inheritedAttribute.setUnique(true);
         inheritedAttribute.setInherited(true);

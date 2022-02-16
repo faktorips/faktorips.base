@@ -21,7 +21,6 @@ import java.util.function.Function;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
@@ -86,7 +85,7 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findFormulaSignature(ipsProject);
     }
 

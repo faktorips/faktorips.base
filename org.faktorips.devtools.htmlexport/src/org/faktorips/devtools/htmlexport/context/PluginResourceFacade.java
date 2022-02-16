@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -47,14 +47,14 @@ public class PluginResourceFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public Properties getMessageProperties(String resourceName) throws CoreRuntimeException {
+    public Properties getMessageProperties(String resourceName) {
         Properties messages = new Properties();
 
         try {
             byte[] bs = new FileHandler().readFile(resourceName);
             messages.load(new ByteArrayInputStream(bs));
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(IStatus.WARNING,
+            throw new IpsException(new IpsStatus(IStatus.WARNING,
                     "Messages " + resourceName + " not be loaded found", e)); //$NON-NLS-1$ //$NON-NLS-2$
         }
 

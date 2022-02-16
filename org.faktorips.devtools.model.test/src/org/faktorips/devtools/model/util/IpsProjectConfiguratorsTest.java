@@ -29,7 +29,6 @@ import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
 
@@ -93,7 +92,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreRuntimeException {
+                {
             fail("should never be called");
         }
 
@@ -113,7 +112,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreRuntimeException {
+                {
             fail("should never be called");
         }
 
@@ -133,7 +132,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreRuntimeException {
+                {
             fail("should never be called");
         }
 

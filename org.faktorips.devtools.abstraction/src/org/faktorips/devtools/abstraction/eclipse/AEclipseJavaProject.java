@@ -37,8 +37,8 @@ import org.faktorips.devtools.abstraction.AWrapper;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.eclipse.internal.Messages;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.SeverityMapping;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
@@ -113,7 +113,7 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
             }
 
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+            throw new IpsException(e.getMessage(), e);
         }
         return result;
     }
@@ -169,7 +169,7 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
                 }
             }
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+            throw new IpsException(e.getMessage(), e);
         }
         return result;
     }

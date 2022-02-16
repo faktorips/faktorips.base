@@ -42,8 +42,8 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsArchive;
@@ -95,7 +95,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -123,7 +123,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
                      */
                     Thread.sleep(1010);
                 } catch (InterruptedException e) {
-                    throw new CoreRuntimeException(new IpsStatus(e));
+                    throw new IpsException(new IpsStatus(e));
                 }
             }
 
@@ -131,7 +131,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             try {
                 os = new JarOutputStream(new FileOutputStream(archive));
             } catch (IOException e) {
-                throw new CoreRuntimeException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
+                throw new IpsException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
             }
             Properties ipsObjectsProperties = new Properties();
             for (IIpsPackageFragmentRoot root : roots) {
@@ -144,7 +144,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             try {
                 os.close();
             } catch (Exception e) {
-                throw new CoreRuntimeException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
+                throw new IpsException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
             }
             @SuppressWarnings("deprecation")
             IProgressMonitor refreshMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 2);
@@ -157,7 +157,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     /**
      * If the file exists in the workspace then refresh it.
      */
-    private void refreshInWorkspaceIfNecessary(IProgressMonitor monitor) throws CoreRuntimeException {
+    private void refreshInWorkspaceIfNecessary(IProgressMonitor monitor) {
         AFile fileInWorkspace = getWorkspaceFile();
         if (fileInWorkspace == null) {
             // nothing to do, because the file dosn't exists in the workspace
@@ -193,7 +193,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     private void addToArchive(IIpsPackageFragmentRoot root,
             JarOutputStream os,
             Properties ipsObjectsProperties,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
 
         try {
             IIpsPackageFragment[] packs = root.getIpsPackageFragments();
@@ -217,7 +217,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     private void addToArchive(IIpsPackageFragment pack,
             JarOutputStream os,
             Properties ipsObjectsProperties,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
 
         try {
             IIpsElement[] elements = pack.getChildren();
@@ -247,7 +247,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     }
 
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties)
-            throws CoreRuntimeException {
+            {
 
         InputStream content = file.getContentFromEnclosingResource();
         String path = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath()).toPortableString();
@@ -277,11 +277,11 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
      *            folder/sub-folders in the jar. See {@link JarOutputStream} for details.
      * @param fileName the name of the original file whose content is written to the jar. It is used
      *            to create an error message in case an {@link IOException} occurs.
-     * @throws CoreRuntimeException if writing the {@link JarOutputStream}, or reading/closing the
+     * @throws IpsException if writing the {@link JarOutputStream}, or reading/closing the
      *             content-stream result in an {@link IOException}.
      */
     private void writeJarEntry(JarOutputStream os, InputStream content, String entryName, String fileName)
-            throws CoreRuntimeException {
+            {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try {
@@ -296,7 +296,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
                 out.write(nextByte);
             }
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error writing archive entry for file " + fileName, e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error writing archive entry for file " + fileName, e)); //$NON-NLS-1$
         } finally {
             IoUtil.close(in);
             try {
@@ -306,7 +306,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
                     out.flush();
                 }
             } catch (IOException e) {
-                throw new CoreRuntimeException(new IpsStatus("Unable to flush steam.", e)); //$NON-NLS-1$
+                throw new IpsException(new IpsStatus("Unable to flush steam.", e)); //$NON-NLS-1$
             }
         }
     }
@@ -317,9 +317,9 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
      * 
      * @param file the {@link IIpsSrcFile} to process.
      * @param os the {@link JarOutputStream} to write the custom Icon to.
-     * @throws CoreRuntimeException if writing the {@link JarEntry} encounters problems.
+     * @throws IpsException if writing the {@link JarEntry} encounters problems.
      */
-    private void writeCustomIconIfApplicable(IIpsSrcFile file, JarOutputStream os) throws CoreRuntimeException {
+    private void writeCustomIconIfApplicable(IIpsSrcFile file, JarOutputStream os) {
         if (file.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
             String iconPath = file.getPropertyValue(IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
             if (StringUtils.isNotEmpty(iconPath)) {
@@ -335,23 +335,23 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     }
 
     private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties)
-            throws CoreRuntimeException {
+            {
 
         JarEntry newEntry = new JarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         try {
             os.putNextEntry(newEntry);
             ipsObjectsProperties.store(os, null);
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error creating entry ipsobjects.properties", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error creating entry ipsobjects.properties", e)); //$NON-NLS-1$
         }
     }
 
     private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         try {
             IPackageFragmentRoot javaRoot = root.getArtefactDestination(false).unwrap();
             if (javaRoot == null) {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus("Can't find file Java root for IPS root " + root.getName())); //$NON-NLS-1$
             }
             if (inclJavaBinaries) {
@@ -376,12 +376,12 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
                 handledRootFolders.add(srcFolder);
             }
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+            throw new IpsException(e.getMessage(), e);
         }
     }
 
     private void addFiles(AFolder rootFolder, AFolder folder, JarOutputStream os, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         for (AResource member : folder) {
             if (member instanceof AFile) {
                 addFiles(rootFolder, (AFile)member, os);
@@ -391,7 +391,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         }
     }
 
-    private void addFiles(AFolder rootFolder, AFile fileToAdd, JarOutputStream os) throws CoreRuntimeException {
+    private void addFiles(AFolder rootFolder, AFile fileToAdd, JarOutputStream os) {
         String name = rootFolder.getWorkspaceRelativePath().relativize(fileToAdd.getWorkspaceRelativePath()).toString();
         if (isDuplicateEntry(name)) {
             return;
@@ -402,22 +402,22 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             byte[] contents = getContent(fileToAdd.getContents());
             os.write(contents);
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error creating entry ipsobjects.properties", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error creating entry ipsobjects.properties", e)); //$NON-NLS-1$
         }
     }
 
-    private byte[] getContent(InputStream contents) throws CoreRuntimeException {
+    private byte[] getContent(InputStream contents) {
         try {
             byte[] content = new byte[contents.available()];
             contents.read(content);
             contents.close();
             return content;
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
-    private int getWorkload() throws CoreRuntimeException {
+    private int getWorkload() {
         int load = 1;
         for (int i = 0; i < roots.length; i++) {
             load = +roots[i].getIpsPackageFragments().length;

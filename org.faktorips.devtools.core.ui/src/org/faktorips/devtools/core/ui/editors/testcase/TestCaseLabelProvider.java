@@ -26,10 +26,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -98,7 +98,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
                         return image;
                     }
                 }
-            } catch (CoreRuntimeException exception) {
+            } catch (IpsException exception) {
                 IpsPlugin.log(exception);
             }
         }
@@ -240,7 +240,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
             if (validationRule != null) {
                 extForPolicyCmptForValidationRule = " - " + ((IPolicyCmptType)validationRule.getParent()).getName(); //$NON-NLS-1$
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // ignore exception, return empty extension
         }
         return extForPolicyCmptForValidationRule;

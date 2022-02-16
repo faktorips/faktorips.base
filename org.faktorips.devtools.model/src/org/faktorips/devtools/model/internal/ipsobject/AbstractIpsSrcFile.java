@@ -14,9 +14,9 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
@@ -63,7 +63,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
                 return false;
             }
             return entry.exists(getQualifiedNameType());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return false;
         }
@@ -109,7 +109,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreRuntimeException {
+    public IIpsElement[] getChildren() {
         if (isContentParsable()) {
             return new IIpsElement[] { getIpsObject() };
         }
@@ -121,9 +121,9 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         IpsSrcFileContent content = getContent();
         if (content == null) {
             if (exists()) {
-                throw new CoreRuntimeException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
+                throw new IpsException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
             } else {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus("Can't get property value because file does not exist. " + this)); //$NON-NLS-1$
             }
         }
@@ -135,9 +135,9 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         IpsSrcFileContent content = getContent(false);
         if (content == null) {
             if (exists()) {
-                throw new CoreRuntimeException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
+                throw new IpsException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
             } else {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus("Can't get property value because file does not exist. " + this)); //$NON-NLS-1$
             }
         }
@@ -153,7 +153,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public boolean isContentParsable() throws CoreRuntimeException {
+    public boolean isContentParsable() {
         IpsSrcFileContent content = getContent();
         if (content == null) {
             return false;

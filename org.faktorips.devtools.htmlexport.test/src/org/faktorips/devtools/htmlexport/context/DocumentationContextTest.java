@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -60,7 +59,7 @@ public class DocumentationContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDocumentedSourceFiles_NoDuplicates() throws CoreRuntimeException {
+    public void testGetDocumentedSourceFiles_NoDuplicates() {
         IIpsProject referencedIpsProject = newIpsProject();
         IIpsSrcFile ipsSrcFile1 = newPolicyCmptType(referencedIpsProject, "Policy").getIpsSrcFile();
         IIpsSrcFile ipsSrcFile2 = newPolicyCmptType(referencedIpsProject, "Coverage").getIpsSrcFile();

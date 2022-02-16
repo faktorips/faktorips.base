@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -46,7 +46,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPut() throws CoreRuntimeException {
+    public void testPut() {
         settings.put(srcFile, "KEY1", "value1");
         assertEquals("value1", settings.get(srcFile, "KEY1"));
 
@@ -118,7 +118,7 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testLoadSave() throws CoreRuntimeException, IOException {
+    public void testLoadSave() throws IpsException, IOException {
         settings.put(srcFile, "KEY1", "value1");
         settings.put(srcFile, "KEY2", "value2");
 

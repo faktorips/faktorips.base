@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -42,7 +41,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         if (IpsObjectType.POLICY_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             // make sure validator class is deleted if the type is removed
             if (!ipsSrcFile.exists()) {
@@ -82,7 +81,7 @@ public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClas
         }
     }
 
-    private boolean isValidatorClassAlreadyPresent(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    private boolean isValidatorClassAlreadyPresent(IIpsSrcFile ipsSrcFile) {
         return getJavaFile(ipsSrcFile).exists();
     }
 }

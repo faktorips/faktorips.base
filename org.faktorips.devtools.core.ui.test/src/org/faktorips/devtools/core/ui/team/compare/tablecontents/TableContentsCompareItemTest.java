@@ -21,7 +21,6 @@ import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -116,7 +115,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEqualsObject() throws CoreRuntimeException {
+    public void testEqualsObject() {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");
@@ -197,7 +196,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHashCode() throws CoreRuntimeException {
+    public void testHashCode() {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -73,7 +72,7 @@ public class TableSingleContentFunctionsResolverTest extends AbstractIpsPluginTe
     }
 
     @Test
-    public void testFunctionsTableInRootPackage() throws CoreRuntimeException {
+    public void testFunctionsTableInRootPackage() {
 
         String keyColumn = "keyColumn";
         createColumn("String", keyColumn);

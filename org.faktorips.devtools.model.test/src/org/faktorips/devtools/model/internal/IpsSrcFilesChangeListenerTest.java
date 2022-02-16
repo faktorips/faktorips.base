@@ -18,7 +18,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -60,7 +59,7 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     }
 
     @Test
-    public void testIpsSrcFilesChanged() throws CoreRuntimeException {
+    public void testIpsSrcFilesChanged() {
         // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
         pcType.getIpsSrcFile().save(true, null);
         while (event == null) {

@@ -22,7 +22,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.ABuildKind;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -93,7 +92,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild_buidJavaFileIntoDerivedFolder() throws CoreRuntimeException {
+    public void testBuild_buidJavaFileIntoDerivedFolder() {
         // build should not throw an exception even if the reference to the type is missing
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();
@@ -103,7 +102,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild_buildJavaFileIntoSrcFolder() throws CoreRuntimeException {
+    public void testBuild_buildJavaFileIntoSrcFolder() {
         // build should not throw an exception even if the reference to the type is missing
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
@@ -113,7 +112,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuildMissingType() throws CoreRuntimeException {
+    public void testBuildMissingType() {
         productCmpt.setProductCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
@@ -124,7 +123,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDelete_deleteJavaFileFromDerivedFolder() throws CoreRuntimeException {
+    public void testDelete_deleteJavaFileFromDerivedFolder() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromDerivedFolder();
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();
@@ -138,7 +137,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDelete_deleteJavaFileFromSrcFolder() throws CoreRuntimeException {
+    public void testDelete_deleteJavaFileFromSrcFolder() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromSrcFolder();
@@ -183,14 +182,14 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testIsContainingAvailableFormula_ProductCmptNoFormula() throws CoreRuntimeException {
+    public void testIsContainingAvailableFormula_ProductCmptNoFormula() {
         createSetupWithNoFormula();
 
         assertFalse(builder.isContainingAvailableFormula(productCmpt));
     }
 
     @Test
-    public void testIsContainingAvailableFormula_ProductCmptGenerationNoFormula() throws CoreRuntimeException {
+    public void testIsContainingAvailableFormula_ProductCmptGenerationNoFormula() {
         createSetupWithNoFormula();
 
         assertFalse(builder.isContainingAvailableFormula(productCmptGen));
@@ -209,7 +208,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetImplementationClass_ProductCmptNoFormula() throws CoreRuntimeException {
+    public void testGetImplementationClass_ProductCmptNoFormula() {
         createSetupWithNoFormula();
 
         String expectedImplClass = "org.faktorips.sample.model.internal.ProductType";
@@ -217,14 +216,14 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetImplementationClass_ProductCmptGenerationNoFormula() throws CoreRuntimeException {
+    public void testGetImplementationClass_ProductCmptGenerationNoFormula() {
         createSetupWithNoFormula();
 
         String expectedImplClass = "org.faktorips.sample.model.internal.ProductTypeGen";
         assertEquals(expectedImplClass, builder.getImplementationClass(productCmptGen));
     }
 
-    private void createSetupWithNoFormula() throws CoreRuntimeException {
+    private void createSetupWithNoFormula() {
         IIpsProject ipsProject2 = newIpsProject();
         type = newPolicyAndProductCmptType(ipsProject2, "PolicyType", "ProductType");
         productCmptType = type.findProductCmptType(ipsProject2);

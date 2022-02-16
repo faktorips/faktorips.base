@@ -16,11 +16,11 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -78,8 +78,8 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
         Display.getDefault().syncExec(() -> {
             try {
                 operation.run(new NullProgressMonitor());
-                fail("sollte CoreRuntimeException werfen");
-            } catch (CoreRuntimeException e1) {
+                fail("sollte IpsException werfen");
+            } catch (IpsException e1) {
                 // nix zu tun
             } catch (Exception e2) {
                 fail(e2.getMessage());

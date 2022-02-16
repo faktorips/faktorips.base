@@ -19,7 +19,6 @@ import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -90,7 +89,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleMissing() throws CoreRuntimeException {
+    public void testValidateLocaleMissing() {
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(1, validationMessages.size());
         Message message = validationMessages.getFirstMessage(Message.ERROR);
@@ -98,7 +97,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleNotSupported() throws CoreRuntimeException {
+    public void testValidateLocaleNotSupported() {
         label.setLocale(Locale.TAIWAN);
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(1, validationMessages.size());
@@ -107,7 +106,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateLocaleNotSupportedByContextProject() throws CoreRuntimeException {
+    public void testValidateLocaleNotSupportedByContextProject() {
         IIpsProject contextProject = newIpsProject("ContextProject");
         IIpsProjectProperties properties = contextProject.getProperties();
         properties.removeSupportedLanguage(Locale.GERMAN);
@@ -119,7 +118,7 @@ public class LabelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateOk() throws CoreRuntimeException {
+    public void testValidateOk() {
         label.setLocale(Locale.US);
         MessageList validationMessages = label.validate(ipsProject);
         assertEquals(0, validationMessages.size());

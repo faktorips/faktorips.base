@@ -16,7 +16,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -230,7 +229,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
     // CSOFF: CyclomaticComplexity
     @Override
-    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList msgList, IIpsProject ipsProject) {
         if (!StringUtils.isBlank(tableColumnName)
                 && AttributeType.DERIVED_ON_THE_FLY.equals(getPolicyComponentTypeAttribute().getAttributeType())) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY,

@@ -14,7 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.util.ArgumentCheck;
@@ -47,7 +46,7 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
     }
 
     @Override
-    public boolean containsPackage(String packageName) throws CoreRuntimeException {
+    public boolean containsPackage(String packageName) {
         if (packageName == null) {
             return false;
         }
@@ -73,7 +72,7 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
     }
 
     @Override
-    public String[] getNonEmptySubpackages(String packageName) throws CoreRuntimeException {
+    public String[] getNonEmptySubpackages(String packageName) {
         if (packageName == null) {
             return new String[0];
         }

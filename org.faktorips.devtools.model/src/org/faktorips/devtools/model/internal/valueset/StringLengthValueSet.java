@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
@@ -72,7 +71,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         if (value == null) {
             return isContainsNull();
         }
@@ -207,7 +206,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         StringLengthValueSetValidator validator = createValidator(getValueSetOwner(), findValueDatatype(ipsProject));
         list.add(validator.validate());

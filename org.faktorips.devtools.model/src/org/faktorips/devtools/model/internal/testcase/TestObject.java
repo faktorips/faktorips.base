@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.testcase.ITestObject;
@@ -59,7 +59,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT);
             }
             // CSOFF: Empty Statement
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
@@ -84,7 +84,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.EXPECTED_RESULT);
             }
             // CSOFF: Empty Statement
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
@@ -108,7 +108,7 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
                 return testCase.isTypeOrDefault(param, TestParameterType.COMBINED);
             }
             // CSOFF: Empty Statement
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }

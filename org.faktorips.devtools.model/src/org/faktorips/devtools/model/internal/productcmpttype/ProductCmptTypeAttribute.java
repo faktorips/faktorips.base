@@ -18,7 +18,6 @@ import java.util.List;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
@@ -131,7 +130,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) {
         if (isMultilingual()) {
             ArrayList<ValueSetType> types = new ArrayList<>();
             types.add(ValueSetType.UNRESTRICTED);
@@ -261,7 +260,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmptType();
     }
 
@@ -276,14 +275,14 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
         validateChangingOverTimeFlag(result);
     }
 
-    private void validateAllowedValueSetTypes(MessageList result) throws CoreRuntimeException {
+    private void validateAllowedValueSetTypes(MessageList result) {
         if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
             result.add(
                     Message.newError(MSGCODE_INVALID_VALUE_SET,
@@ -293,7 +292,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
-    private void validateOverwriteFlag(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateOverwriteFlag(MessageList result, IIpsProject ipsProject) {
         if (isOverwrite()) {
             IProductCmptTypeAttribute superAttr = (IProductCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
@@ -318,7 +317,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         if (isMultiValueAttribute() && getDefaultValue() != null) {
             validateMultiDefaultValues(valueDatatype, result, ipsProject);
         } else {
@@ -327,7 +326,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
         for (String singleValue : split) {
             validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
@@ -338,12 +337,12 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     protected void validateDefaultValue(String defaultValueToValidate,
             ValueDatatype valueDatatype,
             MessageList result,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         super.validateDefaultValue(defaultValueToValidate, valueDatatype, result, ipsProject);
         validateDefaultValue(defaultValueToValidate, result);
     }
 
-    private void validateDefaultValue(String defaultValue, MessageList result) throws CoreRuntimeException {
+    private void validateDefaultValue(String defaultValue, MessageList result) {
         if (!isVisible() && !getValueSet().containsValue(defaultValue, getIpsProject())) {
             result.remove(result.getMessageByCode(MSGCODE_DEFAULT_NOT_IN_VALUESET));
             result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,

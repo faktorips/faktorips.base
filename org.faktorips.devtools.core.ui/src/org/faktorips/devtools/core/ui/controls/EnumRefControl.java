@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -61,7 +60,7 @@ public class EnumRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
         List<IIpsProject> ipsProjects = getIpsProjects();
         if (ipsProjects.isEmpty()) {
             return new IpsSrcFile[0];

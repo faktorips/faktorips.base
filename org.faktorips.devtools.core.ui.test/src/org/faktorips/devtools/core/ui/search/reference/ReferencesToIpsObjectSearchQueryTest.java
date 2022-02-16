@@ -29,7 +29,6 @@ import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -164,7 +163,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testFindReferences() throws CoreRuntimeException {
+    public void testFindReferences() {
         IIpsProject[] projects = new IIpsProject[] { proj, proj2, proj3 };
         when(proj.findReferencingProjectLeavesOrSelf()).thenReturn(projects);
 
@@ -178,7 +177,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testFindReferencingIpsObjTypes_NoSrcFile() throws CoreRuntimeException {
+    public void testFindReferencingIpsObjTypes_NoSrcFile() {
         when(proj.findAllIpsSrcFiles()).thenReturn(new ArrayList<IIpsSrcFile>());
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(object1);
@@ -188,7 +187,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testFindReferencingIpsObjTypes_SrcFileWithoutDependenciesAndResultingReferences() throws CoreRuntimeException {
+    public void testFindReferencingIpsObjTypes_SrcFileWithoutDependenciesAndResultingReferences() {
         initProjectSetUp();
         when(srcFile1.getIpsObject().dependsOn()).thenReturn(new IDependency[] {});
         when(srcFileReferenced.getIpsObject().dependsOn()).thenReturn(new IDependency[] {});
@@ -201,7 +200,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testFindReferencingIpsObjTypes_SrcFilesWithDependenciesAndResultingReference() throws CoreRuntimeException {
+    public void testFindReferencingIpsObjTypes_SrcFilesWithDependenciesAndResultingReference() {
         initProjectSetUp();
         initDependencySetUp();
 
@@ -213,7 +212,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testFindReferencingIpsObjTypes_SrcFilesWithNoDependenciesButResultingReferences() throws CoreRuntimeException {
+    public void testFindReferencingIpsObjTypes_SrcFilesWithNoDependenciesButResultingReferences() {
         initProjectSetUp();
         initDependencySetUp();
 
@@ -227,7 +226,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testFindReferencingIpsObjTypes_OtherMethods() throws CoreRuntimeException {
+    public void testFindReferencingIpsObjTypes_OtherMethods() {
         List<IIpsSrcFile> ipsScrFiles = new ArrayList<>();
         ipsScrFiles.add(srcFile1);
         ipsScrFiles.add(srcFileReferencedProdCmpt);
@@ -252,7 +251,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testAddProdCmpGenerations_NoGenerations() throws CoreRuntimeException {
+    public void testAddProdCmpGenerations_NoGenerations() {
         initProjectSetUp();
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(objectReferenced);
@@ -263,7 +262,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     }
 
     @Test
-    public void testAddProdCmpGenerations_OneOrMoreGenerations() throws CoreRuntimeException {
+    public void testAddProdCmpGenerations_OneOrMoreGenerations() {
         IDependency dependencyObj1ToObjRef = IpsObjectDependency.create(prodCmpt.getQualifiedNameType(),
                 objectReferenced.getQualifiedNameType(), DependencyType.REFERENCE);
         when(prodCmpt.dependsOn()).thenReturn(new IDependency[] { dependencyObj1ToObjRef });

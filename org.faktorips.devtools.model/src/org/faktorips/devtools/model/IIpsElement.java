@@ -12,7 +12,7 @@ package org.faktorips.devtools.model;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -76,10 +76,10 @@ public interface IIpsElement extends IAdaptable {
      * Returns the element's immediate children or an empty array, if this element hasn't got any
      * children.
      */
-    public IIpsElement[] getChildren() throws CoreRuntimeException;
+    public IIpsElement[] getChildren() throws IpsException;
 
     /** Returns <code>true</code> if this element has any children, otherwise <code>false</code>. */
-    public boolean hasChildren() throws CoreRuntimeException;
+    public boolean hasChildren() throws IpsException;
 
     /**
      * Returns <code>true</code> if this element is contained in an archive, <code>false</code>
@@ -95,9 +95,9 @@ public interface IIpsElement extends IAdaptable {
      * remove the element from it's parent or to delete the enclosing resource. Implementations
      * should document these details.
      * 
-     * @throws CoreRuntimeException If an error occurs during deletion
+     * @throws IpsException If an error occurs during deletion
      * @throws UnsupportedOperationException If the element cannot be deleted
      */
-    public void delete() throws CoreRuntimeException;
+    public void delete() throws IpsException;
 
 }

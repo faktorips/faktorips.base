@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -34,7 +35,6 @@ import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractIpsSrcFil
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.StaticContentSelectIpsObjectContext;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -192,7 +192,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         BusyIndicator.showWhile(getDisplay(), () -> {
             try {
                 context.setElements(getIpsSrcFiles());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         });
@@ -241,7 +241,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     /**
      * Returns all ips source files that can be chosen by the user.
      */
-    protected abstract IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException;
+    protected abstract IIpsSrcFile[] getIpsSrcFiles() throws IpsException;
 
     /**
      * Returns an Array of {@link IIpsSrcFile}, that contains all {@link IIpsSrcFile source files}
@@ -250,7 +250,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses to search the source files in all given projects.
      */
-    protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) throws CoreRuntimeException {
+    protected final IIpsSrcFile[] findIpsSrcFilesByType(IpsObjectType type) {
         Set<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(ipsProject.findIpsSrcFiles(type)));
@@ -281,9 +281,9 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * 
      * @param qualifiedName The qualified name to be checked for uniqueness
      * @return True whether the qualified name is unique, else false
-     * @throws CoreRuntimeException If getting the required {@link IIpsSrcFile}s failed
+     * @throws IpsException If getting the required {@link IIpsSrcFile}s failed
      */
-    public boolean checkIpsObjectUniqueness(String qualifiedName) throws CoreRuntimeException {
+    public boolean checkIpsObjectUniqueness(String qualifiedName) {
         List<IIpsSrcFile> srcFiles = Arrays.asList(getIpsSrcFiles());
         if (srcFiles.isEmpty()) {
             return true;

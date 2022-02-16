@@ -16,7 +16,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.type.TypeEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.PolicyCmtTypeDescriptionPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
 /**
@@ -60,7 +59,7 @@ public class PolicyCmptTypeEditor extends TypeEditor implements IModelDescriptio
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreRuntimeException {
+    public IPage createModelDescriptionPage() {
         return new PolicyCmtTypeDescriptionPage(getPolicyCmptType());
     }
 

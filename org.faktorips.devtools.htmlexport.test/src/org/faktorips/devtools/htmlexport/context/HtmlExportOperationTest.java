@@ -17,11 +17,11 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
@@ -52,7 +52,7 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
         Display.getDefault().syncExec(() -> {
             try {
                 operation.run(new NullProgressMonitor());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 fail(e.getMessage());
             }
         });

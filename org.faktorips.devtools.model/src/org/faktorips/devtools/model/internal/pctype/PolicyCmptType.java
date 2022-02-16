@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
@@ -263,14 +263,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public boolean isAggregateRoot() throws CoreRuntimeException {
+    public boolean isAggregateRoot() {
         IsAggregrateRootVisitor visitor = new IsAggregrateRootVisitor(getIpsProject());
         visitor.start(this);
         return visitor.isRoot();
     }
 
     @Override
-    public boolean isDependantType() throws CoreRuntimeException {
+    public boolean isDependantType() {
         return !isAggregateRoot();
     }
 
@@ -337,7 +337,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateProductSide(list, ipsProject);
         validateDuplicateRulesNames(list);
@@ -402,7 +402,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected List<IAssociation> findAssociationsForTargetAndAssociationTypeInternal(String target,
             AssociationType associationType,
-            IIpsProject project) throws CoreRuntimeException {
+            IIpsProject project) {
         List<IAssociation> result = super.findAssociationsForTargetAndAssociationTypeInternal(target, associationType,
                 project);
         if (getIpsProject().getReadOnlyProperties().isSharedDetailToMasterAssociations()) {
@@ -536,9 +536,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public void initPersistentTypeInfo() throws CoreRuntimeException {
+    public void initPersistentTypeInfo() {
         if (!getIpsProject().isPersistenceSupportEnabled()) {
-            throw new CoreRuntimeException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     "Cannot initialize persistence information because the IPS Project is not persistent.")); //$NON-NLS-1$
         }
 
@@ -606,7 +606,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     private boolean isInverseSubsetted(IPolicyCmptTypeAssociation inverseOfDerivedUnion,
-            List<IAssociation> candidateSubsets) throws CoreRuntimeException {
+            List<IAssociation> candidateSubsets) {
         IPolicyCmptTypeAssociation derivedUnion = inverseOfDerivedUnion.findInverseAssociation(getIpsProject());
         if (derivedUnion == null) {
             // must be an error
@@ -658,7 +658,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return Messages.PolicyCmptType_caption;
     }
 

@@ -15,9 +15,9 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -94,13 +94,13 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getAssociation().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         if (getNewName().isEmpty()) {
             status.addFatalError(Messages.RenameAssociationProcessor_msgNewNameMustNotBeEmpty);
             return;
@@ -118,7 +118,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         try {
             addAffectedSrcFiles(modificationSet);
@@ -134,7 +134,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
 
             updateTargetRoleSingular();
             updateTargetRolePlural();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             modificationSet.undo();
             throw e;
         }
@@ -149,7 +149,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         getAssociation().setTargetRolePlural(getNewPluralName());
     }
 
-    private void updateInverseAssociation() throws CoreRuntimeException {
+    private void updateInverseAssociation() {
         IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
         IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
                 .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());

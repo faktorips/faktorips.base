@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -74,7 +73,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
     private ProductCmptGenerationToTypeDelta delta;
 
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         delta = spy(new ProductCmptGenerationToTypeDelta(gen, ipsProject));
 
         List<IProductCmptLink> genLinks = new ArrayList<>();
@@ -107,7 +106,7 @@ public class ProductCmptGenerationToTypeDeltaTest {
     private void setUpLink(IProductCmptLink link,
             String association,
             IProductCmptLinkContainer container,
-            IProductCmpt target) throws CoreRuntimeException {
+            IProductCmpt target) {
         when(link.getAssociation()).thenReturn(association);
         when(link.getProductCmptLinkContainer()).thenReturn(container);
         when(link.findTarget(any(IIpsProject.class))).thenReturn(target);

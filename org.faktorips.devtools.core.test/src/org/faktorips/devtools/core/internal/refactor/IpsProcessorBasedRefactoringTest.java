@@ -26,7 +26,6 @@ import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
@@ -102,17 +101,17 @@ public class IpsProcessorBasedRefactoringTest {
         }
 
         @Override
-        protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+        protected void validateIpsModel(MessageList validationMessageList) {
 
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
 
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
             addAffectedSrcFiles(modificationSet);
             return modificationSet;
@@ -136,7 +135,7 @@ public class IpsProcessorBasedRefactoringTest {
 
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-                SharableParticipants sharedParticipants) throws CoreRuntimeException {
+                SharableParticipants sharedParticipants) {
             return null;
         }
 

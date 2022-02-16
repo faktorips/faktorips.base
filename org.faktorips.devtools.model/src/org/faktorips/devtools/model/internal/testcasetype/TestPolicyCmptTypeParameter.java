@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -185,7 +184,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(association)) {
             return null;
         }
@@ -429,7 +428,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
-            throws CoreRuntimeException {
+            {
 
         if (isRoot() || productCmpt == null) {
             IPolicyCmptType allowedPolicyCmptType = findPolicyCmptType(ipsProjectToSearch);
@@ -497,7 +496,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check if the policy component type exists

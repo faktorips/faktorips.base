@@ -19,7 +19,6 @@ import java.util.Set;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -189,7 +188,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return productPartCollection.getProductParts(type);
     }
 
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) {
         return new ProductCmptGenerationToTypeDelta(this, ipsProject);
     }
 
@@ -293,7 +292,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public boolean canCreateValidLink(IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
@@ -456,7 +455,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptType type = findProductCmptType(ipsProject);
         // no type information available, so no further validation possible

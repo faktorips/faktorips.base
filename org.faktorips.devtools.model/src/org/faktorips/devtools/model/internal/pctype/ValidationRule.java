@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
@@ -165,7 +164,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
                 PROPERTY_NAME, "", list); //$NON-NLS-1$
@@ -563,7 +562,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 

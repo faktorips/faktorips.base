@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -85,7 +84,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
@@ -101,7 +100,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE) && ipsSrcFile.exists()) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
             return enumType.isExtensible() && !enumType.isAbstract();
@@ -110,7 +109,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void generateCodeForJavatype() throws CoreRuntimeException {
+    protected void generateCodeForJavatype() {
         TypeSection mainSection = getMainTypeSection();
         mainSection.getJavaDocForTypeBuilder()
                 .javaDoc(getLocalizedText("CLASS_JAVADOC", getEnumType().getQualifiedName()),
@@ -161,7 +160,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      }
      * </pre>
      */
-    private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreRuntimeException {
+    private void generateConstructor(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$

@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -48,7 +48,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
 
     @SuppressWarnings("deprecation")
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         MessageList messages = new MessageList();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
@@ -69,7 +69,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return messages;
     }
 
-    private int countPackages() throws CoreRuntimeException {
+    private int countPackages() {
         int packs = 0;
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -79,7 +79,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
     }
 
     protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         AFolder folder = (AFolder)pack.getCorrespondingResource();
         SortedSet<? extends AResource> members = folder.getMembers();
         monitor.beginTask("Migrate package " + pack.getName(), members.size()); //$NON-NLS-1$
@@ -119,9 +119,9 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
-     * @throws CoreRuntimeException in case of any exception throw a {@link CoreException}
+     * @throws IpsException in case of any exception throw a {@link CoreException}
      */
-    protected boolean migrate(AFile file) throws CoreRuntimeException {
+    protected boolean migrate(AFile file) {
         // default do nothing
         return false;
     }
@@ -141,14 +141,14 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      */
-    protected abstract void migrate(IIpsSrcFile srcFile) throws CoreRuntimeException;
+    protected abstract void migrate(IIpsSrcFile srcFile) throws IpsException;
 
     /**
      * Hook method for subclasses to do stuff that is done once before any file is migrated.
      * 
-     * @throws CoreRuntimeException This method may throw this exception at any time.
+     * @throws IpsException This method may throw this exception at any time.
      */
-    protected void beforeFileMigration() throws CoreRuntimeException {
+    protected void beforeFileMigration() {
         // Empty default implementation
     }
 }

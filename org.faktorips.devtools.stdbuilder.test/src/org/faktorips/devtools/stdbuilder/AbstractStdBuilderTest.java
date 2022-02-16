@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -59,7 +58,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
 
     @Override
     protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            throws CoreRuntimeException {
+            {
 
         properties.setBuilderSetId(StandardBuilderSet.ID);
     }

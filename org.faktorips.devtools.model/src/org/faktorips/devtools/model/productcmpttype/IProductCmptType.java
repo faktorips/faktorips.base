@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaClass;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -509,7 +509,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * @see #searchMetaObjectSrcFiles(boolean)
      */
-    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreRuntimeException;
+    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws IpsException;
 
     /**
      * Creates and returns a new {@link IProductCmptCategory} belonging to this
@@ -556,9 +556,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * Categories from supertypes are located at the top of the list.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching the supertype hierarchy
+     * @throws IpsException if an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreRuntimeException;
+    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -633,11 +633,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param name the name of the {@link IProductCmptCategory} to check for existence in this type
      *            and it's supertypes
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      * 
      * @see #hasCategory(String)
      */
-    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreRuntimeException;
+    public boolean findHasCategory(String name, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -647,9 +647,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for formula signature
@@ -657,10 +657,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for configurable validation
@@ -668,9 +668,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for table structure usages
@@ -678,9 +678,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for product relevant policy
@@ -688,10 +688,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for product component type
@@ -699,10 +699,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Moves the indicated categories up or down by one position and returns whether a move has been

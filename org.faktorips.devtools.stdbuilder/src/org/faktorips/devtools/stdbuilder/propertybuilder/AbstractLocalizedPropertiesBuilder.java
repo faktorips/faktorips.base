@@ -19,8 +19,8 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -72,7 +72,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
      * 
      */
     @Override
-    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
             for (ISupportedLanguage supportedLanguage : project.getReadOnlyProperties().getSupportedLanguages()) {
@@ -95,7 +95,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
      * {@inheritDoc}
      */
     @Override
-    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException {
+    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) {
         super.afterBuildProcess(ipsProject, buildKind);
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
@@ -113,7 +113,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
                 + getMessagesFileSuffix(supportedLanguage.getLocale());
         Path path = QNameUtil.toPath(resourceBundleBaseName);
         if (path == null) {
-            throw new CoreRuntimeException("Can't find resource bundle for messages of " + entry);
+            throw new IpsException("Can't find resource bundle for messages of " + entry);
         }
         Path file = path.getFileName();
         String fileName = file == null ? IpsStringUtils.EMPTY : file.toString();

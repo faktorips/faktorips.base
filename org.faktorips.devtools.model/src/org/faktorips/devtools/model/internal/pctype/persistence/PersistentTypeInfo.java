@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -333,7 +332,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     @Override
-    public IPolicyCmptType findRootEntity() throws CoreRuntimeException {
+    public IPolicyCmptType findRootEntity() {
         RooEntityFinder rooEntityFinder = new RooEntityFinder(getIpsProject());
         rooEntityFinder.start(getPolicyCmptType());
         return rooEntityFinder.rooEntity;

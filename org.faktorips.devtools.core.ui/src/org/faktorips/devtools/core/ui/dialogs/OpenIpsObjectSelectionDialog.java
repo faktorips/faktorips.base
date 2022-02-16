@@ -46,7 +46,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -137,7 +136,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     @Override
     protected void fillContentProvider(AbstractContentProvider contentProvider,
             ItemsFilter itemsFilter,
-            IProgressMonitor progressMonitorParam) throws CoreRuntimeException {
+            IProgressMonitor progressMonitorParam) {
 
         IProgressMonitor progressMonitor = progressMonitorParam;
         if (progressMonitorParam == null) {

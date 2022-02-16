@@ -17,8 +17,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
@@ -38,18 +38,18 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
      * Configures a {@link IJavaProject} for the usage of Faktor-IPS.
      * 
      * @param javaProject The java project to be configured
-     * @throws CoreRuntimeException if configuring failed
+     * @throws IpsException if configuring failed
      * @deprecated this method is only here to support the deprecated
      *             {@link ProjectUtil#createIpsProject(IJavaProject, String, boolean, boolean, boolean, java.util.List)}
      *             method without code duplication
      */
     @Deprecated
     public static void configureDefaultIpsProject(IJavaProject javaProject)
-            throws CoreRuntimeException {
+            {
         try {
             configureJavaProject(javaProject, false, false);
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -65,7 +65,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
 
     @Override
     public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreRuntimeException {
+            {
         IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         boolean isJodaSupportAvailable = IpsClasspathContainerInitializer.isJodaSupportAvailable();
         boolean isGroovySupportAvailable = IpsClasspathContainerInitializer.isGroovySupportAvailable()
@@ -73,7 +73,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
         try {
             configureJavaProject(javaProject, isJodaSupportAvailable, isGroovySupportAvailable);
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

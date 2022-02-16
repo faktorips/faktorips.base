@@ -14,7 +14,6 @@ import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.AbstractTestLayouter;
 import org.faktorips.devtools.htmlexport.helper.ContainsTextTestLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -38,7 +37,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectWithDefaultValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectWithDefaultValue() {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = "defaultPolicy";
         final String name = "ExtensionPropertyAtIpsObject";
@@ -58,7 +57,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectWithoutDefaultValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectWithoutDefaultValue() {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = null;
         final String name = "ExtensionPropertyAtIpsObject";
@@ -78,7 +77,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectWithSetValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectWithSetValue() {
         Class<PolicyCmptType> type = PolicyCmptType.class;
         String defaultValue = null;
         final String name = "ExtensionPropertyAtIpsObject";
@@ -101,7 +100,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectPartWithDefaultValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectPartWithDefaultValue() {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = "defaultAttribut";
         final String name = "ExtensionPropertyAtIpsObjectPart";
@@ -122,7 +121,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectPartWithoutDefaultValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectPartWithoutDefaultValue() {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = null;
         final String name = "ExtensionPropertyAtIpsObjectPart";
@@ -143,7 +142,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
     }
 
     @Test
-    public void testExtensionPropertyAtIpsObjectPartWithSetValue() throws CoreRuntimeException {
+    public void testExtensionPropertyAtIpsObjectPartWithSetValue() {
         Class<PolicyCmptTypeAttribute> type = PolicyCmptTypeAttribute.class;
         String defaultValue = null;
         final String name = "ExtensionPropertyAtIpsObjectPart";

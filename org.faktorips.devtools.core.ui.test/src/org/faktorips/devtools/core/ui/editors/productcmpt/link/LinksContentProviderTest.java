@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
@@ -121,7 +120,7 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetParent() throws CoreRuntimeException {
+    public void testGetParent() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(true);
         when(linkViewItem.getLink()).thenReturn(link1);
@@ -141,7 +140,7 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetParent_ParameterIsNotALinkViewItem() throws CoreRuntimeException {
+    public void testGetParent_ParameterIsNotALinkViewItem() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(true);
         when(linkViewItem.getLink()).thenReturn(link1);

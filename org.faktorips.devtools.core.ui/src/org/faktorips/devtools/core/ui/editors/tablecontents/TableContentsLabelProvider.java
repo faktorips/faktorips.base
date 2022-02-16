@@ -14,10 +14,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.runtime.MessageList;
 
@@ -58,7 +58,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
             MessageList messageList = row.validate(row.getIpsProject());
             messageList = messageList.getMessagesFor(row, IRow.PROPERTY_VALUE, columnIndex);
             return !messageList.isEmpty();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return false;

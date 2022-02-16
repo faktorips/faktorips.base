@@ -19,7 +19,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.Message;
@@ -50,21 +49,21 @@ public class ProductCmptTypeAssociationTest {
     private MessageList messageList;
 
     @Test
-    public void testDerivedUnionStatic_SubsetChanging() throws CoreRuntimeException {
+    public void testDerivedUnionStatic_SubsetChanging() {
         setUpAssociations(true, false);
 
         verifyErrorMessageAdded();
     }
 
     @Test
-    public void testDerivedUnionChanging_SubsetStatic() throws CoreRuntimeException {
+    public void testDerivedUnionChanging_SubsetStatic() {
         setUpAssociations(false, true);
 
         verifyErrorMessageAdded();
     }
 
     @Test
-    public void testNoMismatch() throws CoreRuntimeException {
+    public void testNoMismatch() {
         setUpAssociations(false, false);
 
         subsetMock.validateDerivedUnionChangingOverTimeProperty(messageList, ipsProject);
@@ -72,14 +71,14 @@ public class ProductCmptTypeAssociationTest {
     }
 
     @Test
-    public void testNoMismatch2() throws CoreRuntimeException {
+    public void testNoMismatch2() {
         setUpAssociations(true, true);
 
         subsetMock.validateDerivedUnionChangingOverTimeProperty(messageList, ipsProject);
         verify(messageList, never()).add(any(Message.class));
     }
 
-    private void setUpAssociations(boolean duChanging, boolean subsetChanging) throws CoreRuntimeException {
+    private void setUpAssociations(boolean duChanging, boolean subsetChanging) {
         subsetMock = mock(ProductCmptTypeAssociation.class, CALLS_REAL_METHODS);
         messageList = mock(MessageList.class);
         messageCaptor = ArgumentCaptor.forClass(Message.class);

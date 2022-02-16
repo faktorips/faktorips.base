@@ -18,7 +18,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.type.TypePart;
@@ -242,7 +241,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check the correct name format
@@ -316,7 +315,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmptType();
     }
 
@@ -372,7 +371,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         }
 
         @Override
-        protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+        protected void validateThis(MessageList list, IIpsProject ipsProject) {
             super.validateThis(list, ipsProject);
             if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getTableStructure()) == null) {
                 String text = MessageFormat.format(Messages.TableStructureUsage_msgTableStructureNotExists,

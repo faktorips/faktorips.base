@@ -20,7 +20,6 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -61,7 +60,7 @@ public class StringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultLocalizedContent() throws CoreRuntimeException {
+    public void testGetDefaultLocalizedContent() {
         assertEquals("Versicherung", new StringValue("Versicherung").getDefaultLocalizedContent(newIpsProject()));
     }
 

@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.views.instanceexplorer;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.InstanceIpsSrcFileViewItem;
 import org.faktorips.devtools.model.IIpsMetaClass;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -66,7 +66,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
             monitor.worked(1);
             monitor.done();
             return result;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return new InstanceIpsSrcFileViewItem[0];
         }

@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IDelegatingValueSet;
@@ -132,7 +131,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         return delegate.containsValue(value, ipsProject);
     }
 
@@ -289,14 +288,14 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         AbstractValueSetValidator<?> validator = delegate.createValidator(getValueSetOwner(),
                 getValueSetOwner().findValueDatatype(ipsProject));
         list.add(validator.validate());
     }
 
     @Override
-    public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validateValue(int index, IIpsProject ipsProject) {
         EnumValueSetValidator validator = getEnumDelegate().createValidator(getValueSetOwner(),
                 findValueDatatype(ipsProject));
         return validator.validateValue(index);

@@ -39,7 +39,6 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
@@ -140,7 +139,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateProductCmptTypeDoesNotConfigureThisType() throws CoreRuntimeException {
+    public void testValidateProductCmptTypeDoesNotConfigureThisType() {
         IPolicyCmptType polType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productType = polType.findProductCmptType(ipsProject);
 
@@ -177,7 +176,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetOverrideCandidates() throws CoreRuntimeException {
+    public void testGetOverrideCandidates() {
         assertEquals(0, policyCmptType.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
@@ -231,7 +230,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindProductCmptType() throws CoreRuntimeException {
+    public void testFindProductCmptType() {
         policyCmptType.setProductCmptType("");
         assertNull(policyCmptType.findProductCmptType(ipsProject));
 
@@ -250,7 +249,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAttributeInSupertypeHierarchy() throws CoreRuntimeException {
+    public void testFindAttributeInSupertypeHierarchy() {
         assertNull(policyCmptType.findPolicyCmptTypeAttribute("unkown", ipsProject));
         IPolicyCmptTypeAttribute a1 = policyCmptType.newPolicyCmptTypeAttribute();
         a1.setName("a1");
@@ -481,7 +480,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOnAssociation() throws CoreRuntimeException {
+    public void testDependsOnAssociation() {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
@@ -504,7 +503,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOnMethodParameterDatatypes() throws CoreRuntimeException {
+    public void testDependsOnMethodParameterDatatypes() {
         IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "C");
@@ -653,7 +652,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testDependsOnProductCmptType() throws CoreRuntimeException {
+    public void testDependsOnProductCmptType() {
         IPolicyCmptType aPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         IProductCmptType aProductCmptType = newProductCmptType(ipsProject, "AProduct");
 
@@ -717,7 +716,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testToXml() throws CoreRuntimeException {
+    public void testToXml() {
         policyCmptType.setConfigurableByProductCmptType(true);
         policyCmptType.setProductCmptType("Product");
         IDescription description = policyCmptType.getDescription(Locale.US);
@@ -775,7 +774,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetSubtypeHierarchy() throws CoreRuntimeException {
+    public void testGetSubtypeHierarchy() {
         ITypeHierarchy hierarchy = policyCmptType.getSubtypeHierarchy();
         assertNotNull(hierarchy);
     }
@@ -795,7 +794,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testIsAggregateRoot() throws CoreRuntimeException {
+    public void testIsAggregateRoot() {
         assertTrue(policyCmptType.isAggregateRoot());
 
         policyCmptType.newPolicyCmptTypeAssociation().setAssociationType(AssociationType.ASSOCIATION);
@@ -858,7 +857,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() throws CoreRuntimeException {
+    public void testValidateOtherTypeWithSameNameTypeInIpsObjectPath() {
         IIpsProject a = newIpsProject();
         IProductCmptType aProductTypeProjectA = newProductCmptType(a, "faktorzehn.example.APolicy");
         IIpsProject b = newIpsProject();
@@ -908,7 +907,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testPersistenceSupport() throws CoreRuntimeException {
+    public void testPersistenceSupport() {
         assertFalse(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
         IIpsProjectProperties properties = policyCmptType.getIpsProject().getProperties();
         properties.setPersistenceSupport(true);
@@ -927,7 +926,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateDuplicateAssociationSpecialCase() throws CoreRuntimeException {
+    public void testValidateDuplicateAssociationSpecialCase() {
         // MTB#357 special case: a detail-to-master association that is a subset of a derived-union
         // could have the same name as the corresponding derived union association
 
@@ -964,7 +963,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAssociationsForTargetAndAssociationType() throws CoreRuntimeException {
+    public void testFindAssociationsForTargetAndAssociationType() {
         IPolicyCmptType baseMotor = newPolicyCmptType(ipsProject, "BaseMotor");
         IPolicyCmptType injection = newPolicyCmptType(ipsProject, "Injection");
 
@@ -1044,7 +1043,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testOverrideAttributes() throws CoreRuntimeException {
+    public void testOverrideAttributes() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("override");
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
@@ -1072,7 +1071,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindOverrideAttributeCandidates() throws CoreRuntimeException {
+    public void testFindOverrideAttributeCandidates() {
         IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
 
         // 1. Attribute
@@ -1213,7 +1212,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertFalse(cmpt.isGenerateValidatorClass());
     }
 
-    public void testValidateSameGenerateValidatorClassSetting_sameSetting() throws CoreRuntimeException {
+    public void testValidateSameGenerateValidatorClassSetting_sameSetting() {
         superSuperPolicyCmptType.setGenerateValidatorClass(false);
         superPolicyCmptType.setGenerateValidatorClass(false);
         policyCmptType.setGenerateValidatorClass(false);
@@ -1225,7 +1224,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateSameGenerateValidatorClassSetting_differentSettingInSuperClass() throws CoreRuntimeException {
+    public void testValidateSameGenerateValidatorClassSetting_differentSettingInSuperClass() {
         superSuperPolicyCmptType.setGenerateValidatorClass(true);
         superPolicyCmptType.setGenerateValidatorClass(false);
         policyCmptType.setGenerateValidatorClass(false);

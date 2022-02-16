@@ -65,6 +65,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
@@ -80,7 +81,6 @@ import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.builder.DependencyGraph;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
@@ -337,7 +337,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         if (changeListeners.isEmpty() && modificationStatusChangeListeners.isEmpty()) {
             try {
                 getWorkspace().run(action, monitor);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
                 throw e;
             }
@@ -394,7 +394,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             final Set<IIpsSrcFile> modifiedSrcFiles) {
         try {
             getWorkspace().run(action, monitor);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
                 ipsSrcFile.discardChanges();
             }
@@ -408,7 +408,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public IIpsProject createIpsProject(AProject project) throws CoreRuntimeException {
+    public IIpsProject createIpsProject(AProject project) {
         try {
             if (Abstractions.isEclipseRunning()) {
                 IProject eclipseProject = project.unwrap();
@@ -439,7 +439,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                 return ipsProject;
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -454,7 +454,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public IIpsProject[] getIpsModelProjects() throws CoreRuntimeException {
+    public IIpsProject[] getIpsModelProjects() {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> modelProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
@@ -466,7 +466,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public IIpsProject[] getIpsProductDefinitionProjects() throws CoreRuntimeException {
+    public IIpsProject[] getIpsProductDefinitionProjects() {
         IIpsProject[] allIpsProjects = getIpsProjects();
         List<IIpsProject> productDefinitionProjects = new ArrayList<>(allIpsProjects.length);
         for (IIpsProject ipsProject : allIpsProjects) {
@@ -478,7 +478,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public Set<AProject> getNonIpsProjects() throws CoreRuntimeException {
+    public Set<AProject> getNonIpsProjects() {
         return Abstractions.getWorkspace()
                 .getRoot().getProjects().stream()
                 .filter(not(AProject::isIpsProject))
@@ -526,7 +526,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreRuntimeException {
+    public IIpsElement[] getChildren() {
         return getIpsProjects();
     }
 
@@ -745,7 +745,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreRuntimeException {
+    public IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() {
         List<IIpsPackageFragmentRoot> result = new ArrayList<>();
         IIpsProject[] projects = getIpsProjects();
         for (IIpsProject project : projects) {
@@ -859,7 +859,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
             try {
                 emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<String, Object>()));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
             return emptyBuilderSet;
@@ -885,7 +885,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     builderSetInfo);
             builderSet.initialize(builderSetConfig);
             return true;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(new IpsStatus("An exception occurred while trying to initialize" //$NON-NLS-1$
                     + " the artefact builder set: " //$NON-NLS-1$
                     + builderSet.getId(), e));
@@ -988,7 +988,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         InputStream is;
         try {
             is = file.getContents();
-        } catch (CoreRuntimeException e1) {
+        } catch (IpsException e1) {
             IpsLog.log(new IpsStatus("Error reading project file contents " //$NON-NLS-1$
                     + file, e1));
             return properties;
@@ -1480,19 +1480,19 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * is provided by the {@link SingleEventModification} is fired. No events are fired during the
      * method execution.
      * 
-     * @throws CoreRuntimeException delegates the exceptions from the
+     * @throws IpsException delegates the exceptions from the
      *             {@link SingleEventModification#execute() execute()} method of the
      *             {@link SingleEventModification}
      */
     public <T> T executeModificationsWithSingleEvent(SingleEventModification<T> modifications)
-            throws CoreRuntimeException {
+            {
         boolean successful = false;
         IIpsSrcFile ipsSrcFile = modifications.getIpsSrcFile();
         IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
         try {
             stopBroadcastingChangesMadeByCurrentThread();
             successful = modifications.execute();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             throw e;
         } finally {
             if (successful) {
@@ -1511,7 +1511,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         throw new UnsupportedOperationException("The IPS Model cannot be deleted."); //$NON-NLS-1$
     }
 

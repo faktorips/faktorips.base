@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -36,19 +35,19 @@ import org.junit.Test;
 public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest {
 
     @Test
-    public void testPathPolicyCmptType() throws CoreRuntimeException {
+    public void testPathPolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(policyCmptType);
     }
 
     @Test
-    public void testPathProductCmptType() throws CoreRuntimeException {
+    public void testPathProductCmptType() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmptType);
     }
 
     @Test
-    public void testPathProductCmptTypeAssociation() throws CoreRuntimeException {
+    public void testPathProductCmptTypeAssociation() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         IProductCmptTypeAssociation association = new ProductCmptTypeAssociation(productCmptType, "xxx.BVBAsso");
 
@@ -56,14 +55,14 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     }
 
     @Test
-    public void testPathPolicyCmpt() throws CoreRuntimeException {
+    public void testPathPolicyCmpt() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "xxx.BVB"); //$NON-NLS-1$
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "yyy.BVB"); //$NON-NLS-1$
         assertImagePathWorksWithIpsObjectAndIpsSrcFile(productCmpt);
     }
 
     @Test
-    public void testPathProductCmptMitEigenemBild() throws CoreRuntimeException {
+    public void testPathProductCmptMitEigenemBild() {
         String productCmptTypeName = "xxx.BVB";
         IProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "yyy.BVB"); //$NON-NLS-1$
@@ -102,7 +101,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     }
 
     @Test
-    public void testPathProductCmptMitEigenemBildUndCoreException() throws CoreRuntimeException {
+    public void testPathProductCmptMitEigenemBildUndCoreException() {
         String productCmptTypeName = "xxx.BVB";
         IProductCmptType productCmptType = newProductCmptType(ipsProject, productCmptTypeName);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "yyy.BVB"); //$NON-NLS-1$
@@ -141,7 +140,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     }
 
     @Test
-    public void testPathProductCmptMitEigenemBildAusSuperProductCmpt() throws CoreRuntimeException {
+    public void testPathProductCmptMitEigenemBildAusSuperProductCmpt() {
         String productCmptTypeName = "xxx.BVB";
         String superProductCmptTypeName = "xxx.SuperBVB";
 
@@ -158,7 +157,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     }
 
     @Test
-    public void testPathTestObject() throws CoreRuntimeException {
+    public void testPathTestObject() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "xxx.TestCaseType");
         ITestCase testCase = newTestCase(testCaseType, "xxxTest"); //$NON-NLS-1$
 
@@ -180,7 +179,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     }
 
     @Test
-    public void testPathTestParameter() throws CoreRuntimeException {
+    public void testPathTestParameter() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "xxx.TestCaseType");
 
         String testParameterName = "xyz.bbvbv";
@@ -201,7 +200,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
         assertEquals("testruleparameter", new IpsElementImagePageElement(ruleParameter, getContext()).getFileName());
     }
 
-    private void assertImagePathWorksWithIpsObjectAndIpsSrcFile(IIpsObject ipsObject) throws CoreRuntimeException {
+    private void assertImagePathWorksWithIpsObjectAndIpsSrcFile(IIpsObject ipsObject) {
         String expectedFileName = ipsObject.getIpsObjectType().getFileExtension();
 
         if (ipsObject instanceof IProductCmpt) {

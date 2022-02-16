@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectMessageLi
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
@@ -161,7 +161,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
         try {
             messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error validating " //$NON-NLS-1$
                     + getDocumentedIpsObject().getQualifiedName(), e));
         }

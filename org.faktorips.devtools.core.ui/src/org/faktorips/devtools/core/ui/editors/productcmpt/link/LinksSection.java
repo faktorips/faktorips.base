@@ -59,7 +59,6 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropLi
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -309,7 +308,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     private TreeMessageHoverService createTreeMessageHoverService(final LinksMessageCueLabelProvider labelProvider) {
         return new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+            protected MessageList getMessagesFor(Object element) {
                 return labelProvider.getMessages(element);
             }
         };

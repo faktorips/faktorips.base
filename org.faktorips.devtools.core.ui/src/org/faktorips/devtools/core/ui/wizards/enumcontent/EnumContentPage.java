@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -39,7 +40,6 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContentValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -128,7 +128,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    protected void setDefaultsExtension(IResource selectedResource) throws CoreRuntimeException {
+    protected void setDefaultsExtension(IResource selectedResource) {
         if (selectedResource == null) {
             return;
         }
@@ -165,7 +165,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreRuntimeException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         IEnumType enumType = getEnumType();
         if (enumType != null) {
             IIpsPackageFragment packageFrag = getIpsPackageFragment();
@@ -191,7 +191,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
         newEnumContent.setEnumType(enumTypeField.getText());
@@ -204,7 +204,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      * Validates the page and generates error messages that are displayed in the message area of the
      * wizard container.
      */
-    public final void validatePage() throws CoreRuntimeException {
+    public final void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage((String)null);
         validateSourceRoot();
@@ -217,7 +217,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         updatePageComplete();
     }
 
-    private void validatePageInternal() throws CoreRuntimeException {
+    private void validatePageInternal() {
         String enumTypeFieldText = enumTypeField.getText();
         if (StringUtils.isEmpty(enumTypeFieldText)) {
             setErrorMessage(Messages.EnumContentPage_msgEnumTypeMissing);
@@ -283,7 +283,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         if (validateInput) {
             try {
                 validatePage();
-            } catch (CoreRuntimeException coreEx) {
+            } catch (IpsException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 

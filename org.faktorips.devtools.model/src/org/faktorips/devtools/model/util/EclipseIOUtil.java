@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.util.IoUtil;
@@ -53,7 +53,7 @@ public class EclipseIOUtil {
      * @param force whether you want to force the write
      * @param keepHistory keep the file history
      * @param progressMonitor the progress monitor to visualize the file writing status
-     * @throws CoreRuntimeException In case of a core exception while writing to the file
+     * @throws IpsException In case of a core exception while writing to the file
      * 
      * @see IFile#setContents(InputStream, boolean, boolean, IProgressMonitor)
      */
@@ -61,7 +61,7 @@ public class EclipseIOUtil {
             InputStream inputStream,
             boolean force,
             boolean keepHistory,
-            IProgressMonitor progressMonitor) throws CoreRuntimeException {
+            IProgressMonitor progressMonitor) {
         try {
             if (!file.isReadOnly()
                     || file.getWorkspace().validateEdit(new IFile[] { file }, IWorkspace.VALIDATE_PROMPT).isOK()) {
@@ -71,7 +71,7 @@ public class EclipseIOUtil {
                         "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         } finally {
             IoUtil.close(inputStream);
         }

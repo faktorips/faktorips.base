@@ -17,8 +17,8 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.StreamUtil;
@@ -78,7 +78,7 @@ public class IpsJarBundle extends AbstractIpsBundle {
 
     void throwExceptionWhenNotFound(ZipEntry zipEntry, Path path) {
         if (zipEntry == null) {
-            throw new CoreRuntimeException("There is no entry " + path + " in " + getLocation()); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException("There is no entry " + path + " in " + getLocation()); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

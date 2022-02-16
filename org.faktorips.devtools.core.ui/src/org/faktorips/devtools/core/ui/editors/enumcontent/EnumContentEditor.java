@@ -12,12 +12,12 @@ package org.faktorips.devtools.core.ui.editors.enumcontent;
 
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * The Faktor-IPS editor to edit <code>IEnumContent</code> objects with.
@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 public class EnumContentEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreRuntimeException {
+    public IPage createModelDescriptionPage() {
         IEnumType enumType = getEnumContent().findEnumType(getIpsProject());
         if (enumType != null) {
             return new EnumsDescriptionPage(enumType);
@@ -41,7 +41,7 @@ public class EnumContentEditor extends IpsObjectEditor implements IModelDescript
     }
 
     @Override
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreRuntimeException {
+    protected void addPagesForParsableSrcFile() throws PartInitException, IpsException {
         addPage(new EnumContentEditorPage(this));
     }
 

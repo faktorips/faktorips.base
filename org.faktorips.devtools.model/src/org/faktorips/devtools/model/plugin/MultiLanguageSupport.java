@@ -13,9 +13,9 @@ package org.faktorips.devtools.model.plugin;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -76,7 +76,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         String localizedCaption = null;
         try {
             localizedCaption = ipsObjectPartContainer.getCaption(getLocalizationLocale());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // Exception not too critical, just log it and use the next possible caption.
             IpsLog.log(e);
         }
@@ -93,7 +93,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         String localizedPluralCaption = null;
         try {
             localizedPluralCaption = ipsObjectPartContainer.getPluralCaption(getLocalizationLocale());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // Exception not too critical, just log it and use the next possible caption.
             IpsLog.log(e);
         }
@@ -112,7 +112,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         if (defaultLocale != null) {
             try {
                 defaultCaption = ipsObjectPartContainer.getCaption(defaultLocale);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // Exception not too critical, just log it and use the next possible caption.
                 IpsLog.log(e);
             }
@@ -132,7 +132,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         if (defaultLocale != null) {
             try {
                 defaultPluralCaption = ipsObjectPartContainer.getPluralCaption(defaultLocale);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // Exception not too critical, just log it and use the next possible caption.
                 IpsLog.log(e);
             }

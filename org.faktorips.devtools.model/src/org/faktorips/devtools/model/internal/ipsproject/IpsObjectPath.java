@@ -24,8 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.search.AbstractSearch;
 import org.faktorips.devtools.model.internal.ipsproject.search.CycleSearch;
 import org.faktorips.devtools.model.internal.ipsproject.search.DuplicateIpsSrcFileSearch;
@@ -224,7 +224,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws CoreRuntimeException {
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) {
         Path correctArchivePath = archivePath;
 
         if (archivePath.getNameCount() >= 2
@@ -245,7 +245,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         try {
             newEntry.initStorage(correctArchivePath);
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
         addEntry(newEntry);
         return newEntry;
@@ -461,7 +461,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public MessageList validate() throws CoreRuntimeException {
+    public MessageList validate() {
         MessageList list = new MessageList();
         if (!isOutputDefinedPerSrcFolder()) {
             if (outputFolderMergableSources == null) {

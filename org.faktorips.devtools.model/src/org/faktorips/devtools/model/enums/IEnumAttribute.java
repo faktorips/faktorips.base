@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.enums;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -242,11 +242,11 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @see #getDatatype()
      * 
-     * @throws CoreRuntimeException If an error occurs while searching the given IPS project for the value
+     * @throws IpsException If an error occurs while searching the given IPS project for the value
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ValueDatatype findDatatype(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this <code>IEnumAttribute</code>'s <code>ValueDatatype</code>. If the datatype is
@@ -261,11 +261,11 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @see #getDatatype()
      * @see #findDatatype(IIpsProject)
      * 
-     * @throws CoreRuntimeException If an error occurs while searching the given IPS project for the value
+     * @throws IpsException If an error occurs while searching the given IPS project for the value
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the data type of this <code>IEnumAttribute</code>.
@@ -329,10 +329,10 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @param ipsProject The IPS project that is used to the search the <code>unique</code> property
      *            in the super type hierarchy.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching
+     * @throws IpsException If an error occurs while searching
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public boolean findIsUnique(IIpsProject ipsProject) throws CoreRuntimeException;
+    public boolean findIsUnique(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets whether this <code>IEnumAttribute</code> is a unique identifier.
@@ -411,7 +411,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * Returns <code>null</code> if this <code>IEnumAttribute</code> is not inherited or the super
      * <code>IEnumAttribute</code> cannot be found.
      */
-    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this <code>IEnumAttribute</code> is marked to be used as ID in
@@ -449,10 +449,10 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this <code>IEnumAttribute</code> is part of.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the copies.
+     * @throws IpsException If an error occurs while searching for the copies.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreRuntimeException;
+    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns whether this <code>IEnumAttribute</code> is a <code>IEnumLiteralNameAttribute</code>.

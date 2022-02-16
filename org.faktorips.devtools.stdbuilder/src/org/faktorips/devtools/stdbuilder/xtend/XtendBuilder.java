@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -59,7 +58,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    protected String generate() throws CoreRuntimeException {
+    protected String generate() {
         if (getGeneratorModelRoot(getIpsObject()).isValidForCodeGeneration()) {
             String body = generateBodyInternal(getIpsObject());
             String packageDef = generatePackageDef();
@@ -100,7 +99,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         super.beforeBuild(ipsSrcFile, status);
         generatorModelContext.resetContext(getPackage(), getAllSuperTypeNames(ipsSrcFile));
     }
@@ -127,7 +126,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) {
         super.afterBuild(ipsSrcFile);
         generatorModelContext.resetContext(null, Collections.emptySet());
     }

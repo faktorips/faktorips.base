@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -164,7 +163,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
@@ -189,7 +188,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         validateAbstractDatatype(result, ipsProject);
     }
 
-    private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) {
         if (overwrites) {
             IAttribute superAttr = findOverwrittenAttribute(ipsProject);
             if (superAttr == null) {
@@ -250,7 +249,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
-    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) {
         IType supertype = ((IType)getIpsObject()).findSupertype(ipsProject);
         if (supertype == null) {
             return null;
@@ -264,14 +263,14 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         validateDefaultValue(defaultValue, valueDatatype, result, ipsProject);
     }
 
     protected void validateDefaultValue(String defaultValueToValidate,
             ValueDatatype valueDatatype,
             MessageList result,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
         } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
@@ -284,7 +283,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         IValueSet valueSet = getValueSet();
         return valueSet == null || defaultValueToValidate == null
                 || valueSet.containsValue(defaultValueToValidate, ipsProject);

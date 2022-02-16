@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.ui.controls.MultiValueAttributeControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
@@ -69,7 +68,7 @@ public class AttributeValueEditComposite
     }
 
     @Override
-    protected void createEditFields(List<EditField<?>> editFields) throws CoreRuntimeException {
+    protected void createEditFields(List<EditField<?>> editFields) {
         createValueEditField(editFields);
         createEditFieldsForExtensionProperties();
     }

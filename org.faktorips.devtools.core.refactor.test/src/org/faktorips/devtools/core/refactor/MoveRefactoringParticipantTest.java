@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
@@ -56,7 +55,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMovePolicyCmptType() throws CoreRuntimeException {
+    public void testMovePolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 ORIGINAL_PACKAGE_NAME + '.' + "Policy");
 
@@ -69,7 +68,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmptType() throws CoreRuntimeException {
+    public void testMoveProductCmptType() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         productCmptType.setConfigurationForPolicyCmptType(false);
 
@@ -82,7 +81,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmpt() throws CoreRuntimeException {
+    public void testMoveProductCmpt() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         saveIpsSrcFile(productCmptType);
         productCmptType.setConfigurationForPolicyCmptType(false);
@@ -106,7 +105,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveEnumType() throws CoreRuntimeException {
+    public void testMoveEnumType() {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
         enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
@@ -121,7 +120,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTableStructure() throws CoreRuntimeException {
+    public void testMoveTableStructure() {
         ITableStructure tableStructure = createTableStructure(ORIGINAL_PACKAGE_NAME + '.' + "TableStructure");
 
         saveIpsSrcFile(tableStructure);
@@ -134,7 +133,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTestCaseType() throws CoreRuntimeException {
+    public void testMoveTestCaseType() {
         ITestCaseType testCaseType = createTestCaseType(ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
 
         saveIpsSrcFile(testCaseType);

@@ -32,10 +32,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -406,7 +406,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         validateTooManyRelationsTest(getSubGenertation());
     }
 
-    private IProductCmptGeneration getSubGenertation() throws CoreRuntimeException {
+    private IProductCmptGeneration getSubGenertation() {
         PolicyCmptType subPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy", "SubProduct");
         subPolicyCmptType.setSupertype(policyCmptType.getName());
         IProductCmptType subProductCmptType = subPolicyCmptType.findProductCmptType(ipsProject);
@@ -442,7 +442,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         IConfiguredDefault defaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
@@ -520,7 +520,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreRuntimeException,
+    public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws IpsException,
             Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
@@ -588,7 +588,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewValidationRule() throws CoreRuntimeException {
+    public void testNewValidationRule() {
         assertEquals(0, generation.getNumOfValidationRules());
 
         newValidationRuleConfig();
@@ -731,7 +731,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsTemplate_true() throws CoreRuntimeException {
+    public void testIsTemplate_true() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration gen = template.getProductCmptGeneration(0);
 
@@ -739,7 +739,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsUsingTemplate() throws CoreRuntimeException {
+    public void testIsUsingTemplate() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
 
         productCmpt.setTemplate(template.getQualifiedName());
@@ -756,7 +756,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreRuntimeException {
+    public void testIsPartOfTemplateHierarchy_prodCmpt() {
         IProductCmpt product = newProductCmpt(ipsProject, "product");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         product.setTemplate(null);
@@ -768,7 +768,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_template() throws CoreRuntimeException {
+    public void testIsPartOfTemplateHierarchy_template() {
         IProductCmpt product = newProductTemplate(ipsProject, "product");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         product.setTemplate(null);
@@ -780,7 +780,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPartThis_ConfigElement() throws CoreRuntimeException {
+    public void testAddPartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
         IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
@@ -789,7 +789,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemovePartThis_ConfigElement() throws CoreRuntimeException {
+    public void testRemovePartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
         IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);

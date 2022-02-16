@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.ui.search.matcher.ExtensionPropertyMatcher;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
@@ -52,13 +51,13 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     @Override
-    protected void searchDetails() throws CoreRuntimeException {
+    protected void searchDetails() {
         Set<IType> searchedTypes = getTypes(getMatchingSrcFiles());
 
         addMatches(searchedTypes);
     }
 
-    private void addMatches(Set<IType> searchedTypes) throws CoreRuntimeException {
+    private void addMatches(Set<IType> searchedTypes) {
         WildcardMatcher stringMatcher = new WildcardMatcher(getSearchModel().getSearchTerm());
         ClassMatcher classMatcher = new ClassMatcher(getSearchModel().getSearchedClazzes());
         ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher);

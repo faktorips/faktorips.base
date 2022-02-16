@@ -25,7 +25,6 @@ import java.util.Set;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.AbstractCustomValidation;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -176,7 +175,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCustomValidation() throws CoreRuntimeException {
+    public void testCustomValidation() {
         PolicyCmptType type = newPolicyCmptType(ipsProject, "Policy");
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
         attribute.setName("attr1");
@@ -257,7 +256,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public MessageList validate(PolicyCmptTypeAttribute attribute, IIpsProject ipsProject) throws CoreRuntimeException {
+        public MessageList validate(PolicyCmptTypeAttribute attribute, IIpsProject ipsProject) {
             MessageList result = new MessageList();
             result.add(msgToReturn);
             return result;
@@ -274,7 +273,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public MessageList validate(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject) throws CoreRuntimeException {
+        public MessageList validate(IPolicyCmptTypeAttribute attribute, IIpsProject ipsProject) {
             MessageList result = new MessageList();
             result.add(msgToReturn);
             return result;
@@ -291,7 +290,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public MessageList validate(Attribute attribute, IIpsProject ipsProject) throws CoreRuntimeException {
+        public MessageList validate(Attribute attribute, IIpsProject ipsProject) {
             MessageList result = new MessageList();
             result.add(msgToReturn);
             return result;
@@ -308,7 +307,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public MessageList validate(IAttribute attribute, IIpsProject ipsProject) throws CoreRuntimeException {
+        public MessageList validate(IAttribute attribute, IIpsProject ipsProject) {
             MessageList result = new MessageList();
             result.add(msgToReturn);
             return result;

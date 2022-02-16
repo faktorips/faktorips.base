@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.enums;
 import java.text.MessageFormat;
 
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -32,12 +31,12 @@ import org.w3c.dom.Element;
  */
 public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements IEnumLiteralNameAttributeValue {
 
-    public EnumLiteralNameAttributeValue(EnumValue parent, String id) throws CoreRuntimeException {
+    public EnumLiteralNameAttributeValue(EnumValue parent, String id) {
         super(parent, id);
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         if (isNullValue()) {

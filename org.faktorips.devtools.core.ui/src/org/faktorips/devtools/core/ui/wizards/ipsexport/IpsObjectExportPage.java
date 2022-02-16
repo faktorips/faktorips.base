@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsProjectRefControl;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileExternal;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -245,7 +245,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * This check does not affect the validation process since it is only used for improving the
      * usability.
      * 
-     * @throws CoreRuntimeException if an error occurs during the validation
+     * @throws IpsException if an error occurs during the validation
      */
     protected void validateObjectToExportUniqueness() {
         String qualifiedName = exportedIpsObjectField.getText();

@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.testcase;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -63,7 +63,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
         }
@@ -193,7 +193,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         return ((ITestPolicyCmpt)getParent()).getTestCase();
     }
 
-    public void validateGroup(MessageList messageList, IIpsProject ipsProject) throws CoreRuntimeException {
+    public void validateGroup(MessageList messageList, IIpsProject ipsProject) {
         // check all messages only once, thus if the same test link is used more than one
         // only one message are added to the list of validation errors
 
@@ -232,7 +232,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         ITestPolicyCmptTypeParameter param = null;
         try {
             param = findTestPolicyCmptTypeParameter(ipsProject);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // ignore exception, the param will be used to indicate errors
         }
 
@@ -258,7 +258,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateGroup(list, ipsProject);
         validateSingle(list, ipsProject);

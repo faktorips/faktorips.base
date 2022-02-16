@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -120,9 +120,9 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Returns the test policy component type parameter or <code>null</code> if the test policy
      * component type parameter does not exists.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the policy component type.
+     * @throws IpsException if an error occurs while searching for the policy component type.
      */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the qualified name of the product component.
@@ -137,9 +137,9 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the product component or <code>null</code> if the product component does not exists.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the product component.
+     * @throws IpsException if an error occurs while searching for the product component.
      */
-    public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given test policy component is product relevant, otherwise
@@ -198,13 +198,13 @@ public interface ITestPolicyCmpt extends ITestObject {
      *            requires a product component otherwise empty
      * @param targetName name of the target if the new link should be an association otherwise empty
      * 
-     * @throws CoreRuntimeException if an error occurs while adding the new link. If the productCmpt and
+     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and
      *             the policyCmptType are both given
      */
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
-            String targetName) throws CoreRuntimeException;
+            String targetName) throws IpsException;
 
     /**
      * Creates a new link on the test policy component and returns it. The given test policy
@@ -223,14 +223,14 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @param recursivelyAddRequired flag indicating whether further links shall be recursively
      *            added where required and possible
      * 
-     * @throws CoreRuntimeException if an error occurs while adding the new link. If the productCmpt and
+     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and
      *             the policyCmptType are both given.
      */
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
             String targetName,
-            boolean recursivelyAddRequired) throws CoreRuntimeException;
+            boolean recursivelyAddRequired) throws IpsException;
 
     /**
      * Recursively adds all required links where possible.
@@ -258,10 +258,10 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IllegalStateException if no product component is assigned to this test policy
      *             component
-     * @throws CoreRuntimeException if an error occurs while searching for the
+     * @throws IpsException if an error occurs while searching for the
      *             {@link ITestPolicyCmptTypeParameter} or while adding links
      */
-    public void addRequiredLinks(IIpsProject ipsProject) throws CoreRuntimeException;
+    public void addRequiredLinks(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns all test policy component links.
@@ -308,9 +308,9 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Removes the given link.
      * 
-     * @throws CoreRuntimeException in case of an error.
+     * @throws IpsException in case of an error.
      */
-    public void removeLink(ITestPolicyCmptLink link) throws CoreRuntimeException;
+    public void removeLink(ITestPolicyCmptLink link) throws IpsException;
 
     /**
      * Updates the default for all test attribute values. The default will be retrieved from the
@@ -318,9 +318,9 @@ public interface ITestPolicyCmpt extends ITestObject {
      * by product then from the policy component. Don't update the value if not default is
      * specified.
      * 
-     * @throws CoreRuntimeException in case of an error.
+     * @throws IpsException in case of an error.
      */
-    public void updateDefaultTestAttributeValues() throws CoreRuntimeException;
+    public void updateDefaultTestAttributeValues() throws IpsException;
 
     /**
      * Moves the test policy component link identified by the indexes up or down by one position. If
@@ -342,10 +342,10 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Returns the index of the given child test policy component. The index starts with 0 (the
      * first element).
      * 
-     * @throws CoreRuntimeException if the given test policy component is no child of the current test
+     * @throws IpsException if the given test policy component is no child of the current test
      *             policy component.
      */
-    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException;
+    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws IpsException;
 
     /**
      * Searches the given attribute in the supertype of the product component type which is stored
@@ -355,9 +355,9 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
-    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws CoreRuntimeException;
+    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the policy component type this test object is related to, if this object is

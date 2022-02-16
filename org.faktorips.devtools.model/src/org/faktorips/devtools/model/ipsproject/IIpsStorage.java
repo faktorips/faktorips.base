@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 
 /**
@@ -52,31 +52,31 @@ public interface IIpsStorage {
      * <p>
      * A package is not empty, if it contains at least one IPS object.
      */
-    public String[] getNonEmptyPackages() throws CoreRuntimeException;
+    public String[] getNonEmptyPackages() throws IpsException;
 
     /**
      * Returns <code>true</code> if the archive contains the package (empty or not), otherwise
      * <code>false</code>.
      */
-    public boolean containsPackage(String name) throws CoreRuntimeException;
+    public boolean containsPackage(String name) throws IpsException;
 
     /**
      * Returns the names (in ascending order) of the non-empty direct sub packages for the given
      * parent package as list.
      */
-    public String[] getNonEmptySubpackages(String pack) throws CoreRuntimeException;
+    public String[] getNonEmptySubpackages(String pack) throws IpsException;
 
     /**
      * Returns the set of qualified name types for the IPS objects stored in the archive
      */
-    public Set<QualifiedNameType> getQNameTypes() throws CoreRuntimeException;
+    public Set<QualifiedNameType> getQNameTypes() throws IpsException;
 
     /**
      * Returns the set of qualified name types for the IPS objects stored in the given package.
      * Returns an empty set if the archive does not contain an object for the given package or
      * packName is <code>null</code>.
      */
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreRuntimeException;
+    public Set<QualifiedNameType> getQNameTypes(String packName) throws IpsException;
 
     /**
      * Returns <code>true</code> if the storage contains the IPS object or resource identified by
@@ -97,7 +97,7 @@ public interface IIpsStorage {
      * <code>null</code>. Throws a CoreException if no Entry with the given path is found within
      * this {@link IIpsArchive}.
      * 
-     * @throws CoreRuntimeException if no Entry with the given path is found within this
+     * @throws IpsException if no Entry with the given path is found within this
      *             {@link IIpsArchive}, or if problems are encountered opening, reading or writing
      *             this archive.
      */
@@ -107,13 +107,13 @@ public interface IIpsStorage {
      * Returns the name of the base package for the mergeable artifacts (XML-Files, Java source
      * files). All mergeable artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreRuntimeException;
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws IpsException;
 
     /**
      * Returns the name of the base package for the derived artifacts (XML-Files, Java source
      * files). All derived artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreRuntimeException;
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws IpsException;
 
     /**
      * Check weather this archive is valid or not. A archive is valid if the corresponding file

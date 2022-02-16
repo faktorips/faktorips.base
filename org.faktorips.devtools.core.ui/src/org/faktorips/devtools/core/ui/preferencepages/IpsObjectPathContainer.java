@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
@@ -101,9 +101,9 @@ public class IpsObjectPathContainer {
      * 
      * @param parent control
      * @return IPS objectpath control
-     * @throws CoreRuntimeException if the control could not be created
+     * @throws IpsException if the control could not be created
      */
-    public Control createControl(final Composite parent) throws CoreRuntimeException {
+    public Control createControl(final Composite parent) {
         final UIToolkit toolkit = new UIToolkit(null);
         ipsObjectPathContainerPmo.addPropertyChangeListener(pce -> {
             if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {
@@ -210,7 +210,7 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         try {
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

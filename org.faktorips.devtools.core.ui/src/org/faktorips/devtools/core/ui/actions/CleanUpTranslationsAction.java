@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -171,7 +170,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         private class CleanUpTranslationsWorkspaceRunnable implements ICoreRunnable {
 
             @Override
-            public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+            public void run(IProgressMonitor monitor) {
                 for (IIpsProject ipsProject : ipsProjects) {
                     List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
                     IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();

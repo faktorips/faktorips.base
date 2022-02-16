@@ -23,11 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -60,7 +59,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetArtefactDestination() throws CoreRuntimeException {
+    public void testGetArtefactDestination() {
         APackageFragmentRoot destination = ipsRoot.getArtefactDestination(false);
         assertNotNull(destination);
         IIpsSrcFolderEntry srcEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
@@ -77,7 +76,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsPackageFragments() throws CoreRuntimeException {
+    public void testGetIpsPackageFragments() {
         IIpsPackageFragment defaultFolder = ipsRoot.getIpsPackageFragment("");
         assertEquals(1, ipsRoot.getIpsPackageFragments().length);
         assertEquals(defaultFolder, ipsRoot.getIpsPackageFragments()[0]);
@@ -111,7 +110,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreatePackageFragment() throws CoreRuntimeException {
+    public void testCreatePackageFragment() {
         IIpsPackageFragment f = ipsRoot.createPackageFragment("a.b", true, null);
         assertTrue(f.exists());
         assertEquals(ipsRoot, f.getParent());
@@ -131,7 +130,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testExists() throws CoreRuntimeException {
+    public void testExists() {
         assertTrue(ipsRoot.exists());
         IIpsPackageFragmentRoot root2 = ipsProject.getIpsPackageFragmentRoot("unknown");
         assertFalse(root2.exists());
@@ -146,7 +145,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObject() throws CoreRuntimeException {
+    public void testGetIpsObject() {
         IIpsPackageFragment pack = ipsRoot.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
         IIpsObject ipsObject = ipsRoot.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
@@ -157,7 +156,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObjectsStartingWith() throws CoreRuntimeException {
+    public void testFindIpsObjectsStartingWith() {
         IIpsObject ob1 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack1.MotorPolicy");
         IIpsObject ob2 = newIpsObject(ipsRoot, IpsObjectType.POLICY_CMPT_TYPE, "pack2.MotorCoverage");
 
@@ -210,7 +209,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetNonIpsResources() throws CoreRuntimeException {
+    public void testGetNonIpsResources() {
         IIpsPackageFragment fragment = ipsRoot.createPackageFragment("fragment", true, null);
         IIpsPackageFragment subFragment = ipsRoot.createPackageFragment("fragment.sub", true, null);
 
@@ -230,7 +229,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         IIpsPackageFragment childPackage = ipsRoot.createPackageFragment("foo", true, null);
 
         ipsRoot.delete();

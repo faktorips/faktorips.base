@@ -19,7 +19,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.abstraction.AWrapper;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AResourceDelta {
 
@@ -76,7 +76,7 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
                 }
             });
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

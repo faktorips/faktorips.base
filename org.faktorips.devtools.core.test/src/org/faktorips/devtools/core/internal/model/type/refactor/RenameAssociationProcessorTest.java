@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -74,7 +73,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputNewNameEmpty() throws CoreRuntimeException {
+    public void testValidateUserInputNewNameEmpty() {
         IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("");
         ipsRenameProcessor.setNewPluralName("somePluralName");
@@ -83,7 +82,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputNeitherNameNorPluralNameChanged() throws CoreRuntimeException {
+    public void testValidateUserInputNeitherNameNorPluralNameChanged() {
         IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName(POLICY_ROLE_SINGULAR);
         ipsRenameProcessor.setNewPluralName(POLICY_ROLE_PLURAL);
@@ -92,7 +91,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputNoPluralNameForToManyAssociation() throws CoreRuntimeException {
+    public void testValidateUserInputNoPluralNameForToManyAssociation() {
         IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("someNewName");
         ipsRenameProcessor.setNewPluralName("");
@@ -101,7 +100,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputValid() throws CoreRuntimeException {
+    public void testValidateUserInputValid() {
         IpsRenameProcessor ipsRenameProcessor = new RenameAssociationProcessor(policyToOtherPolicyAssociation);
         ipsRenameProcessor.setNewName("someNewName");
         ipsRenameProcessor.setNewPluralName("someNewPluralName");
@@ -110,7 +109,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAssociation() throws CoreRuntimeException {
+    public void testRenamePolicyCmptTypeAssociation() {
         String newAssociationName = "foo";
         String newPluralAssociationName = "bar";
         performRenameRefactoring(policyToOtherPolicyAssociation, newAssociationName, newPluralAssociationName);
@@ -134,7 +133,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAssociationDerivedUnion() throws CoreRuntimeException {
+    public void testRenamePolicyCmptTypeAssociationDerivedUnion() {
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "Policy");
         policyCmptType.setConfigurableByProductCmptType(false);
         policyCmptType.setAbstract(true);
@@ -180,7 +179,7 @@ public class RenameAssociationProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenameProductCmptTypeAssociation() throws CoreRuntimeException {
+    public void testRenameProductCmptTypeAssociation() {
         String newAssociationName = "foo";
         String newPluralAssociationName = "bar";
         performRenameRefactoring(productToOtherProductAssociation, newAssociationName, newPluralAssociationName);

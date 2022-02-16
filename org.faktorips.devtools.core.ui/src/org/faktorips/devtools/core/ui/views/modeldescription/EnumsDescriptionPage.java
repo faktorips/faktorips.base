@@ -16,7 +16,6 @@ import java.util.List;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
 
@@ -35,7 +34,7 @@ public class EnumsDescriptionPage extends DefaultModelDescriptionPage {
     }
 
     @Override
-    protected List<DescriptionItem> createDescriptions() throws CoreRuntimeException {
+    protected List<DescriptionItem> createDescriptions() {
         List<DescriptionItem> descriptions = new ArrayList<>();
         if (getIpsObject() != null) {
             // use of

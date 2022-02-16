@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -45,12 +45,12 @@ public class ProductCmptLinkContainerUtil {
      * @return <code>true</code> if a new relation with the given values will be valid,
      *         <code>false</code> otherwise.
      * 
-     * @throws CoreRuntimeException if a problem occur during the search of the type hierarchy.
+     * @throws IpsException if a problem occur during the search of the type hierarchy.
      */
     public static boolean canCreateValidLink(IProductCmptLinkContainer linkContainer,
             IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         if (association == null || target == null || !linkContainer.getProductCmpt().getIpsSrcFile().isMutable()) {
             return false;
@@ -87,7 +87,7 @@ public class ProductCmptLinkContainerUtil {
 
     private static boolean isTypeCorrect(IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         IProductCmptType targetType = target.findProductCmptType(ipsProject);
         if (targetType == null) {
@@ -99,7 +99,7 @@ public class ProductCmptLinkContainerUtil {
     private static boolean isLinkExisting(IProductCmptLinkContainer linkContainer,
             IAssociation association,
             IProductCmpt target,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         for (IProductCmptLink link : linkContainer.getLinksAsList()) {
             if (link.findAssociation(ipsProject).equals(association)

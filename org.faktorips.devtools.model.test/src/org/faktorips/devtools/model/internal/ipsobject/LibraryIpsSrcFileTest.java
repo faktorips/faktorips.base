@@ -20,7 +20,6 @@ import java.nio.file.Path;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -103,7 +102,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContentFromEnclosingResource() throws CoreRuntimeException {
+    public void testGetContentFromEnclosingResource() {
         assertNotNull(srcFile.getContentFromEnclosingResource());
     }
 
@@ -113,7 +112,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         srcFile.delete();
     }
 

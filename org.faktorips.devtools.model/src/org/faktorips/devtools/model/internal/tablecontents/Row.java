@@ -19,7 +19,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -80,7 +79,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return MessageFormat.format(Messages.Row_caption, rowNumber + 1);
     }
 
@@ -200,7 +199,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
      * <code>Message</code> is added to the given <code>MessageList</code>. {@inheritDoc}
      */
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = findTableStructure();
         if (tableStructure == null) {

@@ -24,10 +24,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -113,7 +113,7 @@ public class ProjectSelectionPage extends WizardPage {
                     if (!IpsPlugin.getDefault().getMigrationOperation(project).isEmpty()) {
                         result.add(project);
                     }
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }

@@ -21,7 +21,6 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -73,7 +72,7 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() throws CoreRuntimeException {
+    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() {
         Collection<IIpsSrcFile> oldResult = unqualifiedNameCache
                 .findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
@@ -87,7 +86,7 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() throws CoreRuntimeException {
+    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() {
         ProductCmptType kfz = newProductCmptType(ipsProject, "kfz");
         newProductCmpt(kfz, "z.productCmptHausrat");
         productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat");

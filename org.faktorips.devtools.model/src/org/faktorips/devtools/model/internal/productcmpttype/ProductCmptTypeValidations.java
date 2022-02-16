@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import java.text.MessageFormat;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -45,11 +45,11 @@ public class ProductCmptTypeValidations {
      *            <code>null</code> is an accepted value
      * @return a message instance if the validation fails otherwise <code>null</code>
      * 
-     * @throws CoreRuntimeException delegates raised exceptions
+     * @throws IpsException delegates raised exceptions
      */
     public static Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(boolean isPolicyCmptTypeAbstract,
             boolean isProductCmptTypeAbstract,
-            IProductCmptType thisProductCmptType) throws CoreRuntimeException {
+            IProductCmptType thisProductCmptType) {
 
         if (isPolicyCmptTypeAbstract && !isProductCmptTypeAbstract) {
             return new Message(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT,
@@ -81,13 +81,13 @@ public class ProductCmptTypeValidations {
      *            string if no such supertype exists
      * @param ipsProject The IPS project that is used for the validation
      * 
-     * @throws CoreRuntimeException If an error occurs during the validation
+     * @throws IpsException If an error occurs during the validation
      */
     public static Message validateSupertype(IProductCmptType productCmptType,
             IProductCmptType superProductCmptType,
             String policyCmptType,
             String superPolicyCmptType,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         Message message = null;
         ObjectProperty[] invalidObjectProperties = productCmptType == null ? new ObjectProperty[0]

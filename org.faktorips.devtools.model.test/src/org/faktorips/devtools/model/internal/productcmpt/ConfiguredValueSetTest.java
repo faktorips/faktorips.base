@@ -39,7 +39,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.valueset.DelegatingValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
@@ -93,7 +92,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllowedValueSetTypes() throws CoreRuntimeException {
+    public void testGetAllowedValueSetTypes() {
         // case 1: attribute not found
         attribute.setName("unknown");
         List<ValueSetType> types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
@@ -139,7 +138,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnknownAttribute() throws CoreRuntimeException {
+    public void testValidate_UnknownAttribute() {
         attribute.setName("unknown");
         MessageList ml = configuredValueSet.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
@@ -151,7 +150,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnknownDatatypeValue() throws CoreRuntimeException {
+    public void testValidate_UnknownDatatypeValue() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
@@ -166,7 +165,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_InvalidValueset() throws CoreRuntimeException {
+    public void testValidate_InvalidValueset() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype("Decimal");
         attribute.setValueSetType(ValueSetType.RANGE);
@@ -219,7 +218,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueSetTypeMismatch() throws CoreRuntimeException {
+    public void testValidate_ValueSetTypeMismatch() {
         setUpRangeIntegerAttr();
 
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
@@ -243,7 +242,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueSetTypeMismatchForInheritedValues_changeParentValueSet() throws CoreRuntimeException {
+    public void testValidate_ValueSetTypeMismatchForInheritedValues_changeParentValueSet() {
         setUpRangeIntegerAttr();
         IConfiguredValueSet templateValueSet = setUpRangeIntegerTemplate(attribute);
         setUpInheritRangeValueSet();
@@ -264,7 +263,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueSetTypeMismatchForInheritedValues() throws CoreRuntimeException {
+    public void testValidate_ValueSetTypeMismatchForInheritedValues() {
         setUpRangeIntegerAttr();
 
         IConfiguredValueSet templateValueSet = setUpRangeIntegerTemplate(attribute);
@@ -288,14 +287,14 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.setTemplateValueStatus(TemplateValueStatus.INHERITED);
     }
 
-    private IConfiguredValueSet setUpRangeIntegerTemplate(IPolicyCmptTypeAttribute attr) throws CoreRuntimeException {
+    private IConfiguredValueSet setUpRangeIntegerTemplate(IPolicyCmptTypeAttribute attr) {
         IConfiguredValueSet templateValueSet = createTemplateValueSet(attr);
         templateValueSet.changeValueSetType(ValueSetType.RANGE);
         return templateValueSet;
     }
 
     @Test
-    public void testValidate_ValueSetTypeMismatchForUndefinedValues() throws CoreRuntimeException {
+    public void testValidate_ValueSetTypeMismatchForUndefinedValues() {
         setUpRangeIntegerAttr();
 
         IConfiguredValueSet templateValueSet = createTemplateValueSet(attribute);
@@ -314,7 +313,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueSetNotASubset() throws CoreRuntimeException {
+    public void testValidate_ValueSetNotASubset() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
         attr.setValueSetType(ValueSetType.RANGE);
@@ -379,7 +378,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSetForStringLengthValueSet() throws CoreRuntimeException {
+    public void testValidate_EnumValueSetForStringLengthValueSet() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
         attr.setValueSetType(ValueSetType.STRINGLENGTH);
@@ -398,7 +397,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_EnumValueSetForStringLengthValueSet_ValueTooLong() throws CoreRuntimeException {
+    public void testValidate_EnumValueSetForStringLengthValueSet_ValueTooLong() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
         attr.setValueSetType(ValueSetType.STRINGLENGTH);
@@ -418,7 +417,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValueSet_InheritedValue() throws CoreRuntimeException {
+    public void testGetValueSet_InheritedValue() {
         attribute.setValueSetType(ValueSetType.RANGE);
 
         IConfiguredValueSet templateConfiguredValueSet = createTemplateValueSet(attribute);
@@ -454,7 +453,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValueSet_UndefinedValue() throws CoreRuntimeException {
+    public void testGetValueSet_UndefinedValue() {
         attribute.setValueSetType(ValueSetType.RANGE);
 
         IConfiguredValueSet templateConfiguredValueSet = createTemplateValueSet(attribute);
@@ -482,7 +481,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_InheritedValuesAreRead() throws CoreRuntimeException {
+    public void testInitFromXml_InheritedValuesAreRead() {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
 
@@ -593,7 +592,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_nullIncompatible() throws CoreRuntimeException {
+    public void testValidateThis_nullIncompatible() {
         attribute.setDatatype(ValueDatatype.INTEGER.getQualifiedName());
         attribute.setValueSetType(ValueSetType.UNRESTRICTED);
         attribute.getValueSet().setContainsNull(false);
@@ -624,7 +623,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     private IConfiguredValueSet createTemplateValueSet(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            throws CoreRuntimeException {
+            {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredValueSet templateValueSet = templateGen.newPropertyValue(policyCmptTypeAttribute,
@@ -634,7 +633,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindPcTypeAttribute() throws CoreRuntimeException {
+    public void testFindPcTypeAttribute() {
         IPolicyCmptType policyCmptSupertype = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(policyCmptSupertype.getQualifiedName());
 
@@ -649,7 +648,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreRuntimeException {
+    public void testGetCaption() {
         attribute.setLabelValue(Locale.US, "Attribute Label");
 
         assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "Attribute Label"),

@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -105,7 +104,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
     }
 
     @Override
-    public void run(IProgressMonitor progressMonitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor progressMonitor) {
         if (progressMonitor != null) {
             this.setMonitor(progressMonitor);
         }
@@ -138,7 +137,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
         this.contentMap = keyValueMap;
     }
 
-    protected IStatus importContentMap() throws CoreRuntimeException {
+    protected IStatus importContentMap() {
         List<IIpsSrcFile> allPolicyCmptFiled = getPackageFragmentRoot().findAllIpsSrcFiles(
                 IpsObjectType.POLICY_CMPT_TYPE);
         try {
@@ -164,7 +163,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
     }
 
     @SuppressWarnings("deprecation")
-    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreRuntimeException {
+    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
                 continue;

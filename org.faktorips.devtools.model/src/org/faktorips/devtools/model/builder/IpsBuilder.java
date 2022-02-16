@@ -48,11 +48,11 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.DependencyResolver;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -116,7 +116,7 @@ public class IpsBuilder {
         return new MultiStatus(IpsModelActivator.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
     }
 
-    protected Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) throws CoreRuntimeException {
+    protected Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) {
         ABuildKind currentKind = kind;
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
@@ -171,13 +171,13 @@ public class IpsBuilder {
         } catch (OperationCanceledException e) {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         } catch (Throwable t) {
             /*
              * Need to catch Throwable. If the incremental project builder throws an error, Eclipse
              * just writes a Warning to the error log. So we wrap the error into a CoreException.
              */
-            throw new CoreRuntimeException(new IpsStatus(t));
+            throw new IpsException(new IpsStatus(t));
         } finally {
             monitor.done();
         }
@@ -205,7 +205,7 @@ public class IpsBuilder {
         return project.getIpsArtefactBuilderSet();
     }
 
-    private boolean checkIpsProjectBeforeBuild(IIpsProject ipsProject) throws CoreRuntimeException {
+    private boolean checkIpsProjectBeforeBuild(IIpsProject ipsProject) {
         ipsProject.getProject().deleteMarkers(IpsBuilder.PROBLEM_MARKER, true,
                 AResourceTreeTraversalDepth.RESOURCE_ONLY);
         try {
@@ -224,7 +224,7 @@ public class IpsBuilder {
                 updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
                 return false;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return false;
         }
@@ -236,7 +236,7 @@ public class IpsBuilder {
      * .ipsproject and manifest.mf as marked resource.
      */
     void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         AResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
         IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
 
@@ -254,7 +254,7 @@ public class IpsBuilder {
     }
 
     private void createMarkersNotUsingManifest(MessageList messages, AResource projectPropertiesFile, AFile manifest)
-            throws CoreRuntimeException {
+            {
         createMarkersFromMessageList(projectPropertiesFile, messages, IpsBuilder.PROBLEM_MARKER);
 
         if (manifest.exists()) {
@@ -263,7 +263,7 @@ public class IpsBuilder {
     }
 
     private void createMarkersWithMissingManifestMarker(MessageList messages, AResource projectPropertiesFile)
-            throws CoreRuntimeException {
+            {
         createMarkersFromMessageList(projectPropertiesFile, messages, IpsBuilder.PROBLEM_MARKER);
 
         AMarker marker = projectPropertiesFile.createMarker(IpsBuilder.PROBLEM_MARKER);
@@ -273,7 +273,7 @@ public class IpsBuilder {
 
     private void createMarkersForIpsProjectPropertiesAndManifest(MessageList messages,
             AResource projectPropertiesFile,
-            AFile manifest) throws CoreRuntimeException {
+            AFile manifest) {
         MessageList messagesIpsObjectPath = new MessageList();
         MessageList messagesProject = new MessageList();
 
@@ -416,7 +416,7 @@ public class IpsBuilder {
         }
     }
 
-    private void collectIpsSrcFilesForFullBuild(List<IIpsSrcFile> allIpsSrcFiles) throws CoreRuntimeException {
+    private void collectIpsSrcFilesForFullBuild(List<IIpsSrcFile> allIpsSrcFiles) {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (!root.isBasedOnSourceFolder()) {
@@ -434,7 +434,7 @@ public class IpsBuilder {
         }
     }
 
-    private void removeEmptyFolders() throws CoreRuntimeException {
+    private void removeEmptyFolders() {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.isBasedOnSourceFolder()) {
@@ -474,7 +474,7 @@ public class IpsBuilder {
                     buildStatus.add(new IpsStatus(e));
                 }
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             buildStatus.add(new IpsStatus(e));
         } finally {
             monitor.done();
@@ -486,7 +486,7 @@ public class IpsBuilder {
         return buildStatus;
     }
 
-    protected void clean(IProgressMonitor monitor) throws CoreRuntimeException {
+    protected void clean(IProgressMonitor monitor) {
         getIpsProject().clearCaches();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -513,7 +513,7 @@ public class IpsBuilder {
      * Accordingly all folders in the folder hierarchy starting from the folder that contains the
      * derived resource will not be deleted.
      */
-    private void removeDerivedResources(AFolder folder, IProgressMonitor monitor) throws CoreRuntimeException {
+    private void removeDerivedResources(AFolder folder, IProgressMonitor monitor) {
         for (AResource member : folder) {
             if (monitor.isCanceled()) {
                 return;
@@ -534,7 +534,7 @@ public class IpsBuilder {
         }
     }
 
-    private void removeEmptyFolders(AFolder parent, boolean removeThisParent) throws CoreRuntimeException {
+    private void removeEmptyFolders(AFolder parent, boolean removeThisParent) {
         if (parent == null || !parent.exists()) {
             return;
         }
@@ -683,7 +683,7 @@ public class IpsBuilder {
     }
 
     void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType)
-            throws CoreRuntimeException {
+            {
         Set<AMarker> markers = new LinkedHashSet<>(
                 markedResource.findMarkers(markerType, true, AResourceTreeTraversalDepth.RESOURCE_ONLY));
         for (int i = 0; i < list.size(); i++) {
@@ -709,7 +709,7 @@ public class IpsBuilder {
         }
     }
 
-    private void updateMarker(AMarker marker, String text, int severity) throws CoreRuntimeException {
+    private void updateMarker(AMarker marker, String text, int severity) {
         marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
                 new Object[] { text, Integer.valueOf(severity) });
     }
@@ -733,7 +733,7 @@ public class IpsBuilder {
             IIpsProject ipsProject,
             IIpsSrcFile file,
             MultiStatus buildStatus,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
 
         if (!file.isContentParsable()) {
             // in case of error clear the markers
@@ -795,7 +795,7 @@ public class IpsBuilder {
         }
 
         @Override
-        public boolean visit(AResourceDelta delta) throws CoreRuntimeException {
+        public boolean visit(AResourceDelta delta) {
             AResource resource = delta.getResource();
             if (resource == null || resource.getType() == AResource.AResourceType.PROJECT) {
                 return true;
@@ -850,7 +850,7 @@ public class IpsBuilder {
      * The applyBuildCommand method of this class uses this interface.
      */
     private interface BuildCommand {
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreRuntimeException;
+        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws IpsException;
     }
 
     private class BeforeBuildProcessCommand implements BuildCommand {
@@ -864,7 +864,7 @@ public class IpsBuilder {
         }
 
         @Override
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreRuntimeException {
+        public void build(IIpsArtefactBuilder builder, MultiStatus status) {
             if (TRACE_BUILDER_TRACE) {
                 System.out.println("BeforeBuildProcessCommand, BuilderName: " //$NON-NLS-1$
                         + (builder != null ? builder.getName() : null) + " , BuilderObjectId: " //$NON-NLS-1$
@@ -874,7 +874,7 @@ public class IpsBuilder {
             if (builder != null) {
                 builder.beforeBuildProcess(ipsProject, buildKind);
             } else {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, "Builder is assert to be not null")); //$NON-NLS-1$
             }
         }
@@ -897,7 +897,7 @@ public class IpsBuilder {
         }
 
         @Override
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreRuntimeException {
+        public void build(IIpsArtefactBuilder builder, MultiStatus status) {
             if (TRACE_BUILDER_TRACE) {
                 System.out.println("AfterBuildProcessCommand, BuilderName: " //$NON-NLS-1$
                         + (builder != null ? builder.getName() : null) + " , BuilderObjectId: " //$NON-NLS-1$
@@ -907,7 +907,7 @@ public class IpsBuilder {
             if (builder != null) {
                 builder.afterBuildProcess(ipsProject, buildKind);
             } else {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, "Builder is assert to be not null")); //$NON-NLS-1$
             }
         }
@@ -927,7 +927,7 @@ public class IpsBuilder {
         }
 
         @Override
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreRuntimeException {
+        public void build(IIpsArtefactBuilder builder, MultiStatus status) {
             if (builder.isBuilderFor(ipsSrcFile)) {
                 long begin = 0;
                 try {
@@ -962,7 +962,7 @@ public class IpsBuilder {
         }
 
         @Override
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws CoreRuntimeException {
+        public void build(IIpsArtefactBuilder builder, MultiStatus status) {
             if (builder.isBuilderFor(toDelete)) {
                 builder.delete(toDelete);
             }
@@ -985,7 +985,7 @@ public class IpsBuilder {
 
         @Override
         protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
-                throws CoreRuntimeException {
+                {
             return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
         }
 

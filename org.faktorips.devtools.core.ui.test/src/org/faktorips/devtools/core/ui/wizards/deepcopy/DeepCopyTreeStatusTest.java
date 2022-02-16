@@ -33,7 +33,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.treestructure.ProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.model.internal.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -221,7 +220,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     private void mockLink(IProductCmptLink link,
             IProductCmptTypeAssociation association,
             IProductCmpt source,
-            IProductCmpt target) throws CoreRuntimeException {
+            IProductCmpt target) {
         when(link.findAssociation(any(IIpsProject.class))).thenReturn(association);
         when(link.getProductCmpt()).thenReturn(source);
         when(link.getIpsObject()).thenReturn(source);
@@ -347,7 +346,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         }
     }
 
-    private void mockTableContentUsage() throws CoreRuntimeException {
+    private void mockTableContentUsage() {
         ITableContentUsage tableContentUsage = mock(ITableContentUsage.class);
         when(tableContentUsage.getIpsObject()).thenReturn(productCmpts[0]);
         when(productCmpts[0].getTableContentUsages()).thenReturn(new ITableContentUsage[] { tableContentUsage });

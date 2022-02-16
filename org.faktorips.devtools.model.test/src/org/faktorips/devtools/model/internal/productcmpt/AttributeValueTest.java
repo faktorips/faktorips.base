@@ -29,7 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -83,7 +82,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnknownAttribute() throws CoreRuntimeException {
+    public void testValidate_UnknownAttribute() {
         MessageList ml = attributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
 
@@ -100,7 +99,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueNotParsable() throws CoreRuntimeException {
+    public void testValidate_ValueNotParsable() {
         MessageList ml = attributeValue.validate(ipsProject);
         assertNull(ml
                 .getMessageByCode(IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
@@ -112,7 +111,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueNotInSet() throws CoreRuntimeException {
+    public void testValidate_ValueNotInSet() {
         MessageList ml = attributeValue.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttributeValue.MSGCODE_UNKNWON_ATTRIBUTE));
 
@@ -192,7 +191,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_PersistTemplateValueForInheritedAttribute() throws CoreRuntimeException {
+    public void testToXml_PersistTemplateValueForInheritedAttribute() {
         // Set some value in attributeValue, but set its status to inherited so that getValueHolder
         // returns the value from the template
         attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "definedValue"));
@@ -219,19 +218,19 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreRuntimeException {
+    public void testGetCaption() {
         ILabel label = attribute.getLabel(Locale.US);
         label.setValue("TheCaption");
         assertEquals("TheCaption", attributeValue.getCaption(Locale.US));
     }
 
     @Test
-    public void testGetCaptionNotExistent() throws CoreRuntimeException {
+    public void testGetCaptionNotExistent() {
         assertNull(attributeValue.getCaption(Locale.TAIWAN));
     }
 
     @Test(expected = NullPointerException.class)
-    public void testGetCaptionNullPointer() throws CoreRuntimeException {
+    public void testGetCaptionNullPointer() {
         attributeValue.getCaption(null);
     }
 
@@ -262,7 +261,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
         attribute.setMultiValueAttribute(true);
         attribute.setDatatype("String");
         MultiValueHolder multiValueHolder = new MultiValueHolder(attributeValue);
@@ -285,7 +284,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_hiddenAttribute() throws CoreRuntimeException {
+    public void testValidate_hiddenAttribute() {
         attribute.setMultiValueAttribute(true);
         attribute.setDatatype("String");
         attribute.setVisible(false);
@@ -316,7 +315,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TemplateStatus_excludedNotAllowedForProductCmpt() throws CoreRuntimeException {
+    public void testValidate_TemplateStatus_excludedNotAllowedForProductCmpt() {
         createTemplate();
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
@@ -325,7 +324,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TemplateStatus_inheritedOnlyIfInheritablePropertyExists() throws CoreRuntimeException {
+    public void testValidate_TemplateStatus_inheritedOnlyIfInheritablePropertyExists() {
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
@@ -345,7 +344,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TemplateStatus_undefinedInProduct() throws CoreRuntimeException {
+    public void testValidate_TemplateStatus_undefinedInProduct() {
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
@@ -381,7 +380,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetTemplateValueStatus_DefinedShouldCopyValueHolder() throws CoreRuntimeException {
+    public void testSetTemplateValueStatus_DefinedShouldCopyValueHolder() {
         String templateValue = "template value";
         String definedValue = "defined value";
 
@@ -433,7 +432,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValueHolder_InheritedValue() throws CoreRuntimeException {
+    public void testGetValueHolder_InheritedValue() {
         SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "0");
         attributeValue.setValueHolder(valueHolder);
         assertThat((SingleValueHolder)attributeValue.getValueHolder(), is(valueHolder));
@@ -465,7 +464,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValue_InheritedValueWhenTemplateDoesNotDefineValue() throws CoreRuntimeException {
+    public void testGetValue_InheritedValueWhenTemplateDoesNotDefineValue() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         productCmpt.setTemplate(template.getQualifiedName());
 

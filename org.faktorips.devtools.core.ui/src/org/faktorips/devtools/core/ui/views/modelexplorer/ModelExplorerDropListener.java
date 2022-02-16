@@ -25,6 +25,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.internal.refactor.NonIPSMoveOperation;
@@ -32,7 +33,6 @@ import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -119,12 +119,12 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
 
             moveNonIPSObjects(sources, target, shell);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             logCoreException(shell, e);
         }
     }
 
-    private void logCoreException(Shell shell, CoreRuntimeException e) {
+    private void logCoreException(Shell shell, IpsException e) {
         IStatus status = e.getStatus();
         if (status instanceof IpsStatus) {
             MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());
@@ -133,7 +133,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
     }
 
-    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreRuntimeException {
+    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) {
         try {
             NonIPSMoveOperation moveOp = null;
             if (target instanceof IIpsPackageFragment) {
@@ -190,7 +190,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
 
         @Override
-        protected void execute(final IProgressMonitor monitor) throws CoreRuntimeException, InterruptedException {
+        protected void execute(final IProgressMonitor monitor) throws IpsException, InterruptedException {
             try {
                 move.run(monitor);
             } catch (InvocationTargetException e) {

@@ -23,7 +23,7 @@ import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -60,22 +60,22 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
         // default implementation does nothing
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) {
         // default implementation does nothing
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreRuntimeException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         // default implementation does nothing
     }
 
     @Override
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) {
         // default implementation does nothing
     }
 
@@ -103,10 +103,10 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * 
      * @return true if the file needs to be created, false if the file already exists
      * 
-     * @throws CoreRuntimeException if an Exception occurs during the creation procedure
+     * @throws IpsException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided file parameter is <code>null</code>
      */
-    protected boolean createFileIfNotThere(AFile file) throws CoreRuntimeException {
+    protected boolean createFileIfNotThere(AFile file) {
         ArgumentCheck.notNull(file, this);
         if (!file.exists()) {
             AContainer parent = file.getParent();
@@ -132,10 +132,10 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * 
      * @return true if the folder needs to be created, false if the folder already exists
      * 
-     * @throws CoreRuntimeException if an Exception occurs during the creation procedure
+     * @throws IpsException if an Exception occurs during the creation procedure
      * @throws RuntimeException if the provided folder parameter is <code>null</code>
      */
-    protected boolean createFolderIfNotThere(AFolder folder) throws CoreRuntimeException {
+    protected boolean createFolderIfNotThere(AFolder folder) {
 
         ArgumentCheck.notNull(folder, this);
         if (!folder.exists()) {
@@ -226,12 +226,12 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      * @param keepHistory setting keeping the history when writing to the file @see
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
-     * @throws CoreRuntimeException in case of an error while setting the new content to the
+     * @throws IpsException in case of an error while setting the new content to the
      *             file @see
      *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      */
     public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            throws CoreRuntimeException {
+            {
         file.setContents(inputStream, keepHistory, new NullProgressMonitor());
     }
 
@@ -239,7 +239,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the artefact destination. The destination can either be the output folder for
      * mergeable artefacts or the one for derived artefacts.
      */
-    protected APackageFragmentRoot getArtefactDestination(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    protected APackageFragmentRoot getArtefactDestination(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(buildsDerivedArtefacts());
     }
 

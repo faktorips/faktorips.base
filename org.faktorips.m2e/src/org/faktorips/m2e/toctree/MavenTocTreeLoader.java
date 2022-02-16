@@ -33,8 +33,8 @@ import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsJarBundle;
@@ -58,7 +58,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
 
     @Override
     public void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages)
-            throws CoreRuntimeException {
+            {
         try {
             List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsProject.getIpsPackageFragmentRoots());
             Collections.reverse(ipsRootsList);
@@ -81,7 +81,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
 
             ipsDependencies.values().stream().map(IpsMavenDependency::toString).forEach(repositoryPackages::add);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -140,7 +140,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             Path path = QNameUtil.toPath(internalPackage);
             return path == null ? tocPath : path.resolve(tocPath).toString();
         }
-        throw new CoreRuntimeException("No toc found in the IpsJarBundle " + jarBundle.toString());
+        throw new IpsException("No toc found in the IpsJarBundle " + jarBundle.toString());
     }
 
     private IMavenProjectFacade findMavenProjectFacade(AProject project) {

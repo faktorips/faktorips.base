@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -53,7 +52,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     }
 
     @Override
-    protected void searchDetails() throws CoreRuntimeException {
+    protected void searchDetails() {
         ProductSearchQueryConditionMatcher resultBuilder = new ProductSearchQueryConditionMatcher(getSearchModel());
         Set<IProductPartsContainer> results = resultBuilder.getResults(getMatchingSrcFiles());
 
@@ -63,7 +62,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     }
 
     @Override
-    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreRuntimeException {
+    protected Set<IIpsSrcFile> getSelectedSrcFiles() {
         Set<IIpsSrcFile> selectedSrcFiles = super.getSelectedSrcFiles();
 
         if (selectedSrcFiles.isEmpty()) {
@@ -78,7 +77,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         return selectedSrcFiles;
     }
 
-    private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) throws CoreRuntimeException {
+    private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) {
         Set<IIpsSrcFile> instancesOfProductComponentType = new HashSet<>();
 
         IIpsProject[] ipsProjects = getIpsModel().getIpsProjects();
@@ -117,7 +116,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     // overwritten just for testing purposes
     @Override
-    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreRuntimeException {
+    protected Set<IIpsSrcFile> getMatchingSrcFiles() {
         return super.getMatchingSrcFiles();
     }
 

@@ -36,7 +36,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -69,7 +68,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         ipsProject = spy(newIpsProject());
         IpsPlugin ipsPlugin = mock(IpsPlugin.class);
         IpsPreferences preferences = mock(IpsPreferences.class);
@@ -90,7 +89,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsFirstPageNeeded_NotNeededWhenCopyingValidProductCmpt() throws CoreRuntimeException {
+    public void testIsFirstPageNeeded_NotNeededWhenCopyingValidProductCmpt() {
         singletonMockHelper.reset();
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
@@ -108,7 +107,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsFirstPageNeeded_NeededWhenCopyingProductCmptButTypeNotFound() throws CoreRuntimeException {
+    public void testIsFirstPageNeeded_NeededWhenCopyingProductCmptButTypeNotFound() {
         singletonMockHelper.reset();
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
@@ -122,7 +121,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSubtypes_OnlyShowSelectedTypeWhenCopyingValidProductCmpt() throws CoreRuntimeException {
+    public void testGetSubtypes_OnlyShowSelectedTypeWhenCopyingValidProductCmpt() {
         singletonMockHelper.reset();
 
         IProductCmptType baseType = newProductCmptType(ipsProject, "BaseType");
@@ -140,7 +139,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSubtypes_ShowAllSubtypesWhenCopyingProductCmptForWhichTypeIsNotFound() throws CoreRuntimeException {
+    public void testGetSubtypes_ShowAllSubtypesWhenCopyingProductCmptForWhichTypeIsNotFound() {
         singletonMockHelper.reset();
 
         IProductCmptType baseType = newProductCmptType(ipsProject, "BaseType");
@@ -166,7 +165,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetCopyProductCmpt() throws CoreRuntimeException {
+    public void testSetCopyProductCmpt() {
         singletonMockHelper.reset();
 
         // Create a small test model
@@ -197,7 +196,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetCopyProductCmpt_ProductCmptTypeIsNull() throws CoreRuntimeException {
+    public void testSetCopyProductCmpt_ProductCmptTypeIsNull() {
         singletonMockHelper.reset();
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
@@ -218,7 +217,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetCopyProductCmpt_InitializeNameWithValidResourceName() throws CoreRuntimeException {
+    public void testSetCopyProductCmpt_InitializeNameWithValidResourceName() {
         singletonMockHelper.reset();
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductCmptType");
@@ -242,7 +241,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
      * target {@link IIpsProject}.
      */
     @Test
-    public void testSetIpsProject_UpdateRuntimeId() throws CoreRuntimeException {
+    public void testSetIpsProject_UpdateRuntimeId() {
         singletonMockHelper.reset();
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
@@ -272,7 +271,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateBaseTypeList_noProject() throws CoreRuntimeException {
+    public void testUpdateBaseTypeList_noProject() {
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = mockPackageFragmentRoot();
 
         pmo.setPackageRoot(ipsPackageFragmentRoot);
@@ -280,7 +279,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         assertTrue(pmo.getBaseTypes().isEmpty());
     }
 
-    private IIpsPackageFragmentRoot mockPackageFragmentRoot() throws CoreRuntimeException {
+    private IIpsPackageFragmentRoot mockPackageFragmentRoot() {
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(ipsPackageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
@@ -684,7 +683,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_noMatchingTemplateExists() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_noMatchingTemplateExists() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -700,7 +699,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_baseTypeTemplateIsFound() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_baseTypeTemplateIsFound() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -718,7 +717,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_subTypeTemplateIsFound() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_subTypeTemplateIsFound() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -736,7 +735,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_subTypeTemplateIsFoundWhenBaseTypeIsSelected() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_subTypeTemplateIsFoundWhenBaseTypeIsSelected() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -754,7 +753,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_selectedTemplateIsReset() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_selectedTemplateIsReset() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -775,7 +774,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetSelectedType_showsTemplatesOrDescription() throws CoreRuntimeException {
+    public void testSetSelectedType_showsTemplatesOrDescription() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -794,7 +793,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetSelectedBaseType_showsTemplatesOrDescription() throws CoreRuntimeException {
+    public void testSetSelectedBaseType_showsTemplatesOrDescription() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -813,7 +812,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateTemplatesList_subSubTemplateIsFiltered() throws CoreRuntimeException {
+    public void testUpdateTemplatesList_subSubTemplateIsFiltered() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 
@@ -841,7 +840,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateSubtypeList_baseTypeIsFiltered() throws CoreRuntimeException {
+    public void testUpdateSubtypeList_baseTypeIsFiltered() {
         singletonMockHelper.reset();
         pmo.setIpsProject(ipsProject);
 

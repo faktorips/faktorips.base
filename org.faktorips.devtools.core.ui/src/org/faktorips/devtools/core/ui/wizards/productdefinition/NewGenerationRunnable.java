@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 
@@ -49,7 +49,7 @@ class NewGenerationRunnable extends WorkspaceModifyOperation {
     }
 
     @Override
-    protected void execute(IProgressMonitor monitor) throws CoreRuntimeException, InvocationTargetException,
+    protected void execute(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException {
 
         String taskName = NLS.bind(Messages.NewGenerationRunnable_taskName, IpsPlugin.getDefault().getIpsPreferences()

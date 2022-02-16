@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -355,7 +354,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsValidForCodeGeneration() throws CoreRuntimeException {
+    public void testIsValidForCodeGeneration() {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(true);
         when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
@@ -369,7 +368,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsValidForCodeGeneration_typeInvalid() throws CoreRuntimeException {
+    public void testIsValidForCodeGeneration_typeInvalid() {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(false);
 
@@ -377,7 +376,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsValidForCodeGeneration_notConfigured() throws CoreRuntimeException {
+    public void testIsValidForCodeGeneration_notConfigured() {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(true);
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
@@ -386,7 +385,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsValidForCodeGeneration_policyTypeInvalid() throws CoreRuntimeException {
+    public void testIsValidForCodeGeneration_policyTypeInvalid() {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(true);
         when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
@@ -400,7 +399,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testIsValidForCodeGeneration_policyTypeInvalidForProductProject() throws CoreRuntimeException {
+    public void testIsValidForCodeGeneration_policyTypeInvalidForProductProject() {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(true);
         when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);

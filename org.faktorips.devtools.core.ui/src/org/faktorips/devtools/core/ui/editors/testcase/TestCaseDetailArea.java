@@ -40,6 +40,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -48,7 +49,6 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -193,7 +193,7 @@ public class TestCaseDetailArea {
             for (ITestCaseDetailAreaRedrawListener listener : testCaseDetailAreaRedrawListener) {
                 listener.visibleTestObjectsChanges(testObjects);
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -267,7 +267,7 @@ public class TestCaseDetailArea {
      * section title beside the test policy component.
      */
     private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details)
-            throws CoreRuntimeException {
+            {
         if (testPolicyCmpt == null || details.isDisposed()) {
             return;
         }
@@ -304,7 +304,7 @@ public class TestCaseDetailArea {
 
     private void createAttributeEditFields(final ITestPolicyCmpt testPolicyCmpt,
             String uniqueKey,
-            Composite attributeComposite) throws CoreRuntimeException {
+            Composite attributeComposite) {
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
         boolean firstEditField = true;
         for (final ITestAttributeValue attributeValue : testAttributeValues) {
@@ -334,7 +334,7 @@ public class TestCaseDetailArea {
     private EditField<?> createAttributeEditField(final ITestPolicyCmpt testPolicyCmpt,
             final ITestPolicyCmpt testPolicyCmptForSelection,
             Composite attributeComposite,
-            final ITestAttributeValue attributeValue) throws CoreRuntimeException {
+            final ITestAttributeValue attributeValue) {
 
         // get the ctrlFactory to create the edit field
         ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
@@ -368,7 +368,7 @@ public class TestCaseDetailArea {
     }
 
     private ValueDatatype findDatatype(final ITestAttributeValue attributeValue, ITestAttribute testAttribute)
-            throws CoreRuntimeException {
+            {
         if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
             // the attribute is an extension attribute
             return testAttribute.findDatatype(ipsProject);
@@ -513,7 +513,7 @@ public class TestCaseDetailArea {
      * Recursive create the sections for the links and all their childs.
      */
     private void createPolicyCmptAndLinkSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details)
-            throws CoreRuntimeException {
+            {
 
         createPolicyCmptSection(currTestPolicyCmpt, details);
         ITestPolicyCmptLink[] links = currTestPolicyCmpt.getTestPolicyCmptLinks();
@@ -524,7 +524,7 @@ public class TestCaseDetailArea {
                     if (policyCmpt != null) {
                         createPolicyCmptAndLinkSection(policyCmpt, details);
                     }
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else {
@@ -630,7 +630,7 @@ public class TestCaseDetailArea {
         ITestRuleParameter testRuleParameter = null;
         try {
             testRuleParameter = rule.findTestRuleParameter(ipsProject);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

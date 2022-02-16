@@ -24,9 +24,9 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.internal.refactor.Messages;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -68,7 +68,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreRuntimeException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
@@ -89,10 +89,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param status The {@link RefactoringStatus} to add messages to
      * @param pm The {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreRuntimeException May be thrown at any time
+     * @throws IpsException May be thrown at any time
      */
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
-            throws CoreRuntimeException {
+            {
         // Empty base implementation that may be overwritten by subclasses.
     }
 
@@ -107,7 +107,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreRuntimeException {
+            {
 
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
@@ -135,11 +135,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param pm The {@link IProgressMonitor} to report progress to
      * @param context Condition checking context to collect shared condition checks
      * 
-     * @throws CoreRuntimeException May be thrown at any time
+     * @throws IpsException May be thrown at any time
      */
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreRuntimeException {
+            CheckConditionsContext context) {
 
         // Empty base implementation that may be overwritten by subclasses.
     }
@@ -184,7 +184,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreRuntimeException {
+    public final Change createChange(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = refactorIpsModel(pm);
         saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();
@@ -196,12 +196,12 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param pm {@link IProgressMonitor} to report progress to if necessary
      * 
-     * @throws CoreRuntimeException Subclasses may throw this kind of exception any time
+     * @throws IpsException Subclasses may throw this kind of exception any time
      */
-    public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException;
+    public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws IpsException;
 
     private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm)
-            throws CoreRuntimeException {
+            {
         for (IpsSrcFileModification modification : modificationSet.getModifications()) {
             if (modification.getTargetIpsSrcFile().exists()) {
                 modification.getTargetIpsSrcFile().save(true, pm);
@@ -249,7 +249,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * This implementation always returns true, may be overwritten by subclasses if necessary.
      */
     @Override
-    public boolean isApplicable() throws CoreRuntimeException {
+    public boolean isApplicable() {
         return true;
     }
 
@@ -309,11 +309,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param ipsObjectType Only {@link IIpsSrcFile IpsSrcFiles} with one of these
      *            {@link IpsObjectType types} are searched
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the source files
+     * @throws IpsException If an error occurs while searching for the source files
      * @throws NullPointerException If the parameter is null
      */
     protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType)
-            throws CoreRuntimeException {
+            {
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<>(25);
@@ -334,9 +334,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param pm The {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreRuntimeException If an error occurs while validating the user input
+     * @throws IpsException If an error occurs while validating the user input
      */
-    public final RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException {
+    public final RefactoringStatus validateUserInput(IProgressMonitor pm) {
         RefactoringStatus status = new RefactoringStatus();
         MessageList validationMessageList = new MessageList();
         validateUserInputThis(status, pm);
@@ -352,9 +352,9 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @param validationMessageList Message list to report validation errors to
      * 
-     * @throws CoreRuntimeException If an error occurs while validating the IPS model
+     * @throws IpsException If an error occurs while validating the IPS model
      */
-    protected abstract void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException;
+    protected abstract void validateIpsModel(MessageList validationMessageList) throws IpsException;
 
     /**
      * This operation is called by {@link #validateUserInput(IProgressMonitor)}. Subclasses must
@@ -363,10 +363,10 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @param status {@link RefactoringStatus} to report messages to
      * @param pm {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreRuntimeException May be thrown at any time
+     * @throws IpsException May be thrown at any time
      */
     protected abstract void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns whether this refactoring processor requires that all IPS source files are saved

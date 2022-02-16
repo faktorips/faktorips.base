@@ -22,7 +22,6 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +54,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
         addMavenNature();
     }
 
-    private void newPom(String pomContent) throws CoreRuntimeException {
+    private void newPom(String pomContent) {
         project.getFile(POM_XML).create(new ByteArrayInputStream(pomContent.getBytes()), null);
     }
 
@@ -72,7 +71,7 @@ public class MavenVersionProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProjectVersion_NoMavenNature() throws CoreRuntimeException {
+    public void testGetProjectVersion_NoMavenNature() {
         ipsProject = newIpsProject();
         project = ipsProject.getProject();
         newPom(POM_CONTENT);

@@ -21,7 +21,6 @@ import java.util.Locale;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -111,12 +110,12 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void build(IIpsSrcFile ipsSrcFile) {
 
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
             return true;
         }
 

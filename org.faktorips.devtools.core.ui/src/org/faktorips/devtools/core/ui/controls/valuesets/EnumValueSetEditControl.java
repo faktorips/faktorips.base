@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.ContentsChangeListener;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -206,7 +206,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         valueSet.setValue(index2, name1);
     }
 
-    private MessageList validate(Object element) throws CoreRuntimeException {
+    private MessageList validate(Object element) {
         IndexValueWrapper wrapper = (IndexValueWrapper)element;
         if (valueSet == null) {
             return new MessageList();
@@ -229,7 +229,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
                 MessageList list = validate(element);
                 return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                         false);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return null;
             }
@@ -340,7 +340,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         }
 
         @Override
-        protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+        protected MessageList getMessagesFor(Object element) {
             return validate(element);
         }
 

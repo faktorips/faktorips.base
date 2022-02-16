@@ -22,13 +22,12 @@ import java.util.List;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
-import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -57,7 +56,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeIpsProjectProperties() throws CoreRuntimeException {
+    public void testChangeIpsProjectProperties() {
         productCmptType.validate(ipsProject);
         assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 
@@ -68,7 +67,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeManifest() throws CoreRuntimeException {
+    public void testChangeManifest() {
         productCmptType.validate(ipsProject);
         assertTrue(ipsModel.getValidationResultCache().getResult(productCmptType).isEmpty());
 

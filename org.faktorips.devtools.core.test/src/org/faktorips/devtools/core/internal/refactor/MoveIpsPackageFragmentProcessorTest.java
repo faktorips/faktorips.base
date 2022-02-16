@@ -23,7 +23,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -168,14 +167,14 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreRuntimeException {
+    public void testValidateUserInputThis() {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameFolder() throws CoreRuntimeException {
+    public void testValidateUserInputThis_MoveToSameFolder() {
         processor.setTargetIpsPackageFragment(source);
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -184,7 +183,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameParentFolder() throws CoreRuntimeException {
+    public void testValidateUserInputThis_MoveToSameParentFolder() {
         processor.setTargetIpsPackageFragment(ipsRoot.getIpsPackageFragment("data"));
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -193,7 +192,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() throws CoreRuntimeException {
+    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() {
         processor = new MoveIpsPackageFragmentProcessor(ipsRoot.getIpsPackageFragment(""));
         processor.setTargetIpsPackageFragment(target);
         RefactoringStatus status = new RefactoringStatus();

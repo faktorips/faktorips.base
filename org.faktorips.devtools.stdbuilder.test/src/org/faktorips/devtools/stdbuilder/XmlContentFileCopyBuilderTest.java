@@ -20,7 +20,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -52,7 +51,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild() throws CoreRuntimeException {
+    public void testBuild() {
         assertFalse(getContentsFile().exists());
         ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertTrue(getContentsFile().exists());
@@ -63,7 +62,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         assertFalse(getContentsFile().exists());
         ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         assertTrue(getContentsFile().exists());

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
@@ -21,7 +22,6 @@ import org.faktorips.devtools.htmlexport.helper.FileHandler;
 import org.faktorips.devtools.htmlexport.helper.IoHandler;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.standard.pages.ProjectOverviewPageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class StandardOnePageDocumentorScript implements IDocumentorScript {
@@ -29,7 +29,7 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
     private IoHandler fileHandler = new FileHandler();
 
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreRuntimeException {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) {
         writeProjectOverviewPage(context);
 
         // TODO HIER WEITERMACHEN!!!;
@@ -37,9 +37,9 @@ public class StandardOnePageDocumentorScript implements IDocumentorScript {
         try {
             fileHandler.writeFile("complete.html", context.getLayouter().generate()); //$NON-NLS-1$
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 

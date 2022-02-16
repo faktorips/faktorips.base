@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.ipsproject.bundle;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsLibraryEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 
 public interface IIpsBundleEntry extends IIpsLibraryEntry {
 
-    boolean exists(QualifiedNameType qnt) throws CoreRuntimeException;
+    boolean exists(QualifiedNameType qnt) throws IpsException;
 
     IIpsStorage getIpsStorage();
 

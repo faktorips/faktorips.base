@@ -16,7 +16,6 @@ import java.util.Comparator;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -39,7 +38,7 @@ public class AlphaNumericSimpleNameComparatorTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testCompare() throws CoreRuntimeException {
+    public void testCompare() {
         comparator = AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
 
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$

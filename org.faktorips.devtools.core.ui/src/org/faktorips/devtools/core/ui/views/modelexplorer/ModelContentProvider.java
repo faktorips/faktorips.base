@@ -33,12 +33,12 @@ import org.faktorips.devtools.abstraction.AAbstraction;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
@@ -116,7 +116,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 } else {
                     return ((IIpsElement)parentElement).getChildren();
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;
             }
@@ -138,7 +138,7 @@ public class ModelContentProvider implements ITreeContentProvider {
         } else if (parentElement instanceof IIpsObjectPathContainer) {
             try {
                 return ipsObjectPathContainerChildrenProvider.getChildren((IIpsObjectPathContainer)parentElement);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;
             }
@@ -163,7 +163,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * This problem does not occur with <code>IResource</code>s.
      * </p>
      */
-    private Object[] getProjectContent(IIpsProject project) throws CoreRuntimeException {
+    private Object[] getProjectContent(IIpsProject project) {
         return projectChildrenProvider.getChildren(project);
     }
 
@@ -285,7 +285,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPackageFragmentRoot</code> is contained in the returned array if it contains files
      * (has children).
      */
-    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
+    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) {
         if (layoutStyle == LayoutStyle.FLAT) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             if (fragments.length == 1) {
@@ -323,9 +323,9 @@ public class ModelContentProvider implements ITreeContentProvider {
      * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained files
      * are returned.
      * 
-     * @throws CoreRuntimeException
+     * @throws IpsException
      */
-    private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
+    private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) {
         if (fragment.isDefaultPackage()) {
             return getFileContent(fragment);
         } else {
@@ -338,9 +338,9 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given packagefragments
      * underlying folder.
      * 
-     * @throws CoreRuntimeException
+     * @throws IpsException
      */
-    private Object[] getFolderContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
+    private Object[] getFolderContent(IIpsPackageFragment fragment) {
         // in hierarchical layout display childpackagefragments as children
         if (layoutStyle == LayoutStyle.HIERACHICAL) {
             return fragment.getChildIpsPackageFragments();
@@ -353,7 +353,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Returns all files contained in the given <code>IpsPackageFragment</code>. This includes
      * IpsElements as well as general files.
      */
-    protected Object[] getFileContent(IIpsPackageFragment fragment) throws CoreRuntimeException {
+    protected Object[] getFileContent(IIpsPackageFragment fragment) {
         IIpsElement[] files = fragment.getChildren();
 
         List<IIpsElement> pcts = new ArrayList<>();
@@ -364,7 +364,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                     try {
                         file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                     } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
+                        throw new IpsException(e);
                     }
                 }
                 pcts.add(file2);
@@ -500,7 +500,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                             .toArray();
                     return concatenate(model.getIpsProjects(), nonIpsProjects);
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return EMPTY_ARRAY;
             }

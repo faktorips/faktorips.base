@@ -25,10 +25,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsSrcFileEditor;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
@@ -64,7 +64,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
                 for (IIpsSrcFile srcFileToSave : srcFilesToSave) {
                     try {
                         srcFileToSave.save(true, monitor);
-                    } catch (CoreRuntimeException e) {
+                    } catch (IpsException e) {
                         result.add(e.getStatus());
                     }
                 }

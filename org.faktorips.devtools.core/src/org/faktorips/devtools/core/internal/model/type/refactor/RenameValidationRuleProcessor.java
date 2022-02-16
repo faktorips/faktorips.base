@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -56,7 +56,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
             updateValidationRuleInProductCmpts();
             updateValidationRuleInTestCases();
             updateValidationRuleName();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             modificationSet.undo();
             throw e;
         }
@@ -141,7 +141,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
                 }
             }
             return affectedProductCmptsGenerations;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }
@@ -188,7 +188,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getValidationRule().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
     }

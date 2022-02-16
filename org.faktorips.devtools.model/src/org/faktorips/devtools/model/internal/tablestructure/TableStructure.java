@@ -21,10 +21,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.util.TreeSetHelper;
@@ -160,7 +160,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new CoreRuntimeException("Can't get index for column " + column); //$NON-NLS-1$
+        throw new IpsException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
     @Override
@@ -170,7 +170,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new CoreRuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
+        throw new IpsException("Can't get index for column " + columnName); //$NON-NLS-1$
     }
 
     @Override
@@ -506,7 +506,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {

@@ -18,9 +18,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -248,7 +248,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         try {
             testCaseType = testCase.findTestCaseType(ipsProject);
             // CSOFF: Empty Statement
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // ignore exception while retrieving the test rule parameter
         }
         // CSON: Empty Statement
@@ -451,7 +451,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
                 }
             }
             return childs.toArray(new Object[0]);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             /*
              * ignore model error, the model consitence between the test case type and the test case
              * will be check when openening the editor, therefore it will be ignored is here
@@ -536,7 +536,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         String id = ""; //$NON-NLS-1$
         try {
             id = getIdFor(testPolicyCmpt.findTestParameter(ipsProject), testPolicyCmpt);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         String objectId = StringUtils.substringAfter(id, "#"); //$NON-NLS-1$

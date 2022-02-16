@@ -31,7 +31,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -98,7 +97,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun() throws CoreRuntimeException {
+    public void testRun() {
         cutAction = newIpsCutAction(attribute);
         pasteAction = newIpsPasteAction(pcType);
 
@@ -120,7 +119,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsObject2IpsPackageFragment() throws CoreRuntimeException {
+    public void testCopyPasteIpsObject2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
         newIpsCopyAction(pcType).run();
@@ -135,7 +134,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsPackageFragment2IpsPackageFragment() throws CoreRuntimeException {
+    public void testCopyPasteIpsPackageFragment2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
         newIpsCopyAction(pack).run();
@@ -173,7 +172,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() throws CoreRuntimeException {
+    public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
         IIpsObject obj1 = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "test.PolicyInArchive1");
@@ -191,7 +190,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsPackageFragmentFromArchive2IpsPackageFragment() throws CoreRuntimeException {
+    public void testCopyPasteIpsPackageFragmentFromArchive2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
         IIpsPackageFragmentRoot root = project.findIpsPackageFragmentRoot("test.ipsar");

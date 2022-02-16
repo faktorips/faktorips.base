@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
-import static org.faktorips.devtools.abstraction.plainjava.internal.Exceptions.asCoreRuntimeException;
 import static org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFileUtil.withMonitor;
 
 import java.io.File;
@@ -22,6 +21,7 @@ import java.nio.file.StandardCopyOption;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class PlainJavaFile extends PlainJavaResource implements AFile {
@@ -40,7 +40,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
         try {
             file().createNewFile();
         } catch (IOException e) {
-            throw asCoreRuntimeException("Creating " + file() + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException("Creating " + file() + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -57,7 +57,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
         try {
             return new FileInputStream(file());
         } catch (FileNotFoundException e) {
-            throw asCoreRuntimeException("Can't read " + file(), e); //$NON-NLS-1$
+            throw new IpsException("Can't read " + file(), e); //$NON-NLS-1$
         }
     }
 

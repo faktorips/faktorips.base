@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
@@ -53,7 +53,7 @@ public class ToggleRuleAction extends Action {
         if (!srcFileDirty) {
             try {
                 vRuleConfig.getIpsSrcFile().save(false, new NullProgressMonitor());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(new IpsStatus("Could not save IpsSrcFile \"" + vRuleConfig.getIpsSrcFile() + "\"", e)); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }

@@ -18,7 +18,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -70,7 +69,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
     }
@@ -195,7 +194,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         validateValidFromFormat(list, this);

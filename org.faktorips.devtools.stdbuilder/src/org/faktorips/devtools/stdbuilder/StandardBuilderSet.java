@@ -39,7 +39,6 @@ import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -301,7 +300,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreRuntimeException {
+            CompilationResult<JavaCodeFragment>[] argResults) {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -329,7 +328,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) {
         if (exprCompiler instanceof ExtendedExprCompiler) {
             return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
         } else {
@@ -345,14 +344,14 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreRuntimeException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) {
         modelService = new ModelService();
         generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
         super.initialize(config);
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
         // create policy component type builders
         LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,

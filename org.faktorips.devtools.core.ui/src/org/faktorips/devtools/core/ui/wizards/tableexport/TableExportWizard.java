@@ -25,12 +25,12 @@ import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.tableconversion.ITableFormat;
@@ -113,7 +113,7 @@ public class TableExportWizard extends IpsObjectExportWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
                 protected void execute(IProgressMonitor monitor)
-                        throws CoreRuntimeException, InvocationTargetException, InterruptedException {
+                        throws IpsException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeTableExport(exportContents, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);

@@ -17,7 +17,6 @@ import java.text.MessageFormat;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -48,7 +47,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
     }
 
     @Override
-    public MessageList validate() throws CoreRuntimeException {
+    public MessageList validate() {
 
         MessageList messages = new MessageList();
 

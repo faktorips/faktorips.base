@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.ipsproject;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -57,13 +57,13 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *            destination for mergeable resources is to return. If set to true the destination
      *            for the derived artifacts will be returned.
      */
-    public APackageFragmentRoot getArtefactDestination(boolean derived) throws CoreRuntimeException;
+    public APackageFragmentRoot getArtefactDestination(boolean derived) throws IpsException;
 
     /**
      * Returns the package fragments contained in this root folder. Returns an empty array if this
      * root folder does not contain any fragments.
      */
-    public IIpsPackageFragment[] getIpsPackageFragments() throws CoreRuntimeException;
+    public IIpsPackageFragment[] getIpsPackageFragments() throws IpsException;
 
     /**
      * Returns the package fragment with the indicated name or <code>null</code> if the given name
@@ -81,9 +81,9 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * <code>IIpsPackageFragment</code>s contained in this PackageFragmentRoot. Returns an empty
      * array if no such resources are found.
      * 
-     * @throws CoreRuntimeException if the members of the corresponding resource cannot be accessed.
+     * @throws IpsException if the members of the corresponding resource cannot be accessed.
      */
-    public AResource[] getNonIpsResources() throws CoreRuntimeException;
+    public AResource[] getNonIpsResources() throws IpsException;
 
     /**
      * Returns the default-package.
@@ -99,7 +99,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *            local file system
      * @param monitor the given progress monitor
      * 
-     * @throws CoreRuntimeException if the element could not be created. Reasons include:
+     * @throws IpsException if the element could not be created. Reasons include:
      *             <ul>
      *             <li>This root folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying
@@ -109,17 +109,17 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *             </ul>
      */
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns the IPS object with the indicated type and qualified name.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreRuntimeException;
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws IpsException;
 
     /**
      * Returns the IPS source file with the indicated qualified name type.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreRuntimeException;
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws IpsException;
 
     /**
      * If this root is based on a storage, the method returns the storage, otherwise
@@ -133,7 +133,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * @throws UnsupportedOperationException If the package fragment root is stored in an archive
      */
     @Override
-    public void delete() throws CoreRuntimeException;
+    public void delete() throws IpsException;
 
     /**
      * Finding and returning all {@link IIpsSrcFile IIpsSrcFiles} of the specified
@@ -142,8 +142,8 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * @param type The type of {@link IIpsSrcFile IIpsSrcFiles} you want to find
      * @return A List of all {@link IIpsSrcFile IIpsSrcFiles} found in this
      *         {@link IIpsPackageFragmentRoot}
-     * @throws CoreRuntimeException In case of a core exception finding the resources
+     * @throws IpsException In case of a core exception finding the resources
      */
-    List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws CoreRuntimeException;
+    List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws IpsException;
 
 }

@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TableDescriptionPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -67,7 +66,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreRuntimeException {
+    public IPage createModelDescriptionPage() {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if (tableStructure != null) {
             return new TableDescriptionPage(tableStructure);
@@ -87,7 +86,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     /*
-     * @Override protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
+     * @Override protected Dialog createDialogToFixDifferencesToModel() {
      * contentsPage.updateToolbarActionsEnabledStates();
      * 
      * }

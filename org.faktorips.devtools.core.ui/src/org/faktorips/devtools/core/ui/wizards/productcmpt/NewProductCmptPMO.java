@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -174,7 +173,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         addBaseTypesRecursive(concreteTypes, ipsProject);
     }
 
-    private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) {
         Set<IIpsSrcFile> superTypes = new HashSet<>();
         for (IIpsSrcFile ipsSrcFile : types) {
             if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {

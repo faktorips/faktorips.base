@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -71,7 +70,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findTableStructureUsage(ipsProject);
     }
 
@@ -145,12 +144,12 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITableContents findTableContents(IIpsProject ipsProject) {
         return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, getTableContentName());
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         String tableContentNameToValidate = getTableContentName();
         IProductCmptType type = getProductCmptType(ipsProject);
@@ -211,7 +210,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) {
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {
             return null;
@@ -220,7 +219,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         ITableStructureUsage currentStructureUsage = findTableStructureUsage(getIpsProject());

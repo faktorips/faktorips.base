@@ -30,7 +30,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
@@ -136,7 +135,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             return false;
@@ -322,13 +321,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         list.add(createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validate());
     }
 
     @Override
-    public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validateValue(int index, IIpsProject ipsProject) {
         return createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validateValue(index);
     }
 

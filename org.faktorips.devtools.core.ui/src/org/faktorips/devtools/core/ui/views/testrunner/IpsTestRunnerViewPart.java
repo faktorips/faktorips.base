@@ -57,10 +57,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.UIJob;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.devtools.model.testcase.TestRuleViolationType;
 import org.faktorips.util.StringUtil;
@@ -181,11 +181,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     /*
      * Runs the last runned test.
      */
-    private void rerunTestRun() throws CoreRuntimeException {
+    private void rerunTestRun() {
         try {
             IpsPlugin.getDefault().getIpsTestRunner().startTestRunnerJob(classpathRepository, testPackage);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -885,7 +885,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public void run() {
             try {
                 IpsPlugin.getDefault().getIpsTestRunner().terminate();
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -910,7 +910,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public void run() {
             try {
                 rerunTestRun();
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

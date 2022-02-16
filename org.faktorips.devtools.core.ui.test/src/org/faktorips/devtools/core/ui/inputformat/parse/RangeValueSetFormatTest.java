@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -242,7 +241,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_EmptyRange() throws CoreRuntimeException {
+    public void testIsResponsibleFor_EmptyRange() {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[]"));
@@ -251,7 +250,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_Range() throws CoreRuntimeException {
+    public void testIsResponsibleFor_Range() {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10 / 1]"));

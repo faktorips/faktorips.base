@@ -16,9 +16,9 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
@@ -50,11 +50,11 @@ public class ReferenceDeleteAction extends Action {
             for (IProductCmptLink link : links) {
                 link.delete();
             }
-            CoreRuntimeException exception = null;
+            IpsException exception = null;
             for (IIpsSrcFile srcFile : srcFilesToSave) {
                 try {
                     srcFile.save(false, null);
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                     exception = e;
                 }

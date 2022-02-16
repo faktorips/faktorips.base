@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -104,10 +104,10 @@ public class EnumTypeValidations {
      *            the <code>IpsProject</code> of the provided enumeration type is used within this
      *            method.
      * 
-     * @throws CoreRuntimeException If an exception occurs during processing.
+     * @throws IpsException If an exception occurs during processing.
      */
     public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         ArgumentCheck.notNull(new Object[] { msgList, ipsProject });
 

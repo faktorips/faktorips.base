@@ -21,7 +21,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.junit.Before;
@@ -56,7 +55,7 @@ public class IpsCompositeMoveRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputTargetPackageNotSet() throws CoreRuntimeException {
+    public void testValidateUserInputTargetPackageNotSet() {
         LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
 
@@ -67,7 +66,7 @@ public class IpsCompositeMoveRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputTargetPackageEqualsOriginalPackage() throws CoreRuntimeException {
+    public void testValidateUserInputTargetPackageEqualsOriginalPackage() {
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(originalIpsPackageFragment);
 
         RefactoringStatus result = ipsCompositeMoveRefactoring.validateUserInput(null);

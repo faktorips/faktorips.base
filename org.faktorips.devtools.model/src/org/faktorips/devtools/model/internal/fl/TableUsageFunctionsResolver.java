@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
@@ -58,7 +58,7 @@ public class TableUsageFunctionsResolver extends AbstractTableFunctionsResolver 
                     // only add the access-function if the content has a structure...
                     tableData.add(new TableData(tableContents.getQualifiedName(), table, referencedName));
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // if an error occurs while search for the function, the functions are not
                 // provided and an error is logged.
                 IpsLog.log(e);

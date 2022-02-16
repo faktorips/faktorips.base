@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -38,7 +38,7 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
                 if (isUniqueIdentifier) {
                     overlays[0] = OverlayIcons.KEY;
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
 
@@ -68,7 +68,7 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
                 if (!(IpsStringUtils.isEmpty(datatypeName))) {
                     label += " : " + datatypeName; //$NON-NLS-1$
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
                 return label;
             }

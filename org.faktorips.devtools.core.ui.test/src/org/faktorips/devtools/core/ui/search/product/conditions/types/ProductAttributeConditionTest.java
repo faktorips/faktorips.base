@@ -25,7 +25,6 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
@@ -118,7 +117,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOperandProvider() throws CoreRuntimeException {
+    public void testOperandProvider() {
         String value = "monatlich";
 
         IProductCmptTypeAttribute attribut = productCmptType.newProductCmptTypeAttribute("zahlweise");
@@ -134,7 +133,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOperandProvider_staticAttribute() throws CoreRuntimeException {
+    public void testOperandProvider_staticAttribute() {
         String value = "monatlich";
 
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("zahlweise");
@@ -150,7 +149,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOperandProvider_MultiValueAttribute() throws CoreRuntimeException {
+    public void testOperandProvider_MultiValueAttribute() {
         String value1 = "monatlich";
         String value2 = "taeglich";
 

@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.SimpleCustomValidationForProductCmptAttributeValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -32,7 +31,7 @@ import org.junit.Test;
 public class SimpleCustomValidationForProductCmptAttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
 
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "ProdType");
@@ -41,7 +40,7 @@ public class SimpleCustomValidationForProductCmptAttributeValueTest extends Abst
                 productCmptType.getName(), productCmptTypeAttribute.getName()) {
 
             @Override
-            public ValidationResult validate(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+            public ValidationResult validate(String value, IIpsProject ipsProject) {
                 return newError("4711", "bar");
             }
         };

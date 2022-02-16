@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -43,7 +43,7 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreRuntimeException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
 
         IIpsSrcFile[] allProductCmptTypes = findIpsSrcFilesByType(IpsObjectType.PRODUCT_CMPT_TYPE);
 
@@ -67,9 +67,9 @@ public class ProductCmptType2RefControl extends IpsObjectRefControl {
      * text in the control does not identify a product component type. If abstract types are set to
      * be exclueded but the type found is abstract it is returned nevertheless!
      * 
-     * @throws CoreRuntimeException if an exception occurs while searching for the type.
+     * @throws IpsException if an exception occurs while searching for the type.
      */
-    public IProductCmptType findProductCmptType() throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType() {
         return (IProductCmptType)findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
 }

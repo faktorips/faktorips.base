@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -26,7 +26,7 @@ import org.junit.Test;
 public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testCreateItems() throws CoreRuntimeException {
+    public void testCreateItems() {
         IIpsProject ipsProject = newIpsProject();
 
         IProductCmptType type = newProductCmptType(ipsProject, "home.Product");
@@ -56,7 +56,7 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         try {
             collection.isDuplicateName(cmpt1.getIpsSrcFile());
             fail();
-        } catch (CoreRuntimeException ce) {
+        } catch (IpsException ce) {
             // success
         }
 

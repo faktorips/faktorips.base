@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.productcmpt;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
@@ -126,10 +126,10 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * 
      * @return the association or <code>null</code> if no such association exists.
      * 
-     * @throws CoreRuntimeException if an exception occurs while searching the relation.
+     * @throws IpsException if an exception occurs while searching the relation.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the target product component.
@@ -148,10 +148,10 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this component is part of.
      * 
-     * @throws CoreRuntimeException if an exception occurs while searching for the type.
+     * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmpt findTarget(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the cardinality of target instances in this link
@@ -232,10 +232,10 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @return true if this link is a link instance of the given association including search for
      *         derived unions.
      * 
-     * @throws CoreRuntimeException Throws a core exception if there occurs exception during finding other
+     * @throws IpsException Throws a core exception if there occurs exception during finding other
      *             objects
      */
-    boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreRuntimeException;
+    boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns {@code true} if this link is configuring an association on the policy component

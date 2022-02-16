@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -86,7 +86,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * Returns <code>true</code> if the entry contains a source file with the indicated qualified
      * name type, otherwise <code>false</code>.
      */
-    public abstract boolean exists(QualifiedNameType qnt) throws CoreRuntimeException;
+    public abstract boolean exists(QualifiedNameType qnt) throws IpsException;
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
@@ -108,11 +108,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      */
     @Override
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
-        // try {
         return getIpsPackageFragmentRoot().findAllIpsSrcFiles(type);
-        // } catch (CoreException e) {
-        // throw new CoreRuntimeException(e);
-        // }
     }
 
     /**

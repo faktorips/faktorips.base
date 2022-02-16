@@ -12,7 +12,7 @@ package org.faktorips.devtools.abstraction;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * A file is a resource in the file-system that contains data.
@@ -39,7 +39,7 @@ public interface AFile extends AResource {
      * @param source provides the data to be written to the new file
      * @param monitor a progress monitor that is notified about this process. The monitor may be
      *            {@code null} when progress does not need to be reported.
-     * @throws CoreRuntimeException if the file already exists or creation fails
+     * @throws IpsException if the file already exists or creation fails
      */
     void create(InputStream source, IProgressMonitor monitor);
 
@@ -47,7 +47,7 @@ public interface AFile extends AResource {
      * Returns the file's data contents as an {@link InputStream}.
      *
      * @return the file's contents
-     * @throws CoreRuntimeException if the file can't be read
+     * @throws IpsException if the file can't be read
      */
     InputStream getContents();
 
@@ -58,7 +58,7 @@ public interface AFile extends AResource {
      * @param keepHistory whether to keep a history of the content (if supported by the workspace)
      * @param monitor a progress monitor that is notified about this process. The monitor may be
      *            {@code null} when progress does not need to be reported.
-     * @throws CoreRuntimeException if the file can't be written or does not exist
+     * @throws IpsException if the file can't be written or does not exist
      */
     void setContents(InputStream source, boolean keepHistory, IProgressMonitor monitor);
 

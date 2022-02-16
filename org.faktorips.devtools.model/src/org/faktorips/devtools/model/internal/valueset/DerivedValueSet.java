@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.valueset;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -40,7 +39,7 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             return false;

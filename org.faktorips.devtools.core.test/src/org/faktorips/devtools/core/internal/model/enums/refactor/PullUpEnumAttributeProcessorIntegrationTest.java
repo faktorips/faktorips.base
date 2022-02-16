@@ -14,13 +14,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Test;
 
 public class PullUpEnumAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
 
     @Test
-    public void testPullUpEnumAttribute() throws CoreRuntimeException {
+    public void testPullUpEnumAttribute() {
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         enumType.setSuperEnumType(superEnumType.getQualifiedName());

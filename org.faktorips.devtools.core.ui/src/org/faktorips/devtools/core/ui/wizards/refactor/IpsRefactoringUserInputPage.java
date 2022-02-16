@@ -15,13 +15,13 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -109,7 +109,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * <p>
      * Returns true if valid, false otherwise.
      */
-    private final boolean validateUserInput() throws CoreRuntimeException {
+    private final boolean validateUserInput() {
         resetPageMessages();
 
         RefactoringStatus status = new RefactoringStatus();
@@ -124,7 +124,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * 
      * @param status {@link RefactoringStatus} to add messages to
      */
-    protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreRuntimeException;
+    protected abstract void validateUserInputThis(RefactoringStatus status) throws IpsException;
 
     /**
      * Evaluates the given {@link RefactoringStatus} by setting appropriate page messages.

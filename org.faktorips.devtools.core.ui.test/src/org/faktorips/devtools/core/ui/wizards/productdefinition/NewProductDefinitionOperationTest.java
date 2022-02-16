@@ -28,7 +28,6 @@ import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsCoreExtensions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -49,7 +48,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
@@ -186,7 +185,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreRuntimeException {
+        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
             finishIpsSrcFileCalled = true;
             // simulate doing some stuff
             ipsSrcFile.markAsDirty();

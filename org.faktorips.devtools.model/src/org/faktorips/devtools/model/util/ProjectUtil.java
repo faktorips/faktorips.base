@@ -34,11 +34,11 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -72,11 +72,11 @@ public class ProjectUtil {
      * 
      * @throws NullPointerException If project is <code>null</code>.
      */
-    public static final void addIpsNature(IProject project) throws CoreRuntimeException {
+    public static final void addIpsNature(IProject project) {
         try {
             IpsProjectUtil.addNature(project, IIpsProject.NATURE_ID);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -86,7 +86,7 @@ public class ProjectUtil {
      * 
      * @param project A platform project.
      */
-    public static final boolean hasIpsNature(IJavaProject project) throws CoreRuntimeException {
+    public static final boolean hasIpsNature(IJavaProject project) {
         return hasIpsNature(project.getProject());
     }
 
@@ -96,11 +96,11 @@ public class ProjectUtil {
      * 
      * @param project A platform project.
      */
-    public static final boolean hasIpsNature(IProject project) throws CoreRuntimeException {
+    public static final boolean hasIpsNature(IProject project) {
         try {
             return project.getDescription().hasNature(IIpsProject.NATURE_ID);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
@@ -110,9 +110,9 @@ public class ProjectUtil {
      * @param ipsProject The project to disable the feature at.
      * @param featureName The name of the feature to disable.
      * 
-     * @throws CoreRuntimeException if an error occurs while saving the properties to the file.
+     * @throws IpsException if an error occurs while saving the properties to the file.
      */
-    public static void disableBuilderFeature(IIpsProject ipsProject, String featureName) throws CoreRuntimeException {
+    public static void disableBuilderFeature(IIpsProject ipsProject, String featureName) {
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = props.getBuilderSetConfig();
         String desc = configModel.getPropertyDescription(featureName);
@@ -135,7 +135,7 @@ public class ProjectUtil {
             String runtimeIdPrefix,
             AFolder mergableFolder,
             AFolder derivedFolder,
-            AFolder srcFolder) throws CoreRuntimeException {
+            AFolder srcFolder) {
 
         List<Locale> supportedLocales = new ArrayList<>(1);
         supportedLocales.add(IIpsModel.get().getMultiLanguageSupport().getLocalizationLocale());
@@ -155,7 +155,7 @@ public class ProjectUtil {
      * 
      * @param projectName The name for the new project.
      * 
-     * @throws CoreRuntimeException if the creation of the project fails. See
+     * @throws IpsException if the creation of the project fails. See
      *             {@link IProject#create(org.eclipse.core.runtime.IProgressMonitor)} for details.
      */
     public static IProject createPlatformProject(String projectName) throws CoreException {
@@ -171,11 +171,11 @@ public class ProjectUtil {
      * @param project The project to create the folder in.
      * @param folderName The name of the folder.
      * 
-     * @throws CoreRuntimeException If the creation of the folder fails. See
+     * @throws IpsException If the creation of the folder fails. See
      *             {@link IFolder#create(boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      *             for details.
      */
-    public static AFolder createFolder(AProject project, String folderName) throws CoreRuntimeException {
+    public static AFolder createFolder(AProject project, String folderName) {
         AFolder folder = project.getFolder(folderName);
         if (!folder.exists()) {
             folder.create(new NullProgressMonitor());
@@ -191,13 +191,13 @@ public class ProjectUtil {
      * @param outputFolderForMergableJavaFiles The folder for mergable Java files.
      * @param outputFolderForDerivedJavaFiles The folder for derived Java files.
      * 
-     * @throws CoreRuntimeException if the creation of the folder fails or if the IPSObjectPath
+     * @throws IpsException if the creation of the folder fails or if the IPSObjectPath
      *             could not be set.
      */
     public static AFolder createIpsSourceFolderEntry(IIpsProject ipsProject,
             String folderName,
             AFolder outputFolderForMergableJavaFiles,
-            AFolder outputFolderForDerivedJavaFiles) throws CoreRuntimeException {
+            AFolder outputFolderForDerivedJavaFiles) {
 
         AFolder srcFolder = createFolder(ipsProject.getProject(), folderName);
 
@@ -226,10 +226,10 @@ public class ProjectUtil {
      * @param referringProject The project referring the other.
      * @param referencedProject The project referred by the first one.
      * 
-     * @throws CoreRuntimeException If the IPS object path could not be set accordingly.
+     * @throws IpsException If the IPS object path could not be set accordingly.
      */
     public static void addProjectReference(IIpsProject referringProject, IIpsProject referencedProject)
-            throws CoreRuntimeException {
+            {
 
         IIpsObjectPath ipsObjPath = referringProject.getIpsObjectPath();
         ipsObjPath.newIpsProjectRefEntry(referencedProject);
@@ -298,7 +298,7 @@ public class ProjectUtil {
             boolean isProductDefinitionProject,
             boolean isModelProject,
             boolean isPersistentProject,
-            List<Locale> supportedLocales) throws CoreRuntimeException {
+            List<Locale> supportedLocales) {
 
         IpsProjectCreationProperties creationProperties = new IpsProjectCreationProperties();
         creationProperties.setRuntimeIdPrefix(runtimeIdPrefix);
@@ -321,10 +321,10 @@ public class ProjectUtil {
      * @param javaProject The selected java project
      * @param creationProperties The properties required for creating an {@link IIpsProject}
      * @return The created IPS project
-     * @throws CoreRuntimeException If creating or configuring the IPS project failed
+     * @throws IpsException If creating or configuring the IPS project failed
      */
     private static IIpsProject createDefaultIpsProject(IJavaProject javaProject,
-            IpsProjectCreationProperties creationProperties) throws CoreRuntimeException {
+            IpsProjectCreationProperties creationProperties) {
 
         IIpsModel ipsModel = IIpsModel.get();
         IIpsProject ipsProject = ipsModel.createIpsProject(wrap(javaProject.getProject()).as(AProject.class));
@@ -351,7 +351,7 @@ public class ProjectUtil {
      * @param ipsProject The created {@link IIpsProject}
      * @param javaSrcFolder The java source folder
      * @param ipsModelFolder The model folder
-     * @throws CoreRuntimeException If initializing the object path failed
+     * @throws IpsException If initializing the object path failed
      */
     private static void initializeDefaultIpsObjectPath(IpsProjectCreationProperties creationProperties,
             IIpsProject ipsProject,
@@ -506,11 +506,11 @@ public class ProjectUtil {
      * @param ipsProject The created {@link IIpsProject}
      * @param creationProperties The {@link IpsProjectCreationProperties} required for creating an
      *            {@link IIpsProject}
-     * @throws CoreRuntimeException If the execution of one of the configurators failed
+     * @throws IpsException If the execution of one of the configurators failed
      */
     private static void executeProjectConfigurators(IIpsProject ipsProject,
             IpsProjectCreationProperties creationProperties)
-            throws CoreRuntimeException {
+            {
         boolean isExtensionResponsible = false;
         for (IIpsProjectConfigurator configurator : IpsProjectConfigurators
                 .applicableTo(ipsProject.getJavaProject())

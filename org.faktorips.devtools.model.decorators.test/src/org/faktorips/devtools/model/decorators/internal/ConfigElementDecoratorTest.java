@@ -23,7 +23,6 @@ import java.util.Locale;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
@@ -77,7 +76,7 @@ public class ConfigElementDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_NonStringValue() throws CoreRuntimeException {
+    public void testGetLabel_NonStringValue() {
         IConfigElement configElement = mock(IConfigElement.class);
         when(configElement.getCaption(any(Locale.class))).thenReturn("Foo");
         when(configElement.getPropertyValue()).thenReturn(4711);
@@ -88,7 +87,7 @@ public class ConfigElementDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_Unformatted() throws CoreRuntimeException {
+    public void testGetLabel_Unformatted() {
         IConfigElement configElement = mock(IConfigElement.class);
         when(configElement.getCaption(any(Locale.class))).thenReturn("Foo");
         when(configElement.getPropertyValue()).thenReturn("Bar");
@@ -99,7 +98,7 @@ public class ConfigElementDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_Formatted() throws CoreRuntimeException {
+    public void testGetLabel_Formatted() {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         ValueDatatype datatype = mock(ValueDatatype.class);

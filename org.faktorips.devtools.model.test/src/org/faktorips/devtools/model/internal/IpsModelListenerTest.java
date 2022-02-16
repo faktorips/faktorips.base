@@ -16,13 +16,12 @@ import static org.junit.Assert.assertNull;
 import java.io.InputStream;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -87,7 +86,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeIpsPartProperty() throws CoreRuntimeException {
+    public void testChangeIpsPartProperty() {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
         file.save(true, null);
 
@@ -126,7 +125,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDeletePart() throws CoreRuntimeException {
+    public void testDeletePart() {
         IPolicyCmptTypeAttribute attribute1 = type.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute attribute2 = type.newPolicyCmptTypeAttribute();
         file.save(true, null);

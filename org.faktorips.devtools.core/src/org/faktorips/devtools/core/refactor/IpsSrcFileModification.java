@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.refactor;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
@@ -137,7 +136,7 @@ public class IpsSrcFileModification {
         }
     }
 
-    protected void move(IIpsSrcFile from, IIpsSrcFile to) throws CoreRuntimeException {
+    protected void move(IIpsSrcFile from, IIpsSrcFile to) {
         RefactorUtil.moveIpsSrcFile(from, to.getIpsPackageFragment(), to.getIpsObjectName(), new NullProgressMonitor());
     }
 

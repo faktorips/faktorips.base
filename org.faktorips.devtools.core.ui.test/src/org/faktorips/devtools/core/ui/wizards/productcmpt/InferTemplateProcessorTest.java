@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.ipsobject.Modifier;
@@ -67,7 +66,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     private static final String GENERATION_ASSOCIATION = "GenerationAssociation";
 
     @Test
-    public void testRun_NullValueIsSetInTemplateTableContentUsage() throws CoreRuntimeException {
+    public void testRun_NullValueIsSetInTemplateTableContentUsage() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         ITableStructureUsage usage = type.newTableStructureUsage();
@@ -94,7 +93,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_ValidationRuleConfigsAreSetInTemplate() throws CoreRuntimeException {
+    public void testRun_ValidationRuleConfigsAreSetInTemplate() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IPolicyCmptType policyType = newPolicyCmptType(project, POLICY_TYPE_QNAME);
@@ -154,7 +153,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_ValidationRuleConfigsAreInheritedInProducts() throws CoreRuntimeException {
+    public void testRun_ValidationRuleConfigsAreInheritedInProducts() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IPolicyCmptType policyType = newPolicyCmptType(project, POLICY_TYPE_QNAME);
@@ -214,7 +213,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_ProductAndGenerationLinksAreInferred() throws CoreRuntimeException {
+    public void testRun_ProductAndGenerationLinksAreInferred() {
         IIpsProject project = newIpsProject();
         setLinkThreshold(project, Decimal.valueOf(1));
 
@@ -279,7 +278,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_UsesThresholdFromIpsProjectPropertiesForPopertyValues() throws CoreRuntimeException {
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForPopertyValues() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IProductCmptTypeAttribute[] attributes = new IProductCmptTypeAttribute[11];
@@ -326,7 +325,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalities() throws CoreRuntimeException {
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalities() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IProductCmpt[] products = new IProductCmpt[10];
@@ -357,7 +356,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkTargets() throws CoreRuntimeException {
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkTargets() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
 
@@ -393,7 +392,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalitiesAndTargets() throws CoreRuntimeException {
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalitiesAndTargets() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IProductCmpt product1 = newProductCmpt(type, "Product1");
@@ -441,7 +440,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         return link;
     }
 
-    private List<IProductCmpt> addProductsAndLinks(IProductCmptType type, int t) throws CoreRuntimeException {
+    private List<IProductCmpt> addProductsAndLinks(IProductCmptType type, int t) {
         List<IProductCmpt> products = new ArrayList<>(10);
         for (int i = 0; i < 10; i++) {
             ProductCmpt prod = newProductCmpt(type, "Product" + t + '_' + i);
@@ -455,7 +454,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_LinkIsInferredAndTemplateValueStatesAreAdjusted() throws CoreRuntimeException {
+    public void testRun_LinkIsInferredAndTemplateValueStatesAreAdjusted() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
@@ -504,7 +503,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_MissingLinksAreIgnoredForThresholdCalculation() throws CoreRuntimeException {
+    public void testRun_MissingLinksAreIgnoredForThresholdCalculation() {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
 
@@ -533,13 +532,13 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
     }
 
-    private void setPropertyValueThreshold(IIpsProject project, Decimal threshold) throws CoreRuntimeException {
+    private void setPropertyValueThreshold(IIpsProject project, Decimal threshold) {
         IIpsProjectProperties properties = project.getProperties();
         properties.setInferredTemplatePropertyValueThreshold(threshold);
         project.setProperties(properties);
     }
 
-    private void setLinkThreshold(IIpsProject project, Decimal threshold) throws CoreRuntimeException {
+    private void setLinkThreshold(IIpsProject project, Decimal threshold) {
         IIpsProjectProperties properties = project.getProperties();
         properties.setInferredTemplateLinkThreshold(threshold);
         project.setProperties(properties);

@@ -19,7 +19,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -55,7 +54,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof IEnumType) {
             IEnumType foundEnumType = (IEnumType)ipsObject;
@@ -115,7 +114,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile represents the file for which the property file will be returned
      * @param locale indicates the language of the property file
      */
-    AFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreRuntimeException {
+    AFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) {
         if (ipsSrcFile != null) {
             AFolder artefactDestination = (AFolder)getArtefactDestination(ipsSrcFile).getResource();
             Path relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
@@ -133,7 +132,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
         return IpsObjectType.ENUM_TYPE.equals(ipsObjectType);
     }
@@ -149,7 +148,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void delete(IIpsSrcFile ipsSrcFile) {
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             AFile propertyFile = getPropertyFile(ipsSrcFile, supportedLanguage.getLocale());

@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -228,7 +227,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSaveFile() throws CoreRuntimeException {
+    public void testSaveFile() {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());
         ipsSrcFile.save(false, null);
@@ -249,7 +248,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile, structure.getRoot());
     }
 
-    private void checkSaveFile(IIpsSrcFile ipsSrcFile, IProductCmptStructureReference target) throws CoreRuntimeException {
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile, IProductCmptStructureReference target) {
         linkCreator = new MyLinkCreator(false);
         assertFalse(ipsSrcFile.isDirty());
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));

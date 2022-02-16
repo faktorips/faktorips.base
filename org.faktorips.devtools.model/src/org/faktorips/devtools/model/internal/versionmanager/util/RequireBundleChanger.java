@@ -16,7 +16,7 @@ import java.util.jar.Attributes;
 
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.osgi.util.ManifestElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
@@ -56,7 +56,7 @@ public class RequireBundleChanger {
                     requireBundles.put(editManifestElement.getPluginName(), editManifestElement);
                 }
             } catch (BundleException be) {
-                throw new CoreRuntimeException(be.getMessage());
+                throw new IpsException(be.getMessage());
             }
         }
 

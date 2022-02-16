@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Application for Faktor-IPS to be used with eclipse. Provides reduced functionality in comparison
@@ -77,7 +76,7 @@ public class IpsApplication implements IApplication, IExecutableExtension {
 
     @Override
     public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-            throws CoreRuntimeException {
+            {
         // nothing to do
     }
 

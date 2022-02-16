@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -114,7 +113,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValueDatatype() throws CoreRuntimeException {
+    public void testFindValueDatatype() {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 

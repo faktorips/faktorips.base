@@ -15,7 +15,7 @@ import java.nio.file.Path;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsLibraryEntry;
@@ -34,7 +34,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     protected abstract IIpsStorage getIpsStorage();
 
-    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreRuntimeException;
+    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws IpsException;
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {

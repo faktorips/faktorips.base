@@ -16,8 +16,8 @@ import java.util.Objects;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -156,7 +156,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     private boolean isIdentifierAttributeValues(String value) {
         try {
             return getEnumValueContainer().findEnumValue(value, getEnumValueContainer().getIpsProject()) != null;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             return false;
         }
     }

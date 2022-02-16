@@ -31,11 +31,11 @@ import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -122,7 +122,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         IpsObjectType type = ipsSrcFile.getIpsObjectType();
         return SUPPORTED_TYPES.contains(type) || ipsObjectTypeToTocEntryBuilderMap.containsKey(type);
     }
@@ -134,7 +134,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     @Override
-    public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) {
         if (buildKind == ABuildKind.FULL_BUILD) {
             tocFileMap.clear();
         }
@@ -161,7 +161,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      */
     @Override
-    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws CoreRuntimeException {
+    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) {
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
@@ -175,9 +175,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * Saves the repository's table of contents to a file. The table of contents file is needed by
      * the FaktorIPS runtime to load the product components and table data.
      * 
-     * @throws CoreRuntimeException if an error occurs while writing the toc to the file.
+     * @throws IpsException if an error occurs while writing the toc to the file.
      */
-    private void saveToc(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
+    private void saveToc(IIpsPackageFragmentRoot root) {
         AFile tocFile = getBuilderSet().getRuntimeRepositoryTocFile(root);
         if (tocFile == null) {
             return;
@@ -194,7 +194,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);
         } catch (TransformerException e) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     new IpsStatus("Error transforming product component registry's table of contents to xml.", e)); //$NON-NLS-1$
         }
 
@@ -206,13 +206,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(xml.getBytes(encoding));
                 writeToFile(tocFile, inputStream, true, true);
             } catch (UnsupportedEncodingException e1) {
-                throw new CoreRuntimeException(new IpsStatus(e1));
+                throw new IpsException(new IpsStatus(e1));
             }
         }
     }
 
     private void replaceTocFileIfContentHasChanged(IIpsProject ipsProject, AFile tocFile, String newContents)
-            throws CoreRuntimeException {
+            {
         String oldContents = null;
         String charset = ipsProject.getXmlFileCharset();
         try {
@@ -230,12 +230,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         try {
             is = new ByteArrayInputStream(newContents.getBytes(charset));
         } catch (UnsupportedEncodingException e1) {
-            throw new CoreRuntimeException(new IpsStatus(e1));
+            throw new IpsException(new IpsStatus(e1));
         }
         writeToFile(tocFile, is, true, true);
     }
 
-    private TableOfContent getToc(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    private TableOfContent getToc(IIpsSrcFile ipsSrcFile) {
         IIpsPackageFragmentRoot root = ipsSrcFile.getIpsObject().getIpsPackageFragment().getRoot();
         return getToc(root);
     }
@@ -244,9 +244,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      * Returns the product component registry's table of contents for the indicated ips package
      * fragment root.
      * 
-     * @throws CoreRuntimeException if an error occurs while accessing the toc file.
+     * @throws IpsException if an error occurs while accessing the toc file.
      */
-    public TableOfContent getToc(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
+    public TableOfContent getToc(IIpsPackageFragmentRoot root) {
         IIpsArtefactBuilderSet builderSet = root.getIpsProject().getIpsArtefactBuilderSet();
         AFile tocFile = builderSet.getRuntimeRepositoryTocFile(root);
         TableOfContent toc = tocFileMap.get(tocFile);
@@ -282,7 +282,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         IIpsObject object = null;
         try {
             List<TocEntryObject> entries = new ArrayList<>();
@@ -322,14 +322,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 // no toc entry has been newly created, remove the previous toc entry
                 getToc(ipsSrcFile).removeEntry(object.getQualifiedNameType());
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IStatus status = new IpsStatus("Unable to update the runtime repository toc file with the entry for: " //$NON-NLS-1$
                     + (object == null ? IpsStringUtils.EMPTY : object.getQualifiedName()), e);
-            throw new CoreRuntimeException(status);
+            throw new IpsException(status);
         }
     }
 
-    public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) throws CoreRuntimeException {
+    public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) {
         if (productCmpt.getNumOfGenerations() == 0) {
             return null;
         }
@@ -381,7 +381,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         entry.setGenerationEntries(genEntries);
     }
 
-    public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreRuntimeException {
+    public TocEntryObject createTocEntry(ITableContents tableContents) {
         ITableStructure tableStructure = tableContents.findTableStructure(getIpsProject());
         if (tableStructure == null) {
             return null;
@@ -399,7 +399,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Creates a toc entry for the given test case.
      */
-    public TocEntryObject createTocEntry(ITestCase testCase) throws CoreRuntimeException {
+    public TocEntryObject createTocEntry(ITestCase testCase) {
         ITestCaseType type = testCase.findTestCaseType(getIpsProject());
         if (type == null) {
             return null;
@@ -490,7 +490,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void delete(IIpsSrcFile ipsSrcFile) {
         TableOfContent toc = getToc(ipsSrcFile.getIpsPackageFragment().getRoot());
         toc.removeEntry(ipsSrcFile.getQualifiedNameType());
     }

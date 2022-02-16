@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -34,7 +33,7 @@ import org.junit.Test;
 public class ProductCmptRefControlTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetSrcFiles_SingleProject() throws CoreRuntimeException {
+    public void testGetSrcFiles_SingleProject() {
         IIpsProject project = newIpsProject("BaseProject");
 
         IProductCmptType productCmptType = newProductCmptType(project, "ProductType");
@@ -59,7 +58,7 @@ public class ProductCmptRefControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSrcFilesExclude() throws CoreRuntimeException {
+    public void testGetSrcFilesExclude() {
         IIpsProject project = newIpsProject("BaseProject");
 
         IProductCmptType productCmptType = newProductCmptType(project, "ProductType");
@@ -86,7 +85,7 @@ public class ProductCmptRefControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSrcFiles_MultiProject() throws CoreRuntimeException {
+    public void testGetSrcFiles_MultiProject() {
         IIpsProject project = newIpsProject("BaseProject");
         IIpsProject subProject = newIpsProject("SubProject");
         IIpsProject anotherProject = newIpsProject("AnotherProject");
@@ -131,7 +130,7 @@ public class ProductCmptRefControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testTemplates() throws CoreRuntimeException {
+    public void testTemplates() {
         IIpsProject project = newIpsProject("BaseProject");
 
         IProductCmptType productCmptType = newProductCmptType(project, "ProductType");

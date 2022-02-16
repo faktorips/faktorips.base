@@ -28,12 +28,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
-import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -289,7 +289,7 @@ public class IpsSrcFileContent {
             clearRootPropertyCache();
             modificationStamp = file.getEnclosingResource().getModificationStamp();
             rootProperties = IpsSrcFileSaxHelper.getHeaderAttributes(file);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.logAndShowErrorDialog(e);
         }
     }
@@ -339,7 +339,7 @@ public class IpsSrcFileContent {
         }
     }
 
-    public void save(final boolean force, final IProgressMonitor monitor) throws CoreRuntimeException {
+    public void save(final boolean force, final IProgressMonitor monitor) {
         if (!modified) {
             return;
         }

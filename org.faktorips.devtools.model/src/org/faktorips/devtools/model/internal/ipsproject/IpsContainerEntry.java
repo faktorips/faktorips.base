@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -100,7 +99,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreRuntimeException {
+    public boolean exists(QualifiedNameType qnt) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             if (((IpsObjectPathEntry)entry).exists(qnt)) {

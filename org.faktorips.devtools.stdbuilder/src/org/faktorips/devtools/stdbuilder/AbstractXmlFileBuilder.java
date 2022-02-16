@@ -18,9 +18,9 @@ import java.util.Arrays;
 
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -52,7 +52,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -63,7 +63,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile The source file to process
      * @param newContent The content of the source file to process. Must not be <code>null</code>
      * 
-     * @throws CoreRuntimeException if any errors occur during the build
+     * @throws IpsException if any errors occur during the build
      * @throws NullPointerException when <code>newContent</code> is <code>null</code>
      */
     protected void build(IIpsSrcFile ipsSrcFile, String newContent) {
@@ -80,7 +80,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile The source file to process
      * @param newContent The content of the source file to process. Must not be <code>null</code>
      * 
-     * @throws CoreRuntimeException if any errors occur during the build
+     * @throws IpsException if any errors occur during the build
      * @throws NullPointerException when <code>newContent</code> is <code>null</code>
      */
     protected void build(IIpsSrcFile ipsSrcFile, InputStream newContent) {
@@ -91,8 +91,8 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
             AFile copy = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(copy);
             writeToFile(copy, newContent, true, !newlyCreated);
-        } catch (CoreRuntimeException e) {
-            throw new CoreRuntimeException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
+        } catch (IpsException e) {
+            throw new IpsException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
                     + file.getName(), e));
         }
     }
@@ -114,13 +114,13 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
-    public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) {
         return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void delete(IIpsSrcFile ipsSrcFile) {
         AFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {
             file.delete(null);

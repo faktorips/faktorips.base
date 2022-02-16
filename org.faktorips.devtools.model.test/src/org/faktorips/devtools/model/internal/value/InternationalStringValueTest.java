@@ -20,7 +20,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IInternationalString;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -130,7 +129,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
         IIpsProject ipsProject = newIpsProject();
         MessageList list = new MessageList();
 
@@ -192,7 +191,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLocalizedContentDefault() throws CoreRuntimeException {
+    public void testGetLocalizedContentDefault() {
         IIpsProject ipsProject = newIpsProject();
 
         internationalStringValue.getContent().add(expectedDe);

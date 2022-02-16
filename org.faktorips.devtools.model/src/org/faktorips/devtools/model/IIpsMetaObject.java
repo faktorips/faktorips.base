@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -37,6 +37,6 @@ public interface IIpsMetaObject extends IFixDifferencesToModelSupport {
      * 
      * @return Returns the <code>IIpsSrcFile</code> for the meta class of this meta object
      */
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws IpsException;
 
 }

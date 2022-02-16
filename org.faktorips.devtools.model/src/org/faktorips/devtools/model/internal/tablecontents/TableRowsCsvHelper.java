@@ -21,7 +21,7 @@ import com.opencsv.CSVWriter;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -63,7 +63,7 @@ class TableRowsCsvHelper {
             CDATASection text = doc.createCDATASection(csv);
             element.appendChild(text);
         } catch (IOException e) {
-            throw asCoreRuntimeException(e);
+            throw asIpsException(e);
         }
     }
 
@@ -86,9 +86,9 @@ class TableRowsCsvHelper {
         csvWriter.writeNext(nextLine, false);
     }
 
-    private CoreRuntimeException asCoreRuntimeException(Exception e) {
+    private IpsException asIpsException(Exception e) {
         IpsLog.log(e);
-        return new CoreRuntimeException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID,
+        return new IpsException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID,
                 "Could not write table contents to CSV string", e)); //$NON-NLS-1$
     }
 
@@ -107,7 +107,7 @@ class TableRowsCsvHelper {
                 tableRows.newRow(structure, Optional.empty(), Arrays.asList(csvLine));
             }
         } catch (IOException e) {
-            throw asCoreRuntimeException(e);
+            throw asIpsException(e);
         }
 
     }

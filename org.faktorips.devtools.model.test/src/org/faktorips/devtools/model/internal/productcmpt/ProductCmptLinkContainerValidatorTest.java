@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -68,7 +67,7 @@ public class ProductCmptLinkContainerValidatorTest {
     private String productCmptQualifiedName;
 
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         GregorianCalendar validFromDate = new GregorianCalendar(2021, 0, 1);
         validFrom = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
                 .format(validFromDate.getTime());

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpt;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.runtime.model.type.ValidationRule;
@@ -43,9 +43,9 @@ public interface IValidationRuleConfig extends IPropertyValue {
      * <p>
      * This method searches the super type hierarchy.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the new name of the referenced {@link ValidationRule}

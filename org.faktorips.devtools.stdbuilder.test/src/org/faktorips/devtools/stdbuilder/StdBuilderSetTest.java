@@ -27,7 +27,6 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -46,7 +45,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
      * #bug 1460
      */
     @Test
-    public void testBasePackageNamesWithUpperCaseLetters() throws CoreRuntimeException {
+    public void testBasePackageNamesWithUpperCaseLetters() {
         IIpsProject ipsProject = newIpsProject();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
@@ -59,7 +58,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testStdBuilderSetPropertyDefinitions() throws CoreRuntimeException {
+    public void testStdBuilderSetPropertyDefinitions() {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSetInfo builderSetInfo = IIpsModel.get()
                 .getIpsArtefactBuilderSetInfo("org.faktorips.devtools.stdbuilder.ipsstdbuilderset");
@@ -99,7 +98,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
      */
     @Ignore
     @Test
-    public void testBuildPerformanceLongRun() throws CoreRuntimeException {
+    public void testBuildPerformanceLongRun() {
         IIpsProject ipsProject = newIpsProject();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];

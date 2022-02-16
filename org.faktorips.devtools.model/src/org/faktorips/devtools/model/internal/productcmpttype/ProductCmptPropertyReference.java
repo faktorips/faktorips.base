@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.productcmpttype;
 
 import org.faktorips.devtools.model.ContentChangeEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -91,7 +90,7 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     }
 
     @Override
-    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) {
         return ((ProductCmptType)getProductCmptType()).findProductCmptProperty(this, ipsProject);
     }
 

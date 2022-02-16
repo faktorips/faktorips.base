@@ -23,8 +23,8 @@ import static org.mockito.Mockito.when;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -64,11 +64,11 @@ public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindTestAttributeFails() throws CoreRuntimeException {
+    public void testGetImageDescriptor_FindTestAttributeFails() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         ITestAttributeValue testAttributeValue = mock(ITestAttributeValue.class);
         when(testAttributeValue.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(testAttributeValue)
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(testAttributeValue)
                 .findTestAttribute(ipsProject);
 
         ImageDescriptor imageDescriptor = testAttributeValueDecorator.getImageDescriptor(testAttributeValue);
@@ -77,7 +77,7 @@ public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor() throws CoreRuntimeException {
+    public void testGetImageDescriptor() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");

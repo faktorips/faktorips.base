@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.enums;
 
 import java.text.MessageFormat;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -97,7 +97,7 @@ public abstract class EnumContentValidations {
      *            <code>IEnumContent</code> is based upon.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the
+     * @throws IpsException If an error occurs while searching for the
      *             <code>IEnumType</code>.
      * @throws NullPointerException If <code>validationMessageList</code>,
      *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is
@@ -106,7 +106,7 @@ public abstract class EnumContentValidations {
     public static void validateEnumType(MessageList validationMessageList,
             IEnumContent enumContent,
             String enumTypeQualifiedName,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, enumTypeQualifiedName, ipsProject });
 

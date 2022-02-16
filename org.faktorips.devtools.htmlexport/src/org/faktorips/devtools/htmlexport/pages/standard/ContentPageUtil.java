@@ -14,7 +14,6 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -39,7 +38,7 @@ public class ContentPageUtil {
     }
 
     public static ICompositePageElement createObjectContentPageElement(IIpsSrcFile ipsSrcFile,
-            DocumentationContext context) throws CoreRuntimeException {
+            DocumentationContext context) {
 
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         return createObjectContentPageElement(ipsObject, context);
@@ -47,7 +46,7 @@ public class ContentPageUtil {
 
     // CSOFF: CyclomaticComplexityCheck
     private static ICompositePageElement createObjectContentPageElement(IIpsObject ipsSrcFile,
-            DocumentationContext context) throws CoreRuntimeException {
+            DocumentationContext context) {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.POLICY_CMPT_TYPE) {
             return new PolicyCmptTypeContentPageElement((IPolicyCmptType)ipsSrcFile, context);
         }

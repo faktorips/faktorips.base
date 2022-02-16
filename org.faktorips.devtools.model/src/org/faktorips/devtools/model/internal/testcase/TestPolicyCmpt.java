@@ -18,8 +18,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -143,13 +143,13 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestParameter findTestParameter(IIpsProject ipsProject) {
         return findTestPolicyCmptTypeParameter(ipsProject);
     }
 
     @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
@@ -206,7 +206,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmpt findProductCmpt(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
@@ -398,7 +398,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
-            String targetName) throws CoreRuntimeException {
+            String targetName) {
 
         return addTestPcTypeLink(typeParam, productCmpt, policyCmptType, targetName, false);
     }
@@ -408,18 +408,18 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             final String productCmpt,
             final String policyCmptType,
             final String targetName,
-            final boolean recursivelyAddRequired) throws CoreRuntimeException {
+            final boolean recursivelyAddRequired) {
 
         ArgumentCheck.notNull(typeParam);
         if (!StringUtils.isEmpty(productCmpt) && !StringUtils.isEmpty(policyCmptType)) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     new IpsStatus(Messages.TestPolicyCmpt_Error_ProductCmpAndPolicyCmptTypeGiven));
         }
 
         final IPolicyCmptTypeAssociation policyCmptTypeAssociation = typeParam.findAssociation(typeParam
                 .getIpsProject());
         if (policyCmptTypeAssociation == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     new IpsStatus(MessageFormat.format(Messages.TestPolicyCmpt_Error_LinkNotFound,
                             typeParam.getAssociation())));
         }
@@ -434,7 +434,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                     }
 
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         result = addTestPolicyComponentLink(typeParam, productCmpt, policyCmptType, targetName,
                                 recursivelyAddRequired, policyCmptTypeAssociation);
                         return true;
@@ -443,7 +443,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public void addRequiredLinks(final IIpsProject ipsProject) throws CoreRuntimeException {
+    public void addRequiredLinks(final IIpsProject ipsProject) {
         final IProductCmpt originalProductCmpt = findProductCmpt(getIpsProject());
         if (originalProductCmpt == null) {
             throw new IllegalStateException();
@@ -452,7 +452,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         ((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         for (ITestPolicyCmptTypeParameter childParameter : findTestPolicyCmptTypeParameter(ipsProject)
                                 .getTestPolicyCmptTypeParamChilds()) {
                             boolean addedViaTestParameter = addRequiredLinksViaTestParameter(childParameter);
@@ -471,7 +471,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * possible.
      */
     private boolean addRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter)
-            throws CoreRuntimeException {
+            {
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(), null);
         if (allowedProductCmptSrcFiles.length != 1 || testParameter.getMinInstances() == 0) {
             return false;
@@ -490,7 +490,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * deducing the target product component from the parent product component.
      */
     private void addRequiredLinksViaParentProductCmpt(ITestPolicyCmptTypeParameter testParameter,
-            IProductCmpt originalProductCmpt) throws CoreRuntimeException {
+            IProductCmpt originalProductCmpt) {
 
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(),
                 originalProductCmpt);
@@ -509,7 +509,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public void updateDefaultTestAttributeValues() throws CoreRuntimeException {
+    public void updateDefaultTestAttributeValues() {
         // add the attributes which are defined in the test case type parameter
         IProductCmptGeneration generation = findProductCmpsCurrentGeneration(getIpsProject());
         ITestAttributeValue[] testAttrValues = getTestAttributeValues();
@@ -535,7 +535,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
+    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
         Assert.isNotNull(testPolicyCmpt);
         int idx = 0;
         for (ITestPolicyCmptLink testPolicyCmptLink : testPolicyCmptLinks) {
@@ -544,7 +544,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
             idx++;
         }
-        throw new CoreRuntimeException(new IpsStatus(Messages.TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoLink));
+        throw new IpsException(new IpsStatus(Messages.TestPolicyCmpt_Error_MoveNotPossibleBelongsToNoLink));
     }
 
     @Override
@@ -561,7 +561,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Returns {@code null} if the test policy component is not product relevant or if the product
      * component cannot be found.
      */
-    public IProductCmptGeneration findProductCmpsCurrentGeneration(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptGeneration findProductCmpsCurrentGeneration(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
@@ -578,9 +578,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Fix the sort order of the child test policy cmpt links in order to the corresponding test
      * policy cmpt type parameter.
      * 
-     * @throws CoreRuntimeException in case of an error
+     * @throws IpsException in case of an error
      */
-    void fixDifferentChildSortOrder() throws CoreRuntimeException {
+    void fixDifferentChildSortOrder() {
         List<ITestPolicyCmptLink> oldLinks = testPolicyCmptLinks;
         IIpsProject ipsProject = getIpsProject();
         // fill temporary storage of the links for a test parameter
@@ -621,16 +621,16 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * Fix the sort order of the test attribute values in order to the corresponding test policy
      * cmpt type parameter test attributes.
      * 
-     * @throws CoreRuntimeException in case of an error
+     * @throws IpsException in case of an error
      */
-    void fixDifferentTestAttrValueSortOrder() throws CoreRuntimeException {
+    void fixDifferentTestAttrValueSortOrder() {
         List<ITestAttributeValue> newTestAttrValueList = new ArrayList<>();
         ITestPolicyCmptTypeParameter param = findTestPolicyCmptTypeParameter(getIpsProject());
         ITestAttribute[] testAttr = param.getTestAttributes();
         for (ITestAttribute element : testAttr) {
             ITestAttributeValue testAttrValue = getTestAttributeValue(element.getName());
             if (testAttrValue == null) {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus(
                                 "Couldn't fix the sort order of the test attribute values, because there is a mismatch between test case and its corresponding type!")); //$NON-NLS-1$
             }
@@ -649,7 +649,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // validate if the test case type param exists
@@ -787,7 +787,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * testPolicyCmptTypeParameter will be returned. Returns null if the no related policy component
      * found.
      */
-    private String findPolicyCmptTypeQName(IIpsProject ipsProject) throws CoreRuntimeException {
+    private String findPolicyCmptTypeQName(IIpsProject ipsProject) {
         if (StringUtils.isNotEmpty(productCmpt)) {
             // find using the product cmpt
             IProductCmpt productCmptFound = findProductCmpt(ipsProject);
@@ -814,7 +814,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     private void validateAllowedProductCmpt(MessageList list,
             ITestPolicyCmptTypeParameter param,
             IProductCmpt productCmptCandidateObj,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         /*
          * abort validation if no product cmpt was found/or specified or if the parameter wasn't
@@ -917,7 +917,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         if (!hasProductCmpt()) {
             /*
              * no product cmpt is set, therefore no attribute could be searched, currently an
@@ -946,7 +946,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                 return null;
             }
             return ipsProject.findPolicyCmptType(policyCmptTypeQName);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.logAndShowErrorDialog(e);
         }
         return null;
@@ -974,7 +974,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             final String policyCmptType,
             final String targetName,
             final boolean recursivelyAddRequired,
-            final IPolicyCmptTypeAssociation policyCmptTypeAssociation) throws CoreRuntimeException {
+            final IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
         ITestPolicyCmptLink result;
         if (!policyCmptTypeAssociation.isAssoziation()) {
             // link is composition

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.pctype;
 
 import java.util.List;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -329,14 +329,14 @@ public interface IPolicyCmptType extends IType {
      * A policy component type is considered an aggregate root if it and it's super types havn't got
      * a reverse composite relation.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching the super type hierarchy.
+     * @throws IpsException if an error occurs while searching the super type hierarchy.
      */
-    public boolean isAggregateRoot() throws CoreRuntimeException;
+    public boolean isAggregateRoot() throws IpsException;
 
     /**
      * Returns <code>true</code> if this not an aggregate root, otherwise <code>false</code>.
      */
-    public boolean isDependantType() throws CoreRuntimeException;
+    public boolean isDependantType() throws IpsException;
 
     /**
      * Returns the type's relations.
@@ -374,16 +374,16 @@ public interface IPolicyCmptType extends IType {
      * Creates a new sub type hierarchy for the type and returns it.
      */
     @Override
-    public ITypeHierarchy getSubtypeHierarchy() throws CoreRuntimeException;
+    public ITypeHierarchy getSubtypeHierarchy() throws IpsException;
 
     /**
      * Initializes the persistence metadata (like table, column and discriminator information) with
      * suitable defaults.
      * 
-     * @throws CoreRuntimeException if the corresponding IPS Project does not have persistence support
+     * @throws IpsException if the corresponding IPS Project does not have persistence support
      *             enabled.
      */
-    public void initPersistentTypeInfo() throws CoreRuntimeException;
+    public void initPersistentTypeInfo() throws IpsException;
 
     /**
      * Returns the information about how to persist this policy component type into a relational

@@ -23,8 +23,8 @@ import static org.mockito.Mockito.when;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -60,7 +60,7 @@ public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindAttributeFails() throws CoreRuntimeException {
+    public void testGetImageDescriptor_FindAttributeFails() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");
@@ -68,7 +68,7 @@ public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
         ITestAttribute testAttribute = mock(ITestAttribute.class);
         when(testAttribute.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreRuntimeException("CAN'T FIND IT")).when(testAttribute).findAttribute(ipsProject);
+        doThrow(new IpsException("CAN'T FIND IT")).when(testAttribute).findAttribute(ipsProject);
 
         ImageDescriptor imageDescriptor = testAttributeDecorator.getImageDescriptor(testAttribute);
 
@@ -76,7 +76,7 @@ public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor() throws CoreRuntimeException {
+    public void testGetImageDescriptor() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IPolicyCmptTypeAttribute attribute = policy.newPolicyCmptTypeAttribute("attr");

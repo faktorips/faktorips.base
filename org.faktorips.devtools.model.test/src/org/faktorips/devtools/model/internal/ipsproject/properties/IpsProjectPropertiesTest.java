@@ -27,7 +27,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -69,7 +68,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptNamingStrategy() throws CoreRuntimeException {
+    public void testValidate_ProductCmptNamingStrategy() {
         ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
         MessageList result = properties.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
@@ -92,7 +91,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RequiredFeatures() throws CoreRuntimeException {
+    public void testValidate_RequiredFeatures() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
@@ -120,7 +119,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DefinedDatatypes() throws CoreRuntimeException {
+    public void testValidate_DefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -135,7 +134,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_PredefinedDatatypes() throws CoreRuntimeException {
+    public void testValidate_PredefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -152,7 +151,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesIsoConformity() throws CoreRuntimeException {
+    public void testValidate_SupportedLanguagesIsoConformity() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -170,7 +169,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreRuntimeException {
+    public void testValidate_SupportedLanguagesDefaultLanguage() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();

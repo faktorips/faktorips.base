@@ -29,7 +29,6 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -107,7 +106,7 @@ public class EnumNodeGeneratorTest extends AbstractStdBuilderTest {
     }
 
     private IEnumAttribute newIdentifierAttribute(IEnumType enumType, String name, StringDatatype string)
-            throws CoreRuntimeException {
+            {
         IEnumAttribute identifierAttribute = enumType.newEnumAttribute();
         identifierAttribute.setName(name);
         identifierAttribute.setIdentifier(true);

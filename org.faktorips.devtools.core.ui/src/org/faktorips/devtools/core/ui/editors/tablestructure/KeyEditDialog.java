@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -43,7 +44,6 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.tablestructure.Column;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IKey;
@@ -183,7 +183,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         itemsViewer.setLabelProvider(new KeyItemLabelProvider());
         new TableMessageHoverService(itemsViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+            protected MessageList getMessagesFor(Object element) {
                 MessageList list = key.validate(key.getIpsProject());
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
@@ -378,7 +378,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
             Message msg = msgList.getMessage(0);
             setMessage(msg.getText(), UIToolkit.convertToJFaceSeverity(msg.getSeverity()));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
     }
@@ -403,7 +403,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             MessageList list;
             try {
                 list = key.validate(key.getIpsProject());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return image;
             }

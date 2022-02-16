@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.testcasetype;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -233,10 +233,10 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreRuntimeException If an error occurs.
+     * @throws IpsException If an error occurs.
      */
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns <code>true</code> if the test attribute based on a model attribute (policy component

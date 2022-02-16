@@ -25,13 +25,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.CustomValidationsResolver;
 import org.faktorips.devtools.model.internal.IpsElement;
@@ -653,7 +653,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType);
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IIpsProject ipsProject) {
         if (isNotInIpsRoot()) {
             return new MessageList();
         }
@@ -728,7 +728,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
     }
 
-    private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void execCustomValidations(MessageList result, IIpsProject ipsProject) {
         Class<? extends IpsObjectPartContainer> thisClass = getClass();
         Set<ICustomValidation<? extends IIpsObjectPartContainer>> customValidations = getIpsModel()
                 .getCustomModelExtensions().getCustomValidations(thisClass);
@@ -748,7 +748,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This is not possible. We'll have to content ourselves with the unsafe cast.
      */
     private MessageList getValidationMessages(IIpsProject ipsProject,
-            ICustomValidation<? extends IIpsObjectPartContainer> validation) throws CoreRuntimeException {
+            ICustomValidation<? extends IIpsObjectPartContainer> validation) {
         @SuppressWarnings("unchecked")
         MessageList msgList = ((ICustomValidation<IIpsObjectPartContainer>)validation).validate(this, ipsProject);
         return msgList;
@@ -779,7 +779,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * After validation method. Perform operations which will be executed after validation of this
      * object part container.
      */
-    protected void afterValidateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void afterValidateThis(MessageList result, IIpsProject ipsProject) {
         result.add(extensionProperties.validate());
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
@@ -799,7 +799,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Validates part container's children.
      */
-    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) {
         IIpsElement[] children = getChildren();
         for (IIpsElement element : children) {
             MessageList childResult = ((IpsObjectPartContainer)element).validate(ipsProject);
@@ -837,11 +837,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
      * 
-     * @throws CoreRuntimeException Subclasses may wrap any occurring exceptions into a
+     * @throws IpsException Subclasses may wrap any occurring exceptions into a
      *             CoreException and propagate it trough this method.
      * @throws NullPointerException if list is <code>null</code>.
      */
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         // empty default method
     }
 
@@ -1082,7 +1082,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct caption.
      */
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }
@@ -1092,7 +1092,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct plural caption.
      */
     @Override
-    public String getPluralCaption(Locale locale) throws CoreRuntimeException {
+    public String getPluralCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }

@@ -20,19 +20,19 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.IClassLoaderProvider;
-import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IClassLoaderProvider;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -186,9 +186,9 @@ public interface IIpsProject extends IIpsElement {
      * @param checkRequiredJavaProjects <code>true</code> if the Java project's required by this
      *            Java project are also checked.
      * 
-     * @throws CoreRuntimeException if an error occurs while checking the Java project.
+     * @throws IpsException if an error occurs while checking the Java project.
      */
-    public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws CoreRuntimeException;
+    public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws IpsException;
 
     /**
      * Returns all {@link IIpsProject IpsProjects} that are directly or indirectly referenced in the
@@ -303,9 +303,9 @@ public interface IIpsProject extends IIpsElement {
      * Sets the project's properties and stores the properties in the project's property file
      * (".ipsproject").
      * 
-     * @throws CoreRuntimeException if an error occurs while saving the properties to the file.
+     * @throws IpsException if an error occurs while saving the properties to the file.
      */
-    public void setProperties(IIpsProjectProperties properties) throws CoreRuntimeException;
+    public void setProperties(IIpsProjectProperties properties) throws IpsException;
 
     /**
      * Returns the file that stores the project's properties. Note that the file need not exist.
@@ -362,7 +362,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Sets the new object path.
      */
-    public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreRuntimeException;
+    public void setIpsObjectPath(IIpsObjectPath newPath) throws IpsException;
 
     /**
      * Returns the language in that the expression language's functions are used. E.g. the
@@ -442,7 +442,7 @@ public interface IIpsProject extends IIpsElement {
      * to this <code>IIpsProject</code>. Both default output locations of the Java project and
      * output locations of class path entries are examined.
      */
-    public AResource[] getNonIpsResources() throws CoreRuntimeException;
+    public AResource[] getNonIpsResources() throws IpsException;
 
     /**
      * Returns the project's package fragment roots contains source code or an empty array if none
@@ -483,9 +483,9 @@ public interface IIpsProject extends IIpsElement {
      * @return The first product component identified by the given qualified name that has been
      *         found.
      * 
-     * @throws CoreRuntimeException If an error occurs during the search.
+     * @throws IpsException If an error occurs during the search.
      */
-    public IProductCmpt findProductCmpt(String qualifiedName) throws CoreRuntimeException;
+    public IProductCmpt findProductCmpt(String qualifiedName) throws IpsException;
 
     /**
      * Returns the product template with the given qualified name or <code>null</code> if no such
@@ -544,9 +544,9 @@ public interface IIpsProject extends IIpsElement {
      * first one found is returned.
      * 
      * @param runtimeId The runtime-id to find the product component for.
-     * @throws CoreRuntimeException if an error occurs during search.
+     * @throws IpsException if an error occurs during search.
      */
-    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreRuntimeException;
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws IpsException;
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing <code>TableContents</code> that are based
@@ -555,7 +555,7 @@ public interface IIpsProject extends IIpsElement {
      * class path.
      * 
      * @param structure The product components type product component will be searched for.
-     * @throws CoreRuntimeException if an error occurs while searching
+     * @throws IpsException if an error occurs while searching
      */
     public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure);
 
@@ -595,19 +595,19 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns all IPS source files of the given type found on the class path.
      */
-    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreRuntimeException;
+    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws IpsException;
 
     /**
      * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to
      * the given list.
      */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreRuntimeException;
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws IpsException;
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
      * and match the given filter (object type list).
      * 
-     * @throws CoreRuntimeException if an error occurs while searching
+     * @throws IpsException if an error occurs while searching
      */
     public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
 
@@ -629,7 +629,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      */
     public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns all templates which are based on the given {@link IProductCmptType}. If the parameter
@@ -663,9 +663,9 @@ public interface IIpsProject extends IIpsElement {
      * path.
      * 
      * @param testCaseType The <code>TestCaseType</code> to search the <code>TestCase</code>s for
-     * @throws CoreRuntimeException if an exception occurs while searching
+     * @throws IpsException if an exception occurs while searching
      */
-    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreRuntimeException;
+    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws IpsException;
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing <code>EnumContent</code>s that are based
@@ -675,10 +675,10 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @param includingSubtypes <code>true</code> if sub types of <code>enumType</code> should be
      *            included in the search
-     * @throws CoreRuntimeException if an exception occurs while searching
+     * @throws IpsException if an exception occurs while searching
      */
     public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
-            throws CoreRuntimeException;
+            throws IpsException;
 
     /**
      * Returns all data types accessible on the project's path.
@@ -764,11 +764,11 @@ public interface IIpsProject extends IIpsElement {
      * {@link ValueSetType#UNRESTRICTED} is always returned and is the first element in the array.
      * If data type is <code>null</code> then an array with <code>UNRESTRICTED</code> is returned.
      * 
-     * @throws CoreRuntimeException if an error occurs while retrieving the value set types,
+     * @throws IpsException if an error occurs while retrieving the value set types,
      *             possible reasons are that the data types files can't be read or the XML can't be
      *             parsed.
      */
-    public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws CoreRuntimeException;
+    public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given value set type is available for the given value data
@@ -819,7 +819,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Validates the project and returns the result as list of messages.
      */
-    public MessageList validate() throws CoreRuntimeException;
+    public MessageList validate() throws IpsException;
 
     /**
      * Returns the naming conventions used for this project.
@@ -836,9 +836,9 @@ public interface IIpsProject extends IIpsElement {
      *         runtime id a new message is created. This message has only one invalid object
      *         property, containing the product component given to this method.
      * 
-     * @throws CoreRuntimeException if an error occurs during search.
+     * @throws IpsException if an error occurs during search.
      */
-    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws CoreRuntimeException;
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given resource will be excluded from the product
@@ -883,7 +883,7 @@ public interface IIpsProject extends IIpsElement {
      * corresponding project folder.
      */
     @Override
-    public void delete() throws CoreRuntimeException;
+    public void delete() throws IpsException;
 
     /**
      * Returns a Set of {@link IIpsSrcFile} representing all {@link EnumType EnumTypes} that are

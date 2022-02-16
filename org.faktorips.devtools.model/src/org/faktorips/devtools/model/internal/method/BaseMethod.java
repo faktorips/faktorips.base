@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
@@ -142,7 +141,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         if (StringUtils.isEmpty(getName())) {
             result.add(new Message(IBaseMethod.MSGCODE_NO_NAME, Messages.Method_msg_NameEmpty, Message.ERROR, this,
@@ -203,7 +202,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     }
 
     @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Datatype findDatatype(IIpsProject ipsProject) {
         return ipsProject.findDatatype(getDatatype());
     }
 

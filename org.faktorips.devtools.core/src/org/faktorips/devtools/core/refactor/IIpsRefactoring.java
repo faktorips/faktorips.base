@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -42,9 +42,9 @@ public interface IIpsRefactoring {
      * 
      * @param pm An {@link IProgressMonitor} to report progress to
      * 
-     * @throws CoreRuntimeException If an error occurs while validating the user input
+     * @throws IpsException If an error occurs while validating the user input
      */
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException;
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws IpsException;
 
     /**
      * Returns whether this refactoring requires that all IPS source files are saved before the

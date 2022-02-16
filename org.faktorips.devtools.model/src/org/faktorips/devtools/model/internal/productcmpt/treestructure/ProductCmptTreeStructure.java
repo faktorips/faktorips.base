@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -260,7 +260,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                         children.add(buildNode(p, link, parent));
                     }
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }
@@ -370,7 +370,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 List<IProductCmptLink> linksForAssociation = mapping.computeIfAbsent(association.getName(),
                         $ -> new ArrayList<>());
                 linksForAssociation.add(link);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }

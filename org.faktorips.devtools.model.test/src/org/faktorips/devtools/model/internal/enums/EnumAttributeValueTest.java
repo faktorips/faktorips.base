@@ -31,7 +31,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -65,7 +64,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumAttribute() throws CoreRuntimeException {
+    public void testFindEnumAttribute() {
         assertEquals(genderEnumAttributeId, maleIdAttributeValue.findEnumAttribute(ipsProject));
         assertEquals(genderEnumAttributeName, maleNameAttributeValue.findEnumAttribute(ipsProject));
 
@@ -135,7 +134,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesParsable() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesParsable() {
         IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
         stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         stringAttribute.setName("StringAttribute");
@@ -188,7 +187,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesUniqueIdentifierValueEmpty() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesUniqueIdentifierValueEmpty() {
         IIpsModel ipsModel = getIpsModel();
         IEnumAttributeValue uniqueIdentifierEnumAttributeValue = genderEnumValueFemale.getEnumAttributeValues().get(0);
 
@@ -207,7 +206,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesUniqueIdentifierValueNotUnique() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesUniqueIdentifierValueNotUnique() {
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueMale = genderEnumValueMale.getEnumAttributeValues()
                 .get(0);
         IEnumAttributeValue uniqueIdentifierEnumAttributeValueFemale = genderEnumValueFemale.getEnumAttributeValues()
@@ -228,7 +227,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesIdBoundary1() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesIdBoundary1() {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName("EnumContentName");
         paymentMode.setIdentifierBoundary("P9");
@@ -247,7 +246,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesIdBoundary2() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesIdBoundary2() {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName("EnumContentName");
         paymentMode.setIdentifierBoundary("P9");
@@ -265,7 +264,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateIdentifierValueNotValid_NotExtensible() throws CoreRuntimeException {
+    public void testValidateIdentifierValueNotValid_NotExtensible() {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName("EnumContentName");
         paymentMode.setIdentifierBoundary("P9");
@@ -285,7 +284,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateIdentifierValueNotValid_Abstract() throws CoreRuntimeException {
+    public void testValidateIdentifierValueNotValid_Abstract() {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName("EnumContentName");
         paymentMode.setIdentifierBoundary("P9");
@@ -356,7 +355,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateAndAppendMessagesMultilingual() throws CoreRuntimeException {
+    public void testValidateAndAppendMessagesMultilingual() {
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
         maleNameAttributeValue.setValue(internationalStringValue);
@@ -411,7 +410,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
                                 IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE));
     }
 
-    private IEnumValue createEnumValueWithEnumReference(String refId) throws CoreRuntimeException {
+    private IEnumValue createEnumValueWithEnumReference(String refId) {
         paymentMode.setExtensible(true);
         paymentMode.setEnumContentName(PAYMENT_CONTENT);
         EnumContent newEnumContent = newEnumContent(paymentMode, PAYMENT_CONTENT);

@@ -29,9 +29,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IpsBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -97,7 +97,7 @@ public class BuildTask extends AbstractIpsTask {
         }
     }
 
-    private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreRuntimeException {
+    private IProject[] buildEclipseProjects(IWorkspace workspace) {
         List<IProject> existingProjects = new ArrayList<>();
         for (EclipseProject eclipseProject : eclipseProjects) {
             String name = eclipseProject.getName();
@@ -136,7 +136,7 @@ public class BuildTask extends AbstractIpsTask {
                             }
                         }
                     } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
+                        throw new IpsException(e);
                     }
                     System.out.println("finished building project " + project.getName());
                 } else {

@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.tablestructure;
 
 import java.text.MessageFormat;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -66,7 +65,7 @@ public class ForeignKey extends Key implements IForeignKey {
     }
 
     @Override
-    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) {
         return (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, refTableStructure);
     }
 
@@ -83,7 +82,7 @@ public class ForeignKey extends Key implements IForeignKey {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkIpsObjectReference(refTableStructure, IpsObjectType.TABLE_STRUCTURE, "referenced table", //$NON-NLS-1$
                 this, PROPERTY_REF_TABLE_STRUCTURE, "", list); //$NON-NLS-1$
@@ -118,7 +117,7 @@ public class ForeignKey extends Key implements IForeignKey {
             ITableStructure refStructure,
             IIpsProject ipsProject,
             String refItem,
-            MessageList list) throws CoreRuntimeException {
+            MessageList list) {
 
         IColumnRange range = getTableStructure().getRange(fkItem);
         if (range != null) {
@@ -138,7 +137,7 @@ public class ForeignKey extends Key implements IForeignKey {
             ITableStructure refStructure,
             IIpsProject ipsProject,
             String refItem,
-            MessageList list) throws CoreRuntimeException {
+            MessageList list) {
 
         IColumn column = refStructure.getColumn(refItem);
         if (column != null) {

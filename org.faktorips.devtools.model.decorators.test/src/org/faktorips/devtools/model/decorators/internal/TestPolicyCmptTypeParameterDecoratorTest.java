@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -98,7 +98,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetImageDescriptor_FindAssociationFails() throws CoreRuntimeException {
+    public void testGetImageDescriptor_FindAssociationFails() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -106,7 +106,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = mock(ITestPolicyCmptTypeParameter.class);
         when(testPolicyCmptTypeParameter.getIpsProject()).thenReturn(ipsProject);
         when(testPolicyCmptTypeParameter.getAssociation()).thenReturn("agg");
-        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptTypeParameter)
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptTypeParameter)
                 .findAssociation(ipsProject);
 
         ImageDescriptor imageDescriptor = testPolicyCmptTypeParameterDecorator
@@ -116,7 +116,7 @@ public class TestPolicyCmptTypeParameterDecoratorTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetImageDescriptor_Association() throws CoreRuntimeException {
+    public void testGetImageDescriptor_Association() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();

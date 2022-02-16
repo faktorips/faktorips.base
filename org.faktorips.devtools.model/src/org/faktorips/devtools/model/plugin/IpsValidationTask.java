@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.plugin;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 
@@ -37,9 +37,9 @@ public abstract class IpsValidationTask {
      * @param ipsProject The context IPS project that shall be used for finder-methods that are used
      *            within the implementation
      * 
-     * @throws CoreRuntimeException If any error occurs during execution
+     * @throws IpsException If any error occurs during execution
      */
-    public abstract Message execute(IIpsProject ipsProject) throws CoreRuntimeException;
+    public abstract Message execute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns whether the overall validation this task is a part of shall continue even if this

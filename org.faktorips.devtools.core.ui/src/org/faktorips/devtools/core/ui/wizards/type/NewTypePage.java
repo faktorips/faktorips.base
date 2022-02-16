@@ -17,13 +17,13 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -83,7 +83,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      * Delegates to <code>supertypeChanged()</code> if the supertype control has been edited.
      */
     @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreRuntimeException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         if (e.field == supertypeField) {
             supertypeChanged(supertypeField);
         }
@@ -95,9 +95,9 @@ public abstract class NewTypePage extends IpsObjectPage {
      * 
      * @param supertypeField The text button field used to select the supertype.
      * 
-     * @throws CoreRuntimeException Subclasses may throw at any time.
+     * @throws IpsException Subclasses may throw at any time.
      */
-    protected void supertypeChanged(TextButtonField supertypeField) throws CoreRuntimeException {
+    protected void supertypeChanged(TextButtonField supertypeField) {
         // Empty default implementation
     }
 
@@ -159,7 +159,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         IType type = (IType)newIpsObject;
         String supertypeName = getSuperType();
@@ -168,7 +168,7 @@ public abstract class NewTypePage extends IpsObjectPage {
     }
 
     @Override
-    public void pageEntered() throws CoreRuntimeException {
+    public void pageEntered() {
         super.pageEntered();
 
         validatePage();
@@ -197,7 +197,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      * product component type page are not equal.
      */
     @Override
-    protected void validatePageExtension() throws CoreRuntimeException {
+    protected void validatePageExtension() {
         if (!isCurrentPage()) {
             return;
         }
@@ -214,7 +214,7 @@ public abstract class NewTypePage extends IpsObjectPage {
         }
     }
 
-    protected abstract void validatePageExtensionThis(IpsValidation validation) throws CoreRuntimeException;
+    protected abstract void validatePageExtensionThis(IpsValidation validation) throws IpsException;
 
     /**
      * Check for name conflicts of the product and policy component type name.
@@ -222,7 +222,7 @@ public abstract class NewTypePage extends IpsObjectPage {
     private class ValidateNameConflicts extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (pageOfAssociatedType != null && !StringUtils.isEmpty(getIpsObjectName())
                     && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
                 return new Message("", Messages.NewTypePage_msgNameConflicts, Message.ERROR); //$NON-NLS-1$
@@ -238,7 +238,7 @@ public abstract class NewTypePage extends IpsObjectPage {
     private class ValidateSupertypeExists extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (!StringUtils.isEmpty(getSuperType())) {
                 IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(getIpsObjectType(), getSuperType());
                 if (ipsSrcFile == null) {

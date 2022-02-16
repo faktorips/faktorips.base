@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.util.XmlUtil;
@@ -259,9 +259,9 @@ public class ExtensionPropertyHandler {
     /**
      * Validates the extension property values.
      * 
-     * @throws CoreRuntimeException if an error occurs while validating the extension properties.
+     * @throws IpsException if an error occurs while validating the extension properties.
      */
-    public MessageList validate() throws CoreRuntimeException {
+    public MessageList validate() {
         MessageList ml = new MessageList();
         Collection<IExtensionPropertyDefinition> properties = ipsObjectPartContainer.getExtensionPropertyDefinitions();
         for (IExtensionPropertyDefinition property : properties) {

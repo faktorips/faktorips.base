@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -86,13 +86,13 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getAttribute().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         try {
             addAffectedSrcFiles(modificationSet);
@@ -106,7 +106,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             updateSuperHierarchyAttributes();
             updateSubHierarchyAttributes();
             updateAttributeName();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             modificationSet.undo();
             throw e;
         }
@@ -141,7 +141,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwritten attributes of
      * the super type hierarchy.
      */
-    private void updateSuperHierarchyAttributes() throws CoreRuntimeException {
+    private void updateSuperHierarchyAttributes() {
         List<IAttribute> attributesToRename = getAllOverwrittenAttributes();
 
         /*
@@ -153,7 +153,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    private List<IAttribute> getAllOverwrittenAttributes() throws CoreRuntimeException {
+    private List<IAttribute> getAllOverwrittenAttributes() {
         List<IAttribute> attributesToRename = new ArrayList<>(1);
 
         // Collect overwritten attributes

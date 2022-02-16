@@ -20,7 +20,6 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Before;
@@ -79,7 +78,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_inextensibleEnum() throws CoreRuntimeException {
+    public void testGetNewInstanceCodeFragement_inextensibleEnum() {
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
         enumType.newEnumLiteralNameAttribute();
         createEnumValue();
@@ -91,7 +90,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_extensibleEnum() throws CoreRuntimeException {
+    public void testGetNewInstanceCodeFragement_extensibleEnum() {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
         IEnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
@@ -108,7 +107,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetNewInstanceCodeFragement_extensibleEnumWithoutContent() throws CoreRuntimeException {
+    public void testGetNewInstanceCodeFragement_extensibleEnumWithoutContent() {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
@@ -146,7 +145,7 @@ public class XEnumTypeTest extends AbstractStdBuilderTest {
                 xenumType.getMethodNameGetValueByIdentifier());
     }
 
-    private void createEnumValue() throws CoreRuntimeException {
+    private void createEnumValue() {
         IEnumValue enumValue = enumType.newEnumValue();
         enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
         enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue(DISPLAYNAME_NAME));

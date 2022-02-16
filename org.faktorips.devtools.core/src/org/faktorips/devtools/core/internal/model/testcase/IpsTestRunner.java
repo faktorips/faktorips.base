@@ -63,11 +63,11 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseJavaProject;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -354,7 +354,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     /*
      * Create the string containing the additional repository packages
      */
-    private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreRuntimeException {
+    private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) {
         StringBuilder argument = new StringBuilder();
         for (String repositoryPackages : getAllRepositoryPackagesAsString(currentIpsProject)) {
             argument.append(BRACELEFT + repositoryPackages + BRACERIGHT);
@@ -573,7 +573,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     @Override
-    public void terminate() throws CoreRuntimeException {
+    public void terminate() {
         try {
             if (launch != null) {
                 if (launch.canTerminate()) {
@@ -588,7 +588,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
         } catch (DebugException e) {
             e.printStackTrace();
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -810,7 +810,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Returns a list off repository packages of the given ips project and its referenced projects
      * and referenced projects by the referenced projects ...
      */
-    private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreRuntimeException {
+    private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) {
         List<String> repositoryPackages = new ArrayList<>();
         getRepositoryPackages(ipsProject, repositoryPackages);
         List<IIpsProject> ipsProjects = ipsProject.getAllReferencedIpsProjects();
@@ -831,7 +831,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * package only if the toc file exists.
      */
     private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages)
-            throws CoreRuntimeException {
+            {
         IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
         List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsRoots);
         // need reverse sort order: see IpsTestAction#ipsProjectSelected
@@ -893,7 +893,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         if (testRunnerMonitor.isCanceled()) {
             try {
                 terminate();
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }

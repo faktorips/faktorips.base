@@ -20,7 +20,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AWorkspace;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -94,9 +94,9 @@ public interface IIpsModel extends IIpsElement {
      * .ipsproject file.
      * 
      * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreRuntimeException if an error occurs while creating the IPS project.
+     * @throws IpsException if an error occurs while creating the IPS project.
      */
-    IIpsProject createIpsProject(AProject project) throws CoreRuntimeException;
+    IIpsProject createIpsProject(AProject project) throws IpsException;
 
     /** Returns all IPS projects opened in the workspace or an empty array if none. */
     IIpsProject[] getIpsProjects();
@@ -105,13 +105,13 @@ public interface IIpsModel extends IIpsElement {
      * Returns all IPS projects opened in the workspace that contain a model definition or an empty
      * array if none.
      */
-    IIpsProject[] getIpsModelProjects() throws CoreRuntimeException;
+    IIpsProject[] getIpsModelProjects() throws IpsException;
 
     /**
      * Returns all IPS projects opened in the workspace that contain a product definition or an
      * empty array if none.
      */
-    IIpsProject[] getIpsProductDefinitionProjects() throws CoreRuntimeException;
+    IIpsProject[] getIpsProductDefinitionProjects() throws IpsException;
 
     /** Returns the IPS project with the indicated name. */
     IIpsProject getIpsProject(String name);
@@ -127,9 +127,9 @@ public interface IIpsModel extends IIpsElement {
      * Returns all {@link AProject projects} in the workspace, that do not have an IpsProject
      * nature. Ignores closed projects.
      * 
-     * @throws CoreRuntimeException if an exception occurs while accessing project-natures.
+     * @throws IpsException if an exception occurs while accessing project-natures.
      */
-    Set<AProject> getNonIpsProjects() throws CoreRuntimeException;
+    Set<AProject> getNonIpsProjects() throws IpsException;
 
     /**
      * Returns the IpsElement that corresponds to the indicated resource. The IpsElement may not be
@@ -203,7 +203,7 @@ public interface IIpsModel extends IIpsElement {
      * Returns all package fragment roots containing source files or an empty array if none is
      * found.
      */
-    IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws CoreRuntimeException;
+    IIpsPackageFragmentRoot[] getSourcePackageFragmentRoots() throws IpsException;
 
     /**
      * Returns a view on the extension properties for the given class.

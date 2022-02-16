@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.NewWizardUtil;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -59,7 +58,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * Adds the setting of the selected PolicyCmptType.
      */
     @Override
-    protected void setDefaults(IResource selectedResource) throws CoreRuntimeException {
+    protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
 
         IIpsObject ipsObject = getSelectedIpsObject();
@@ -104,7 +103,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreRuntimeException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         super.valueChangedExtension(e);
 
         if (e.field == policyCmptTypeField) {
@@ -128,7 +127,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validateName() throws CoreRuntimeException {
+    protected void validateName() {
         super.validateName();
 
         if (getIpsProject() == null) {
@@ -142,7 +141,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
@@ -207,7 +206,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * of the product component type of the supertype of the policy component type.
      */
     @Override
-    protected void validatePageExtensionThis(IpsValidation validation) throws CoreRuntimeException {
+    protected void validatePageExtensionThis(IpsValidation validation) {
         // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidatePcTypeDoesNotExist());
         validation.addTask(new ValidatePcTypeAlreadyConfigured());
@@ -219,7 +218,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePcTypeDoesNotExist extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -238,7 +237,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePcTypeAlreadyConfigured extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -263,7 +262,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -293,7 +292,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }

@@ -18,7 +18,6 @@ import java.util.Locale;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.valueset.DelegatingValueSet;
@@ -82,7 +81,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     @Override
     protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            throws CoreRuntimeException {
+            {
         IValueSet valueSetToValidate = getValueSet();
         IValueSet modelValueSet = attribute.getValueSet();
 
@@ -178,7 +177,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         List<ValueSetType> types = new ArrayList<>();
         if (attribute == null) {
@@ -335,7 +334,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return MessageFormat.format(Messages.ConfiguredValueSet_caption, getAttributeLabel(locale));
     }
 

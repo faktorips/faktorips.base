@@ -10,7 +10,7 @@
 package org.faktorips.devtools.abstraction;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * A folder is a file-system resource that contains files and/or other folders.
@@ -43,7 +43,7 @@ public interface AFolder extends AContainer {
      * @param monitor a progress monitor that is notified about this process. The monitor may be
      *            {@code null} when progress does not need to be reported.
      *
-     * @throws CoreRuntimeException if the folder already exists or creation fails
+     * @throws IpsException if the folder already exists or creation fails
      */
     void create(IProgressMonitor monitor);
 

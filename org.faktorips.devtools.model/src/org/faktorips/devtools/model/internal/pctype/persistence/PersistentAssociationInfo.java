@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
@@ -115,7 +114,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws CoreRuntimeException {
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) {
         if (!cascadeTypeOverwriteDefault) {
             initDefaultsCascadeTypes();
         }
@@ -125,7 +124,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void initDefaultsCascadeTypes() throws CoreRuntimeException {
+    public void initDefaultsCascadeTypes() {
         IPolicyCmptTypeAssociation invAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject());
         RelationshipType relationship = null;
@@ -213,7 +212,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public boolean isJoinTableRequired() throws CoreRuntimeException {
+    public boolean isJoinTableRequired() {
         return isJoinTableRequired(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
     }
@@ -322,7 +321,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreRuntimeException {
+    public boolean isForeignKeyColumnDefinedOnTargetSide() {
         return isForeignKeyColumnDefinedOnTargetSide(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
     }
@@ -504,7 +503,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void initDefaults() throws CoreRuntimeException {
+    public void initDefaults() {
         if (getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
             fetchType = FetchType.LAZY;
         } else {
@@ -567,7 +566,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList msgList, IIpsProject ipsProject) {
         if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
             return;
         }

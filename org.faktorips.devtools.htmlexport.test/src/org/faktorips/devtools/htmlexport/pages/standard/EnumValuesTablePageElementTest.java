@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -96,7 +96,7 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResult() throws CoreRuntimeException {
+    public void testCreateRowWithIpsObjectPart_filledResult() {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(enumAttribute1);
         doReturn(stringValue).when(enumAttributeValue1).getValue();
         doReturn("toBeAdded").when(stringValue).getDefaultLocalizedContent(ipsProject);
@@ -113,12 +113,12 @@ public class EnumValuesTablePageElementTest {
     }
 
     @Test
-    public void testCreateRowWithIpsObjectPart_filledResultThrowException() throws CoreRuntimeException {
+    public void testCreateRowWithIpsObjectPart_filledResultThrowException() {
         doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(enumAttribute1);
         doReturn(stringValue).when(enumAttributeValue1).getValue();
         doReturn("enumAttributeValue1Name").when(enumAttributeValue1).getName();
         doReturn("toBeAdded").when(stringValue).getDefaultLocalizedContent(ipsProject);
-        when(enumAttribute1.findDatatype(ipsProject)).thenThrow(new CoreRuntimeException(new IpsStatus("Test")));
+        when(enumAttribute1.findDatatype(ipsProject)).thenThrow(new IpsException(new IpsStatus("Test")));
 
         pageElement = new EnumValuesTablePageElement(enumType, doc);
         List<IPageElement> resultList = pageElement.createRowWithIpsObjectPart(enumValue1);

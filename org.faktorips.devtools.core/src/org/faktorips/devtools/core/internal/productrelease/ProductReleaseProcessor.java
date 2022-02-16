@@ -26,10 +26,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -165,7 +165,7 @@ public class ProductReleaseProcessor {
         return result;
     }
 
-    private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreRuntimeException {
+    private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) {
         try {
             if (!ipsProject.getProject().isSynchronized(AResourceTreeTraversalDepth.INFINITE)) {
                 ipsProject.getProject().refreshLocal(AResourceTreeTraversalDepth.INFINITE, monitor);
@@ -182,14 +182,14 @@ public class ProductReleaseProcessor {
         }
     }
 
-    private void updateVersionProperty(IIpsProject ipsProject, String newVersion) throws CoreRuntimeException {
+    private void updateVersionProperty(IIpsProject ipsProject, String newVersion) {
         IIpsProjectProperties projectProperties = ipsProject.getProperties();
         projectProperties.setVersion(newVersion);
         ipsProject.setProperties(projectProperties);
         observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_new_version_set, newVersion));
     }
 
-    private void validateIpsProject(IIpsProject ipsProject) throws CoreRuntimeException, InterruptedException {
+    private void validateIpsProject(IIpsProject ipsProject) throws IpsException, InterruptedException {
         MessageList messages = ipsProject.validate();
         if (messages.containsErrorMsg()) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_fipsErrors);

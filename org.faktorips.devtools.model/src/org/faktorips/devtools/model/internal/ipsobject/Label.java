@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabel;
@@ -116,7 +115,7 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         if (locale == null) {
             validateLocaleMissing(list);
         } else {

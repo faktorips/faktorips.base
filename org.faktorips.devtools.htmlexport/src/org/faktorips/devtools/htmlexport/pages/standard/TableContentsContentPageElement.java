@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -27,7 +28,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -59,7 +59,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ITableStructure tableStructure;
         try {
             tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Could not find TableStructure of " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
@@ -95,7 +95,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ContentTablePageElement contentTablePageElement = null;
         try {
             contentTablePageElement = new ContentTablePageElement(tableRows);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not create ContentTable of " + tableRows.getName(), e)); //$NON-NLS-1$
         }
@@ -125,13 +125,13 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
         private ValueDatatype[] datatypes;
 
-        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreRuntimeException {
+        public ContentTablePageElement(ITableRows tableContentsGeneration) {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
             this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 
-        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreRuntimeException {
+        private void initDatatypes(ITableRows tableContentsGeneration) {
             datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());

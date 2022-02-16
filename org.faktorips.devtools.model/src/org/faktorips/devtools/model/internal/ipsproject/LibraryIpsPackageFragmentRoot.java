@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -61,7 +61,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public APackageFragmentRoot getArtefactDestination(boolean derived) throws CoreRuntimeException {
+    public APackageFragmentRoot getArtefactDestination(boolean derived) {
         IIpsLibraryEntry entry = (IIpsLibraryEntry)getIpsObjectPathEntry();
         String path;
         if (entry.getPath().isAbsolute()) {
@@ -73,12 +73,12 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public IIpsPackageFragment[] getIpsPackageFragments() throws CoreRuntimeException {
+    public IIpsPackageFragment[] getIpsPackageFragments() {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreRuntimeException {
+    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() {
         if (getIpsStorage() == null) {
             return new ArrayList<>(0);
         }
@@ -98,13 +98,13 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public AResource[] getNonIpsResources() throws CoreRuntimeException {
+    public AResource[] getNonIpsResources() {
         return new AResource[0];
     }
 
     @Override
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
 
         throw newExceptionMethodNotAvailableForArchvies();
     }
@@ -114,13 +114,13 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         return storage.getCorrespondingResource();
     }
 
-    private CoreRuntimeException newExceptionMethodNotAvailableForArchvies() {
-        return new CoreRuntimeException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
+    private IpsException newExceptionMethodNotAvailableForArchvies() {
+        return new IpsException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
     @Override
     void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            throws CoreRuntimeException {
+            {
         if (type == null) {
             return;
         }
@@ -155,7 +155,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         throw new UnsupportedOperationException("IPS Package Fragment Roots that are stored" + //$NON-NLS-1$
                 " in an archive cannot be deleted."); //$NON-NLS-1$
     }

@@ -20,7 +20,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
@@ -61,7 +60,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         assertEquals(0, timedObject.getChildren().length);
         IIpsObjectGeneration gen = timedObject.newGeneration();
         assertEquals(1, timedObject.getChildren().length);
@@ -364,7 +363,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
      * A validation message must be produced.
      */
     @Test
-    public void testValidate_NoGenerationsAllowed_ValidFromDate() throws CoreRuntimeException {
+    public void testValidate_NoGenerationsAllowed_ValidFromDate() {
         // Setup
         IIpsProject ipsProject = newIpsProject();
 

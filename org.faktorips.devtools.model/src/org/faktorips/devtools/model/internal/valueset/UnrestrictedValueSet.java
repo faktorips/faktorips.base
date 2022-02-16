@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.DatatypeUtil;
@@ -82,7 +81,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
 
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {

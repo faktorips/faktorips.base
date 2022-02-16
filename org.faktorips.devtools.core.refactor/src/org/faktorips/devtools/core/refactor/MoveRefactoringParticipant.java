@@ -27,7 +27,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * This class is loaded by the Faktor-IPS 'Move' refactoring to participate in this process by
@@ -51,7 +51,7 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
     }
 
     @Override
-    public Change createChange(IProgressMonitor pm) throws CoreRuntimeException, OperationCanceledException {
+    public Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException {
         return refactoringHelper.createChange(pm);
     }
 

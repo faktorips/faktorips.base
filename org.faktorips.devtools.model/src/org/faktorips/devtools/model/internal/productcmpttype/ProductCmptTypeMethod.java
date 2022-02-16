@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.method.Method;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
@@ -155,7 +154,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         validateChangingOverTime(result, ipsProject);
         if (!isFormulaSignatureDefinition()) {
@@ -205,7 +204,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
     }
 
-    protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) {
         if (!StringUtils.isEmpty(getName())) {
             ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
             propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
@@ -244,7 +243,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmptType();
     }
 

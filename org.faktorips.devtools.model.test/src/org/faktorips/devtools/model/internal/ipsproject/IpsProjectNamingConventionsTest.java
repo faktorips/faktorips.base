@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -60,7 +59,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
      * .
      */
     @Test
-    public void testValidateIpsPackageName() throws CoreRuntimeException {
+    public void testValidateIpsPackageName() {
         MessageList ml = namingConventions.validateIpsPackageName("validName");
         assertFalse(ml.containsErrorMsg());
         assertEquals(0, ml.size());
@@ -91,25 +90,25 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateNameForPolicyCmptType() throws CoreRuntimeException {
+    public void testValidateNameForPolicyCmptType() {
         IpsObjectType type = IpsObjectType.POLICY_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
     @Test
-    public void testValidateNameForProductCmptType() throws CoreRuntimeException {
+    public void testValidateNameForProductCmptType() {
         IpsObjectType type = IpsObjectType.PRODUCT_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
     @Test
-    public void testValidateNameForTableStructure() throws CoreRuntimeException {
+    public void testValidateNameForTableStructure() {
         IpsObjectType type = IpsObjectType.TABLE_STRUCTURE;
         testCommonJavaTypeNameValidation(type);
     }
 
     @Test
-    public void testValidateNameForProductCmpt() throws CoreRuntimeException {
+    public void testValidateNameForProductCmpt() {
         IpsObjectType type = IpsObjectType.PRODUCT_CMPT;
 
         // check only that the name must not be empty and is not qualified,
@@ -138,24 +137,24 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateNameForTableContents() throws CoreRuntimeException {
+    public void testValidateNameForTableContents() {
         IpsObjectType type = IpsObjectType.TABLE_CONTENTS;
         testCommonOSNameValidation(type);
     }
 
     @Test
-    public void testValidateNameForTestCaseType() throws CoreRuntimeException {
+    public void testValidateNameForTestCaseType() {
         IpsObjectType type = IpsObjectType.TEST_CASE_TYPE;
         testCommonJavaTypeNameValidation(type);
     }
 
     @Test
-    public void testValidateNameForTestCase() throws CoreRuntimeException {
+    public void testValidateNameForTestCase() {
         IpsObjectType type = IpsObjectType.TEST_CASE;
         testCommonOSNameValidation(type);
     }
 
-    private void testCommonJavaTypeNameValidation(IpsObjectType type) throws CoreRuntimeException {
+    private void testCommonJavaTypeNameValidation(IpsObjectType type) {
         List<String> validNames = new ArrayList<>();
         List<String> invalidNames = new ArrayList<>();
         List<String> invalidNamesMsgCodes = new ArrayList<>();
@@ -175,7 +174,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         validateAndAssertNames(type, true, validNames, invalidNames, invalidNamesMsgCodes);
     }
 
-    private void testCommonOSNameValidation(IpsObjectType type) throws CoreRuntimeException {
+    private void testCommonOSNameValidation(IpsObjectType type) {
         List<String> validNames = new ArrayList<>();
         List<String> invalidNames = new ArrayList<>();
         List<String> invalidNamesMsgCodes = new ArrayList<>();
@@ -248,7 +247,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             boolean qualifiedNames,
             List<String> validNames,
             List<String> invalidNames,
-            List<String> invalidNamesMsgCodes) throws CoreRuntimeException {
+            List<String> invalidNamesMsgCodes) {
         assertEquals("Wrong usage of assert method, each invalid name should have a message code", invalidNames.size(),
                 invalidNamesMsgCodes.size());
 

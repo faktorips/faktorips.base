@@ -16,7 +16,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -99,7 +98,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
 
     @Override
     protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            throws CoreRuntimeException {
+            {
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         String valueToValidate = getValue();
 
@@ -112,7 +111,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
-            throws CoreRuntimeException {
+            {
         String valueToValidate = getValue();
         IValueSet valueSetToValidate = getValueSet();
         if (StringUtils.isNotEmpty(valueToValidate) && valueSetToValidate != null) {
@@ -165,7 +164,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return MessageFormat.format(Messages.ConfiguredDefault_caption, getAttributeLabel(locale));
     }
 

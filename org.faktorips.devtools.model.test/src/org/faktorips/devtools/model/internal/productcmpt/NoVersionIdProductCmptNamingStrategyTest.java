@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
@@ -46,7 +45,7 @@ public class NoVersionIdProductCmptNamingStrategyTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetNextVersionId() throws CoreRuntimeException {
+    public void testGetNextVersionId() {
         IProductCmpt pc = newProductCmpt(project, "TestProduct");
         assertEquals("", strategy.getNextVersionId(pc, null));
     }

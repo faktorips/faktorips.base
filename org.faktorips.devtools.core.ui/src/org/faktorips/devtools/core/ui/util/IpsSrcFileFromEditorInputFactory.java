@@ -27,10 +27,10 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileExternal;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileImmutable;
@@ -188,7 +188,7 @@ public class IpsSrcFileFromEditorInputFactory {
             String name) {
 
         if (root == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     "No mutable counterpart of the external file has been found, even if it should exist. " //$NON-NLS-1$
                             + "Reason: the IPS package root does not exist."); //$NON-NLS-1$
         }
@@ -201,14 +201,14 @@ public class IpsSrcFileFromEditorInputFactory {
         }
         IIpsPackageFragment ipsFolder = root.getIpsPackageFragment(folderName.toString());
         if (ipsFolder == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     "The mutable counterpart of the external file has not been found, even if it should exist. " //$NON-NLS-1$
                             + "Reason: the IPS folder does not exist."); //$NON-NLS-1$
         }
 
         IIpsSrcFile mutableSrcFile = ipsFolder.getIpsSrcFile(name);
         if (mutableSrcFile == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     "The mutable counterpart of the external file has not been found, even if it should exist. " //$NON-NLS-1$
                             + "Reason: the IPS SrcFile does not exist."); //$NON-NLS-1$
         }

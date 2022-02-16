@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.core.ui.editors.testcase.TestCaseEditor;
 import org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -78,7 +78,7 @@ public class IpsTestAction extends IpsAction {
      * Adds all test path elements depending on the given object
      */
     private IIpsPackageFragmentRoot addPathElementFromObject(List<String> pathElements, Object object)
-            throws CoreRuntimeException, CoreException {
+            throws IpsException, CoreException {
 
         IIpsPackageFragmentRoot root = null;
         if (object instanceof IIpsPackageFragmentRoot) {
@@ -135,7 +135,7 @@ public class IpsTestAction extends IpsAction {
     }
 
     @Override
-    public void run(IStructuredSelection selection) throws CoreRuntimeException {
+    public void run(IStructuredSelection selection) {
         try {
             List<String> selectedPathElements = new ArrayList<>(1);
 
@@ -157,7 +157,7 @@ public class IpsTestAction extends IpsAction {
                         try {
                             currRoot = addPathElementFromObject(selectedPathElements, selStructObj);
                         } catch (CoreException e) {
-                            throw new CoreRuntimeException(e);
+                            throw new IpsException(e);
                         }
                         if (currRoot != null) {
                             root = currRoot;
@@ -167,7 +167,7 @@ public class IpsTestAction extends IpsAction {
                     try {
                         root = addPathElementFromObject(selectedPathElements, element);
                     } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
+                        throw new IpsException(e);
                     }
                 }
             }
@@ -187,7 +187,7 @@ public class IpsTestAction extends IpsAction {
                     runTest(selectedPathElements, root.getIpsProject());
                 }
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -285,7 +285,7 @@ public class IpsTestAction extends IpsAction {
     /**
      * Run the test.
      */
-    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) {
         if (selectedPathElements.size() > 0) {
             String testRootsString = ""; //$NON-NLS-1$
             String testPackagesString = ""; //$NON-NLS-1$
@@ -315,7 +315,7 @@ public class IpsTestAction extends IpsAction {
             try {
                 testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode, launch);
             } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                throw new IpsException(e);
             }
         }
     }

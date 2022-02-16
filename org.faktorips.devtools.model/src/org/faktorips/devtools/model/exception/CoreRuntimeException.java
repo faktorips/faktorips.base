@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.exception;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * The {@link CoreRuntimeException} is intended to replace the {@link CoreException}. Checked
@@ -28,19 +28,19 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
  * throws a {@link CoreRuntimeException}, document that it does and in which cases this happens.
  * 
  * @author Stefan Widmaier, FaktorZehn AG
+ * @deprecated use {@link org.faktorips.devtools.abstraction.exception.IpsException} instead
  */
-public class CoreRuntimeException extends RuntimeException {
+@Deprecated(forRemoval = true, since = "22.6")
+public class CoreRuntimeException extends IpsException {
 
     private static final long serialVersionUID = -2861599541541109752L;
-    private final IStatus status;
 
     /**
      * Constructor that should be used when a {@link CoreException} needs to be wrapped into an
      * unchecked exception.
      */
     public CoreRuntimeException(CoreException cause) {
-        super(cause.getMessage(), cause);
-        status = cause.getStatus();
+        super(cause);
     }
 
     /**
@@ -48,13 +48,11 @@ public class CoreRuntimeException extends RuntimeException {
      * {@link CoreException} internally.
      */
     public CoreRuntimeException(IStatus status) {
-        super(new CoreException(status));
-        this.status = status;
+        super(status);
     }
 
     public CoreRuntimeException(String message, CoreException cause) {
         super(message, cause);
-        status = cause.getStatus();
     }
 
     /**
@@ -68,15 +66,9 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(String message) {
         super(message);
-        status = new IpsStatus(message);
     }
 
     public CoreRuntimeException(String message, CoreRuntimeException cause) {
         super(message, cause);
-        status = cause.getStatus();
-    }
-
-    public IStatus getStatus() {
-        return status;
     }
 }

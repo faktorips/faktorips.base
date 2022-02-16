@@ -18,7 +18,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.TestCaseDescriptionPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
 /**
@@ -66,7 +65,7 @@ public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescrip
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreRuntimeException {
+    public IPage createModelDescriptionPage() {
         return new TestCaseDescriptionPage(getTestCaseType());
     }
 }

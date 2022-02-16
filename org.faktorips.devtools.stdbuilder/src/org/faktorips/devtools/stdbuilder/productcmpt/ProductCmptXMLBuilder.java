@@ -21,8 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IInternationalString;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -223,7 +223,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             build(ipsSrcFile, nodeToString);
 
         } catch (TransformerException e) {
-            throw new CoreRuntimeException(new CoreException(new IpsStatus(e)));
+            throw new IpsException(new CoreException(new IpsStatus(e)));
         }
     }
 
@@ -239,7 +239,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     @Override
     public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            throws CoreRuntimeException {
+            {
         super.writeToFile(file, new UUIDFilterStream(inputStream), force, keepHistory);
     }
 

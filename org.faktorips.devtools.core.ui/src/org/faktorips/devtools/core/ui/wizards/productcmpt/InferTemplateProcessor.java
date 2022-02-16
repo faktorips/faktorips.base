@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.template.ProductCmptLinkHistograms;
 import org.faktorips.devtools.model.internal.productcmpt.template.PropertyValueHistograms;
@@ -91,7 +90,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         if (monitor == null) {
             this.monitor = new NullProgressMonitor();
         } else {

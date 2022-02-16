@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -155,7 +154,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TableStructureNotFound() throws CoreRuntimeException {
+    public void testValidate_TableStructureNotFound() {
         MessageList ml = tableStructureUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND));
 
@@ -170,7 +169,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_InvalidRoleName() throws CoreRuntimeException {
+    public void testValidate_InvalidRoleName() {
         tableStructureUsage.setRoleName("role1");
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_INVALID_ROLE_NAME));
@@ -185,7 +184,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MustReferenceAtLeast1TableStructure() throws CoreRuntimeException {
+    public void testValidate_MustReferenceAtLeast1TableStructure() {
         MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
         assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE));
 
@@ -196,7 +195,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateRoleNameInSupertypeHierarchy() throws CoreRuntimeException {
+    public void testValidateRoleNameInSupertypeHierarchy() {
         IProductCmptType a = newProductCmptType(project, "a");
         ITableStructureUsage aStructureUsage = a.newTableStructureUsage();
         aStructureUsage.setRoleName("usage");
@@ -220,7 +219,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_typeDoesNotAcceptChangingOverTime() throws CoreRuntimeException {
+    public void testValidate_typeDoesNotAcceptChangingOverTime() {
         productCmptType.setChangingOverTime(true);
         tableStructureUsage.setChangingOverTime(false);
 
@@ -256,7 +255,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreRuntimeException {
+    public void testIsPropertyFor() {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newTableContentUsage(tableStructureUsage);

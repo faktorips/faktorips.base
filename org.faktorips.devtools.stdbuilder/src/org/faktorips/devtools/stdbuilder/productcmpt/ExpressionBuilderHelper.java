@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
@@ -85,7 +85,7 @@ public class ExpressionBuilderHelper {
                 fragment.append(messages.getMessage(i).getText());
             }
             return fragment;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             buildStatus.add(new IpsStatus("Error compiling formula " + formula.getExpression() //$NON-NLS-1$
                     + " of config element " + formula + ".", e)); //$NON-NLS-1$ //$NON-NLS-2$
             JavaCodeFragment fragment = new JavaCodeFragment();

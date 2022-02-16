@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.tablestructure;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -53,6 +53,6 @@ public interface IColumn extends IKeyItem, ILabeledElement {
     /**
      * Returns the value data type of this column.
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws IpsException;
 
 }

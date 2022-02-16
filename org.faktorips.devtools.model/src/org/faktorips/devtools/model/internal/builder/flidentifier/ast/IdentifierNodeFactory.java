@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.Messages;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -63,7 +63,7 @@ public class IdentifierNodeFactory {
                 return createInvalidNoDatatype(parameter.getDatatype());
             }
             return parameterNode;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return createInvalidDatatypeError(parameter.getDatatype());
         }
@@ -114,7 +114,7 @@ public class IdentifierNodeFactory {
     public IdentifierNode createAssociationNode(IAssociation association, boolean listOfType) {
         try {
             return new AssociationNode(association, listOfType, textRegion, ipsProject);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return createInvalidAssociationTargetNode(association.getTarget());
         }

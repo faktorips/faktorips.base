@@ -20,9 +20,9 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.builder.IpsBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.fl.CompilationResult;
@@ -110,11 +110,11 @@ public interface IIpsArtefactBuilderSet {
      * @param fct The table access function code should be generated for.
      * @param argResults Compilation Results for the function's arguments.
      * 
-     * @throws CoreRuntimeException if an error occurs while generating the code.
+     * @throws IpsException if an error occurs while generating the code.
      */
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreRuntimeException;
+            CompilationResult<JavaCodeFragment>[] argResults) throws IpsException;
 
     /**
      * Creates an<code>IdentifierResolver</code> used to resolve identifiers in the given formula.
@@ -125,13 +125,13 @@ public interface IIpsArtefactBuilderSet {
      *            services that are necessary to be able to resolve an identifier properly
      */
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression expression,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException;
+            ExprCompiler<JavaCodeFragment> exprCompiler) throws IpsException;
 
     /**
      * Returns the file that contain the runtime repository toc file. Note that the file might not
      * exists.
      */
-    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreRuntimeException;
+    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws IpsException;
 
     /**
      * Returns the name of the resource containing the root's table of contents at runtime. E.g.
@@ -193,7 +193,7 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @see IIpsArtefactBuilderSetConfig class description
      */
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreRuntimeException;
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws IpsException;
 
     /**
      * Subclasses should re-implement this method if an aggregate root builder is contained
@@ -224,10 +224,10 @@ public interface IIpsArtefactBuilderSet {
      * @param buildKind One of the build kinds defined in
      *            <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
      * 
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      *             Throwing a CoreException or RuntimeException will interrupt the build cycle
      */
-    public void beforeBuildProcess(ABuildKind buildKind) throws CoreRuntimeException;
+    public void beforeBuildProcess(ABuildKind buildKind) throws IpsException;
 
     /**
      * This method is called when the build process is finished for this builder set. It is called
@@ -237,9 +237,9 @@ public interface IIpsArtefactBuilderSet {
      * @param buildKind One of the build kinds defined in
      *            <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
      * 
-     * @throws CoreRuntimeException implementations can throw or delegate rising CoreExceptions.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterBuildProcess(ABuildKind buildKind) throws CoreRuntimeException;
+    public void afterBuildProcess(ABuildKind buildKind) throws IpsException;
 
     /**
      * Returns an array of builders which are sub types of or from the same type as the provided

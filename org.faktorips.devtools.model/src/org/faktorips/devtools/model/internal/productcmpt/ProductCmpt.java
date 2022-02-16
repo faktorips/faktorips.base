@@ -23,12 +23,12 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
@@ -136,11 +136,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public String getVersionId() throws CoreRuntimeException {
+    public String getVersionId() {
         try {
             return getIpsProject().getProductCmptNamingStrategy().getVersionId(getName());
         } catch (IllegalArgumentException e) {
-            throw new CoreRuntimeException(new IpsStatus("Can't get version id for " + this, e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Can't get version id for " + this, e)); //$NON-NLS-1$
         }
     }
 
@@ -195,7 +195,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (isUsingTemplate()) {
             try {
                 getEnclosingResource().getWorkspace().run(new RemoveTemplateOperation(this), new NullProgressMonitor());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }
@@ -221,7 +221,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptType type = ProductCmptValidations.validateProductCmptType(this, productCmptType, list, ipsProject);
         if (type == null) {
@@ -279,7 +279,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
 
-    private void validateRuntimeId(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateRuntimeId(MessageList list, IIpsProject ipsProject) {
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validateRuntimeId(getRuntimeId());
         for (Message msg : list2) {
@@ -295,7 +295,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
     }
 
-    private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) {
         if (containsDifferenceToModel(ipsProject)) {
             list.newError(MSGCODE_DIFFERENCES_TO_MODEL, Messages.ProductCmpt_Error_DifferencesToModel0, this);
         }
@@ -411,7 +411,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         IProductCmptType cmptType = findProductCmptType(getIpsProject());
         if (cmptType != null) {
             return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(cmptType);
@@ -421,17 +421,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) {
         return !computeDeltaToModel(ipsProject).isEmpty();
     }
 
     @Override
-    public void fixAllDifferencesToModel(final IIpsProject ipsProject) throws CoreRuntimeException {
+    public void fixAllDifferencesToModel(final IIpsProject ipsProject) {
         ((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<>(getIpsSrcFile()) {
 
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
                         return true;
                     }
@@ -440,7 +440,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) {
         return new ProductCmptToTypeDelta(this, ipsProject);
     }
 
@@ -456,7 +456,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) {
         return ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT_TYPE, getProductCmptType());
     }
 
@@ -694,7 +694,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
             GregorianCalendar effectiveDate,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         IProductCmptGeneration generation = getGenerationByEffectiveDate(effectiveDate);
         return category != null ? findPropertyValuesForSpecificCategory(generation, category, ipsProject)
@@ -703,7 +703,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private List<IPropertyValue> findPropertyValuesForSpecificCategory(IProductCmptGeneration generation,
             IProductCmptCategory category,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         List<IPropertyValue> propertyValues = new ArrayList<>();
 
@@ -762,7 +762,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public boolean canCreateValidLink(IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 

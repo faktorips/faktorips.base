@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -82,7 +81,7 @@ public class ProductCmptPropertyTypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() throws CoreRuntimeException {
+    public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() {
         templateCmpt = newProductTemplate(productCmptType, "template");
         prodCmpt.setTemplate(templateCmpt.getQualifiedName());
 

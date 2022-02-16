@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.method;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -69,7 +68,7 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
     }
 
     @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Datatype findDatatype(IIpsProject ipsProject) {
         return ipsProject.findDatatype(datatype);
     }
 
@@ -88,7 +87,7 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         if (StringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Parameter_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$

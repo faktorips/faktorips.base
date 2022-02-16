@@ -29,7 +29,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.runtime.Severity;
@@ -83,7 +82,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     @Override
-    public IIpsObject getTargetForImport() throws CoreRuntimeException {
+    public IIpsObject getTargetForImport() {
         return ((EnumRefControl)importTargetControl).findEnum();
     }
 

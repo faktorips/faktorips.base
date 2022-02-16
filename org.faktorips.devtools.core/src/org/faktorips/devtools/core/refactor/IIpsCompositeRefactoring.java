@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * Allows batch execution of multiple {@link IIpsRefactoring}s.
@@ -46,7 +46,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * result of checking the initial conditions of each contained refactoring.
      */
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreRuntimeException,
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws IpsException,
             OperationCanceledException;
 
     /**
@@ -63,7 +63,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * This implementation always returns an empty {@link RefactoringStatus}.
      */
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreRuntimeException, OperationCanceledException;
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws IpsException, OperationCanceledException;
 
     /**
      * {@inheritDoc}
@@ -77,7 +77,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * Always returns a {@link NullChange}.
      */
     @Override
-    public Change createChange(IProgressMonitor pm) throws CoreRuntimeException, OperationCanceledException;
+    public Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException;
 
     /**
      * {@inheritDoc}

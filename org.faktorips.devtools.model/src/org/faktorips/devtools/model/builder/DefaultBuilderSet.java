@@ -23,7 +23,6 @@ import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.naming.JavaPackageStructure;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -117,7 +116,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreRuntimeException {
+            CompilationResult<JavaCodeFragment>[] argResults) {
 
         return null;
     }
@@ -129,7 +128,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) {
         return null;
     }
 
@@ -149,7 +148,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     }
 
     @Override
-    public void beforeBuildProcess(ABuildKind buildKind) throws CoreRuntimeException {
+    public void beforeBuildProcess(ABuildKind buildKind) {
         super.beforeBuildProcess(buildKind);
         initAdditionalAnnotationsAndImports();
         retainedAnnotations = initRetainedAnnotations();

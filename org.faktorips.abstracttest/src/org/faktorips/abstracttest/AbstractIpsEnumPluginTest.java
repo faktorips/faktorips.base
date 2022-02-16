@@ -21,7 +21,6 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -111,7 +110,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         value2.setEnumAttributeValue(2, ValueFactory.createStringValue("annually"));
     }
 
-    private void createGenderEnum() throws CoreRuntimeException {
+    private void createGenderEnum() {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
         genderEnumType.setAbstract(false);
         genderEnumType.setExtensible(true);

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -81,7 +80,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
     private IProductCmptLink staticLink3;
 
     @Before
-    public void setUp() throws CoreRuntimeException {
+    public void setUp() {
         setUpLinksForLinkContainer(gen1, link1, link2);
         setUpLinksForLinkContainer(gen2, linkA, linkB);
         setUpLinksForLinkContainer(genLatest, linkLatest1, linkLatest2, linkLatest3);
@@ -117,7 +116,7 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(staticAssoc2.isChangingOverTime()).thenReturn(false);
     }
 
-    private void setUpLink(IProductCmptLink link, String association) throws CoreRuntimeException {
+    private void setUpLink(IProductCmptLink link, String association) {
         when(link.getAssociation()).thenReturn(association);
         when(link.getTarget()).thenReturn("targetName");
         when(link.findTarget(any(IIpsProject.class))).thenReturn(target);

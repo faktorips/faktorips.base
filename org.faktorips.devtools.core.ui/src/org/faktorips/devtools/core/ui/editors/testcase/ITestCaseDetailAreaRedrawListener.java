@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.List;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.testcase.ITestObject;
 
 /**
@@ -22,6 +22,6 @@ import org.faktorips.devtools.model.testcase.ITestObject;
  */
 public interface ITestCaseDetailAreaRedrawListener {
 
-    public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws CoreRuntimeException;
+    public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws IpsException;
 
 }

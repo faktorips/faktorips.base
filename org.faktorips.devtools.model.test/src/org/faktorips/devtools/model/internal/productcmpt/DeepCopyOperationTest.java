@@ -43,10 +43,10 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
@@ -349,7 +349,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDeepCopyOperationFixups() throws CoreRuntimeException, CycleInProductStructureException {
+    public void testDeepCopyOperationFixups() throws IpsException, CycleInProductStructureException {
         createTestContent();
         IProductCmptTreeStructure structure = comfortMotorProduct
                 .getStructure((GregorianCalendar)GregorianCalendar.getInstance(), ipsProject);
@@ -384,13 +384,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
     }
 
-    private void createTestContent() throws CoreRuntimeException {
+    private void createTestContent() {
         createModel();
         createProducts();
         createTables();
     }
 
-    private void createModel() throws CoreRuntimeException {
+    private void createModel() {
 
         // set up extension properties
         // IExtensionPropertyDefinition extProp = mock(IExtensionPropertyDefinition.class);
@@ -461,7 +461,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         salesNameAttribute.setValueSetConfiguredByProduct(true);
     }
 
-    private void createProducts() throws CoreRuntimeException {
+    private void createProducts() {
         comfortMotorProduct = newProductCmpt(motorContract.findProductCmptType(ipsProject),
                 "products.ComfortMotorProduct");
         comfortMotorProduct.setProductCmptType(motorContract.getProductCmptType());
@@ -504,7 +504,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
     }
 
-    private void createTables() throws CoreRuntimeException {
+    private void createTables() {
         tableContent = newTableContents(ipsProject, "TableContent");
         ITableContentUsage newTableContentUsage = standardTplCoverage.getLatestProductCmptGeneration()
                 .newTableContentUsage();
@@ -766,7 +766,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             Set<IProductCmptStructureReference> toCopy,
             Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles,
             IpsPackageFragment sourcePackageFragment,
-            IIpsPackageFragment targetPackageFragment) throws CoreRuntimeException {
+            IIpsPackageFragment targetPackageFragment) {
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
                 new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
                 new GregorianCalendar());

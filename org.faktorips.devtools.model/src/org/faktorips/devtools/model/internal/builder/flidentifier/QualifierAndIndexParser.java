@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
@@ -96,7 +96,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         try {
             productCmpt = findProductCmpt();
             return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS
                     .bind(Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
@@ -108,7 +108,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return associationNode.isListContext() || associationNode.getAssociation().is1ToManyIgnoringQualifier();
     }
 
-    private IProductCmpt findProductCmpt() throws CoreRuntimeException {
+    private IProductCmpt findProductCmpt() {
         Collection<IIpsSrcFile> foundProductCmpts = findProductCmptByName();
         if (foundProductCmpts != null) {
             for (IIpsSrcFile ipsSrcFile : foundProductCmpts) {
@@ -121,7 +121,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return null;
     }
 
-    private Collection<IIpsSrcFile> findProductCmptByName() throws CoreRuntimeException {
+    private Collection<IIpsSrcFile> findProductCmptByName() {
         Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
         if (foundProductCmpt.isEmpty()) {
             IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());

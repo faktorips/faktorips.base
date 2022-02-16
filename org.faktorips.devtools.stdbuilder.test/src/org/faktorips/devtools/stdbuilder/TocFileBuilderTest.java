@@ -26,7 +26,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -71,7 +70,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetToc() throws CoreRuntimeException {
+    public void testGetToc() {
 
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
@@ -88,7 +87,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptWithGeneration() throws CoreRuntimeException {
+    public void testCreateTocEntryProductCmptWithGeneration() {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
@@ -104,7 +103,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptWithoutGeneration() throws CoreRuntimeException {
+    public void testCreateTocEntryProductCmptWithoutGeneration() {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
@@ -120,7 +119,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryPolicyCmptType() throws CoreRuntimeException {
+    public void testCreateTocEntryPolicyCmptType() {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
         assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
@@ -129,7 +128,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmptType() throws CoreRuntimeException {
+    public void testCreateTocEntryProductCmptType() {
         IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
@@ -140,7 +139,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryTable() throws CoreRuntimeException {
+    public void testCreateTocEntryTable() {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
@@ -158,7 +157,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_RealEnum() throws CoreRuntimeException {
+    public void testCreateTocEntry_RealEnum() {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(false);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
@@ -185,7 +184,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_SeparatedEnum() throws CoreRuntimeException {
+    public void testCreateTocEntry_SeparatedEnum() {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
@@ -212,7 +211,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntry_AbstractEnum() throws CoreRuntimeException {
+    public void testCreateTocEntry_AbstractEnum() {
         IEnumType enumType = newEnumType(ipsProject, "test.JavaEnum");
         enumType.setExtensible(true);
         enumType.setIdentifierBoundary("e");
@@ -366,7 +365,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Ignore
     // not supported at the moment
     @Test
-    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() throws CoreRuntimeException {
+    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() {
         // create a product component
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);

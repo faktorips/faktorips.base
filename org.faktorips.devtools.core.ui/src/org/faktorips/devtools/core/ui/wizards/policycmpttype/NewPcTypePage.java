@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -94,7 +93,7 @@ public class NewPcTypePage extends NewTypePage {
     }
 
     @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreRuntimeException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         super.valueChangedExtension(e);
         if (e.field == configurableField) {
             IDialogSettings settings = getSettings();
@@ -107,7 +106,7 @@ public class NewPcTypePage extends NewTypePage {
      * Sets the configurable property to true if the supertype is also configurable and disables it.
      */
     @Override
-    protected void supertypeChanged(TextButtonField supertypeField) throws CoreRuntimeException {
+    protected void supertypeChanged(TextButtonField supertypeField) {
         String qualifiedName = supertypeField.getValue();
         IIpsProject ipsProject = getIpsProject();
         if (ipsProject != null) {
@@ -127,7 +126,7 @@ public class NewPcTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validateName() throws CoreRuntimeException {
+    protected void validateName() {
         super.validateName();
         if (getIpsProject() == null) {
             return;
@@ -139,7 +138,7 @@ public class NewPcTypePage extends NewTypePage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
@@ -159,7 +158,7 @@ public class NewPcTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validatePageExtensionThis(IpsValidation validation) throws CoreRuntimeException {
+    protected void validatePageExtensionThis(IpsValidation validation) {
         // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidateInstancesWillBeConfiguredByProductCmptType());
     }
@@ -168,7 +167,7 @@ public class NewPcTypePage extends NewTypePage {
     private class ValidateInstancesWillBeConfiguredByProductCmptType extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreRuntimeException {
+        public Message execute(IIpsProject ipsProject) {
             // Super-type may not be set after all
             if (StringUtils.isEmpty(getSuperType())) {
                 return null;

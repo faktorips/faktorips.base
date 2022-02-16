@@ -18,13 +18,13 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
@@ -70,16 +70,16 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * @param parent The <code>IEnumValue</code> this <code>IEnumAttributeValue</code> belongs to.
      * @param id A unique ID for this <code>IEnumAttributeValue</code>.
      * 
-     * @throws CoreRuntimeException If an error occurs while initializing the object.
+     * @throws IpsException If an error occurs while initializing the object.
      */
-    public EnumAttributeValue(EnumValue parent, String id) throws CoreRuntimeException {
+    public EnumAttributeValue(EnumValue parent, String id) {
         super(parent, id);
         propertyChangeListener = evt -> valueChanged(null, evt.getNewValue());
         setValueInternal(ValueFactory.createStringValue(null));
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         IEnumAttribute foundEnumAttribute = findEnumAttribute(getIpsProject());
         if (foundEnumAttribute != null) {
             return foundEnumAttribute.getLabelValue(locale);
@@ -209,7 +209,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         IEnumAttribute enumAttribute = findEnumAttribute(ipsProject);
         if (enumAttribute == null) {
             return;

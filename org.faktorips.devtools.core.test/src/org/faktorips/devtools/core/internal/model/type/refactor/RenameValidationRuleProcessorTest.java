@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -52,13 +51,13 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testCheckInitialConditionsValid() throws CoreRuntimeException {
+    public void testCheckInitialConditionsValid() {
         RefactoringStatus status = ipsRenameProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
-    public void testCheckFinalConditionsValid() throws CoreRuntimeException {
+    public void testCheckFinalConditionsValid() {
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
@@ -76,7 +75,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testRefactorIpsModel() throws CoreRuntimeException {
+    public void testRefactorIpsModel() {
         performRenameRefactoring(validationRule, NEW_NAME);
 
         assertEquals(NEW_NAME, validationRule.getName());
@@ -89,7 +88,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testRefactorIpsModel_MultipleProductCmptGen() throws CoreRuntimeException {
+    public void testRefactorIpsModel_MultipleProductCmptGen() {
         IProductCmptGeneration productCmptGeneration2 = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration2.newPropertyValues(validationRule);
         performRenameRefactoring(validationRule, NEW_NAME);
@@ -104,7 +103,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testValidateUserInputInvalid() throws CoreRuntimeException {
+    public void testValidateUserInputInvalid() {
         validationRule.setMessageCode(StringUtils.EMPTY);
         ipsRenameProcessor.setNewName("noMsgCode");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
@@ -112,7 +111,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testValidateUserInputValid() throws CoreRuntimeException {
+    public void testValidateUserInputValid() {
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
         assertTrue(status.isOK());

@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.tablecontents.TableContents;
@@ -117,7 +117,7 @@ public class DeepCopyOperation implements ICoreRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor progressMonitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor progressMonitor) {
         IProgressMonitor monitor = progressMonitor;
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -214,15 +214,15 @@ public class DeepCopyOperation implements ICoreRunnable {
         }
         try {
             copySortOrder(sourceIpsPackageFragment, targetIpsPackageFragment, old2NewSrcFile, monitor);
-        } catch (CoreRuntimeException e) {
-            throw new CoreRuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
+        } catch (IpsException e) {
+            throw new IpsException("Exception occured during sort order copying.", e); //$NON-NLS-1$
         }
     }
 
     private void copySortOrder(IIpsPackageFragment sourceParent,
             IIpsPackageFragment targetParent,
             Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
         Comparator<IIpsElement> sourceComparator = sourceParent.getChildOrderComparator();
         if (sourceComparator instanceof DefinedOrderComparator) {
             Comparator<IIpsElement> targetComparator = targetParent.getChildOrderComparator();
@@ -277,7 +277,7 @@ public class DeepCopyOperation implements ICoreRunnable {
             Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
             GregorianCalendar oldValidFrom,
             GregorianCalendar newValidFrom,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
 
         IIpsObject templateObject = toCopyProductCmptStructureReference.getWrappedIpsObject();
         IIpsSrcFile file = handleMap.get(toCopyProductCmptStructureReference);
@@ -305,7 +305,7 @@ public class DeepCopyOperation implements ICoreRunnable {
                             ((ITimedIpsObject)file.getIpsObject()).retainOnlyGeneration(oldValidFrom, newValidFrom);
                         }
                     }
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
                 }
@@ -469,7 +469,7 @@ public class DeepCopyOperation implements ICoreRunnable {
                 final IIpsProject ipsProject = productCmptTemplate.getIpsProject();
                 IProductCmpt oldTargetProductCmpt = link.findTarget(ipsProject);
                 linkData = new LinkData(productCmptTemplate, oldTargetProductCmpt, link.findAssociation(ipsProject));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.logAndShowErrorDialog(e);
                 return;
             }
@@ -501,7 +501,7 @@ public class DeepCopyOperation implements ICoreRunnable {
      * source is appended, after the given number of segments to ignore is cut off.
      */
     private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         IIpsPackageFragment result;
         String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
         result = ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);

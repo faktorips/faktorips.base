@@ -19,7 +19,6 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -54,7 +53,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testCheckFinalConditionsValid() throws CoreRuntimeException {
+    public void testCheckFinalConditionsValid() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME
                 + '.' + "Policy");
         IpsMoveProcessor ipsMoveProcessor = new MoveIpsObjectProcessor(policyCmptType);
@@ -67,7 +66,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testCheckFinalConditionsFileAlreadyExists() throws CoreRuntimeException {
+    public void testCheckFinalConditionsFileAlreadyExists() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME
                 + '.' + "Policy");
         IpsMoveProcessor ipsMoveProcessor = new MoveIpsObjectProcessor(policyCmptType);
@@ -81,7 +80,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMovePolicyCmptType() throws CoreRuntimeException {
+    public void testMovePolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME
                 + '.' + "Policy");
         PolicyCmptTypeReferences policyCmptTypeReferences = new PolicyCmptTypeReferences(policyCmptType, false);
@@ -95,7 +94,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveSuperPolicyCmptType() throws CoreRuntimeException {
+    public void testMoveSuperPolicyCmptType() {
         IPolicyCmptType superPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME
                 + '.' + "SuperPolicyCmptType");
         superPolicyCmptType.setAbstract(true);
@@ -109,7 +108,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveProductCmptType() throws CoreRuntimeException {
+    public void testMoveProductCmptType() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         ProductCmptTypeReferences productCmptTypeReferences = new ProductCmptTypeReferences(productCmptType);
 
@@ -122,7 +121,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveSuperProductCmptType() throws CoreRuntimeException {
+    public void testMoveSuperProductCmptType() {
         IProductCmptType superProductCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.'
                 + "SuperProduct");
         superProductCmptType.setAbstract(true);
@@ -136,7 +135,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveTestCaseType() throws CoreRuntimeException {
+    public void testMoveTestCaseType() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
         TestCaseTypeReferences testCaseTypeReferences = new TestCaseTypeReferences(testCaseType);
 
@@ -149,7 +148,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveEnumType() throws CoreRuntimeException {
+    public void testMoveEnumType() {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
         enumType.newEnumLiteralNameAttribute();
         EnumTypeReferences enumTypeReferences = new EnumTypeReferences(enumType);
@@ -163,7 +162,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveTableStructure() throws CoreRuntimeException {
+    public void testMoveTableStructure() {
         ITableStructure tableStructure = newTableStructure(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "TableStructure");
         TableStructureReferences tableStructureReferences = new TableStructureReferences(tableStructure);
 
@@ -176,7 +175,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveProductCmpt() throws CoreRuntimeException {
+    public void testMoveProductCmpt() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         IProductCmpt productCmpt = newProductCmpt(productCmptType, ORIGINAL_PACKAGE_NAME + '.' + "ProductCmpt");
         ProductCmptReferences productCmptReferences = new ProductCmptReferences(productCmpt, productCmptType);
@@ -191,7 +190,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveTestCase() throws CoreRuntimeException {
+    public void testMoveTestCase() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
         ITestCase testCase = newTestCase(testCaseType, ORIGINAL_PACKAGE_NAME + '.' + "TestCase");
 
@@ -204,7 +203,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveEnumContent() throws CoreRuntimeException {
+    public void testMoveEnumContent() {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
         enumType.setExtensible(true);
         enumType.setEnumContentName(ORIGINAL_PACKAGE_NAME + '.' + "EnumContent");
@@ -219,7 +218,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     }
 
     @Test
-    public void testMoveTableContents() throws CoreRuntimeException {
+    public void testMoveTableContents() {
         ITableStructure tableStructure = newTableStructure(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "TableStructure");
         ITableContents tableContents = newTableContents(tableStructure, ORIGINAL_PACKAGE_NAME + '.' + "TableContents");
 

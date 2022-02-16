@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -101,7 +100,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * @param referencedProject The project that is referenced by the referencingProject
      */
     private void createProjectReference(IIpsProject referencingProject, IIpsProject referencedProject)
-            throws CoreRuntimeException {
+            {
         IIpsObjectPath path = referencingProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(referencedProject);
         referencingProject.setIpsObjectPath(path);

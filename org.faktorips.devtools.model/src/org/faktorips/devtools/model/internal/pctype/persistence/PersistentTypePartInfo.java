@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.pctype.persistence;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -90,7 +89,7 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateIndexName(list);
     }

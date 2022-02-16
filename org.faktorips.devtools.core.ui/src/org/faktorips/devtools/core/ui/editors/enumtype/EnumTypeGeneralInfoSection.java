@@ -35,7 +35,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -214,7 +213,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         propertyChanged();
     }
 
-    private void propertyChanged() throws CoreRuntimeException {
+    private void propertyChanged() {
         /*
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.

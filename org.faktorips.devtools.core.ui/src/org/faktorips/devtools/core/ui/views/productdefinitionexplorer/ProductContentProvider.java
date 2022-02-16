@@ -17,7 +17,6 @@ import java.util.List;
 import org.faktorips.devtools.core.ui.views.modelexplorer.LayoutStyle;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -33,7 +32,7 @@ public class ProductContentProvider extends ModelContentProvider {
      * as children of the given PackageFragmentRoot. {@inheritDoc}
      */
     @Override
-    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
+    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) {
         if (getLayoutStyle() == LayoutStyle.FLAT) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             // filter out empty packagefragments if their IFolders do not contain files and at the

@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -93,7 +93,7 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
                 root.init();
                 return root;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;

@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
@@ -39,12 +39,12 @@ public abstract class AbstractPropertiesGenerator {
             if (messagesPropertiesFile.exists()) {
                 localizedProperties.load(messagesPropertiesFile.getContents());
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             StdBuilderPlugin.log(e);
         }
     }
 
-    void storeMessagesToFile(AFile propertyFile, AbstractLocalizedProperties messages) throws CoreRuntimeException {
+    void storeMessagesToFile(AFile propertyFile, AbstractLocalizedProperties messages) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
@@ -55,9 +55,9 @@ public abstract class AbstractPropertiesGenerator {
      * Saving the properties to the file adding the given comment. The file must already exists.
      * 
      * @return true if file was modified otherwise false
-     * @throws CoreRuntimeException in case of any exception during writing to file
+     * @throws IpsException in case of any exception during writing to file
      */
-    public boolean saveIfModified() throws CoreRuntimeException {
+    public boolean saveIfModified() {
         if (getLocalizedProperties().isModified()) {
             AFile file = getMessagesPropertiesFile();
             if (!file.exists()) {
@@ -72,7 +72,7 @@ public abstract class AbstractPropertiesGenerator {
         }
     }
 
-    public void loadMessages() throws CoreRuntimeException {
+    public void loadMessages() {
         if (messagesPropertiesFile.exists()) {
             getLocalizedProperties().load(messagesPropertiesFile.getContents());
         } else {

@@ -28,7 +28,6 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
@@ -158,7 +157,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     }
 
     @Test
-    public void testGetValueNameExtensible() throws CoreRuntimeException {
+    public void testGetValueNameExtensible() {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
 
         IEnumAttribute id = enumType.newEnumAttribute();
@@ -187,7 +186,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         assertNull(adapter.getValueName("idC"));
     }
 
-    private void addEnumValue(IEnumValueContainer container, String id, String name) throws CoreRuntimeException {
+    private void addEnumValue(IEnumValueContainer container, String id, String name) {
         IEnumValue contentEnumValue = container.newEnumValue();
         List<IEnumAttributeValue> values = contentEnumValue.getEnumAttributeValues();
         values.get(0).setValue(new StringValue(id));

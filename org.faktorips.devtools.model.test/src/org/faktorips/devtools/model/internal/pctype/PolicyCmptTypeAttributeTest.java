@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
@@ -73,7 +72,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateComputationMethodHasDifferentDatatype() throws CoreRuntimeException {
+    public void testValidateComputationMethodHasDifferentDatatype() {
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
         pcType.setConfigurableByProductCmptType(true);
         pcType.setProductCmptType(productType.getQualifiedName());
@@ -98,7 +97,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateComputationMethodNotSpecified() throws CoreRuntimeException {
+    public void testValidateComputationMethodNotSpecified() {
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
         attribute.setComputationMethodSignature("");
@@ -113,7 +112,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateComputationMethodDoesNotExist() throws CoreRuntimeException {
+    public void testValidateComputationMethodDoesNotExist() {
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
         attribute.setComputationMethodSignature("");
@@ -140,7 +139,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindComputationMethodSignature() throws CoreRuntimeException {
+    public void testFindComputationMethodSignature() {
         assertNull(attribute.findComputationMethod(ipsProject));
 
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
@@ -168,7 +167,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverwrittenAttribute() throws CoreRuntimeException {
+    public void testFindOverwrittenAttribute() {
         attribute.setName("a");
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "Supertype");
         IPolicyCmptType supersupertype = newPolicyCmptType(ipsProject, "SuperSupertype");
@@ -464,7 +463,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreRuntimeException {
+    public void testIsPropertyFor() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType(pcType.getQualifiedName());
@@ -479,7 +478,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValue() throws CoreRuntimeException {
+    public void testValidateDefaultValue() {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
 
@@ -497,7 +496,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAllowedValueSetTypes_allowEnumValueSetForExtensibleEnumDatatypes_dependingOnProductRelevance()
-            throws CoreRuntimeException {
+            {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
 
@@ -511,7 +510,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis_illegalValueSets() throws CoreRuntimeException {
+    public void testValidateThis_illegalValueSets() {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
         attribute.setValueSetType(ValueSetType.ENUM);
@@ -538,7 +537,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitChangingOverTimeDefault_Attribute_isChangingOverTime_IfProductCmptType_IsChangingOverTime()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         pcType.setProductCmptType("ProductType");
@@ -550,7 +549,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitChangingOverTimeDefault_Attribute_isNotChangingOverTime_IfProductCmptType_IsNotChangingOverTime()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         pcType.setProductCmptType("ProductType");
@@ -561,7 +560,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() {
         attribute.setValueSetConfiguredByProduct(true);
         attribute.setName("attributeName");
         MessageList ml = attribute.validate(attribute.getIpsProject());
@@ -572,7 +571,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotProductRelevant()
-            throws CoreRuntimeException {
+            {
         newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setValueSetConfiguredByProduct(false);
@@ -584,7 +583,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotChangeble() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotChangeble() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         pcType.setProductCmptType(productCmptType.getQualifiedName());
@@ -598,7 +597,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfOverwrittenAndNotChangeble() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfOverwrittenAndNotChangeble() {
         IPolicyCmptType supertype = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "sup.SuperType");
         pcType.setSupertype(supertype.getQualifiedName());
         IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute("name");
@@ -619,7 +618,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsNotProductRelevant()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         productCmptType.setChangingOverTime(true);
@@ -634,7 +633,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsProductRelevant()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");
@@ -649,7 +648,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsNotProductRelevant()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");
@@ -664,7 +663,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsProductRelevant()
-            throws CoreRuntimeException {
+            {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");
@@ -678,7 +677,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangingOverTime_default() throws CoreRuntimeException {
+    public void testChangingOverTime_default() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         pcType.setProductCmptType("ProductType");

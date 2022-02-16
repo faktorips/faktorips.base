@@ -33,7 +33,6 @@ import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumTypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -242,7 +241,7 @@ public class EnumTypePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
@@ -288,7 +287,7 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreRuntimeException {
+    protected void validatePageExtension() {
         super.validatePageExtension();
 
         MessageList validationMessages = new MessageList();

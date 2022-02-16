@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -177,7 +176,7 @@ public class DerivedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValue_ValueIsNull() throws CoreRuntimeException {
+    public void testContainsValue_ValueIsNull() {
         IDerivedValueSet derivedValueSet = new DerivedValueSet(attr, "1");
 
         assertTrue(derivedValueSet.containsValue(null, ipsProject));

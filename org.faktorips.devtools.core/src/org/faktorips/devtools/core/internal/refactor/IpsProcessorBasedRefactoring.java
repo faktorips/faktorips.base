@@ -19,7 +19,6 @@ import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -33,7 +32,7 @@ public final class IpsProcessorBasedRefactoring extends ProcessorBasedRefactorin
     }
 
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreRuntimeException {
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) {
         return getIpsRefactoringProcessor().validateUserInput(pm);
     }
 

@@ -19,10 +19,10 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
@@ -64,7 +64,7 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
         MessageList list = null;
         try {
             list = getMessages(element);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return baseProvider.getImage(element);
         }
@@ -87,9 +87,9 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
      * <p>
      * Returns an empty list if the given object is not an IPS object part.
      * 
-     * @throws CoreRuntimeException If an error occurs during the creation of the message list.
+     * @throws IpsException If an error occurs during the creation of the message list.
      */
-    public MessageList getMessages(Object element) throws CoreRuntimeException {
+    public MessageList getMessages(Object element) {
         MessageList result = new MessageList();
         if (element instanceof IIpsObjectPartContainer) {
             IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
@@ -101,7 +101,7 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
 
     private void collectMessagesForIpsObjectPartContainer(MessageList result,
             MessageList msgList,
-            IIpsObjectPartContainer container) throws CoreRuntimeException {
+            IIpsObjectPartContainer container) {
 
         result.add(msgList.getMessagesFor(container));
         IIpsElement[] childs = container.getChildren();

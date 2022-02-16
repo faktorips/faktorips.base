@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredList;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -109,7 +109,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
                     showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
                     setListElements(getElements());
                     wizard.setShowSubtypeAttributes(showSubtypes);
-                } catch (CoreRuntimeException ex) {
+                } catch (IpsException ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             };
@@ -120,12 +120,12 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
         try {
             init(policyCmptType);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    private IPolicyCmptTypeAttribute[] getElements() throws CoreRuntimeException {
+    private IPolicyCmptTypeAttribute[] getElements() {
         List<? extends IAttribute> attributes = typeHierarchy.getAllAttributesRespectingOverride(policyCmptType);
         List<IPolicyCmptTypeAttribute> attributesInDialog = new ArrayList<>();
         for (IAttribute attribute : attributes) {
@@ -239,7 +239,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         return text;
     }
 
-    private void init(IPolicyCmptType policyCmptType) throws CoreRuntimeException {
+    private void init(IPolicyCmptType policyCmptType) {
         typeHierarchy = policyCmptType.getSupertypeHierarchy();
 
         AttributeLabelProvider attrLabelProvider = new AttributeLabelProvider();

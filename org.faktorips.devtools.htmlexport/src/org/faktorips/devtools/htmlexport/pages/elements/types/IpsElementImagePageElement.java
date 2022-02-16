@@ -19,7 +19,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -48,7 +47,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         super(createImageDataByIpsElement(element), title, path, context);
     }
 
-    public IpsElementImagePageElement(IIpsElement element, DocumentationContext context) throws CoreRuntimeException {
+    public IpsElementImagePageElement(IIpsElement element, DocumentationContext context) {
         super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element), context);
     }
 
@@ -68,7 +67,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         }
     }
 
-    private static String getIpsElementImageName(IIpsElement element) throws CoreRuntimeException {
+    private static String getIpsElementImageName(IIpsElement element) {
         if (element instanceof IIpsPackageFragment) {
             return "ipspackage"; //$NON-NLS-1$
         }
@@ -134,7 +133,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         throw new RuntimeException("Unknown Type of ITestValue"); //$NON-NLS-1$
     }
 
-    private static String createImageNameByIpsSrcFile(IIpsElement element) throws CoreRuntimeException {
+    private static String createImageNameByIpsSrcFile(IIpsElement element) {
         IIpsSrcFile srcFile = (IIpsSrcFile)element;
         if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
             return srcFile.getIpsObjectType().getFileExtension();
@@ -143,13 +142,13 @@ public class IpsElementImagePageElement extends ImagePageElement {
         return createImageNameByProductCmpt(ipsObject);
     }
 
-    private static String createImageNameByProductCmpt(IProductCmpt object) throws CoreRuntimeException {
+    private static String createImageNameByProductCmpt(IProductCmpt object) {
         IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
         return getProductCmptImageNameByProductCmptType(productCmptType);
     }
 
     private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType)
-            throws CoreRuntimeException {
+            {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }

@@ -50,6 +50,7 @@ import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -62,7 +63,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -207,7 +207,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 && !ipsSrcFile.getEnclosingResource().isSynchronized(AResourceTreeTraversalDepth.RESOURCE_ONLY)) {
             try {
                 ipsSrcFile.getEnclosingResource().refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 throw new PartInitException("Error refreshing resource " + ipsSrcFile.getEnclosingResource()); //$NON-NLS-1$
             }
         }
@@ -302,9 +302,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * subclasses by adding the pages to edit the ips object with.
      * 
      * @throws PartInitException if there is an exception while initializing a part
-     * @throws CoreRuntimeException in case of other core exceptions
+     * @throws IpsException in case of other core exceptions
      */
-    protected abstract void addPagesForParsableSrcFile() throws PartInitException, CoreRuntimeException;
+    protected abstract void addPagesForParsableSrcFile() throws PartInitException, IpsException;
 
     protected void updatePageStructure(boolean forceRefreshInclStructuralChanges) {
         logMethodStarted("updatePageStructure"); //$NON-NLS-1$
@@ -335,7 +335,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             // also triggers the refresh
             super.setActivePage(0);
             logMethodFinished("updatePageStructure"); //$NON-NLS-1$
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             updatingPageStructure = false;
             IpsPlugin.log(e);
             return;
@@ -402,7 +402,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
              * contain the correct state.
              */
             ipsSrcFile.getIpsObject();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 
@@ -541,7 +541,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     public void doSave(IProgressMonitor monitor) {
         try {
             ipsSrcFile.save(true, monitor);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -706,7 +706,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
 
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -716,9 +716,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Creates a dialog to disblay the differences to the model and ask the user if the
      * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
      * 
-     * @throws CoreRuntimeException May be thrown if any error occurs.
+     * @throws IpsException May be thrown if any error occurs.
      */
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
+    protected Dialog createDialogToFixDifferencesToModel() {
         throw new UnsupportedOperationException();
     }
 
@@ -920,7 +920,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 }
                 return messages;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return Collections.emptyList();

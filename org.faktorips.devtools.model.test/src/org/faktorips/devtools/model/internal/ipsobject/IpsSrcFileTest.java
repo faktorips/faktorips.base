@@ -28,11 +28,10 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
-import org.faktorips.devtools.model.IModificationStatusChangeListener;
-import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.IModificationStatusChangeListener;
+import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -98,7 +97,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSave() throws CoreRuntimeException {
+    public void testSave() {
         policyCmptType.newPolicyCmptTypeAttribute();
         assertTrue(parsableFile.isDirty());
 
@@ -111,7 +110,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSaveWithPreProcessor() throws CoreRuntimeException {
+    public void testSaveWithPreProcessor() {
         try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, (ipsObject) -> {
@@ -128,7 +127,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSaveWithPreProcessorForDifferentIpsObjectType() throws CoreRuntimeException {
+    public void testSaveWithPreProcessorForDifferentIpsObjectType() {
         try (var testIpsModelExtensions = new TestIpsModelExtensions()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, (ipsObject) -> {
@@ -144,7 +143,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testIsContentParsable() throws CoreRuntimeException {
+    public void testIsContentParsable() {
         assertFalse(unparsableFile.isContentParsable());
         assertTrue(parsableFile.isContentParsable());
     }
@@ -184,7 +183,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testGetIpsObject() throws CoreRuntimeException {
+    public void testGetIpsObject() {
         IIpsObject ipsObject = parsableFile.getIpsObject();
         assertNotNull(ipsObject);
         assertTrue(ipsObject.isFromParsableFile());
@@ -218,14 +217,14 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         assertEquals(0, unparsableFile.getChildren().length);
         assertEquals(1, parsableFile.getChildren().length);
         assertEquals(parsableFile.getIpsObject(), parsableFile.getChildren()[0]);
     }
 
     @Test
-    public void testHasChildren() throws CoreRuntimeException {
+    public void testHasChildren() {
         assertFalse(unparsableFile.hasChildren());
         assertTrue(parsableFile.hasChildren());
     }
@@ -236,7 +235,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testNewMemento() throws CoreRuntimeException {
+    public void testNewMemento() {
         policyCmptType.newPolicyCmptTypeAttribute();
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         assertEquals(true, memento.isDirty());
@@ -244,7 +243,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testSetMemento() throws CoreRuntimeException {
+    public void testSetMemento() {
         IIpsSrcFileMemento memento = parsableFile.newMemento();
         policyCmptType.newPolicyCmptTypeAttribute();
         parsableFile.setMemento(memento);
@@ -253,14 +252,14 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     }
 
     @Test
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         parsableFile.delete();
         assertFalse(parsableFile.exists());
         assertFalse(((IpsModel)parsableFile.getIpsModel()).isCached(parsableFile));
     }
 
     @Test
-    public void testDeleteSrcFileNotExisting() throws CoreRuntimeException {
+    public void testDeleteSrcFileNotExisting() {
         parsableFile.delete();
         parsableFile.delete();
         // Test successful if no exception occurs

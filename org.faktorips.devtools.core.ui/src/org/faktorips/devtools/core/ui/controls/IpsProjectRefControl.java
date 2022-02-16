@@ -14,10 +14,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -114,10 +114,10 @@ public class IpsProjectRefControl extends TextButtonControl {
      * hand, if {@link #isOnlyProductDefinitionProjects()} returns {@code true}, only product
      * definition projects are returned.
      * 
-     * @throws CoreRuntimeException if an error occurs while collecting the {@link IIpsProject IPS
+     * @throws IpsException if an error occurs while collecting the {@link IIpsProject IPS
      *             projects}
      */
-    protected IIpsProject[] collectIpsProjects() throws CoreRuntimeException {
+    protected IIpsProject[] collectIpsProjects() {
         if (isOnlyProductDefinitionProjects()) {
             return IIpsModel.get().getIpsProductDefinitionProjects();
         } else {

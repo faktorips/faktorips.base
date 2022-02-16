@@ -18,11 +18,10 @@ import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
 import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -36,7 +35,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * and provided new name.
      */
     protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
-            String newName) throws CoreRuntimeException {
+            String newName) {
 
         return performRenameRefactoring(ipsObjectPartContainer, newName, null, false);
     }
@@ -46,7 +45,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * provided new name.
      */
     protected final RefactoringStatus performRenameRefactoring(IIpsPackageFragment ipsPackageFragment, String newName)
-            throws CoreRuntimeException {
+            {
         IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory()
                 .createRenameRefactoring(ipsPackageFragment, newName, null, false);
 
@@ -59,7 +58,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      */
     protected final RefactoringStatus performRenameRefactoring(IProductCmpt productCmpt,
             String newName,
-            boolean adaptRuntimeId) throws CoreRuntimeException {
+            boolean adaptRuntimeId) {
 
         return performRenameRefactoring(productCmpt, newName, null, adaptRuntimeId);
     }
@@ -70,7 +69,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      */
     protected final RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             String newName,
-            String newPluralName) throws CoreRuntimeException {
+            String newPluralName) {
 
         return performRenameRefactoring(ipsObjectPartContainer, newName, newPluralName, false);
     }
@@ -78,7 +77,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
     private RefactoringStatus performRenameRefactoring(IIpsObjectPartContainer ipsObjectPartContainer,
             String newName,
             String newPluralName,
-            boolean adaptRuntimeId) throws CoreRuntimeException {
+            boolean adaptRuntimeId) {
 
         printValidationResult(ipsObjectPartContainer);
 
@@ -93,7 +92,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * {@link IIpsObjectPartContainer}.
      */
     protected final RefactoringStatus performPullUpRefactoring(IIpsObjectPart ipsObjectPart,
-            IIpsObjectPartContainer targetIpsObjectPartContainer) throws CoreRuntimeException {
+            IIpsObjectPartContainer targetIpsObjectPartContainer) {
 
         printValidationResult(ipsObjectPart);
 
@@ -108,7 +107,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * target {@link IIpsPackageFragment}.
      */
     protected final RefactoringStatus performMoveRefactoring(IIpsObject ipsObject,
-            IIpsPackageFragment targetIpsPackageFragment) throws CoreRuntimeException {
+            IIpsPackageFragment targetIpsPackageFragment) {
 
         printValidationResult(ipsObject);
 
@@ -123,7 +122,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * provided target {@link IIpsPackageFragment}.
      */
     protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
-            IIpsPackageFragment targetIpsPackageFragment) throws CoreRuntimeException {
+            IIpsPackageFragment targetIpsPackageFragment) {
 
         Set<IIpsElement> ipsElemets = new LinkedHashSet<>();
         for (IIpsObject ipsObject : ipsObjects) {
@@ -138,7 +137,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
         return performRefactoring(ipsCompositeMoveRefactoring);
     }
 
-    private RefactoringStatus performRefactoring(IIpsRefactoring ipsRefactoring) throws CoreRuntimeException {
+    private RefactoringStatus performRefactoring(IIpsRefactoring ipsRefactoring) {
         PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsRefactoring.toLtkRefactoring(),
                 CheckConditionsOperation.ALL_CONDITIONS);
         Abstractions.getWorkspace().run(operation, new NullProgressMonitor());

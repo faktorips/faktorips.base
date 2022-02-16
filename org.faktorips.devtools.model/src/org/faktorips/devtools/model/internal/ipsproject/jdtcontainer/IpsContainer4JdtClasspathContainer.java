@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AJavaProject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -95,7 +95,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         try {
             currentContainer = getClasspathContainer();
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
         synchronized (this) {
             if (jdtClasspathContainer != null) {

@@ -16,7 +16,6 @@ import java.text.MessageFormat;
 
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.util.PathUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -85,7 +84,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreRuntimeException {
+    public boolean exists(QualifiedNameType qnt) {
         if (archive == null || qnt == null) {
             return false;
         }

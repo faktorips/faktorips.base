@@ -35,13 +35,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
@@ -157,7 +157,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             ArrayList<IIpsProject> sortedProjectList = new ArrayList<>(Arrays.asList(projects));
             Collections.sort(sortedProjectList, Comparator.comparing(p -> p.getName().toLowerCase()));
             projectSelectComboViewer.setInput(sortedProjectList);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 

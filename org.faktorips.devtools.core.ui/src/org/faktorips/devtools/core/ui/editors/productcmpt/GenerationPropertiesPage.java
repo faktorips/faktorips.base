@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IMessage;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
@@ -48,7 +49,6 @@ import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -206,7 +206,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         List<IProductCmptCategory> categories = new ArrayList<>(4);
         try {
             categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             /*
              * The categories could not be determined. Recover by creating a fallback section and
              * log the exception.

@@ -25,7 +25,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -89,7 +88,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         assertFalse(propertyFile.exists());
     }
 
-    private void createEnumAttributes() throws CoreRuntimeException {
+    private void createEnumAttributes() {
         IEnumAttribute idAttribute = enumType.newEnumAttribute();
         idAttribute.setName("id");
         idAttribute.setIdentifier(true);
@@ -151,7 +150,7 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetPropertyFile_NotNull() throws CoreRuntimeException {
+    public void testGetPropertyFile_NotNull() {
         assertNotNull(enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN));
     }
 }

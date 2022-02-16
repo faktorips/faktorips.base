@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.tablestructure;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public interface IForeignKey extends IKey {
@@ -47,9 +47,9 @@ public interface IForeignKey extends IKey {
      * Returns the table structure this foreign key references. Returns <code>null</code> if the
      * table structure can't be found.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the table structure.
+     * @throws IpsException if an error occurs while searching for the table structure.
      */
-    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the name of the referenced unique key. This method never returns null.

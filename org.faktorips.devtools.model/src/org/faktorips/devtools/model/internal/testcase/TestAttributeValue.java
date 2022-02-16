@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -82,7 +82,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestAttribute findTestAttribute(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(testAttribute)) {
             return null;
         }
@@ -95,7 +95,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public IAttribute findAttribute(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IAttribute findAttribute(IIpsProject ipsProject) {
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {
             return null;
@@ -129,7 +129,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public void setDefaultValue() throws CoreRuntimeException {
+    public void setDefaultValue() {
         IAttribute modelAttribute = findAttribute(getIpsProject());
         if (modelAttribute == null) {
             return;
@@ -204,7 +204,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                 return true;
             }
             // CSOFF: Empty Statement
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // ignore exceptions
         }
         // CSON: Empty Statement
@@ -212,7 +212,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public void updateDefaultTestAttributeValue() throws CoreRuntimeException {
+    public void updateDefaultTestAttributeValue() {
         IProductCmptGeneration generation = ((TestPolicyCmpt)getParent()).findProductCmpsCurrentGeneration(getParent()
                 .getIpsProject());
         setDefaultTestAttributeValueInternal(generation);
@@ -223,7 +223,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
      * product cmpt or if no product cmpt is available or the attribute isn't configurated by
      * product then from the policy cmpt. Don't update the value if not default is specified.
      */
-    void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) throws CoreRuntimeException {
+    void setDefaultTestAttributeValueInternal(IProductCmptGeneration generation) {
         IIpsProject ipsProject = getIpsProject();
         ITestAttribute attribute = findTestAttribute(ipsProject);
         if (attribute == null) {
@@ -264,7 +264,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) {
         super.validateThis(messageList, ipsProject);
         ITestAttribute testAttr = findTestAttribute(ipsProject);
         if (testAttr == null) {

@@ -18,7 +18,6 @@ import java.util.Set;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.type.Messages;
 import org.faktorips.devtools.model.internal.type.TypePart;
@@ -85,7 +84,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Datatype findDatatype(IIpsProject ipsProject) {
         return method.findDatatype(ipsProject);
     }
 
@@ -100,7 +99,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreRuntimeException {
+    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) {
         if (!typeToSearchFrom.isSubtypeOf(getType(), ipsProject)) {
             return null;
         }
@@ -110,7 +109,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IMethod findOverriddenMethod(IIpsProject ipsProject) {
         OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
         finder.start(getType());
         return finder.overridingMethod;
@@ -122,7 +121,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public boolean overrides(IMethod other) throws CoreRuntimeException {
+    public boolean overrides(IMethod other) {
         if (this.equals(other)) {
             return false;
         }
@@ -178,7 +177,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         result.add(method.validate(ipsProject));
         if (isAbstract() && !getType().isAbstract()) {
@@ -192,7 +191,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
     }
 
-    private void validateOverriddenMethod(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateOverriddenMethod(MessageList list, IIpsProject ipsProject) {
         IMethod overridden = findOverriddenMethod(ipsProject);
         if (overridden == null) {
             return;
@@ -211,7 +210,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         Datatype returnType = findDatatype(ipsProject);
         if (returnType == null) {
             return;

@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.wizards.IpsObjectPage;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -73,7 +72,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void setDefaults(IResource selectedResource) throws CoreRuntimeException {
+    protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         IIpsObject obj = getSelectedIpsObject();
         if (obj instanceof ITestCaseType) {
@@ -84,7 +83,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreRuntimeException {
+    protected void validatePageExtension() {
         if (getErrorMessage() != null) {
             return;
         }
@@ -95,7 +94,7 @@ public class TestCasePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreRuntimeException {
+            {
 
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;
@@ -108,7 +107,7 @@ public class TestCasePage extends IpsObjectPage {
      * Generate the default content for the given test case. All test value parameter will be
      * created, because for this kind of parameter there is no add functionality.
      */
-    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreRuntimeException {
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) {
         for (ITestParameter element : parameter) {
             if (element instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();

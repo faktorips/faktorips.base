@@ -22,10 +22,10 @@ import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -49,7 +49,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             try {
                 List<GenerationDate> result = collectGenerationDates(productCmpt, monitor);
                 return result.toArray();
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -57,7 +57,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     }
 
     public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         IProgressMonitor theMonitor = monitor;
         if (theMonitor == null) {
             theMonitor = new NullProgressMonitor();
@@ -86,7 +86,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     private TreeSet<GregorianCalendar> collectValidFromDates(IProductCmpt productCmpt,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
 
         TreeSet<GregorianCalendar> result = new TreeSet<>(Comparator.comparing(GregorianCalendar::getTime).reversed());
         if (productCmpt == null) {
@@ -110,7 +110,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             GregorianCalendar smallestValidFrom,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
         GregorianCalendar theSmallestValidFrom = smallestValidFrom;
         Set<GregorianCalendar> result = new HashSet<>();
         if (monitor.isCanceled()) {

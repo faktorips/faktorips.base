@@ -32,7 +32,6 @@ import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -160,7 +159,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     }
 
     private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
         IIpsSrcFile srcFile = page.createIpsSrcFile(SubMonitor.convert(monitor, 2));
         if (srcFile == null) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(

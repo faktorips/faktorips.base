@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -66,7 +66,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_RemoveProductCmpt() throws CoreRuntimeException {
+    public void testFindProductCmptByRuntimeId_RemoveProductCmpt() {
         productCmpt.setRuntimeId("runtimeId");
         Collection<IIpsSrcFile> beforeDeletion = runtimeIdCache.findProductCmptByRuntimeId("runtimeId");
         assertThat(beforeDeletion.size(), is(1));
@@ -78,7 +78,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_MoreThanOneProdCmptWithSameId() throws CoreRuntimeException {
+    public void testFindProductCmptByRuntimeId_MoreThanOneProdCmptWithSameId() {
         productCmpt.setRuntimeId("runtimeId");
         ProductCmpt newProductCmpt = newProductCmpt(productCmptType, "b.productCmpt2020-2");
         newProductCmpt.setRuntimeId("runtimeId");
@@ -89,7 +89,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByRuntimeId_ChangeIdByText() throws CoreRuntimeException, IOException {
+    public void testFindProductCmptByRuntimeId_ChangeIdByText() throws IpsException, IOException {
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("runtimeId").size(), is(0));
         assertThat(runtimeIdCache.findProductCmptByRuntimeId("productCmpt2020").size(), is(1));
 

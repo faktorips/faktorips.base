@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -88,7 +88,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindTestPolicyCmptTypeParameterFails() throws CoreRuntimeException {
+    public void testGetImageDescriptor_FindTestPolicyCmptTypeParameterFails() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -96,7 +96,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
         ITestPolicyCmptLink testPolicyCmptLink = mock(ITestPolicyCmptLink.class);
         when(testPolicyCmptLink.isAssociation()).thenReturn(false);
         when(testPolicyCmptLink.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreRuntimeException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptLink)
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(testPolicyCmptLink)
                 .findTestPolicyCmptTypeParameter(ipsProject);
 
         ImageDescriptor imageDescriptor = testPolicyCmptLinkDecorator.getImageDescriptor(testPolicyCmptLink);
@@ -105,7 +105,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Composition() throws CoreRuntimeException {
+    public void testGetImageDescriptor_Composition() {
         IIpsProject ipsProject = newIpsProject();
         IPolicyCmptType parentPolicyCmptType = newPolicyCmptType(ipsProject, "Parent");
         IPolicyCmptTypeAssociation association = parentPolicyCmptType.newPolicyCmptTypeAssociation();
@@ -125,7 +125,7 @@ public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetImageDescriptor_CompositionAssociationNotFound() throws CoreRuntimeException {
+    public void testGetImageDescriptor_CompositionAssociationNotFound() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         ITestPolicyCmptLink testPolicyCmptLink = mock(ITestPolicyCmptLink.class);
         when(testPolicyCmptLink.isAssociation()).thenReturn(false);

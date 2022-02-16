@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -61,7 +60,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testFindPolicyCmptTypeAssociation() throws CoreRuntimeException {
+    public void testFindPolicyCmptTypeAssociation() {
         assertNull(association.findMatchingPolicyCmptTypeAssociation(ipsProject));
 
         association.setTarget(coverageType.getQualifiedName());
@@ -100,7 +99,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
      * 
      */
     @Test
-    public void testFindPolicyCmptTypeAssociation2() throws CoreRuntimeException {
+    public void testFindPolicyCmptTypeAssociation2() {
         PolicyCmptType police = newPolicyAndProductCmptType(ipsProject, "Police", "Produkt");
         IProductCmptType produkt = police.findProductCmptType(ipsProject);
 
@@ -464,7 +463,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
      * )} .
      */
     @Test
-    public void testFindTarget() throws CoreRuntimeException {
+    public void testFindTarget() {
         association.setTarget("");
         assertNull(association.findTarget(ipsProject));
 
@@ -634,7 +633,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreRuntimeException {
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() {
         association.setTargetRoleSingular("targetRoleSingular");
         productType.setChangingOverTime(true);
         association.setChangingOverTime(false);
@@ -679,7 +678,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testFIPS6441() throws CoreRuntimeException {
+    public void testFIPS6441() {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "PolicyType");
         IProductCmptType policyType = policy.findProductCmptType(ipsProject);
 

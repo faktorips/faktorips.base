@@ -21,9 +21,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
@@ -144,21 +144,21 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<IMethod> findAllMethods(IIpsProject ipsProject) {
         AllMethodsFinder finder = new AllMethodsFinder(ipsProject);
         finder.start(this);
         return finder.getMethodes();
     }
 
     @Override
-    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) {
         AllAttributeFinder finder = new AllAttributeFinder(ipsProject);
         finder.start(this);
         return finder.attributes;
     }
 
     @Override
-    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) {
         AllAssociationFinder finder = new AllAssociationFinder(ipsProject, true);
         finder.start(this);
         return finder.getAssociationsFound();
@@ -195,7 +195,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
         finder.start(this);
@@ -206,7 +206,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject project,
-            boolean includeSupertypes) throws CoreRuntimeException {
+            boolean includeSupertypes) {
 
         if (target == null || associationType == null) {
             return new ArrayList<>();
@@ -224,11 +224,11 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     /**
      * @param project the project used to find the associations
-     * @throws CoreRuntimeException in case of an exception while finding a type or association
+     * @throws IpsException in case of an exception while finding a type or association
      */
     protected List<IAssociation> findAssociationsForTargetAndAssociationTypeInternal(String target,
             AssociationType associationType,
-            IIpsProject project) throws CoreRuntimeException {
+            IIpsProject project) {
         List<IAssociation> result = new ArrayList<>();
         List<IAssociation> associations = getAssociationsForTarget(target);
         for (IAssociation association : associations) {
@@ -339,7 +339,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreRuntimeException {
+    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) {
         MethodFinderByNameAndParamtypes finder = new MethodFinderByNameAndParamtypes(ipsProject, name, datatypes);
         finder.start(this);
         return finder.method;
@@ -356,7 +356,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreRuntimeException {
+    public IMethod findMethod(String signature, IIpsProject ipsProject) {
         MethodFinderBySignature finder = new MethodFinderBySignature(ipsProject, signature);
         finder.start(this);
         return finder.method;
@@ -374,7 +374,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);
@@ -433,7 +433,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         ConstrainableAssociationFinder finder = new ConstrainableAssociationFinder(false, ipsProject);
         finder.start(this);
         return finder.getAssociationsFound();
@@ -470,7 +470,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public ITypeHierarchy getSubtypeHierarchy() throws CoreRuntimeException {
+    public ITypeHierarchy getSubtypeHierarchy() {
         return TypeHierarchy.getSubtypeHierarchy(this);
     }
 
@@ -504,7 +504,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         DuplicatePropertyNameValidator duplicateValidator = createDuplicatePropertyNameValidator(ipsProject);
         duplicateValidator.start(this);
@@ -531,7 +531,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         validateAbstractAttributes(list, ipsProject);
     }
 
-    public void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    public void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) {
         if (!isAbstract()) {
             findAllAttributes(ipsProject).stream().filter(attribute -> !attribute.isOfType(getQualifiedNameType()))
                     .forEach(attribute -> {
@@ -547,7 +547,7 @@ public abstract class Type extends BaseIpsObject implements IType {
      * Validation for {@link #MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
      */
     private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
-            throws CoreRuntimeException {
+            {
 
         List<IMethod> methods = findOverrideMethodCandidates(true, ipsProject);
         for (IMethod method : methods) {

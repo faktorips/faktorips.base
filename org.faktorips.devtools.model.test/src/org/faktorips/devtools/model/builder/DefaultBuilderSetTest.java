@@ -22,7 +22,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -70,7 +69,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAdditionalAnnotations() throws CoreRuntimeException {
+    public void testGetAdditionalAnnotations() {
         builderSet.beforeBuildProcess(null);
         List<String> annotations = builderSet.getAdditionalAnnotations();
 
@@ -82,7 +81,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAdditionalImports() throws CoreRuntimeException {
+    public void testGetAdditionalImports() {
         builderSet.beforeBuildProcess(null);
         List<String> imports = builderSet.getAdditionalImports();
 
@@ -115,7 +114,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
+        protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
             return new LinkedHashMap<>();
         }
 

@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -105,7 +105,7 @@ public interface IIpsObjectPath {
      * is already an archive entry with the given path no entry is created but the existing entry is
      * returned.
      */
-    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws CoreRuntimeException;
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws IpsException;
 
     /**
      * Factory method that creates a new project reference entry and adds it to the list of entries.
@@ -213,7 +213,7 @@ public interface IIpsObjectPath {
     /**
      * Validates the object path and returns the result as list of messages.
      */
-    public MessageList validate() throws CoreRuntimeException;
+    public MessageList validate() throws IpsException;
 
     /**
      * Moves the entries at at the given indices up/down and adjusts the positions of the elements

@@ -31,7 +31,6 @@ import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -44,7 +43,7 @@ import org.w3c.dom.Element;
 public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Test
-    public void testGetSetEnumType() throws CoreRuntimeException {
+    public void testGetSetEnumType() {
         assertEquals(genderEnumType.getQualifiedName(), genderEnumContent.getEnumType());
         try {
             genderEnumContent.setEnumType(null);
@@ -63,7 +62,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindEnumType() throws CoreRuntimeException {
+    public void testFindEnumType() {
         try {
             genderEnumContent.findEnumType(null);
             fail();
@@ -86,12 +85,12 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateThis() throws CoreRuntimeException {
+    public void testValidateThis() {
         assertTrue(genderEnumContent.isValid(ipsProject));
     }
 
     @Test
-    public void testValidateEnumType() throws CoreRuntimeException {
+    public void testValidateEnumType() {
         IIpsModel ipsModel = getIpsModel();
 
         // Test EnumType missing.
@@ -130,7 +129,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateReferencedEnumAttributesCount() throws CoreRuntimeException {
+    public void testValidateReferencedEnumAttributesCount() {
         genderEnumType.newEnumAttribute();
         MessageList validationMessageList = genderEnumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -139,7 +138,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateReferencedEnumAttributeNames() throws CoreRuntimeException {
+    public void testValidateReferencedEnumAttributeNames() {
         genderEnumAttributeId.setName("foo");
         MessageList validationMessageList = genderEnumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -148,7 +147,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateReferencedEnumAttributeOrdering() throws CoreRuntimeException {
+    public void testValidateReferencedEnumAttributeOrdering() {
         genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         MessageList validationMessageList = genderEnumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -157,7 +156,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateName() throws CoreRuntimeException {
+    public void testValidateName() {
         IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
         enumContent.setEnumType(genderEnumType.getQualifiedName());
         MessageList validationMessageList = enumContent.validate(ipsProject);
@@ -166,7 +165,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testDependsOn() throws CoreRuntimeException {
+    public void testDependsOn() {
         IDependency[] dependencies = genderEnumContent.dependsOn();
         assertEquals(1, dependencies.length);
 
@@ -184,7 +183,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testGetEnumAttributeReferencesCount() throws CoreRuntimeException {
+    public void testGetEnumAttributeReferencesCount() {
         assertEquals(2, genderEnumContent.getEnumAttributeReferencesCount());
 
         genderEnumType.newEnumAttribute();
@@ -193,7 +192,7 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindMetaClass() throws CoreRuntimeException {
+    public void testFindMetaClass() {
         IEnumType type = newEnumType(ipsProject, "EnumType");
         EnumContent enumContent = newEnumContent(type, "enumContent");
 
@@ -202,12 +201,12 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testContainsDifferenceToModel() throws CoreRuntimeException {
+    public void testContainsDifferenceToModel() {
         assertFalse(genderEnumContent.containsDifferenceToModel(ipsProject));
     }
 
     @Test
-    public void testIsFixToModelRequired() throws CoreRuntimeException {
+    public void testIsFixToModelRequired() {
         assertFalse(genderEnumContent.isFixToModelRequired());
         genderEnumType.moveEnumAttribute(genderEnumAttributeId, false);
         assertTrue(genderEnumContent.isFixToModelRequired());
@@ -267,14 +266,14 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testIsCapableOfContainingValues() throws CoreRuntimeException {
+    public void testIsCapableOfContainingValues() {
         assertTrue(genderEnumContent.isCapableOfContainingValues());
         genderEnumContent.setEnumType("foo");
         assertFalse(genderEnumContent.isCapableOfContainingValues());
     }
 
     @Test
-    public void testFindAggregatedEnumValue() throws CoreRuntimeException {
+    public void testFindAggregatedEnumValue() {
         EnumContent enumContent = (EnumContent)genderEnumContent;
         assertEquals(2, enumContent.findAggregatedEnumValues().size());
         genderEnumType.newEnumValue();

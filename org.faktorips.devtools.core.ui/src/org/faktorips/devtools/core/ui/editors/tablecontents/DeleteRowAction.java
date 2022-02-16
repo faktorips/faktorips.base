@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -80,7 +79,7 @@ public class DeleteRowAction extends IpsAction {
         }
 
         @Override
-        protected boolean execute() throws CoreRuntimeException {
+        protected boolean execute() {
             if (selection.isEmpty()) {
                 return false;
             }

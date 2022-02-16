@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.faktorips.devtools.model.Validatable;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
@@ -52,7 +51,7 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
         }
     }
 
-    private String validateAndReturnErrorMessages(Validatable validatable) throws CoreRuntimeException {
+    private String validateAndReturnErrorMessages(Validatable validatable) {
         MessageList msgList = validatable.validate(validatable.getIpsProject());
         String text = msgList.getMessagesBySeverity(Severity.ERROR).getText();
         if (!StringUtils.isEmpty(text)) {

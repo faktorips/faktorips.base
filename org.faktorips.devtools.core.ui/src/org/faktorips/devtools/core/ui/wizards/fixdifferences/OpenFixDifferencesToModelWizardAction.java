@@ -35,12 +35,12 @@ import org.faktorips.devtools.abstraction.AAbstraction;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.adapter.IIpsSrcFileWrapper;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -119,7 +119,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
                     Object selected = iter.next();
                     addElementToFix(ipsElementsToFix, selected);
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // don't disturb
                 IpsPlugin.log(e);
             }
@@ -128,7 +128,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     /* private */ void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected)
-            throws CoreRuntimeException {
+            {
         if (selected instanceof AAbstraction) {
             addElementToFix(ipsElementsToFix, ((AAbstraction)selected).unwrap());
         }
@@ -160,7 +160,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElements(IIpsProject ipsProject, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            throws CoreRuntimeException {
+            {
         if (ipsProject == null) {
             return;
         }
@@ -176,7 +176,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElements(IIpsPackageFragmentRoot element, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            throws CoreRuntimeException {
+            {
         if (element == null) {
             return;
         }
@@ -188,7 +188,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElements(IIpsPackageFragment pack, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            throws CoreRuntimeException {
+            {
         IIpsSrcFile[] ipsSrcFiles = pack.getIpsSrcFiles();
         for (IIpsElement element : ipsSrcFiles) {
             addElementToFix(ipsElementsToFix, element);
@@ -200,7 +200,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElement(IFixDifferencesToModelSupport ipsElementToFix,
-            Set<IFixDifferencesToModelSupport> ipsElementsToFix) throws CoreRuntimeException {
+            Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         IIpsProject ipsProject = ipsElementToFix.getIpsSrcFile().getIpsProject();
         MessageList msgListProperties = ipsProject.validate();
         if (msgListProperties.containsErrorMsg()) {

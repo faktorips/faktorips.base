@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -349,7 +349,7 @@ public class UniqueKeyValidator {
         try {
             cachedValueDatatypes = ((TableContents)tableContentsGeneration.getTableContents()).findColumnDatatypes(
                     cachedTableStructure, tableContentsGeneration.getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(new IpsStatus(
                     "Error searching value datatypes: " //$NON-NLS-1$
                             + tableContentsGeneration.getTableContents().getTableStructure()));
@@ -361,7 +361,7 @@ public class UniqueKeyValidator {
         try {
             cachedTableStructure = tableContentsGeneration.getTableContents().findTableStructure(
                     tableContentsGeneration.getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(new IpsStatus(
                     "Error searching TableStructure: " //$NON-NLS-1$
                             + tableContentsGeneration.getTableContents().getTableStructure()));

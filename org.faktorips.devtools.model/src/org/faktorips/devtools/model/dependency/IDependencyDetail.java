@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.dependency;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -67,10 +67,10 @@ public interface IDependencyDetail {
      * @param targetIpsPackageFragment The new package fragment of the refactored object.
      * @param newName The new name of the refactored object.
      * 
-     * @throws CoreRuntimeException In case of any exception while setting the new name, a
+     * @throws IpsException In case of any exception while setting the new name, a
      *             {@link CoreException} needs to be thrown. In case of throwing any
      *             {@link RuntimeException} the whole refactoring may break
      */
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreRuntimeException;
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws IpsException;
 
 }

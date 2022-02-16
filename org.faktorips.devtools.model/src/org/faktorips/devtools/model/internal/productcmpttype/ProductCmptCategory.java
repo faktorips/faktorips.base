@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -72,7 +72,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public boolean findIsContainingProperty(IProductCmptProperty property,
             IProductCmptType contextType,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         // The queried property must be found by the context type
         if (contextType.findProductCmptProperty(property.getPropertyName(), ipsProject) == null) {
             return false;
@@ -132,7 +132,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             final boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
 
         class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
@@ -321,7 +321,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         if (!validateNameIsEmpty(list)) {
             return;
         }
@@ -342,7 +342,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         if (getProductCmptTypeImpl().findIsCategoryNameUsedTwiceInSupertypeHierarchy(name, ipsProject)) {
             String text = MessageFormat.format(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
@@ -429,7 +429,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
-            throws CoreRuntimeException {
+            {
 
         if (indexes.length == 0) {
             return new int[0];
@@ -443,7 +443,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public boolean insertProductCmptProperty(final IProductCmptProperty property,
             final IProductCmptProperty targetProperty,
-            final boolean above) throws CoreRuntimeException {
+            final boolean above) {
 
         final IProductCmptType contextType = property.findProductCmptType(property.getIpsProject());
         if (contextType == null) {
@@ -455,7 +455,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                     private boolean result = true;
 
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         contextType.changeCategoryAndDeferPolicyChange(property, name);
                         List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
                                 contextType.getIpsProject());
@@ -481,7 +481,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void insertProductCmptProperty(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreRuntimeException {
+            boolean above) {
 
         if (propertyIndex > targetPropertyIndex) {
             moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
@@ -497,7 +497,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyUp(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreRuntimeException {
+            boolean above) {
 
         int targetIndex = above ? targetPropertyIndex : targetPropertyIndex + 1;
         for (int i = propertyIndex; i > targetIndex; i--) {
@@ -512,7 +512,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyDown(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreRuntimeException {
+            boolean above) {
 
         int targetIndex = above ? targetPropertyIndex - 1 : targetPropertyIndex;
         for (int i = propertyIndex; i < targetIndex; i++) {
@@ -594,7 +594,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             try {
                 productCmptType1 = property1.findProductCmptType(productCmptType.getIpsProject());
                 productCmptType2 = property2.findProductCmptType(productCmptType.getIpsProject());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // Consider elements equal if the product component types cannot be found
                 IpsLog.log(e);
                 return 0;
@@ -628,7 +628,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             IProductCmptType contextType = null;
             try {
                 contextType = property1.findProductCmptType(property1.getIpsProject());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 /*
                  * Consider the properties equal if the product component type containing the
                  * references cannot be found.

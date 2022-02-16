@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
 /**
@@ -69,7 +68,7 @@ public class HtmlExportOperation implements ICoreRunnable {
      */
     @SuppressWarnings("deprecation")
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
 
         int monitorScriptFaktor = 9;

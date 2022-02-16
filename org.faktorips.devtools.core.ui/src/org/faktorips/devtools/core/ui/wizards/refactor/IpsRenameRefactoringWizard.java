@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
@@ -131,7 +130,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreRuntimeException {
+        protected void validateUserInputThis(RefactoringStatus status) {
             getIpsRenameProcessor().setNewName(newNameTextField.getText());
 
             if (getIpsRenameProcessor().isPluralNameRefactoringRequired()) {

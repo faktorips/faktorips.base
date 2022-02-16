@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -34,7 +33,7 @@ public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
         policyCmptType = newPolicyCmptType(ipsProject, "Policy1");
     }
 
-    public IIpsProject newPersistentIpsProject() throws CoreRuntimeException {
+    public IIpsProject newPersistentIpsProject() {
         ipsProject = newIpsProject();
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPersistenceSupport(true);

@@ -23,7 +23,6 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -49,7 +48,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     @Override
-    public boolean visit(IResourceDelta delta) throws CoreRuntimeException {
+    public boolean visit(IResourceDelta delta) {
         IResource resource = delta.getResource();
         if (resource.isTeamPrivateMember()) {
             return handlePrivateTeamMember(resource);

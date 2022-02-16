@@ -21,8 +21,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -71,7 +71,7 @@ public class TypeValidations {
      * @param ipsProject The IPS project.
      * @param ipsObject The model object of the type that is to validate.
      * 
-     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
+     * @throws IpsException Any raised exceptions are delegated by this method.
      * @deprecated since 21.6; use {@link #validateUniqueQualifiedName(IIpsObject)} or
      *             {@link #validateUniqueQualifiedName(IpsObjectType, String, IIpsProject)} instead.
      */
@@ -79,7 +79,7 @@ public class TypeValidations {
     public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
             String qualifiedName,
             IIpsProject ipsProject,
-            IIpsObject ipsObject) throws CoreRuntimeException {
+            IIpsObject ipsObject) {
         IIpsSrcFile file = ipsProject.findIpsSrcFile(otherIpsObjectType, qualifiedName);
         if (file != null) {
             if (ipsProject.equals(file.getIpsProject())) {
@@ -109,9 +109,9 @@ public class TypeValidations {
      * 
      * @param ipsObject the model object that is to be validated
      * 
-     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
+     * @throws IpsException Any raised exceptions are delegated by this method.
      */
-    public static MessageList validateUniqueQualifiedName(IIpsObject ipsObject) throws CoreRuntimeException {
+    public static MessageList validateUniqueQualifiedName(IIpsObject ipsObject) {
         requireNonNull(ipsObject, "ipsObject must not be null"); //$NON-NLS-1$
         return validateUniqueQualifiedName(ipsObject, ipsObject.getIpsObjectType(), ipsObject.getQualifiedName(),
                 ipsObject.getIpsProject());
@@ -128,11 +128,11 @@ public class TypeValidations {
      * @param qualifiedName the qualified name of the type that is to be validated
      * @param ipsProject the IPS project
      * 
-     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
+     * @throws IpsException Any raised exceptions are delegated by this method.
      */
     public static MessageList validateUniqueQualifiedName(IpsObjectType ipsObjectType,
             String qualifiedName,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         return validateUniqueQualifiedName(null, ipsObjectType, qualifiedName, ipsProject);
     }
 
@@ -149,12 +149,12 @@ public class TypeValidations {
      * @param qualifiedName the qualified name of the type that is to be validated
      * @param ipsProject the IPS project
      * 
-     * @throws CoreRuntimeException Any raised exceptions are delegated by this method.
+     * @throws IpsException Any raised exceptions are delegated by this method.
      */
     private static MessageList validateUniqueQualifiedName(@CheckForNull IIpsObject ipsObject,
             IpsObjectType ipsObjectType,
             String qualifiedName,
-            IIpsProject ipsProject) throws CoreRuntimeException {
+            IIpsProject ipsProject) {
         requireNonNull(ipsObjectType, "ipsObjectType must not be null"); //$NON-NLS-1$
         requireNonNull(qualifiedName, "qualifiedName must not be null"); //$NON-NLS-1$
         requireNonNull(ipsProject, "ipsProject must not be null"); //$NON-NLS-1$

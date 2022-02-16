@@ -33,7 +33,6 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -144,7 +143,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar()
-            throws CoreRuntimeException {
+            {
 
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
         verify(testProcessorSpy).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
@@ -153,7 +152,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar()
-            throws CoreRuntimeException {
+            {
 
         testProcessorSpy.invalid = true;
 
@@ -164,7 +163,7 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldAlwaysBeApplicable() throws CoreRuntimeException {
+    public void shouldAlwaysBeApplicable() {
         assertTrue(testProcessorSpy.isApplicable());
     }
 
@@ -180,13 +179,13 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        protected void validateIpsModel(MessageList validationMessageList) throws CoreRuntimeException {
+        protected void validateIpsModel(MessageList validationMessageList) {
 
         }
 
         @Override
         protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm)
-                throws CoreRuntimeException {
+                {
             if (invalid) {
                 status.addFatalError("foo");
             }
@@ -200,7 +199,7 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
             addAffectedSrcFiles(modificationSet);
             return modificationSet;
@@ -218,7 +217,7 @@ public class IpsRefactoringProcessorTest {
 
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-                SharableParticipants sharedParticipants) throws CoreRuntimeException {
+                SharableParticipants sharedParticipants) {
 
             return null;
         }

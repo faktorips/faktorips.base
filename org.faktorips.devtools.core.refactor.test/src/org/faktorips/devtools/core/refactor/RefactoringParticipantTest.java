@@ -24,7 +24,6 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -52,7 +51,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         configureBuilderSetToGenerateJaxbSupport();
     }
 
-    private void configureBuilderSetToGenerateJaxbSupport() throws CoreRuntimeException {
+    private void configureBuilderSetToGenerateJaxbSupport() {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
         configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
@@ -161,7 +160,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected IEnumType createEnumType(String name,
             IEnumType superEnumType,
             String idAttributeName,
-            String nameAttributeName) throws CoreRuntimeException {
+            String nameAttributeName) {
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
@@ -192,7 +191,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String literalNameDefaultValueProviderAttribute,
             String idAttributeValue,
             String nameAttributeValue,
-            String literalNameAttributeValue) throws CoreRuntimeException {
+            String literalNameAttributeValue) {
 
         IEnumType enumType = createEnumType(name, superEnumType, idAttributeName, nameAttributeName);
 
@@ -207,17 +206,17 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         return enumType;
     }
 
-    protected ITableStructure createTableStructure(String name) throws CoreRuntimeException {
+    protected ITableStructure createTableStructure(String name) {
         ITableStructure tableStructure = newTableStructure(ipsProject, name);
         tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
         return tableStructure;
     }
 
-    protected ITestCaseType createTestCaseType(String name) throws CoreRuntimeException {
+    protected ITestCaseType createTestCaseType(String name) {
         return newTestCaseType(ipsProject, name);
     }
 
-    protected void saveIpsSrcFile(IIpsObject ipsObject) throws CoreRuntimeException {
+    protected void saveIpsSrcFile(IIpsObject ipsObject) {
         ipsObject.getIpsSrcFile().save(true, null);
     }
 

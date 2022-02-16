@@ -24,7 +24,6 @@ import static org.mockito.Mockito.withSettings;
 
 import java.util.Set;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -293,7 +292,7 @@ public class XPolicyAssociationTest {
     }
 
     @Test
-    public void testIsGenerateGetterTrue() throws CoreRuntimeException {
+    public void testIsGenerateGetterTrue() {
         IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
 
         doReturn(false).when(assoc).isDerived();

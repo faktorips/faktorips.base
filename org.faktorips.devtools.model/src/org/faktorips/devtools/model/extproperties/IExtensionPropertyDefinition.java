@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.extproperties;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Element;
@@ -159,9 +159,9 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @return A list of messages describing invalid property state or warnings about the state.
      *         <code>null</code> if the value is valid.
      * 
-     * @throws CoreRuntimeException if an error occurs while validating the property.
+     * @throws IpsException if an error occurs while validating the property.
      */
-    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws CoreRuntimeException;
+    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws IpsException;
 
     /**
      * Returns the position of the label and editing field of the extension property in the display

@@ -23,7 +23,6 @@ import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.DatatypeUtil;
@@ -132,7 +131,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         validateName(list, ipsProject);
@@ -372,7 +371,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public ValueDatatype findDatatype(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ValueDatatype findDatatype(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {
@@ -386,7 +385,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) {
         ValueDatatype foundDatatype = findDatatype(ipsProject);
         if (DatatypeUtil.isExtensibleEnumType(foundDatatype)) {
             EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)foundDatatype;
@@ -407,7 +406,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) {
         Set<IEnumType> subclassingEnumTypes = getEnumType().searchSubclassingEnumTypes();
         List<IEnumAttribute> inheritedAttributeCopies = new ArrayList<>(subclassingEnumTypes.size());
         for (IEnumType subclassingEnumType : subclassingEnumTypes) {
@@ -432,7 +431,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     @Override
-    public boolean findIsUnique(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean findIsUnique(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         if (inherited) {

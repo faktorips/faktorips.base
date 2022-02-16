@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -101,7 +100,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
         IIpsProjectProperties props = ipsProject.getProperties();
         path = (IpsObjectPath)props.getIpsObjectPath();
         IIpsProject refProject = this.newIpsProject("TestProject2");

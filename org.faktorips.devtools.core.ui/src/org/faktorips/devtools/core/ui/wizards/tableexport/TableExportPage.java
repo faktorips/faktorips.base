@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -86,7 +85,7 @@ public class TableExportPage extends IpsObjectExportPage {
      * 
      * @return The currently selected {@link ITableContents}
      */
-    public ITableContents getTableContents() throws CoreRuntimeException {
+    public ITableContents getTableContents() {
         if (exportedIpsObjectControl instanceof TableContentsRefControl) {
             return ((TableContentsRefControl)exportedIpsObjectControl).findTableContents();
         }

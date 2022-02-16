@@ -28,7 +28,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
 import org.junit.Before;
@@ -81,7 +80,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_shouldReturn0IfBothEnumValuesAreNull() throws CoreRuntimeException {
+    public void testCompare_shouldReturn0IfBothEnumValuesAreNull() {
         setUpEnumValue("A", null);
         setUpEnumValue("B", null);
 
@@ -89,7 +88,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_shouldReturnLessThan0IfFirstStringValueIsNullAndSecondNotNull() throws CoreRuntimeException {
+    public void testCompare_shouldReturnLessThan0IfFirstStringValueIsNullAndSecondNotNull() {
         IEnumValue valueB = Mockito.mock(IEnumValue.class);
         setUpEnumValue("B", valueB);
 
@@ -97,7 +96,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_shouldReturnLessThan0IfFirstEnumValueIsNullAndSecondNotNull() throws CoreRuntimeException {
+    public void testCompare_shouldReturnLessThan0IfFirstEnumValueIsNullAndSecondNotNull() {
         setUpEnumValue("unresolvedA", null);
         IEnumValue valueB = Mockito.mock(IEnumValue.class);
         setUpEnumValue("B", valueB);
@@ -106,7 +105,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_shouldReturnGreaterThan0IfFirstStringValueIsNotNullAndSecondIsNull() throws CoreRuntimeException {
+    public void testCompare_shouldReturnGreaterThan0IfFirstStringValueIsNotNullAndSecondIsNull() {
         IEnumValue valueA = Mockito.mock(IEnumValue.class);
         setUpEnumValue("A", valueA);
 
@@ -114,7 +113,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_shouldReturnGreaterThan0IfFirstEnumValueIsNotNullSndSecondIsNull() throws CoreRuntimeException {
+    public void testCompare_shouldReturnGreaterThan0IfFirstEnumValueIsNotNullSndSecondIsNull() {
 
         IEnumValue valueA = Mockito.mock(IEnumValue.class);
         setUpEnumValue("A", valueA);
@@ -123,7 +122,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_firstValueInEnumIsGreaterThenSecondValueInEnum() throws CoreRuntimeException {
+    public void testCompare_firstValueInEnumIsGreaterThenSecondValueInEnum() {
         IEnumValue valueA = Mockito.mock(IEnumValue.class);
         setUpEnumValueWithIndex("A", valueA, 1);
 
@@ -136,7 +135,7 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void testCompare_sortList() throws CoreRuntimeException {
+    public void testCompare_sortList() {
         IEnumValue valueA = Mockito.mock(IEnumValue.class);
         IEnumValue valueB = Mockito.mock(IEnumValue.class);
         IEnumValue valueC = Mockito.mock(IEnumValue.class);
@@ -159,14 +158,14 @@ public class EnumTypeDatatypeAdapterTest {
         assertNull(list.get(3));
     }
 
-    public void initEnumContentAndType() throws CoreRuntimeException {
+    public void initEnumContentAndType() {
         when(enumContent.getIpsProject()).thenReturn(ipsProject);
         when(enumType.getIpsProject()).thenReturn(ipsProject);
         when(enumContent.findEnumValue("testValue", ipsProject)).thenReturn(enumValue);
     }
 
     @Test
-    public void test_getValueName_NULL() throws CoreRuntimeException {
+    public void test_getValueName_NULL() {
         assertTrue(adapter.getValueName(null) == null);
 
         initEnumContentAndType();
@@ -177,13 +176,13 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     @Test
-    public void test_getValue() throws CoreRuntimeException {
+    public void test_getValue() {
         initEnumContentAndType();
         assertEquals(enumValue, adapterWithContent.getValue("testValue"));
     }
 
     @Test
-    public void test_getValue_Null() throws CoreRuntimeException {
+    public void test_getValue_Null() {
         initEnumContentAndType();
         when(enumContent.findEnumValue("testValue", ipsProject)).thenReturn(null);
         assertEquals(null, adapterWithContent.getValue("testValue"));
@@ -232,11 +231,11 @@ public class EnumTypeDatatypeAdapterTest {
         }
     }
 
-    private void setUpEnumValue(String enumName, IEnumValue value) throws CoreRuntimeException {
+    private void setUpEnumValue(String enumName, IEnumValue value) {
         Mockito.when(enumType.findEnumValue(enumName, null)).thenReturn(value);
     }
 
-    private void setUpEnumValueWithIndex(String enumName, IEnumValue value, int index) throws CoreRuntimeException {
+    private void setUpEnumValueWithIndex(String enumName, IEnumValue value, int index) {
         setUpEnumValue(enumName, value);
         Mockito.when(enumType.getIndexOfEnumValue(value)).thenReturn(index);
     }

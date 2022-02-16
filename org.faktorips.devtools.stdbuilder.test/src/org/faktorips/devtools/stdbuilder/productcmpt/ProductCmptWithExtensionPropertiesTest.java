@@ -22,7 +22,7 @@ import java.util.Map;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -44,7 +44,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testExtensionXml() throws CoreRuntimeException, IOException, SAXException {
+    public void testExtensionXml() throws IpsException, IOException, SAXException {
         try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
             TestExtensionPropertyDefinition extensionPropertyDefinition = new TestExtensionPropertyDefinition();
             extensionPropertyDefinition.setName("TestExtension");

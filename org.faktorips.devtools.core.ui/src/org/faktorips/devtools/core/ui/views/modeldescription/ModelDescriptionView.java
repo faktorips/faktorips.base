@@ -20,8 +20,8 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * This class contributes a simple viewer for object classes implementing IModelDescriptionSupport
@@ -69,7 +69,7 @@ public class ModelDescriptionView extends PageBookView {
      * @param e Exception
      * @return new page with exception message.
      */
-    private IPage createExceptionPage(CoreRuntimeException e) {
+    private IPage createExceptionPage(IpsException e) {
         MessagePage page = new MessagePage();
         page.setMessage(e.getLocalizedMessage());
         return page;
@@ -86,7 +86,7 @@ public class ModelDescriptionView extends PageBookView {
                     return null;
                 }
 
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 page = createExceptionPage(e);
             }

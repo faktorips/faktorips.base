@@ -58,9 +58,9 @@ import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.builder.IpsBuilder.EclipseIpsBuilder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -129,23 +129,23 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         boolean called = false;
         ABuildKind buildKind = null;
 
-        public AssertThatFullBuildIsTriggeredBuilder() throws CoreRuntimeException {
+        public AssertThatFullBuildIsTriggeredBuilder() {
             super(new TestIpsArtefactBuilderSet());
         }
 
         @Override
-        public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+        public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
             called = true;
             this.buildKind = buildKind;
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void build(IIpsSrcFile ipsSrcFile) {
 
         }
 
         @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void delete(IIpsSrcFile ipsSrcFile) {
 
         }
 
@@ -155,7 +155,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
             return false;
         }
 
@@ -168,7 +168,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private static class TestRemoveIpsArtefactBuilder extends AbstractArtefactBuilder {
 
-        public TestRemoveIpsArtefactBuilder() throws CoreRuntimeException {
+        public TestRemoveIpsArtefactBuilder() {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -182,7 +182,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void build(IIpsSrcFile ipsSrcFile) {
             buildCalled = true;
         }
 
@@ -192,7 +192,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void delete(IIpsSrcFile ipsSrcFile) {
             deleteCalled = true;
         }
 
@@ -209,17 +209,17 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         private IIpsProject ipsProjectOfBeforeBuildProcess;
         private IIpsProject ipsProjectOfAfterBuildProcess;
 
-        public TestDependencyIpsArtefactBuilder() throws CoreRuntimeException {
+        public TestDependencyIpsArtefactBuilder() {
             super(new TestIpsArtefactBuilderSet());
         }
 
         @Override
-        public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+        public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
             ipsProjectOfBeforeBuildProcess = project;
         }
 
         @Override
-        public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) throws CoreRuntimeException {
+        public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) {
             ipsProjectOfAfterBuildProcess = project;
         }
 
@@ -234,19 +234,19 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void build(IIpsSrcFile ipsSrcFile) {
             builtIpsObjects.add(ipsSrcFile.getIpsObject());
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
             return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
                     || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
                     || ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT);
         }
 
         @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+        public void delete(IIpsSrcFile ipsSrcFile) {
         }
 
         @Override
@@ -490,7 +490,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDependencyGraph() throws CoreRuntimeException {
+    public void testDependencyGraph() {
         IProductCmptType a = newProductCmptType(root, "A");
         IProductCmptType b = newProductCmptType(root, "B");
         b.setSupertype(a.getQualifiedName());
@@ -544,7 +544,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() throws CoreRuntimeException {
+    public void testIsFullBuildTriggeredAfterChangesToIpsArchiveOnObjectPath() {
         AFile archiveFile = ipsProject.getProject().getFile("archive.ipsar");
         Path archivePath = archiveFile.getLocation();
         IIpsProject project2 = newIpsProject("Project2");
@@ -572,7 +572,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() throws CoreRuntimeException {
+    public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() {
         ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
         AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
         // this changes the properties file!
@@ -585,7 +585,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testMarkerForNotParsableIpsSrcFiles() throws CoreRuntimeException, UnsupportedEncodingException {
+    public void testMarkerForNotParsableIpsSrcFiles() throws IpsException, UnsupportedEncodingException {
         AFile file = ((AContainer)root.getCorrespondingResource())
                 .getFile(java.nio.file.Path.of("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
         String xml = "invalid xml";
@@ -604,7 +604,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveResource() throws CoreRuntimeException {
+    public void testRemoveResource() {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -624,7 +624,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testBuildOnlyFilesInIpsSrcFolder() throws CoreRuntimeException {
+    public void testBuildOnlyFilesInIpsSrcFolder() {
         TestRemoveIpsArtefactBuilder builder = new TestRemoveIpsArtefactBuilder();
 
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -886,7 +886,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     private TestDependencyIpsArtefactBuilder createTestBuilderForProject(IIpsProject project,
-            boolean isAggregateRootBuilderSet) throws CoreRuntimeException {
+            boolean isAggregateRootBuilderSet) {
 
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
@@ -902,7 +902,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCleanBuild() throws CoreRuntimeException {
+    public void testCleanBuild() {
         newPolicyCmptType(ipsProject, "mycompany.motor.MotorPolicy");
         AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         archiveFile.getWorkspace().build(ABuildKind.FULL_BUILD, null);
@@ -932,14 +932,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testArtefactBuilderSetIfIpsProjectIsSet() throws CoreRuntimeException {
+    public void testArtefactBuilderSetIfIpsProjectIsSet() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IIpsArtefactBuilderSet builderSet = ((IpsModel)ipsProject.getIpsModel()).getIpsArtefactBuilderSet(ipsProject,
                 false);
         assertEquals(ipsProject, builderSet.getIpsProject());
     }
 
-    private void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) throws CoreRuntimeException {
+    private void setTestArtefactBuilder(IIpsProject project, IIpsArtefactBuilder builder) {
         IIpsProjectProperties props = project.getProperties();
         props.setBuilderSetId(TestIpsArtefactBuilderSet.ID);
         project.setProperties(props);
@@ -1039,7 +1039,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateMarkersForIpsProjectProperties() throws CoreRuntimeException {
+    public void testCreateMarkersForIpsProjectProperties() {
         IpsBuilder ipsBuilder = new EclipseIpsBuilder().getIpsBuilder();
 
         MessageList list = new MessageList();
@@ -1065,7 +1065,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateMarkersForIpsProjectPropertiesUsingManifest() throws CoreRuntimeException {
+    public void testCreateMarkersForIpsProjectPropertiesUsingManifest() {
         IpsBuilder ipsBuilder = new EclipseIpsBuilder().getIpsBuilder();
 
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
@@ -1120,7 +1120,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateMarkersForIpsProjectPropertiesUsingManifestWhichDoesNotExist() throws CoreRuntimeException {
+    public void testCreateMarkersForIpsProjectPropertiesUsingManifestWhichDoesNotExist() {
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         ipsObjectPath.setUsingManifest(true);
         ipsProject.setIpsObjectPath(ipsObjectPath);

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -26,7 +25,7 @@ import org.junit.Test;
 public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
 
     @Test
-    public void testFinalCheckConditionsInvalidModel() throws CoreRuntimeException {
+    public void testFinalCheckConditionsInvalidModel() {
         policyCmptTypeAttribute.setDatatype(null);
 
         RefactoringStatus status = performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
@@ -35,14 +34,14 @@ public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactor
     }
 
     @Test
-    public void testPullUpPolicyCmptTypeAttribute() throws CoreRuntimeException {
+    public void testPullUpPolicyCmptTypeAttribute() {
         performPullUpRefactoring(policyCmptTypeAttribute, superPolicyCmptType);
 
         checkExpectationsForPullUpAttribute(policyCmptTypeAttribute, policyCmptType, superPolicyCmptType);
     }
 
     @Test
-    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() throws CoreRuntimeException {
+    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() {
         IPolicyCmptType superSuperPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "SuperSuperPolicy");
         IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
@@ -61,14 +60,14 @@ public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactor
     }
 
     @Test
-    public void testPullUpProductCmptTypeAttribute() throws CoreRuntimeException {
+    public void testPullUpProductCmptTypeAttribute() {
         performPullUpRefactoring(productCmptTypeAttribute, superProductCmptType);
 
         checkExpectationsForPullUpAttribute(productCmptTypeAttribute, productCmptType, superProductCmptType);
     }
 
     @Test
-    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() throws CoreRuntimeException {
+    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() {
         IPolicyCmptType superSuperPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "SuperSuperPolicy");
         IProductCmptType superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");

@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.PageBookView;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * Mark a class for providing input to {@link ModelDescriptionView}.
@@ -29,5 +29,5 @@ public interface IModelDescriptionSupport {
      * 
      * @return IPage new Page.
      */
-    public IPage createModelDescriptionPage() throws CoreRuntimeException;
+    public IPage createModelDescriptionPage() throws IpsException;
 }

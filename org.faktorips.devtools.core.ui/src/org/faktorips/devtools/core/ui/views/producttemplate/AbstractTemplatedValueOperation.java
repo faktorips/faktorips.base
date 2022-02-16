@@ -15,8 +15,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
@@ -41,7 +41,7 @@ public abstract class AbstractTemplatedValueOperation implements ICoreRunnable {
         for (IIpsSrcFile ipsSrcFile : filesToSave) {
             try {
                 ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }

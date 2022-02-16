@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -69,7 +68,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidate() throws CoreRuntimeException {
+    public void testValidate() {
         MessageList ml = null;
 
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
@@ -127,7 +126,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateTargetSideNotTransient() throws CoreRuntimeException {
+    public void testValidateTargetSideNotTransient() {
         MessageList ml = null;
 
         setupMasterToDetailComposition();
@@ -174,7 +173,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateCascadeType_Merge() throws CoreRuntimeException {
+    public void testValidateCascadeType_Merge() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
@@ -187,7 +186,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateCascadeType_Persist() throws CoreRuntimeException {
+    public void testValidateCascadeType_Persist() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
@@ -200,7 +199,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateCascadeType_Refresh() throws CoreRuntimeException {
+    public void testValidateCascadeType_Refresh() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
@@ -213,7 +212,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateCascadeType_Remove() throws CoreRuntimeException {
+    public void testValidateCascadeType_Remove() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
@@ -226,7 +225,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateCascadeType_All() throws CoreRuntimeException {
+    public void testValidateCascadeType_All() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
@@ -246,7 +245,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testJoinTableRequiredAssociation() throws CoreRuntimeException {
+    public void testJoinTableRequiredAssociation() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
 
         // 1:1 Association, join table not required
@@ -266,7 +265,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testJoinTableRequiredMaster2Detail() throws CoreRuntimeException {
+    public void testJoinTableRequiredMaster2Detail() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
 
         // 1:n Composition master to detail, join table not required
@@ -293,7 +292,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testJoinTableRequiredDetail2Master() throws CoreRuntimeException {
+    public void testJoinTableRequiredDetail2Master() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
 
         // n:1 Association, join table not required
@@ -359,7 +358,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testToXml() throws CoreRuntimeException {
+    public void testToXml() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         persistenceAssociatonInfo.setTransient(true);
         persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
@@ -478,7 +477,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testInitDefaultCascadeTypes() throws CoreRuntimeException {
+    public void testInitDefaultCascadeTypes() {
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -520,7 +519,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testInitDefaults() throws CoreRuntimeException {
+    public void testInitDefaults() {
         pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         pcAssociation.setMaxCardinality(2);
         targetPcAssociation.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -550,7 +549,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateLazyFetchForSingleValuedAssociationsAllowed() throws CoreRuntimeException {
+    public void testValidateLazyFetchForSingleValuedAssociationsAllowed() {
         MessageList msgList = null;
 
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -603,7 +602,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testEvalRelationShipType() throws CoreRuntimeException {
+    public void testEvalRelationShipType() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo inversePersistenceAssociatonInfo = targetPcAssociation
                 .getPersistenceAssociatonInfo();
@@ -654,7 +653,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testColumnNamesUniqueForeignKeyColumnCreatedOnTargetSide() throws CoreRuntimeException {
+    public void testColumnNamesUniqueForeignKeyColumnCreatedOnTargetSide() {
         pcAssociation.delete();
 
         IPolicyCmptTypeAssociation pcAssociation2 = policyCmptType.newPolicyCmptTypeAssociation();
@@ -680,7 +679,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testColumnNamesUnique() throws CoreRuntimeException {
+    public void testColumnNamesUnique() {
         IPolicyCmptTypeAssociation pcAssociation2 = policyCmptType.newPolicyCmptTypeAssociation();
         IPersistentAssociationInfo persistenceAssociatonInfo1 = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo persistenceAssociatonInfo2 = pcAssociation2.getPersistenceAssociatonInfo();
@@ -701,7 +700,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateMaxColumnAndTableNameLength() throws CoreRuntimeException {
+    public void testValidateMaxColumnAndTableNameLength() {
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo inversePersistenceAssociatonInfo = targetPcAssociation
                 .getPersistenceAssociatonInfo();
@@ -764,7 +763,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testValidateDerivedUnionJoinColumnNotNecessary() throws CoreRuntimeException {
+    public void testValidateDerivedUnionJoinColumnNotNecessary() {
         // join column is only necessary for none derived union associations
         MessageList ml = null;
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "super");

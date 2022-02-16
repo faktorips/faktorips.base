@@ -24,13 +24,13 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.messages.MessagesManager;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.IpsObjectTypeComparator;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -141,7 +141,7 @@ public class DocumentationContext {
         if (documentedSrcFiles == null) {
             try {
                 documentedSrcFiles = new LinkedHashSet<>(ipsProject.findAllIpsSrcFiles(getDocumentedIpsObjectTypes()));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 addStatus(new IpsStatus(
                         IStatus.ERROR,
                         "Error finding IpsSrcFiles of types " + StringUtils.join(getDocumentedIpsObjectTypes(), ';'), //$NON-NLS-1$
@@ -166,7 +166,7 @@ public class DocumentationContext {
             result.retainAll(getDocumentedSourceFiles());
 
             return result;
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             addStatus(new IpsStatus(IStatus.ERROR,
                     "Error finding IpsSrcFiles of types " + StringUtils.join(ipsObjectTypes, ';'), e.getCause())); //$NON-NLS-1$
             return new ArrayList<>();

@@ -16,7 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -86,7 +85,7 @@ public class AssociationCollector extends AbstractProductCmptCollector {
 
     private void addLinkedProductCmpts(IProductCmpt productCmpt,
             IAssociation matchingAssociation,
-            Set<IProductCmpt> newContextCmpts) throws CoreRuntimeException {
+            Set<IProductCmpt> newContextCmpts) {
         List<IProductCmptLink> links = getLinks(productCmpt, matchingAssociation.getName());
         for (IProductCmptLink cmptLink : links) {
             newContextCmpts.add(cmptLink.findTarget(getIpsProject()));

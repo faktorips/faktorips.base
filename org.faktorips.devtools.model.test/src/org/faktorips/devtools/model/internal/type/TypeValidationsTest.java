@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -116,7 +116,7 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUniqueQualifiedName_DependantProject() throws CoreRuntimeException {
+    public void testValidateUniqueQualifiedName_DependantProject() {
         IIpsProject dependantIpsProject = newIpsProject("p2");
         IIpsObjectPath ipsObjectPath = dependantIpsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject);
@@ -152,7 +152,7 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
                 try {
                     return hasMessages(matchers).matches(TypeValidations.validateUniqueQualifiedName(ipsObject)
                             .getMessagesByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     return false;
                 }
             }

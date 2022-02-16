@@ -10,7 +10,6 @@
 
 package org.faktorips.abstracttest;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
@@ -61,7 +60,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreRuntimeException {
+            {
         return new AbstractIpsProjectMigrationOperation[0];
     }
 

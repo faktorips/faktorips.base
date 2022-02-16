@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpttype;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -54,9 +54,9 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
     /**
      * Returns the referenced {@link IProductCmptProperty} or null if it cannot be found.
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the part id of the referenced {@link IProductCmptProperty}.

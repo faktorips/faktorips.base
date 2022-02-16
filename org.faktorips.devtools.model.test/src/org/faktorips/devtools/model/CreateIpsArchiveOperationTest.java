@@ -24,7 +24,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchive;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -43,7 +43,7 @@ import org.junit.Test;
 public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testRun() throws CoreRuntimeException {
+    public void testRun() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorCoverage", "mycompany.motor.MotorCoverageType");
@@ -75,7 +75,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithIconFile() throws CoreRuntimeException {
+    public void testRunWithIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -121,7 +121,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
      * The same icon is used in two product component types
      */
     @Test
-    public void testRun_withDoubledIconFile() throws CoreRuntimeException {
+    public void testRun_withDoubledIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy2", "mycompany.motor.MotorProduct2");
@@ -156,7 +156,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithErroneousIconFile() throws CoreRuntimeException {
+    public void testRunWithErroneousIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -201,7 +201,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         InputStream inputStream = null;
         try {
             inputStream = archive.getResourceAsStream("test.gif");
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             return true;
         } finally {
             IoUtil.close(inputStream);

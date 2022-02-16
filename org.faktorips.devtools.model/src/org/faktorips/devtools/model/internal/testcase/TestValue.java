@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -96,12 +95,12 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestParameter findTestParameter(IIpsProject ipsProject) {
         return findTestValueParameter(ipsProject);
     }
 
     @Override
-    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(testValueParameter)) {
             return null;
         }
@@ -130,7 +129,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    public void setDefaultValue() throws CoreRuntimeException {
+    public void setDefaultValue() {
         ITestValueParameter parameter = findTestValueParameter(getIpsProject());
         if (parameter == null) {
             return;
@@ -148,7 +147,7 @@ public class TestValue extends TestObject implements ITestValue {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ITestValueParameter param = findTestValueParameter(ipsProject);
         if (param == null) {

@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.type.TypeHierarchy;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -56,7 +55,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasChildren() throws CoreRuntimeException {
+    public void testHasChildren() {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
         assertTrue(a.hasChildren(supersupertype));
@@ -65,7 +64,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetParent() throws CoreRuntimeException {
+    public void testGetParent() {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
         IType c = (IType)a.getParent(supertype);
@@ -75,7 +74,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
         Object[] b = a.getChildren(supersupertype);
@@ -85,7 +84,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements() throws CoreRuntimeException {
+    public void testGetElements() {
         HierarchyContentProvider a = new HierarchyContentProvider();
         a.inputChanged(null, null, TypeHierarchy.getTypeHierarchy(supertype));
         Object[] b = a.getElements(pcType);

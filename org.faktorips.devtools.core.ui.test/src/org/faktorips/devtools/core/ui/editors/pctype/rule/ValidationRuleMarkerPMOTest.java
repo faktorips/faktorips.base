@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPM
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -68,7 +67,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
         markerPMO = ValidationRuleMarkerPMO.createFor(ipsProject, rule);
     }
 
-    private void initMarkerEnumInProjectSettings() throws CoreRuntimeException {
+    private void initMarkerEnumInProjectSettings() {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.addMarkerEnum("qualified.markerEnum");
         ipsProject.setProperties(properties);
@@ -83,7 +82,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetItems_defaultValues() throws CoreRuntimeException {
+    public void testGetItems_defaultValues() {
         initMarkerEnumInProjectSettings();
         initMarkerPMO();
 
@@ -100,7 +99,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetItems() throws CoreRuntimeException {
+    public void testGetItems() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("id1"));
         initMarkerPMO();
@@ -113,7 +112,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateActiveMarkers() throws CoreRuntimeException {
+    public void testUpdateActiveMarkers() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("id1"));
         initMarkerPMO();
@@ -128,7 +127,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIllegalID() throws CoreRuntimeException {
+    public void testIllegalID() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("illegalID"));
         initMarkerPMO();

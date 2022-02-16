@@ -24,7 +24,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
@@ -226,7 +225,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueStringEmpty() throws CoreRuntimeException {
+    public void testValidateDefaultValueStringEmpty() {
         MessageList list = new MessageList();
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
@@ -237,7 +236,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverwrittenAttribute_nullIcompatible() throws CoreRuntimeException {
+    public void testOverwrittenAttribute_nullIcompatible() {
         String superTypeQName = "SuperPCType";
         PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
         PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");

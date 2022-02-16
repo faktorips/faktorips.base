@@ -45,11 +45,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
-import org.faktorips.devtools.model.IClassLoaderProvider;
-import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -59,13 +54,18 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IClassLoaderProvider;
+import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -236,7 +236,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         try {
             contents = XmlUtil.nodeToString(doc, charset);
         } catch (TransformerException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is = null;
         try {
@@ -247,7 +247,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 file.create(is, null);
             }
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
         } finally {
             IoUtil.close(is);
         }
@@ -307,13 +307,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) throws CoreRuntimeException {
+    public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) {
         return isJavaProjectErrorFree(getJavaProject(), checkReferencedJavaProjects);
     }
 
     @CheckForNull
     private Boolean isJavaProjectErrorFree(AJavaProject javaProject, boolean checkReferencedJavaProjects)
-            throws CoreRuntimeException {
+            {
         AProject tmpProject = javaProject.getProject();
         if (!tmpProject.isAccessible()) {
             return null;
@@ -444,7 +444,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public boolean canBeBuild() {
         try {
             return !validate().containsErrorMsg();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return false;
         }
@@ -521,7 +521,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (!getNamingConventions().validateIpsPackageRootName(name).containsErrorMsg()) {
                 return new IpsPackageFragmentRoot(this, name);
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // nothing to do,
             return null;
         }
@@ -569,7 +569,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public AResource[] getNonIpsResources() throws CoreRuntimeException {
+    public AResource[] getNonIpsResources() {
         AContainer cont = (AContainer)getCorrespondingResource();
         if (!cont.isAccessible()) {
             return new AResource[0];
@@ -724,7 +724,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreRuntimeException {
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) {
         if (runtimeId == null) {
             return null;
         }
@@ -1201,7 +1201,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreRuntimeException {
+    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TEST_CASE);
         if (testCaseType == null) {
             return ipsSrcFiles;
@@ -1218,7 +1218,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
-            throws CoreRuntimeException {
+            {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
         if (enumType == null) {
             return ipsSrcFiles;
@@ -1293,7 +1293,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList validate() throws CoreRuntimeException {
+    public MessageList validate() {
         MessageList result = getJavaProject().validateJavaProjectBuildPath();
         if (!getIpsProjectPropertiesFile().exists()) {
             String text = Messages.IpsProject_msgMissingDotIpsprojectFile;
@@ -1478,7 +1478,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws CoreRuntimeException {
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) {
         MessageList result = new MessageList();
         for (IIpsSrcFile cmptToCheck : cmptsToCheck) {
             if (!cmptToCheck.exists()) {
@@ -1559,7 +1559,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
             root.delete();
         }
@@ -1639,7 +1639,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         @Override
-        public void configure() throws CoreRuntimeException {
+        public void configure() {
             try {
                 IProjectDescription description = getProject().getDescription();
                 ICommand command = getIpsBuildCommand();
@@ -1650,7 +1650,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     addCommandAtFirstPosition(description, newBuildCommand);
                 }
             } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                throw new IpsException(e);
             }
         }
 
@@ -1662,7 +1662,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         /**
          * Finds the specific command for product definition builder.
          */
-        private ICommand getIpsBuildCommand() throws CoreRuntimeException {
+        private ICommand getIpsBuildCommand() {
             try {
                 ICommand[] commands = getProject().getDescription().getBuildSpec();
                 for (ICommand command : commands) {
@@ -1673,7 +1673,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
                 return null;
             } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                throw new IpsException(e);
             }
         }
 
@@ -1690,7 +1690,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             try {
                 getProject().setDescription(description, null);
             } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                throw new IpsException(e);
             }
         }
     }

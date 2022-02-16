@@ -15,7 +15,7 @@ import java.util.List;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
@@ -79,14 +79,14 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * attribute does not exist, this method returns the type of the current configuration element's
      * value set.
      * 
-     * @throws CoreRuntimeException if an error occurs.
+     * @throws IpsException if an error occurs.
      * 
      * @see IIpsProject#getValueSetTypes(ValueDatatype)
      * @see IPolicyCmptTypeAttribute#getValueSet()
      * @see IValueSet#isUnrestricted()
      */
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreRuntimeException;
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the type of the value set defining the values valid for this configuration element. If

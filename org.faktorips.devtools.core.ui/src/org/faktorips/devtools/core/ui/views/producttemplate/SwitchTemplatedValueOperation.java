@@ -18,7 +18,6 @@ import java.util.function.Function;
 import com.google.common.collect.Iterables;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
@@ -52,7 +51,7 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
 
     @SuppressWarnings("deprecation")
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         int count = getInheritingPropertyValues().size() + getDefiningPropertyValues().size() + 1;
         monitor.beginTask(Messages.SwitchTemplatePropertyValueOperation_progress, count + 10);
         for (ITemplatedValue inheritingPropertyValue : getInheritingPropertyValues()) {

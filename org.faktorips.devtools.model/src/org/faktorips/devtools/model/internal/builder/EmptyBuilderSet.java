@@ -18,7 +18,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.AbstractIdentifierResolver;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
@@ -63,12 +62,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreRuntimeException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) {
         return new EmptyParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
-    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws CoreRuntimeException {
+    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
         return null;
     }
 
@@ -99,7 +98,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
         return new LinkedHashMap<>();
     }
 

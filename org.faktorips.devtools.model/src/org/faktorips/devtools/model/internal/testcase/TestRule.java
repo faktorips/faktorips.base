@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -101,12 +100,12 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestParameter findTestParameter(IIpsProject ipsProject) {
         return findTestRuleParameter(ipsProject);
     }
 
     @Override
-    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreRuntimeException {
+    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(testRuleParameter)) {
             return null;
         }
@@ -135,7 +134,7 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IValidationRule findValidationRule(IIpsProject ipsProject) {
         ITestCase testCase = (ITestCase)getParent();
         return testCase.findValidationRule(validationRule, ipsProject);
     }
@@ -153,7 +152,7 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check if the validation rule is inside the test case type structure (one rule of the test

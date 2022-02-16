@@ -18,7 +18,7 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * A Java refactoring that encapsulates a JDT Java refactoring.
@@ -34,16 +34,16 @@ public final class JdtRefactoring extends JavaRefactoring {
     }
 
     @Override
-    public RefactoringStatus checkAllConditions(IProgressMonitor pm) throws CoreRuntimeException {
+    public RefactoringStatus checkAllConditions(IProgressMonitor pm) {
         try {
             return jdtRefactoring.checkAllConditions(pm);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 
     @Override
-    public void perform(final IProgressMonitor pm) throws CoreRuntimeException {
+    public void perform(final IProgressMonitor pm) {
         ICoreRunnable operation = new PerformRefactoringOperation(jdtRefactoring,
                 CheckConditionsOperation.FINAL_CONDITIONS);
         Abstractions.getWorkspace().run(operation, pm);

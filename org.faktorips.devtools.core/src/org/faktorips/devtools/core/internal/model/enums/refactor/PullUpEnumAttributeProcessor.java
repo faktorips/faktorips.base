@@ -17,13 +17,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsPullUpProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -62,7 +62,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreRuntimeException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
         try {
             addAffectedSrcFiles(modificationSet);
@@ -71,14 +71,14 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
             modificationSet.setTargetElement(newEnumAttr);
             markeOriginalEnumAttributeInherited();
             inheritEnumAttributeInSubclassesOfTarget();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             modificationSet.undo();
             throw e;
         }
         return modificationSet;
     }
 
-    private IEnumAttribute pullUpEnumAttribute() throws CoreRuntimeException {
+    private IEnumAttribute pullUpEnumAttribute() {
         IEnumAttribute newEnumAttribute = getTargetEnumType().newEnumAttribute();
         newEnumAttribute.copyFrom(getEnumAttribute());
         return newEnumAttribute;
@@ -88,7 +88,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
         getEnumAttribute().setInherited(true);
     }
 
-    private void inheritEnumAttributeInSubclassesOfTarget() throws CoreRuntimeException {
+    private void inheritEnumAttributeInSubclassesOfTarget() {
         IEnumAttribute pulledUpAttribute = getTargetEnumType().getEnumAttribute(getEnumAttribute().getName());
         for (IEnumType subEnumType : subEnumTypes) {
             subEnumType.inheritEnumAttributes(Arrays.asList(pulledUpAttribute));
@@ -132,7 +132,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
      * attribute must be found in the super type hierarchy of the target enumeration type.
      */
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreRuntimeException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         super.validateUserInputThis(status, pm);
 
         if (!getEnumType().isSubEnumTypeOf(getTargetEnumType(), getIpsProject())) {

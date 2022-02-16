@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
@@ -135,8 +135,8 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateIfValidationFailsAttributeValue() throws CoreRuntimeException {
-        doThrow(new CoreRuntimeException(Status.CANCEL_STATUS)).when(attrValue).validate(ipsProject);
+    public void testCreateIfValidationFailsAttributeValue() {
+        doThrow(new IpsException(Status.CANCEL_STATUS)).when(attrValue).validate(ipsProject);
 
         assertThat(DatatypeMismatchEntry.forEachMismatch(Collections.singletonList(attrValue)).isEmpty(),
                 equalTo(true));
@@ -190,7 +190,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testForEachMismatchSingleValue() throws CoreRuntimeException {
+    public void testForEachMismatchSingleValue() {
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "10.0"));
         configuredDefault.setValue("11.0");
 
@@ -200,7 +200,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
         assertThat(entries.get(1).getPropertyName(), is(configuredDefault.getPropertyName()));
     }
 
-    private IFormula mockFormula() throws CoreRuntimeException {
+    private IFormula mockFormula() {
         IFormula formula = mock(IFormula.class);
         when(formula.getIpsProject()).thenReturn(ipsProject);
         when(formula.validate(ipsProject)).thenReturn(new MessageList());

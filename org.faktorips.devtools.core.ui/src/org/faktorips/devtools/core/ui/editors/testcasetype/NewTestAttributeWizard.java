@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
@@ -89,7 +89,7 @@ public class NewTestAttributeWizard extends Wizard {
                 testAttribute.setDatatype(testAttributeDefinitionWizardPage.getDatatype());
                 firstCreatedTestAttribute = testAttribute;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;

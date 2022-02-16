@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.abstraction.ABuildKind;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
@@ -68,19 +67,19 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     }
 
     @Test
-    public void testBuild_buildJavaFileIntoSrcFolder() throws CoreRuntimeException {
+    public void testBuild_buildJavaFileIntoSrcFolder() {
         // build should not throw an exception even if the reference to the policyCmptType is
         // missing
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
     }
 
     @Test
-    public void testIsBuilderFor_falseIf_SrcFileIsNotProductCmptType() throws CoreRuntimeException {
+    public void testIsBuilderFor_falseIf_SrcFileIsNotProductCmptType() {
         assertFalse(productCmptGenerationClassBuilder.isBuilderFor(productCmpt.getIpsSrcFile()));
     }
 
     @Test
-    public void testIsBuilderFor_trueIf_ProductCmptType_ProductCmptTypeDoesNotExist() throws CoreRuntimeException {
+    public void testIsBuilderFor_trueIf_ProductCmptType_ProductCmptTypeDoesNotExist() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         IIpsSrcFile ipsSrcFile = productCmptType.getIpsSrcFile();
         productCmptType.delete();
@@ -90,7 +89,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
 
     @Test
     public void testIsBuilderFor_trueIf_ProductCmptType_NotChangingOverTime_ProductCmptGenerationSrcFileExist()
-            throws CoreRuntimeException {
+            {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         productCmptType.setChangingOverTime(false);
 
@@ -109,7 +108,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
 
     @Test
     public void testIsBuilderFor_trueIf_ProductCmptType_ChangingOverTime_ProductCmptGenerationSrcFileExist_ProductCmptTypeSrcFileExists()
-            throws CoreRuntimeException {
+            {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         productCmptType.setChangingOverTime(true);
 
@@ -127,7 +126,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     }
 
     @Test
-    public void testIsGeneratingArtifactsFor_trueIf_PolicyCmptType_ChangingOverTime() throws CoreRuntimeException {
+    public void testIsGeneratingArtifactsFor_trueIf_PolicyCmptType_ChangingOverTime() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         productCmptType.setChangingOverTime(true);
 
@@ -135,7 +134,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     }
 
     @Test
-    public void testIsGeneratingArtifactsFor_falseIf_PolicyCmptType_NotChangingOverTime() throws CoreRuntimeException {
+    public void testIsGeneratingArtifactsFor_falseIf_PolicyCmptType_NotChangingOverTime() {
         ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
         productCmptType.setChangingOverTime(false);
 

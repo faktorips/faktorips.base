@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -49,7 +49,7 @@ public class Wrappers {
      * that object to be wrapped in an implementation-specific {@link AWrapper wrapper}.
      * <p>
      * Any {@link CoreException} thrown by the supplier is rethrown as a
-     * {@link CoreRuntimeException}.
+     * {@link IpsException}.
      */
     public static <T> WrapperBuilder wrap(CoreExceptionThrowingSupplier<T> supplier) {
         return get(() -> wrap(supplier.get()));
@@ -59,13 +59,13 @@ public class Wrappers {
      * Runs the given runnable.
      * <p>
      * Any {@link CoreException} thrown by the runnable is rethrown as a
-     * {@link CoreRuntimeException}.
+     * {@link IpsException}.
      */
     public static void run(CoreExceptionThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+            throw new IpsException(e.getMessage(), e);
         }
     }
 
@@ -73,13 +73,13 @@ public class Wrappers {
      * Calls the given supplier and returns the result.
      * <p>
      * Any {@link CoreException} thrown by the supplier is rethrown as a
-     * {@link CoreRuntimeException}.
+     * {@link IpsException}.
      */
     public static <T> T get(CoreExceptionThrowingSupplier<T> supplier) {
         try {
             return supplier.get();
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
+            throw new IpsException(e.getMessage(), e);
         }
     }
 

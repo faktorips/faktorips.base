@@ -25,7 +25,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueTypeMismatch;
 
@@ -48,7 +47,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
     }
 
     @Override
-    public void setContentType(String enumType) throws CoreRuntimeException {
+    public void setContentType(String enumType) {
         enumContent.setEnumType(enumType);
     }
 

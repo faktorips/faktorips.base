@@ -31,12 +31,12 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -255,7 +255,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IIpsProject ipsProject) {
         try {
             MessageList list = new MessageList();
             if (validateBuilderSetId(ipsProject, list)) {
@@ -278,7 +278,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             // CSON: IllegalCatch
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -347,7 +347,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * Validate the IPS object path entry.
      */
-    private void validateIpsObjectPath(MessageList list) throws CoreRuntimeException {
+    private void validateIpsObjectPath(MessageList list) {
         list.add(path.validate());
     }
 

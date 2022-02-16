@@ -10,14 +10,13 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 
 public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTypeDelta {
 
     public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         super(generation, generation, ipsProject);
     }
 
@@ -27,7 +26,7 @@ public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTy
     }
 
     @Override
-    protected void createAdditionalEntriesAndChildren() throws CoreRuntimeException {
+    protected void createAdditionalEntriesAndChildren() {
         // nothing to do
     }
 

@@ -26,7 +26,6 @@ import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -107,11 +106,11 @@ public class IpsProjectBuilder {
         return this;
     }
 
-    public IIpsProject build() throws CoreRuntimeException {
+    public IIpsProject build() {
         return newIpsProject();
     }
 
-    private IIpsProject newIpsProject() throws CoreRuntimeException {
+    private IIpsProject newIpsProject() {
         if (Abstractions.isEclipseRunning()) {
             ICoreRunnable runnable = $ -> {
                 IProject project = new PlatformProjectBuilder().name(name).description(description).build();

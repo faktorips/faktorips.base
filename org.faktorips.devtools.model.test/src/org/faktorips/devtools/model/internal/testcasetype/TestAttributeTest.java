@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -349,7 +348,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsBasedOnModelAttribute() throws CoreRuntimeException {
+    public void testIsBasedOnModelAttribute() {
         testAttribute.setDatatype("");
         testAttribute.setAttribute("");
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy1", "SubProduct1");
@@ -365,7 +364,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsAttributeRelevantByProductCmpt() throws CoreRuntimeException {
+    public void testIsAttributeRelevantByProductCmpt() {
         ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)testAttribute.getParent();
         param.setRequiresProductCmpt(true);
 
@@ -434,7 +433,7 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateName() throws CoreRuntimeException {
+    public void testValidateName() {
         MessageList ml;
 
         // test validate name for extension attribute

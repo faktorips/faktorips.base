@@ -22,7 +22,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -69,7 +69,7 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
         assertThat(isEqualContent(), is(true));
     }
 
-    public boolean isEqualContent() throws CoreRuntimeException, IOException {
+    public boolean isEqualContent() throws IpsException, IOException {
         InputStream i1 = ipsSrcFile.getContentFromEnclosingResource();
         InputStream i2 = srcFileOffRoot.getContentFromEnclosingResource();
         byte[] buf1 = new byte[64 * 1024];

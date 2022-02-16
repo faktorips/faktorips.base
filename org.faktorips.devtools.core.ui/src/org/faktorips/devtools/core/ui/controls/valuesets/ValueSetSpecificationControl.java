@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
@@ -493,7 +492,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         @Override
-        public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+        public MessageList validate(IIpsProject ipsProject) {
             MessageList messageList = super.validate(ipsProject);
             addContainsNullMessagesIfApplicable(messageList);
             return messageList;

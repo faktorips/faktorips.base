@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -84,7 +83,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
     }
 
     @Override
-    public IIpsObject getTargetForImport() throws CoreRuntimeException {
+    public IIpsObject getTargetForImport() {
         return ((TableContentsRefControl)importTargetControl).findTableContents();
     }
 

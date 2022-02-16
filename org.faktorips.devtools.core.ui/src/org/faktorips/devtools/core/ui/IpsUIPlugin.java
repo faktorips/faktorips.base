@@ -95,6 +95,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -120,7 +121,6 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -363,7 +363,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return datatypeInputFormat.getDatatypeInputFormat(datatype, ipsProject);
     }
 
-    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() throws CoreRuntimeException {
+    private ValueDatatypeControlFactory[] initValueDatatypeControlFactories() {
         List<ValueDatatypeControlFactory> factories = new ArrayList<>();
 
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
@@ -374,7 +374,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             for (IConfigurationElement configElement : configElements) {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
                 if (StringUtils.isEmpty(configElClass)) {
-                    throw new CoreRuntimeException(new IpsStatus(IStatus.ERROR,
+                    throw new IpsException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                     + extension.getExtensionPointUniqueIdentifier() + ". The attribute \"" //$NON-NLS-1$
                                     + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$
@@ -551,10 +551,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @return A Factory class which can be used to create the controls for configuring the custom
      *         properties, or <code>null</code> if the table format has no custom properties.
      * 
-     * @throws CoreRuntimeException if the factory class could not be created.
+     * @throws IpsException if the factory class could not be created.
      */
     public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat)
-            throws CoreRuntimeException {
+            {
 
         ArgumentCheck.notNull(tableFormat);
 
@@ -568,7 +568,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             for (IConfigurationElement configElement : configElements) {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
                 if (StringUtils.isEmpty(configElClass)) {
-                    throw new CoreRuntimeException(new IpsStatus(IStatus.ERROR,
+                    throw new IpsException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                     + extension.getExtensionPointUniqueIdentifier()
                                     + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
@@ -606,7 +606,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             TableFormatConfigurationCompositeFactory tableFormatPropertiesControlFactory = getTableFormatPropertiesControlFactory(
                     tableFormat);
             return (tableFormatPropertiesControlFactory != null);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -792,7 +792,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      *            will be returned.
      */
     public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId)
-            throws CoreRuntimeException {
+            {
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (extensionPropertyEditFieldFactoryMap == null) {
             extensionPropertyEditFieldFactoryMap = new HashMap<>();
@@ -804,7 +804,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (configElements.length > 0) {
                     String configElPropertyId = configElements[0].getAttribute("propertyId"); //$NON-NLS-1$
                     if (StringUtils.isEmpty(configElPropertyId)) {
-                        throw new CoreRuntimeException(new IpsStatus(IStatus.ERROR,
+                        throw new IpsException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extension.getExtensionPointUniqueIdentifier()
                                         + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
@@ -831,7 +831,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      *            will be returned.
      */
     public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId)
-            throws CoreRuntimeException {
+            {
 
         if (extensionPropertySectionFactoriesMap == null) {
             // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
@@ -843,7 +843,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 for (IConfigurationElement configElement : extension.getConfigurationElements()) {
                     String configElPropertyId = configElement.getAttribute("propertyId"); //$NON-NLS-1$
                     if (StringUtils.isBlank(configElPropertyId)) {
-                        throw new CoreRuntimeException(new IpsStatus(IStatus.ERROR,
+                        throw new IpsException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extension.getExtensionPointUniqueIdentifier()
                                         + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
@@ -1337,7 +1337,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
                 try {
                     return openWithDefaultIpsSrcTextEditor(fileToEdit);
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else {
@@ -1352,7 +1352,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * editors status bar to inform the user about using the text editor instead of the IPS
          * object editor.
          */
-        private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) throws CoreRuntimeException {
+        private IEditorPart openWithDefaultIpsSrcTextEditor(IFile fileToEdit) {
             String defaultContentTypeOfIpsSrcFilesId = "org.faktorips.devtools.core.ipsSrcFile"; //$NON-NLS-1$
             IFileEditorInput editorInput = new FileEditorInput(fileToEdit);
 
@@ -1361,7 +1361,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
             IEditorDescriptor[] editors = PlatformUI.getWorkbench().getEditorRegistry().getEditors("", contentType); //$NON-NLS-1$
             if (editors.length != 1) {
-                throw new CoreRuntimeException(new IpsStatus(
+                throw new IpsException(new IpsStatus(
                         NLS.bind("No registered editors (or more then one) for content-type id {0} found!", //$NON-NLS-1$
                                 defaultContentTypeOfIpsSrcFilesId)));
             }
@@ -1372,7 +1372,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
                 IEditorPart editorPart = page.openEditor(editorInput, editors[0].getId());
                 if (editorPart == null) {
-                    throw new CoreRuntimeException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
+                    throw new IpsException(new IpsStatus("Error opening the default text editor!!")); //$NON-NLS-1$
                 }
                 /*
                  * show information in the status bar about using the default text editor instead of

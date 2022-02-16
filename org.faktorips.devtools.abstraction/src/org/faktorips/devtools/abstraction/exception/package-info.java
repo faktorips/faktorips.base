@@ -8,4 +8,4 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.exception;
+package org.faktorips.devtools.abstraction.exception;

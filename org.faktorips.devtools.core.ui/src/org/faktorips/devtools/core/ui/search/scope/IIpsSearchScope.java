@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.search.scope;
 
 import java.util.Set;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -25,7 +25,7 @@ public interface IIpsSearchScope {
     /**
      * @return Set of srcFile, which are related in this Scope
      */
-    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreRuntimeException;
+    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws IpsException;
 
     /**
      * returns the description of the scope

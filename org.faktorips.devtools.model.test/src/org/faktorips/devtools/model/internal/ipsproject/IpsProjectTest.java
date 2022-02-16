@@ -69,6 +69,7 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IVersionProviderFactory;
@@ -77,7 +78,6 @@ import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -269,7 +269,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreRuntimeException {
+    public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() {
         IProductCmptType type = newProductCmptType(ipsProject, "MotorProduct");
         newProductCmpt(type, "ProductCmpt1");
         IIpsSrcFile[] result = ipsProject.findAllProductCmptSrcFiles(type, true);
@@ -282,7 +282,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateRequiredFeatures() throws CoreRuntimeException {
+    public void testValidateRequiredFeatures() {
         MessageList ml = ipsProject.validate();
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_NO_VERSIONMANAGER));
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -313,7 +313,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_JavaCodeContainsError() throws CoreRuntimeException {
+    public void testValidate_JavaCodeContainsError() {
         MessageList list = ipsProject.validate();
         assertFalse(list.containsErrorMsg());
 
@@ -418,7 +418,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsReferencedBy() throws CoreRuntimeException {
+    public void testIsReferencedBy() {
         assertFalse(baseProject.isReferencedBy(null, true));
         assertFalse(baseProject.isReferencedBy(baseProject, true));
         assertFalse(baseProject.isReferencedBy(ipsProject, true));
@@ -440,7 +440,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencingProjects() throws CoreRuntimeException {
+    public void testGetReferencingProjects() {
         assertEquals(0, baseProject.findReferencingProjects(true).length);
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -465,7 +465,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencingProjectsLeavesOrSelf() throws CoreRuntimeException {
+    public void testGetReferencingProjectsLeavesOrSelf() {
         assertEquals(1, baseProject.findReferencingProjectLeavesOrSelf().length);
         assertEquals(baseProject, baseProject.findReferencingProjectLeavesOrSelf()[0]);
 
@@ -527,7 +527,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsAccessibleViaIpsObjectPath() throws CoreRuntimeException {
+    public void testIsAccessibleViaIpsObjectPath() {
         assertFalse(ipsProject.isAccessibleViaIpsObjectPath(null));
 
         IIpsObject obj1 = newPolicyCmptType(baseProject, "Object");
@@ -555,7 +555,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MissingPropertyFile() throws CoreRuntimeException {
+    public void testValidate_MissingPropertyFile() {
         AFile file = ipsProject.getIpsProjectPropertiesFile();
         file.delete(null);
         MessageList list = ipsProject.validate();
@@ -564,7 +564,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnparsablePropertyFile() throws CoreRuntimeException {
+    public void testValidate_UnparsablePropertyFile() {
         AFile file = ipsProject.getIpsProjectPropertiesFile();
         InputStream unparsableContents = new ByteArrayInputStream("blabla".getBytes());
         file.setContents(unparsableContents, false, null);
@@ -614,7 +614,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatype() throws CoreRuntimeException {
+    public void testFindDatatype() {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(
                 new String[] { Datatype.DECIMAL.getQualifiedName(), Datatype.PRIMITIVE_INT.getQualifiedName() });
@@ -643,14 +643,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatype_IndirectRefProject() throws CoreRuntimeException {
+    public void testFindDatatype_IndirectRefProject() {
         makeIpsProjectDependOnBaseProjectIndirect(true);
 
         assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
     }
 
     @Test
-    public void testFindDatatype_IndirectRefProject_ReexportedIsFalse() throws CoreRuntimeException {
+    public void testFindDatatype_IndirectRefProject_ReexportedIsFalse() {
         makeIpsProjectDependOnBaseProjectIndirect(false);
 
         assertNull(ipsProject.findDatatype("Integer"));
@@ -662,7 +662,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * <p>
      * Only baseProject has a datatype of type <code>Integer</code>.
      */
-    private void makeIpsProjectDependOnBaseProjectIndirect(boolean reexported) throws CoreRuntimeException {
+    private void makeIpsProjectDependOnBaseProjectIndirect(boolean reexported) {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] {});
         ipsProject.setProperties(props);
@@ -682,7 +682,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValueDatatype() throws CoreRuntimeException {
+    public void testFindValueDatatype() {
         assertNull(ipsProject.findValueDatatype(null));
 
         IIpsProjectProperties props = ipsProject.getProperties();
@@ -706,14 +706,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValueDatatype_IndirectRefProject() throws CoreRuntimeException {
+    public void testFindValueDatatype_IndirectRefProject() {
         makeIpsProjectDependOnBaseProjectIndirect(true);
 
         assertEquals(Datatype.INTEGER, ipsProject.findValueDatatype("Integer"));
     }
 
     @Test
-    public void testFindValueDatatype_IndirectRefProject_ReexportedIsFalse() throws CoreRuntimeException {
+    public void testFindValueDatatype_IndirectRefProject_ReexportedIsFalse() {
         makeIpsProjectDependOnBaseProjectIndirect(false);
 
         assertNull(ipsProject.findValueDatatype("Integer"));
@@ -783,7 +783,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_DelegatesToBuilderSet() throws CoreRuntimeException {
+    public void testGetDatatypeHelper_DelegatesToBuilderSet() {
         // no helper registered in builder set
         assertNull(ipsProject.getDatatypeHelper(Datatype.MONEY));
 
@@ -911,7 +911,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatypes3Parameters() throws CoreRuntimeException {
+    public void testFindDatatypes3Parameters() {
         IPolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "a", "aConfig");
         List<Datatype> datatypes = Arrays.asList(ipsProject.findDatatypes(false, false, false));
         assertTrue(datatypes.contains(a));
@@ -928,7 +928,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatypes5Parameters() throws CoreRuntimeException {
+    public void testFindDatatypes5Parameters() {
         IEnumType testEnumType = newEnumType(ipsProject, "TestEnumType");
         testEnumType.setAbstract(true);
         Datatype[] types = ipsProject.findDatatypes(false, false, false, null, false);
@@ -940,7 +940,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatypes_IndirectRefProject() throws CoreRuntimeException {
+    public void testFindDatatypes_IndirectRefProject() {
         makeIpsProjectDependOnBaseProjectIndirect(true);
 
         Datatype[] datatypes = ipsProject.findDatatypes(false, false);
@@ -949,7 +949,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatypes_IndirectRefProject_ReexportedIsFalse() throws CoreRuntimeException {
+    public void testFindDatatypes_IndirectRefProject_ReexportedIsFalse() {
         makeIpsProjectDependOnBaseProjectIndirect(false);
 
         Datatype[] datatypes = ipsProject.findDatatypes(false, false);
@@ -1002,7 +1002,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFile() throws CoreRuntimeException, InterruptedException {
+    public void testFindIpsSrcFile() throws IpsException, InterruptedException {
         IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
         QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
         IIpsSrcFile file = ipsProject.findIpsSrcFile(qnt);
@@ -1035,7 +1035,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFile_WithTwoSrcFolderRoots() throws CoreRuntimeException, InterruptedException {
+    public void testFindIpsSrcFile_WithTwoSrcFolderRoots() throws IpsException, InterruptedException {
         IPolicyCmptType testObject = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.Test");
         QualifiedNameType qnt = new QualifiedNameType("a.b.Test", IpsObjectType.POLICY_CMPT_TYPE);
         IIpsSrcFile file = ipsProject.findIpsSrcFile(qnt);
@@ -1107,7 +1107,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsObject() throws CoreRuntimeException {
+    public void testFindIpsObject() {
         IIpsPackageFragment folder = root.createPackageFragment("a.b", true, null);
         IIpsSrcFile file = folder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Test", true, null);
         IIpsObject pdObject = ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "a.b.Test");
@@ -1139,7 +1139,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     public IProductCmptType createProductCmptType(IIpsPackageFragment packageFragment,
             IPolicyCmptType policyCmptType,
-            String name) throws CoreRuntimeException {
+            String name) {
         IProductCmptType productCmptType = (IProductCmptType)packageFragment
                 .createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, name, true, null).getIpsObject();
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -1148,7 +1148,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllProductCmptSrcFiles() throws CoreRuntimeException {
+    public void testFindAllProductCmptSrcFiles() {
         // create the following types: Type0, Type1 and Type2
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
         IPolicyCmptType policyCmptType0 = (IPolicyCmptType)pack
@@ -1233,7 +1233,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllTestCaseSrcFiles() throws CoreRuntimeException {
+    public void testFindAllTestCaseSrcFiles() {
         // create the following testcase types: TestType0, TestType1
 
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
@@ -1294,7 +1294,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllTableContentsSrcFiles() throws CoreRuntimeException {
+    public void testFindAllTableContentsSrcFiles() {
         ITableStructure ts0 = newTableStructure(ipsProject, "structure0");
         ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
 
@@ -1312,7 +1312,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllEnumContentSrcFiles() throws CoreRuntimeException {
+    public void testFindAllEnumContentSrcFiles() {
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
         IEnumType enumType0 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null)
@@ -1382,7 +1382,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFiles() throws CoreRuntimeException {
+    public void testFindIpsSrcFiles() {
         // create the following types: Type0, a.b.Type1 and c.Type2
         IIpsPackageFragment pack = root.getIpsPackageFragment("");
         IPolicyCmptType type0 = (IPolicyCmptType)pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null)
@@ -1577,7 +1577,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDependsOn() throws CoreRuntimeException {
+    public void testDependsOn() {
         assertFalse(ipsProject.isReferencing(baseProject));
 
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -1609,7 +1609,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIfOutputFolderSetForSrcFolderEntry() throws CoreRuntimeException {
+    public void testValidateIfOutputFolderSetForSrcFolderEntry() {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry srcFolder = path.newSourceFolderEntry((AFolder)root.getEnclosingResource());
         srcFolder.setSpecificBasePackageNameForDerivedJavaClasses("srctest");
@@ -1653,7 +1653,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectABuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
+            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
                 return new LinkedHashMap<>();
             }
 
@@ -1711,7 +1711,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsArtefactBuilderSet projectBBuilderSet = new DefaultBuilderSet() {
 
             @Override
-            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreRuntimeException {
+            protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
                 return new LinkedHashMap<>();
             }
 
@@ -1790,7 +1790,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle() {
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
@@ -1827,7 +1827,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * <code>setUniqueQualifier(prj, "qualifier1", "qualifier2")</code>.
      */
     public static void updateSrcFolderEntryQalifiers(IIpsProject prj, String... qualifiers)
-            throws CoreRuntimeException {
+            {
         IIpsObjectPath path = prj.getIpsObjectPath();
         IIpsObjectPathEntry[] entries = path.getEntries();
         for (int i = 0; i < entries.length; i++) {
@@ -1841,7 +1841,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle_ProjectHasSelfReference() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle_ProjectHasSelfReference() {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject);
         ipsProject.setIpsObjectPath(path);
@@ -1857,7 +1857,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle_CycleInFourProjects() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle_CycleInFourProjects() {
         IIpsProject ipsProject10 = this.newIpsProject("TestProject10");
         IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
         IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
@@ -1905,7 +1905,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle_ReexportedIsFalse() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse() {
         IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject).setReexported(false);
@@ -1935,7 +1935,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_ProjectHasSelfReference() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_ProjectHasSelfReference() {
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject).setReexported(false);
         ipsProject.setIpsObjectPath(path);
@@ -1951,7 +1951,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_CycleInFourProjects() throws CoreRuntimeException {
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_CycleInFourProjects() {
         IIpsProject ipsProject10 = this.newIpsProject("TestProject10");
         IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
         IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
@@ -2002,7 +2002,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetNamingConventions() throws CoreRuntimeException {
+    public void testGetNamingConventions() {
         IIpsProjectNamingConventions namingConventions = ipsProject.getNamingConventions();
         assertTrue(namingConventions instanceof DefaultIpsProjectNamingConventions);
         assertFalse(namingConventions.validateIpsPackageName("testPackage").containsErrorMsg());
@@ -2010,7 +2010,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCheckForDuplicateRuntimeIds() throws CoreRuntimeException {
+    public void testCheckForDuplicateRuntimeIds() {
         IIpsProject prj = newIpsProject("PRJ1");
 
         IProductCmpt cmpt1 = newProductCmpt(prj, "product1");
@@ -2054,7 +2054,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsResourceExcludedFromProductDefinition() throws CoreRuntimeException {
+    public void testIsResourceExcludedFromProductDefinition() {
         assertFalse(ipsProject.isResourceExcludedFromProductDefinition(null));
 
         AFolder folder1 = ipsProject.getProject().getFolder("exludedFolderWithFile");
@@ -2080,7 +2080,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSourceFiles() throws CoreRuntimeException {
+    public void testFindIpsSourceFiles() {
         // create the following types: Type0, a.b.Type1 and c.Type2, and table structure
 
         IIpsSrcFile type0 = root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true,
@@ -2150,7 +2150,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetResourceAsStream() throws CoreRuntimeException, IOException {
+    public void testGetResourceAsStream() throws IpsException, IOException {
         IIpsPackageFragmentRoot rootOne = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
         createFileWithContent((AFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
         assertEquals("111", getFirstLine(ipsProject.getResourceAsStream("file.txt")));
@@ -2167,7 +2167,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         ipsProject.delete();
 
         assertFalse(root.exists());
@@ -2230,7 +2230,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarkerEnums_False() throws CoreRuntimeException {
+    public void testValidateMarkerEnums_False() {
         EnumType enumType = initProjectProperty("Enum; falseEnum");
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
         MessageList msgList = ipsProject.validate();
@@ -2248,7 +2248,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarkerEnums_True() throws CoreRuntimeException {
+    public void testValidateMarkerEnums_True() {
         EnumType enumType = initProjectProperty("Enum");
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
         MessageList msgList = ipsProject.validate();
@@ -2258,7 +2258,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(msgList.isEmpty());
     }
 
-    private EnumType initProjectProperty(String markerString) throws CoreRuntimeException {
+    private EnumType initProjectProperty(String markerString) {
         EnumType enumType = newEnumType(ipsProject, "Enum");
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         ipsProjectProperties.addMarkerEnum(markerString);
@@ -2267,7 +2267,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarkerEnums_isExtensible() throws CoreRuntimeException {
+    public void testValidateMarkerEnums_isExtensible() {
         EnumType enumType = initProjectProperty("Enum");
         enumType.setExtensible(true);
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
@@ -2288,7 +2288,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMarkerEnums_isAbstract() throws CoreRuntimeException {
+    public void testValidateMarkerEnums_isAbstract() {
         EnumType enumType = initProjectProperty("Enum");
         enumType.setAbstract(true);
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
@@ -2309,7 +2309,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetMarkerEnums_DisableMarkerEnums() throws CoreRuntimeException {
+    public void testGetMarkerEnums_DisableMarkerEnums() {
         newEnumType(ipsProject, "Enum");
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         ipsProjectProperties.addMarkerEnum("Enum");
@@ -2321,20 +2321,20 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(markerEnums.isEmpty());
     }
 
-    private void setPredefinedDatatypesUsed(IIpsProject project, String... datatypes) throws CoreRuntimeException {
+    private void setPredefinedDatatypesUsed(IIpsProject project, String... datatypes) {
         IIpsProjectProperties props = project.getProperties();
         props.setPredefinedDatatypesUsed(datatypes);
         project.setProperties(props);
     }
 
-    private void createProjectReference(IIpsProject from, IIpsProject to) throws CoreRuntimeException {
+    private void createProjectReference(IIpsProject from, IIpsProject to) {
         IIpsObjectPath path = from.getIpsObjectPath();
         path.newIpsProjectRefEntry(to);
         from.setIpsObjectPath(path);
     }
 
     @Test
-    public void testFindAllProductTemplates_NoTemplateExists() throws CoreRuntimeException {
+    public void testFindAllProductTemplates_NoTemplateExists() {
         IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
         IProductCmptType subType = newProductCmptType(baseType, "subType");
 
@@ -2345,7 +2345,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllProductTemplates_TemplatesExist() throws CoreRuntimeException {
+    public void testFindAllProductTemplates_TemplatesExist() {
         IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
         IProductCmptType subType = newProductCmptType(baseType, "subType");
         IIpsSrcFile baseTemplate = newProductTemplate(baseType, "baseTemplate").getIpsSrcFile();
@@ -2358,7 +2358,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllProductTemplates_TemplateExistsInReferencedProject() throws CoreRuntimeException {
+    public void testFindAllProductTemplates_TemplateExistsInReferencedProject() {
         makeIpsProjectDependOnBaseProjectIndirect(true);
 
         IProductCmptType type = newProductCmptType(baseProject, "type");
@@ -2367,13 +2367,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindTemplateHierarchy_EmptyHierarchy() throws CoreRuntimeException {
+    public void testFindTemplateHierarchy_EmptyHierarchy() {
         assertThat(ipsProject.findTemplateHierarchy(null).isEmpty(), is(true));
         assertThat(ipsProject.findTemplateHierarchy(newProductCmpt(baseProject, "p")).isEmpty(), is(true));
     }
 
     @Test
-    public void testFindTemplateHierarchy_DirectReferences() throws CoreRuntimeException {
+    public void testFindTemplateHierarchy_DirectReferences() {
         makeIpsProjectDependOnBaseProjectIndirect(true);
         IProductCmpt t1 = newProductTemplate(baseProject, "Template-1");
         IProductCmpt t2 = newProductTemplate(ipsProject, "Template-2");
@@ -2400,7 +2400,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindTemplateHierarchy_IndirectReference() throws CoreRuntimeException {
+    public void testFindTemplateHierarchy_IndirectReference() {
         makeIpsProjectDependOnBaseProject();
         IProductCmpt t1 = newProductTemplate(baseProject, "Template-1");
         IProductCmpt t2 = newProductTemplate(baseProject, "Template-2");
@@ -2430,7 +2430,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_VersionProviderMissing() throws CoreRuntimeException {
+    public void testValidate_VersionProviderMissing() {
         MessageList list = ipsProject.validate();
         assertFalse(list.containsErrorMsg());
 
@@ -2450,7 +2450,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_VersionProviderSet() throws CoreRuntimeException {
+    public void testValidate_VersionProviderSet() {
         MessageList list = ipsProject.validate();
         assertFalse(list.containsErrorMsg());
 
@@ -2477,7 +2477,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         @Override
         public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-                throws CoreRuntimeException {
+                {
             throw new UnsupportedOperationException();
         }
     }

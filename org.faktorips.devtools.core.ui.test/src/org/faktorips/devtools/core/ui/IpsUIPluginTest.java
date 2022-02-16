@@ -48,7 +48,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DefaultDeepCopySmartModeBehavior;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -164,7 +163,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTableFormatPropertiesControlFactory() throws CoreRuntimeException {
+    public void testGetTableFormatPropertiesControlFactory() {
         ITableFormat tableFormatWithFactory = new TestTableFormat();
         ITableFormat tableFormatWithoutFactory = new TestTableFormatTwo();
 

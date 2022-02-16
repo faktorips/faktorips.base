@@ -13,7 +13,7 @@ package org.faktorips.devtools.tableconversion;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -72,6 +72,6 @@ public abstract class AbstractTableImportOperation implements ICoreRunnable {
     }
 
     @Override
-    public abstract void run(IProgressMonitor monitor) throws CoreRuntimeException;
+    public abstract void run(IProgressMonitor monitor) throws IpsException;
 
 }

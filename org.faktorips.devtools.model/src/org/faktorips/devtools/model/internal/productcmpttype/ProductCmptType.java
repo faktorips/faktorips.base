@@ -28,11 +28,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
@@ -242,10 +242,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * @param reference the {@link IProductCmptPropertyReference} to search the corresponding
      *            {@link IProductCmptProperty} for
      * 
-     * @throws CoreRuntimeException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
     IProductCmptProperty findProductCmptProperty(IProductCmptPropertyReference reference, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
             if (reference.isReferencedProperty(property)) {
@@ -565,7 +565,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         List<IMethod> candidates = super.findOverrideMethodCandidates(onlyNotImplementedAbstractMethods, ipsProject);
         List<IProductCmptTypeMethod> overloadedMethods = findSignaturesOfOverloadedFormulas(ipsProject);
@@ -580,7 +580,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptType supertype = findSuperProductCmptType(ipsProject);
         if (isConfigurationForPolicyCmptType()) {
@@ -650,7 +650,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private void validateIconPath(MessageList msgList, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validateIconPath(MessageList msgList, IIpsProject ipsProject) {
         if (isUseCustomInstanceIcon()) {
             InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
             if (stream == null) {
@@ -661,7 +661,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 try {
                     stream.close();
                 } catch (IOException e) {
-                    throw new CoreRuntimeException(new IpsStatus(e));
+                    throw new IpsException(new IpsStatus(e));
                 }
             }
         }
@@ -673,7 +673,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
@@ -686,7 +686,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validatePolicyCmptTypeReference(IProductCmptType supertype, IIpsProject ipsProject, MessageList list)
-            throws CoreRuntimeException {
+            {
 
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj == null) {
@@ -722,7 +722,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForFormulaSignatureDefinition(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
@@ -735,7 +735,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
@@ -747,7 +747,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
@@ -759,7 +759,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
@@ -771,7 +771,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
@@ -857,12 +857,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws CoreRuntimeException {
+    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) {
         return searchMetaObjectSrcFiles(includeSubtypes);
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreRuntimeException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
@@ -889,7 +889,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         return Messages.ProductCmptType_caption;
     }
 
@@ -929,7 +929,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws CoreRuntimeException {
+    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) {
         // Collect all categories from the supertype hierarchy
         final Map<IProductCmptType, List<IProductCmptCategory>> typesToOriginalCategories = new LinkedHashMap<>();
         TypeHierarchyVisitor<IProductCmptType> visitor = new TypeHierarchyVisitor<>(ipsProject) {
@@ -1001,13 +1001,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public boolean findHasCategory(String name, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean findHasCategory(String name, IIpsProject ipsProject) {
         return findCategory(name, ipsProject) != null;
     }
 
     @Override
     public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, ipsProject);
@@ -1017,7 +1017,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, ipsProject);
@@ -1027,7 +1027,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, ipsProject);
@@ -1037,7 +1037,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, ipsProject);
         defaultCategoryFinder.start(this);
@@ -1046,7 +1046,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         DefaultCategoryFinder defaultCategoryFinder = new DefaultCategoryFinder(ProductCmptPropertyType.VALIDATION_RULE,
                 ipsProject);
         defaultCategoryFinder.start(this);
@@ -1054,7 +1054,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) {
 
         ProductCmptCategoryFinder visitor = new ProductCmptCategoryFinder(ipsProject, name);
         visitor.start(this);
@@ -1155,18 +1155,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @return the new indices within the context list
      * 
-     * @throws CoreRuntimeException if an error occurs during the move
+     * @throws IpsException if an error occurs during the move
      */
     int[] movePropertyReferences(final int[] movedIndices,
             final List<IProductCmptProperty> contextProperties,
-            final boolean up) throws CoreRuntimeException {
+            final boolean up) {
 
         return (int[])((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<>(getIpsSrcFile()) {
                     private Object result;
 
                     @Override
-                    protected boolean execute() throws CoreRuntimeException {
+                    protected boolean execute() {
                         createProductCmptPropertyReferencesForNotReferencedProperties();
                         result = moveProductCmptPropertyReferencesInternal(movedIndices, contextProperties, up);
                         return true;
@@ -1222,7 +1222,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             IProductCmptPropertyReference reference = (IProductCmptPropertyReference)part;
             try {
                 return reference.findProductCmptProperty(getIpsProject()) != null;
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 /*
                  * If an error occurs during the search for the property, the property is not found
                  * but we cannot be sure whether it is obsolete.
@@ -1238,10 +1238,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Returns whether at least two categories with the indicated name exist in the supertype
      * hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType} itself.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching the supertype hierarchy
+     * @throws IpsException if an error occurs while searching the supertype hierarchy
      */
     boolean findIsCategoryNameUsedTwiceInSupertypeHierarchy(final String categoryName, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
         CategoryCounter counter = new CategoryCounter(categoryName, ipsProject);
         counter.start(this);
         return counter.categoriesFound > 1;

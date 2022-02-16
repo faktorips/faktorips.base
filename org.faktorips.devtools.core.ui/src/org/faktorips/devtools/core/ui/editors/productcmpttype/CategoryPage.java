@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.PartAdapter;
@@ -36,7 +37,6 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
@@ -169,7 +169,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             List<IProductCmptCategory> categories = new ArrayList<>();
             try {
                 categories.addAll(getProductCmptType().findCategories(getProductCmptType().getIpsProject()));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 // Recover by not displaying any lastCategoryState
                 IpsPlugin.log(e);
             }
@@ -423,7 +423,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             }
         }
 
-        private Object obtainCategoryState() throws CoreRuntimeException {
+        private Object obtainCategoryState() {
             List<IProductCmptCategory> categories = getProductCmptType().findCategories(getIpsProject());
             List<CategoryState> categoryState = new ArrayList<>(categories.size());
             for (IProductCmptCategory category : categories) {

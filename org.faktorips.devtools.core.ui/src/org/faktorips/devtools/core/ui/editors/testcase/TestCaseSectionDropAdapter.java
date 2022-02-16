@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -310,7 +309,7 @@ class DropToLinkHelper {
             }
 
             private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreRuntimeException {
+                    {
 
                 if (testCaseTypeAssociation.isRoot()) {
                     return dropOnRootTestCaseTypeAssociation(testCaseTypeAssociation);
@@ -320,7 +319,7 @@ class DropToLinkHelper {
             }
 
             private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreRuntimeException {
+                    {
 
                 ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().getTestCase())
                         .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
@@ -329,7 +328,7 @@ class DropToLinkHelper {
                 return rootTestPolicyCmpt;
             }
 
-            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
+            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
                 ITestPolicyCmptTypeParameter targetToChildParameter = getTargetToChildParameter(productCmpt,
                         testPolicyCmpt);
                 ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(targetToChildParameter,

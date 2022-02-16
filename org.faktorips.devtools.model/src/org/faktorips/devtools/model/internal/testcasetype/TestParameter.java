@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -98,7 +97,7 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     public abstract void setTestParameterType(TestParameterType testParameterType);
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check for duplicate test parameter names

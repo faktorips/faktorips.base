@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -28,7 +29,6 @@ import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -88,7 +88,7 @@ class AssociationPersistenceTab {
     private void searchInverseAssociation() {
         try {
             inverseAssociation = association.findInverseAssociation(getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -163,7 +163,7 @@ class AssociationPersistenceTab {
                             getToolkit().setDataChangeable(groupForeignKey,
                                     persistEnabled && ownerOfManyToManyAssociation && !joinTableRequired);
                             enableOrDisableForeignKeyColumn();
-                        } catch (CoreRuntimeException e) {
+                        } catch (IpsException e) {
                             IpsPlugin.logAndShowErrorDialog(e);
                         }
                     }
@@ -319,7 +319,7 @@ class AssociationPersistenceTab {
             if (persistentAssociationInfo.isJoinTableRequired()) {
                 return;
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         getToolkit().setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);

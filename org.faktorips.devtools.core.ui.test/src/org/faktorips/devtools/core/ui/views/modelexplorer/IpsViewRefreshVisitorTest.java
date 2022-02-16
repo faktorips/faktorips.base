@@ -35,7 +35,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -323,7 +322,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
     // Test for FIPS-70
     @Test
-    public void testUpdateIfManifestIsChanged() throws CoreRuntimeException {
+    public void testUpdateIfManifestIsChanged() {
 
         ModelExplorerConfiguration config = new ModelExplorerConfiguration(
                 ipsProject.getIpsModel().getIpsObjectTypes());

@@ -65,7 +65,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
@@ -143,7 +142,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsModelProjects() throws CoreRuntimeException {
+    public void testGetIpsModelProjects() {
         IIpsProject modelProject = newIpsProject("ModelProject");
         IIpsProjectProperties properties = modelProject.getProperties();
         properties.setModelProject(true);
@@ -169,7 +168,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsProductDefinitionProjects() throws CoreRuntimeException {
+    public void testGetIpsProductDefinitionProjects() {
         IIpsProject modelProject = newIpsProject("ModelProject");
         IIpsProjectProperties properties = modelProject.getProperties();
         properties.setModelProject(true);
@@ -273,7 +272,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsElement() throws CoreRuntimeException {
+    public void testFindIpsElement() {
         AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
         assertEquals(model, model.getIpsElement(root));
 
@@ -297,7 +296,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeListenerSupport() throws CoreRuntimeException {
+    public void testChangeListenerSupport() {
         IIpsProject project = newIpsProject();
         IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
         TestContentsChangeListener listener = new TestContentsChangeListener();
@@ -320,7 +319,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testModifcationStatusChangeListenerSupport() throws CoreRuntimeException {
+    public void testModifcationStatusChangeListenerSupport() {
         IIpsProject project = newIpsProject();
         IIpsSrcFile file = newPolicyCmptType(project, "TestPolicy").getIpsSrcFile();
         TestModStatusListener listener = new TestModStatusListener();
@@ -368,7 +367,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testForceReloadOfCachedIpsSrcFileContents() throws CoreRuntimeException {
+    public void testForceReloadOfCachedIpsSrcFileContents() {
         IIpsProject ipsProject = this.newIpsProject("TestProject");
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
@@ -483,7 +482,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testClearValidationCache() throws CoreRuntimeException {
+    public void testClearValidationCache() {
         IIpsProject project = super.newIpsProject();
         IPolicyCmptType pcType = super.newPolicyCmptType(project, "TestedType");
         model.getValidationResultCache().putResult(pcType, new MessageList());
@@ -496,7 +495,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunAndQueueChangeEvents() throws CoreRuntimeException {
+    public void testRunAndQueueChangeEvents() {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
         final IDescription typeADescription = typeA.newDescription();
@@ -551,7 +550,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunAndQueueChangeEvents_ErrorHandling() throws CoreRuntimeException {
+    public void testRunAndQueueChangeEvents_ErrorHandling() {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
         final IDescription typeADescription = typeA.newDescription();
@@ -645,7 +644,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreRuntimeException {
+    public void testDelete() {
         IIpsModel.get().delete();
     }
 

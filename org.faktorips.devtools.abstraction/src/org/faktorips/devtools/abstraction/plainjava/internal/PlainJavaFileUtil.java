@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
-import static org.faktorips.devtools.abstraction.plainjava.internal.Exceptions.asCoreRuntimeException;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -21,6 +19,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 public class PlainJavaFileUtil {
 
@@ -64,7 +63,7 @@ public class PlainJavaFileUtil {
                 monitor.done();
             }
         } catch (IOException e) {
-            throw asCoreRuntimeException(taskname + " " + file + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException(taskname + " " + file + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -75,7 +74,7 @@ public class PlainJavaFileUtil {
         try {
             pathHandler.handle(file.toPath());
         } catch (IOException e) {
-            throw asCoreRuntimeException(taskname + " " + file + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException(taskname + " " + file + " failed", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (monitor != null) {
             monitor.done();

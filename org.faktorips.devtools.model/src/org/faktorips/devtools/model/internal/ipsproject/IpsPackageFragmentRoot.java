@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -48,7 +48,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * within this IPS package fragment root.
      */
     @Override
-    public APackageFragmentRoot getArtefactDestination(boolean derived) throws CoreRuntimeException {
+    public APackageFragmentRoot getArtefactDestination(boolean derived) {
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)getIpsObjectPathEntry();
         AFolder folder;
         if (derived) {
@@ -81,7 +81,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * project corresponding to this root's IpsProject or not.
      */
     @Override
-    public IIpsPackageFragment[] getIpsPackageFragments() throws CoreRuntimeException {
+    public IIpsPackageFragment[] getIpsPackageFragments() {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
@@ -91,7 +91,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * 
      * @return List List of IIpsPackageFragments
      */
-    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreRuntimeException {
+    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() {
         AFolder folder = (AFolder)getCorrespondingResource();
         List<IIpsPackageFragment> list = new ArrayList<>();
         // add the default package
@@ -101,7 +101,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    public AResource[] getNonIpsResources() throws CoreRuntimeException {
+    public AResource[] getNonIpsResources() {
         AContainer cont = (AContainer)getCorrespondingResource();
         List<AResource> childResources = new ArrayList<>();
         for (AResource child : cont) {
@@ -117,7 +117,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * Returns <code>true</code> if the given IResource is a folder that corresponds to an
      * IpsPackageFragment contained in this IpsPackageFragmentRoot, <code>false</code> otherwise.
      */
-    private boolean isPackageFragment(AResource res) throws CoreRuntimeException {
+    private boolean isPackageFragment(AResource res) {
         IIpsPackageFragment[] frags = getIpsPackageFragments();
         for (IIpsPackageFragment frag : frags) {
             if (frag.getCorrespondingResource().equals(res)) {
@@ -137,7 +137,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * list. This is an application of the collecting parameter pattern.
      */
     private void getIpsPackageFragments(AFolder folder, String namePrefix, List<IIpsPackageFragment> packs)
-            throws CoreRuntimeException {
+            {
         for (AResource resource : folder) {
             if (resource.getType() == AResourceType.FOLDER) {
                 String name = resource.getName();
@@ -154,7 +154,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     @Override
     public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            throws CoreRuntimeException {
+            {
 
         if (!isValidIpsPackageFragmentName(name)) {
             return null;
@@ -180,13 +180,13 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreRuntimeException {
+    public IIpsElement[] getChildren() {
         return getIpsPackageFragments();
     }
 
     @Override
     void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            throws CoreRuntimeException {
+            {
         if (!exists()) {
             return;
         }
@@ -208,12 +208,12 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * adds them to the result.
      * 
      * @throws NullPointerException if either type, prefix or result is null.
-     * @throws CoreRuntimeException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
     public void findIpsSourceFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List<IIpsSrcFile> result) throws CoreRuntimeException {
+            List<IIpsSrcFile> result) {
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
         ArgumentCheck.notNull(result);
@@ -247,7 +247,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         /*
          * Just deleting the default package fragment as all other fragments have the default
          * package as parent and will be deleted automatically.

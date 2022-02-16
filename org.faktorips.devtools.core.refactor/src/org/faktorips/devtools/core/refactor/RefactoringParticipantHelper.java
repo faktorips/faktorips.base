@@ -31,10 +31,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IJavaBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -143,7 +143,7 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @see RefactoringParticipant#createChange(IProgressMonitor)
      */
-    public final Change createChange(IProgressMonitor pm) throws CoreRuntimeException, OperationCanceledException {
+    public final Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException {
         /*
          * The Java elements need to be sorted in such a way that types are processed after
          * everything else because otherwise members may not be found anymore (because the type they
@@ -193,7 +193,7 @@ public abstract class RefactoringParticipantHelper {
                 }
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
         return new NullChange();
     }
@@ -359,7 +359,7 @@ public abstract class RefactoringParticipantHelper {
      * @param progressMonitor The {@link IProgressMonitor} to report progress to should that be
      *            necessary
      * 
-     * @throws CoreRuntimeException If an error occurs during creation of the refactoring instance
+     * @throws IpsException If an error occurs during creation of the refactoring instance
      */
     protected abstract JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
             IJavaElement targetJavaElement,

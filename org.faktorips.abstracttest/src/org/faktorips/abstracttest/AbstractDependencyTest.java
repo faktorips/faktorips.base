@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -31,7 +30,7 @@ public abstract class AbstractDependencyTest extends AbstractIpsPluginTest {
     protected void assertSingleDependencyDetail(IIpsObject object,
             IDependency dependency,
             IIpsObjectPartContainer part,
-            String propertyName) throws CoreRuntimeException {
+            String propertyName) {
 
         List<IDependencyDetail> details = object.getDependencyDetails(dependency);
         DependencyDetail detail = new DependencyDetail(part, propertyName);
@@ -42,7 +41,7 @@ public abstract class AbstractDependencyTest extends AbstractIpsPluginTest {
     protected void assertDependencyDetailContained(IIpsObject object,
             IDependency dependency,
             IIpsObjectPartContainer part,
-            String propertyName) throws CoreRuntimeException {
+            String propertyName) {
 
         List<IDependencyDetail> details = object.getDependencyDetails(dependency);
         DependencyDetail detail = new DependencyDetail(part, propertyName);

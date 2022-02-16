@@ -35,7 +35,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
@@ -43,7 +42,7 @@ import org.junit.Test;
 public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetTransferedElements() throws CoreRuntimeException {
+    public void testGetTransferedElements() {
         IIpsProject prj = super.newIpsProject();
         PolicyCmptType type = newPolicyCmptType(prj, "first.second.Name");
 

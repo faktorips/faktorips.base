@@ -61,7 +61,6 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.tablecontents.TableContents;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
@@ -400,7 +399,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         new TableMessageHoverService(tableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreRuntimeException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     return ((IRow)element).validate(((IRow)element).getIpsProject());
                 }

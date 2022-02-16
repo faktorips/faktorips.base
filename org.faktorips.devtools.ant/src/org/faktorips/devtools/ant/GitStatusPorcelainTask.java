@@ -46,7 +46,7 @@ import org.eclipse.jgit.treewalk.filter.PathFilterGroup;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 @SuppressWarnings("restriction")
 public class GitStatusPorcelainTask extends AbstractIpsTask {
@@ -104,7 +104,7 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
 
         WorkspaceJob job = new WorkspaceJob("sync") {
             @Override
-            public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreRuntimeException {
+            public IStatus runInWorkspace(IProgressMonitor monitor) {
                 for (Entry<IProject, RepositoryProvider> sourceCtrl : projectWithRepository.entrySet()) {
                     IProject projekt = sourceCtrl.getKey();
 
@@ -250,18 +250,18 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
             throw new BuildException("Failed finding RepositoryMapping");
         }
 
-        public String createDiffView() throws CoreRuntimeException {
+        public String createDiffView() {
             return createDiffView(null);
         }
 
-        public String createDiffView(RevCommit rev) throws CoreRuntimeException {
+        public String createDiffView(RevCommit rev) {
             CreatePatchOperation op = new CreatePatchOperation(mapping.getRepository(), rev);
             op.setHeaderFormat(DiffHeaderFormat.NONE);
             op.setPathFilter(PathFilterGroup.createFromStrings(repoRelativePath));
             try {
                 op.execute(new NullProgressMonitor());
             } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                throw new IpsException(e);
             }
             return op.getPatchContent();
         }

@@ -28,7 +28,6 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -137,14 +136,14 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
 
     }
 
-    private void setModelProjectProperty(IIpsProject project, boolean b) throws CoreRuntimeException {
+    private void setModelProjectProperty(IIpsProject project, boolean b) {
         IIpsProjectProperties props = project.getProperties();
         props.setModelProject(b);
         project.setProperties(props);
     }
 
     @Test
-    public void testGetChildren() throws CoreRuntimeException {
+    public void testGetChildren() {
         List<Object> list;
         // --- Tests for hierarchical layout style ---
         // Proj contains only the packageFragmentRoot and a folder,
@@ -377,7 +376,7 @@ public class ModelContentProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetElements() throws CoreRuntimeException {
+    public void testGetElements() {
         ICoreRunnable runnable = $ -> {
             IProject project = newPlatformProject("TestJavaProject");
             addJavaCapabilities(project);

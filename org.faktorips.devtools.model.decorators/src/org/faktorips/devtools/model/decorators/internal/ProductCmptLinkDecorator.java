@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -36,7 +36,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
                         IIpsDecorators.getImageDescriptor(target),
                         OverlayIcons.LINK,
                         IDecoration.BOTTOM_RIGHT);
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }
@@ -58,7 +58,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
                     return IpsStringUtils.EMPTY;
                 }
                 return findTarget.getName();
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }

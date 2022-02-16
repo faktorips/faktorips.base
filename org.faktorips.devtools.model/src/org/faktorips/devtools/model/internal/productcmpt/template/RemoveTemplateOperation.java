@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.productcmpt.template;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -40,7 +39,7 @@ public class RemoveTemplateOperation implements ICoreRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreRuntimeException {
+    public void run(IProgressMonitor monitor) {
         RemoveTemplateModification modification = new RemoveTemplateModification(productCmpt);
         ((IpsModel)productCmpt.getIpsModel()).executeModificationsWithSingleEvent(modification);
     }
@@ -55,7 +54,7 @@ public class RemoveTemplateOperation implements ICoreRunnable {
         }
 
         @Override
-        protected boolean execute() throws CoreRuntimeException {
+        protected boolean execute() {
             processPropertyValues(productCmpt);
             processLinks(productCmpt);
             for (IProductCmptGeneration container : productCmpt.getProductCmptGenerations()) {

@@ -17,13 +17,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -102,7 +102,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
             } else {
                 resetState();
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -122,7 +122,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         return configValueSet.getIpsProject();
     }
 
-    private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() throws CoreRuntimeException {
+    private IpsPartEditDialog2 createEnumSubsetDialogIfApplicable() {
         IPolicyCmptTypeAttribute attribute = configValueSet.findPcTypeAttribute(getIpsProject());
         ValueDatatype datatype = getValueDatatype(attribute);
 

@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -59,10 +59,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * 
      * @param target The new location/name.
      * 
-     * @throws CoreRuntimeException If the source does not exist or is modified or if the target
+     * @throws IpsException If the source does not exist or is modified or if the target
      *             already exists.
      */
-    public NonIPSMoveOperation(Object[] sources, IIpsPackageFragment target) throws CoreRuntimeException {
+    public NonIPSMoveOperation(Object[] sources, IIpsPackageFragment target) {
         sourceObjects = prepare(sources);
         targetRoot = target.getRoot();
         targetNames = getTargetNames(sourceObjects, target);
@@ -78,7 +78,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * @param sources All sources which will be moved to the target
      * @param target The target absolute path
      */
-    public NonIPSMoveOperation(IProject targetProject, Object[] sources, String target) throws CoreRuntimeException {
+    public NonIPSMoveOperation(IProject targetProject, Object[] sources, String target) {
         sourceObjects = prepare(sources);
         this.targetProject = targetProject;
 
@@ -95,10 +95,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * Converts any contained IIpsSrcFiles to the objects contained within.
      * 
      * @param rawSources The IIpsElements to prepare.
-     * @throws CoreRuntimeException If an IIpsSrcFile is contained which can not return the
+     * @throws IpsException If an IIpsSrcFile is contained which can not return the
      *             IIpsObject stored within.
      */
-    private Object[] prepare(Object[] rawSources) throws CoreRuntimeException {
+    private Object[] prepare(Object[] rawSources) {
         Object[] result = new Object[rawSources.length];
 
         for (int i = 0; i < result.length; i++) {
@@ -147,10 +147,10 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
     /**
      * Check all sources to exist and to be saved. If not so, a CoreException will be thrown.
      */
-    private void checkSources(Object[] source) throws CoreRuntimeException {
+    private void checkSources(Object[] source) {
         IpsStatus status = checkSourcesForInvalidContent(source);
         if (status != null) {
-            throw new CoreRuntimeException(status);
+            throw new IpsException(status);
         }
     }
 
@@ -210,7 +210,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
         try {
             ResourcesPlugin.getWorkspace().run(run, monitor);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

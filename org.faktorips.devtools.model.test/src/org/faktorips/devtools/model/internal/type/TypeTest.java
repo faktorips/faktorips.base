@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -69,7 +68,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsSubtype() throws CoreRuntimeException {
+    public void testIsSubtype() {
         IType subtype = newProductCmptType((IProductCmptType)type, "Subtype");
         IType subsubtype = newProductCmptType((IProductCmptType)type, "SubSubtype");
 
@@ -85,7 +84,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsSubtypeDifferentProject() throws CoreRuntimeException {
+    public void testIsSubtypeDifferentProject() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicy");
 
         assertFalse(policyCmptType.isSubtypeOf(null, ipsProject));
@@ -119,7 +118,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicatePropertyName() throws CoreRuntimeException {
+    public void testValidate_DuplicatePropertyName() {
         type = newPolicyCmptType(ipsProject, "Policy");
         IType supertype = newPolicyCmptType(ipsProject, "Supertype");
         type.setSupertype(supertype.getQualifiedName());
@@ -197,7 +196,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateAssociationName() throws CoreRuntimeException {
+    public void testValidate_DuplicateAssociationName() {
         type = newPolicyCmptType(ipsProject, "Policy");
         IType supertype = newPolicyCmptType(ipsProject, "Supertype");
         type.setSupertype(supertype.getQualifiedName());
@@ -230,7 +229,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MustOverrideAbstractMethod() throws CoreRuntimeException {
+    public void testValidate_MustOverrideAbstractMethod() {
         // a supertype with a method and connect the type to it
         IType superType = this.newProductCmptType(ipsProject, "Supertype");
         superType.setAbstract(true);
@@ -525,7 +524,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindMethod() throws CoreRuntimeException {
+    public void testFindMethod() {
         assertNull(type.findMethod("SomeName", new String[0], ipsProject));
 
         IType supertype = newProductCmptType(ipsProject, "Product");
@@ -589,7 +588,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAttribute() throws CoreRuntimeException {
+    public void testFindAttribute() {
         assertNull(type.findAttribute("unknown", ipsProject));
 
         IAttribute a1 = type.newAttribute();
@@ -618,7 +617,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAssociationsForTargetAndAssociationType() throws CoreRuntimeException {
+    public void testGetAssociationsForTargetAndAssociationType() {
         IProductCmptType baseMotor = newProductCmptType(ipsProject, "BaseMotorProduct");
         IProductCmptType motor = (IProductCmptType)type;
         IProductCmptType injection = newProductCmptType(ipsProject, "InjectionProduct");
@@ -795,7 +794,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAssociationByRoleNamePlural() throws CoreRuntimeException {
+    public void testFindAssociationByRoleNamePlural() {
         assertNull(type.findAssociationByRoleNamePlural(null, ipsProject));
         assertNull(type.findAssociationByRoleNamePlural("OtherTypes", ipsProject));
 
@@ -850,7 +849,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetOverrideCandidates() throws CoreRuntimeException {
+    public void testGetOverrideCandidates() {
         assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
@@ -967,7 +966,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverrideMethodCandidates() throws CoreRuntimeException {
+    public void testFindOverrideMethodCandidates() {
         assertEquals(0, type.findOverrideMethodCandidates(false, ipsProject).size());
 
         // create two more types that act as supertype and supertype's supertype
@@ -1012,7 +1011,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverrideMethods() throws CoreRuntimeException {
+    public void testOverrideMethods() {
         IType supertype = newProductCmptType(ipsProject, "Product");
         type.setSupertype(supertype.getQualifiedName());
         IMethod m1 = supertype.newMethod();
@@ -1043,7 +1042,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllAssociations() throws CoreRuntimeException {
+    public void testFindAllAssociations() {
         IType superSuperType = newProductCmptType(ipsProject, "AbstractProduct");
         IType superType = newProductCmptType(ipsProject, "Product");
         type.setSupertype(superType.getQualifiedName());
@@ -1080,7 +1079,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHasExistingSupertype() throws CoreRuntimeException {
+    public void testHasExistingSupertype() {
         assertFalse(type.hasExistingSupertype(ipsProject));
 
         type.setSupertype("xyz");
@@ -1092,7 +1091,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testConstrainPolicyAssociation() throws CoreRuntimeException {
+    public void testConstrainPolicyAssociation() {
         setUpConstrainableAssociations();
 
         IAssociation constrainingAssociation = constrains_subSourcePolicy.constrainAssociation(constrains_association1,
@@ -1105,7 +1104,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testConstrainProductAssociation() throws CoreRuntimeException {
+    public void testConstrainProductAssociation() {
         IProductCmptType sourceProduct = newProductCmptType(ipsProject, "ProductA");
         IProductCmptType targetProduct = newProductCmptType(ipsProject, "ProductB");
         IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)sourceProduct.newAssociation();
@@ -1128,7 +1127,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation() throws CoreRuntimeException {
+    public void testFindConstrainableAssociation() {
         setUpConstrainableAssociations();
 
         List<IAssociation> candidates = constrains_subSourcePolicy.findConstrainableAssociationCandidates(ipsProject);
@@ -1139,7 +1138,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation_ignoreDerivedUnionAndSubset() throws CoreRuntimeException {
+    public void testFindConstrainableAssociation_ignoreDerivedUnionAndSubset() {
         setUpConstrainableAssociations();
         constrains_association1.setDerivedUnion(true);
         constrains_association2.setSubsettedDerivedUnion(constrains_association1.getName());
@@ -1150,7 +1149,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation_ignoreConstrainingAndConstrainedAssociations() throws CoreRuntimeException {
+    public void testFindConstrainableAssociation_ignoreConstrainingAndConstrainedAssociations() {
         setUpConstrainableAssociations();
         IPolicyCmptTypeAssociation assoc3 = createAssociation(constrains_subSourcePolicy, constrains_subTargetPolicy,
                 constrains_association1.getTargetRoleSingular());
@@ -1163,7 +1162,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindConstrainableAssociation_ignoreDetailToMaster() throws CoreRuntimeException {
+    public void testFindConstrainableAssociation_ignoreDetailToMaster() {
         setUpConstrainableAssociations();
         constrains_association1.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         constrains_association2.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
@@ -1174,7 +1173,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertEquals("assoc1", candidates.get(0).getName());
     }
 
-    private void setUpConstrainableAssociations() throws CoreRuntimeException {
+    private void setUpConstrainableAssociations() {
         constrains_sourcePolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
         constrains_targetPolicy = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
         constrains_association1 = createAssociation(constrains_sourcePolicy, constrains_targetPolicy, "assoc1");

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 
@@ -50,9 +50,9 @@ public interface ITestValue extends ITestObject {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreRuntimeException if an error occurs while searching for the test value.
+     * @throws IpsException if an error occurs while searching for the test value.
      */
-    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws CoreRuntimeException;
+    public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the value.
@@ -67,8 +67,8 @@ public interface ITestValue extends ITestObject {
     /**
      * Sets the default value of the test value. The default value of the data type will be used.
      * 
-     * @throws CoreRuntimeException if the test value parameter wasn't found
+     * @throws IpsException if the test value parameter wasn't found
      */
-    public void setDefaultValue() throws CoreRuntimeException;
+    public void setDefaultValue() throws IpsException;
 
 }

@@ -43,7 +43,7 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -111,7 +111,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(mavenIpsProjectConfigurator.isGroovySupported(ipsProject.getJavaProject()), is(true));
     }
 
-    @Test(expected = CoreRuntimeException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProjectMissingMergableOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForMergableSources(null);
@@ -120,7 +120,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
     }
 
-    @Test(expected = CoreRuntimeException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_missingDerivedOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForDerivedSources(null);
@@ -129,7 +129,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
     }
 
-    @Test(expected = CoreRuntimeException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_noMavenProject() throws Exception {
         ipsProject = newIpsProject();
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
@@ -227,7 +227,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(eclipseLink11.get().getVersion(), is("2.2.3"));
     }
 
-    @Test(expected = CoreRuntimeException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_persistenceMalformed() throws Exception {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport("Malformed name");

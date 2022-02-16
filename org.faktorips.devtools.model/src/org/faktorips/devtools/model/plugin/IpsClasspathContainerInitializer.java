@@ -28,7 +28,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
@@ -173,13 +173,13 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     @Override
-    public void initialize(IPath containerPath, IJavaProject project) throws CoreRuntimeException {
+    public void initialize(IPath containerPath, IJavaProject project) {
         IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
                 containerPath) };
         try {
             JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

@@ -55,9 +55,9 @@ import org.eclipse.ui.actions.SelectionListenerAction;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Test runner failure pane shows all errors or failures in a table.
@@ -198,11 +198,11 @@ public class FailurePane implements IMenuListener {
     /*
      * Find java element in the given java project by the given class name.
      */
-    private IJavaElement findElement(IJavaProject project, String className) throws CoreRuntimeException {
+    private IJavaElement findElement(IJavaProject project, String className) {
         try {
             return project == null ? null : project.findType(className);
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

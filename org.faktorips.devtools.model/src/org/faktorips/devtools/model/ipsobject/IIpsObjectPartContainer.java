@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.ipsobject;
 
 import java.util.Locale;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.XmlSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
 import org.faktorips.util.memento.MementoSupport;
 
@@ -69,10 +69,10 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @param locale The locale to request the caption for.
      * 
-     * @throws CoreRuntimeException If any error occurs while retrieving the caption.
+     * @throws IpsException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
-    public String getCaption(Locale locale) throws CoreRuntimeException;
+    public String getCaption(Locale locale) throws IpsException;
 
     /**
      * Returns the plural caption of this <code>IIpsObjectPartContainer</code> for the given
@@ -82,10 +82,10 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * 
      * @param locale The locale to request the plural caption for.
      * 
-     * @throws CoreRuntimeException If any error occurs while retrieving the caption.
+     * @throws IpsException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
-    public String getPluralCaption(Locale locale) throws CoreRuntimeException;
+    public String getPluralCaption(Locale locale) throws IpsException;
 
     /**
      * Returns the last resort caption of this <code>IIpsObjectPartContainer</code>. The last resort

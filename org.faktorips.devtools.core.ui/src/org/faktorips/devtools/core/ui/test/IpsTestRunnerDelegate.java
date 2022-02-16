@@ -25,10 +25,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.ui.progress.UIJob;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.ui.actions.IpsTestAction;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Launch configuration delegate to delegate the launch to the ips test runner.
@@ -50,7 +50,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration configuration,
             final String mode,
             final ILaunch launch,
-            IProgressMonitor monitor) throws CoreRuntimeException {
+            IProgressMonitor monitor) {
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -78,7 +78,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
                 trace("Lauch configuration (" + configuration.getName() + ") in UI Job 'IPS Testrunner delegate'"); //$NON-NLS-1$ //$NON-NLS-2$
                 try {
                     startTest(configuration, mode, launch);
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 return Job.ASYNC_FINISH;
@@ -92,14 +92,14 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
      * Delegate the test start to the ips test runner
      */
     private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch)
-            throws CoreRuntimeException {
+            {
         String packageFragment;
         String testCases;
         try {
             packageFragment = configuration.getAttribute(IpsTestRunner.ATTR_PACKAGEFRAGMENTROOT, ""); //$NON-NLS-1$
             testCases = configuration.getAttribute(IpsTestRunner.ATTR_TESTCASES, ""); //$NON-NLS-1$
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
 
         IpsTestAction runTestAction = new IpsTestAction(null, mode);

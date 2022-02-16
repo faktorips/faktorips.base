@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
@@ -67,7 +66,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
@@ -77,7 +76,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 

@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.productcmpt;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 
@@ -68,9 +68,9 @@ public interface IConfigElement extends IPropertyValue {
      * 
      * @return the corresponding attribute or <code>null</code> if no such attribute exists.
      * 
-     * @throws CoreRuntimeException if an exception occurs while searching for the attribute.
+     * @throws IpsException if an exception occurs while searching for the attribute.
      */
-    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreRuntimeException;
+    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the element's value data type, or <code>null</code> if it can't be found. The

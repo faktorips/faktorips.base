@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
@@ -31,7 +30,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject> {
 
     @Override
-    public Object[] getChildren(IIpsProject project) throws CoreRuntimeException {
+    public Object[] getChildren(IIpsProject project) {
 
         List<Object> result = new ArrayList<>();
 

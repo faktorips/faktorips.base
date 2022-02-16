@@ -21,7 +21,6 @@ import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.migration.CoreVersionManager;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -64,7 +63,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreRuntimeException {
+            {
         AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId()));
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);

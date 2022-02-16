@@ -33,7 +33,6 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
@@ -114,7 +113,7 @@ public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest
         return ipsBundleEntry;
     }
 
-    private void addEntry(IpsObjectPath ipsObjectPath, IpsBundleEntry ipsBundleEntry) throws CoreRuntimeException {
+    private void addEntry(IpsObjectPath ipsObjectPath, IpsBundleEntry ipsBundleEntry) {
         List<IIpsObjectPathEntry> entries = new LinkedList<>(
                 Arrays.asList(ipsObjectPath.getEntries()));
         entries.add(ipsBundleEntry);

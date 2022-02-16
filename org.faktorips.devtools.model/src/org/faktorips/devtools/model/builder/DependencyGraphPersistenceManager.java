@@ -20,7 +20,6 @@ import java.io.ObjectOutputStream;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.builder.DependencyGraph;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -84,7 +83,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant, IDep
     }
 
     @Override
-    public void prepareToSave(ISaveContext context) throws CoreRuntimeException {
+    public void prepareToSave(ISaveContext context) {
         // Empty implementation.
     }
 
@@ -94,7 +93,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant, IDep
     }
 
     @Override
-    public void saving(ISaveContext context) throws CoreRuntimeException {
+    public void saving(ISaveContext context) {
         if (context.getKind() == ISaveContext.FULL_SAVE) {
             @SuppressWarnings("deprecation")
             IpsModel model = IpsModel.get();

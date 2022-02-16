@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.enums;
 
 import java.util.List;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.IPartReference;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * An <code>IEnumContent</code> is used when the values for a Faktor-IPS enumeration shall not be
@@ -108,10 +108,10 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * @param enumType The qualified name of the <code>IEnumType</code> this
      *            <code>IEnumContent</code> shall be based upon.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the new <code>IEnumType</code>.
+     * @throws IpsException If an error occurs while searching for the new <code>IEnumType</code>.
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
-    public void setEnumType(String enumType) throws CoreRuntimeException;
+    public void setEnumType(String enumType) throws IpsException;
 
     /**
      * Returns the qualified name of the <code>IEnumType</code> this <code>IEnumContent</code> is
@@ -123,9 +123,9 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * Returns <code>true</code> if this <code>IEnumContent</code> is inconsistent with the model
      * and needs to be fixed by the user, <code>false</code> otherwise.
      * 
-     * @throws CoreRuntimeException If an error occurs during the validation.
+     * @throws IpsException If an error occurs during the validation.
      */
-    public boolean isFixToModelRequired() throws CoreRuntimeException;
+    public boolean isFixToModelRequired() throws IpsException;
 
     /**
      * Returns a list containing all <code>IPartReference</code>s that belong to this

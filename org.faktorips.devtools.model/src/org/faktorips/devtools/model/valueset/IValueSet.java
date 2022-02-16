@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.valueset;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -73,9 +73,9 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * @param value The value to check.
      * @param ipsProject The project to look up the data type.
      * 
-     * @throws CoreRuntimeException If an error occurs while checking.
+     * @throws IpsException If an error occurs while checking.
      */
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException;
+    public boolean containsValue(String value, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns {@code true} if this value set contains the other value set and both value sets are

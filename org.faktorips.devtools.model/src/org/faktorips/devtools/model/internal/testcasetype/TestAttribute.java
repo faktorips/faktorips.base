@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -234,7 +233,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
-            throws CoreRuntimeException {
+            {
 
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
         if (!reqProductCmpt) {
@@ -253,7 +252,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) {
         super.validateThis(messageList, ipsProject);
 
         // check if the name is not empty

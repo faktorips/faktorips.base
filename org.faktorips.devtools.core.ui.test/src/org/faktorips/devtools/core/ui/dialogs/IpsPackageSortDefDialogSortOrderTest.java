@@ -22,8 +22,8 @@ import java.util.Arrays;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.dialogs.IpsPackageSortDefDialog.SortOrder;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
@@ -51,7 +51,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testRestore() throws CoreRuntimeException, IOException {
+    public void testRestore() throws IpsException, IOException {
         ipsRoot.createPackageFragment("a", true, null);
         ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
@@ -75,7 +75,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testRestoreAndDirty() throws CoreRuntimeException, IOException {
+    public void testRestoreAndDirty() throws IpsException, IOException {
         ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
@@ -100,7 +100,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testSave_nothingChanged() throws CoreRuntimeException {
+    public void testSave_nothingChanged() {
         ipsRoot.createPackageFragment("a", true, null);
         ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
@@ -115,7 +115,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testSave_newSortOrder() throws CoreRuntimeException {
+    public void testSave_newSortOrder() {
         ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         ipsRoot.createPackageFragment("c", true, null);
@@ -132,7 +132,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testGetElements_inDefaultOrder() throws CoreRuntimeException {
+    public void testGetElements_inDefaultOrder() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -154,7 +154,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testGetElements_inSortOrder() throws CoreRuntimeException, IOException {
+    public void testGetElements_inSortOrder() throws IpsException, IOException {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -179,7 +179,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testGetElements_inSortOrderAndDefaultOrder() throws CoreRuntimeException, IOException {
+    public void testGetElements_inSortOrderAndDefaultOrder() throws IpsException, IOException {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -203,7 +203,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testUp() throws CoreRuntimeException {
+    public void testUp() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -221,7 +221,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testUpList() throws CoreRuntimeException {
+    public void testUpList() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -243,7 +243,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testDown() throws CoreRuntimeException {
+    public void testDown() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -261,7 +261,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testDownList() throws CoreRuntimeException {
+    public void testDownList() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -283,7 +283,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testAbove() throws CoreRuntimeException {
+    public void testAbove() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -305,7 +305,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testBelow() throws CoreRuntimeException {
+    public void testBelow() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null);
@@ -327,7 +327,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testIsFirstPackageFragment() throws CoreRuntimeException {
+    public void testIsFirstPackageFragment() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
@@ -340,7 +340,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testIsLastPackageFragment() throws CoreRuntimeException {
+    public void testIsLastPackageFragment() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null);
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null);
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
@@ -353,7 +353,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testIsFirstSrcFile() throws CoreRuntimeException {
+    public void testIsFirstSrcFile() {
         ProductCmpt prodA = newProductCmpt(ipsProject, "A 2018-01");
         ProductCmpt prodB = newProductCmpt(ipsProject, "B 2018-01");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();
@@ -366,7 +366,7 @@ public class IpsPackageSortDefDialogSortOrderTest extends AbstractIpsPluginTest 
     }
 
     @Test
-    public void testIsLastSrcFile() throws CoreRuntimeException {
+    public void testIsLastSrcFile() {
         ProductCmpt prodA = newProductCmpt(ipsProject, "A 2018-01");
         ProductCmpt prodB = newProductCmpt(ipsProject, "B 2018-01");
         IIpsPackageFragment defaultIpsPackageFragment = ipsRoot.getDefaultIpsPackageFragment();

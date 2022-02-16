@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
-import static org.faktorips.devtools.abstraction.plainjava.internal.Exceptions.asCoreRuntimeException;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,6 +22,7 @@ import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions.AImplementation;
 import org.faktorips.devtools.abstraction.Wrappers.WrapperBuilder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 public enum PlainJavaImplementation implements AImplementation {
     INSTANCE;
@@ -41,7 +40,7 @@ public enum PlainJavaImplementation implements AImplementation {
         try {
             return Files.createTempDirectory("Workspace").toFile(); //$NON-NLS-1$
         } catch (IOException e) {
-            throw asCoreRuntimeException("Could not create temporary workspace directory", e); //$NON-NLS-1$
+            throw new IpsException("Could not create temporary workspace directory", e); //$NON-NLS-1$
         }
     }
 

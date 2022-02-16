@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.HashMap;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
@@ -102,7 +101,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     /**
      * Returns the association object which is related by the test association type.
      */
-    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
         return testPolicyCmptTypeParameter.findAssociation(ipsProject);
     }
 
@@ -131,7 +130,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
      * Returns the name of the policy component type which is related by the test association
      * parameter.
      */
-    public String getPolicyCmptTypeTarget(IIpsProject ipsProject) throws CoreRuntimeException {
+    public String getPolicyCmptTypeTarget(IIpsProject ipsProject) {
         return findAssociation(ipsProject).getTarget();
     }
 
@@ -148,18 +147,18 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
     //
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         // TODO Auto-generated method stub
         return Severity.NONE;
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isValid(IIpsProject ipsProject) {
         return false;
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreRuntimeException {
+    public MessageList validate(IIpsProject ipsProject) {
         MessageList messageList = new MessageList();
         validate(messageList, ipsProject);
         return messageList;
@@ -169,7 +168,7 @@ public class TestCaseTypeAssociation implements IDummyTestCaseObject {
      * Validate the test policy cmpt association parameters. And validate the min and max instances
      * of the test policy cmpt type param by validating the parent test policy cmpt
      */
-    private void validate(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    private void validate(MessageList list, IIpsProject ipsProject) {
         if (parentTestPolicyCmpt == null) {
             return;
         }

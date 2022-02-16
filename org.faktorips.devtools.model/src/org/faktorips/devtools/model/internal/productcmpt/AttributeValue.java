@@ -16,7 +16,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
@@ -131,7 +130,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findAttribute(ipsProject);
     }
 
@@ -205,7 +204,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr == null) {
@@ -256,7 +255,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreRuntimeException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String caption = null;

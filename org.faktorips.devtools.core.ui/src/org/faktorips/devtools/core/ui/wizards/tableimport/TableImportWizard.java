@@ -20,13 +20,13 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -223,7 +223,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             } else {
                 return newTableContentsPage.getTableStructure();
             }
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -232,7 +232,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * @return The table contents to import into.
      */
-    private ITableContents getTableContents() throws CoreRuntimeException {
+    private ITableContents getTableContents() {
         if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (ITableContents)selectContentsPage.getTargetForImport();
         }

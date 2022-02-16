@@ -25,7 +25,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
@@ -97,7 +96,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public void setEnumType(String enumType) throws CoreRuntimeException {
+    public void setEnumType(String enumType) {
         ArgumentCheck.notNull(enumType);
 
         String oldEnumType = this.enumType;
@@ -149,7 +148,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         EnumContentValidations.validateEnumType(list, this, enumType, ipsProject);
@@ -286,7 +285,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IIpsSrcFile findMetaClassSrcFile(IIpsProject ipsProject) {
         return ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, getEnumType());
     }
 
@@ -294,18 +293,18 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
      * Returns <code>false</code>.
      */
     @Override
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsDifferenceToModel(IIpsProject ipsProject) {
         // TODO AW: What shall we do here?
         return false;
     }
 
     @Override
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public void fixAllDifferencesToModel(IIpsProject ipsProject) {
         // TODO AW: What shall we do here?
     }
 
     @Override
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws CoreRuntimeException {
+    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) {
         // TODO AW: What shall we do here?
         return null;
     }
@@ -325,7 +324,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     }
 
     @Override
-    public boolean isFixToModelRequired() throws CoreRuntimeException {
+    public boolean isFixToModelRequired() {
 
         MessageList messages = validate(getIpsProject());
 

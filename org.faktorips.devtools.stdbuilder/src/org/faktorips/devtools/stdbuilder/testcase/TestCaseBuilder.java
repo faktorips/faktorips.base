@@ -26,9 +26,9 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -81,7 +81,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         ArgumentCheck.isTrue(ipsSrcFile.getIpsObjectType() == IpsObjectType.TEST_CASE);
         ITestCase testCase = (ITestCase)ipsSrcFile.getIpsObject();
         if (!testCase.isValid(getIpsProject())) {
@@ -124,12 +124,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return ipsSrcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE);
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public void delete(IIpsSrcFile ipsSrcFile) {
         AFile file = getXmlContentFile(ipsSrcFile);
         if (file.exists()) {
             file.delete(null);
@@ -139,11 +139,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Converts the given string content as ByteArrayInputStream.
      */
-    private ByteArrayInputStream convertContentAsStream(String content, String charSet) throws CoreRuntimeException {
+    private ByteArrayInputStream convertContentAsStream(String content, String charSet) {
         try {
             return new ByteArrayInputStream(content.getBytes(charSet));
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -164,7 +164,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
-    public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) throws CoreRuntimeException {
+    public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) {
         return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));
     }
@@ -178,7 +178,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * 
      * @return the xml representation of the test case
      */
-    private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) throws CoreRuntimeException {
+    private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) {
         Element testCaseElm = doc.createElement("TestCase");
         testCaseElm.setAttribute("testCaseType", testCase.getTestCaseType());
         Locale generatorLocale = GeneratorConfig.forIpsObject(testCase).getLanguageUsedInGeneratedSourceCode();
@@ -230,7 +230,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Add the given test values to the given element.
      */
-    private void addTestValues(Document doc, Element element, ITestValue[] testValues) throws CoreRuntimeException {
+    private void addTestValues(Document doc, Element element, ITestValue[] testValues) {
         if (testValues == null) {
             return;
         }
@@ -246,7 +246,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Add the given test rules to the given element.
      */
-    private void addTestRules(Document doc, Element element, ITestRule[] testRules) throws CoreRuntimeException {
+    private void addTestRules(Document doc, Element element, ITestRule[] testRules) {
         if (testRules == null) {
             return;
         }
@@ -275,7 +275,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             ITestPolicyCmpt[] testPolicyCmpts,
             ITestPolicyCmptLink link,
             boolean isInput,
-            ObjectId objectId) throws CoreRuntimeException {
+            ObjectId objectId) {
 
         if (testPolicyCmpts == null) {
             return;
@@ -309,7 +309,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             IIpsSrcFile policyCmptTypeSrcFile = testPolicyCmpt.getIpsProject()
                     .findIpsSrcFile(IpsObjectType.POLICY_CMPT_TYPE, policyCmptTypeQName);
             if (policyCmptTypeSrcFile == null) {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus(NLS.bind("The policy component type {0} was not found.", policyCmptTypeQName)));
             }
             testPolicyCmptElem.setAttribute("class", getQualifiedClassName(policyCmptTypeSrcFile.getIpsObject()));
@@ -324,11 +324,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     private String getPolicyCmptTypeNameAndSetProductCmptAttr(ITestPolicyCmpt testPolicyCmpt,
-            Element testPolicyCmptElem) throws CoreRuntimeException {
+            Element testPolicyCmptElem) {
         IIpsSrcFile productCmptSrcFile = testPolicyCmpt.getIpsProject().findIpsSrcFile(IpsObjectType.PRODUCT_CMPT,
                 testPolicyCmpt.getProductCmpt());
         if (productCmptSrcFile == null) {
-            throw new CoreRuntimeException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     NLS.bind("The product component {0} was not found.", testPolicyCmpt.getProductCmpt())));
         }
         testPolicyCmptElem.setAttribute("productCmpt",
@@ -341,10 +341,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         return productCmptTypeSrcFile.getPropertyValue(IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
     }
 
-    private String getPolicyCmptTypeNameFromParameter(ITestPolicyCmpt testPolicyCmpt) throws CoreRuntimeException {
+    private String getPolicyCmptTypeNameFromParameter(ITestPolicyCmpt testPolicyCmpt) {
         ITestPolicyCmptTypeParameter parameter = testPolicyCmpt.findTestPolicyCmptTypeParameter(getIpsProject());
         if (parameter == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
                             testPolicyCmpt.getTestPolicyCmptTypeParameter())));
         }
@@ -354,12 +354,12 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     private Element createTestPolicyCmptElem(Document doc,
             Element parent,
             ITestPolicyCmpt testPolicyCmpt,
-            ITestPolicyCmptLink link) throws CoreRuntimeException {
+            ITestPolicyCmptLink link) {
         Element testPolicyCmptElem;
         if (link != null) {
             ITestPolicyCmptTypeParameter parameter = link.findTestPolicyCmptTypeParameter(getIpsProject());
             if (parameter == null) {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         new IpsStatus(NLS.bind("The test policy component type parameter {0} was not found.",
                                 link.getTestPolicyCmptTypeParameter())));
             }
@@ -381,7 +381,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element parent,
             ITestPolicyCmptLink[] associations,
             boolean isInput,
-            ObjectId objectId) throws CoreRuntimeException {
+            ObjectId objectId) {
         if (associations == null) {
             return;
         }
@@ -412,7 +412,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     }
 
     private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput)
-            throws CoreRuntimeException {
+            {
         ITestPolicyCmptTypeParameter param = association.findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null) {
             return false;
@@ -426,7 +426,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     private void addTestAttrValues(Document doc,
             Element testPolicyCmpt,
             ITestAttributeValue[] testAttrValues,
-            boolean isInput) throws CoreRuntimeException {
+            boolean isInput) {
         if (testAttrValues == null) {
             return;
         }
@@ -439,7 +439,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                     || testAttrValue.isExpectedResultAttribute(ipsProject) && !isInput) {
                 ITestAttribute testAttribute = testAttrValue.findTestAttribute(ipsProject);
                 if (testAttribute == null) {
-                    throw new CoreRuntimeException(new IpsStatus(
+                    throw new IpsException(new IpsStatus(
                             NLS.bind("The test attribute {0} was not found in the test case type definition.",
                                     testAttrValue.getTestAttribute())));
                 }
@@ -454,11 +454,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private String getContentAsString(InputStream is, String charSet) throws CoreRuntimeException {
+    private String getContentAsString(InputStream is, String charSet) {
         try {
             return StringUtil.readFromInputStream(is, charSet);
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 

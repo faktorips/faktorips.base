@@ -25,13 +25,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 
@@ -79,7 +79,7 @@ public class MigrationPage extends WizardPage {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(project).getDescription());
                 desc.append(System.lineSeparator());
                 desc.append(System.lineSeparator());
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 desc.append(Messages.MigrationPage_labelError + e.getMessage());
                 desc.append(System.lineSeparator());
@@ -114,7 +114,7 @@ public class MigrationPage extends WizardPage {
     private Optional<? extends Object> getMigrationOperation(IIpsProject ipsProject) {
         try {
             return Optional.of(IpsPlugin.getDefault().getMigrationOperation(ipsProject));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             // will be logged in the wizard
             return Optional.empty();
         }

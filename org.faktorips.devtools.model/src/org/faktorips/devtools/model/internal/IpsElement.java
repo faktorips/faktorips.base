@@ -11,10 +11,9 @@
 package org.faktorips.devtools.model.internal;
 
 import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public abstract class IpsElement extends PlatformObject implements IIpsElement {
@@ -92,12 +91,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreRuntimeException {
+    public IIpsElement[] getChildren() {
         return NO_CHILDREN;
     }
 
     @Override
-    public boolean hasChildren() throws CoreRuntimeException {
+    public boolean hasChildren() {
         return getChildren().length > 0;
     }
 

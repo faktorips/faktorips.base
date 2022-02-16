@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportWizard;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.TableFormatPropertiesPage;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.MessageList;
@@ -132,7 +132,7 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
                 protected void execute(IProgressMonitor monitor)
-                        throws CoreRuntimeException, InvocationTargetException, InterruptedException {
+                        throws IpsException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeEnumExport(exportEnumContainer, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);

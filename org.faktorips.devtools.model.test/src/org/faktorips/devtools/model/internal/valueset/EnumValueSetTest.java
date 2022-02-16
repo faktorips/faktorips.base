@@ -37,7 +37,6 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -694,7 +693,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_CheckDuplicates() throws CoreRuntimeException {
+    public void testValidate_CheckDuplicates() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.size());
@@ -734,7 +733,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateValue() throws CoreRuntimeException {
+    public void testValidateValue() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("2EUR");
         set.addValue("3EUR");

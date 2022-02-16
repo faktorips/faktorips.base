@@ -21,11 +21,10 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.type.TypeValidations;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -139,12 +138,12 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreRuntimeException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 
@@ -154,7 +153,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws CoreRuntimeException {
+    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) {
         if (dependency == null) {
             throw new NullPointerException("Can not get dependency details for null as dependency."); //$NON-NLS-1$
         }
@@ -263,7 +262,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @see #validateNamingConventions(MessageList, String, String)
      */
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         validateNamingConventions(list, getName(), PROPERTY_NAME);
@@ -291,7 +290,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      *            property.
      */
     protected void validateNamingConventions(MessageList list, String nameToValidate, String property)
-            throws CoreRuntimeException {
+            {
 
         MessageList mlForNameValidation = new MessageList();
         mlForNameValidation.add(getIpsProject().getNamingConventions()
@@ -303,7 +302,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         getIpsSrcFile().delete();
     }
 

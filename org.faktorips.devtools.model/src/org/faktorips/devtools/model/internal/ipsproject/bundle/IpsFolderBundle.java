@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.jar.Manifest;
 
-import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 

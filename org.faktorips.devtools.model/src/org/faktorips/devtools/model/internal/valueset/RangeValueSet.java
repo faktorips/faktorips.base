@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
@@ -161,7 +160,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreRuntimeException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (!(datatype instanceof NumericDatatype)) {
             return false;
@@ -360,7 +359,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         RangeValueSetValidator validator = createValidator(getValueSetOwner(), findValueDatatype(ipsProject));
         list.add(validator.validate());

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueType;
@@ -68,10 +68,10 @@ public interface IEnumValueContainer extends IIpsObject {
      * @param ipsProject The IPS project used as the starting point to search for the enumeration
      *            type if necessary
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the referenced {@link IEnumType}
+     * @throws IpsException If an error occurs while searching for the referenced {@link IEnumType}
      *             or the identifier {@link IEnumAttribute}
      */
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreRuntimeException;
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new list and collects the values of the enumeration attribute that is marked as the
@@ -93,10 +93,10 @@ public interface IEnumValueContainer extends IIpsObject {
      * If the {@link IEnumType} referenced by this {@link IEnumValueContainer} cannot be found then
      * no {@link IEnumValue} will be created and null will be returned.
      * 
-     * @throws CoreRuntimeException If an error occurs while searching for the referenced {@link IEnumType}
+     * @throws IpsException If an error occurs while searching for the referenced {@link IEnumType}
      *             (in case this {@link IEnumValueContainer} is an {@link IEnumContent}.
      */
-    public IEnumValue newEnumValue() throws CoreRuntimeException;
+    public IEnumValue newEnumValue() throws IpsException;
 
     /**
      * Returns a reference to the {@link IEnumType} or {@code null} if no {@link IEnumType} can be
@@ -126,12 +126,12 @@ public interface IEnumValueContainer extends IIpsObject {
      *            moved.
      * @param up Flag indicating whether to move up ({@code true}) or down ({@code false} ).
      * 
-     * @throws CoreRuntimeException If an error occurs while moving the {@link IEnumValue IEnumValues}.
+     * @throws IpsException If an error occurs while moving the {@link IEnumValue IEnumValues}.
      * @throws NullPointerException If {@code enumValuesToMove} is {@code null}.
      * @throws NoSuchElementException If any of the given {@link IEnumValue IEnumValues} is not part
      *             of this {@link IEnumValueContainer}.
      */
-    public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws CoreRuntimeException;
+    public int[] moveEnumValues(List<IEnumValue> enumValuesToMove, boolean up) throws IpsException;
 
     /**
      * Returns the index of the given {@link IEnumValue} or -1 if the given {@link IEnumValue} does

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -32,7 +33,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.RegexTablePag
 import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectPartsContainerTablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -79,7 +79,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         for (ITestParameter testParameter : testParameters) {
             try {
                 root.addPageElements(createTestParameterPageElement(testParameter));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error adding TestParameter", e)); //$NON-NLS-1$
             }
         }
@@ -96,7 +96,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
                     getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsStatus status = new IpsStatus(IStatus.WARNING,
                     "Could not find image for " + getDocumentedIpsObject().getName(), e); //$NON-NLS-1$
             getContext().addStatus(status);
@@ -110,7 +110,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * creates a IPageElement representing the given testParameter
      * 
      */
-    private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreRuntimeException {
+    private IPageElement createTestParameterPageElement(ITestParameter testParameter) {
         if (testParameter instanceof ITestValueParameter) {
             return createTestValueParameterPageElement((ITestValueParameter)testParameter);
         }
@@ -126,7 +126,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     }
 
     private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
-            throws CoreRuntimeException {
+            {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),

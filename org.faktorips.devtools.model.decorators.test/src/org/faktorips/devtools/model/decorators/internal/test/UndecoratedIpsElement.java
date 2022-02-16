@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.decorators.internal.test;
 
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsElement;
 
 public class UndecoratedIpsElement extends IpsElement {
@@ -23,7 +22,7 @@ public class UndecoratedIpsElement extends IpsElement {
     }
 
     @Override
-    public void delete() throws CoreRuntimeException {
+    public void delete() {
         // nothing to do
     }
 

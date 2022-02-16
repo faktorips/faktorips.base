@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.util.PathUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -68,7 +67,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreRuntimeException {
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) {
         String objectDir = PathUtil.toPortableString(getRootFolder(qnt.toPath()));
         return bundleManifest.getBasePackage(objectDir);
     }
@@ -87,7 +86,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * {@link #getBasePackageNameForMergableArtefacts(QualifiedNameType)}
      */
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreRuntimeException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) {
         return getBasePackageNameForMergableArtefacts(qnt);
     }
 
@@ -107,19 +106,19 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     }
 
     @Override
-    public String[] getNonEmptyPackages() throws CoreRuntimeException {
+    public String[] getNonEmptyPackages() {
         Set<String> nonEmptyPackagePaths = bundleContentIndex.getNonEmptyPackagePaths();
         String[] result = nonEmptyPackagePaths.toArray(new String[nonEmptyPackagePaths.size()]);
         return result;
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes() throws CoreRuntimeException {
+    public Set<QualifiedNameType> getQNameTypes() {
         return bundleContentIndex.getQualifiedNameTypes();
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreRuntimeException {
+    public Set<QualifiedNameType> getQNameTypes(String packName) {
         return bundleContentIndex.getQualifiedNameTypes(packName);
     }
 

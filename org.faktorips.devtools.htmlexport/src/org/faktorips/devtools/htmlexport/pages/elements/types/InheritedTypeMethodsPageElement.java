@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
@@ -57,7 +57,7 @@ public class InheritedTypeMethodsPageElement extends AbstractInheritedIpsObjectP
             }
 
             overriddenMethods.add(overriddenMethod);
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding overridden Method", e)); //$NON-NLS-1$
         }
     }

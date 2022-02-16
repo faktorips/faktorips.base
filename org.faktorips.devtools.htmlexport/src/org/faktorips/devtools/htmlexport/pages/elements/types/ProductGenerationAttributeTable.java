@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -30,7 +31,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -82,7 +82,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      */
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context)
-            throws CoreRuntimeException {
+            {
         super(context);
         this.productCmpt = productCmpt;
         this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
@@ -258,7 +258,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         List<IAttribute> allAttributes;
         try {
             allAttributes = policyCmptType.findAllAttributes(getContext().getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding Attributes of PolicyCmptType " //$NON-NLS-1$
                     + policyCmptType.getQualifiedName(), e));
             return;
@@ -413,7 +413,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         ITableContents tableContent = null;
         try {
             tableContent = usage.findTableContents(getContext().getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find contents of TableContentUsage " //$NON-NLS-1$
                     + usage.getName(), e));
         }
@@ -466,14 +466,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         for (IProductCmptLink productCmptLink : links) {
             try {
                 cellContent.addPageElements(createProductCmptLink(productCmptLink));
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(new IpsStatus(IStatus.ERROR,
                         "Could not get linked ProductCmpt within " + productCmptLink.getName(), e)); //$NON-NLS-1$
             }
         }
     }
 
-    private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) throws CoreRuntimeException {
+    private IPageElement createProductCmptLink(IProductCmptLink productCmptLink) {
         IProductCmpt target;
         target = productCmptLink.findTarget(productCmpt.getIpsProject());
 
@@ -496,7 +496,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         List<IAssociation> associations;
         try {
             associations = productCmptType.findAllAssociations(productCmptType.getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding all associations of " //$NON-NLS-1$
                     + productCmptType.getQualifiedName(), e));
             associations = new ArrayList<>();

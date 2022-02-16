@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.testcasetype;
 import java.text.MessageFormat;
 
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -86,7 +85,7 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreRuntimeException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check if the validation rule has the expected result type

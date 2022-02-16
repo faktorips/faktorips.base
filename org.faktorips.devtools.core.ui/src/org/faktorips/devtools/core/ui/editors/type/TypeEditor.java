@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.editors.type;
 
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Provides common behavior for all type editors.
@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.exception.CoreRuntimeException;
 public abstract class TypeEditor extends IpsObjectEditor {
 
     @Override
-    protected final void addPagesForParsableSrcFile() throws PartInitException, CoreRuntimeException {
+    protected final void addPagesForParsableSrcFile() throws PartInitException, IpsException {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
         if (IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
             addAllInOneSinglePage();

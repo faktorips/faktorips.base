@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDesc
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -221,7 +220,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreRuntimeException {
+    protected Dialog createDialogToFixDifferencesToModel() {
         IIpsObjectGeneration[] gen = getProductCmpt().getGenerationsOrderedByValidDate();
         IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
         for (int i = 0; i < generations.length; i++) {
@@ -272,7 +271,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreRuntimeException {
+    public IPage createModelDescriptionPage() {
         IProductCmptType cmptType = getProductCmpt().findProductCmptType(getIpsProject());
         if (cmptType != null) {
             return new ProductCmptTypeDescriptionPage(cmptType);

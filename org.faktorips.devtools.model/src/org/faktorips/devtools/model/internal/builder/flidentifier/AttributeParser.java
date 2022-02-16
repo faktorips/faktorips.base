@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.fl.IdentifierKind;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AttributeNode;
@@ -57,7 +57,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     public IdentifierNode parseInternal() {
         try {
             return parseToNode();
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return nodeFactory().createInvalidIdentifier(Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
                     Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
