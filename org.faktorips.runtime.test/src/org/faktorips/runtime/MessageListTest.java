@@ -505,6 +505,7 @@ public class MessageListTest {
         list.toString();
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         MessageList list = new MessageList();

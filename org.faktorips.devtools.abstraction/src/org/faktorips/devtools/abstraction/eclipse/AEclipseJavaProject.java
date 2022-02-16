@@ -13,11 +13,11 @@ import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 
-import java.lang.Runtime.Version;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -94,7 +94,7 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
     }
 
     @Override
-    public Version getSourceVersion() {
+    public Runtime.Version getSourceVersion() {
         String compilerCompliance = javaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
         return Runtime.Version.parse(compilerCompliance);
     }
@@ -129,15 +129,16 @@ public class AEclipseJavaProject extends AWrapper<IJavaProject> implements AJava
     public boolean isJavaFolder(AResource resource) {
         try {
             IPath outputPath = javaProject().getOutputLocation();
-            IClasspathEntry[] entries = javaProject().getResolvedClasspath(true);
-            if (toEclipsePath(resource.getWorkspaceRelativePath()).equals(outputPath)) {
+            IPath relativePath = toEclipsePath(resource.getWorkspaceRelativePath());
+            if (Objects.equals(outputPath, relativePath)) {
                 return true;
             }
+            IClasspathEntry[] entries = javaProject().getResolvedClasspath(true);
             for (IClasspathEntry entry : entries) {
-                if (toEclipsePath(resource.getWorkspaceRelativePath()).equals(entry.getOutputLocation())) {
+                if (Objects.equals(entry.getOutputLocation(), relativePath)) {
                     return true;
                 }
-                if (toEclipsePath(resource.getWorkspaceRelativePath()).equals(entry.getPath())) {
+                if (Objects.equals(entry.getPath(), relativePath)) {
                     return true;
                 }
             }

@@ -20,6 +20,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.model.versionmanager.IpsFeatureVersionManagerSorte
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
 
 /**
  * The main plug-in class.
@@ -132,9 +132,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the plugin's version identifier.
      */
-    public Version getVersionIdentifier() {
-        String version = getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
-        return Version.parseVersion(version);
+    public AVersion getVersionIdentifier() {
+        String bundleVersion = getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        return AVersion.parse(bundleVersion);
     }
 
     /**

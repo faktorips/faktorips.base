@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.migration;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -20,7 +21,6 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
-import org.osgi.framework.Version;
 
 /**
  * Version manager for the core-feature of FaktorIps.
@@ -92,22 +92,23 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public int compareToCurrentVersion(String otherVersion) {
-        Version outer = Version.parseVersion(otherVersion);
-        Version inner = Version.parseVersion(getCurrentVersion());
+        AVersion outer = AVersion.parse(otherVersion);
+        AVersion inner = AVersion.parse(getCurrentVersion());
         return outer.compareTo(inner);
     }
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreRuntimeException {
-        String version = projectToMigrate.getReadOnlyProperties().getMinRequiredVersionNumber(getFeatureId());
-        if (version == null) {
+        String minRequiredVersion = projectToMigrate.getReadOnlyProperties()
+                .getMinRequiredVersionNumber(getFeatureId());
+        if (minRequiredVersion == null) {
             // no version entry was found in the properties, therefore no migration operation will
             // be available
             // for this project
             return new AbstractIpsProjectMigrationOperation[0];
         }
-        return getMigrationOperations(projectToMigrate, version);
+        return getMigrationOperations(projectToMigrate, minRequiredVersion);
     }
 
     private AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate,
@@ -116,9 +117,9 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
         String migrationClassName = null;
         try {
             AbstractIpsProjectMigrationOperation migrationOperation = null;
-            String version = versionToStart;
-            while (compareToCurrentVersion(version) < 0) {
-                String underscoreVersion = version.replace('.', '_');
+            String currentVersion = versionToStart;
+            while (compareToCurrentVersion(currentVersion) < 0) {
+                String underscoreVersion = currentVersion.replace('.', '_');
                 underscoreVersion = underscoreVersion.replace('-', '_');
                 String packageName = QNameUtil.getPackageName(CoreVersionManager.class.getName());
                 migrationClassName = packageName + ".Migration_" + underscoreVersion; //$NON-NLS-1$
@@ -127,16 +128,18 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
                 migrationOperation = (AbstractIpsProjectMigrationOperation)constructor
                         .newInstance(projectToMigrate, getFeatureId());
                 operations.add(migrationOperation);
-                version = migrationOperation.getTargetVersion();
+                currentVersion = migrationOperation.getTargetVersion();
             }
         } catch (ClassNotFoundException e) {
             // there is no migration strategy for the expected version.
             // however we have to migrate as much we found and should not throw any exception
             // because maybe other migration managers fix this problem
             // If any migration is still missing, the validation should report the problem!
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new CoreRuntimeException(new IpsStatus(e));
         }
+        // CSON: IllegalCatch
 
         return operations.toArray(new AbstractIpsProjectMigrationOperation[operations.size()]);
     }

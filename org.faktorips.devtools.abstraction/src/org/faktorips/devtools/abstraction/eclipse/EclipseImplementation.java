@@ -11,17 +11,16 @@ package org.faktorips.devtools.abstraction.eclipse;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
-import java.lang.Runtime.Version;
 import java.util.Locale;
 import java.util.Objects;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions.AImplementation;
 import org.faktorips.devtools.abstraction.Wrappers.WrapperBuilder;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -93,13 +92,9 @@ public class EclipseImplementation implements AImplementation, BundleActivator {
     }
 
     @Override
-    public Version getVersion() {
-        String version = Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
-        version = version.replace(".qualifier", IpsStringUtils.EMPTY); //$NON-NLS-1$
-        if (version.endsWith(".0")) { //$NON-NLS-1$
-            version = version.substring(0, version.length() - 2);
-        }
-        return Version.parse(version);
+    public AVersion getVersion() {
+        String bundleVersion = Platform.getBundle("org.faktorips.devtools.model").getHeaders().get("Bundle-Version"); //$NON-NLS-1$ //$NON-NLS-2$
+        return AVersion.parse(bundleVersion);
     }
 
     @Override

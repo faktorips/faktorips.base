@@ -24,6 +24,8 @@ import org.faktorips.devtools.model.method.IParameter;
  */
 public class BuilderHelper {
 
+    private static final Version VERSION_1_5 = Runtime.Version.parse("1.5"); //$NON-NLS-1$
+
     private BuilderHelper() {
         super();
     }
@@ -90,11 +92,11 @@ public class BuilderHelper {
     }
 
     /**
-     * Returns true if the compliance level of the java project that is associated with the provided
-     * IPS project is equal or greater that 1.5. Otherwise false is returned.
+     * Returns {@code true} if the compliance level of the java project that is associated with the
+     * provided IPS project is equal or greater than 1.5. Otherwise {@code false} is returned.
      */
     public static final boolean javaComplianceGreateEqual5(IIpsProject ipsProject) {
-        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        return sourceVersion.compareToIgnoreOptional(Runtime.Version.parse("1.5")) >= 0; //$NON-NLS-1$
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        return sourceVersion.compareToIgnoreOptional(VERSION_1_5) >= 0;
     }
 }

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.method;
 
-import java.lang.Runtime.Version;
 import java.lang.reflect.Modifier;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
             result.add(new Message(IBaseMethod.MSGCODE_NO_NAME, Messages.Method_msg_NameEmpty, Message.ERROR, this,
                     PROPERTY_NAME));
         } else {
-            Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+            Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
             IStatus status = JavaConventions.validateMethodName(getName(), sourceVersion.toString(),
                     sourceVersion.toString());
             if (!status.isOK()) {

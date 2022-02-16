@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.Runtime.Version;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -42,6 +41,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
@@ -719,9 +719,9 @@ public class XmlUtil {
     }
 
     public static final String getSchemaLocation(IpsObjectType ipsObjectType) {
-        Version version = Abstractions.getVersion();
+        AVersion version = Abstractions.getVersion();
         String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
-                version.feature() + "." + version.interim(), //$NON-NLS-1$
+                version.majorMinor().toString(),
                 ipsObjectType.getXmlElementName());
         return schemaLocation;
     }

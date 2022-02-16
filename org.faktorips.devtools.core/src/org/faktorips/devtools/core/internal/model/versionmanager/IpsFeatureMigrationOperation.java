@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
@@ -31,7 +32,6 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
-import org.osgi.framework.Version;
 
 /**
  * Operation to migrate the content created with one version of FaktorIps to match the needs of
@@ -150,8 +150,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
-            } else if (Version.parseVersion(version)
-                    .compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
+            } else if (AVersion.parse(version)
+                    .compareTo(AVersion.parse(operation.getTargetVersion())) < 0) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }

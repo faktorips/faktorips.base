@@ -21,18 +21,18 @@ import static org.mockito.Mockito.withSettings;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Version;
 
 public class ExtendableVersionManagerTest {
 
     private static final String MY_FEATURE_ID = "myFeatureId";
     private ExtendableVersionManager extendableVersionManager;
-    private Version currentVersion;
+    private AVersion currentVersion;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation1;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
@@ -41,8 +41,8 @@ public class ExtendableVersionManagerTest {
         extendableVersionManager = new ExtendableVersionManager() {
 
             @Override
-            protected Version getVersion() {
-                return new Version("1.0.0.test");
+            protected AVersion getVersion() {
+                return AVersion.parse("1.0.0.test");
             }
 
             @Override
@@ -50,7 +50,7 @@ public class ExtendableVersionManagerTest {
                 return MY_FEATURE_ID;
             }
         };
-        currentVersion = Version.parseVersion(extendableVersionManager.getCurrentVersion());
+        currentVersion = AVersion.parse(extendableVersionManager.getCurrentVersion());
     }
 
     @Test
@@ -106,10 +106,10 @@ public class ExtendableVersionManagerTest {
         ipsProjectMigrationOperation2 = mock(AbstractIpsProjectMigrationOperation.class);
         when(ipsProjectMigrationOperation2.getTargetVersion()).thenReturn(currentVersion + "zzz");
 
-        Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
-        registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
+        Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
+        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation1.getTargetVersion()),
                 (ipsProject, featureId) -> ipsProjectMigrationOperation1);
-        registeredMigrations.put(new Version(ipsProjectMigrationOperation2.getTargetVersion()),
+        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation2.getTargetVersion()),
                 (ipsProject, featureId) -> ipsProjectMigrationOperation2);
         extendableVersionManager.setRegisteredMigrations(registeredMigrations);
     }

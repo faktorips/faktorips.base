@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal;
 
-import java.lang.Runtime.Version;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
@@ -297,11 +296,11 @@ public class ValidationUtils {
             String text;
 
             if (Datatype.MONEY.equals(datatype)) {
-                String[] params = { propertyName, value, datatype.getName() };
-                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY,
+                        propertyName, value, datatype.getName());
             } else {
-                String[] params = { value, propertyName, datatype.getName() };
-                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE,
+                        value, propertyName, datatype.getName());
             }
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text,
@@ -352,7 +351,7 @@ public class ValidationUtils {
      * @see JavaConventions#validateFieldName(String, String, String)
      */
     public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
-        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
         IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name),
                 sourceVersion.toString(),
                 sourceVersion.toString());
@@ -380,7 +379,7 @@ public class ValidationUtils {
      * @see JavaConventions#validateJavaTypeName(String, String, String)
      */
     public static IStatus validateJavaTypeName(String name, IIpsProject ipsProject) {
-        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
         return JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString());
     }
 
@@ -400,7 +399,7 @@ public class ValidationUtils {
      * @see JavaConventions#validateIdentifier(String, String, String)
      */
     public static IStatus validateJavaIdentifier(String name, IIpsProject ipsProject) {
-        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
         return JavaConventions.validateIdentifier(name, sourceVersion.toString(), sourceVersion.toString());
     }
 

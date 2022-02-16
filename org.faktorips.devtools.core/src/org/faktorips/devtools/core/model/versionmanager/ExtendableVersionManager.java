@@ -19,6 +19,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.abstraction.eclipse.OsgiVersions;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -26,7 +28,6 @@ import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOp
 import org.faktorips.devtools.model.versionmanager.IExtendableVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.Version;
 
 /**
  * This is a special version manager, managing the compatibility between new and old project
@@ -49,7 +50,7 @@ import org.osgi.framework.Version;
  */
 public class ExtendableVersionManager implements IExtendableVersionManager {
 
-    private static final Version NONE = Version.emptyVersion;
+    private static final AVersion NONE = AVersion.VERSION_ZERO;
 
     private String featureID;
 
@@ -61,9 +62,9 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
 
     private boolean requiredForAllProjects;
 
-    private Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations;
+    private Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations;
 
-    private Version currentVersion;
+    private AVersion currentVersion;
 
     /**
      * The default constructor simply creates the version manager but initializes nothing. To
@@ -74,7 +75,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
     public ExtendableVersionManager() {
     }
 
-    private Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredOperations(String contributorName) {
+    private Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredOperations(String contributorName) {
         IIpsModelExtensions modelExtensions = IIpsModelExtensions.get();
         if (modelExtensions != null) {
             return modelExtensions.getRegisteredMigrationOperations(contributorName);
@@ -124,16 +125,16 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
         registeredMigrations = getRegisteredOperations(contributorName);
     }
 
-    protected Version getVersion() {
+    protected AVersion getVersion() {
         if (currentVersion == null) {
             currentVersion = retrieveContributorVersion();
         }
         return currentVersion;
     }
 
-    private Version retrieveContributorVersion() {
+    private AVersion retrieveContributorVersion() {
         Bundle bundle = Platform.getBundle(getContributorName());
-        currentVersion = bundle.getVersion();
+        currentVersion = OsgiVersions.toAVersion(bundle.getVersion());
         return currentVersion;
     }
 
@@ -169,9 +170,9 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
             return true;
         }
 
-        Version otherVersionVersion = Version.parseVersion(otherVersion);
-        SortedSet<Version> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
-        for (Version version : versionsWithMigration) {
+        AVersion otherVersionVersion = AVersion.parse(otherVersion);
+        SortedSet<AVersion> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
+        for (AVersion version : versionsWithMigration) {
             if (version.compareTo(otherVersionVersion) > 0 && version.compareTo(getVersion()) <= 0) {
                 return false;
             }
@@ -181,32 +182,32 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
 
     @Override
     public int compareToCurrentVersion(String otherVersion) {
-        Version outer = Version.parseVersion(otherVersion);
-        Version inner = getVersion();
+        AVersion outer = AVersion.parse(otherVersion);
+        AVersion inner = getVersion();
         return outer.compareTo(inner);
     }
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws CoreRuntimeException {
-        Version projectsVersion = Version.parseVersion(projectToMigrate.getReadOnlyProperties()
+        AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId()));
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);
         return result.toArray(new AbstractIpsProjectMigrationOperation[result.size()]);
     }
 
     private List<AbstractIpsProjectMigrationOperation> getMigrationOperations(IIpsProject projectToMigrate,
-            Version projectsVersion) {
+            AVersion projectsVersion) {
 
         if (NONE.equals(projectsVersion)) {
             // No version means no installed feature, so no migration required
             return Collections.emptyList();
         }
 
-        SortedSet<Version> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
+        SortedSet<AVersion> versionsWithMigration = new TreeSet<>(registeredMigrations.keySet());
         List<AbstractIpsProjectMigrationOperation> result = new ArrayList<>();
 
-        for (Version version : versionsWithMigration) {
+        for (AVersion version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(getVersion()) <= 0) {
                 result.add(registeredMigrations.get(version).createIpsProjectMigrationOpertation(projectToMigrate,
                         getFeatureId()));
@@ -215,7 +216,8 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
         return result;
     }
 
-    /* private */void setRegisteredMigrations(Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations) {
+    /* private */void setRegisteredMigrations(
+            Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations) {
         this.registeredMigrations = registeredMigrations;
     }
 

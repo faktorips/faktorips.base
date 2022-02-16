@@ -13,7 +13,6 @@ import static org.faktorips.devtools.abstraction.plainjava.internal.Exceptions.a
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.Runtime.Version;
 import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Map;
@@ -22,6 +21,7 @@ import java.util.WeakHashMap;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions.AImplementation;
 import org.faktorips.devtools.abstraction.Wrappers.WrapperBuilder;
 
@@ -87,9 +87,9 @@ public enum PlainJavaImplementation implements AImplementation {
     }
 
     @Override
-    public Version getVersion() {
+    public AVersion getVersion() {
         // TODO read from Manifest?
-        return Version.parse("21.12"); //$NON-NLS-1$
+        return AVersion.parse("21.12"); //$NON-NLS-1$
     }
 
     @Override

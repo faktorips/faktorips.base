@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
-import java.lang.Runtime.Version;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +187,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
 
         // Check for valid java field name.
-        Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
         IStatus status = JavaConventions.validateFieldName(name, sourceVersion.toString(), sourceVersion.toString());
         if (!(status.isOK())) {
             text = MessageFormat.format(Messages.EnumAttribute_NameNotAValidFieldName, name);

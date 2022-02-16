@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction;
 
-import java.lang.Runtime.Version;
 import java.util.Locale;
 
 import org.faktorips.devtools.abstraction.Wrappers.WrapperBuilder;
@@ -60,7 +59,7 @@ public final class Abstractions {
     /**
      * Returns the Faktor-IPS implementation version.
      */
-    public static Version getVersion() {
+    public static AVersion getVersion() {
         return IMPLEMENTATION.getVersion();
     }
 
@@ -94,7 +93,7 @@ public final class Abstractions {
 
         Locale getLocale();
 
-        Version getVersion();
+        AVersion getVersion();
 
         ALog getLog();
 

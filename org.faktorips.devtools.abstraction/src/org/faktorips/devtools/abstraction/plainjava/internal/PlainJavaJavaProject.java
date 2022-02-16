@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
-import java.lang.Runtime.Version;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Objects;
@@ -68,7 +67,8 @@ public class PlainJavaJavaProject extends AWrapper<PlainJavaProject> implements 
     }
 
     @Override
-    public Version getSourceVersion() {
+    public Runtime.Version getSourceVersion() {
+        // TODO aus pom lesen
         return Runtime.version();
     }
 

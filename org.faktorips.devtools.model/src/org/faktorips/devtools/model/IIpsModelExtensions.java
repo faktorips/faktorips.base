@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -36,7 +37,6 @@ import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.osgi.framework.Version;
 
 /**
  * Extensions to the Faktor-IPS model.
@@ -116,7 +116,7 @@ public interface IIpsModelExtensions {
      * @return A map containing all registered migration operations. The key of the map is the
      *         target version of the operation
      */
-    Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName);
+    Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName);
 
     /**
      * Returns user preferences.

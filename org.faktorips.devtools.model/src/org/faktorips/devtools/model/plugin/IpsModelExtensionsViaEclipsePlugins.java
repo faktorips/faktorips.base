@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -47,7 +48,6 @@ import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.osgi.framework.Version;
 
 public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions {
 
@@ -59,7 +59,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
 
     private final Supplier<IClassLoaderProviderFactory> classLoaderProviderFactory;
 
-    private final Supplier<Map<Version, IIpsProjectMigrationOperationFactory>> registeredMigrationOperations;
+    private final Supplier<Map<AVersion, IIpsProjectMigrationOperationFactory>> registeredMigrationOperations;
 
     private final Supplier<SortorderSet<IFunctionResolverFactory<JavaCodeFragment>>> flFunctionResolvers;
 
@@ -147,7 +147,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     }
 
     @Override
-    public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
+    public Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(
+            String contributorName) {
         // FIXME filter by contributor
         // if (!contributorName.equals(configElement.getContributor().getName())) {
         return registeredMigrationOperations.get();

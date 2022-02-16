@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,9 +28,7 @@ import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementC
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -39,9 +38,6 @@ public class SimpleTypeModelPartsReaderTest {
 
     @Mock
     ModelElement parentModel;
-
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
 
     private final ModelElementCreator<DummyElement> modelElementCreator = DummyElement::new;
 
@@ -70,30 +66,33 @@ public class SimpleTypeModelPartsReaderTest {
     public void testCreateParts_tooMany() throws Exception {
         SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
-        expectedEx.expect(IllegalArgumentException.class);
-        expectedEx.expectMessage("Cannot find part Track in " + PartHolder3.class.getCanonicalName());
 
-        simpleTypePartsReader.createParts(Parent.class, PartHolder3.class, parentModel);
+        IllegalArgumentException expectedEx = assertThrows(IllegalArgumentException.class,
+                () -> simpleTypePartsReader.createParts(Parent.class, PartHolder3.class, parentModel));
+
+        assertThat(expectedEx.getMessage(), is("Cannot find part Track in " + PartHolder3.class.getCanonicalName()));
     }
 
     @Test
     public void testCreateParts_tooFew() throws Exception {
         SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
-        expectedEx.expect(IllegalStateException.class);
-        expectedEx.expectMessage("No getter method found for annotated part \"Trick\"");
 
-        simpleTypePartsReader.createParts(Parent.class, PartHolder1.class, parentModel);
+        IllegalStateException expectedEx = assertThrows(IllegalStateException.class,
+                () -> simpleTypePartsReader.createParts(Parent.class, PartHolder1.class, parentModel));
+
+        assertThat(expectedEx.getMessage(), is("No getter method found for annotated part \"Trick\""));
     }
 
     @Test
     public void testCreateParts_manyTooFew() throws Exception {
         SimpleTypePartsReader<DummyElement, ParentAnnotation, ChildAnnotation> simpleTypePartsReader = new SimpleTypePartsReader<>(
                 ParentAnnotation.class, namesAccessor, ChildAnnotation.class, nameAccessor, modelElementCreator);
-        expectedEx.expect(IllegalStateException.class);
-        expectedEx.expectMessage("No getter methods found for annotated parts \"Trick\", \"Track\"");
 
-        simpleTypePartsReader.createParts(Parent2.class, PartHolder1.class, parentModel);
+        IllegalStateException expectedEx = assertThrows(IllegalStateException.class,
+                () -> simpleTypePartsReader.createParts(Parent2.class, PartHolder1.class, parentModel));
+
+        assertThat(expectedEx.getMessage(), is("No getter methods found for annotated parts \"Trick\", \"Track\""));
     }
 
     @Test

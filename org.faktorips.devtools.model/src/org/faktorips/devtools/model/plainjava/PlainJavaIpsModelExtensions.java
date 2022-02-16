@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.osgi.framework.Version;
 
 public class PlainJavaIpsModelExtensions implements IIpsModelExtensions {
 
@@ -66,7 +66,8 @@ public class PlainJavaIpsModelExtensions implements IIpsModelExtensions {
     }
 
     @Override
-    public Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName) {
+    public Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(
+            String contributorName) {
         // TODO Auto-generated method stub
         return Collections.emptyMap();
     }
