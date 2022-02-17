@@ -21,6 +21,7 @@
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
     </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl DE -consoleLog"/>
@@ -200,9 +201,9 @@
         <setEntry value="org.eclipse.equinox.p2.director.app@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.director.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.director@default:default"/>
-        <setEntry value="org.eclipse.equinox.p2.discovery.compatibility.nl_de@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.discovery.compatibility.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.discovery.compatibility@default:default"/>
-        <setEntry value="org.eclipse.equinox.p2.discovery.nl_de@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.discovery.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.discovery@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.engine.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.engine@default:default"/>
@@ -226,7 +227,7 @@
         <setEntry value="org.eclipse.equinox.p2.repository@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.touchpoint.eclipse.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.touchpoint.eclipse@default:default"/>
-        <setEntry value="org.eclipse.equinox.p2.transport.ecf.nl_de@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.transport.ecf.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.transport.ecf@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.ui.discovery@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.ui.nl_de@default:false"/>
@@ -264,9 +265,9 @@
         <setEntry value="org.eclipse.jdt.junit.nl_de@default:false"/>
         <setEntry value="org.eclipse.jdt.junit.runtime.nl_de@default:false"/>
         <setEntry value="org.eclipse.jdt.junit.runtime@default:default"/>
-        <setEntry value="org.eclipse.jdt.junit4.runtime.nl_de@default:default"/>
+        <setEntry value="org.eclipse.jdt.junit4.runtime.nl_de@default:false"/>
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
-        <setEntry value="org.eclipse.jdt.junit5.runtime.nl_de@default:default"/>
+        <setEntry value="org.eclipse.jdt.junit5.runtime.nl_de@default:false"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
         <setEntry value="org.eclipse.jdt.launching.nl_de@default:false"/>
@@ -297,7 +298,7 @@
         <setEntry value="org.eclipse.m2e.editor.xml@default:default"/>
         <setEntry value="org.eclipse.m2e.editor@default:default"/>
         <setEntry value="org.eclipse.m2e.importer@default:default"/>
-        <setEntry value="org.eclipse.m2e.jdt.ui@default:default"/>
+        <setEntry value="org.eclipse.m2e.jdt.ui@default:false"/>
         <setEntry value="org.eclipse.m2e.jdt@default:default"/>
         <setEntry value="org.eclipse.m2e.launching@default:default"/>
         <setEntry value="org.eclipse.m2e.lifecyclemapping.defaults@default:default"/>
@@ -342,7 +343,7 @@
         <setEntry value="org.eclipse.team.ui@default:default"/>
         <setEntry value="org.eclipse.text.nl_de@default:false"/>
         <setEntry value="org.eclipse.text@default:default"/>
-        <setEntry value="org.eclipse.ui.browser.nl_de@default:default"/>
+        <setEntry value="org.eclipse.ui.browser.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.browser@default:default"/>
         <setEntry value="org.eclipse.ui.cheatsheets.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.cheatsheets@default:default"/>
@@ -407,6 +408,8 @@
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest.core*1.3.0.zz-NO-SPLIT_PCK-v201303031735@default:default"/>
+        <setEntry value="org.junit*4.12.0.v201504281640@default:default"/>
+        <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
         <setEntry value="org.junit.jupiter.api@default:default"/>
         <setEntry value="org.junit.jupiter.engine@default:default"/>
         <setEntry value="org.junit.jupiter.migrationsupport@default:default"/>
@@ -417,7 +420,6 @@
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
-        <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
         <setEntry value="org.objenesis*1.4.0@default:default"/>
         <setEntry value="org.objenesis*2.1.0@default:default"/>
@@ -433,17 +435,17 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
-        <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
+        <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.decorators.nl1@default:default"/>
+        <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
@@ -453,7 +455,7 @@
         <setEntry value="org.faktorips.fl@default:default"/>
         <setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
-        <setEntry value="org.faktorips.nls.devtools.model.nl1@default:default"/>
+        <setEntry value="org.faktorips.nls.devtools.model.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
         <setEntry value="org.faktorips.runtime.groovy@default:default"/>
