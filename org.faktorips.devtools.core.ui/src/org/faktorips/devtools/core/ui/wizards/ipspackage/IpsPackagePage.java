@@ -382,7 +382,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         IIpsPackageFragment pack = getParentPackageFragment();
         IIpsPackageFragment ipsPackage = pack.getRoot().getIpsPackageFragment(
                 pack.isDefaultPackage() ? name : (pack.getName() + "." + name)); //$NON-NLS-1$
-        IFolder folder = (IFolder)ipsPackage.getCorrespondingResource();
+        IFolder folder = (IFolder)ipsPackage.getCorrespondingResource().unwrap();
         if (folder != null) {
             if (folder.exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, ipsPackage.getName()));
