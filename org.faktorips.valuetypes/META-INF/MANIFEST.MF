@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Valuetypes for Java5
 Bundle-SymbolicName: org.faktorips.valuetypes
-Bundle-Version: 21.12.3.qualifier
+Bundle-Version: 21.12.4.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Export-Package: org.faktorips.annotation,
  org.faktorips.values,
