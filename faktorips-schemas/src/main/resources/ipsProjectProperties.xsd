@@ -18,6 +18,7 @@
             <xsd:element name="PersistenceOptions" type="PersistenceOptionsType" minOccurs="0" maxOccurs="1" />
             <xsd:element name="SupportedLanguages" type="SupportedLanguagesType" minOccurs="1" maxOccurs="1" />
             <xsd:element name="DefaultCurrency" type="DefaultCurrencyType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="FeatureConfigurations" type="FeatureConfigurationsType" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="changesInTimeNamingConvention" type="string" use="required" />
         <xsd:attribute name="modelProject" type="boolean" use="required" />
@@ -214,5 +215,23 @@
     <xsd:complexType name="RequiredIpsFeatureType">
         <xsd:attribute name="id" type="string" use="required" />
         <xsd:attribute name="minVersion" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationsType">
+        <xsd:sequence>
+            <xsd:element name="FeatureConfiguration" type="FeatureConfigurationType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="FeatureConfigurationPropertyType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="featureId" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationPropertyType">
+        <xsd:attribute name="name" type="string" use="required" />
+        <xsd:attribute name="value" type="string" use="required" />
     </xsd:complexType>
 </xsd:schema>
