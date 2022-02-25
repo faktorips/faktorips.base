@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools UI
 Bundle-SymbolicName: org.faktorips.devtools.core.ui;singleton:=true
-Bundle-Version: 19.7.3.qualifier
+Bundle-Version: 19.7.4.qualifier
 Bundle-Activator: org.faktorips.devtools.core.ui.IpsUIPlugin
 Require-Bundle: org.eclipse.ui;visibility:=reexport,
  org.eclipse.gef;bundle-version="3.4.0",

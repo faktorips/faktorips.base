@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Custom Ant-Tasks
 Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
-Bundle-Version: 19.7.3.qualifier
+Bundle-Version: 19.7.4.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.apache.ant,
  org.eclipse.ant.core,
