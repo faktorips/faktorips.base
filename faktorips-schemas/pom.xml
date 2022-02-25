@@ -7,7 +7,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-schemas</artifactId>
-    <version>21.12.4-SNAPSHOT</version>
+    <version>21.12.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Faktor-IPS Schemas</name>
 

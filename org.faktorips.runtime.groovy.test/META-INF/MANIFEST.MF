@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Groovy Runtime Tests
 Bundle-SymbolicName: org.faktorips.runtime.groovy.test
-Bundle-Version: 21.12.4.qualifier
+Bundle-Version: 21.12.5.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.runtime.groovy;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
