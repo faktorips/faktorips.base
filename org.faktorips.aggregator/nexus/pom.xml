@@ -27,7 +27,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-nexus-base</artifactId>
-    <version>20.12.7-SNAPSHOT</version>
+    <version>20.12.8-SNAPSHOT</version>
 
     <name>Faktor-IPS Library for Maven</name>
     <url>http://www.faktorzehn.org</url>

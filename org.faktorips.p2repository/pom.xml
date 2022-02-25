@@ -38,7 +38,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>org.faktorips.aggregator.sites</artifactId>
-        <version>20.12.7-SNAPSHOT</version>
+        <version>20.12.8-SNAPSHOT</version>
         <relativePath>../org.faktorips.aggregator/sites/pom.xml</relativePath>
     </parent>
 
