@@ -377,7 +377,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
         if (selected instanceof IIpsProject) {
             IIpsProject ipsProject = (IIpsProject)selected;
-            manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
+            manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource().unwrap()));
 
             try {
                 AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
