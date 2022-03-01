@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
@@ -63,7 +62,7 @@ public class WorkbenchRunnableAdapter implements IRunnableWithProgress {
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
         try {
-            JavaCore.run((IWorkspaceRunnable)workspaceRunnable, rule, monitor);
+            ResourcesPlugin.getWorkspace().run(workspaceRunnable, rule, IWorkspace.AVOID_UPDATE, monitor);
         } catch (OperationCanceledException e) {
             throw new InterruptedException(e.getMessage());
         } catch (CoreException e) {
