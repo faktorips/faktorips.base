@@ -535,6 +535,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         return getIpsProjects();
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public IIpsElement getIpsElement(AResource resource) {
         ArgumentCheck.notNull(resource);
@@ -542,9 +543,17 @@ public class IpsModel extends IpsElement implements IIpsModel {
             return this;
         }
         if (resource.getType() == AResourceType.PROJECT) {
-            return getIpsProject(resource.getName());
+            if (((AProject)resource).isIpsProject()) {
+                return getIpsProject(resource.getName());
+            } else {
+                return null;
+            }
         }
-        IIpsProject ipsProject = getIpsProject(resource.getProject().getName());
+        AProject project = resource.getProject();
+        if (project == null) {
+            return null;
+        }
+        IIpsProject ipsProject = getIpsProject(project.getName());
         Path relativePath = resource.getProjectRelativePath();
         IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(relativePath.subpath(0, 1).toString());
         if (root == null) {
@@ -575,6 +584,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
         return ipsFolder.getIpsSrcFile(resource.getName());
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Returns an IpsElement of an IPS project that is not categorized as such (For example the

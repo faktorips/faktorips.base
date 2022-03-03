@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.WeakHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -48,8 +48,7 @@ public class Wrappers {
      * Returns a {@link WrapperBuilder} for the object produced by the given supplier that allows
      * that object to be wrapped in an implementation-specific {@link AWrapper wrapper}.
      * <p>
-     * Any {@link CoreException} thrown by the supplier is rethrown as a
-     * {@link IpsException}.
+     * Any {@link CoreException} thrown by the supplier is rethrown as a {@link IpsException}.
      */
     public static <T> WrapperBuilder wrapSupplier(CoreExceptionThrowingSupplier<T> supplier) {
         return get(() -> wrap(supplier.get()));
@@ -58,8 +57,7 @@ public class Wrappers {
     /**
      * Runs the given runnable.
      * <p>
-     * Any {@link CoreException} thrown by the runnable is rethrown as a
-     * {@link IpsException}.
+     * Any {@link CoreException} thrown by the runnable is rethrown as a {@link IpsException}.
      */
     public static void run(CoreExceptionThrowingRunnable runnable) {
         try {
@@ -72,8 +70,7 @@ public class Wrappers {
     /**
      * Calls the given supplier and returns the result.
      * <p>
-     * Any {@link CoreException} thrown by the supplier is rethrown as a
-     * {@link IpsException}.
+     * Any {@link CoreException} thrown by the supplier is rethrown as a {@link IpsException}.
      */
     public static <T> T get(CoreExceptionThrowingSupplier<T> supplier) {
         try {
@@ -177,7 +174,7 @@ public class Wrappers {
 
     public abstract static class WrapperBuilder {
 
-        private static Map<Object, Set<AAbstraction>> wrappers = new ConcurrentHashMap<>();
+        private static Map<Object, Set<AAbstraction>> wrappers = new WeakHashMap<>();
 
         private final Object original;
 
@@ -195,7 +192,10 @@ public class Wrappers {
             if (original == null) {
                 return null;
             }
-            Set<AAbstraction> abstractions = wrappers.computeIfAbsent(original, $ -> new LinkedHashSet<>());
+            Set<AAbstraction> abstractions;
+            synchronized (wrappers) {
+                abstractions = wrappers.computeIfAbsent(original, $ -> new LinkedHashSet<>());
+            }
             synchronized (abstractions) {
                 for (AAbstraction abstraction : abstractions) {
                     if (abstractionClass.isInstance(abstraction)) {

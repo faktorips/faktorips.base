@@ -232,7 +232,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
         AProject project = root.getProject("TestProject");
         IIpsProject ipsProject = model.getIpsProject("TestProject");
-        assertEquals(ipsProject, model.getIpsElement(project));
+        assertNull(model.getIpsElement(project));
 
         AFolder rootFolder = project.getFolder("model");
         IIpsPackageFragmentRoot packRoot = ipsProject.getIpsPackageFragmentRoot("productdef");
