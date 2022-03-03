@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -105,7 +106,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             datatypeChanged(editFieldDatatypeOrRule.getText());
         }
         wizard.postAsyncRunnable(() -> {
-            if (wizard.getShell().isDisposed()) {
+            Shell shell = wizard.getShell();
+            if (shell == null || shell.isDisposed()) {
                 return;
             }
             updateSetPageComplete();
