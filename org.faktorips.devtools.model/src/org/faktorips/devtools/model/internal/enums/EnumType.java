@@ -249,9 +249,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return literalNameAttribute;
     }
 
-    private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass)
-            {
-
+    private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass) {
         return ((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<IEnumAttribute>(getIpsSrcFile()) {
 
@@ -270,8 +268,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 });
     }
 
-    private IEnumAttribute createNewEnumAttributeSingleEvent(final Class<? extends IEnumAttribute> attributeClass)
-            {
+    private IEnumAttribute createNewEnumAttributeSingleEvent(final Class<? extends IEnumAttribute> attributeClass) {
         IEnumAttribute newEnumAttribute = newPart(attributeClass);
 
         // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
@@ -302,8 +299,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
-            {
+    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject) {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<>(2);
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
@@ -660,8 +656,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Adds validation messages to the given message list. The validation will pass immediately if
      * the <code>IEnumType</code> is abstract.
      */
-    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
-            {
+    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
         // Pass validation on abstract EnumType.
@@ -671,8 +666,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateInheritedAttributesNonAbstract(validationMessageList, ipsProject);
     }
 
-    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject)
-            {
+    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject) {
         List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates(ipsProject);
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
@@ -889,8 +883,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes)
-            {
+    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) {
         List<IEnumAttribute> newEnumAttributes = new ArrayList<>();
         for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
             String currentSuperEnumAttributeName = currentSuperEnumAttribute.getName();

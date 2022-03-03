@@ -73,8 +73,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
      * resolved.
      */
-    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject)
-            {
+    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject) {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         hierarchy.addSubtypes(pcType, null, false, searchProject);
         return hierarchy;
@@ -94,8 +93,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return hierarchy;
     }
 
-    private void addSubtypes(IType pcType, IType superType, boolean searchReferencingProjects, IIpsProject ipsProject)
-            {
+    private void addSubtypes(IType pcType, IType superType, boolean searchReferencingProjects, IIpsProject ipsProject) {
         List<IType> subtypes = searchDirectSubtypes(pcType, searchReferencingProjects, ipsProject);
         Node node = new Node(pcType, superType, subtypes);
         add(node);
@@ -104,8 +102,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
     }
 
-    private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject)
-            {
+    private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject) {
         List<IType> subtypes = new ArrayList<>();
         if (searchReferencingProjects) {
             IIpsProject[] referencingProjects = ipsProject.findReferencingProjectLeavesOrSelf();

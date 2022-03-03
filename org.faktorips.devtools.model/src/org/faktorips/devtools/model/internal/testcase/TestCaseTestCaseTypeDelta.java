@@ -287,9 +287,8 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
      * Computes all missing test policy cmpts, test policy cmpt links and test attribute values
      * (test case side)
      */
-    private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(List<ITestPolicyCmpt> testCaseSideObjects)
-            {
-
+    private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(
+            List<ITestPolicyCmpt> testCaseSideObjects) {
         List<ITestPolicyCmptTypeParameter> missingTestPolicyCmptTypeParameter = new ArrayList<>();
         missingTestPolicyCmptTypeParameter.addAll(Arrays.asList(testCaseType.getTestPolicyCmptTypeParameters()));
         List<ITestAttribute> missingTestAttributes = new ArrayList<>();

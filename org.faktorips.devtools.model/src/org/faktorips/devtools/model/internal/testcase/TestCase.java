@@ -210,8 +210,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Adds all test policy cmpts and its child test policy cmpts to the given list.
      */
-    private void addChildTestPolicyCmpt(List<ITestPolicyCmpt> allPolicyCmpts, ITestPolicyCmpt cmpt)
-            {
+    private void addChildTestPolicyCmpt(List<ITestPolicyCmpt> allPolicyCmpts, ITestPolicyCmpt cmpt) {
         allPolicyCmpts.add(cmpt);
         ITestPolicyCmptLink[] testLinks = cmpt.getTestPolicyCmptLinks();
         for (ITestPolicyCmptLink testLink : testLinks) {
@@ -361,8 +360,7 @@ public class TestCase extends IpsObject implements ITestCase {
     /**
      * Adds the missing test object of the given testPolicyCmptTypeParameter
      */
-    public ITestPolicyCmpt addRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter)
-            {
+    public ITestPolicyCmpt addRootTestPolicyCmpt(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
 
         String name = testPolicyCmptTypeParameter.getName();
         ITestPolicyCmpt testPolicyCpmt = newTestPolicyCmpt();
@@ -806,8 +804,7 @@ public class TestCase extends IpsObject implements ITestCase {
     }
 
     @Override
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject)
-            {
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.getName().equals(validationRuleName)) {
@@ -821,8 +818,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * Returns all validation rules of the policy cmpt types of the product cmpt inside this test
      * case.
      */
-    private Collection<IValidationRule> getTestCaseTestRuleCandidates(IIpsProject ipsProject)
-            {
+    private Collection<IValidationRule> getTestCaseTestRuleCandidates(IIpsProject ipsProject) {
         List<IValidationRule> result = new ArrayList<>();
         getValidationRules(getTestPolicyCmpts(), result, ipsProject);
         return result;

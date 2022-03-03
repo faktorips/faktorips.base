@@ -262,8 +262,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return candidate;
     }
 
-    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            {
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         validateDefaultValue(defaultValue, valueDatatype, result, ipsProject);
     }
 
@@ -282,8 +281,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return valueDatatype.isParsable(defaultValueToValidate);
     }
 
-    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject)
-            {
+    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) {
         IValueSet valueSet = getValueSet();
         return valueSet == null || defaultValueToValidate == null
                 || valueSet.containsValue(defaultValueToValidate, ipsProject);

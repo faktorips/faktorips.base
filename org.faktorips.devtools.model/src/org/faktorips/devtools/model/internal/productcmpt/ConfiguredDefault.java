@@ -97,8 +97,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     @Override
-    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            {
+    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute) {
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         String valueToValidate = getValue();
 
@@ -110,8 +109,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
 
     }
 
-    private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
-            {
+    private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list) {
         String valueToValidate = getValue();
         IValueSet valueSetToValidate = getValueSet();
         if (StringUtils.isNotEmpty(valueToValidate) && valueSetToValidate != null) {

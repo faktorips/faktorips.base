@@ -247,8 +247,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * 
      * @param projectToMigrate The project the migration operation should be returned for.
      */
-    public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
-            {
+    public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate) {
         IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
 
         /*

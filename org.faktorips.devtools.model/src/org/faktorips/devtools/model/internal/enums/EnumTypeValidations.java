@@ -106,9 +106,7 @@ public class EnumTypeValidations {
      * 
      * @throws IpsException If an exception occurs during processing.
      */
-    public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject)
-            {
-
+    public static void validateSuperTypeHierarchy(MessageList msgList, IEnumType enumType, IIpsProject ipsProject) {
         ArgumentCheck.notNull(new Object[] { msgList, ipsProject });
 
         IEnumType superEnumType = enumType.findSuperEnumType(ipsProject);

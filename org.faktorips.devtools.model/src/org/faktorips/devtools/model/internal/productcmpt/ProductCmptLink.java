@@ -401,9 +401,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * 
      * @throws IpsException if an error occurs during supertype-evaluation
      */
-    private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            {
-
+    private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject) {
         if (target == null || association == null) {
             return false;
         }

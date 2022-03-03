@@ -367,8 +367,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            {
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         super.validateDefaultValue(valueDatatype, result, ipsProject);
         if (isDefaultValueForbidden(valueDatatype)) {
             expectNoDefaultValue(result);

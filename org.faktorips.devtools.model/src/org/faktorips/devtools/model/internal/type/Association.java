@@ -458,8 +458,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
     }
 
-    private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss)
-            {
+    private void validateDerivedUnionsTarget(MessageList list, IIpsProject ipsProject, IAssociation unionAss) {
         IType unionTarget = unionAss.findTarget(ipsProject);
         if (unionTarget == null) {
             String text = Messages.Association_msg_TargetOfDerivedUnionDoesNotExist;
@@ -493,8 +492,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateConstrainedAssociation(MessageList list,
             IAssociation constrainedAssociation,
-            IAssociation parentAssociation)
-            {
+            IAssociation parentAssociation) {
         if (!isCovariantTargetType(constrainedAssociation)) {
             String text = MessageFormat.format(Messages.Association_msg_ConstrainedTargetNoSuperclass, getName());
             list.newError(MSGCODE_CONSTRAINED_TARGET_SUPERTYP_NOT_COVARIANT, text,

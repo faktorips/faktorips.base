@@ -502,8 +502,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
     }
 
-    private boolean validateEmptyInverseAssociation(MessageList list, IIpsProject ipsProject)
-            {
+    private boolean validateEmptyInverseAssociation(MessageList list, IIpsProject ipsProject) {
         if (StringUtils.isEmpty(inverseAssociation)) {
             // special check in case of subsetted derived union the inverse must be set if the
             // derived union has specified an inverse association

@@ -148,8 +148,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject)
-            {
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
@@ -470,8 +469,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * target product component from the test parameter, returns {@code false} if that was not
      * possible.
      */
-    private boolean addRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter)
-            {
+    private boolean addRequiredLinksViaTestParameter(ITestPolicyCmptTypeParameter testParameter) {
         IIpsSrcFile[] allowedProductCmptSrcFiles = testParameter.getAllowedProductCmpt(getIpsProject(), null);
         if (allowedProductCmptSrcFiles.length != 1 || testParameter.getMinInstances() == 0) {
             return false;
@@ -916,8 +914,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     }
 
     @Override
-    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject)
-            {
+    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) {
         if (!hasProductCmpt()) {
             /*
              * no product cmpt is set, therefore no attribute could be searched, currently an

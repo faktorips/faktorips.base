@@ -209,8 +209,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
     }
 
-    private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject)
-            {
+    private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject) {
         Datatype returnType = findDatatype(ipsProject);
         if (returnType == null) {
             return;

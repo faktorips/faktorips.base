@@ -341,9 +341,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return true;
     }
 
-    private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
-            {
-
+    private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject) {
         if (getProductCmptTypeImpl().findIsCategoryNameUsedTwiceInSupertypeHierarchy(name, ipsProject)) {
             String text = MessageFormat.format(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
                     getProductCmptType().getName());
@@ -428,8 +426,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
-            {
+    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType) {
 
         if (indexes.length == 0) {
             return new int[0];

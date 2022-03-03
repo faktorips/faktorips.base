@@ -48,8 +48,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
     }
 
     @Override
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
         return emptyOps;
     }
 

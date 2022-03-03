@@ -427,9 +427,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     }
 
     @Override
-    public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt)
-            {
-
+    public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt) {
         if (isRoot() || productCmpt == null) {
             IPolicyCmptType allowedPolicyCmptType = findPolicyCmptType(ipsProjectToSearch);
             if (allowedPolicyCmptType == null) {

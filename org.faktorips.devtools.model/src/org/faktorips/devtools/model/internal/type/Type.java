@@ -194,9 +194,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
-            {
-
+    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject) {
         AssociationFinderPlural finder = new AssociationFinderPlural(ipsProject, roleNamePlural);
         finder.start(this);
         return finder.association;
@@ -373,8 +371,8 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            {
+    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods,
+            IIpsProject ipsProject) {
 
         MethodOverrideCandidatesFinder finder = new MethodOverrideCandidatesFinder(ipsProject,
                 onlyNotImplementedAbstractMethods);
@@ -432,8 +430,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject)
-            {
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) {
         ConstrainableAssociationFinder finder = new ConstrainableAssociationFinder(false, ipsProject);
         finder.start(this);
         return finder.getAssociationsFound();
@@ -546,8 +543,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     /**
      * Validation for {@link #MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}
      */
-    private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list)
-            {
+    private void validateIfAllAbstractMethodsAreImplemented(IIpsProject ipsProject, MessageList list) {
 
         List<IMethod> methods = findOverrideMethodCandidates(true, ipsProject);
         for (IMethod method : methods) {

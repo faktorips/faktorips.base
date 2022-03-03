@@ -51,8 +51,7 @@ public class DependencyDetail implements IDependencyDetail {
     }
 
     @Override
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName)
-            {
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) {
         try {
             updateProperty(targetIpsPackageFragment, newName);
         } catch (IllegalAccessException e) {

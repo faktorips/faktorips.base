@@ -209,8 +209,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
-            {
+    public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter) {
 
         ITestPolicyCmptTypeParameter[] parameters = getTestParameters(TestParameterType.INPUT,
                 TestPolicyCmptTypeParameter.class, inputTestPolicyCmptTypeParameter)
@@ -271,8 +270,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
-            {
+    public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter) {
         ITestValueParameter[] parameters = getTestParameters(TestParameterType.EXPECTED_RESULT,
                 TestValueParameter.class, expResultTestValueParameter).toArray(new ITestValueParameter[0]);
         if (parameters.length == 0) {
@@ -481,8 +479,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     }
 
     @Override
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject)
-            {
+    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) {
         IValidationRule[] validationRules = getTestRuleCandidates(ipsProject);
         for (IValidationRule validationRule : validationRules) {
             if (validationRule.getName().equals(validationRuleName)) {
@@ -521,9 +518,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
         return allParameters.toArray(new ITestParameter[allParameters.size()]);
     }
 
-    private void getAllChildTestParameter(ITestParameter testParameter, List<ITestParameter> allParameters)
-            {
-
+    private void getAllChildTestParameter(ITestParameter testParameter, List<ITestParameter> allParameters) {
         allParameters.add(testParameter);
         IIpsElement[] elems = testParameter.getChildren();
         for (IIpsElement elem : elems) {

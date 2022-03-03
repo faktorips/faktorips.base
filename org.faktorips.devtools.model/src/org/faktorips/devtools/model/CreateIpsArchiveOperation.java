@@ -243,8 +243,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         return false;
     }
 
-    private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties)
-            {
+    private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) {
 
         InputStream content = file.getContentFromEnclosingResource();
         String path = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath()).toPortableString();
@@ -277,8 +276,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
      * @throws IpsException if writing the {@link JarOutputStream}, or reading/closing the
      *             content-stream result in an {@link IOException}.
      */
-    private void writeJarEntry(JarOutputStream os, InputStream content, String entryName, String fileName)
-            {
+    private void writeJarEntry(JarOutputStream os, InputStream content, String entryName, String fileName) {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try {
@@ -331,8 +329,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         }
     }
 
-    private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties)
-            {
+    private void createIpsObjectsPropertiesEntry(JarOutputStream os, Properties ipsObjectsProperties) {
 
         JarEntry newEntry = new JarEntry(IIpsArchive.JAVA_MAPPING_ENTRY_NAME);
         try {
@@ -343,8 +340,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         }
     }
 
-    private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor)
-            {
+    private void addJavaFiles(IIpsPackageFragmentRoot root, JarOutputStream os, IProgressMonitor monitor) {
         APackageFragmentRoot javaRoot = root.getArtefactDestination(false);
         if (javaRoot == null) {
             throw new IpsException(
@@ -373,8 +369,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         }
     }
 
-    private void addFiles(AFolder rootFolder, AFolder folder, JarOutputStream os, IProgressMonitor monitor)
-            {
+    private void addFiles(AFolder rootFolder, AFolder folder, JarOutputStream os, IProgressMonitor monitor) {
         for (AResource member : folder) {
             if (member instanceof AFile) {
                 addFiles(rootFolder, (AFile)member, os);

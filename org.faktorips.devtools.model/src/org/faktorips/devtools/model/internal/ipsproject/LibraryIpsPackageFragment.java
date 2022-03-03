@@ -97,8 +97,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) {
         try {
             if (source != null) {
                 source.close();
@@ -110,20 +109,20 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) {
         throw newCantModifyPackageStoredInArchive();
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsSrcFile createIpsFile(IpsObjectType type,
+            String ipsObjectName,
+            boolean force,
+            IProgressMonitor monitor) {
         throw newCantModifyPackageStoredInArchive();
     }
 
     @Override
-    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
-            {
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) {
         throw new IpsException(new IpsStatus("Can't modifiy package stored in an archive.")); //$NON-NLS-1$
     }
 

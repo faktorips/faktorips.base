@@ -316,8 +316,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     @Override
-    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            {
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         if (isMultiValueAttribute() && getDefaultValue() != null) {
             validateMultiDefaultValues(valueDatatype, result, ipsProject);
         } else {
@@ -325,8 +324,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
-    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            {
+    private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
         for (String singleValue : split) {
             validateDefaultValue(singleValue, valueDatatype, result, ipsProject);

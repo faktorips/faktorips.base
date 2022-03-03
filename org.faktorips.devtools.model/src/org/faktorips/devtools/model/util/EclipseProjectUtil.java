@@ -191,8 +191,8 @@ public class EclipseProjectUtil {
      * @param outputFolderForMergableJavaFiles The folder for mergable Java files.
      * @param outputFolderForDerivedJavaFiles The folder for derived Java files.
      * 
-     * @throws IpsException if the creation of the folder fails or if the IPSObjectPath
-     *             could not be set.
+     * @throws IpsException if the creation of the folder fails or if the IPSObjectPath could not be
+     *             set.
      */
     public static AFolder createIpsSourceFolderEntry(IIpsProject ipsProject,
             String folderName,
@@ -228,9 +228,7 @@ public class EclipseProjectUtil {
      * 
      * @throws IpsException If the IPS object path could not be set accordingly.
      */
-    public static void addProjectReference(IIpsProject referringProject, IIpsProject referencedProject)
-            {
-
+    public static void addProjectReference(IIpsProject referringProject, IIpsProject referencedProject) {
         IIpsObjectPath ipsObjPath = referringProject.getIpsObjectPath();
         ipsObjPath.newIpsProjectRefEntry(referencedProject);
         referringProject.setIpsObjectPath(ipsObjPath);
@@ -509,8 +507,7 @@ public class EclipseProjectUtil {
      * @throws IpsException If the execution of one of the configurators failed
      */
     private static void executeProjectConfigurators(IIpsProject ipsProject,
-            IpsProjectCreationProperties creationProperties)
-            {
+            IpsProjectCreationProperties creationProperties) {
         boolean isExtensionResponsible = false;
         for (IIpsProjectConfigurator configurator : IpsProjectConfigurators
                 .applicableTo(ipsProject.getJavaProject())

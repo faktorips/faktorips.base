@@ -44,8 +44,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
      *             method without code duplication
      */
     @Deprecated
-    public static void configureDefaultIpsProject(IJavaProject javaProject)
-            {
+    public static void configureDefaultIpsProject(IJavaProject javaProject) {
         try {
             configureJavaProject(javaProject, false, false);
         } catch (JavaModelException e) {
@@ -64,8 +63,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
     }
 
     @Override
-    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            {
+    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
         IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         boolean isJodaSupportAvailable = IpsClasspathContainerInitializer.isJodaSupportAvailable();
         boolean isGroovySupportAvailable = IpsClasspathContainerInitializer.isGroovySupportAvailable()

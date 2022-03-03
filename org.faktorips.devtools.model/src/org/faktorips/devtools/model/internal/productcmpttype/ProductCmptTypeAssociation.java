@@ -81,8 +81,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
-            {
+    public Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject) {
         Set<IPolicyCmptTypeAssociation> result = new LinkedHashSet<>();
 
         IPolicyCmptType sourcePolicyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);

@@ -232,9 +232,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
-            {
-
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject) {
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
         if (!reqProductCmpt) {
             return true;

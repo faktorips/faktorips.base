@@ -500,8 +500,7 @@ public class DeepCopyOperation implements ICoreRunnable {
      * Creates a new package, based on the target package. To this base package, the path of the
      * source is appended, after the given number of segments to ignore is cut off.
      */
-    private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor)
-            {
+    private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) {
         IIpsPackageFragment result;
         String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
         result = ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);

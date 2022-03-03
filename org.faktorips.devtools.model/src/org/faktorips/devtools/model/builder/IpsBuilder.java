@@ -235,8 +235,7 @@ public class IpsBuilder {
      * creates markers for the messages from the validation of the ipsproject differing between the
      * .ipsproject and manifest.mf as marked resource.
      */
-    void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject)
-            {
+    void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) {
         AResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
         IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
 
@@ -253,8 +252,7 @@ public class IpsBuilder {
         }
     }
 
-    private void createMarkersNotUsingManifest(MessageList messages, AResource projectPropertiesFile, AFile manifest)
-            {
+    private void createMarkersNotUsingManifest(MessageList messages, AResource projectPropertiesFile, AFile manifest) {
         createMarkersFromMessageList(projectPropertiesFile, messages, IpsBuilder.PROBLEM_MARKER);
 
         if (manifest.exists()) {
@@ -262,8 +260,7 @@ public class IpsBuilder {
         }
     }
 
-    private void createMarkersWithMissingManifestMarker(MessageList messages, AResource projectPropertiesFile)
-            {
+    private void createMarkersWithMissingManifestMarker(MessageList messages, AResource projectPropertiesFile) {
         createMarkersFromMessageList(projectPropertiesFile, messages, IpsBuilder.PROBLEM_MARKER);
 
         AMarker marker = projectPropertiesFile.createMarker(IpsBuilder.PROBLEM_MARKER);
@@ -682,8 +679,7 @@ public class IpsBuilder {
         }
     }
 
-    void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType)
-            {
+    void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
         Set<AMarker> markers = new LinkedHashSet<>(
                 markedResource.findMarkers(markerType, true, AResourceTreeTraversalDepth.RESOURCE_ONLY));
         for (int i = 0; i < list.size(); i++) {
@@ -984,8 +980,7 @@ public class IpsBuilder {
         }
 
         @Override
-        protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
-                {
+        protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
             return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
         }
 

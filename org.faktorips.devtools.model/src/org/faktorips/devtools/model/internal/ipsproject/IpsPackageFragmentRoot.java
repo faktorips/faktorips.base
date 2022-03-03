@@ -136,8 +136,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
      * Creates the packages based on the contents of the given platform folder and adds them to the
      * list. This is an application of the collecting parameter pattern.
      */
-    private void getIpsPackageFragments(AFolder folder, String namePrefix, List<IIpsPackageFragment> packs)
-            {
+    private void getIpsPackageFragments(AFolder folder, String namePrefix, List<IIpsPackageFragment> packs) {
         for (AResource resource : folder) {
             if (resource.getType() == AResourceType.FOLDER) {
                 String name = resource.getName();
@@ -153,9 +152,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            {
-
+    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor) {
         if (!isValidIpsPackageFragmentName(name)) {
             return null;
         }
@@ -185,8 +182,7 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
     }
 
     @Override
-    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result)
-            {
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) {
         if (!exists()) {
             return;
         }

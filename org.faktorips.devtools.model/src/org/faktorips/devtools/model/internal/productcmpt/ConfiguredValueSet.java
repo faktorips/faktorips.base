@@ -80,8 +80,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            {
+    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute) {
         IValueSet valueSetToValidate = getValueSet();
         IValueSet modelValueSet = attribute.getValueSet();
 

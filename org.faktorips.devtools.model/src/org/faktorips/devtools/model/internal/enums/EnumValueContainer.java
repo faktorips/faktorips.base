@@ -100,8 +100,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject)
-            {
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) {
         if (identifierAttributeValue == null) {
             return null;
         }

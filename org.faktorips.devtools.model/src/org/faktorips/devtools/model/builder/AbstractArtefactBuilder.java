@@ -226,12 +226,10 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      * @param keepHistory setting keeping the history when writing to the file @see
      *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
-     * @throws IpsException in case of an error while setting the new content to the
-     *             file @see
+     * @throws IpsException in case of an error while setting the new content to the file @see
      *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      */
-    public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory)
-            {
+    public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory) {
         file.setContents(inputStream, keepHistory, new NullProgressMonitor());
     }
 

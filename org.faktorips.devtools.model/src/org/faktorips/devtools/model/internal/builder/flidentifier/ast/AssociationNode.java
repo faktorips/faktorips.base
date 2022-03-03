@@ -31,8 +31,7 @@ public class AssociationNode extends IdentifierNode {
 
     private final boolean listContext;
 
-    AssociationNode(IAssociation association, boolean listContext, TextRegion textRegion, IIpsProject ipsProject)
-            {
+    AssociationNode(IAssociation association, boolean listContext, TextRegion textRegion, IIpsProject ipsProject) {
         super(association.findTarget(ipsProject), association.is1ToMany() || listContext, textRegion);
         this.association = association;
         this.listContext = listContext;

@@ -15,8 +15,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 
 public class ProductCmptGenerationToTypeDelta extends PropertyValueContainerToTypeDelta {
 
-    public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject)
-            {
+    public ProductCmptGenerationToTypeDelta(IProductCmptGeneration generation, IIpsProject ipsProject) {
         super(generation, generation, ipsProject);
     }
 
