@@ -73,7 +73,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
 
     @Override
     public void setContents(InputStream source, boolean keepHistory, IProgressMonitor monitor) {
-        // TODO history?
+        // keepHistory wird vorerst ignoriert.
         long previousModificationStamp = getModificationStamp();
         withMonitor(file(), monitor, "Writing", p -> //$NON-NLS-1$
         Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING));
@@ -94,7 +94,7 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
 
     @Override
     public boolean isReadOnly() {
-        // TODO Files from JARs?
+        // TODO FIPS-8693: Files from JARs
         return false;
     }
 

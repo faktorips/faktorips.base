@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AContainer;
@@ -27,9 +28,9 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWrapper;
 
-public abstract class AEclipseResource extends AWrapper<IResource> implements AResource {
+public abstract class EclipseResource extends AWrapper<IResource> implements AResource, IAdaptable {
 
-    protected AEclipseResource(IResource resource) {
+    protected EclipseResource(IResource resource) {
         super(resource);
     }
 

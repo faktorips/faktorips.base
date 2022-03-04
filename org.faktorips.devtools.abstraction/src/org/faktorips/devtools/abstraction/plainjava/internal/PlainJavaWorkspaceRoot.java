@@ -76,7 +76,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
                 .map(PlainJavaFolder.class::cast)
                 .map(PlainJavaFolder::directory)
                 .map(File::toPath)
-                // TODO Projekte irgend wie erkennen und filtern?
+                // FIPS-8693: Müssen ggf. .git- und andere Ordner ignoriert werden?
                 .map(this::project)
                 .collect(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(AProject::getName))));
@@ -95,7 +95,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
                         return null;
                     }
                     if (parentFile.equals(directory())) {
-                        // TODO Projekte erkennen? Evtl. sind nur IPS-Projekte relevant?
+                        // FIPS-8693: Müssen ggf. .git- und andere Ordner ignoriert werden?
                         return (PlainJavaProject)wrap(file).as(AProject.class);
                     } else {
                         return (PlainJavaFolder)wrap(file).as(AFolder.class);

@@ -57,14 +57,12 @@ public class PlainJavaMarkerImpl {
     }
 
     /**
-     * Returns whether this marker's type equals the given type (or one of its subtypes)
+     * Returns whether this marker's type equals the given type.
      *
      * @param type the marker type to compare with
-     * @param includeSubTypes whether to check exact matches or also subtype matches
-     * @return whether this marker's type equals the given type (or one of its subtypes)
+     * @return whether this marker's type equals the given type
      */
-    // TODO document how subtypes are defined
-    public boolean equalsType(String type, boolean includeSubTypes) {
+    public boolean equalsType(String type) {
         if (this.type == null && type == null) {
             return true;
         }
@@ -72,7 +70,6 @@ public class PlainJavaMarkerImpl {
             return false;
         }
         return this.type.equals(type);
-        // TODO handle subtypes
     }
 
     public Object getAttribute(String attributeName) {
@@ -80,7 +77,6 @@ public class PlainJavaMarkerImpl {
     }
 
     public String getAttribute(String attributeName, String defaultValue) {
-        // eclipse specific
         Object value = attributes.get(attributeName);
         if (isAttributeSameTypeAsDefault(value, String.class)) {
             return (String)value;
@@ -93,7 +89,6 @@ public class PlainJavaMarkerImpl {
     }
 
     public int getAttribute(String attributeName, int defaultValue) {
-        // eclipse specific
         Object value = attributes.get(attributeName);
         if (isAttributeSameTypeAsDefault(value, Integer.class)) {
             return (int)value;
@@ -102,7 +97,6 @@ public class PlainJavaMarkerImpl {
     }
 
     public boolean getAttribute(String attributeName, boolean defaultValue) {
-        // eclipse specific
         Object value = attributes.get(attributeName);
         if (isAttributeSameTypeAsDefault(value, Boolean.class)) {
             return (boolean)value;

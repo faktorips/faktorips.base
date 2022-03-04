@@ -53,7 +53,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testBuild() {
         assertFalse(getContentsFile().exists());
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertTrue(getContentsFile().exists());
     }
 
@@ -64,10 +64,10 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testDelete() {
         assertFalse(getContentsFile().exists());
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertTrue(getContentsFile().exists());
         contents.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertFalse(getContentsFile().exists());
     }
 

@@ -94,7 +94,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testBuild_buidJavaFileIntoDerivedFolder() {
         // build should not throw an exception even if the reference to the type is missing
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromDerivedFolder();
         assertTrue(generatedProductCmptJavaFile.exists());
@@ -104,7 +104,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testBuild_buildJavaFileIntoSrcFolder() {
         // build should not throw an exception even if the reference to the type is missing
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromSrcFolder();
         assertTrue(generatedProductCmptJavaFile.exists());
@@ -115,7 +115,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     public void testBuildMissingType() {
         productCmpt.setProductCmptType("");
         productCmpt.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromDerivedFolder();
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();
         assertFalse(generatedProductCmptGenerationJavaFile.exists());
@@ -124,28 +124,28 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testDelete_deleteJavaFileFromDerivedFolder() {
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromDerivedFolder();
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromDerivedFolder();
         assertTrue(generatedProductCmptGenerationJavaFile.exists());
         assertTrue(generatedProductCmptJavaFile.exists());
 
         productCmpt.delete();
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertFalse(generatedProductCmptGenerationJavaFile.exists());
         assertFalse(generatedProductCmptJavaFile.exists());
     }
 
     @Test
     public void testDelete_deleteJavaFileFromSrcFolder() {
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromSrcFolder();
         assertTrue(generatedProductCmptJavaFile.exists());
         assertTrue(generatedProductCmptGenerationJavaFile.exists());
 
         productCmptType.delete();
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertFalse(generatedProductCmptJavaFile.exists());
         assertFalse(generatedProductCmptGenerationJavaFile.exists());
     }

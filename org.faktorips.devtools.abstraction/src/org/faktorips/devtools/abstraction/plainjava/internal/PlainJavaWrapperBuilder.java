@@ -38,8 +38,7 @@ public class PlainJavaWrapperBuilder extends WrapperBuilder {
     @Override
     protected <A extends AAbstraction> A wrapInternal(Object original, Class<A> aClass) {
         if (AResourceDelta.class.isAssignableFrom(aClass)) {
-            // TODO
-            throw new IllegalArgumentException(
+            throw new UnsupportedOperationException(
                     "Resource deltas are currently not supported in plain Java mode"); //$NON-NLS-1$
         }
         if (AFolder.class.isAssignableFrom(aClass)) {

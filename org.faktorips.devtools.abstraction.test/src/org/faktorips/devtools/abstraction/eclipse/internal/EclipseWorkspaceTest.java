@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -27,7 +27,7 @@ import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.junit.Test;
 
-public class AEclipseWorkspaceTest extends AEclipseAbstractionTestSetup {
+public class EclipseWorkspaceTest extends EclipseAbstractionTestSetup {
 
     @Test
     public void testGetEclipseWorkspace() {
@@ -61,6 +61,6 @@ public class AEclipseWorkspaceTest extends AEclipseAbstractionTestSetup {
     public void testBuild() throws CoreException {
         newSimpleIpsProject("someProject");
 
-        Abstractions.getWorkspace().build(ABuildKind.CLEAN_BUILD, new NullProgressMonitor());
+        Abstractions.getWorkspace().build(ABuildKind.CLEAN, new NullProgressMonitor());
     }
 }

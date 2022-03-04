@@ -22,7 +22,7 @@ import java.util.Collection;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;

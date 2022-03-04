@@ -52,9 +52,9 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.Model");
         entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.Model");
         ipsProject.setIpsObjectPath(path);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         newPolicyCmptType(ipsProject, "Policy");
-        ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         IIpsSrcFolderEntry entry = path.getSourceFolderEntries()[0];
         entry.setSpecificBasePackageNameForDerivedJavaClasses("org.faktorips.sample.Model");
         entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.Model");
-        ipsProject.getProject().build(ABuildKind.CLEAN_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.CLEAN, null);
         ipsProject.setIpsObjectPath(path);
         System.out.println("init objects");
         for (int i = 0; i < 5000; i++) {
@@ -128,8 +128,8 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
 
         System.out.println("start build");
         Date time = new Date();
-        ipsProject.getProject().build(ABuildKind.CLEAN_BUILD, null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.CLEAN, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         System.out.println("Buildtime: " + ((new Date().getTime() - time.getTime()) / 1000) + "s");
     }
 
@@ -150,7 +150,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
          * after an incremental build the base package and the generated xml file for the product
          * cmpt is expected to be there
          */
-        productCmpt.getIpsProject().getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        productCmpt.getIpsProject().getProject().build(ABuildKind.INCREMENTAL, null);
         IPackageFragment fragment = packageFragmentRoot.getPackageFragment("org.faktorips.sample.model");
         assertTrue(fragment.exists());
         // TODO little dirty here. Better to ask the builder for its package
@@ -159,12 +159,12 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertTrue(productFile.exists());
 
         // a clean build is expected to remove the base directory and the product xml file.
-        productCmpt.getIpsProject().getProject().build(ABuildKind.CLEAN_BUILD, null);
+        productCmpt.getIpsProject().getProject().build(ABuildKind.CLEAN, null);
         assertFalse(productFile.exists());
         assertFalse(fragment.exists());
 
         // a full build creates the base directory and the product component xml file again.
-        productCmpt.getIpsProject().getProject().build(ABuildKind.FULL_BUILD, null);
+        productCmpt.getIpsProject().getProject().build(ABuildKind.FULL, null);
         assertTrue(fragment.exists());
         assertTrue(productFile.exists());
 
@@ -178,7 +178,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
          * after the clean build the non derived file in the destinations sub folder is expected to
          * stay
          */
-        productCmpt.getIpsProject().getProject().build(ABuildKind.CLEAN_BUILD, null);
+        productCmpt.getIpsProject().getProject().build(ABuildKind.CLEAN, null);
         assertTrue(file.exists());
         assertTrue(fragment.exists());
     }

@@ -67,6 +67,7 @@ import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementa
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange.Type;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
@@ -1685,10 +1686,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             PlainJavaResource resource = change.getChangedResource();
             if (resource instanceof PlainJavaProject) {
                 AProject project = (AProject)resource;
-                if (project.isIpsProject()) {
-                    IIpsProject ipsProject = getIpsProject(project);
-                    forceReloadOfCachedIpsSrcFileContents(ipsProject);
-                }
+                projectChanged(project);
             } else if (resource instanceof PlainJavaFile) {
                 AProject project = resource.getProject();
                 if (project != null && project.isIpsProject()) {
@@ -1700,20 +1698,35 @@ public class IpsModel extends IpsElement implements IIpsModel {
                         if (QualifiedNameType.representsQualifiedNameType(path)) {
                             IIpsSrcFile ipsSrcFile = findIpsSrcFile(resource, ipsProject, path);
                             if (ipsSrcFile != null) {
-                                forEachIpsSrcFilesChangeListener(listener -> listener
-                                        .ipsSrcFilesChanged(
-                                                new IpsSrcFilesChangedEvent(
-                                                        Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
-                                IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
-                                boolean isInSync = isInSync(ipsSrcFile, content);
-                                if (!isInSync) {
-                                    ipsSrcFileContentHasChanged(
-                                            ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
-                                }
+                                ipsSrcFileChanged(ipsSrcFile, change);
                             }
                         }
                     }
                 }
+            }
+        }
+
+        private void ipsSrcFileChanged(IIpsSrcFile ipsSrcFile, PlainJavaResourceChange change) {
+            forEachIpsSrcFilesChangeListener(listener -> listener
+                    .ipsSrcFilesChanged(
+                            new IpsSrcFilesChangedEvent(
+                                    Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
+            if (Type.REMOVED == change.getType()) {
+                removeIpsSrcFileContent(ipsSrcFile);
+            } else {
+                IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
+                boolean isInSync = isInSync(ipsSrcFile, content);
+                if (!isInSync) {
+                    ipsSrcFileContentHasChanged(
+                            ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
+                }
+            }
+        }
+
+        private void projectChanged(AProject project) {
+            if (project.isIpsProject()) {
+                IIpsProject ipsProject = getIpsProject(project);
+                forceReloadOfCachedIpsSrcFileContents(ipsProject);
             }
         }
 

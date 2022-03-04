@@ -25,7 +25,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer.JdtClasspathResolver;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;

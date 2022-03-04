@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import java.nio.file.Path;
 
@@ -17,9 +17,9 @@ import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
-public class AEclipsePackageFragmentRoot extends AEclipseJavaElement implements APackageFragmentRoot {
+public class EclipsePackageFragmentRoot extends EclipseJavaElement implements APackageFragmentRoot {
 
-    AEclipsePackageFragmentRoot(IPackageFragmentRoot packageFragmentRoot) {
+    EclipsePackageFragmentRoot(IPackageFragmentRoot packageFragmentRoot) {
         super(packageFragmentRoot);
     }
 

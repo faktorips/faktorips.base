@@ -45,11 +45,6 @@ public class PlainJavaResourceTest extends PlainJavaAbstractionTestSetup {
         assertThat(testProject.getFile("someFile").unwrap(), is(instanceOf(File.class)));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetAdapter() {
-        testProject.getFolder("src").getAdapter(File.class);
-    }
-
     @Test
     public void testIsAccessible() {
         assertThat(testProject.getFolder("src").isAccessible(), is(true));

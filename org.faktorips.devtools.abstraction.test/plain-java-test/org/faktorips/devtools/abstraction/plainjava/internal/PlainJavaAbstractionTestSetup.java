@@ -41,12 +41,12 @@ public class PlainJavaAbstractionTestSetup extends AbstractAbstractionTestSetup 
 
     @Override
     public void addDependencies(AProject project, AProject... dependencies) {
-        // TODO: add to maven or something
+        // TODO: FIPS-8693: Dependencies in POM?
     }
 
     @Override
     protected void toIpsProjectImpl(AProject project) {
-        // TODO: add ips to pom
+        // TODO: FIPS-8693: IPS-Dependencies in POM?
     }
 
     @Override

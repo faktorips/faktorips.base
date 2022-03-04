@@ -56,9 +56,9 @@ import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
@@ -628,35 +628,33 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     @Test
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
-        if (Abstractions.isEclipseRunning()) {
-            IIpsProject project = newIpsProject("TestProject");
-            IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
-            pcType.getIpsSrcFile().save(true, null);
+        IIpsProject project = newIpsProject("TestProject");
+        IPolicyCmptType pcType = newPolicyCmptTypeWithoutProductCmptType(project, "A");
+        pcType.getIpsSrcFile().save(true, null);
 
-            pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
+        pcType = (IPolicyCmptType)project.findIpsObject(pcType.getQualifiedNameType());
 
-            boolean status = false;
-            int counter = 0;
-            while (!status || counter > 200) {
-                status = model.isCached(pcType.getIpsSrcFile());
-                counter++;
-            }
-            assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected",
-                    status);
-
-            pcType.getIpsSrcFile().getEnclosingResource().delete(null);
-
-            status = false;
-            counter = 0;
-            while (!status || counter > 200) {
-                status = !model.isCached(pcType.getIpsSrcFile());
-                counter++;
-            }
-
-            assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
-                    + " is in the IpsModel cache which is not expected since the resource changed listener "
-                    + "should be triggered by know and have the cache cleared.", status);
+        boolean status = false;
+        int counter = 1;
+        while (!(status || counter > 1000)) {
+            status = model.isCached(pcType.getIpsSrcFile());
+            Thread.sleep(counter *= 10);
         }
+        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected",
+                status);
+
+        pcType.getIpsSrcFile().getEnclosingResource().delete(null);
+
+        status = false;
+        counter = 1;
+        while (!(status || counter > 1000)) {
+            status = !model.isCached(pcType.getIpsSrcFile());
+            Thread.sleep(counter *= 10);
+        }
+
+        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
+                + " is in the IpsModel cache which is not expected since the resource changed listener "
+                + "should be triggered by now and have the cache cleared.", status);
     }
 
     @Test(expected = UnsupportedOperationException.class)

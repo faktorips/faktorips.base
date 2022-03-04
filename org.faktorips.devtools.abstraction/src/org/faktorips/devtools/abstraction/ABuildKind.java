@@ -12,15 +12,18 @@ package org.faktorips.devtools.abstraction;
 /**
  * There are different kinds of build jobs:
  * <ul>
- * <li>A {@link #FULL_BUILD full build} builds every applicable item in a project.</li>
- * <li>An {@link #INCREMENTAL_BUILD incremental build} builds only items affected by changes since a
+ * <li>A {@link #FULL full build} builds every applicable item in a project.</li>
+ * <li>An {@link #INCREMENTAL incremental build} builds only items affected by changes since a
  * previous build.</li>
- * <li>A {@link #CLEAN_BUILD clean build} discards previous build results and then performs a
- * {@link #FULL_BUILD}.</li>
+ * <li>A {@link #CLEAN clean build} discards previous build results and then performs a
+ * {@link #FULL}.</li>
+ * <li>A {@link #AUTO auto build} operates like an incremental build, but is triggered automatically
+ * whenever a resources changes</li>
  * </ul>
  */
 public enum ABuildKind {
-    FULL_BUILD,
-    INCREMENTAL_BUILD,
-    CLEAN_BUILD;
+    FULL,
+    INCREMENTAL,
+    CLEAN,
+    AUTO;
 }

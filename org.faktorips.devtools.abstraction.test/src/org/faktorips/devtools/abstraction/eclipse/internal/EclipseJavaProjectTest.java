@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -41,7 +41,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class AEclipseJavaProjectTest extends AEclipseAbstractionTestSetup {
+public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
 
     private AJavaProject aJavaProject;
     private AProject aProject;
@@ -96,7 +96,7 @@ public class AEclipseJavaProjectTest extends AEclipseAbstractionTestSetup {
 
     @Test
     public void testGetProject() {
-        assertThat(aJavaProject.getProject(), is(instanceOf(AEclipseProject.class)));
+        assertThat(aJavaProject.getProject(), is(instanceOf(EclipseProject.class)));
         assertThat(aJavaProject.getProject().unwrap(), is(sameInstance(aProject.unwrap())));
     }
 
@@ -104,7 +104,7 @@ public class AEclipseJavaProjectTest extends AEclipseAbstractionTestSetup {
     public void testHasBuildState() {
         assertThat(aJavaProject.hasBuildState(), is(false));
 
-        aJavaProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        aJavaProject.getProject().build(ABuildKind.FULL, null);
 
         assertThat(aJavaProject.hasBuildState(), is(true));
     }

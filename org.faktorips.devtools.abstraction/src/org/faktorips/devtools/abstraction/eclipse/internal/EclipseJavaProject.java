@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
@@ -37,7 +37,6 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.abstraction.eclipse.internal.Messages;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.SeverityMapping;
 import org.faktorips.runtime.Message;
@@ -45,7 +44,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.Severity;
 
-public class AEclipseJavaProject extends AEclipseJavaElement implements AJavaProject {
+public class EclipseJavaProject extends EclipseJavaElement implements AJavaProject {
 
     /**
      * Validation message code to indicate that the corresponding Java Project has build path
@@ -53,7 +52,7 @@ public class AEclipseJavaProject extends AEclipseJavaElement implements AJavaPro
      */
     public static final String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = "IPSPROJECT-JavaProjectHasBuildPathErrors"; //$NON-NLS-1$
 
-    AEclipseJavaProject(IJavaProject javaProject) {
+    EclipseJavaProject(IJavaProject javaProject) {
         super(javaProject);
     }
 
@@ -86,7 +85,7 @@ public class AEclipseJavaProject extends AEclipseJavaElement implements AJavaPro
     @Override
     public APackageFragmentRoot toPackageFragmentRoot(AResource resource) {
         IPackageFragmentRoot packageFragmentRoot = javaProject()
-                .getPackageFragmentRoot(((AEclipseResource)resource).unwrap());
+                .getPackageFragmentRoot(((EclipseResource)resource).unwrap());
         return wrap(packageFragmentRoot).as(APackageFragmentRoot.class);
     }
 

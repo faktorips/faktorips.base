@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,7 +26,7 @@ import org.faktorips.devtools.abstraction.Abstractions;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AEclipseContainerTest extends AEclipseAbstractionTestSetup {
+public class EclipseContainerTest extends EclipseAbstractionTestSetup {
 
     private AProject testProject;
     private IProject eclipseProject;

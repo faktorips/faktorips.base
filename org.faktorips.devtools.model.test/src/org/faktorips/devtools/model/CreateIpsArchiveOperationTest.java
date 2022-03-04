@@ -49,7 +49,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorCoverage", "mycompany.motor.MotorCoverageType");
         newPolicyAndProductCmptType(project, "mycompany.home.HomePolicy", "mycompany.home.HomeProduct");
         AFile archiveFile = project.getProject().getFile("test.ipsar");
-        archiveFile.getWorkspace().build(ABuildKind.FULL_BUILD, null);
+        archiveFile.getWorkspace().build(ABuildKind.FULL, null);
 
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);

@@ -98,7 +98,7 @@ public enum PlainJavaImplementation implements AImplementation {
 
     @Override
     public AVersion getVersion() {
-        // TODO read from Manifest?
+        // TODO FIPS-8693: Aus dem Manifest des diese Klasse enthaltenden JARs lesen?
         return AVersion.parse("21.12"); //$NON-NLS-1$
     }
 
@@ -132,7 +132,6 @@ public enum PlainJavaImplementation implements AImplementation {
 
         @Override
         public void log(IStatus status) {
-            // TODO formatting, logging frameworks/maven logging,...
             logListeners.keySet().forEach(l -> l.logging(status, ID));
             if (status.getSeverity() == IStatus.ERROR) {
                 Logger.getLogger(ID).log(Level.SEVERE, status.getMessage());

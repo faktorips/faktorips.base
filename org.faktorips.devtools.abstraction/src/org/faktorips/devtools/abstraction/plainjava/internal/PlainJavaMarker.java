@@ -12,7 +12,6 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AWrapper;
 
-// TODO Marker im Workspace persistieren?
 public class PlainJavaMarker extends AWrapper<PlainJavaMarkerImpl> implements AMarker {
 
     public PlainJavaMarker(PlainJavaResource resource, String type) {

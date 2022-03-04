@@ -76,7 +76,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
             for (ISupportedLanguage supportedLanguage : project.getReadOnlyProperties().getSupportedLanguages()) {
-                if (buildKind == ABuildKind.FULL_BUILD) {
+                if (buildKind == ABuildKind.FULL) {
                     getMessagesGenerator(srcRoot, supportedLanguage).loadMessages();
                 }
                 AFile propertyFile = getPropertyFile(srcRoot, supportedLanguage);

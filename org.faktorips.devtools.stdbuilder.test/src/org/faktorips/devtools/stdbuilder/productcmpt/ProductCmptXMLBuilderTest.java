@@ -281,15 +281,15 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
     @Test
     public void testBuild() {
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test
     public void testDelete() {
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
 
         productCmpt.getIpsSrcFile().getCorrespondingFile().delete(null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test

@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.builder;
 
 import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 
 import java.text.MessageFormat;
@@ -138,7 +139,7 @@ public class IpsBuilder {
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(getIpsProject());
             boolean isFullBuildRequired = isFullBuildRequired(currentKind);
             if (isFullBuildRequired) {
-                currentKind = ABuildKind.FULL_BUILD;
+                currentKind = ABuildKind.FULL;
             }
             beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
@@ -146,7 +147,7 @@ public class IpsBuilder {
             monitor.worked(100);
             try {
                 if (isFullBuildRequired) {
-                    currentKind = ABuildKind.FULL_BUILD;
+                    currentKind = ABuildKind.FULL;
                     monitor.subTask(Messages.IpsBuilder_startFullBuild);
                     fullBuild(ipsArtefactBuilderSet, buildStatus, newSubProgressMonitor(monitor));
                 } else {
@@ -299,7 +300,7 @@ public class IpsBuilder {
     }
 
     private boolean isFullBuildRequired(ABuildKind currentKind) {
-        if (currentKind == ABuildKind.FULL_BUILD) {
+        if (currentKind == ABuildKind.FULL) {
             return true;
         }
         AResourceDelta delta = builder.getDelta();
@@ -612,9 +613,9 @@ public class IpsBuilder {
                 MultiStatus currentBuildStatus = createInitialMultiStatus();
                 try {
                     if (!ipsProject.equals(getIpsProject())) {
-                        beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL_BUILD);
+                        beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
-                                new BeforeBuildProcessCommand(ABuildKind.INCREMENTAL_BUILD, ipsProject), monitor);
+                                new BeforeBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
                     }
                     for (IDependency dependency : dependencySet) {
                         if (monitor.isCanceled()) {
@@ -641,8 +642,8 @@ public class IpsBuilder {
                 } finally {
                     if (!ipsProject.equals(getIpsProject())) {
                         applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
-                                new AfterBuildProcessCommand(ABuildKind.INCREMENTAL_BUILD, ipsProject), monitor);
-                        afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL_BUILD);
+                                new AfterBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
+                        afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
                         if (currentBuildStatus.getSeverity() != IStatus.OK) {
                             ipsProject.reinitializeIpsArtefactBuilderSet();
                         }
@@ -987,18 +988,6 @@ public class IpsBuilder {
         @Override
         protected void clean(IProgressMonitor monitor) throws CoreException {
             ipsBuilder.clean(monitor);
-        }
-
-        private static ABuildKind buildKind(int kind) {
-            switch (kind) {
-                case IncrementalProjectBuilder.INCREMENTAL_BUILD:
-                    return ABuildKind.INCREMENTAL_BUILD;
-                case IncrementalProjectBuilder.CLEAN_BUILD:
-                    return ABuildKind.CLEAN_BUILD;
-                case IncrementalProjectBuilder.FULL_BUILD:
-                default:
-                    return ABuildKind.FULL_BUILD;
-            }
         }
 
         public class EclipseBuilder implements ABuilder {

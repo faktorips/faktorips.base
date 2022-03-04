@@ -106,7 +106,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         assertTrue(archive.contains(qnt.toPath()));
 
         motorPolicyType.getIpsSrcFile().getCorrespondingFile().delete(null);
-        project.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+        project.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
         createArchive(project, archiveFile);
         assertFalse(archive.contains(qnt.toPath()));
@@ -361,7 +361,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         // in the source and afterwards copied to the bin folder
         newIpsObject(project, IpsObjectType.TEST_CASE, "test.testcase");
 
-        project.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+        project.getProject().build(ABuildKind.INCREMENTAL, null);
 
         File file = createFileIfNecessary(archiveFile);
         CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, file);

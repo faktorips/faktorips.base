@@ -20,7 +20,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.AVersion;
-import org.faktorips.devtools.abstraction.eclipse.OsgiVersions;
+import org.faktorips.devtools.abstraction.mapping.OsgiVersionMapping;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
@@ -133,7 +133,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
 
     private AVersion retrieveContributorVersion() {
         Bundle bundle = Platform.getBundle(getContributorName());
-        currentVersion = OsgiVersions.toAVersion(bundle.getVersion());
+        currentVersion = OsgiVersionMapping.toAVersion(bundle.getVersion());
         return currentVersion;
     }
 
@@ -187,8 +187,7 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
     }
 
     @Override
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
         AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId()));
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);

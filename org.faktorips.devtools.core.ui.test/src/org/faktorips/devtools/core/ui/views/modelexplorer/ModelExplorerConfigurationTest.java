@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -88,7 +88,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         allowedTypes.remove(IpsObjectType.TABLE_CONTENTS);
         config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
 
-        folder = ((AEclipseProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
+        folder = ((EclipseProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
         folder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);

@@ -7,9 +7,10 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -19,11 +20,10 @@ import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.AWrapper;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.abstraction.eclipse.internal.BuildKindMapping;
 
-public class AEclipseWorkspace extends AWrapper<IWorkspace> implements AWorkspace {
+public class EclipseWorkspace extends AWrapper<IWorkspace> implements AWorkspace {
 
-    AEclipseWorkspace(IWorkspace workspace) {
+    EclipseWorkspace(IWorkspace workspace) {
         super(workspace);
     }
 
@@ -43,7 +43,6 @@ public class AEclipseWorkspace extends AWrapper<IWorkspace> implements AWorkspac
 
     @Override
     public void build(ABuildKind buildKind, IProgressMonitor monitor) {
-        Wrappers.run(() -> workspace().build(BuildKindMapping.forEclipse(buildKind), monitor));
+        Wrappers.run(() -> workspace().build(buildKind(buildKind), monitor));
     }
-
 }

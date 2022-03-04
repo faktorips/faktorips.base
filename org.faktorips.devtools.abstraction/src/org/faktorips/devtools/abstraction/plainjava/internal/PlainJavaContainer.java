@@ -79,8 +79,6 @@ public abstract class PlainJavaContainer extends PlainJavaResource implements AC
     @Override
     protected void refreshInternal() {
         members = null;
-        // TODO alte Members merken, neue direkt holen und vergleichen, Workspace ggf. über
-        // gelöschte benachrichtigen
         super.refreshInternal();
     }
 

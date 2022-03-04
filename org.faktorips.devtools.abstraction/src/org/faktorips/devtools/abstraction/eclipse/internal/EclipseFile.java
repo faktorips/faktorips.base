@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.run;
@@ -26,9 +26,9 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 
-public class AEclipseFile extends AEclipseResource implements AFile {
+public class EclipseFile extends EclipseResource implements AFile {
 
-    protected AEclipseFile(IFile file) {
+    protected EclipseFile(IFile file) {
         super(file);
     }
 

@@ -20,7 +20,6 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AWrapper;
 
-// TODO gibt es andere Elemente als Files?
 public class PlainJavaJavaElement extends AWrapper<File> implements AJavaElement {
 
     protected PlainJavaJavaElement(File javaFile) {

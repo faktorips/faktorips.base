@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 
-public class AEclipseFolder extends AEclipseContainer implements AFolder {
+public class EclipseFolder extends EclipseContainer implements AFolder {
 
-    AEclipseFolder(IFolder folder) {
+    EclipseFolder(IFolder folder) {
         super(folder);
     }
 

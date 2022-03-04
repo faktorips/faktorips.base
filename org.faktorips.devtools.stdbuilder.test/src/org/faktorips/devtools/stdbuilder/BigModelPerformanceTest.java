@@ -252,7 +252,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         long average = 0;
         for (int i = 0; i < warmup + n; i++) {
             long start = System.nanoTime();
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             long end = System.nanoTime();
             long duration = (end - start) / 1_000_000;
             if (i < warmup) {

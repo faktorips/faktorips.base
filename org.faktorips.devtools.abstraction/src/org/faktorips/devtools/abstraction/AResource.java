@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -21,7 +20,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 /**
  * A resource is a file or folder, possibly with a special role like a project or workspace.
  */
-public interface AResource extends AAbstraction, IAdaptable, Comparable<AResource> {
+public interface AResource extends AAbstraction, Comparable<AResource> {
 
     /**
      * A {@link Comparator} comparing resources by name.

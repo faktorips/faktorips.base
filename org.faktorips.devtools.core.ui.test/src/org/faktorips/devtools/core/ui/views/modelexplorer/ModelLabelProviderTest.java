@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
@@ -112,7 +113,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
-        Image img = IpsUIPlugin.getImageHandling().getImage(proj.getProject());
+        Image img = IpsUIPlugin.getImageHandling().getImage((IAdaptable)proj.getProject().unwrap());
         assertTrue(img == flatProvider.getImage(proj));
         assertTrue(img == hierarchyProvider.getImage(proj));
         img = IpsUIPlugin.getImageHandling().getImage(root);

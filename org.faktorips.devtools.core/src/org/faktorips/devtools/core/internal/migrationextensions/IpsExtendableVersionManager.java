@@ -62,8 +62,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
     }
 
     @Override
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
         AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId()));
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);

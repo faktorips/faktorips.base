@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -21,7 +21,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -29,14 +28,13 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AEclipseResourceTest extends AEclipseAbstractionTestSetup {
+public class EclipseResourceTest extends EclipseAbstractionTestSetup {
 
     private AProject testProject1;
     private IProject eclipseProject;
@@ -53,14 +51,6 @@ public class AEclipseResourceTest extends AEclipseAbstractionTestSetup {
         assertThat(testProject1.unwrap(), is(instanceOf(IResource.class)));
         assertThat(testProject1.getFile(".ipsproject").unwrap(), is(instanceOf(IResource.class)));
         assertThat(testProject1.getFolder("src").unwrap(), is(instanceOf(IResource.class)));
-    }
-
-    @Test
-    public void testGetAdapter() {
-        AResource folder = testProject1.getFolder("src");
-        IFolder adapter = folder.getAdapter(IFolder.class);
-
-        assertThat(adapter, is(notNullValue()));
     }
 
     @Test

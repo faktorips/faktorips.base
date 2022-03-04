@@ -75,7 +75,7 @@ public class PlainJavaWorkspaceTest extends PlainJavaAbstractionTestSetup {
     public void testBuild() {
         Abstractions.getWorkspace().getRoot().getProject("TestProject");
 
-        Abstractions.getWorkspace().build(ABuildKind.CLEAN_BUILD, new NullProgressMonitor());
+        Abstractions.getWorkspace().build(ABuildKind.CLEAN, new NullProgressMonitor());
 
         // TODO: assert später wenn PlainJavaProject#build implementiert ist
     }

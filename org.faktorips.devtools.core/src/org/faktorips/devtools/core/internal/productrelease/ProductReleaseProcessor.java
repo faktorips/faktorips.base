@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
@@ -197,7 +196,7 @@ public class ProductReleaseProcessor {
     }
 
     private void checkProblemMarkers(IIpsProject ipsProject) throws CoreException, InterruptedException {
-        if (((AEclipseProject)ipsProject.getProject()).unwrap().findMaxProblemSeverity(IMarker.PROBLEM, true,
+        if (((IProject)ipsProject.getProject().unwrap()).findMaxProblemSeverity(IMarker.PROBLEM, true,
                 IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_errors);
         } else {

@@ -61,8 +61,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseJavaProject;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
@@ -296,7 +294,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        String[] classPath = computeClasspath(((AEclipseJavaProject)this.ipsProject.getJavaProject()).unwrap());
+        String[] classPath = computeClasspath(this.ipsProject.getJavaProject().unwrap());
 
         VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
         String[] args = new String[4];
@@ -525,7 +523,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         sld.initializeDefaults(configuration);
 
         // get source container from the project
-        ISourceContainer sc = new ProjectSourceContainer(((AEclipseProject)ipsProject.getProject()).unwrap(), true);
+        ISourceContainer sc = new ProjectSourceContainer(ipsProject.getProject().unwrap(), true);
         List<ISourceContainer> sourceContainer = new ArrayList<>(
                 Arrays.asList(sc.getSourceContainers()));
 
@@ -536,7 +534,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         // get source container from the classpath
         List<IRuntimeClasspathEntry> classpaths = new ArrayList<>();
         classpaths.addAll(Arrays.asList(JavaRuntime
-                .computeUnresolvedRuntimeClasspath(((AEclipseJavaProject)ipsProject.getJavaProject()).unwrap())));
+                .computeUnresolvedRuntimeClasspath((IJavaProject)ipsProject.getJavaProject().unwrap())));
         IRuntimeClasspathEntry[] entries = new IRuntimeClasspathEntry[classpaths.size()];
         classpaths.toArray(entries);
         IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveSourceLookupPath(entries, configuration);
@@ -830,8 +828,7 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Adds all repository packages of the given ips project to the given list. Add the repository
      * package only if the toc file exists.
      */
-    private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages)
-            {
+    private void getRepositoryPackages(IIpsProject ipsProject, List<String> repositoryPackages) {
         IIpsPackageFragmentRoot[] ipsRoots = ipsProject.getIpsPackageFragmentRoots();
         List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsRoots);
         // need reverse sort order: see IpsTestAction#ipsProjectSelected

@@ -7,14 +7,14 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.mapping;
 
 import org.faktorips.devtools.abstraction.AVersion;
 import org.osgi.framework.Version;
 
-public class OsgiVersions {
+public class OsgiVersionMapping {
 
-    private OsgiVersions() {
+    private OsgiVersionMapping() {
         // util
     }
 

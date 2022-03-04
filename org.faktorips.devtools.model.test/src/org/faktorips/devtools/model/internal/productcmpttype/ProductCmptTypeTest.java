@@ -42,7 +42,7 @@ import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.DependencyType;

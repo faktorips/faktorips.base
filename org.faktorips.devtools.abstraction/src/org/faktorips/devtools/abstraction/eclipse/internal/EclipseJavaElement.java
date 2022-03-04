@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
@@ -20,9 +20,9 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AWrapper;
 
-public class AEclipseJavaElement extends AWrapper<IJavaElement> implements AJavaElement {
+public class EclipseJavaElement extends AWrapper<IJavaElement> implements AJavaElement {
 
-    protected AEclipseJavaElement(IJavaElement javaElement) {
+    protected EclipseJavaElement(IJavaElement javaElement) {
         super(javaElement);
     }
 

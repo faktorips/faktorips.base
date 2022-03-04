@@ -62,7 +62,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
         testCase.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test

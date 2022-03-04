@@ -24,8 +24,14 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 
-// TODO: setup and tear down methoden schreiben
 public abstract class AbstractAbstractionTestSetup {
+
+    @After
+    public void tearDown() {
+        Abstractions.getWorkspace().getRoot().getProjects()
+                .stream()
+                .forEach(p -> p.delete(null));
+    }
 
     /**
      * Returns a path of the source folder relativ to its project e.g. {@code src} will get
@@ -204,13 +210,6 @@ public abstract class AbstractAbstractionTestSetup {
 
     private void createFolder(AProject project, Path folder) {
         project.getLocation().resolve(folder).toFile().mkdirs();
-    }
-
-    @After
-    public void tearDown() {
-        Abstractions.getWorkspace().getRoot().getProjects()
-                .stream()
-                .forEach(p -> p.delete(null));
     }
 
     protected static <A extends AAbstraction> Matcher<A> wrapperOf(Object object) {

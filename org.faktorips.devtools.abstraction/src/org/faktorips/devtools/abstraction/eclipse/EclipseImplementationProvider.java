@@ -12,6 +12,7 @@ package org.faktorips.devtools.abstraction.eclipse;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.AImplementationProvider;
 import org.faktorips.devtools.abstraction.Abstractions.AImplementation;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 
 public class EclipseImplementationProvider implements AImplementationProvider {
 

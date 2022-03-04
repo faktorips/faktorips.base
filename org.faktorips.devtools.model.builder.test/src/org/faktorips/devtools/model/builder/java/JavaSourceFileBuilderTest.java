@@ -69,7 +69,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true);
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
@@ -259,7 +259,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 //@formatter:on
             }
         };
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -280,7 +280,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -321,7 +321,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -341,7 +341,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -382,7 +382,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -402,7 +402,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -443,7 +443,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -463,7 +463,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -504,7 +504,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -519,7 +519,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     public void testLinebreaks_NewFile_Windows() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -543,7 +543,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         };
 
         builder.setLineSeparatorPreference("\r\n");
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
         builder.build(ipsSrcFile);
 
@@ -558,7 +558,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     public void testLinebreaks_NewFile_Linux() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
         AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
@@ -582,7 +582,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         };
 
         builder.setLineSeparatorPreference("\n");
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
         builder.build(ipsSrcFile);
 

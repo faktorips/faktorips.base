@@ -58,8 +58,8 @@ import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
 import org.faktorips.devtools.model.builder.IpsBuilder.EclipseIpsBuilder;
@@ -274,7 +274,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             MessageList msgList = pcType.validate(pcType.getIpsProject());
             int numOfMsg = msgList.size();
             assertTrue(numOfMsg > 0);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             AResource resource = pcType.getEnclosingResource();
             Set<AMarker> markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true,
                     AResourceTreeTraversalDepth.INFINITE);
@@ -300,7 +300,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             pcType.getIpsSrcFile().save(true, null);
             msgList = pcType.validate(ipsProject);
             assertEquals(0, msgList.size());
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             resource = pcType.getEnclosingResource();
             markers = resource.findMarkers(IpsBuilder.PROBLEM_MARKER, true, AResourceTreeTraversalDepth.INFINITE);
             assertEquals(msgList.size(), markers.size());
@@ -318,7 +318,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             IProductCmpt aProduct = newProductCmpt(a, "AProduct");
 
             TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
             assertTrue(builtIpsObjects.contains(a));
             assertTrue(builtIpsObjects.contains(b));
@@ -331,7 +331,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             bAttr.setDatatype("String");
             b.getIpsSrcFile().save(true, null);
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builtIpsObjects.contains(a));
             assertTrue(builtIpsObjects.contains(b));
         }
@@ -364,7 +364,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             aProduct.getIpsSrcFile().save(true, null);
 
             final TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, false);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
             assertTrue(builtIpsObjects.contains(a));
@@ -374,7 +374,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             builtIpsObjects.clear();
             assertTrue(builtIpsObjects.isEmpty());
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builtIpsObjects.isEmpty());
 
             aAttr.setDatatype("String");
@@ -401,7 +401,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             ((IWorkspace)getIpsModel().getWorkspace().unwrap()).addResourceChangeListener(listener,
                     IResourceChangeEvent.POST_BUILD);
             a.getIpsSrcFile().save(true, null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
         }
     }
 
@@ -420,14 +420,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
             // initial build: all ipsobjects will be touched
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
             c.getIpsSrcFile().save(true, null);
 
             builder.getBuiltIpsObjects().clear();
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             /*
              * list is expected to be empty since only master to detail compositions will be build
              * when the the builder set is an aggregate root builder set
@@ -452,14 +452,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
             // initial build: all ipsobjects will be touched
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
             c.getIpsSrcFile().save(true, null);
 
             builder.getBuiltIpsObjects().clear();
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             /*
              * all dependent objects are expected to be in the list since all relations are
              * composite master to detail relations
@@ -486,14 +486,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
             TestDependencyIpsArtefactBuilder builder = createTestBuilderForProject(ipsProject, true);
             // initial build: all ipsobjects will be touched
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             IPolicyCmptTypeAttribute cAttr = c.newPolicyCmptTypeAttribute();
             cAttr.setName("cAttr");
             c.getIpsSrcFile().save(true, null);
 
             builder.getBuiltIpsObjects().clear();
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             /*
              * all dependent objects are expected to be in the list since all relations are
              * composite master to detail relations
@@ -522,7 +522,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             // after this incremental build the TestDependencyIpsArtefactBuilder is expected to
             // contain
             // all new IpsObjects in its build list.
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             List<IIpsObject> builtIpsObjects = builder.getBuiltIpsObjects();
             assertTrue(builtIpsObjects.contains(a));
             assertTrue(builtIpsObjects.contains(b));
@@ -534,19 +534,19 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             // after this second build no IpsObjects are expected in the build list since nothing
             // has
             // changed since the last build
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builder.getBuiltIpsObjects().isEmpty());
 
             // since the ProductCmptType d has been deleted after this build the
             // TestDependencyIpsArtefactBuilder is expected to contain all dependent IpsObjects
             d.getIpsSrcFile().getCorrespondingResource().delete(null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             builtIpsObjects = builder.getBuiltIpsObjects();
             assertTrue(builtIpsObjects.contains(a));
 
             // recreate d. All dependants are expected to be rebuilt
             d = newProductCmptType(root, "D");
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             builtIpsObjects = builder.getBuiltIpsObjects();
             assertTrue(builtIpsObjects.contains(a));
 
@@ -558,7 +558,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             a.getIpsSrcFile().getCorrespondingResource().delete(null);
             b.getIpsSrcFile().getCorrespondingResource().delete(null);
             c.getIpsSrcFile().getCorrespondingResource().delete(null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
         }
     }
 
@@ -580,30 +580,30 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
             setTestArtefactBuilder(ipsProject, builder);
             builder.called = false;
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
             assertTrue(builder.called);
 
             builder.buildKind = null;
             builder.called = false;
             archiveFile.touch(null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
             assertTrue(builder.called);
-            assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+            assertEquals(ABuildKind.FULL, builder.buildKind);
         }
     }
 
     @Test
     public void testIsFullBuildTriggeredAfterChangesToIpsProjectFile() {
         if (Abstractions.isEclipseRunning()) {
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
             AssertThatFullBuildIsTriggeredBuilder builder = new AssertThatFullBuildIsTriggeredBuilder();
             // this changes the properties file!
             setTestArtefactBuilder(ipsProject, builder);
             builder.buildKind = null;
             builder.called = false;
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
             assertTrue(builder.called);
-            assertEquals(ABuildKind.FULL_BUILD, builder.buildKind);
+            assertEquals(ABuildKind.FULL, builder.buildKind);
         }
     }
 
@@ -615,7 +615,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             String xml = "invalid xml";
             suppressLoggingDuringExecutionOfThisTestCase();
             file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             Set<AMarker> markers = file.findMarkers(IMarker.PROBLEM, true, AResourceTreeTraversalDepth.RESOURCE_ONLY);
             boolean isMessageThere = false;
             for (AMarker marker : markers) {
@@ -642,10 +642,10 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                     new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
             IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builder.buildCalled);
             ipsObject.getIpsSrcFile().getCorrespondingFile().delete(null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builder.deleteCalled);
         }
     }
@@ -664,14 +664,14 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                     new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(builderSet) });
 
             IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             assertTrue(builder.buildCalled);
             builder.buildCalled = false;
 
             AResource resource = ipsObject.getEnclosingResource();
             resource.copy(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName()), null);
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             assertTrue(!builder.buildCalled);
         }
@@ -729,9 +729,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                                     builderSetProjectC }) };
             ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-            projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-            projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
+            projectB.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
+            projectC.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
             assertTrue(buildObjects.contains(a));
@@ -752,7 +752,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             attrA.setDatatype("String");
             a.getIpsSrcFile().save(true, null);
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             buildObjects = builderProjectA.getBuiltIpsObjects();
             assertTrue(buildObjects.contains(a));
@@ -774,7 +774,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             a.getIpsSrcFile().save(true, null);
 
             ((IpsProject)projectC).getIpsProjectPropertiesFile().delete(null);
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             buildObjects = builderProjectA.getBuiltIpsObjects();
             assertTrue(buildObjects.contains(a));
@@ -858,9 +858,9 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             ((IpsModel)ipsProject.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
 
             // first initial build
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-            projectB.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
-            projectC.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
+            projectB.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
+            projectC.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             // expect the following object in the builders of the projects
             List<IIpsObject> buildObjects = builderProjectA.getBuiltIpsObjects();
@@ -888,7 +888,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             aProductTypeAttr.getIpsSrcFile().save(true, null);
 
             // build
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
 
             // expect a build of the product components in all the projects
             buildObjects = builderProjectA.getBuiltIpsObjects();
@@ -940,7 +940,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     public void testCleanBuild() {
         newPolicyCmptType(ipsProject, "mycompany.motor.MotorPolicy");
         AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
-        archiveFile.getWorkspace().build(ABuildKind.FULL_BUILD, null);
+        archiveFile.getWorkspace().build(ABuildKind.FULL, null);
 
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(ipsProject.getIpsPackageFragmentRoots(),
@@ -963,12 +963,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         newPath.setEntries(newEntries);
         project2.setIpsObjectPath(newPath);
 
-        project2.getProject().build(ABuildKind.CLEAN_BUILD, null);
+        project2.getProject().build(ABuildKind.CLEAN, null);
     }
 
     @Test
     public void testArtefactBuilderSetIfIpsProjectIsSet() {
-        ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
         IIpsArtefactBuilderSet builderSet = ((IpsModel)ipsProject.getIpsModel()).getIpsArtefactBuilderSet(ipsProject,
                 false);
         assertEquals(ipsProject, builderSet.getIpsProject());
@@ -1161,7 +1161,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             ipsObjectPath.setUsingManifest(true);
             ipsProject.setIpsObjectPath(ipsObjectPath);
 
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, new NullProgressMonitor());
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             Set<AMarker> markers = ipsProject.getIpsProjectPropertiesFile().findMarkers(IpsBuilder.PROBLEM_MARKER, true,
                     AResourceTreeTraversalDepth.INFINITE);
 

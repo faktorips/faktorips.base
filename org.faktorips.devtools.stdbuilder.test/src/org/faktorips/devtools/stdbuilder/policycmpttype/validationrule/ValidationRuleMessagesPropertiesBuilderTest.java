@@ -290,7 +290,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         AFile propertyFile = validationMessagesBuilder.getPropertyFile(root, supportedLanguage);
         when(propertyFile.getParent()).thenReturn(folder);
 
-        validationMessagesBuilder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        validationMessagesBuilder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         verify(folder).create(any(IProgressMonitor.class));
     }
 

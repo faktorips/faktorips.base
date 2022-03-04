@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -21,7 +21,7 @@ import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AEclipseMarkerTest extends AEclipseAbstractionTestSetup {
+public class EclipseMarkerTest extends EclipseAbstractionTestSetup {
 
     private static final String MARKER_TYPE = "TestMarker";
     private AProject testProject;

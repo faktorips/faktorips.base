@@ -7,12 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrapSupplier;
+import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
 
 import java.nio.charset.Charset;
 import java.util.Set;
@@ -23,13 +24,12 @@ import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.eclipse.internal.BuildKindMapping;
 
-public class AEclipseProject extends AEclipseContainer implements AProject {
+public class EclipseProject extends EclipseContainer implements AProject {
     private static final String NATURE_ID = "org.faktorips.devtools.model.ipsnature"; //$NON-NLS-1$
     private static final String OLD_NATURE_ID = "org.faktorips.devtools.core.ipsnature"; //$NON-NLS-1$
 
-    AEclipseProject(IProject project) {
+    EclipseProject(IProject project) {
         super(project);
     }
 
@@ -71,12 +71,11 @@ public class AEclipseProject extends AEclipseContainer implements AProject {
 
     @Override
     public void build(ABuildKind kind, IProgressMonitor monitor) {
-        run(() -> project().build(BuildKindMapping.forEclipse(kind), monitor));
+        run(() -> project().build(buildKind(kind), monitor));
     }
 
     @Override
     public Charset getDefaultCharset() {
         return get(() -> Charset.forName(project().getDefaultCharset()));
     }
-
 }

@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrapSupplier;
@@ -21,9 +21,9 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
 
-public abstract class AEclipseContainer extends AEclipseResource implements AContainer {
+public abstract class EclipseContainer extends EclipseResource implements AContainer {
 
-    AEclipseContainer(IContainer container) {
+    EclipseContainer(IContainer container) {
         super(container);
     }
 

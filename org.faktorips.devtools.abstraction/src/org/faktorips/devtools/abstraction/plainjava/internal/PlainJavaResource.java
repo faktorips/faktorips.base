@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.abstraction.AAdaptersFactory;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
@@ -39,7 +38,7 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     private Long lastModified;
     private volatile Set<PlainJavaMarker> markers = null;
 
-    // TODO ggf. aus Git/Maven initialisieren?
+    // TODO FIPS-8427: ggf. aus Git/Maven initialisieren?
     private boolean derived;
 
     public PlainJavaResource(File wrapped) {
@@ -53,11 +52,6 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     File file() {
         return unwrap();
-    }
-
-    @Override
-    public <T> T getAdapter(Class<T> adapter) {
-        return AAdaptersFactory.getAdapter(this, adapter);
     }
 
     @Override
@@ -113,8 +107,6 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     @Override
     public void delete(IProgressMonitor monitor) {
-        // TODO auch im IpsModel entsprechende Objekte löschen, siehe
-        // org.faktorips.devtools.model.internal.PlainJavaIpsModelTest.testClearIpsSrcFileContentsCacheWhenFileDeleted()v
         if (file().exists()) {
             getWorkspace().getRoot().remove(file().toPath());
             clearMarkers();
@@ -159,14 +151,14 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     @Override
     public Set<AMarker> findMarkers(String type, boolean includeSubtypes, AResourceTreeTraversalDepth depth) {
         Set<AMarker> foundMarkers = new LinkedHashSet<>();
-        recursive(r -> r.findMarkersInternal(type, includeSubtypes, foundMarkers), depth);
+        recursive(r -> r.findMarkersInternal(type, foundMarkers), depth);
         return foundMarkers;
     }
 
-    private void findMarkersInternal(String type, boolean includeSubtypes, Set<AMarker> foundMarkers) {
+    private void findMarkersInternal(String type, Set<AMarker> foundMarkers) {
         if (markers != null) {
             synchronized (markers) {
-                markers.stream().filter(m -> m.unwrap().equalsType(type, includeSubtypes))
+                markers.stream().filter(m -> m.unwrap().equalsType(type))
                         .forEach(foundMarkers::add);
             }
         }
@@ -232,15 +224,15 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     @Override
     public void deleteMarkers(String type, boolean includeSubtypes, AResourceTreeTraversalDepth depth) {
-        recursive(r -> r.deletMarkersInternal(type, includeSubtypes), depth);
+        recursive(r -> r.deletMarkersInternal(type), depth);
     }
 
-    private void deletMarkersInternal(String type, boolean includeSubtypes) {
+    private void deletMarkersInternal(String type) {
         if (markers != null) {
             synchronized (markers) {
                 for (Iterator<PlainJavaMarker> iterator = markers.iterator(); iterator.hasNext();) {
                     PlainJavaMarkerImpl marker = iterator.next().unwrap();
-                    if (marker.equalsType(type, includeSubtypes)) {
+                    if (marker.equalsType(type)) {
                         iterator.remove();
                     }
                 }

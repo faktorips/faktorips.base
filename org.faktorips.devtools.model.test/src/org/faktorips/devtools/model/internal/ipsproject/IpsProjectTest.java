@@ -72,7 +72,7 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.EclipseImplementation;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersionProvider;
@@ -337,37 +337,37 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
             assertNull(ipsProject.isJavaProjectErrorFree(false));
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             assertNotNull(ipsProject.isJavaProjectErrorFree(false));
             assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // delete the source folder => inconsistent class path
             AFolder srcFolder = ipsProject.getProject().getFolder("src");
             srcFolder.delete(null);
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
 
             assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // recreate source folder
             srcFolder.create(null);
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // create Java sourcefile with compile error
             AFile srcFile = srcFolder.getFile("Bla.java");
             srcFile.create(new ByteArrayInputStream("wrong code".getBytes()), null);
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             assertFalse(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // change Java Sourcefile to contain warnings
             String code = "import java.lang.String; public class Bla { }";
             srcFile.setContents(new ByteArrayInputStream(code.getBytes()), false, null);
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // create Java sourcefile with compile error
             srcFile.delete(null);
-            ipsProject.getProject().build(ABuildKind.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             assertTrue(ipsProject.isJavaProjectErrorFree(false).booleanValue());
 
             // project closed

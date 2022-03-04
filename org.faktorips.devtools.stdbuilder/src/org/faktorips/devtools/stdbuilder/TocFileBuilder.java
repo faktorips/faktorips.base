@@ -135,13 +135,13 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
      */
     @Override
     public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) {
-        if (buildKind == ABuildKind.FULL_BUILD) {
+        if (buildKind == ABuildKind.FULL) {
             tocFileMap.clear();
         }
         IIpsPackageFragmentRoot[] srcRoots = ipsProject.getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot srcRoot : srcRoots) {
             IpsPackageFragmentRoot root = (IpsPackageFragmentRoot)srcRoot;
-            if (buildKind == ABuildKind.FULL_BUILD) {
+            if (buildKind == ABuildKind.FULL) {
                 getToc(root).clear();
             }
             // next lines are a workaround for a bug in PDE

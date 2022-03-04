@@ -10,21 +10,14 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.faktorips.devtools.abstraction.AAdaptersFactory;
-
 /**
- * The kind of modifiers.
+ * The kinds of modifiers.
  */
-public enum Modifier implements IAdaptable {
+public enum Modifier {
 
-    PUBLISHED("published", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
+    PUBLISHED("published", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC), //$NON-NLS-1$
 
-    },
-
-    PUBLIC("public", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC) { //$NON-NLS-1$
-
-    };
+    PUBLIC("public", Modifier.ACC_PUBLIC, java.lang.reflect.Modifier.PUBLIC); //$NON-NLS-1$
 
     // from org.eclipse.jdt.core.Flags
     private static final int ACC_PUBLIC = 0x0001;
@@ -85,11 +78,6 @@ public enum Modifier implements IAdaptable {
             }
         }
         return null;
-    }
-
-    @Override
-    public <T> T getAdapter(Class<T> adapter) {
-        return AAdaptersFactory.getAdapter(this, adapter);
     }
 
 }

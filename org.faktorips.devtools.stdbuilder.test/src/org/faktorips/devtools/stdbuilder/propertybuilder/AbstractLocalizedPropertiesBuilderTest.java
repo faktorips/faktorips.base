@@ -51,7 +51,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testBeforeBuildProcess_VerifyCreateParentFolder() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
 
         assertTrue(propertyFile.getParent().exists());
     }
@@ -60,7 +60,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testBeforeBuildProcess_LoadFor_FULL_BUILD() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.beforeBuildProcess(ipsProject, ABuildKind.FULL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.FULL);
 
         verify(builder.generator, times(ipsProject.getReadOnlyProperties().getSupportedLanguages().size()))
                 .loadMessages();
@@ -70,7 +70,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     public void testAfterBuildProcess() throws Exception {
         setUpBuilderAndDependencies();
 
-        builder.afterBuildProcess(ipsProject, ABuildKind.FULL_BUILD);
+        builder.afterBuildProcess(ipsProject, ABuildKind.FULL);
 
         verify(builder.generator, times(ipsProject.getReadOnlyProperties().getSupportedLanguages().size()))
                 .saveIfModified();

@@ -41,7 +41,7 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
 
     @Override
     public Set<AProject> getReferencedProjects() {
-        // TODO über Maven auflösen?
+        // TODO FIPS-8693: über Maven auflösen? Oder referenzieren wir nur JARs?
         return Set.of();
     }
 
@@ -55,18 +55,19 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
     @Override
     public void create() {
         super.create();
-        // TODO muss noch etwas angelegt werden, um den Ordner als Projekt zu markieren? Evtl.
+        // TODO FIPS-8693: muss noch etwas angelegt werden, um den Ordner als Projekt zu markieren?
+        // Evtl.
         // eine pom.xml wenn wir ein Maven-Projekt anlegen?
     }
 
     @Override
     public void build(ABuildKind incrementalBuild, IProgressMonitor monitor) {
-        // TODO später...
+        // TODO FIPS-8427: XTend-Build ohne Eclipse aufrufen?
     }
 
     @Override
     public Charset getDefaultCharset() {
-        // TODO von Maven / Filesystem abfragen?
+        // TODO FIPS-8693: von Maven / Filesystem abfragen?
         return StandardCharsets.UTF_8;
     }
 

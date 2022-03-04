@@ -33,7 +33,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseFolder;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -272,7 +272,7 @@ public class EclipseProjectUtil {
 
         IIpsProject ipsProject = createDefaultIpsProject(javaProject, creationProperties);
 
-        IFolder ipsModelFolder = ((AEclipseFolder)ipsProject.getProject()
+        IFolder ipsModelFolder = ((EclipseFolder)ipsProject.getProject()
                 .getFolder(creationProperties.getSourceFolderName())).unwrap();
         if (!ipsModelFolder.exists()) {
             ipsModelFolder.create(true, true, new NullProgressMonitor());

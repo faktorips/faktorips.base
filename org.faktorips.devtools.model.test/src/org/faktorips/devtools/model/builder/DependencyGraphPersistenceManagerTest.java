@@ -37,7 +37,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
             IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "B");
             IAssociation bToA = b.newAssociation();
             bToA.setTarget(a.getQualifiedName());
-            ipsProject.getProject().build(ABuildKind.INCREMENTAL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
             DependencyGraphPersistenceManager persistenceManager = IpsModelExtensionsViaEclipsePlugins.get()
                     .getDependencyGraphPersistenceManager();
             assertNull(persistenceManager.getDependencyGraph(ipsProject));

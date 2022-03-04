@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.abstraction.eclipse.AEclipseFile;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
@@ -84,7 +83,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     private void updatePluginId(String fileName, IProgressMonitor monitor) {
-        IFile file = ((AEclipseFile)getIpsProject().getProject().getFile(fileName)).unwrap();
+        IFile file = getIpsProject().getProject().getFile(fileName).unwrap();
         update(file, c -> c.replace(IpsPlugin.PLUGIN_ID, IpsModelActivator.PLUGIN_ID), monitor);
     }
 

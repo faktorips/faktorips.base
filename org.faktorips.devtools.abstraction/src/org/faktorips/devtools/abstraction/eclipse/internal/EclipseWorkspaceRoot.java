@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
@@ -20,9 +20,9 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 
-public class AEclipseWorkspaceRoot extends AEclipseContainer implements AWorkspaceRoot {
+public class EclipseWorkspaceRoot extends EclipseContainer implements AWorkspaceRoot {
 
-    AEclipseWorkspaceRoot(IWorkspaceRoot workspaceRoot) {
+    EclipseWorkspaceRoot(IWorkspaceRoot workspaceRoot) {
         super(workspaceRoot);
     }
 

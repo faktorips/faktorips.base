@@ -12,6 +12,7 @@ Require-Bundle: org.faktorips.runtime;visibility:=reexport,
  org.apache.commons.io;bundle-version="2.6.0"
 Export-Package: org.faktorips.devtools.abstraction,
  org.faktorips.devtools.abstraction.eclipse,
+ org.faktorips.devtools.abstraction.eclipse.internal;x-friends:="org.faktorips.abstracttest,org.faktorips.devtools.model,org.faktorips.devtools.model.test",
  org.faktorips.devtools.abstraction.exception,
  org.faktorips.devtools.abstraction.mapping,
  org.faktorips.devtools.abstraction.plainjava,
@@ -22,4 +23,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
  org.junit;version="4.13.2"
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.faktorips.devtools.abstraction.eclipse.EclipseImplementation
+Bundle-Activator: org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation

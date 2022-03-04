@@ -131,13 +131,13 @@ public class PlainJavaMarkerTest extends PlainJavaAbstractionTestSetup {
     public void testEqualsType_false() {
         AMarker marker1 = testProject.createMarker(MARKER_TYPE + "diff");
 
-        assertThat(((PlainJavaMarkerImpl)marker1.unwrap()).equalsType(MARKER_TYPE, true), is(false));
+        assertThat(((PlainJavaMarkerImpl)marker1.unwrap()).equalsType(MARKER_TYPE), is(false));
     }
 
     @Test
     public void testEqualsType_true() {
         AMarker marker1 = testProject.createMarker(MARKER_TYPE);
 
-        assertThat(((PlainJavaMarkerImpl)marker1.unwrap()).equalsType(MARKER_TYPE, true), is(true));
+        assertThat(((PlainJavaMarkerImpl)marker1.unwrap()).equalsType(MARKER_TYPE), is(true));
     }
 }

@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AbstractAbstractionTestSetup;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 
-public class AEclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
+public class EclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
 
     @Override
     public Path srcFolder() {

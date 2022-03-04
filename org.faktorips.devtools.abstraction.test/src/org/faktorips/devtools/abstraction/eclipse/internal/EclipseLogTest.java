@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,7 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AEclipseLogTest extends AEclipseAbstractionTestSetup {
+public class EclipseLogTest extends EclipseAbstractionTestSetup {
 
     private final Map<String, IStatus> loggerImpl = new HashMap<>();
     private final ALogListener logListener = (status, contextId) -> loggerImpl.put(contextId, status);

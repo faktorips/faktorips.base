@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -51,69 +51,69 @@ public class EclipseWrapperBuilder extends WrapperBuilder {
     @Override
     protected <A extends AAbstraction> A wrapInternal(Object original, Class<A> aClass) {
         if (ALog.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseLog((ILog)original);
+            return (A)new EclipseLog((ILog)original);
         }
         if (AResourceDelta.class.isAssignableFrom(aClass)) {
             return (A)new EclipseResourceDelta((IResourceDelta)original);
         }
         if (AFolder.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseFolder((IFolder)original);
+            return (A)new EclipseFolder((IFolder)original);
         }
         if (AFile.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseFile((IFile)original);
+            return (A)new EclipseFile((IFile)original);
         }
         if (AProject.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseProject((IProject)original);
+            return (A)new EclipseProject((IProject)original);
         }
         if (AWorkspaceRoot.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseWorkspaceRoot((IWorkspaceRoot)original);
+            return (A)new EclipseWorkspaceRoot((IWorkspaceRoot)original);
         }
         if (AContainer.class.isAssignableFrom(aClass)) {
             IContainer container = (IContainer)original;
             if (container instanceof IWorkspaceRoot) {
-                return (A)new AEclipseWorkspaceRoot((IWorkspaceRoot)container);
+                return (A)new EclipseWorkspaceRoot((IWorkspaceRoot)container);
             }
             if (container instanceof IProject) {
-                return (A)new AEclipseProject((IProject)container);
+                return (A)new EclipseProject((IProject)container);
             }
             if (container instanceof IFolder) {
-                return (A)new AEclipseFolder((IFolder)container);
+                return (A)new EclipseFolder((IFolder)container);
             }
         }
         if (AResource.class.isAssignableFrom(aClass)) {
             IResource resource = (IResource)original;
             if (resource instanceof IWorkspaceRoot) {
-                return (A)new AEclipseWorkspaceRoot((IWorkspaceRoot)resource);
+                return (A)new EclipseWorkspaceRoot((IWorkspaceRoot)resource);
             } else if (resource instanceof IProject) {
-                return (A)new AEclipseProject((IProject)resource);
+                return (A)new EclipseProject((IProject)resource);
             } else if (resource instanceof IFolder) {
-                return (A)new AEclipseFolder((IFolder)resource);
+                return (A)new EclipseFolder((IFolder)resource);
             } else if (resource instanceof IFile) {
-                return (A)new AEclipseFile((IFile)resource);
+                return (A)new EclipseFile((IFile)resource);
             } else {
                 throw new IllegalArgumentException(
                         "Don't know how to wrap a " + resource.getClass().getName() + " as a " + aClass.getName()); //$NON-NLS-1$//$NON-NLS-2$
             }
         }
         if (AJavaProject.class.isAssignableFrom(aClass)) {
-            if (original instanceof AEclipseProject) {
-                return (A)new AEclipseJavaProject(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot())
-                        .getJavaProject(((AEclipseProject)original).getName()));
+            if (original instanceof EclipseProject) {
+                return (A)new EclipseJavaProject(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot())
+                        .getJavaProject(((EclipseProject)original).getName()));
             } else {
-                return (A)new AEclipseJavaProject((IJavaProject)original);
+                return (A)new EclipseJavaProject((IJavaProject)original);
             }
         }
         if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipsePackageFragmentRoot((IPackageFragmentRoot)original);
+            return (A)new EclipsePackageFragmentRoot((IPackageFragmentRoot)original);
         }
         if (AJavaElement.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseJavaElement((IJavaElement)original);
+            return (A)new EclipseJavaElement((IJavaElement)original);
         }
         if (AMarker.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseMarker((IMarker)original);
+            return (A)new EclipseMarker((IMarker)original);
         }
         if (AWorkspace.class.isAssignableFrom(aClass)) {
-            return (A)new AEclipseWorkspace((IWorkspace)original);
+            return (A)new EclipseWorkspace((IWorkspace)original);
         }
         throw new IllegalArgumentException("Unknown wrapper class: " + aClass); //$NON-NLS-1$
     }

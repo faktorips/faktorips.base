@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.eclipse;
+package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.run;
@@ -16,9 +16,9 @@ import org.eclipse.core.resources.IMarker;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AWrapper;
 
-public class AEclipseMarker extends AWrapper<IMarker> implements AMarker {
+public class EclipseMarker extends AWrapper<IMarker> implements AMarker {
 
-    AEclipseMarker(IMarker marker) {
+    EclipseMarker(IMarker marker) {
         super(marker);
     }
 
