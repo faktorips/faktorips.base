@@ -60,7 +60,6 @@
         <Setting enabled="false" name="derivedUnionIsImplemented" />
         <Setting name="formulaLanguageLocale" value="ko" />
         <Setting enabled="false" name="markerEnums" value="marker; marker2" />
-        <Setting enabled="true" name="businessFunctionsForValidationRules" />
         <Setting enabled="false" name="changingOverTimeDefault" />
         <Setting name="duplicateProductComponentSeverity" value="ERROR" />
         <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR" />

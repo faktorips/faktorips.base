@@ -108,13 +108,10 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertTrue(config.shouldDisplayChildrenFor(IpsObjectType.IPS_SOURCE_FILE));
         assertTrue(config.shouldDisplayChildrenFor(IpsObjectType.ENUM_TYPE));
         assertTrue(config.shouldDisplayChildrenFor(IpsObjectType.TABLE_STRUCTURE));
-        assertFalse(config.shouldDisplayChildrenFor(IpsObjectType.BUSINESS_FUNCTION));
         assertFalse(config.shouldDisplayChildrenFor(IpsObjectType.ENUM_CONTENT));
         assertFalse(config.shouldDisplayChildrenFor(IpsObjectType.TABLE_CONTENTS));
         assertFalse(config.shouldDisplayChildrenFor(IpsObjectType.TEST_CASE));
         assertFalse(config.shouldDisplayChildrenFor(IpsObjectType.TEST_CASE_TYPE));
-        assertFalse(config
-                .shouldDisplayChildrenFor(org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance()));
     }
 
     @Test

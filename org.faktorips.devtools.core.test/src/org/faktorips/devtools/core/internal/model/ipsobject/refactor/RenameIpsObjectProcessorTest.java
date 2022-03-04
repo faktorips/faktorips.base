@@ -200,19 +200,6 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         tableStructureReferences.check(NEW_NAME);
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testRenameBusinessFunction() throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performRenameRefactoring(businessFunction, NEW_NAME);
-
-        checkIpsSourceFile(businessFunction.getName(), NEW_NAME, businessFunction.getIpsPackageFragment(),
-                businessFunction.getIpsPackageFragment(),
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance());
-    }
-
     @Test
     public void testRenameProductCmpt() throws CoreException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");

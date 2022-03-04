@@ -14,8 +14,6 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.IControlFlow;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
@@ -98,8 +96,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
 
     protected static final String TABLE_CONTENTS_NAME = "TableContents";
 
-    protected static final String BUSINESS_FUNCTION_NAME = "BusinessFunction";
-
     protected IIpsProject ipsProject;
 
     protected IPolicyCmptType superPolicyCmptType;
@@ -162,9 +158,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
 
     protected ITableContents tableContents;
 
-    @SuppressWarnings("deprecation")
-    protected org.faktorips.devtools.model.bf.IBusinessFunction businessFunction;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -176,7 +169,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         createTestModel();
         createEnumModel();
         createTableModel();
-        createBusinessModel();
 
         createProductCmpt();
         createEnumContent();
@@ -311,18 +303,6 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
     private void createTableModel() throws CoreException {
         tableStructure = newTableStructure(ipsProject, TABLE_STRUCTURE_NAME);
         tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
-    }
-
-    @SuppressWarnings("deprecation")
-    private void createBusinessModel() throws CoreException {
-        businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(ipsProject,
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(),
-                BUSINESS_FUNCTION_NAME);
-        businessFunction.newStart(new Location(0, 0));
-        businessFunction.newEnd(new Location(10, 10));
-        IControlFlow controlFlow = businessFunction.newControlFlow();
-        controlFlow.setSource(businessFunction.getStart());
-        controlFlow.setTarget(businessFunction.getEnd());
     }
 
     private void createProductCmpt() throws CoreException {

@@ -641,19 +641,6 @@ public interface IIpsProjectProperties {
     void setMarkerEnumsEnabled(boolean enabled);
 
     /**
-     * Check if the option to allow business functions for validation rules is enabled or not
-     * 
-     * @return <code>true</code> if the option is enabled, <code>false</code> if the option is
-     *         disabled or not configured in the .ipsproject file
-     */
-    boolean isBusinessFunctionsForValidationRulesEnabled();
-
-    /**
-     * @see #isBusinessFunctionsForValidationRulesEnabled()
-     */
-    void setBusinessFunctionsForValidationRules(boolean enabled);
-
-    /**
      * Check if the default state for changing over time flag on {@link IProductCmptType
      * IProductCmptTypes} is enabled or disabled.
      * 

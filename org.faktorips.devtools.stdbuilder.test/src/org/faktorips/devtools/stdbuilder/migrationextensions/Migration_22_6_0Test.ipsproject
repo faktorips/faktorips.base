@@ -30,7 +30,7 @@
         <OptionalConstraints/>                             Definition of optional constraints. Details below.
         <SupportedLanguages/>                              List of supported natural languages. Details below.
     </IpsProject>
---><IpsProject changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}">
+--><IpsProject changesInTimeNamingConvention="FIPS" modelProject="true" persistentProject="false" productDefinitionProject="true" runtimeIdPrefix="migration22.6.">
 
  <!--
         Required Ips-Features
@@ -48,7 +48,7 @@
         </RequiredIpsFeatures>
     -->
  <RequiredIpsFeatures>
-  <RequiredIpsFeature id="org.faktorips.feature" minVersion="$IPS-MinVersion$"/>
+  <RequiredIpsFeature id="org.faktorips.feature" minVersion="21.12.0"/>
  </RequiredIpsFeatures>
 
  <!--
@@ -69,74 +69,71 @@
  <IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">
   <IpsArtefactBuilderSetConfig>
 
-   <!--Generiert JAXB-Annotationen in Vertragsklassen.-->
+   <!--Enables the generation of JAXB support-->
    <Property name="generateJaxbSupport" value="false"/>
 
-   <!--Generiert nur Implementierungsklassen (false) oder auch Published Interfaces (true)-->
+   <!--Generate the published interfaces (true) or only implementation classes (false)-->
    <Property name="generatePublishedInterfaces" value="false"/>
 
-   <!--Hier können die qualifizierten Namen für zusätzliche Annotationen eingestellt werden, die an alle generierten Methoden angehängt werden (z.B. org.faktorips.runtime.annotation.IpsGenerated (um generierten Code von der Analyse durch SonarQube/JaCoCo auszuschließen) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Mehrere Annotationen werden mit Strichpunkt getrennt.-->
+   <!--Define the qualified names of annotations which are added for every generated method (for example org.faktorips.runtime.annotation.IpsGenerated (to mark generated code as ignored by SonarQube/JaCoCo) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Multiple annotations are separated by semicolon.-->
    <Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>
 
-   <!--Konstantennamen für Camel-Case-Properties mit Unterstrich trennen.-->
+   <!--Separate constant names for camel case properties with an underscore-->
    <Property name="camelCaseSeparated" value="true"/>
 
-   <!--Qualifizierter Name der Basisklasse für Vertragsklassen. Falls ein leerer String angegeben wird, wird die Defaultbasisklasse benutzt.-->
+   <!--Defines the qualified name of the base class of all policy components. Leave the value empty if the default base class should be used.-->
    <Property name="baseClassPolicyComponent" value=""/>
 
-   <!--Der Logging Konnektor der im generierten Code verwendet werden soll. Wenn "None" ausgewählt ist, wird kein Logging generiert. Im Standard sind die Konnektoren "org.faktorips.devtools.core.javaUtilLoggingConnector" und "org.faktorips.devtools.core.log4jLoggingConnector" enthalten. Neue Konnektoren werden mit dem Extension Point "org.faktorips.devtools.core.loggingFrameworkConnector" registriert.-->
+   <!--The logging connector that is used for the generation of logging code. The generation of logging code is disabled if the value "None" is specified. Possible values are the IDs of extensions of the extension point "org.faktorips.devtools.model.loggingFrameworkConnector". Two extension come with the standard "org.faktorips.devtools.model.javaUtilLoggingConnector" and "org.faktorips.devtools.model.log4jLoggingConnector"-->
    <Property name="loggingFrameworkConnector" value="None"/>
 
-   <!--Nicht mergebare Ressourcen als abgeleitet markieren.-->
+   <!--Mark none mergeable resources as derived-->
    <Property name="markNoneMergeableResourcesAsDerived" value="false"/>
 
-   <!--Hier können die Namen für Annotationen eingestellt werden, die, wenn manuell hinzugefügt, an generierten Methoden nicht entfernt werden (z.B. Override). Mehrere Annotationen werden mit Strichpunkt getrennt. Wird die Annotation qualifiziert verwendet (z.B. weil es mehrere Annotationen mit gleichem unqualifiziertem Namen gibt) muss der Name hier qualifiziert angegeben werden, ansonsten unqualifiziert.-->
+   <!--Define the names of annotations which are retained if manually added to a generated method (for example Override). Multiple annotations are separated by semicolon. The name must be written as used in the annotation - if the annotation is qualified (for example because there are several annotations with the same unqualified names), the qualified name must be used here, otherwise the unqualified name. -->
    <Property name="retainAnnotations" value=""/>
 
-   <!--Legt fest wohin Formeln kompiliert werden.-->
+   <!--Specifies the kind of formula compiling.-->
    <Property name="formulaCompiling" value="Both"/>
 
-   <!--Die Sprache in der Code und Dokumentation generiert werden. Derzeit werden die Werte de und en unterstützt.-->
-   <Property name="generatorLocale" value="de"/>
+   <!--The language in which the code and documentation is generated. Currently supported are the values de and en.-->
+   <Property name="generatorLocale" value="en"/>
 
-   <!--Generiert toXml()-Methoden in Produktbaustein und -generationsklassen.-->
+   <!--Generates toXml() methods into Product Component and Generation classes-->
    <Property name="toXMLSupport" value="false"/>
 
-   <!--Generiert copy-Methoden in Vertagsklassen.-->
+   <!--Enables the generation of a model copy mechanism-->
    <Property name="generateCopySupport" value="true"/>
 
-   <!--Generiert Unterstützung für das Visitor-Pattern in allen Vertragsklassen.-->
+   <!--Enables the generation of visitor code-->
    <Property name="generateVisitorSupport" value="true"/>
 
-   <!--Der Persistence-Provider, der zur Generierung herstellerspezifischen Codes verwendet wird. Derzeit werden die Provider 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0', 'Generic JPA 2.1' und 'Jakarta Persistence 2.2' unterstützt.-->
-   <Property name="persistenceProvider" value="$IPS-PersistenceDatabase$"/>
+   <!--The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5', 'Generic JPA 2.0', 'Generic JPA 2.1' and 'Jakarta Persistence 2.2'.-->
+   <Property name="persistenceProvider" value="Generic JPA 2.1"/>
 
-   <!--Generiert einen Mechanismus zur Ermittelung von Modell-Unterschieden.-->
+   <!--Enables the generation of a delta determining mechanism for model objects-->
    <Property name="generateDeltaSupport" value="true"/>
 
-   <!--Qualifizierter Name der Basisklasse für Produktklassen. Falls ein leerer String angegeben wird, wird die Defaultbasisklasse benutzt.-->
+   <!--Defines the qualified name of the base class of all product components. Leave the value empty if the default base class should be used.-->
    <Property name="baseClassProductComponent" value=""/>
 
-   <!--Generiert nur die nötigsten Javadoc-Kommentare wie @generated, sowie Dokumentation aus dem Modell. Um überflüssige Leerzeilen in den Kommentaren zu vermeiden, muss die Option "Entferne leere Zeilen" im Java-Formatierungsprogramm der Projekteinstellungen aktiviert werden. Noch kompakter werden die Kommentare, wenn die Option "/** and */ on separate lines" deaktiviert wird.-->
+   <!--Only generate necessary Javadoc comments like @generated, as well as documentation from model. To remove empty lines within comments, activate "remove blank lines" in the Java codestyle formatter options. Disabling the "/** and */ on separate lines" option creates even more compact comments.-->
    <Property name="minimalJavadoc" value="false"/>
 
-   <!--Generiert Getter-Methoden für Produkt-Attribute in produktkonfigurierten Vertragsklassen.-->
+   <!--Enables the generation of getter methods of ProductComponentType attributes in the according PolicyCmptType class.-->
    <Property name="generateConvenienceGetters" value="false"/>
 
-   <!--Hier kann die Variante der DatatypeHelper definiert werden, die für die Local* Datatypes (LocalDate, LocalDateTime, LocalTime) verwendet wird. Möglich sind Joda oder Java8-->
+   <!--Define what helper variant is used for local date data types (LocalDate, LocalDateTime, LocalTime), i.e. Joda or Java8-->
    <Property name="localDateDatatypeHelperVariant" value="java8"/>
 
-   <!--Builder vereinfachen den Aufbau von Teststrukturen.-->
+   <!--Builders simplify the process of instantiating test structures.-->
    <Property name="builderClasses" value="All"/>
 
-   <!--Generiert Unterstützung für das Listener-Pattern in allen Vertragsklassen.-->
+   <!--Enables the generation of a notification mechanism-->
    <Property name="generateChangeListener" value="false"/>
 
-   <!--Lässt alle generierten Klassen Serializable implementieren.-->
+   <!--Enables the generation of Serializable support on policy components-->
    <Property name="serializablePolicyCmpts" value="false"/>
-
-   <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie ursprünglich ihren Typ im Methodennamen widerspiegeln sollen. Wird ein Manifest verwendet sollte diese Einstellung auch dort gepflegt werden.-->
-   <Property name="valueSetMethods" value="Unified"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
@@ -222,9 +219,8 @@
              file="base.ipsar">      The archive file.
           </Entry>
     -->
- <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="src/main/java">
-  <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" reexported="true" sourceFolder="\${IPS-SourceFolder}" tocPath="\${IPS-TocXML}.xml" type="src" validationMessagesBundle="\${IPS-ValidationMessageBundle}"/>
-  <Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="true" type="container"/>
+ <IpsObjectPath basePackageDerived="org.faktorips.devtools.core.internal.migrationextensions" basePackageMergable="org.faktorips.devtools.core.internal.migrationextensions" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="src/main/java">
+  <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" reexported="true" sourceFolder="productdef" tocPath="faktorips-repository-toc.xml" type="src" validationMessagesBundle="message-validation"/>
  </IpsObjectPath>
 
  <!--
@@ -322,7 +318,7 @@
         or
         <Version versionProvider="org.faktorips.devtools.core.bundleVersionProvider"/>
     -->
- <Version versionProvider="org.faktorips.maven.mavenVersionProvider"/> 
+        <Version version="1.2.3"/>
  <!--
         AdditionalSettings
          
@@ -340,12 +336,16 @@
             <!- - True to allow shared associations. Shared associations are detail-to-master associationis that can be used
                 by multiple master-to-detail associations- ->
             <Setting enabled="true" name="sharedDetailToMasterAssociations"/>
+            <!- - True to allow navigation via associations in formulas. - ->
+            <Setting enabled="true" name="associationsInFormulas"/>
             <!- - Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German.
                 Only English (en) and German (de) are supported at the moment. - ->
             <Setting name="formulaLanguageLocale" value="en"/>
             <!- - Represents the qualified name of the marker enums seperated by ";". For further processing only the first entered qualified name will be considered - ->
                 True to allow usage of marker enums. - ->
             <Setting enabled="true" name="markerEnums" value="markerEnumName"/>
+            <!- - True to allow business functions for validation rules. - ->
+            <Setting enabled="true" name="businessFunctionsForValidationRules"/>
             <!- - False to set the default state of changing over time flag on product component types to disabled. - ->
             <Setting enabled="false" name="changingOverTimeDefault"/>
             <!- - When inferring a template from multiple product components, Faktor-IPS checks whether a link is used in all or at least many of those product components.
@@ -375,8 +375,10 @@
   <Setting enabled="true" name="referencedProductComponentsAreValidOnThisGenerationsValidFromDate"/>
   <Setting enabled="false" name="rulesWithoutReferencesAllowed"/>
   <Setting enabled="false" name="sharedDetailToMasterAssociations"/>
-  <Setting name="formulaLanguageLocale" value="de"/>
+  <Setting enabled="false" name="associationsInFormulas"/>
+  <Setting name="formulaLanguageLocale" value="en"/>
   <Setting enabled="false" name="markerEnums" value=""/>
+  <Setting enabled="true" name="businessFunctionsForValidationRules"/>
   <Setting enabled="false" name="changingOverTimeDefault"/>
   <Setting name="inferredTemplateLinkThreshold" value="1"/>
   <Setting name="inferredTemplatePropertyValueThreshold" value="0.8"/>
@@ -403,7 +405,7 @@
         on the association side which holds a single value (to-one relationship side).
          
         <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
-                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="1000"
+                maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="4000"
                 allowLazyFetchForSingleValuedAssociations="true">
             <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
             <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
@@ -413,7 +415,7 @@
         for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, example:
             IdentifierName1 -> IDENTIFIER_NAME1
     -->
- <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="1000" maxTableNameLength="30">
+ <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="4000" maxTableNameLength="30">
   <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
   <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
  </PersistenceOptions>
@@ -433,7 +435,7 @@
         </SupportedLanguages>
     -->
  <SupportedLanguages>
-  <SupportedLanguage defaultLanguage="true" locale="\${IPS-Language}"/>
+  <SupportedLanguage defaultLanguage="true" locale="en"/>
  </SupportedLanguages>
 
  <!--

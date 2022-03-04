@@ -216,7 +216,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * </p>
      */
     protected boolean supportsXmlSchema() {
-        return isNotBusinessFunction();
+        return true;
     }
 
     /**
@@ -235,11 +235,6 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      */
     protected String getXmlSchemaLocation() {
         return XmlUtil.getSchemaLocation(getIpsObjectType());
-    }
-
-    @SuppressWarnings("deprecation")
-    private boolean isNotBusinessFunction() {
-        return !IpsObjectType.BUSINESS_FUNCTION.getXmlElementName().equals(getIpsObjectType().getXmlElementName());
     }
 
     @Override

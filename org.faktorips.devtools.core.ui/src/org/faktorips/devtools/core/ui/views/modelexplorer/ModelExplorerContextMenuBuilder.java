@@ -277,9 +277,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE)) {
             newMenu.add(new NewEnumTypeAction(workbenchWindow));
         }
-        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
-            newMenu.add(new org.faktorips.devtools.core.ui.actions.NewBusinessFunctionAction(workbenchWindow));
-        }
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
             newMenu.add(new NewTableStructureAction(workbenchWindow));
         }

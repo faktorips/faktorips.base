@@ -72,13 +72,6 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
      */
     «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
-        «IF specificBusinessFunctions»
-              if (
-              «FOR bf : specifiedBusinessFunctions SEPARATOR  " || "»
-              "«bf»".equals(context.getValue("businessFunction"))
-              «ENDFOR»
-              ) {
-        «ENDIF»
         «IF configured»
             if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»
@@ -104,10 +97,6 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
               return «CONTINUE_VALIDATION»;
         «ENDIF»
         «IF configured»
-        }
-        return «CONTINUE_VALIDATION»;
-        «ENDIF»
-        «IF specificBusinessFunctions»
         }
         return «CONTINUE_VALIDATION»;
         «ENDIF»

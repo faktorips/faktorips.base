@@ -27,7 +27,6 @@ import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.model.internal.type.TypePart;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -54,7 +53,6 @@ import org.w3c.dom.NodeList;
 public class ValidationRule extends TypePart implements IValidationRule {
 
     private static final String XML_TAG_VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
-    private static final String XML_TAG_BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
     private static final String XML_TAG_MARKERS = "Markers"; //$NON-NLS-1$
     private static final String XML_TAG_MARKER = "Marker"; //$NON-NLS-1$
 
@@ -65,11 +63,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private List<String> validatedAttributes = new ArrayList<>();
 
     private MessageSeverity msgSeverity = MessageSeverity.ERROR;
-
-    /** The qualified names of the business functions this rule is used in. */
-    private ArrayList<String> functions = new ArrayList<>(0);
-
-    private boolean appliedForAllBusinessFunction = true;
 
     private boolean validatedAttrSpecifiedInSrc = false;
 
@@ -110,63 +103,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    public String[] getBusinessFunctions() {
-        return functions.toArray(new String[functions.size()]);
-    }
-
-    @Override
-    public void setBusinessFunctions(String[] functionNames) {
-        functions.clear();
-        for (String functionName : functionNames) {
-            functions.add(functionName);
-        }
-        objectHasChanged();
-    }
-
-    @Override
-    public int getNumOfBusinessFunctions() {
-        return functions.size();
-    }
-
-    @Override
-    public void addBusinessFunction(String functionName) {
-        ArgumentCheck.notNull(functionName);
-        functions.add(functionName);
-        objectHasChanged();
-    }
-
-    @Override
-    public void removeBusinessFunction(int index) {
-        functions.remove(index);
-        objectHasChanged();
-    }
-
-    @Override
-    public String getBusinessFunction(int index) {
-        return functions.get(index);
-    }
-
-    @Override
-    public void setBusinessFunctions(int index, String functionName) {
-        ArgumentCheck.notNull(functionName);
-        String oldName = getBusinessFunction(index);
-        functions.set(index, functionName);
-        valueChanged(oldName, functionName);
-    }
-
-    @Override
-    public boolean isAppliedForAllBusinessFunctions() {
-        return appliedForAllBusinessFunction;
-    }
-
-    @Override
-    public void setAppliedForAllBusinessFunctions(boolean newValue) {
-        boolean oldValue = appliedForAllBusinessFunction;
-        appliedForAllBusinessFunction = newValue;
-        valueChanged(oldValue, newValue);
-    }
-
-    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
@@ -179,7 +115,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
         }
 
         IIpsProject project = getIpsProject();
-        validateBusinessFunctions(list, project);
 
         validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
@@ -220,41 +155,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
             usedMarkerIds.add(usedMarker);
         }
         return usedMarkerIds;
-    }
-
-    @SuppressWarnings("deprecation")
-    private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) {
-        for (int i = 0; i < functions.size(); i++) {
-            String function = functions.get(i);
-            list.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
-                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
-                    Message.WARNING, new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
-            if (StringUtils.isNotEmpty(function)) {
-                if (ipsProject.findIpsObject(IpsObjectType.BUSINESS_FUNCTION, function) == null) {
-                    String text = NLS.bind(Messages.ValidationRule_msgFunctionNotExists, function);
-                    list.add(new Message("", text, Message.ERROR, //$NON-NLS-1$
-                            new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
-                } else {
-                    if (isAppliedForAllBusinessFunctions()) {
-                        String text = Messages.ValidationRule_msgIgnored;
-                        list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
-                                new ObjectProperty(this, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS, i)));
-                    }
-                }
-            }
-        }
-        if (!isAppliedForAllBusinessFunctions() && functions.isEmpty()) {
-            String text = Messages.ValidationRule_msgOneBusinessFunction;
-            list.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
-                    IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
-        }
-        if (isAppliedForAllBusinessFunctions()
-                && ipsProject.getProperties().isBusinessFunctionsForValidationRulesEnabled()) {
-            list.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
-                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
-                    Message.WARNING,
-                    new ObjectProperty(this, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS)));
-        }
     }
 
     private void validateCheckValueAgainstValueSet(MessageList msgList) {
@@ -369,8 +269,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
         super.initPropertiesFromXml(element, id);
         initDefaultChangingOverTime();
         name = element.getAttribute(PROPERTY_NAME);
-        appliedForAllBusinessFunction = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS));
         msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
         msgSeverity = MessageSeverity.getMessageSeverity(element.getAttribute(PROPERTY_MESSAGE_SEVERITY));
         checkValueAgainstValueSetRule = Boolean
@@ -401,13 +299,11 @@ public class ValidationRule extends TypePart implements IValidationRule {
         }
 
         NodeList nl = element.getChildNodes();
-        functions.clear();
         validatedAttributes.clear();
         markers.clear();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
-                initChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, subElement);
                 initChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
                 initChildrenForMarkers(subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
@@ -415,7 +311,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 }
             }
         }
-        functions.trimToSize();
     }
 
     private void initChildrenFor(String elementType, List<String> childElements, Element subElement) {
@@ -448,8 +343,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_NAME, name);
-        newElement.setAttribute(PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS,
-                String.valueOf(appliedForAllBusinessFunction));
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
         newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
@@ -458,7 +351,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
-        appendChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, newElement);
         appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
         appendChildrenForMarkers(newElement);
 

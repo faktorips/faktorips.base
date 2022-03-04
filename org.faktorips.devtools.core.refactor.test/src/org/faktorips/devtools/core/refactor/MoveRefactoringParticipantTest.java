@@ -144,20 +144,4 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
 
         checkJavaSourceFilesTestCaseType(ORIGINAL_PACKAGE_NAME, "TestCaseType", TARGET_PACKAGE_NAME, "TestCaseType");
     }
-
-    @Test
-    public void testMoveBusinessFunction() throws CoreException {
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction(
-                ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performFullBuild(ipsProject);
-
-        performMoveRefactoring(businessFunction, targetIpsPackageFragment);
-
-        checkJavaSourceFilesBusinessFunction(ORIGINAL_PACKAGE_NAME, "BusinessFunction", TARGET_PACKAGE_NAME,
-                "BusinessFunction");
-    }
-
 }

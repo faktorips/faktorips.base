@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
-import org.faktorips.devtools.core.ui.editors.pctype.RuleFunctionsControl;
 import org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesControl;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -32,7 +31,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     // edit fields
     private CheckboxField appliedToAllField;
-    private RuleFunctionsControl rfControl;
     private CheckboxField specifiedInSrcField;
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
@@ -54,12 +52,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         TabItem msgPage = new TabItem(folder, SWT.NONE);
         msgPage.setText(Messages.RuleEditDialog_generalTitle);
         msgPage.setControl(createGeneralPage(folder));
-
-        if (isCreateFunctionsPage()) {
-            TabItem functionsPage = new TabItem(folder, SWT.NONE);
-            functionsPage.setText(Messages.RuleEditDialog_functionTitle);
-            functionsPage.setControl(createFunctionsPage(folder));
-        }
 
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
@@ -85,22 +77,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         return workArea;
     }
 
-    private boolean isCreateFunctionsPage() {
-        return getIpsPart().getIpsProject().getReadOnlyProperties().isBusinessFunctionsForValidationRulesEnabled();
-    }
-
-    private Control createFunctionsPage(TabFolder folder) {
-        Composite workArea = createTabItemComposite(folder, 1, false);
-        ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
-        Checkbox appliedToAllCheckbox = getToolkit().createCheckbox(workArea,
-                Messages.RuleEditDialog_labelApplyInAllBusinessFunctions);
-        rfControl = new RuleFunctionsControl(workArea);
-        rfControl.initialize(super.getIpsPart(), null);
-        appliedToAllField = new CheckboxField(appliedToAllCheckbox);
-
-        return workArea;
-    }
-
     private Control createMarkersPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
 
@@ -122,10 +98,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private void bindFields() {
         ruleUI.bindFields(rule, getBindingContext());
-        if (isCreateFunctionsPage()) {
-            getBindingContext().bindContent(appliedToAllField, rule,
-                    IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        }
         getBindingContext().bindContent(specifiedInSrcField, rule,
                 IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }

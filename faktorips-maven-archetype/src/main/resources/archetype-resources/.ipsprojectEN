@@ -346,8 +346,6 @@
             <!- - Represents the qualified name of the marker enums seperated by ";". For further processing only the first entered qualified name will be considered - ->
                 True to allow usage of marker enums. - ->
             <Setting enabled="true" name="markerEnums" value="markerEnumName"/>
-            <!- - True to allow business functions for validation rules. - ->
-            <Setting enabled="true" name="businessFunctionsForValidationRules"/>
             <!- - False to set the default state of changing over time flag on product component types to disabled. - ->
             <Setting enabled="false" name="changingOverTimeDefault"/>
             <!- - When inferring a template from multiple product components, Faktor-IPS checks whether a link is used in all or at least many of those product components.
@@ -379,7 +377,6 @@
   <Setting enabled="false" name="sharedDetailToMasterAssociations"/>
   <Setting name="formulaLanguageLocale" value="en"/>
   <Setting enabled="false" name="markerEnums" value=""/>
-  <Setting enabled="false" name="businessFunctionsForValidationRules"/>
   <Setting enabled="false" name="changingOverTimeDefault"/>
   <Setting name="inferredTemplateLinkThreshold" value="1"/>
   <Setting name="inferredTemplatePropertyValueThreshold" value="0.8"/>

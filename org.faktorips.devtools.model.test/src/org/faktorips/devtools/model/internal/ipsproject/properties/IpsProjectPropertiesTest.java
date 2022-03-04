@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -197,21 +195,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testValidate_DeprecatedBusinessFunctions() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setBusinessFunctionsForValidationRules(false);
-        MessageList list = props.validate(ipsProject);
-        assertThat(list,
-                not(hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED)));
-
-        props.setBusinessFunctionsForValidationRules(true);
-        list = props.validate(ipsProject);
-        assertThat(list,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-    }
-
     @Test
     public void testValidate_FeatureConfiguration_UnknownFeature() throws CoreException {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
@@ -245,7 +228,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             props.setMarkerEnumsEnabled((i & 1) == 1);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
             props.setPersistenceSupport((i & 1) == 1);
-            props.setBusinessFunctionsForValidationRules((i & 1) == 1);
             props.setChangingOverTimeDefault((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
@@ -258,7 +240,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
             assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
-            assertEquals(props.isBusinessFunctionsForValidationRulesEnabled(), (i & 1) == 1);
             assertEquals(props.isChangingOverTimeDefaultEnabled(), (i & 1) == 1);
         }
     }
@@ -274,7 +255,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setRuntimeIdPrefix("newRuntimeIdPrefix");
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
-        props.setBusinessFunctionsForValidationRules(true);
         props.setChangingOverTimeDefault(false);
         props.setGenerateValidatorClassDefault(true);
         props.setGenericValidationDefault(false);
@@ -328,7 +308,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isProductDefinitionProject());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertTrue(props.isGenerateValidatorClassDefaultEnabled());
         assertFalse(props.isGenericValidationDefaultEnabled());
@@ -456,7 +435,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isProductDefinitionProject());
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertFalse(props.isGenerateValidatorClassDefaultEnabled());
         assertTrue(props.isGenericValidationDefaultEnabled());
@@ -541,21 +519,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
 
         assertFalse(props.isMarkerEnumsEnabled());
-    }
-
-    @Test
-    public void testIsBusinessFunctionsForValidationRulesEnabled_default() {
-        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-
-        assertFalse(props.isBusinessFunctionsForValidationRulesEnabled());
-    }
-
-    @Test
-    public void testIsBusinessFunctionsForValidationRulesEnabled() {
-        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setBusinessFunctionsForValidationRules(true);
-
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
     }
 
     @Test

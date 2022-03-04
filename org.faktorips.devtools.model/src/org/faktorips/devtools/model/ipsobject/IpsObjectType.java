@@ -21,7 +21,6 @@ import org.faktorips.devtools.model.internal.tablecontents.TableContents;
 import org.faktorips.devtools.model.internal.tablestructure.TableStructure;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.internal.testcasetype.TestCaseType;
-import org.faktorips.runtime.ValidationContext;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -44,19 +43,6 @@ public class IpsObjectType {
     public static final IpsObjectType ENUM_TYPE = new IpsObjectType(
             "EnumType", "EnumType", Messages.IpsObjectType_nameEnumType, Messages.IpsObjectType_nameEnumTypePlural, //$NON-NLS-1$ //$NON-NLS-2$
             "ipsenumtype", false, false, EnumType.class); //$NON-NLS-1$
-
-    /**
-     * Type for business function.
-     *
-     * @deprecated for removal since 21.6; You can use any object type as a value set to
-     *             {@link ValidationContext#setValue(String, Object)} to control execution of your
-     *             validation rules.
-     */
-    @Deprecated
-    public static final IpsObjectType BUSINESS_FUNCTION = new IpsObjectType(
-            "BusinessFunction", "BusinessFunction", Messages.IpsObjectType_nameBusinessFunction, //$NON-NLS-1$ //$NON-NLS-2$
-            Messages.IpsObjectType_nameBusinessFunctionPlural, "ipsbf", false, false, //$NON-NLS-1$
-            org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl.class);
 
     /**
      * Type for Policy component type.
@@ -251,12 +237,6 @@ public class IpsObjectType {
         }
         if (this == TEST_CASE) {
             return new TestCase(file);
-        }
-        if (this == BUSINESS_FUNCTION) {
-            @SuppressWarnings("deprecation")
-            org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl businessFunctionImpl = new org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl(
-                    file);
-            return businessFunctionImpl;
         }
         if (this == ENUM_TYPE) {
             return new EnumType(file);

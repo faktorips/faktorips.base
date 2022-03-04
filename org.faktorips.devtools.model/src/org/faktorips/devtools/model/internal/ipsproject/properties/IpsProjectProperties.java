@@ -121,8 +121,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
 
-    private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
-
     private static final String SETTING_CHANGING_OVER_TIME_DEFAULT = "changingOverTimeDefault"; //$NON-NLS-1$
 
     private static final String SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD = "inferredTemplateLinkThreshold"; //$NON-NLS-1$
@@ -204,7 +202,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
     private boolean enableMarkerEnums = true;
-    private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
     private boolean generateValidatorClassByDefault = false;
     private boolean genericValidationByDefault = false;
@@ -284,7 +281,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validateVersion(list);
             validateSupportedLanguages(list);
             validateFeatureConfigurations(list);
-            validateDeprecatedBusinessFunctions(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -292,16 +288,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void validateDeprecatedBusinessFunctions(MessageList msgList) {
-        if (isBusinessFunctionsForValidationRulesEnabled()) {
-            msgList.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
-                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
-                    Message.WARNING,
-                    new ObjectProperty(this, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)));
         }
     }
 
@@ -719,9 +705,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(), getMarkerEnumsAsString()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
-                isBusinessFunctionsForValidationRulesEnabled()));
-
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT, isChangingOverTimeDefaultEnabled()));
 
@@ -1135,8 +1118,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
             markerEnumsConfiguredInIpsProjectFile = true;
-        } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
-            setBusinessFunctionsForValidationRules(enabled);
         } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
             setChangingOverTimeDefault(enabled);
         } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
@@ -1541,9 +1522,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        True to allow usage of marker enums. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator()
-                + "    <!-- True to allow business functions for validation rules. -->" + System.lineSeparator() //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + System.lineSeparator()
                 + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"false\"" + " name=\"" + SETTING_CHANGING_OVER_TIME_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator()
@@ -1897,16 +1875,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setFormulaLanguageLocale(Locale locale) {
         formulaLanguageLocale = locale;
-    }
-
-    @Override
-    public boolean isBusinessFunctionsForValidationRulesEnabled() {
-        return businessFunctionsForValidationRules;
-    }
-
-    @Override
-    public void setBusinessFunctionsForValidationRules(boolean enabled) {
-        businessFunctionsForValidationRules = enabled;
     }
 
     @Override

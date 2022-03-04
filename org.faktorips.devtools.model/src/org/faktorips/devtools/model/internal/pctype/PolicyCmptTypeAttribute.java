@@ -124,7 +124,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         rule.addValidatedAttribute(getName());
         rule.setMessageCode(getProposalMsgCodeForValueSetRule());
         rule.setCheckValueAgainstValueSetRule(true);
-        rule.setAppliedForAllBusinessFunctions(true);
         rule.setValidatedAttrSpecifiedInSrc(false);
         return rule;
     }

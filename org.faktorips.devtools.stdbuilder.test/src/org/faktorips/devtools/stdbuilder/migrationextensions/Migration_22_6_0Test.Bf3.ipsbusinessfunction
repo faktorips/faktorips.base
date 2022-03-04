@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction parameterRectangleHeight="92" parameterRectangleWidth="256" parameterRectangleX="10" parameterRectangleY="10" xml:space="preserve">
+ <Description id="30dda87e-f37b-4fa8-b604-3a4c5043062a" locale="en">By means of this business function is checked that no compile error occur when two method or business call actions are used that delegate to the same method or business function</Description>
+ <BFElement id="0" name="" type="start">
+  <Location xlocation="503" ylocation="6"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="19" type="out"/>
+ </BFElement>
+ <BFElement id="1" name="" type="end">
+  <Location xlocation="500" ylocation="599"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="11" type="in"/>
+ </BFElement>
+ <Action executableMethodName="doitNow" id="2" name="" target="policy" type="methodCallAction">
+  <Location xlocation="447" ylocation="128"/>
+  <Size height="60" width="141"/>
+  <ControlFlow id="8" type="out"/>
+  <ControlFlow id="19" type="in"/>
+ </Action>
+ <Action executableMethodName="doitNow" id="4" name="" target="policy" type="methodCallAction">
+  <Location xlocation="445" ylocation="237"/>
+  <Size height="60" width="138"/>
+  <ControlFlow id="9" type="out"/>
+  <ControlFlow id="8" type="in"/>
+ </Action>
+ <Action executableMethodName="" id="5" name="" target="businessfunctions.subBfs.Bf2" type="businessFunctionCallAction">
+  <Location xlocation="393" ylocation="351"/>
+  <Size height="60" width="234"/>
+  <ControlFlow id="10" type="out"/>
+  <ControlFlow id="9" type="in"/>
+ </Action>
+ <Action executableMethodName="" id="6" name="" target="businessfunctions.subBfs.Bf2" type="businessFunctionCallAction">
+  <Location xlocation="394" ylocation="462"/>
+  <Size height="60" width="240"/>
+  <ControlFlow id="11" type="out"/>
+  <ControlFlow id="10" type="in"/>
+ </Action>
+ <Parameter datatype="businessfunctions.BfPolicy" name="policy" type="parameter"/>
+ <ControlFlow conditionValue="" id="8" name="" source="2" target="4"/>
+ <ControlFlow conditionValue="" id="9" name="" source="4" target="5"/>
+ <ControlFlow conditionValue="" id="10" name="" source="5" target="6"/>
+ <ControlFlow conditionValue="" id="11" name="" source="6" target="1"/>
+ <ControlFlow conditionValue="" id="19" name="" source="0" target="2"/>
+</BusinessFunction>

@@ -91,13 +91,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateNameForBusinessFunction() throws CoreException {
-        @SuppressWarnings("deprecation")
-        IpsObjectType type = IpsObjectType.BUSINESS_FUNCTION;
-        testCommonJavaTypeNameValidation(type);
-    }
-
-    @Test
     public void testValidateNameForPolicyCmptType() throws CoreException {
         IpsObjectType type = IpsObjectType.POLICY_CMPT_TYPE;
         testCommonJavaTypeNameValidation(type);
@@ -319,13 +312,6 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         // Test case
         ITestCase tc = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "/test");
         ml = tc.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
-
-        // Business function
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.model.businessfct.BusinessFunction bf = (org.faktorips.devtools.model.businessfct.BusinessFunction)newIpsObject(
-                ipsProject, IpsObjectType.BUSINESS_FUNCTION, "1test");
-        ml = bf.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME));
 
         // Table structure

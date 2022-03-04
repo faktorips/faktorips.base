@@ -393,10 +393,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // toc file builder
         builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder businessFunctionBuilder = new org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder(
-                this);
-        builders.put(BuilderKindIds.BUSINESS_FUNCTION, businessFunctionBuilder);
         // New enum type builder
         builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));

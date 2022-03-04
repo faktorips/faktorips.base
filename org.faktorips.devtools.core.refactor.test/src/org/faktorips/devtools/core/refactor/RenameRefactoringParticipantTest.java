@@ -383,19 +383,6 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameBusinessFunction() throws CoreException {
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performFullBuild(ipsProject);
-
-        performRenameRefactoring(businessFunction, "RenamedBusinessFunction");
-
-        checkJavaSourceFilesBusinessFunction("", "BusinessFunction", "", "RenamedBusinessFunction");
-    }
-
-    @Test
     public void testRenameOnlyLetterCaseChanged() throws CoreException {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PolicyCmptType");
 

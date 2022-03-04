@@ -21,8 +21,6 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.IControlFlow;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -150,16 +148,6 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         assertThat(getJavaType(targetPackageName, newName, false, false, ipsProject), exists());
     }
 
-    protected void checkJavaSourceFilesBusinessFunction(String originalPackageName,
-            String originalName,
-            String targetPackageName,
-            String newName) {
-
-        assertThat(getJavaType(originalPackageName, originalName, true, false, ipsProject), not(exists()));
-
-        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
-    }
-
     protected IEnumType createEnumType(String name,
             IEnumType superEnumType,
             String idAttributeName,
@@ -217,20 +205,6 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
 
     protected ITestCaseType createTestCaseType(String name) throws CoreException {
         return newTestCaseType(ipsProject, name);
-    }
-
-    @SuppressWarnings("deprecation")
-    protected org.faktorips.devtools.model.bf.IBusinessFunction createBusinessFunction(String name)
-            throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
-                ipsProject,
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(), name);
-        businessFunction.newStart(new Location(0, 0));
-        businessFunction.newEnd(new Location(10, 10));
-        IControlFlow controlFlow = businessFunction.newControlFlow();
-        controlFlow.setSource(businessFunction.getStart());
-        controlFlow.setTarget(businessFunction.getEnd());
-        return businessFunction;
     }
 
     protected void saveIpsSrcFile(IIpsObject ipsObject) throws CoreException {

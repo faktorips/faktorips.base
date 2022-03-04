@@ -448,6 +448,14 @@ public class XmlUtil {
         return VALIDATORS.computeIfAbsent(ipsObjectType, ValidatingDocumentBuilderHolder::new).get();
     }
 
+    public static final void resetValidatingDocumentBuilder(IpsObjectType ipsObjectType) {
+        VALIDATORS.remove(ipsObjectType);
+    }
+
+    public static final void resetValidatingDocumentBuilders() {
+        VALIDATORS.clear();
+    }
+
     /**
      * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. The
      * {@code customErrorHandler} will be used instead of the default one.

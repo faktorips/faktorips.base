@@ -103,14 +103,6 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return result;
     }
 
-    public boolean isSpecificBusinessFunctions() {
-        return !getValidationRule().isAppliedForAllBusinessFunctions();
-    }
-
-    public String[] getSpecifiedBusinessFunctions() {
-        return getValidationRule().getBusinessFunctions();
-    }
-
     public String getMethodNameExecRule() {
         return StringUtils.uncapitalize(getName());
     }

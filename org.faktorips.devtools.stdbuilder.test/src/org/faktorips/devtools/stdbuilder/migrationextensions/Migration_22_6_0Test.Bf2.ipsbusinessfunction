@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction parameterRectangleHeight="100" parameterRectangleWidth="100" parameterRectangleX="10" parameterRectangleY="10" xml:space="preserve">
+ <Description id="a1b21a68-d75d-4073-86e6-a83af81d4aca" locale="en"/>
+ <BFElement id="0" name="" type="start">
+  <Location xlocation="443" ylocation="129"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="3" type="out"/>
+ </BFElement>
+ <BFElement id="1" name="" type="end">
+  <Location xlocation="445" ylocation="416"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="4" type="in"/>
+ </BFElement>
+ <Action executableMethodName="" id="2" name="action" target="" type="inlineAction">
+  <Location xlocation="409" ylocation="251"/>
+  <Size height="60" width="100"/>
+  <ControlFlow id="4" type="out"/>
+  <ControlFlow id="3" type="in"/>
+ </Action>
+ <ControlFlow conditionValue="" id="3" name="" source="0" target="2"/>
+ <ControlFlow conditionValue="" id="4" name="" source="2" target="1"/>
+</BusinessFunction>

@@ -29,11 +29,6 @@
 <!-- 
     Extensions to the Java perspective
   -->
-   <extension point="org.faktorips.devtools.model.ipsobjecttype">
-       <ipsobjecttype
-            class="org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType">
-       </ipsobjecttype>
-   </extension>
    <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
        <classpathVariableInitializer
              class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"

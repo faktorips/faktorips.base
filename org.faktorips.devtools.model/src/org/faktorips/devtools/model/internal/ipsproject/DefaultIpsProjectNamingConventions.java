@@ -119,10 +119,6 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             MessageList ml = validateNameForEnumType(name, qualifiedCheck);
             result.add(ml);
             return result;
-        } else if (IpsObjectType.BUSINESS_FUNCTION.equals(type)) {
-            MessageList ml = validateNameForBusinessFunction(name, qualifiedCheck);
-            result.add(ml);
-            return result;
         } else if (IpsObjectType.POLICY_CMPT_TYPE.equals(type)) {
             MessageList ml = validateNameForPolicyCmptType(name, qualifiedCheck);
             result.add(ml);
@@ -194,10 +190,6 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private MessageList validateNameForProductCmptType(String name, boolean qualifiedCheck) {
-        return validateJavaTypeName(name, qualifiedCheck);
-    }
-
-    private MessageList validateNameForBusinessFunction(String name, boolean qualifiedCheck) {
         return validateJavaTypeName(name, qualifiedCheck);
     }
 

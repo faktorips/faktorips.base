@@ -10,10 +10,6 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -129,7 +125,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     @Test
     public void testInitFromXml() {
         Document doc = getTestDocument();
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.setChangingOverTime(false);
         validationRule.initFromXml(doc.getDocumentElement());
         assertEquals("42", validationRule.getId());
@@ -137,12 +132,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("ageMissing", validationRule.getMessageCode());
         assertEquals("messageText", validationRule.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, validationRule.getMessageSeverity());
-        assertFalse(validationRule.isAppliedForAllBusinessFunctions());
         assertTrue(validationRule.isChangingOverTime());
-        String[] functions = validationRule.getBusinessFunctions();
-        assertEquals(2, functions.length);
-        assertEquals("NewOffer", functions[0]);
-        assertEquals("Renewal", functions[1]);
         String[] validatedAttributes = validationRule.getValidatedAttributes();
         assertEquals("a", validatedAttributes[0]);
         assertEquals("b", validatedAttributes[1]);
@@ -156,7 +146,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfConfigured() {
         Document doc = getTestDocument();
         doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.initFromXml(doc.getDocumentElement());
         assertTrue(validationRule.isChangingOverTime());
     }
@@ -167,7 +156,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
         doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.initFromXml(doc.getDocumentElement());
         assertFalse(validationRule.isChangingOverTime());
     }
@@ -181,7 +169,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
         doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.initFromXml(doc.getDocumentElement());
         assertFalse(validationRule.isChangingOverTime());
     }
@@ -195,7 +182,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
         doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.initFromXml(doc.getDocumentElement());
         assertTrue(validationRule.isChangingOverTime());
     }
@@ -204,12 +190,10 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testToXmlDocument() {
         validationRule = policyCmptType.newRule(); // => id=1 because it's the second validationRule
         validationRule.setName("checkAge");
-        validationRule.setAppliedForAllBusinessFunctions(true);
         validationRule.setChangingOverTime(true);
         validationRule.setMessageCode("ageMissing");
         validationRule.getMessageText().add(new LocalizedString(Locale.GERMAN, "messageText"));
         validationRule.setMessageSeverity(MessageSeverity.WARNING);
-        validationRule.setBusinessFunctions(new String[] { "NewOffer", "Renewal" });
         validationRule.addValidatedAttribute("a");
         validationRule.setCheckValueAgainstValueSetRule(true);
         validationRule.setCategory("foo");
@@ -224,12 +208,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("ageMissing", copy.getMessageCode());
         assertEquals("messageText", copy.getMessageText().get(Locale.GERMAN).getValue());
         assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
-        assertTrue(copy.isAppliedForAllBusinessFunctions());
         assertTrue(copy.isChangingOverTime());
-        String[] functions = copy.getBusinessFunctions();
-        assertEquals(2, functions.length);
-        assertEquals("NewOffer", functions[0]);
-        assertEquals("Renewal", functions[1]);
         String[] validationAttributes = copy.getValidatedAttributes();
         assertEquals("a", validationAttributes[0]);
         assertTrue(copy.isCheckValueAgainstValueSetRule());
@@ -238,40 +217,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals(2, markers.size());
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
-    }
-
-    @Test
-    public void testAddBusinessFunction() {
-        validationRule.addBusinessFunction("f1");
-        assertEquals(1, validationRule.getNumOfBusinessFunctions());
-        assertEquals("f1", validationRule.getBusinessFunction(0));
-
-        validationRule.addBusinessFunction("f2");
-        assertEquals(2, validationRule.getNumOfBusinessFunctions());
-        assertEquals("f2", validationRule.getBusinessFunction(1));
-    }
-
-    @Test
-    public void testSetBusinessFunction() {
-        validationRule.addBusinessFunction("f1");
-        validationRule.addBusinessFunction("f2");
-
-        validationRule.setBusinessFunctions(1, "changed");
-        assertEquals("changed", validationRule.getBusinessFunction(1));
-    }
-
-    @Test
-    public void testRemoveBusinessFunction() {
-        validationRule.addBusinessFunction("f1");
-        validationRule.addBusinessFunction("f2");
-        validationRule.addBusinessFunction("f3");
-        validationRule.addBusinessFunction("f4");
-
-        validationRule.removeBusinessFunction(3);
-        validationRule.removeBusinessFunction(1);
-        assertEquals(2, validationRule.getNumOfBusinessFunctions());
-        assertEquals("f1", validationRule.getBusinessFunction(0));
-        assertEquals("f3", validationRule.getBusinessFunction(1));
     }
 
     @Test
@@ -298,58 +243,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
                 "validatedAttributes");
         assertEquals(1, messageList.size());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testValidateBusinessFunctions() throws CoreException {
-        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(true));
-        validationRule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertThat(msgList.size(), is(1));
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList
-                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        validationRule.addBusinessFunction("function");
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
-                isEmpty());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testValidateBusinessFunctions_DisabledInProject() throws CoreException {
-        setProjectProperty(ipsProject, p -> p.setBusinessFunctionsForValidationRules(false));
-        validationRule.setAppliedForAllBusinessFunctions(true);
-        MessageList msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        msgList = msgList
-                .getMessagesByCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED);
-        assertThat(msgList, isEmpty());
-
-        validationRule.setAppliedForAllBusinessFunctions(false);
-        validationRule.addBusinessFunction("function");
-        msgList = validationRule.validate(ipsSrcFile.getIpsProject());
-        assertThat(msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS),
-                isEmpty());
-        msgList = msgList.getMessagesFor(validationRule, IValidationRule.PROPERTY_BUSINESS_FUNCTIONS);
-        assertThat(msgList,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
     }
 
     @Test

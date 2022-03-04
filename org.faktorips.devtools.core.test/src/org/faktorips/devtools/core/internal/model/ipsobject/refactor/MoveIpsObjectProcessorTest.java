@@ -175,19 +175,6 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
         tableStructureReferences.check(TARGET_PACKAGE_NAME + '.' + tableStructure.getName());
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testMoveBusinessFunction() throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction(
-                ORIGINAL_PACKAGE_NAME + '.' + "BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performMoveRefactoring(businessFunction, targetIpsPackageFragment);
-
-        checkIpsSourceFile(businessFunction.getName(), businessFunction.getName(), originalIpsPackageFragment,
-                targetIpsPackageFragment, org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance());
-    }
-
     @Test
     public void testMoveProductCmpt() throws CoreException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
