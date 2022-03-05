@@ -24,7 +24,7 @@
         <!-- User properties -->
         <target-platform>eclipse-2019-03</target-platform>
         <!-- plugin versions -->
-        <tycho-version>2.7.0</tycho-version>
+        <tycho-version>3.0.0-SNAPSHOT</tycho-version>
         <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
         <maven-checkstyle-plugin-version>2.17</maven-checkstyle-plugin-version>
         <maven-surefire-plugin-version>2.22.0</maven-surefire-plugin-version>
@@ -34,6 +34,7 @@
         <xtend-maven-plugin-version>2.25.0</xtend-maven-plugin-version>
         <maven-javadoc-plugin-version>3.3.1</maven-javadoc-plugin-version>
         <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
+        <maven-bundle-plugin-version>5.1.4</maven-bundle-plugin-version>
         <!-- java and compiler options -->
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -169,6 +170,13 @@
                                 <arch>x86_64</arch>
                             </environment>
                         </environments>
+                        <pomDependencies>consider</pomDependencies>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>com.google.code.findbugs</groupId>
+                                <artifactId>jsr305</artifactId>
+                            </exclusion>
+                        </exclusions>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -198,18 +206,41 @@
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin-version}</version>
                 </plugin>
-
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven-bundle-plugin-version}</version>
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>generate-manifest</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>manifest</goal>
+                            </goals>
+                            <configuration>
+                                <supportIncrementalBuild>true</supportIncrementalBuild>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <instructions>
+                            <Bundle-Vendor>Faktor Zehn GmbH</Bundle-Vendor>
+                            <Export-Package>org.faktorips.*</Export-Package>
+                        </instructions>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
-        </dependency>
-    </dependencies>
+<!--     <dependencies> -->
+<!--         <dependency> -->
+<!--             <groupId>com.google.code.findbugs</groupId> -->
+<!--             <artifactId>jsr305</artifactId> -->
+<!--             <version>3.0.2</version> -->
+<!--         </dependency> -->
+<!--     </dependencies> -->
 
     <scm>
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>

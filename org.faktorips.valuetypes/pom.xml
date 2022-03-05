@@ -7,22 +7,56 @@
 
     <parent>
         <groupId>org.faktorips</groupId>
-        <artifactId>org.faktorips.aggregator.plugins</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
-        <relativePath>../org.faktorips.aggregator/plugins/pom.xml</relativePath>
+        <artifactId>base</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.valuetypes</artifactId>
+    <version>22.6.0-SNAPSHOT</version>
 
-    <packaging>eclipse-plugin</packaging>
+    <packaging>bundle</packaging>
+    <name>IPS Valuetypes for Java 8</name>
+
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>4.2.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+                <includes>
+                    <include>agpl-3.0.txt</include>
+                    <include>LICENSE.txt</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>create-javadoc</id>
@@ -49,19 +83,46 @@
                             <jvmVersion>11</jvmVersion>
                             <module>
                                 <moduleInfoSource>
-                                    module org.faktorips.valuetypes {
-                                        requires static com.github.spotbugs.annotations;
-                                        requires java.xml.bind;
-                                        exports org.faktorips.annotation;
-                                        exports org.faktorips.values;
-                                        exports org.faktorips.values.xml;
-                                        exports org.faktorips.valueset;
+                                    module
+                                    org.faktorips.valuetypes {
+                                    requires
+                                    static
+                                    com.github.spotbugs.annotations;
+                                    requires java.xml.bind;
+                                    exports
+                                    org.faktorips.annotation;
+                                    exports
+                                    org.faktorips.values;
+                                    exports
+                                    org.faktorips.values.xml;
+                                    exports
+                                    org.faktorips.valueset;
                                     }
                                 </moduleInfoSource>
                             </module>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            javax.xml.bind.*
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

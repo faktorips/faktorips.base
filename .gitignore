@@ -1,4 +1,7 @@
+# maven
 target/
+
+org.faktorips.valuetypes/.*
 
 # files generated (temporary) by the tycho maven builds
 .polyglot.*
