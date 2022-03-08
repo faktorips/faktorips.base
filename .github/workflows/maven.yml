@@ -2,6 +2,9 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
 name: Java CI with Maven
+concurrency: 
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 on:
   push:
@@ -19,6 +22,8 @@ jobs:
       matrix:
        eclipse-release: ['2019-03', '2019-06', '2019-09', '2019-12', '2020-03', '2020-06', '2020-09', '2020-12', '2021-03', '2021-06', '2021-09', '2021-12']
 
+    env:
+       integration-test-release: '2019-03'
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 8
@@ -34,5 +39,19 @@ jobs:
         cache: maven
     - name: build config
       run: mvn -B install --settings settings.xml --file org.faktorips.codequality.config/pom.xml
-    - name: Build with Maven
-      run: mvn -B package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }}
+    - name: Check compiles
+      run: mvn -B clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests
+      if: ${{ matrix.eclipse-release != env.integration-test-release }}
+    - name: Run Integration Tests
+      uses: GabrielBB/xvfb-action@v1
+      with:
+       run: mvn -B clean verify --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -Dmaven.test.failure.ignore=true
+      if: ${{ matrix.eclipse-release == env.integration-test-release }}
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-results
+        if-no-files-found: error
+        path: |
+          ${{ github.workspace }}/**/target/surefire-reports/*.xml
+      if: ${{ matrix.eclipse-release == env.integration-test-release }}
