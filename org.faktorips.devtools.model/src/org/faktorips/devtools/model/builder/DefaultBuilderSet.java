@@ -70,13 +70,29 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         String basePackInternal = javaPackageStructure.getBasePackageName(entry, true, false);
         Path path = QNameUtil.toPath(basePackInternal);
-        String basePackageRelativeTocPath = entry.getBasePackageRelativeTocPath();
-        path = path == null ? Path.of(basePackageRelativeTocPath) : path.resolve(basePackageRelativeTocPath);
+        String basePackageRelativeTocPath = getRelativePath(entry);
+        if (path == null) {
+            path = Path.of(basePackageRelativeTocPath);
+        } else {
+            path = path.resolve(basePackageRelativeTocPath);
+        }
         AFolder tocFileLocation = getTocFileLocation(root);
         if (tocFileLocation == null) {
             return null;
         }
         return tocFileLocation.getFile(path);
+    }
+
+    /**
+     * Path needs to be relative, even if configured absolute.
+     * 
+     */
+    private String getRelativePath(IIpsSrcFolderEntry entry) {
+        String basePackageRelativeTocPath = entry.getBasePackageRelativeTocPath();
+        if (basePackageRelativeTocPath.startsWith("/") || basePackageRelativeTocPath.startsWith("\\")) { //$NON-NLS-1$ //$NON-NLS-2$
+            basePackageRelativeTocPath = basePackageRelativeTocPath.substring(1);
+        }
+        return basePackageRelativeTocPath;
     }
 
     private AFolder getTocFileLocation(IIpsPackageFragmentRoot root) {
