@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
@@ -60,8 +57,7 @@
     </build>
 
     <dependencies>
-        <!-- modules as dependencies to ensure they are built before this 
-            p2 repository -->
+        <!-- modules as dependencies to ensure they are built before this p2 repository -->
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-runtime-groovy</artifactId>
@@ -156,7 +152,7 @@
                 </property>
             </activation>
             <properties>
-              <qualifiedVersion>${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</qualifiedVersion>
+                <qualifiedVersion>${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</qualifiedVersion>
             </properties>
             <build>
                 <plugins>
@@ -193,8 +189,7 @@
                         </executions>
                     </plugin>
                     <!-- zip runtime and valuetypes and add license -->
-                    <!-- TODO Refactor this by using maven-assembly-plugin 
-                        !!! -->
+                    <!-- TODO Refactor this by using maven-assembly-plugin !!! -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
@@ -207,26 +202,14 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <zip update="true"
-                                            destfile="${deploy.zipRuntimeAndValuetypes}">
-                                            <fileset
-                                                dir="${project.build.directory}/repository/plugins"
-                                                includes="org.faktorips.runtime*.jar" />
-                                            <fileset
-                                                dir="${project.basedir}/../org.faktorips.runtime/client/target/"
-                                                includes="faktorips-runtime-client*.jar" />
-                                            <fileset
-                                                dir="${project.build.directory}/repository/plugins"
-                                                includes="org.faktorips.valuetypes*.jar" />
-                                            <fileset
-                                                dir="${project.build.directory}"
-                                                includes="${deploy.license},${deploy.agpl}" />
+                                        <zip update="true" destfile="${deploy.zipRuntimeAndValuetypes}">
+                                            <fileset dir="${project.build.directory}/repository/plugins" includes="org.faktorips.runtime*.jar" />
+                                            <fileset dir="${project.basedir}/../org.faktorips.runtime/client/target/" includes="faktorips-runtime-client*.jar" />
+                                            <fileset dir="${project.build.directory}/repository/plugins" includes="org.faktorips.valuetypes*.jar" />
+                                            <fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl}" />
                                         </zip>
-                                        <zip update="true"
-                                            destfile="${deploy.repositoryZip}">
-                                            <fileset
-                                                dir="${project.build.directory}"
-                                                includes="${deploy.license},${deploy.agpl}" />
+                                        <zip update="true" destfile="${deploy.repositoryZip}">
+                                            <fileset dir="${project.build.directory}" includes="${deploy.license},${deploy.agpl}" />
                                         </zip>
                                     </target>
                                 </configuration>
@@ -280,6 +263,24 @@
                                     <toDir>/var/www/doc.faktorzehn.org/faktorips-maven-plugin/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}/</toDir>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <!-- 
+                                Faktor-IPS Documentation gets uploaded with ${project.version} and therefore is always a SNAPSHOT version.
+                                Either we change the version before building, similar to the maven-release-plugin, or we just rename it.
+                                -->
+                                <id>rename-fips-documentation</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>sshexec</goal>
+                                </goals>
+                                <configuration>
+                                    <commands>
+                                        <command>cp -r /var/www/doc.faktorzehn.org/faktor-ips/${project.version} /var/www/doc.faktorzehn.org/faktor-ips/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</command>
+                                    </commands>
+                                    <serverId>doc.faktorzehn.org</serverId>
+                                    <url>scp://doc@doc.faktorzehn.org:2004</url>
+                                </configuration>
+                            </execution>
                         </executions>
                         <dependencies>
                             <dependency>
@@ -295,8 +296,7 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <!-- Unzip deployed update site and create 
-                                    composites -->
+                                <!-- Unzip deployed update site and create composites -->
                                 <id>update-composite-p2</id>
                                 <goals>
                                     <goal>exec</goal>
