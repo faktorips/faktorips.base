@@ -1,0 +1,23 @@
+<idea-plugin>
+    <id>org.faktorips.faktorips.intellij</id>
+    <name>Faktor-IPS Development Tools</name>
+    <vendor email="fips@faktorzehn.de" url="https://www.faktorzehn.org">Faktor Zehn Gmbh</vendor>
+
+    <description><![CDATA[
+    <p>Using the product system Faktor-IPS for insurance and finance applications you design your business model, generate java code and define products very easy.</p>
+    <p>Find out more about Faktor-IPS in this short 3-minute video <a title="What is Faktor-IPS?" href="https://youtu.be/ygE5LjJoxG0">What is Faktor-IPS?</a>.</p>
+    <p>More videos and tutorials are available in our <a title="Dokumentation" href="https://www.faktorzehn.org/de/dokumentation/">Documentation</a>.</p>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
