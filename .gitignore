@@ -5,6 +5,7 @@
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/shelf
+.idea/**/workspace.xml
 
 # Generated files
 .idea/**/contentModel.xml
