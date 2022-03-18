@@ -95,7 +95,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         return addImport(getDatatypeHelper(true));
     }
 
-    private Datatype getDatatypeUseWrappers() {
+    public Datatype getDatatypeUseWrappers() {
         ValueDatatype datatype = getDatatype();
         if (datatype.isPrimitive()) {
             datatype = datatype.getWrapperType();

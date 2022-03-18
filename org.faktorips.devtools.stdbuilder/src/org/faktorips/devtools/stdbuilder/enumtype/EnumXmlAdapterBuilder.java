@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
@@ -122,7 +123,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         if (idAttribute == null || !idAttribute.isValid(getIpsProject())) {
             return;
         }
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));
+
+        ValueDatatype idAttributeDatatype = idAttribute.findDatatype(getIpsProject());
+        if (idAttributeDatatype.isPrimitive()) {
+            idAttributeDatatype = idAttributeDatatype.getWrapperType();
+        }
+
+        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttributeDatatype);
 
         StringBuilder superClassName = new StringBuilder();
         superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$

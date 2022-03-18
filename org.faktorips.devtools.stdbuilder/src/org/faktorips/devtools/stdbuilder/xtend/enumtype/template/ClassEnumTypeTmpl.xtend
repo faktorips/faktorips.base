@@ -92,7 +92,11 @@ class ClassEnumTypeTmpl {
          */
         @Override
         public int hashCode() {
-            return «methodNameGetIdentifierAttribute»().hashCode();
+            «IF identifierAttribute.datatype.primitive»
+                return «identifierAttribute.datatypeUseWrappers».hashCode(«methodNameGetIdentifierAttribute»());
+            «ELSE»
+                return «methodNameGetIdentifierAttribute»().hashCode();
+            «ENDIF»
         }
     '''
 
@@ -139,7 +143,11 @@ class ClassEnumTypeTmpl {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof «name») {
-                return this.«methodNameGetIdentifierAttribute»().equals(((«name») obj).«methodNameGetIdentifierAttribute»());
+                «IF identifierAttribute.datatype.primitive»
+                    return this.«methodNameGetIdentifierAttribute»() == ((«name») obj).«methodNameGetIdentifierAttribute»();
+                «ELSE»
+                    return this.«methodNameGetIdentifierAttribute»().equals(((«name») obj).«methodNameGetIdentifierAttribute»());
+                «ENDIF»
             }
             return false;
         }
