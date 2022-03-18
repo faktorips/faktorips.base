@@ -6,7 +6,7 @@
     <description><![CDATA[
     <p>Using the product system Faktor-IPS for insurance and finance applications you design your business model, generate java code and define products very easy.</p>
     <p>Find out more about Faktor-IPS in this short 3-minute video <a title="What is Faktor-IPS?" href="https://youtu.be/ygE5LjJoxG0">What is Faktor-IPS?</a>.</p>
-    <p>More videos and tutorials are available in our <a title="Dokumentation" href="https://www.faktorzehn.org/de/dokumentation/">Documentation</a>.</p>
+    <p>More videos and tutorials are available in our <a title="Documentation" href="https://www.faktorzehn.org/en/dokumentation/">Documentation</a>.</p>
     ]]></description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
@@ -14,7 +14,37 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+
+        <fileType name="PolicyComponentType"
+                  implementationClass="org.faktorips.devtools.filetypes.PolicyCmptTypeFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipspolicycmpttype"/>
+        <fileType name="ProductComponentType"
+                  implementationClass="org.faktorips.devtools.filetypes.ProductCmptTypeFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipsproductcmpttype"/>
+        <fileType name="ProductComponent"
+                  implementationClass="org.faktorips.devtools.filetypes.ProductCmptFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipsproduct"/>
+        <fileType name="EnumType"
+                  implementationClass="org.faktorips.devtools.filetypes.EnumTypeFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipsenumtype"/>
+        <fileType name="EnumContent"
+                  implementationClass="org.faktorips.devtools.filetypes.EnumContentFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipsenumcontent"/>
+        <fileType name="ProductTemplate"
+                  implementationClass="org.faktorips.devtools.filetypes.ProductTemplateFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipstemplate"/>
+        <fileType name="TestCaseType"
+                  implementationClass="org.faktorips.devtools.filetypes.TestCaseTypeFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipstestcasetype"/>
+        <fileType name="TestCase"
+                  implementationClass="org.faktorips.devtools.filetypes.TestCaseFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipstestcase"/>
+        <fileType name="TableStructure"
+                  implementationClass="org.faktorips.devtools.filetypes.TableStructureFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipstablestructure"/>
+        <fileType name="TableContents"
+                  implementationClass="org.faktorips.devtools.filetypes.TableContentsFileType"
+                  fieldName="INSTANCE" language="XML" extensions="ipstablecontents"/>
     </extensions>
 
     <actions>
