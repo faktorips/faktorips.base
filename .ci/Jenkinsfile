@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        PROJECT_NAME = 'faktorips.intellij'
+        BUILD_NAME = 'main'
+     }
+
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}"
+                }
+
+                withGradle {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
+    post {
+        unsuccessful {
+            emailext to: env.TEAM_EMAIL, mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
+                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
+                <br>
+                $BUILD_URL
+            '''
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
+    }
+}

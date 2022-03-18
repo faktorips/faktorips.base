@@ -1,0 +1,34 @@
+library 'f10-jenkins-library@1.0_patches'
+
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        PROJECT_NAME = 'faktorips-documentation'
+        BUILD_NAME = "${env.GERRIT_CHANGE_NUMBER}"
+    }
+
+    stages {
+        stage('Pre-Build') {
+            steps {
+                script {
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.BUILD_NAME}"
+                }
+
+                preBuildSteps()
+            }
+        }
+
+        stage('Build') {
+            steps {
+                withGradle {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
+    }
+}
