@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>22.6.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -23,7 +23,6 @@
     <!-- These are all modules that are included in the Faktor-IPS build -->
 
     <modules>
-        <module>../org.faktorips.valuetypes</module>
         <module>targets</module>
         <module>plugins</module>
         <module>features</module>
