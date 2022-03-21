@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>22.6.0-SNAPSHOT</version>
     </parent>
 
 
@@ -134,7 +134,7 @@
             <extension>
                 <groupId>org.faktorips</groupId>
                 <artifactId>codequality-config</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>22.6.0-SNAPSHOT</version>
             </extension>
         </extensions>
         <pluginManagement>

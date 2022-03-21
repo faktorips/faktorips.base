@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>22.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.valuetypes</artifactId>
@@ -46,7 +46,7 @@
     <build>
         <resources>
             <resource>
-                <directory>src/resources</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>agpl-3.0.txt</include>
                     <include>LICENSE.txt</include>

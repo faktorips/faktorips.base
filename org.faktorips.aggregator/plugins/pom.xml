@@ -45,13 +45,17 @@
         <module>../../org.faktorips.runtime.groovy</module>
         <module>../../org.faktorips.testsupport</module>
         <module>../../org.faktorips.util</module>
-        <module>../../org.faktorips.valuetypes.joda</module>
     </modules>
     
     <dependencies>
     <dependency>
         <groupId>org.faktorips</groupId>
         <artifactId>org.faktorips.valuetypes</artifactId>
+        <version>${project.version}</version>
+    </dependency>
+     <dependency>
+        <groupId>org.faktorips</groupId>
+        <artifactId>org.faktorips.valuetypes.joda</artifactId>
         <version>${project.version}</version>
     </dependency>
     

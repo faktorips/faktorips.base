@@ -16,7 +16,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.faktorips</groupId>
     <artifactId>base</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>22.6.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Platform for Developing Insurance Applications</name>
 
@@ -35,6 +35,7 @@
         <maven-javadoc-plugin-version>3.3.1</maven-javadoc-plugin-version>
         <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
         <maven-bundle-plugin-version>5.1.4</maven-bundle-plugin-version>
+        <version.joda>2.1</version.joda>
         <!-- java and compiler options -->
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -51,6 +52,8 @@
 
     <modules>
         <module>org.faktorips.codequality.config</module>
+        <module>org.faktorips.valuetypes</module>
+        <module>org.faktorips.valuetypes.joda</module>
         <module>org.faktorips.aggregator</module>
     </modules>
 
@@ -94,6 +97,8 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin-version}</version>
                     <configuration>
+                        <source>${java.version}</source>
+                        <detectJavaApiLink>false</detectJavaApiLink>
                         <tags>
                             <tag>
                                 <name>apiNote</name>
@@ -233,14 +238,6 @@
             </plugins>
         </pluginManagement>
     </build>
-
-<!--     <dependencies> -->
-<!--         <dependency> -->
-<!--             <groupId>com.google.code.findbugs</groupId> -->
-<!--             <artifactId>jsr305</artifactId> -->
-<!--             <version>3.0.2</version> -->
-<!--         </dependency> -->
-<!--     </dependencies> -->
 
     <scm>
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
